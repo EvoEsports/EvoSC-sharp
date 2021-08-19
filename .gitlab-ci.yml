@@ -15,4 +15,4 @@ build:
 test:
     stage: test
     script:
-        - "dotnet test EvoSC"
+        - "dotnet test EvoSC.Tests"
