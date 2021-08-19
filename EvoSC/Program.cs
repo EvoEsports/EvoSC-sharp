@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace EvoSC
 {
@@ -6,7 +6,7 @@ namespace EvoSC
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello, EvoSC!");
         }
     }
 }
