@@ -10,7 +10,7 @@ build:
         - "dotnet build EvoSC"
     artifacts:
       paths:
-        - bin/
+        - EvoSC/bin/
 
 test:
     stage: test
