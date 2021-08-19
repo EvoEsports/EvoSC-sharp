@@ -7,6 +7,7 @@ stages:
 build:
     stage: build
     script:
+        - "cd EvoSC"
         - "dotnet build"
     artifacts:
       paths:
@@ -15,4 +16,5 @@ build:
 test:
     stage: test
     script: 
+        - "cd EvoSC"
         - "dotnet test"
