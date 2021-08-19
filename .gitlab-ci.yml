@@ -7,14 +7,12 @@ stages:
 build:
     stage: build
     script:
-        - "cd EvoSC"
-        - "dotnet build"
+        - "dotnet build EvoSC.sln"
     artifacts:
       paths:
         - bin/
 
 test:
     stage: test
-    script: 
-        - "cd EvoSC"
-        - "dotnet test"
+    script:
+        - "dotnet test EvoSC.sln"
