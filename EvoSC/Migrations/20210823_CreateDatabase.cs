@@ -3,7 +3,7 @@ using FluentMigrator;
 using FluentMigrator.Builders.Create.Table;
 using FluentMigrator.Infrastructure;
 
-namespace EvoSC
+namespace EvoSC.Migrations
 {
     [Migration(20210823214300)]
     public class CreateDatabase : Migration 
@@ -34,8 +34,7 @@ namespace EvoSC
                 .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
                 .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
             );
-
-
+            
             this.CreateTableIfNotExists("Player_MapFavorites", table => table
                 .WithColumn("PlayerID").AsInt32()
                 .ForeignKey("FK_MapFavorites_PlayerID", "Players", "ID")
@@ -105,8 +104,7 @@ namespace EvoSC
                 .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
                 .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
             );
-
-
+            
             Create.PrimaryKey("PK_MapFavorites").OnTable("Player_MapFavorites").WithSchema("Player_MapFavorites")
                 .Columns("PlayerID", "MapID");
         }
@@ -115,26 +113,12 @@ namespace EvoSC
         {
             Delete.Table("Players");
             Delete.Table("Maps");
-            Delete.Table("Statistics");
-            Delete.Table("LocalRecords");
-            Delete.Table("PersonalBests");
-            Delete.Table("MapFavorites");
-        }
-        
-    }
-
-    public static class Ex
-    {
-        public static IFluentSyntax CreateTableIfNotExists(this MigrationBase self, string tableName, Func<ICreateTableWithColumnOrSchemaOrDescriptionSyntax, IFluentSyntax> constructTableFunction, string schemaName = "dbo")
-        {
-            if (!self.Schema.Schema(schemaName).Table(tableName).Exists())
-            {
-                return constructTableFunction(self.Create.Table(tableName));
-            }
-            else
-            {
-                return null;
-            }       
+            Delete.Table("Player_MapFavorites");
+            Delete.Table("Player_PersonalBests");
+            Delete.Table("Player_Statistics");
+            Delete.Table("Map_Karma");
+            Delete.Table("Map_Records");
+            Delete.Table("Map_Statistics");
         }
     }
 }

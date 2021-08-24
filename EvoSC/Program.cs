@@ -1,5 +1,5 @@
 using System;
-
+using EvoSC.Migrations;
 using FluentMigrator.Runner;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +26,7 @@ namespace EvoSC
 
         private static IServiceProvider CreateServices()
         {
-            const string connectionString = "server=SERVERIP;uid=evosc;pwd=evosc123!;database=evosc;SslMode=none";
+            const string connectionString = "server=localhost;uid=evosc;pwd=evosc123!;database=evosc;SslMode=none";
             return new ServiceCollection()
                 .AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
