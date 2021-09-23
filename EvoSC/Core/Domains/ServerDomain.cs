@@ -13,6 +13,9 @@ using GbxRemoteNet;
 
 namespace EvoSC.Core.Domains
 {
+    /// <summary>
+    /// A domain which maintain a <see cref="GbxRemoteClient"/> connection to a Mania based game.
+    /// </summary>
     public class ServerDomain : CommonDomainThreadListener
     {
         private readonly DefaultDomainUpdateLoopSubscriber _updateLoop;

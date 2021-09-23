@@ -7,6 +7,9 @@ using EvoSC.ChatCommand;
 
 namespace EvoSC.ChatCommand
 {
+    /// <summary>
+    /// Manager that can create chat commands
+    /// </summary>
     public class ChatCommandManager : AppSystem
     {
         private World _world;
@@ -21,6 +24,16 @@ namespace EvoSC.ChatCommand
 
         }
 
+        /// <summary>
+        /// Add a new command on the controller
+        /// </summary>
+        /// <param name="command">The command path</param>
+        /// <param name="callback">Callback when the command has been triggered</param>
+        /// <param name="description">The command description</param>
+        /// <param name="arguments">The arguments of the command</param>
+        /// <param name="access">The required accesses for the command</param>
+        /// <param name="hidden">Whether or not the command is hidden from help pages</param>
+        /// <returns>Command Entity</returns>
         public Entity Add(string command, ChatCommandInvoked callback, string description = "-",
             CommandArguments.Argument[] arguments = null,
             string access = null, bool hidden = false)

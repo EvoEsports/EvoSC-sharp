@@ -8,6 +8,9 @@ using GameHost.V3.Utility;
 
 namespace EvoSC.Core
 {
+    /// <summary>
+    /// Entry point of the controller
+    /// </summary>
     public class EvoSCEntryModule : HostModule
     {
         public EvoSCEntryModule(HostRunnerScope scope) : base(scope)

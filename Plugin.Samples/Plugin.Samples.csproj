@@ -24,8 +24,8 @@
             <ModuleAsm Include="$(OutDir)$(AssemblyName).dll" />
             <ModuleCfg Include="$(OutDir)module.json" />
             
-            <Destination Include="$(ProjectDir)../Prototype.EvoSC/$(OutDir)Modules/Plugin.Samples/" />
-            <DestinationBin Include="$(ProjectDir)../Prototype.EvoSC/$(OutDir)Modules/Plugin.Samples/bin" />
+            <Destination Include="$(ProjectDir)../EvoSC/$(OutDir)Modules/Plugin.Samples/" />
+            <DestinationBin Include="$(ProjectDir)../EvoSC/$(OutDir)Modules/Plugin.Samples/bin" />
         </ItemGroup>
 
         <Copy SourceFiles="@(ModuleAsm)" DestinationFolder="@(DestinationBin)" SkipUnchangedFiles="true" />

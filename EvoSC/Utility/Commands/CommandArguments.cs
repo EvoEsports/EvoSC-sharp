@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace EvoSC.Utility.Commands
 {
+    /// <summary>
+    /// The arguments of a command
+    /// </summary>
     public class CommandArguments : List<CommandArguments.Argument>
     {
         public struct Argument

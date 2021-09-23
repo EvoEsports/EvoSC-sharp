@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using DefaultEcs;
 using EvoSC.Core.Configuration;
 using GameHost.V3;
 using GameHost.V3.Ecs;
-using GameHost.V3.Injection;
 using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.Module;
 using GameHost.V3.Threading;
@@ -13,6 +10,9 @@ using NLog;
 
 namespace EvoSC.Core.Systems
 {
+    /// <summary>
+    /// Automatically load modules that are in Config/modules.json
+    /// </summary>
     public class LoadModulesListSystem : AppSystem
     {
         private readonly HashSet<Entity> _loaded = new();

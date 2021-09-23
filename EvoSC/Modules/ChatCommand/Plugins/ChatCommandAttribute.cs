@@ -14,6 +14,13 @@ using EvoSC.ChatCommand;
 
 namespace EvoSC.ChatCommand
 {
+    /// <summary>
+    /// Place this a attribute on a method to convert it to a chat command.
+    /// </summary>
+    /// <example>
+    /// [ChatCommandAttribute]
+    /// void OnCommand();
+    /// </example>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field)]
     [MeansImplicitUse]
     public class ChatCommandAttribute : CustomInjectorAttribute

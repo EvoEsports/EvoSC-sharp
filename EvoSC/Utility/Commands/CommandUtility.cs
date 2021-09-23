@@ -39,6 +39,14 @@ namespace EvoSC.Utility.Commands
             return output.Count > 0;
         }
 
+        /// <summary>
+        /// Get whether or not a command can be executed
+        /// </summary>
+        /// <param name="commandEntity">The command entity</param>
+        /// <param name="input">Input string</param>
+        /// <param name="argumentOutput">Output of argument entities</param>
+        /// <typeparam name="TList">List of entity that are arguments/parameters</typeparam>
+        /// <returns>True if the command can be executed</returns>
         public static bool CanExecuteCommand<TList>(Entity commandEntity, string input, TList argumentOutput)
             where TList : IList<Entity>
         {
@@ -50,6 +58,7 @@ namespace EvoSC.Utility.Commands
             return CanExecute(commandEntity, trimmedText, argumentOutput);
         }
 
+        // TODO: add a way to customize it (so that the users can create new parameter type)
         private static ParameterBase[] s_parameters =
         {
             new NumberParameter(), new BooleanParameter(), new TextParameter()

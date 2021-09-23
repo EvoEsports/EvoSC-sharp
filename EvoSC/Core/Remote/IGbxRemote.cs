@@ -21,6 +21,8 @@ namespace EvoSC.Core.Remote
     /// </summary>
     public interface IGbxRemote
     {
+        // TODO: document methods
+        
         IDisposable SubscribeAnyEvent(MessageHandler<OnRemoteCallback> callback);
         
         Task<ResponseMessage> CallMethodAsync(string method, params object[] args);

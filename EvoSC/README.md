@@ -13,3 +13,4 @@
 ## TO-DO
 - Simplify the namespaces (even if they're correct hierarchy wise) to have less `using` in the code.
 - Split controller modules into sub projects
+- ChatCommandAttribute on Task based methods
