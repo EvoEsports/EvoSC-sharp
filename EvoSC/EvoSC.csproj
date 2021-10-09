@@ -5,8 +5,9 @@
     <TargetFramework>net5.0</TargetFramework>
     
     <!-- These parameters only exist if you use 'dotnet publish ...' -->
-    <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
-    <PublishSingleFile>true</PublishSingleFile>
+    <!-- Temporarily removed until we fix this issue with other computers -->
+    <!--<RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
+    <PublishSingleFile>true</PublishSingleFile>-->
     <LangVersion>10</LangVersion>
   </PropertyGroup>
 
