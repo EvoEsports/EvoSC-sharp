@@ -3,6 +3,7 @@ using DefaultEcs;
 using EvoSC.Core.Configuration;
 using GameHost.V3;
 using GameHost.V3.Ecs;
+using GameHost.V3.Injection;
 using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.Module;
 using GameHost.V3.Threading;
@@ -16,30 +17,35 @@ namespace EvoSC.Core.Systems
     public class LoadModulesListSystem : AppSystem
     {
         private readonly HashSet<Entity> _loaded = new();
+        private readonly Scope _scope;
         
         private World _world;
         private ILogger _logger;
 
         private IScheduler _scheduler;
 
+        
         public LoadModulesListSystem(Scope scope) : base(scope)
         {
+            _scope = scope;
+            
             Dependencies.AddRef(() => ref _world);
             Dependencies.AddRef(() => ref _logger);
             Dependencies.AddRef(() => ref _scheduler);
+
+            Dependencies.Add(new Dependency(typeof(SpawnConfigurationSystem)));
         }
 
         private ModuleListConfig _config;
 
         protected override void OnInit()
         {
-            if (!_world.Has<ModuleListConfig>())
+            if (!_scope.Context.TryGet(out _config))
             {
                 _logger.Info($"No modules to autoload. ('Config/modules.json' not found)");
                 return;
             }
-
-            _config = _world.Get<ModuleListConfig>();
+            
             if (_config.Modules.Length == 0)
             {
                 _logger.Info($"No modules to autoload. (Field 'load' empty)");

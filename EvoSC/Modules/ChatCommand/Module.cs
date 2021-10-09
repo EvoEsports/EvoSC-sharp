@@ -1,14 +1,13 @@
 ﻿using System;
 using EvoSC.Core.Domains;
+using EvoSC.Modules.ChatCommand.Systems;
 using GameHost.V3;
 using GameHost.V3.Injection;
 using GameHost.V3.IO.Storage;
 using GameHost.V3.Module;
-using GameHost.V3.Module.Storage;
 using GameHost.V3.Utility;
-using EvoSC.ChatCommand;
 
-namespace EvoSC.ChatCommand
+namespace EvoSC.Modules.ChatCommand
 {
     public class Module : HostModule
     {

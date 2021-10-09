@@ -20,7 +20,7 @@ namespace Plugin.Samples
             
             LoadModule(sc => new Simple.Module(sc));
             LoadModule(sc => new ReactToEvents.Module(sc));
-            LoadModule(sc => new SimpleCommand.Module(sc));
+            LoadModule(sc => new Commands.Module(sc));
         }
 
         protected override void OnDispose()

@@ -1,22 +1,23 @@
 ﻿using System;
 using Collections.Pooled;
 using DefaultEcs;
-using EvoSC.Core.Remote;
 using EvoSC.Events;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ChatCommand.Components;
+using EvoSC.Modules.ServerConnection;
 using EvoSC.Utility.Commands;
+using EvoSC.Utility.Remotes;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.Utility;
 using NLog;
 
-namespace EvoSC.ChatCommand
+namespace EvoSC.Modules.ChatCommand.Systems
 {
     public class ChatCommandExecuteSystem : AppSystem
     {
         private World _world;
-        private IGbxRemote _remote;
+        private ILowLevelGbxRemote _remote;
 
         private IServerEventLoopSubscriber _eventLoop;
 
@@ -53,17 +54,22 @@ namespace EvoSC.ChatCommand
                 if (string.IsNullOrEmpty(ev.Text))
                     continue;
 
-                if (!ev.Player.Backend.Has<InGamePlayerInfo>())
+                if (!ev.Player.HasInfo)
                 {
-                    _remote.ChatSendServerMessageToLoginAsync("Invalid Player", ev.Player.Login);
-
                     _logger.Warn(
                         "Player (Ent: {0} Login: {1}) has no {2}",
-                        ev.Player.Backend,
+                        ev.Player.Entity,
                         ev.Player.Login,
                         nameof(InGamePlayerInfo)
                     );
+
+                    _remote.ChatSendServerMessageToLoginAsync("Couldn't execute chat command", ev.Player.Login);
+
+                    continue;
                 }
+
+                if (ev.Player.Entity.Has<IsServerPlayer>())
+                    continue;
 
                 using var matches = new PooledList<Entity>();
                 if (!CommandUtility.GetBestCommands(_commandSet.GetEntities(), ev.Text, matches))

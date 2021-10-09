@@ -1,19 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using DefaultEcs;
-using EvoSC.Core.Remote;
+using EvoSC.Utility.Remotes;
+using EvoSC.Utility.Remotes.Structs;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.Threading;
 using GameHost.V3.Utility;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public class CreatePlayerOnServerStart : AppSystem
     {
         private World _world;
-        private IGbxRemote _remote;
+        private ILowLevelGbxRemote _remote;
 
         // We ask for the domain-thread only task scheduler for GetPlayerList
         private ConstrainedTaskScheduler _taskScheduler;
@@ -36,13 +37,16 @@ namespace EvoSC.ServerConnection
             {
                 _connectionState.Subscribe((_, state) =>
                 {
-                    if (state < ServerConnectionState.Connecting)
+                    if (state != ServerConnectionState.Connected)
                         return;
 
                     // Each time we connect to the server we ask for the player list
                     _taskScheduler.StartUnwrap(async () =>
                     {
-                        OnGetPlayerList(new[] {await _remote.GetMainServerPlayerInfoAsync()}, true);
+                        OnGetPlayerList(new[]
+                        {
+                            (await _remote.GetMainServerPlayerInfoAsync()).GetValueOrDefault()
+                        }, true);
                         OnGetPlayerList(await _remote.GetPlayerListAsync(), false);
                     });
                 }, true)

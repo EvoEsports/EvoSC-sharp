@@ -1,8 +1,10 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using GameHost.V3;
-using GameHost.V3.Ecs;
-using GameHost.V3.Injection;
 using EvoSC.Core.Plugins;
-using EvoSC.Core.Remote;
+using EvoSC.Modules.ServerConnection;
+using EvoSC.Utility.Remotes;
 
 namespace Plugin.Samples.Simple
 {
@@ -13,15 +15,13 @@ namespace Plugin.Samples.Simple
     //
     public class HelloWorld : PluginSystemBase
     {
-        [Dependency] private IGbxRemote _remote;
-        
         public HelloWorld(Scope scope) : base(scope)
         {
         }
 
         protected override void OnInit()
         {
-            _remote.ChatSendServerMessageAsync("Hello World!");
+            Remote.SendChatMessage("Hello World!");
         }
     }
 }

@@ -4,20 +4,22 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using EvoSC.Injection;
+using EvoSC.Modules.CLI;
 
 using var runner = GameHostInit.Launch(
     sc =>
     {
         addLogger(sc);
+        
     },
     //sc => new EvoSCEntryModule(sc)
-    sc => new EvoSC.CLI.Module(sc)
+    sc => new Module(sc)
 );
 
 while (runner.Loop())
 {
     // update 40 times per second
-    Thread.Sleep(25);
+    Thread.Sleep(300);
 }
 
 LogManager.Shutdown();

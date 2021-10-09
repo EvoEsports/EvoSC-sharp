@@ -1,14 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using DefaultEcs;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ServerConnection;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection.Dependencies;
-using GameHost.V3.Threading;
-using GameHost.V3.Utility;
 using NLog;
 
 namespace EvoSC.Core.Plugins
@@ -19,21 +16,18 @@ namespace EvoSC.Core.Plugins
 
     public abstract class PluginSystemBase : AppSystem
     {
-        private IServerEventLoopSubscriber _eventLoop;
+        protected GbxRemote Remote;
+    
         private ILogger _logger;
 
         private readonly Scope _scope;
-        private ConstrainedTaskScheduler _taskScheduler;
-        private World _world;
 
         protected PluginSystemBase(Scope scope) : base(scope)
         {
             _scope = scope;
             
             Dependencies.AddRef(() => ref _logger);
-            Dependencies.AddRef(() => ref _eventLoop);
-            Dependencies.AddRef(() => ref _world);
-            Dependencies.AddRef(() => ref _taskScheduler);
+            Dependencies.AddRef(() => ref Remote);
 
             foreach (var member in GetType()
                 .GetMembers(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))

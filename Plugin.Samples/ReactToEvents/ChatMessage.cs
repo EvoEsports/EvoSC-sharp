@@ -1,9 +1,13 @@
+using System;
 using DefaultEcs;
 using GameHost.V3;
 using GameHost.V3.Domains.Time;
 using EvoSC.Core.Plugins;
 using EvoSC.Events;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.Remotes.GBXRemote.Impl;
+using EvoSC.Modules.ServerConnection;
+using EvoSC.Utility.Remotes;
+using GbxRemoteNet;
 
 namespace Plugin.Samples.ReactToEvents
 {
@@ -41,6 +45,8 @@ namespace Plugin.Samples.ReactToEvents
         [ServerEvent]
         private void OnPlayerChat(EventOnPlayerChat ev)
         {
+            if (ev.Player.Entity.Has<IsServerPlayer>())
+                return;
             Logger.Info("<{0}s> {1}: {2}", _worldTime.Total.TotalSeconds, ev.Player.Login, ev.Text);
         }
     }

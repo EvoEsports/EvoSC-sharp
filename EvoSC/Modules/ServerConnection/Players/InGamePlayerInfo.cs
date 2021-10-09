@@ -1,7 +1,7 @@
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     // TODO: Extract most of the variables into other components
-    // This component is really big, and most variables have more sense to be in other new components
+// This component is really big, and most variables have more sense to be in other new components
     public readonly struct InGamePlayerInfo
     {
         // TODO: nickname should be its own component

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DefaultEcs;
-using EvoSC.Core.Remote;
+using EvoSC.Utility.Remotes;
+using EvoSC.Utility.Remotes.Structs;
 using GameHost.V3;
 using GameHost.V3.Domains.Time;
 using GameHost.V3.Ecs;
@@ -10,11 +11,11 @@ using GameHost.V3.Loop.EventSubscriber;
 using GameHost.V3.Utility;
 using NLog;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public class PlayerSystem : AppSystem
     {
-        private IGbxRemote _remote;
+        private ILowLevelGbxRemote _remote;
         private World _world;
         private IDomainUpdateLoopSubscriber _updateLoop;
 
@@ -93,6 +94,7 @@ namespace EvoSC.ServerConnection
 
             if (runInfoTask && !entity.Has<InGamePlayerInfo>() && !entity.Has<Task<GbxPlayerInfo>>())
             {
+                Console.WriteLine("add task to " + entity);
                 PlayerEntity.QueueInfoTask(entity, login, _remote);
             }
 

@@ -1,7 +1,9 @@
 using System;
 using EvoSC.Core.Domains;
+using EvoSC.Modules.ServerConnection;
 using GameHost.V3;
 using GameHost.V3.Ecs;
+using GameHost.V3.Injection;
 using GameHost.V3.Module;
 using GameHost.V3.Utility;
 
@@ -22,9 +24,19 @@ namespace EvoSC.Core.Plugins
         {
             TrackDomain<ServerDomain>(domain =>
             {
-                _lastDomain = domain;
-                OnServerFound(domain);
-                _lastDomain = null;
+                if (!domain.Scope.Context.TryGet(out IDependencyResolver resolver))
+                    throw new InvalidOperationException("Couldn't get resolver");
+
+                var dependencyCollection = new DependencyCollection(domain.Scope.Context, resolver);
+                Disposables.Add(dependencyCollection);
+
+                dependencyCollection.Add(new ServerIsConnectedDependency());
+                dependencyCollection.OnFinal(() =>
+                {
+                    _lastDomain = domain;
+                    OnServerFound(domain);
+                    _lastDomain = null;
+                });
             });
         }
 

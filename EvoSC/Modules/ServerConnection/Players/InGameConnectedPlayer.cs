@@ -1,6 +1,6 @@
 using System;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     /// <summary>
     ///     Component that represent an entity as a player on the server

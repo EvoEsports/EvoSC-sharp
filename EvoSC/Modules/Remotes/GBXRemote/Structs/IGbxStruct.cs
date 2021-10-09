@@ -3,31 +3,8 @@ using System.Collections.Generic;
 using GbxRemoteNet.XmlRpc.Packets;
 using GbxRemoteNet.XmlRpc.Types;
 
-namespace EvoSC.Core.Remote
+namespace EvoSC.Modules.Remotes.GBXRemote.Structs
 {
-    public interface IGbxStruct
-    {
-        XmlRpcBaseType Serialize();
-        void Deserialize(ResponseMessage response);
-        void Deserialize(XmlRpcBaseType xmlBaseType);
-
-        public static T Deserialize<T>(ResponseMessage response)
-            where T : struct, IGbxStruct
-        {
-            var result = default(T);
-            result.Deserialize(response);
-            return result;
-        }
-
-        public static T Deserialize<T>(XmlRpcBaseType response)
-            where T : struct, IGbxStruct
-        {
-            var result = default(T);
-            result.Deserialize(response);
-            return result;
-        }
-    }
-
     public static class GbxStructExtensions
     {
         public static TWanted GetXmlRpcType<TWanted>(this ResponseMessage message)

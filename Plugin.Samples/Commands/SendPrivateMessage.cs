@@ -1,11 +1,10 @@
 using DefaultEcs;
-using GameHost.V3;
-using EvoSC.ChatCommand;
 using EvoSC.Core.Plugins;
-using EvoSC.Core.Remote;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ChatCommand.Plugins;
+using EvoSC.Modules.ServerConnection;
+using GameHost.V3;
 
-namespace Plugin.Samples.SimpleCommand
+namespace Plugin.Samples.Commands
 {
     //
     // SendPrivateMessage:
@@ -43,7 +42,6 @@ namespace Plugin.Samples.SimpleCommand
     
     public class SendPrivateMessage : PluginSystemBase
     {
-        [Dependency] private IGbxRemote _remote;
         [Dependency] private World _world;
 
         public SendPrivateMessage(Scope scope) : base(scope)
@@ -67,7 +65,7 @@ namespace Plugin.Samples.SimpleCommand
         [ChatCommand("/tell", hidden: true)]
         private void NoMessageArgFound(PlayerEntity playerEntity)
         {
-            _remote.ChatSendServerMessageToLoginAsync("You forgot to put the message!", playerEntity.Login);
+            Remote.SendChatMessageToPlayer("You forgot to put the message!", playerEntity);
         }
 
         [ChatCommand("/tell")]
@@ -93,17 +91,21 @@ namespace Plugin.Samples.SimpleCommand
 
             if (otherPlayer == default)
             {
-                _remote.ChatSendServerMessageToLoginAsync(
+                Remote.SendChatMessageToPlayer(
                     $"$999Recipient '{nickNameOrLogin}' not found!",
-                    playerEntity.Login
+                    playerEntity
                 );
                 return;
             }
 
-            _remote.ChatSendServerMessageToLoginAsync(
-                $"$<{playerEntity.Info.Result.NickName}$z$s$> $999-> $aaa{message}",
+            Remote.SendChatMessageToPlayers(
+                $"$<{playerEntity.NickName}$z$s$> $999-> $aaa{message}",
                 // send to both the receiver and sender
-                $"{nickNameOrLogin},{playerEntity.Login}"
+                stackalloc PlayerEntity[]
+                {
+                    new PlayerEntity(otherPlayer),
+                    playerEntity
+                }
             );
         }
     }

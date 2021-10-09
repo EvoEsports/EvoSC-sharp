@@ -1,14 +1,12 @@
 using System;
+using EvoSC.Core.Domains;
+using EvoSC.Core.Plugins;
 using GameHost.V3;
 using GameHost.V3.Injection;
 using GameHost.V3.IO.Storage;
 using GameHost.V3.Module.Storage;
-using Plugin.Samples.Commands;
-using EvoSC.ChatCommand;
-using EvoSC.Core.Domains;
-using EvoSC.Core.Plugins;
 
-namespace Plugin.Samples.SimpleCommand
+namespace Plugin.Samples.Commands
 {
     public class Module : PluginModuleBase
     {
@@ -23,7 +21,7 @@ namespace Plugin.Samples.SimpleCommand
             // make sure that the ChatCommand Module will be loaded
             // (normally there shouldn't be a need to do that,
             //  but we show that there is an explicit dependency)
-            LoadModule(sc => new EvoSC.ChatCommand.Module(sc));
+            LoadModule(sc => new EvoSC.Modules.ChatCommand.Module(sc));
         }
 
         protected override void OnServerFound(ServerDomain domain)

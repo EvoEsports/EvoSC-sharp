@@ -1,5 +1,6 @@
 using System;
 using EvoSC.Core.Systems;
+using EvoSC.Modules.ServerConnection;
 using GameHost.V3;
 using GameHost.V3.Injection;
 using GameHost.V3.IO.Storage;
@@ -15,18 +16,17 @@ namespace EvoSC.Core
     {
         public EvoSCEntryModule(HostRunnerScope scope) : base(scope)
         {
-        }
-
-        protected override void OnInit()
-        {
-            LoadModule(sc => new ServerConnection.Module(sc));
-            LoadModule(sc => new ChatCommand.Module(sc));
-
             Disposables.AddRange(new IDisposable[]
             {
                 new SpawnConfigurationSystem(ModuleScope), 
                 new LoadModulesListSystem(ModuleScope)
             });
+        }
+
+        protected override void OnInit()
+        {
+            LoadModule(sc => new Module(sc));
+            LoadModule(sc => new Modules.ChatCommand.Module(sc));
         }
 
         protected override IStorage CreateDataStorage(Scope scope)

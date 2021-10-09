@@ -7,9 +7,8 @@ using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.Loop;
 using GameHost.V3.Loop.EventSubscriber;
 using GameHost.V3.Utility;
-using EvoSC.ServerConnection;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public class ManageEventLoopSystem : AppSystem
     {

@@ -2,13 +2,13 @@
 using System.Linq;
 using Collections.Pooled;
 using DefaultEcs;
+using EvoSC.Modules.CLI.Components;
 using EvoSC.Utility.Commands;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection.Dependencies;
-using EvoSC.CLI;
 
-namespace EvoSC.CLI
+namespace EvoSC.Modules.CLI.Systems
 {
     public class CliExecuteCommandSystem : AppSystem
     {

@@ -1,17 +1,16 @@
 ﻿using System;
 using DefaultEcs;
-using EvoSC.CLI.InteractiveSystems;
+using EvoSC.Modules.CLI.InteractiveSystems;
+using EvoSC.Modules.CLI.Systems;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection;
 using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.IO.Storage;
 using GameHost.V3.Module;
-using GameHost.V3.Module.Storage;
 using GameHost.V3.Utility;
-using EvoSC.CLI;
 
-namespace EvoSC.CLI
+namespace EvoSC.Modules.CLI
 {
     public class Module : HostModule
     {

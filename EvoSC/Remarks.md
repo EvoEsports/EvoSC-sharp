@@ -55,9 +55,10 @@ This is particularly useful for unit tests, but also for performance:
 - One can test performance improvement on a custom IGbxRemote, check if everything work alright compared to the base one, and then implement it into the base one.
 - One can create a fake GbxRemote for unit testing (to see if your plugin work, etc...)
 
-In this case, the currently used IGbxRemote is [ForceThreadedGbxRemote](Core/Remote/ForceThreadedGbxRemote.cs):
-- It force all calls to be done on another thread.
+In this case, the currently used IGbxRemote is [ThreadedLowLevelGbxRemote](Modules/Remotes/GBXRemote/Impl/ThreadedLowLevelGbxRemote.cs):
+- It force all calls to be done on another thread and batched.
 - Calls that either require a struct argument or struct return are manually deserialized.
+
 ### Others
 - ServerDomain warn you when there is a lag spike (delta > **50ms**).
 - When ServerDomain is idle, its delta time (aka how much time it worked in one update loop) should be under **0.01ms**

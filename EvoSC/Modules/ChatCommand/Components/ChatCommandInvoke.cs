@@ -1,8 +1,8 @@
 using System;
 using DefaultEcs;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ServerConnection;
 
-namespace EvoSC.ChatCommand
+namespace EvoSC.Modules.ChatCommand.Components
 {
     public delegate void ChatCommandInvoked(PlayerEntity playerEntity, Span<Entity> arguments);
 }

@@ -1,4 +1,4 @@
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ServerConnection;
 
 namespace EvoSC.Events
 {

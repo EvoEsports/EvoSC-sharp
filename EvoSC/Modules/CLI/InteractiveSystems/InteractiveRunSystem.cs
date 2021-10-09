@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using DefaultEcs;
 using EvoSC.Core;
+using EvoSC.Modules.CLI.Systems;
 using EvoSC.Utility.Commands;
 using GameHost.V3;
 using GameHost.V3.Ecs;
@@ -10,9 +11,8 @@ using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.IO.Storage;
 using GameHost.V3.Module;
 using GameHost.V3.Module.Storage;
-using EvoSC.CLI;
 
-namespace EvoSC.CLI.InteractiveSystems
+namespace EvoSC.Modules.CLI.InteractiveSystems
 {
     public class InteractiveRunSystem : AppSystem
     {

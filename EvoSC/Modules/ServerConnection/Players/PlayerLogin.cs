@@ -1,6 +1,6 @@
 using System;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public readonly struct PlayerLogin : IEquatable<PlayerLogin>
     {

@@ -6,8 +6,8 @@ using GameHost.V3.Ecs;
 using GameHost.V3.Injection;
 using GameHost.V3.Utility;
 using EvoSC.Core.Plugins;
-using EvoSC.Core.Remote;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ServerConnection;
+using EvoSC.Utility.Remotes;
 
 namespace Plugin.Samples.Simple
 {
@@ -20,8 +20,7 @@ namespace Plugin.Samples.Simple
     {
         [Dependency] private World _world;
         [Dependency] private TaskScheduler _taskScheduler;
-        [Dependency] private IGbxRemote _remote;
-        
+
         public ShowConnectedPlayers(Scope scope) : base(scope)
         {
         }
@@ -43,14 +42,14 @@ namespace Plugin.Samples.Simple
                 {
                     var player = new PlayerEntity(entity);
                     sb.Append('\n');
-                    sb.Append(player.Info.Result.NickName);
+                    sb.Append(player.NickName);
                     sb.Append(' ');
                     sb.Append('-');
                     sb.Append(' ');
                     sb.Append(player.Login);
                 }
 
-                _remote.ChatSendServerMessageAsync(sb.ToString());
+                Remote.SendChatMessage(sb.ToString());
             });
         }
     }

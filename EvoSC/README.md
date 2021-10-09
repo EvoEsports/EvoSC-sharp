@@ -7,6 +7,9 @@
 ### External modules
 - [Samples](../Plugin.Samples)
 
+### Required
+- .NET 5 framework
+
 ### Tested on
 - Pop!_OS 21.04 Linux 5.11.0-7633-generic x86-64
 

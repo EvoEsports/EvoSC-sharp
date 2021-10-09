@@ -1,18 +1,19 @@
 using DefaultEcs;
-using EvoSC.Core.Remote;
+using EvoSC.Core.Configuration;
 using GameHost.V3;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public class ServerScope : Scope
     {
-        public readonly IGbxRemote Remote;
+        public readonly ServerConnectionConfig ConnectionConfig;
         public readonly World World;
 
-        public ServerScope(Scope parent, World world, IGbxRemote remote) : base(new ChildScopeContext(parent.Context))
+        public ServerScope(Scope parent, World world, ServerConnectionConfig connectionConfig)
+            : base(new ChildScopeContext(parent.Context))
         {
             Context.Register(World = world);
-            Context.Register(Remote = remote);
+            Context.Register(ConnectionConfig = connectionConfig);
         }
     }
 }

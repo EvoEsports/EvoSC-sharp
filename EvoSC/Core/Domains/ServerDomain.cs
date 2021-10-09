@@ -2,8 +2,7 @@ using System;
 using System.Diagnostics;
 using DefaultEcs;
 using EvoSC.Core.Configuration;
-using EvoSC.Core.Remote;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ServerConnection;
 using GameHost.V3;
 using GameHost.V3.Domains;
 using GameHost.V3.Loop;
@@ -32,11 +31,17 @@ namespace EvoSC.Core.Domains
 
         public ServerDomain(HostRunnerScope hostScope, Entity domainEntity) : base(hostScope, domainEntity)
         {
-            Scope = createScope(DomainScope, domainEntity);
-            {
-                Scope.Context.Register(ConnectionConfig = domainEntity.Get<ServerConnectionConfig>());
-            }
+            Debug.Assert(domainEntity.Has<ServerConnectionConfig>(), "domainEntity.Has<ServerConnectionConfig>()");
 
+            ConnectionConfig = domainEntity.Get<ServerConnectionConfig>();
+            
+            var world = new World();
+            Scope = new ServerScope(
+                DomainScope,
+                world,
+                ConnectionConfig
+            );
+            
             var workerName = $"Server {ConnectionConfig.Host}:{ConnectionConfig.Port}";
             {
                 Scope.Context.Register(Worker = _worker = new DomainWorker(workerName));
@@ -51,32 +56,14 @@ namespace EvoSC.Core.Domains
             {
                 _updateLoop.Invoke(_worker.Elapsed, _worker.Delta);
             }
-            
+
+            Console.WriteLine(Worker.Delta.TotalMilliseconds + "ms");
             if (Worker.Performance < 1)
             {
                 Console.WriteLine(
                     $"Performance Problem! {(int)(Worker.Performance * 100)}% (Delta: {Worker.Delta.TotalMilliseconds}ms Target: {Worker.OptimalDeltaTarget.TotalMilliseconds}ms)"
                 );
             }
-        }
-        
-        private ServerScope createScope(Scope hostScope, Entity domainEntity)
-        {
-            Debug.Assert(domainEntity.Has<ServerConnectionConfig>(), "domainEntity.Has<ServerConnectionConfig>()");
-
-            var connection = domainEntity.Get<ServerConnectionConfig>();
-            var world = new World();
-            return new ServerScope(
-                hostScope,
-                world,
-                new ForceThreadedGbxRemote(
-                    world,
-                    new GbxRemoteClient(
-                        connection.Host,
-                        connection.Port,
-                        new GbxRemoteClientOptions {InvokeEventOnModeScriptMethodResponse = true})
-                )
-            );
         }
     }
 }

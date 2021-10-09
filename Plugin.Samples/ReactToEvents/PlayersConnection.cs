@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using DefaultEcs;
 using GameHost.V3;
 using EvoSC.Core.Plugins;
-using EvoSC.Core.Remote;
 using EvoSC.Events;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ServerConnection;
+using EvoSC.Utility.Remotes;
 
 namespace Plugin.Samples.ReactToEvents
 {
@@ -16,7 +16,6 @@ namespace Plugin.Samples.ReactToEvents
     // - EventOnPlayerDisconnect
     //
     //  EventOnPlayerConnect:
-    //      Is a task based callback
     //      If the player is new to the server (since the controller lifetime) say a special message to them
     //      If the player isn't new, send a welcome back message.
     //
@@ -40,8 +39,6 @@ namespace Plugin.Samples.ReactToEvents
 
     public class PlayersConnection : PluginSystemBase
     {
-        [Dependency] private IGbxRemote _remote;
-
         public PlayersConnection(Scope scope) : base(scope)
         {
         }
@@ -51,26 +48,24 @@ namespace Plugin.Samples.ReactToEvents
         }
 
         [ServerEvent]
-        private async Task OnPlayerConnected(Entity entity, EventOnPlayerConnect component)
+        private void OnPlayerConnected(Entity entity, EventOnPlayerConnect ev)
         {
-            var playerInfo = await component.Player.Info;
-            if (component.Player.Backend.Has<WasConnectedInThePast>())
+            if (ev.Player.Entity.Has<WasConnectedInThePast>())
             {
-                await _remote.ChatSendServerMessageAsync($"Welcome back $<{playerInfo.NickName}$z$s$>!");
+                Remote.SendChatMessage($"Welcome back $<{ev.Player.NickName}$z$s$>!");
             }
             else
             {
-                await _remote.ChatSendServerMessageAsync($"Welcome to the server $<{playerInfo.NickName}$z$s$>!");
+                Remote.SendChatMessage($"Welcome to the server $<{ev.Player.NickName}$z$s$>!");
 
-                component.Player.Backend.Set<WasConnectedInThePast>();
+                ev.Player.Entity.Set<WasConnectedInThePast>();
             }
         }
 
         [ServerEvent]
-        private async Task OnPlayerDisconnected(Entity entity, EventOnPlayerDisconnect component)
+        private void OnPlayerDisconnected(Entity entity, EventOnPlayerDisconnect ev)
         {
-            var playerInfo = await component.Player.Info;
-            await _remote.ChatSendServerMessageAsync($"Bye bye $<{playerInfo.NickName}$z$s$>!");
+            Remote.SendChatMessage($"Bye bye $<{ev.Player.NickName}$z$s$>!");
         }
 
         private struct WasConnectedInThePast

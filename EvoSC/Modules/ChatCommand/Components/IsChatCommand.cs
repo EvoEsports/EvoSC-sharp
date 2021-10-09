@@ -1,4 +1,4 @@
-namespace EvoSC.ChatCommand
+namespace EvoSC.Modules.ChatCommand.Components
 {
     public struct IsChatCommand
     {

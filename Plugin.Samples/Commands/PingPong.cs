@@ -1,10 +1,10 @@
 using System;
 using DefaultEcs;
 using GameHost.V3;
-using EvoSC.ChatCommand;
 using EvoSC.Core.Plugins;
-using EvoSC.Core.Remote;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ChatCommand.Systems;
+using EvoSC.Modules.ServerConnection;
+using EvoSC.Utility.Remotes;
 
 namespace Plugin.Samples.Commands
 {
@@ -32,8 +32,7 @@ namespace Plugin.Samples.Commands
         {
         }
 
-        [Dependency] private ChatCommandManager _chatCommand { get; }
-        [Dependency] private IGbxRemote _remote { get; }
+        [Dependency] private ChatCommandManager _chatCommand;
 
         protected override void OnInit()
         {
@@ -42,7 +41,7 @@ namespace Plugin.Samples.Commands
 
         private void OnPingCommand(PlayerEntity player, Span<Entity> arguments)
         {
-            _remote.ChatSendServerMessageAsync($"$<{player.Info.Result.NickName}$> {player.Id} {player.Login} pong!");
+            Remote.SendChatMessage($"$<{player.NickName}$> {player.Id} {player.Login} pong!");
         }
     }
 }

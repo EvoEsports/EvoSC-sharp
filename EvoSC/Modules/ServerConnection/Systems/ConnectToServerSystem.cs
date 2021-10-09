@@ -1,21 +1,22 @@
+using System.Threading.Tasks;
 using EvoSC.Core.Configuration;
-using EvoSC.Core.Remote;
+using EvoSC.Utility.Remotes;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.IO.Events;
 using NLog;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public class ConnectToServerSystem : AppSystem
     {
         private readonly Bindable<ServerConnectionState> _stateBindable;
         private ServerConnectionConfig _connectionConfig;
-        private IGbxRemote _remoteClient;
+        private ILowLevelGbxRemote _remoteClient;
 
         private ILogger _logger;
-        
+
         public ConnectToServerSystem(Scope scope) : base(scope)
         {
             _stateBindable = new Bindable<ServerConnectionState>();
@@ -30,15 +31,17 @@ namespace EvoSC.ServerConnection
         protected override async void OnInit()
         {
             _logger.Info("Connect to {0}:{1}", _connectionConfig.Host, _connectionConfig.Port);
-            
+
             _stateBindable.Value = ServerConnectionState.Disconnected;
-            await _remoteClient.ConnectAsync();
+
+            var task = Task.Run(() => _remoteClient.Connect(
+                _connectionConfig.AdminLogin,
+                _connectionConfig.AdminPassword
+            ));
 
             _stateBindable.Value = ServerConnectionState.Connecting;
-            await _remoteClient.AuthenticateAsync(_connectionConfig.AdminLogin, _connectionConfig.AdminPassword);
-            await _remoteClient.SetApiVersionAsync("2013-04-16");
-            await _remoteClient.EnableCallbackTypeAsync();
-            
+            await task;
+
             _stateBindable.Value = ServerConnectionState.Connected;
         }
     }

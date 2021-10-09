@@ -1,10 +1,10 @@
-using GameHost.V3;
-using EvoSC.ChatCommand;
 using EvoSC.Core.Plugins;
-using EvoSC.Core.Remote;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ChatCommand.Plugins;
+using EvoSC.Modules.ServerConnection;
+using EvoSC.Utility.Remotes;
+using GameHost.V3;
 
-namespace Plugin.Samples.SimpleCommand
+namespace Plugin.Samples.Commands
 {
     //
     // SendPrivateMessage:
@@ -29,8 +29,6 @@ namespace Plugin.Samples.SimpleCommand
 
     public class SendGlobalMessage : PluginSystemBase
     {
-        [Dependency] private IGbxRemote _remote;
-
         public SendGlobalMessage(Scope scope) : base(scope)
         {
         }
@@ -42,7 +40,7 @@ namespace Plugin.Samples.SimpleCommand
         [ChatCommand("/global")]
         private void OnGlobalCommand(PlayerEntity playerEntity, string message)
         {
-            _remote.ChatSendServerMessageAsync($"$ff0Global: $ffd$i{message}");
+            Remote.SendChatMessage($"$ff0Global: $ffd$i{message}");
         }
     }
 }

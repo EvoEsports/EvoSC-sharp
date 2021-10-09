@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using DefaultEcs;
 using EvoSC.Core.Plugins;
-using EvoSC.ServerConnection;
+using EvoSC.Modules.ChatCommand.Components;
+using EvoSC.Modules.ChatCommand.Systems;
+using EvoSC.Modules.ServerConnection;
 using EvoSC.Utility.Commands;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection;
 using GameHost.V3.Injection.Dependencies;
 using GameHost.V3.Utility;
 using JetBrains.Annotations;
-using EvoSC.ChatCommand;
 
-namespace EvoSC.ChatCommand
+namespace EvoSC.Modules.ChatCommand.Plugins
 {
     /// <summary>
     /// Place this a attribute on a method to convert it to a chat command.

@@ -1,11 +1,11 @@
 ﻿using DefaultEcs;
+using EvoSC.Modules.ChatCommand.Components;
 using EvoSC.Utility.Commands;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection.Dependencies;
-using EvoSC.ChatCommand;
 
-namespace EvoSC.ChatCommand
+namespace EvoSC.Modules.ChatCommand.Systems
 {
     /// <summary>
     /// Manager that can create chat commands

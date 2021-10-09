@@ -2,7 +2,7 @@
 
 namespace EvoSC.Core.Configuration
 {
-    public struct ModuleListConfig
+    public class ModuleListConfig
     {
         [JsonPropertyName("load")] public string[] Modules { get; set; }
     }

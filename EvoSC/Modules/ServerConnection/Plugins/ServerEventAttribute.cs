@@ -3,14 +3,13 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DefaultEcs;
 using EvoSC.Core.Plugins;
-using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection;
 using GameHost.V3.Threading;
 using GameHost.V3.Utility;
 using JetBrains.Annotations;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     [AttributeUsage(AttributeTargets.Method)]
     [MeansImplicitUse]

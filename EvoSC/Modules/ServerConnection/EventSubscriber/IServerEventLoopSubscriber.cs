@@ -3,7 +3,7 @@ using DefaultEcs;
 using GameHost.V3.Ecs;
 using GameHost.V3.Loop.EventSubscriber;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public interface IServerBeforeEventLoopSubscriber : IServerEventLoopSubscriber
     {

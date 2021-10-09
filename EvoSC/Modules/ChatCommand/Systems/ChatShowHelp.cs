@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Text;
 using DefaultEcs;
-using EvoSC.Core.Remote;
+using EvoSC.Modules.ChatCommand.Components;
 using EvoSC.Utility.Commands;
+using EvoSC.Utility.Remotes;
 using GameHost.V3;
 using GameHost.V3.Ecs;
 using GameHost.V3.Injection.Dependencies;
-using EvoSC.ChatCommand;
 
-namespace EvoSC.ChatCommand
+namespace EvoSC.Modules.ChatCommand.Systems
 {
     public class ChatShowHelp : AppSystem
     {
-        private IGbxRemote _remote;
+        private ILowLevelGbxRemote _remote;
         private ChatCommandManager _manager;
         private World _world;
 

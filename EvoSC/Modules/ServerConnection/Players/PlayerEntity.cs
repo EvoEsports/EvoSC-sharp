@@ -2,72 +2,104 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DefaultEcs;
-using EvoSC.Core.Remote;
+using EvoSC.Utility.Remotes;
+using EvoSC.Utility.Remotes.Structs;
 using GameHost.V3.Utility;
+using NLog;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public struct PlayerEntity
     {
-        public readonly Entity Backend;
+        public readonly Entity Entity;
 
-        public ValueTask<InGamePlayerInfo> Info
+        public bool HasInfo => Entity.Has<InGamePlayerInfo>() || Entity.Has<Task<GbxPlayerInfo>>();
+
+        public readonly ValueTask<InGamePlayerInfo> GetInGameInfoAsync()
+        {
+            if (Entity.TryGet(out InGamePlayerInfo component))
+            {
+                return ValueTask.FromResult(component);
+            }
+
+            if (Entity.TryGet(out Task<GbxPlayerInfo> task))
+            {
+                var backend = Entity;
+
+                async ValueTask<InGamePlayerInfo> GetTask()
+                {
+                    var result = await task;
+                    SetPlayerInfo(backend, result);
+                    return backend.Get<InGamePlayerInfo>();
+                }
+
+                return GetTask();
+            }
+
+            throw new KeyNotFoundException($"Component {nameof(InGamePlayerInfo)} not found on {Entity}");
+        }
+
+        public readonly InGamePlayerInfo GetInGameInfo()
+        {
+            var task = GetInGameInfoAsync();
+            // fast path, result is already here and there will be no allocation
+            if (task.IsCompleted)
+                return task.Result;
+
+            // slow path, wait for the task to be completed
+            // (convert it to a managed task since ValueTask.Result may not block)
+            return task.AsTask().Result;
+        }
+
+        public readonly string NickName
         {
             get
             {
-                if (Backend.TryGet(out InGamePlayerInfo component))
-                {
-                    return ValueTask.FromResult(component);
-                }
+                if (Entity.TryGet(out CustomPlayerNickName custom))
+                    return custom;
 
-                if (Backend.TryGet(out Task<GbxPlayerInfo> task))
-                {
-                    var backend = Backend;
+                return GetInGameInfo().NickName;
+            }
 
-                    async ValueTask<InGamePlayerInfo> GetTask()
-                    {
-                        var result = await task;
-                        SetPlayerInfo(backend, result);
-                        return backend.Get<InGamePlayerInfo>();
-                    }
+            set
+            {
+                if (value == null)
+                    Entity.Remove<CustomPlayerNickName>();
 
-                    return GetTask();
-                }
-
-                throw new KeyNotFoundException($"Component {nameof(InGamePlayerInfo)} not found on {Backend}");
+                Entity.Set(new CustomPlayerNickName(value));
             }
         }
 
-        public string Login
+        public readonly string Login
         {
             get
             {
-                if (Backend.TryGet(out PlayerLogin component))
+                if (Entity.TryGet(out PlayerLogin component))
                     return component.Value;
 
-                throw new KeyNotFoundException($"Component {nameof(PlayerLogin)} not found on {Backend}");
+                throw new KeyNotFoundException($"Component {nameof(PlayerLogin)} not found on {Entity}");
             }
         }
 
-        public int Id
+        public readonly int Id
         {
             get
             {
-                if (Backend.TryGet(out InGameConnectedPlayer component))
+                if (Entity.TryGet(out InGameConnectedPlayer component))
                     return component.Id;
 
-                throw new KeyNotFoundException($"Component {nameof(InGameConnectedPlayer)} not found on {Backend}");
+                throw new KeyNotFoundException($"Component {nameof(InGameConnectedPlayer)} not found on {Entity}");
             }
         }
 
-        public PlayerEntity(Entity backend)
+        public PlayerEntity(Entity entity)
         {
-            Backend = backend;
+            Entity = entity;
         }
 
         public override string ToString()
         {
-            return $"Player('{Login}', {Backend})";
+            return $"Player('{Login}', {Entity})";
         }
 
         internal static void SetPlayerInfo(Entity entity, GbxPlayerInfo result)
@@ -100,9 +132,24 @@ namespace EvoSC.ServerConnection
             ));
         }
 
-        internal static void QueueInfoTask(Entity entity, string login, IGbxRemote client)
+        internal static void QueueInfoTask(Entity entity, string login, ILowLevelGbxRemote client)
         {
-            entity.Set(client.GetPlayerInfoAsync(login));
+            entity.Set(Task.Run(async () =>
+            {
+                var nullableInfo = await client.GetPlayerInfoAsync(login);
+                if (nullableInfo is not { } info)
+                {
+                    // This may happen if the player disconnected
+                    // or if they were never connected
+                    
+                    s_logger.Warn("Couldn't get the PlayerInfo of {login}", login);
+                    return default;
+                }
+
+                return info;
+            }));
         }
+
+        private static readonly ILogger s_logger = LogManager.GetCurrentClassLogger();
     }
 }

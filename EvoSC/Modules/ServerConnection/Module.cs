@@ -1,8 +1,9 @@
 using System;
-using System.Text.Json;
+using System.Linq;
 using DefaultEcs;
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Domains;
+using EvoSC.Core.Systems;
 using GameHost.V3;
 using GameHost.V3.Injection;
 using GameHost.V3.Injection.Dependencies;
@@ -12,17 +13,18 @@ using GameHost.V3.Threading.Components;
 using GameHost.V3.Threading.V2;
 using GameHost.V3.Utility;
 using NLog;
-using EvoSC.ServerConnection;
 
-namespace EvoSC.ServerConnection
+namespace EvoSC.Modules.ServerConnection
 {
     public class Module : HostModule
     {
         // we need the host scope for the server domain
         private readonly HostRunnerScope _hostScope;
+        
         private ILogger _logger;
-
         private World _world;
+        private ServerConnectionConfig _connectionConfig;
+        
 
         public Module(HostRunnerScope scope) : base(scope)
         {
@@ -30,19 +32,9 @@ namespace EvoSC.ServerConnection
 
             Dependencies.AddRef(() => ref _world);
             Dependencies.AddRef(() => ref _logger);
-        }
-
-        private ServerConnectionConfig GetConfiguration()
-        {
-            using var pooledFiles = ModuleScope.DataStorage.GetPooledFiles("server.json");
-            if (pooledFiles.Count == 0)
-            {
-                _logger.Fatal($"File 'server.json' not found in {ModuleScope.DataStorage.CurrentPath}");
-                return default;
-            }
-
-            using var pooledBytes = pooledFiles[0].GetPooledBytes();
-            return JsonSerializer.Deserialize<ServerConnectionConfig>(pooledBytes.Span);
+            Dependencies.AddRef(() => ref _connectionConfig);
+            
+            Dependencies.Add(new Dependency(typeof(SpawnConfigurationSystem)));
         }
 
         protected override void OnInit()
@@ -58,21 +50,23 @@ namespace EvoSC.ServerConnection
             {
                 var listenerCollection = _world.CreateEntity();
                 listenerCollection.Set<ListenerCollectionBase>(new ListenerCollection());
-
+                
                 var domain = _world.CreateEntity();
-                domain.Set(GetConfiguration());
+                domain.Set(_connectionConfig);
                 domain.Set<IListener>(new ServerDomain(_hostScope, domain));
                 domain.Set(new PushToListenerCollection(listenerCollection));
             }
-
+        
             TrackDomain<ServerDomain>(domain =>
             {
                 Disposables.AddRange(new IDisposable[]
                 {
+                    new LoadRemoteSystem(domain.Scope),
+                    new GbxRemote(domain.Scope),
+                
                     new ConnectToServerSystem(domain.Scope), 
                     new ManageEventLoopSystem(domain.Scope),
-                    new CreateEventServerSystem(domain.Scope),
-                    
+
                     new PlayerSystem(domain.Scope),
                     new CreatePlayerOnServerStart(domain.Scope)
                 });
