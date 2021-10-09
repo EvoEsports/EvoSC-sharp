@@ -19,7 +19,7 @@ using var runner = GameHostInit.Launch(
 while (runner.Loop())
 {
     // update 40 times per second
-    Thread.Sleep(300);
+    Thread.Sleep(25);
 }
 
 LogManager.Shutdown();
