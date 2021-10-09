@@ -57,7 +57,6 @@ namespace EvoSC.Core.Domains
                 _updateLoop.Invoke(_worker.Elapsed, _worker.Delta);
             }
 
-            Console.WriteLine(Worker.Delta.TotalMilliseconds + "ms");
             if (Worker.Performance < 1)
             {
                 Console.WriteLine(
