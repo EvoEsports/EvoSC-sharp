@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC", "EvoSC\EvoSC.csproj", "{6EBB117D-57AC-4E41-BA16-5E17E164AB36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Samples", "Plugin.Samples\Plugin.Samples.csproj", "{442F3310-3E58-47EA-B8EB-BEBDB5432675}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Tests", "EvoSC.Tests\EvoSC.Tests.csproj", "{4D8E0E76-EE16-42D0-83A3-A8FB11B81AF1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6EBB117D-57AC-4E41-BA16-5E17E164AB36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EBB117D-57AC-4E41-BA16-5E17E164AB36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EBB117D-57AC-4E41-BA16-5E17E164AB36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EBB117D-57AC-4E41-BA16-5E17E164AB36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{442F3310-3E58-47EA-B8EB-BEBDB5432675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442F3310-3E58-47EA-B8EB-BEBDB5432675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442F3310-3E58-47EA-B8EB-BEBDB5432675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{442F3310-3E58-47EA-B8EB-BEBDB5432675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D8E0E76-EE16-42D0-83A3-A8FB11B81AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D8E0E76-EE16-42D0-83A3-A8FB11B81AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D8E0E76-EE16-42D0-83A3-A8FB11B81AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D8E0E76-EE16-42D0-83A3-A8FB11B81AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

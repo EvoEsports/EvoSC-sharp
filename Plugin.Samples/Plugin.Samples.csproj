@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <AssemblyName>Plugin.Samples</AssemblyName>
+        <RootNamespace>Plugin.Samples</RootNamespace>
+        <Company>Plugin.Samples</Company>
+        <Product>Plugin.Samples</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EvoSC\EvoSC.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="module.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <!-- Automatically copy the '.dll' and 'module.json' to the Modules/ folder on build -->
+    <Target Name="CopyModule" AfterTargets="Build">
+        <ItemGroup>
+            <ModuleAsm Include="$(OutDir)$(AssemblyName).dll" />
+            <ModuleCfg Include="$(OutDir)module.json" />
+            
+            <Destination Include="$(ProjectDir)../EvoSC/$(OutDir)Modules/Plugin.Samples/" />
+            <DestinationBin Include="$(ProjectDir)../EvoSC/$(OutDir)Modules/Plugin.Samples/bin" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(ModuleAsm)" DestinationFolder="@(DestinationBin)" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="@(ModuleCfg)" DestinationFolder="@(Destination)" SkipUnchangedFiles="true" />
+    </Target>
+
+</Project>
