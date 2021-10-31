@@ -9,7 +9,8 @@ using EvoSC.Modules.CLI;
 using var runner = GameHostInit.Launch(
     sc =>
     {
-        addLogger(sc);
+        
+        AddLogger(sc);
         
     },
     //sc => new EvoSCEntryModule(sc)
@@ -24,7 +25,12 @@ while (runner.Loop())
 
 LogManager.Shutdown();
 
-void addLogger(Scope scope)
+void SetupDb(Scope scope)
+{
+    
+}
+
+void AddLogger(Scope scope)
 {
     LoggingConfiguration config = new();
 

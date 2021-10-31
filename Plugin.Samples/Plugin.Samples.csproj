@@ -18,6 +18,10 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FluentMigrator" Version="3.3.1" />
+    </ItemGroup>
+
     <!-- Automatically copy the '.dll' and 'module.json' to the Modules/ folder on build -->
     <Target Name="CopyModule" AfterTargets="Build">
         <ItemGroup>
