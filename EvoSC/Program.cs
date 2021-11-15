@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using EvoSC.Domain;
 using GameHost.V3;
 using NLog;
 using NLog.Config;
@@ -27,7 +28,9 @@ LogManager.Shutdown();
 
 void SetupDb(Scope scope)
 {
-    
+    scope.Context.Register(typeof(DatabaseContext));
+    var test = scope.Context.TryGet(typeof(DatabaseContext), out var dbContext);
+
 }
 
 void AddLogger(Scope scope)

@@ -26,6 +26,7 @@ namespace EvoSC.Core
         protected override void OnInit()
         {
             LoadModule(sc => new Module(sc));
+            LoadModule(sc => new Modules.DatabaseConnection.Module(sc));
             LoadModule(sc => new Modules.ChatCommand.Module(sc));
         }
 

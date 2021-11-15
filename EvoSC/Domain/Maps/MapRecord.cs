@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using EvoSC.Domain.Players;
 
 namespace EvoSC.Domain.Maps
 {
@@ -12,11 +13,9 @@ namespace EvoSC.Domain.Maps
         public int Score { get; set; }
         public int Rank { get; set; }
         public string Checkpoints { get; set; }
-        
-        [ForeignKey("Player")]
-        public int PlayerId { get; set; }
-        [ForeignKey("Map")]
-        public int MapId { get; set; }
+
+        public Player Player { get; set; }
+        public Map Map { get; set; }
         
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

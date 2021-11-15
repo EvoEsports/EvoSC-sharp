@@ -7,8 +7,7 @@ namespace EvoSC.Domain.Players
     public class PlayerStatistic
     {
         [Key]
-        [ForeignKey("Player")]
-        public int PlayerId { get; set; }
+        public Player Player { get; set; }
         public int Visits { get; set; }
         public int PlayTime { get; set; }
         public int Finishes { get; set; }

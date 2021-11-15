@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using EvoSC.Domain.Players;
 
 namespace EvoSC.Domain.Maps
 {
@@ -16,8 +17,7 @@ namespace EvoSC.Domain.Maps
         public int ManiaExchangeId { get; set; }
         public DateTime ManiaExchangeVersion { get; set; }
         
-        [ForeignKey("Player")]
-        public string PlayerId { get; set; }
+        public Player Player { get; set; }
         
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

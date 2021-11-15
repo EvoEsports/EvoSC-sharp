@@ -1,14 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using EvoSC.Domain.Players;
 
 namespace EvoSC.Domain.Maps
 {
     [Table("Player_MapFavorites")]
     public class MapFavorite
     {
-        [ForeignKey("Player")]
-        public int PlayerId { get; set; }
-        
-        [ForeignKey("Map")]
-        public int MapId { get; set; }
+        public Player Player { get; set; }
+        public Map Map { get; set; }
     }
 }

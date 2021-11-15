@@ -8,8 +8,7 @@ namespace EvoSC.Domain.Maps
     public class MapStatistic
     {
         [Key]
-        [ForeignKey("Map")]
-        public int MapId { get; set; }
+        public Map Map { get; set; }
         public int NumberOfPlays { get; set; }
         public int Cooldown { get; set; }
         public DateTime LastPlayed { get; set; }
