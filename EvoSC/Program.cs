@@ -26,13 +26,6 @@ while (runner.Loop())
 
 LogManager.Shutdown();
 
-void SetupDb(Scope scope)
-{
-    scope.Context.Register(typeof(DatabaseContext));
-    var test = scope.Context.TryGet(typeof(DatabaseContext), out var dbContext);
-
-}
-
 void AddLogger(Scope scope)
 {
     LoggingConfiguration config = new();
