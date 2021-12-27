@@ -1,9 +1,0 @@
-{
-  "$schema": "https://github.com/guerro323/GameHost/blob/v3-dev/GameHost.V3/module_schema.json",
-  "name": "Samples for EvoSC#",
-  "description": "Used for testing the controller and assuring a good quality of life with short samples.",
-  "version": "0.0.1",
-  "authors": [
-    "guerro"
-  ]
-}

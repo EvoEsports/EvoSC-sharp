@@ -1,1 +1,0 @@
-# Plugin.Samples.Simple Module
