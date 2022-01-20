@@ -1,5 +1,4 @@
 using System;
-using EvoSC.Migrations;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,15 +14,14 @@ namespace EvoSC
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Initializing EvoSC...");
             var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-            logger.Info("Hello, EvoSC!");
 
             logger.Info("Migrating database \"evosc\"...");
-            var serviceProvider = CreateServices();
             
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
 
-            using (var scope = serviceProvider.CreateScope())
+            using (var scope = host.Services.CreateScope())
             {
                 UpdateDatabase(scope.ServiceProvider);
             }
@@ -44,19 +42,6 @@ namespace EvoSC
                     logging.SetMinimumLevel(LogLevel.Trace);
                 })
                 .UseNLog(); // NLog: Setup NLog for Dependency injection
-
-        private static IServiceProvider CreateServices()
-        {
-            const string connectionString = "server=localhost;uid=evosc;pwd=evosc123!;database=evosc;SslMode=none";
-            return new ServiceCollection()
-                .AddFluentMigratorCore()
-                .ConfigureRunner(rb => rb
-                    .AddMySql5()
-                    .WithGlobalConnectionString(connectionString)
-                    .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
-                .AddLogging(lb => lb.AddFluentMigratorConsole())
-                .BuildServiceProvider(false);
-        }
 
         private static void UpdateDatabase(IServiceProvider serviceProvider)
         {
