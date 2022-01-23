@@ -14,17 +14,19 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_CONNECTION_STRING": "server=localhost;uid=evosc;pwd=evosc123!;database=evosc;SslMode=none"
       }
     },
-    "EvoMapSubmission": {
+    "EvoSC": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:6001;http://localhost:6000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_CONNECTION_STRING": "server=localhost;uid=evosc;pwd=evosc123!;database=evosc;SslMode=none"
       }
     }
   }

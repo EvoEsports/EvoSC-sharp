@@ -10,7 +10,7 @@ namespace EvoSC.Migrations
     {
         public override void Up()
         {
-            this.CreateTableIfNotExists("Players", table => table
+            Create.Table("Players")
                 .WithColumn("ID").AsInt32().PrimaryKey().NotNullable()
                 .WithColumn("Login").AsString()
                 .WithColumn("Nickname").AsString()
@@ -18,10 +18,9 @@ namespace EvoSC.Migrations
                 .WithColumn("Group").AsInt32()
                 .WithColumn("Path").AsString()
                 .WithColumn("Banned").AsBoolean()
-                .WithColumn("LastVisit").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-            );
+                .WithColumn("LastVisit").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime);
             
-            this.CreateTableIfNotExists("Maps", table => table
+            Create.Table("Maps")
                 .WithColumn("ID").AsInt32().PrimaryKey().NotNullable()
                 .WithColumn("UID").AsString().Unique()
                 .WithColumn("PlayerID").AsInt32()
@@ -32,17 +31,15 @@ namespace EvoSC.Migrations
                 .WithColumn("ManiaExchangeId").AsInt32()
                 .WithColumn("ManiaExchangeVersion").AsDateTime()
                 .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-            );
+                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime);
             
-            this.CreateTableIfNotExists("Player_MapFavorites", table => table
+            Create.Table("Player_MapFavorites")
                 .WithColumn("PlayerID").AsInt32()
                 .ForeignKey("FK_MapFavorites_PlayerID", "Players", "ID")
                 .WithColumn("MapID").AsInt32()
-                .ForeignKey("FK_MapFavorites_MapID", "Maps", "ID")
-            );
+                .ForeignKey("FK_MapFavorites_MapID", "Maps", "ID");
 
-            this.CreateTableIfNotExists("Player_PersonalBests", table => table
+            Create.Table("Player_PersonalBests")
                 .WithColumn("ID").AsInt32().PrimaryKey().NotNullable()
                 .WithColumn("PlayerID").AsInt32()
                 .ForeignKey("FK_PersonalBests_PlayerID", "Players", "ID")
@@ -51,10 +48,9 @@ namespace EvoSC.Migrations
                 .WithColumn("Score").AsInt32()
                 .WithColumn("Checkpoints").AsInt32()
                 .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-            );
+                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime);
             
-            this.CreateTableIfNotExists("Player_Statistics", table => table
+            Create.Table("Player_Statistics")
                 .WithColumn("PlayerID").AsInt32().PrimaryKey().NotNullable()
                 .ForeignKey("FK_Statistics_PlayerID", "Players", "ID")
                 .WithColumn("Visits").AsInt32()
@@ -70,29 +66,26 @@ namespace EvoSC.Migrations
                 .WithColumn("CheckpointsDriven").AsInt32()
                 .WithColumn("ConsecutiveDaysPlayed").AsInt32()
                 .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-            );
+                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime);
             
-            this.CreateTableIfNotExists("Map_Karma", table => table
+            Create.Table("Map_Karma")
                 .WithColumn("ID").AsInt32().PrimaryKey().NotNullable()
                 .WithColumn("MapID").AsInt32()
                 .ForeignKey("FK_Map_Karma_MapID", "Maps", "ID")
                 .WithColumn("PlayerID").AsInt32()
                 .ForeignKey("FK_Map_Karma_PlayerID", "Players", "ID")
                 .WithColumn("Rating").AsInt16()
-                .WithColumn("New").AsBoolean()
-            );
+                .WithColumn("New").AsBoolean();
 
-            this.CreateTableIfNotExists("Map_Statistics", table => table
+            Create.Table("Map_Statistics")
                 .WithColumn("MapID").AsInt32().PrimaryKey().NotNullable()
                 .ForeignKey("FK_Map_Statistics_MapID", "Maps", "ID")
                 .WithColumn("NumberOfPlays").AsInt32()
                 .WithColumn("Cooldown").AsInt32()
                 .WithColumn("LastPlayed").AsDateTime()
-                .WithColumn("AmountSkipped").AsInt32()
-            );
+                .WithColumn("AmountSkipped").AsInt32();
 
-            this.CreateTableIfNotExists("Map_Records", table => table
+            Create.Table("Map_Records")
                 .WithColumn("ID").AsInt32().PrimaryKey().NotNullable()
                 .WithColumn("PlayerID").AsInt32()
                 .ForeignKey("FK_LocalRecords_PlayerID", "Players", "ID")
@@ -102,8 +95,7 @@ namespace EvoSC.Migrations
                 .WithColumn("Rank").AsInt32()
                 .WithColumn("Checkpoints").AsString()
                 .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime)
-            );
+                .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentUTCDateTime);
             
             Create.PrimaryKey("PK_MapFavorites").OnTable("Player_MapFavorites").WithSchema("Player_MapFavorites")
                 .Columns("PlayerID", "MapID");

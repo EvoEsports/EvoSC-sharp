@@ -1,4 +1,5 @@
 using System;
+using EvoSC.Contracts;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,10 +15,9 @@ namespace EvoSC
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Initializing EvoSC...");
             var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-
-            logger.Info("Migrating database \"evosc\"...");
+            logger.Info("Initializing EvoSC...");
+            Console.WriteLine("Initializing EvoSC...");
             
             var host = CreateHostBuilder(args).Build();
 
@@ -26,8 +26,11 @@ namespace EvoSC
                 UpdateDatabase(scope.ServiceProvider);
             }
 
-            Console.WriteLine("Done!");
+            logger.Info("Completed initialization");
+            Console.WriteLine("Completed initialization");
 
+            var sample = host.Services.GetRequiredService<ISampleService>();
+            logger.Info(sample.GetName());
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>

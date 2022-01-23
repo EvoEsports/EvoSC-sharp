@@ -1,13 +1,18 @@
-﻿using EvoSC.Migrations;
+﻿using System;
+using EvoSC.Core.PluginHandler;
+using EvoSC.Migrations;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace EvoSC
 {
     public class Startup
     {
-        const string connectionString = "server=localhost;uid=evosc;pwd=evosc123!;database=evosc;SslMode=none";
+        const string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         
         public Startup(IConfiguration configuration)
         {
@@ -21,10 +26,34 @@ namespace EvoSC
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
                     .AddMySql5()
-                    .WithGlobalConnectionString(connectionString)
+                    .WithGlobalConnectionString(Environment.GetEnvironmentVariable("DOTNET_CONNECTION_STRING"))
                     .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
-                .BuildServiceProvider(false);
+                .AddPluginLoaders();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvoSC API v1"));
+            }
+
+            app.UseStaticFiles();
+
+            app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
