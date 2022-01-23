@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoSC", "EvoSC\EvoSC.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Tests", "EvoSC.Tests\EvoSC.Tests.csproj", "{509D2739-D17C-4C20-969F-30EC4DE36DB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Contracts", "EvoSC.Contracts\EvoSC.Contracts.csproj", "{190D7B5C-0D65-4495-A06F-5F74BD242FEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginSample", "PluginSample\PluginSample.csproj", "{4A2B6B9F-52AF-48DB-A3B7-9B98D9F3FC47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{509D2739-D17C-4C20-969F-30EC4DE36DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{509D2739-D17C-4C20-969F-30EC4DE36DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509D2739-D17C-4C20-969F-30EC4DE36DB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190D7B5C-0D65-4495-A06F-5F74BD242FEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190D7B5C-0D65-4495-A06F-5F74BD242FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190D7B5C-0D65-4495-A06F-5F74BD242FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190D7B5C-0D65-4495-A06F-5F74BD242FEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A2B6B9F-52AF-48DB-A3B7-9B98D9F3FC47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A2B6B9F-52AF-48DB-A3B7-9B98D9F3FC47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A2B6B9F-52AF-48DB-A3B7-9B98D9F3FC47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A2B6B9F-52AF-48DB-A3B7-9B98D9F3FC47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

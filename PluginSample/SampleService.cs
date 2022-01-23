@@ -1,6 +1,11 @@
-﻿namespace PluginSample;
+﻿using EvoSC.Contracts;
 
-public class SampleService
+namespace PluginSample;
+
+public class SampleService : ISampleService
 {
-    
+    public string GetName()
+    {
+        return "Sample";
+    }
 }

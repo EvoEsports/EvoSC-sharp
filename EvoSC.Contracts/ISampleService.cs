@@ -1,6 +1,6 @@
 ﻿namespace EvoSC.Contracts;
 
-public class ISampleService
+public interface ISampleService
 {
-    
+    string GetName();
 }
