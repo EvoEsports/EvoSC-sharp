@@ -8,4 +8,9 @@ public class SampleService : ISampleService
     {
         return "Sample";
     }
+
+    public string Ping()
+    {
+        return "Pong";
+    }
 }
