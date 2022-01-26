@@ -8,7 +8,6 @@ namespace EvoSC.Domain
     {
         public DatabaseContext() : base("DatabaseConnectionString")
         {
-            Database.SetInitializer(new CreateDatabaseIfNotExists<DatabaseContext>());
         }
         
         public DbSet<Map> Maps { get; set; }
