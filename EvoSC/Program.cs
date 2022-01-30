@@ -1,6 +1,6 @@
 ﻿using System;
 using EvoSC.Contracts;
-using EvoSC.Core.PluginHandler;
+using EvoSC.Core.Plugins;
 using EvoSC.Migrations;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,8 +32,8 @@ builder.ConfigureServices(services =>
         .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
     .AddLogging(lb => lb.AddFluentMigratorConsole());
 
-    // Plugin loading setup
-    services.AddPluginLoaders();
+    // Add plugin manager
+    services.AddSingleton<PluginManager>();
 });
 
 var app = builder.Build();
