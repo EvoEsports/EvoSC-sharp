@@ -15,4 +15,12 @@
         </ProjectReference>
     </ItemGroup>
 
+        
+    <ItemGroup>
+        <Content Include="PluginSample.Services.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>  
+    </ItemGroup>
+
+
 </Project>

@@ -1,7 +1,6 @@
 ﻿using System;
+using EvoSC.Core.Plugins;
 using EvoSC.Core.Services;
-using EvoSC.Migrations;
-using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -24,23 +23,23 @@ builder.ConfigureLogging((context, builder) =>
 builder.ConfigureServices(services =>
 {
     // FluentMigrator setup
-    services.AddFluentMigratorCore()
+    /*services.AddFluentMigratorCore()
     .ConfigureRunner(rb => rb
         .AddMySql5()
         .WithGlobalConnectionString(Environment.GetEnvironmentVariable("DOTNET_CONNECTION_STRING"))
         .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
-    .AddLogging(lb => lb.AddFluentMigratorConsole());
+    .AddLogging(lb => lb.AddFluentMigratorConsole());*/
 
-    // Add plugin factory
-    services.AddPluginFactory();
+    // Initialize plugin factory
+    PluginFactory.Instance.LoadPlugins(services);
 });
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     UpdateDatabase(scope.ServiceProvider);
-}
+}*/
 
 logger.Info("Completed initialization");
 Console.WriteLine("Completed initialization");
@@ -50,9 +49,9 @@ logger.Info(sample.GetName());
 
 app.Run();
 
-static void UpdateDatabase(IServiceProvider serviceProvider)
+/*static void UpdateDatabase(IServiceProvider serviceProvider)
 {
     var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
 
     runner.MigrateUp();
-}
+}*/

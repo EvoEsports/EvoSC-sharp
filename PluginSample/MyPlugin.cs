@@ -13,7 +13,7 @@ public class MyPlugin : IPlugin
 
     public void Execute()
     {
-        throw new NotImplementedException();
+        System.Console.WriteLine("Executing...");
     }
 
     public void Load(IServiceCollection services)
@@ -23,6 +23,6 @@ public class MyPlugin : IPlugin
 
     public void Unload()
     {
-        throw new NotImplementedException();
+        System.Console.WriteLine("Unloading...");
     }
 }

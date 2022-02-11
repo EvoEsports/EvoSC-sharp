@@ -17,6 +17,7 @@
     <PackageReference Include="NLog" Version="5.0.0-rc1" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.0.0-rc1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   
   <ItemGroup>

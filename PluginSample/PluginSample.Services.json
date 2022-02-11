@@ -1,0 +1,8 @@
+{
+    "services": [
+      {
+        "serviceInterface": "ISampleService",
+        "serviceImplementation": "SampleService"
+      }
+    ]
+  }
