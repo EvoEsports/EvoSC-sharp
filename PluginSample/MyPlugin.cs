@@ -1,5 +1,5 @@
-﻿using EvoSC.Core.Services;
-using EvoSC.Core.Plugins;
+﻿using EvoSC.Core.Plugins;
+using EvoSC.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -21,8 +21,10 @@ public class MyPlugin : IPlugin
         services.AddTransient<ISampleService, SampleService>();
     }
 
-    public void Unload()
+    public void Unload(IServiceCollection services)
     {
+        services.Remove<SampleService>();
+
         System.Console.WriteLine("Unloading...");
     }
 }

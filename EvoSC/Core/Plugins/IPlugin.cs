@@ -10,5 +10,5 @@ public interface IPlugin
 
     void Load(IServiceCollection services);
     void Execute();
-    void Unload();
+    void Unload(IServiceCollection services);
 }
