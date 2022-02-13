@@ -1,11 +1,11 @@
-﻿using EvoSC.Contracts;
-using EvoSC.Core.Plugins;
+﻿using EvoSC.Core.Plugins;
+using EvoSC.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace PluginSample;
 
-public class MyPlugin : IEvoScPlugin
+public class MyPlugin : IPlugin
 {
     public string Name => "MyPlugin";
 
@@ -13,7 +13,7 @@ public class MyPlugin : IEvoScPlugin
 
     public void Execute()
     {
-        throw new NotImplementedException();
+        System.Console.WriteLine("Executing...");
     }
 
     public void Load(IServiceCollection services)
@@ -21,8 +21,10 @@ public class MyPlugin : IEvoScPlugin
         services.AddTransient<ISampleService, SampleService>();
     }
 
-    public void Unload()
+    public void Unload(IServiceCollection services)
     {
-        throw new NotImplementedException();
+        services.Remove<SampleService>();
+
+        System.Console.WriteLine("Unloading...");
     }
 }

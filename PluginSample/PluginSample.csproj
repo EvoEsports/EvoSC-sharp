@@ -9,10 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EvoSC.Contracts\EvoSC.Contracts.csproj">
+        <ProjectReference Include="..\EvoSC\EvoSC.csproj">
             <Private>false</Private>
             <ExcludeAssets>runtime</ExcludeAssets>
         </ProjectReference>
     </ItemGroup>
+
 
 </Project>

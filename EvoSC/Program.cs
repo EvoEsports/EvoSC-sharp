@@ -1,6 +1,6 @@
 ﻿using System;
-using EvoSC.Contracts;
 using EvoSC.Core.Plugins;
+using EvoSC.Core.Services;
 using EvoSC.Migrations;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,8 +18,8 @@ Console.WriteLine("Initializing EvoSC...");
 // NLog: Setup NLog for Dependency injection
 builder.ConfigureLogging((context, builder) =>
 {
-    builder.SetMinimumLevel(LogLevel.Trace);
-    builder.AddNLog("appsettings.json");
+    builder.AddNLog("appsettings.json")
+        .SetMinimumLevel(LogLevel.Trace);
 });
 
 builder.ConfigureServices(services =>
@@ -32,8 +32,8 @@ builder.ConfigureServices(services =>
         .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
     .AddLogging(lb => lb.AddFluentMigratorConsole());
 
-    // Add plugin manager
-    services.AddSingleton<PluginManager>();
+    // Load plugins
+    PluginFactory.Instance.LoadPlugins(services);
 });
 
 var app = builder.Build();
@@ -46,10 +46,12 @@ using (var scope = app.Services.CreateScope())
 logger.Info("Completed initialization");
 Console.WriteLine("Completed initialization");
 
+app.Run();
+
 var sample = app.Services.GetRequiredService<ISampleService>();
 logger.Info(sample.GetName());
 
-app.Run();
+app.WaitForShutdown();
 
 static void UpdateDatabase(IServiceProvider serviceProvider)
 {
