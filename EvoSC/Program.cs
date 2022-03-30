@@ -1,5 +1,7 @@
 ﻿using System;
 using EvoSC.Contracts;
+using EvoSC.Core;
+using EvoSC.Core.Configuration;
 using EvoSC.Core.PluginHandler;
 using EvoSC.Migrations;
 using FluentMigrator.Runner;
@@ -22,13 +24,18 @@ builder.ConfigureLogging((context, builder) =>
     builder.AddNLog("appsettings.json");
 });
 
+var serverConnectionConfig = ConfigurationLoader.LoadServerConnectionConfig();
+
+var serverConnection = new ServerConnection();
+serverConnection.ConnectToServer(serverConnectionConfig);
+
 builder.ConfigureServices(services =>
 {
     // FluentMigrator setup
     services.AddFluentMigratorCore()
     .ConfigureRunner(rb => rb
         .AddMySql5()
-        .WithGlobalConnectionString(Environment.GetEnvironmentVariable("DOTNET_CONNECTION_STRING"))
+        .WithGlobalConnectionString(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING"))
         .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
     .AddLogging(lb => lb.AddFluentMigratorConsole());
 
@@ -44,7 +51,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 logger.Info("Completed initialization");
-Console.WriteLine("Completed initialization");
 
 var sample = app.Services.GetRequiredService<ISampleService>();
 logger.Info(sample.GetName());

@@ -10,6 +10,7 @@ public class MyPlugin
         public void Configure(IServiceCollection services)
         {
             services.AddTransient<ISampleService, SampleService>();
+            GbxCallbacks callbacks = new GbxCallbacks("", 0);
         }
     }
 }

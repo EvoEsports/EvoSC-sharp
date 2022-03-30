@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EvoSC.Contracts\EvoSC.Contracts.csproj" />
+      <ProjectReference Include="..\EvoSC\EvoSC.csproj" />
     </ItemGroup>
 
 </Project>
