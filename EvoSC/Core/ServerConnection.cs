@@ -1,14 +1,34 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using EvoSC.Core.Configuration;
+using EvoSC.Interfaces;
 using GbxRemoteNet;
 
 namespace EvoSC.Core;
 
 public class ServerConnection
 {
-    public void ConnectToServer(ServerConnectionConfig _serverConnectionConfig)
+    private readonly GbxRemoteClient _gbxRemoteClient;
+    private readonly IEnumerable<IGbxEventHandler> _eventHandlers;
+    
+    public ServerConnection(GbxRemoteClient gbxRemoteClient, IEnumerable<IGbxEventHandler> eventHandlers)
     {
-        var gbxRemoteClient = new GbxRemoteClient(_serverConnectionConfig.Host, _serverConnectionConfig.Port);
-        
+        _gbxRemoteClient = gbxRemoteClient;
+        _eventHandlers = eventHandlers;
+    }
+    
+    public void InitializeEventHandlers()
+    {
+        foreach (var eventHandler in _eventHandlers)
+        {
+            eventHandler.HandleEvents(_gbxRemoteClient);
+        }
+    }
+
+    public async Task<bool> Authenticate(ServerConnectionConfig config)
+    {
+        return await _gbxRemoteClient.AuthenticateAsync(config.AdminLogin, config.AdminPassword);
     }
 }

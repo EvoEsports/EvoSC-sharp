@@ -12,6 +12,7 @@ namespace EvoSC.Domain.Players
         public string Login { get; set; }
         public string Nickname { get; set; }
         public string UbisoftName { get; set; }
+        // TODO: Needs to be changed to correct group
         public int Group { get; set; }
         public string Path { get; set; }
         public bool Banned { get; set; }

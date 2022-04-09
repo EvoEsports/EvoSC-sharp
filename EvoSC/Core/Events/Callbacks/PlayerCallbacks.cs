@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using EvoSC.Core.Events.Args;
 
-namespace EvoSC.Core.Events;
+namespace EvoSC.Core.Events.Callbacks;
 
-public class GbxCallbacks
+public class PlayerCallbacks
 {
     public event EventHandler<PlayerConnectEventArgs> PlayerConnect;
     public event EventHandler<PlayerDisconnectEventArgs> PlayerDisconnect;
-    public event EventHandler<PlayerChatEventArgs> PlayerChat;
 
     public Task OnPlayerConnect(PlayerConnectEventArgs e)
     {
@@ -19,12 +18,6 @@ public class GbxCallbacks
     public Task OnPlayerDisconnect(PlayerDisconnectEventArgs e)
     {
         PlayerDisconnect?.Invoke(null, e);
-        return Task.CompletedTask;
-    }
-
-    public Task OnPlayerChat(PlayerChatEventArgs e)
-    {
-        PlayerChat?.Invoke(null, e);
         return Task.CompletedTask;
     }
 }

@@ -1,17 +1,19 @@
-﻿using System.Linq;
-using System.Reflection;
-using System.Security.Policy;
-using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using Tomlet.Attributes;
 
 namespace EvoSC.Core.Configuration;
 
 public class ServerConnectionConfig
 {
-    [JsonPropertyName("host")] public string Host { get; set; }
-    [JsonPropertyName("port")] public int Port { get; set; }
+    [TomlProperty("host")]
+    public string Host { get; set; }
+    [TomlProperty("port")]
+    public int Port { get; set; }
 
-    [JsonPropertyName("login")] public string AdminLogin { get; set; }
-    [JsonPropertyName("password")] public string AdminPassword { get; set; }
+    [TomlProperty("login")]
+    public string AdminLogin { get; set; }
+    [TomlProperty("password")]
+    public string AdminPassword { get; set; }
 
     public bool IsAnyNullOrEmpty(ServerConnectionConfig config)
     {

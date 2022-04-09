@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Tomlet;
+using Tomlet.Models;
 
 namespace EvoSC.Core.Configuration;
 
@@ -11,9 +11,9 @@ public static class ConfigurationLoader
     {
         try
         {
-            using var reader = File.OpenText(@"config/server.json");
-            var o = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-            var config = o.ToObject<ServerConnectionConfig>();
+            TomlDocument document = TomlParser.ParseFile(@"config/server.toml");
+            var config = TomletMain.To<ServerConnectionConfig>(document);
+            
             if (config != null && !config.IsAnyNullOrEmpty(config))
             {
                 return config;
@@ -23,7 +23,7 @@ public static class ConfigurationLoader
         }
         catch (Exception e) when (e is DirectoryNotFoundException or FileNotFoundException)
         {
-            throw new Exception("The config directory does not exist, or the server.json file is missing", e);
+            throw new Exception("The config directory does not exist, or the server.toml file is missing", e);
         }
     }
 }

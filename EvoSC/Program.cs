@@ -1,10 +1,18 @@
 ﻿using System;
+using System.Security.Authentication;
 using EvoSC.Contracts;
 using EvoSC.Core;
 using EvoSC.Core.Configuration;
+using EvoSC.Core.Events.GbxEventHandlers;
 using EvoSC.Core.PluginHandler;
+using EvoSC.Core.Services.Chat;
+using EvoSC.Core.Services.Player;
+using EvoSC.Interfaces;
+using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Player;
 using EvoSC.Migrations;
 using FluentMigrator.Runner;
+using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -26,18 +34,26 @@ builder.ConfigureLogging((context, builder) =>
 
 var serverConnectionConfig = ConfigurationLoader.LoadServerConnectionConfig();
 
-var serverConnection = new ServerConnection();
-serverConnection.ConnectToServer(serverConnectionConfig);
-
 builder.ConfigureServices(services =>
 {
     // FluentMigrator setup
     services.AddFluentMigratorCore()
-    .ConfigureRunner(rb => rb
-        .AddMySql5()
-        .WithGlobalConnectionString(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING"))
-        .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
-    .AddLogging(lb => lb.AddFluentMigratorConsole());
+        .ConfigureRunner(rb => rb
+            .AddMySql5()
+            .WithGlobalConnectionString(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING"))
+            .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
+        .AddLogging(lb => lb.AddFluentMigratorConsole());
+
+    // GbxClient
+    services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
+
+    // Event Handlers
+    services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
+    services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
+
+    // Services
+    services.AddSingleton<IPlayerService, PlayerService>();
+    services.AddSingleton<IChatService, ChatService>();
 
     // Plugin loading setup
     services.AddPluginLoaders();
@@ -49,6 +65,20 @@ using (var scope = app.Services.CreateScope())
 {
     UpdateDatabase(scope.ServiceProvider);
 }
+
+logger.Info($"Connecting to server with IP {serverConnectionConfig.Host} and port {serverConnectionConfig.Port}");
+var serverConnection = new ServerConnection(
+    app.Services.GetRequiredService<GbxRemoteClient>(), 
+    app.Services.GetServices<IGbxEventHandler>()
+);
+var loggedIn = await serverConnection.Authenticate(serverConnectionConfig);
+
+if (!loggedIn)
+{
+    throw new AuthenticationException("Could not authenticate to server - login or password is incorrect!");
+}
+
+serverConnection.InitializeEventHandlers();
 
 logger.Info("Completed initialization");
 

@@ -1,15 +1,14 @@
 ﻿using System;
+using EvoSC.Domain.Players;
 
 namespace EvoSC.Core.Events.Args;
 
 public class PlayerConnectEventArgs: EventArgs
 {
-    public string Login { get; set; }
-    public bool IsSpectator { get; set; }
+    private Player Player { get; }
 
-    public PlayerConnectEventArgs(string login, bool isSpectator)
+    public PlayerConnectEventArgs(Player player)
     {
-        Login = login;
-        IsSpectator = isSpectator;
+        Player = player;
     }
 }
