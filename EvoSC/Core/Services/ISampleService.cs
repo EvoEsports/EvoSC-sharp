@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Contracts;
+﻿namespace EvoSC.Core.Services;
 
 public interface ISampleService
 {

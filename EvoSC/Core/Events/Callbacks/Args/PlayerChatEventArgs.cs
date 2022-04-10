@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EvoSC.Core.Events.Args;
+namespace EvoSC.Core.Events.Callbacks.Args;
 
 public class PlayerChatEventArgs : EventArgs
 {

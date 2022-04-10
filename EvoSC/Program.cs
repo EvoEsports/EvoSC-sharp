@@ -1,17 +1,18 @@
 ﻿using System;
+using EvoSC.Core.Plugins;
+using EvoSC.Core.Services;
+using EvoSC.Domain;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Authentication;
-using EvoSC.Contracts;
 using EvoSC.Core;
 using EvoSC.Core.Configuration;
+using EvoSC.Core.Events.Callbacks;
 using EvoSC.Core.Events.GbxEventHandlers;
-using EvoSC.Core.PluginHandler;
 using EvoSC.Core.Services.Chat;
 using EvoSC.Core.Services.Player;
 using EvoSC.Interfaces;
 using EvoSC.Interfaces.Chat;
-using EvoSC.Interfaces.Player;
-using EvoSC.Migrations;
-using FluentMigrator.Runner;
+using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,62 +24,57 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 var builder = Host.CreateDefaultBuilder(args);
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Initializing EvoSC...");
-Console.WriteLine("Initializing EvoSC...");
 
 // NLog: Setup NLog for Dependency injection
 builder.ConfigureLogging((context, builder) =>
 {
-    builder.SetMinimumLevel(LogLevel.Trace);
-    builder.AddNLog("appsettings.json");
+    builder.ClearProviders();
+    builder.AddNLog("nlog.config")
+        .SetMinimumLevel(LogLevel.Trace);
 });
 
 var serverConnectionConfig = ConfigurationLoader.LoadServerConnectionConfig();
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? "server=localhost;uid=evosc;password=evosc123!;database=evosc";
 
 builder.ConfigureServices(services =>
 {
-    // FluentMigrator setup
-    services.AddFluentMigratorCore()
-        .ConfigureRunner(rb => rb
-            .AddMySql5()
-            .WithGlobalConnectionString(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING"))
-            .ScanIn(typeof(CreateDatabase).Assembly).For.Migrations())
-        .AddLogging(lb => lb.AddFluentMigratorConsole());
-
+    services.AddDbContext<DatabaseContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    
     // GbxClient
     services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
-
+    
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
+    
+    // Callbacks
+    services.AddSingleton<IPlayerCallbacks, PlayerCallbacks>();
 
     // Services
     services.AddSingleton<IPlayerService, PlayerService>();
     services.AddSingleton<IChatService, ChatService>();
-
-    // Plugin loading setup
-    services.AddPluginLoaders();
+    
+    // Load plugins
+    PluginFactory.Instance.LoadPlugins(services);
 });
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    UpdateDatabase(scope.ServiceProvider);
+    await scope.ServiceProvider.GetRequiredService<DatabaseContext>().Database.MigrateAsync();
 }
 
 logger.Info($"Connecting to server with IP {serverConnectionConfig.Host} and port {serverConnectionConfig.Port}");
 var serverConnection = new ServerConnection(
     app.Services.GetRequiredService<GbxRemoteClient>(), 
-    app.Services.GetServices<IGbxEventHandler>()
+    app.Services.GetServices<IGbxEventHandler>(),
+    app.Services.GetService<IPlayerService>()
 );
-var loggedIn = await serverConnection.Authenticate(serverConnectionConfig);
-
-if (!loggedIn)
-{
-    throw new AuthenticationException("Could not authenticate to server - login or password is incorrect!");
-}
 
 serverConnection.InitializeEventHandlers();
+
+await serverConnection.ConnectToServer(serverConnectionConfig);
 
 logger.Info("Completed initialization");
 
@@ -86,10 +82,3 @@ var sample = app.Services.GetRequiredService<ISampleService>();
 logger.Info(sample.GetName());
 
 app.Run();
-
-static void UpdateDatabase(IServiceProvider serviceProvider)
-{
-    var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
-
-    runner.MigrateUp();
-}

@@ -16,7 +16,7 @@ namespace EvoSC.Domain.Maps
 
         public Player Player { get; set; }
         public Map Map { get; set; }
-        
+
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

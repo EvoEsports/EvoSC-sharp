@@ -1,5 +1,5 @@
 ﻿using EvoSC.Interfaces;
-using EvoSC.Interfaces.Player;
+using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 
 namespace EvoSC.Core.Events.GbxEventHandlers;
@@ -18,7 +18,4 @@ public class PlayerGbxEventHandler : IGbxEventHandler
         client.OnPlayerConnect += _playerService.ClientOnPlayerConnect;
         client.OnPlayerDisconnect += _playerService.ClientOnPlayerDisconnect;
     }
-
-    
-
 }

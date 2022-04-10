@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Threading.Tasks;
-using EvoSC.Core.Events.Args;
+using EvoSC.Core.Events.Callbacks.Args;
+using EvoSC.Interfaces.Players;
 
 namespace EvoSC.Core.Events.Callbacks;
 
-public class PlayerCallbacks
+public class PlayerCallbacks : IPlayerCallbacks
 {
     public event EventHandler<PlayerConnectEventArgs> PlayerConnect;
     public event EventHandler<PlayerDisconnectEventArgs> PlayerDisconnect;
 
-    public Task OnPlayerConnect(PlayerConnectEventArgs e)
+    public virtual void OnPlayerConnect(PlayerConnectEventArgs e)
     {
-        PlayerConnect?.Invoke(null, e);
-        return Task.CompletedTask;
+        PlayerConnect?.Invoke(this, e);
     }
 
-    public Task OnPlayerDisconnect(PlayerDisconnectEventArgs e)
+    public virtual void OnPlayerDisconnect(PlayerDisconnectEventArgs e)
     {
-        PlayerDisconnect?.Invoke(null, e);
-        return Task.CompletedTask;
+        PlayerDisconnect?.Invoke(this, e);
     }
 }

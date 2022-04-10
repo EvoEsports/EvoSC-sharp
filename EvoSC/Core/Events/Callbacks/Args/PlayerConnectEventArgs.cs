@@ -1,7 +1,7 @@
 ﻿using System;
 using EvoSC.Domain.Players;
 
-namespace EvoSC.Core.Events.Args;
+namespace EvoSC.Core.Events.Callbacks.Args;
 
 public class PlayerConnectEventArgs: EventArgs
 {
