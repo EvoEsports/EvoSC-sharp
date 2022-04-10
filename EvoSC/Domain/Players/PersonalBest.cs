@@ -12,11 +12,10 @@ namespace EvoSC.Domain.Players
         public int Id { get; set; }
         public int Score { get; set; }
         public int Checkpoints { get; set; }
-        
+
         public Player Player { get; set; }
         public Map Map { get; set; }
-        
-        
+
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using EvoSC.Core.Plugins;
+﻿using EvoSC;
+using EvoSC.Core.Plugins;
 using EvoSC.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;

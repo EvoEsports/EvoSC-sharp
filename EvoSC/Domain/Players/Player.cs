@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using EvoSC.Domain.Maps;
 
 namespace EvoSC.Domain.Players
 {
@@ -16,5 +18,11 @@ namespace EvoSC.Domain.Players
         public string Path { get; set; }
         public bool Banned { get; set; }
         public DateTime LastVisit { get; set; }
+
+        public PlayerStatistic PlayerStatistic { get; set; }
+
+        public IEnumerable<PersonalBest> PersonalBests { get; set; }
+        public IEnumerable<MapRecord> MapRecords { get; set; }
+        public IEnumerable<MapKarma> MapKarmas { get; set; }
     }
 }

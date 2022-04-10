@@ -7,7 +7,9 @@ namespace EvoSC.Domain.Players
     public class PlayerStatistic
     {
         [Key]
+        public int PlayerStatisticId { get; set; }
         public Player Player { get; set; }
+        public int PlayerId { get; set; }
         public int Visits { get; set; }
         public int PlayTime { get; set; }
         public int Finishes { get; set; }
