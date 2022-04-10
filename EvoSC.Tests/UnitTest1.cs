@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace EvoSC.Tests
@@ -8,6 +7,8 @@ namespace EvoSC.Tests
         [Fact]
         public void Test1()
         {
+            //TODO: Test loading/unloading of plugins
+            //AppDomain.CurrentDomain.GetAssemblies().First()
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using EvoSC.Contracts;
+﻿using EvoSC.Core.Services;
 
 namespace PluginSample;
 
