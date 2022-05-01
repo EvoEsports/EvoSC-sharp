@@ -13,7 +13,7 @@ public static class ConfigurationLoader
         {
             TomlDocument document = TomlParser.ParseFile(@"config/server.toml");
             var config = TomletMain.To<ServerConnectionConfig>(document);
-            
+
             if (config != null && !config.IsAnyNullOrEmpty(config))
             {
                 return config;

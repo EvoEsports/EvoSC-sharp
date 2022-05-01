@@ -39,21 +39,21 @@ var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_S
 builder.ConfigureServices(services =>
 {
     services.AddDbContext<DatabaseContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-    
+
     // GbxClient
     services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
-    
+
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
-    
+
     // Callbacks
     services.AddSingleton<IPlayerCallbacks, PlayerCallbacks>();
 
     // Services
     services.AddSingleton<IPlayerService, PlayerService>();
     services.AddSingleton<IChatService, ChatService>();
-    
+
     // Load plugins
     PluginFactory.Instance.LoadPlugins(services);
 });
@@ -67,12 +67,13 @@ using (var scope = app.Services.CreateScope())
 
 logger.Info($"Connecting to server with IP {serverConnectionConfig.Host} and port {serverConnectionConfig.Port}");
 var serverConnection = new ServerConnection(
-    app.Services.GetRequiredService<GbxRemoteClient>(), 
+    app.Services.GetRequiredService<GbxRemoteClient>(),
     app.Services.GetServices<IGbxEventHandler>(),
     app.Services.GetService<IPlayerService>()
 );
 
 serverConnection.InitializeEventHandlers();
+
 
 await serverConnection.ConnectToServer(serverConnectionConfig);
 
@@ -80,5 +81,18 @@ logger.Info("Completed initialization");
 
 var sample = app.Services.GetRequiredService<ISampleService>();
 logger.Info(sample.GetName());
+var module = app.Services.GetService<IPlugin>();
+module.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
+//Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
 
 app.Run();
+
+void Subscribe(IPlayerCallbacks playerCallbacks)
+{
+    playerCallbacks.PlayerConnect += PlayerCallbacks_PlayerConnect;
+}
+
+void PlayerCallbacks_PlayerConnect(object sender, EvoSC.Core.Events.Callbacks.Args.PlayerConnectEventArgs e)
+{
+    logger.Info("A player has connected");
+}

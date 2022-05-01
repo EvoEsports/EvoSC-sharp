@@ -17,12 +17,12 @@ public class ServerConnectionConfig
 
     public bool IsAnyNullOrEmpty(ServerConnectionConfig config)
     {
-        foreach(PropertyInfo pi in config.GetType().GetProperties())
+        foreach (PropertyInfo pi in config.GetType().GetProperties())
         {
-            if(pi.PropertyType == typeof(string))
+            if (pi.PropertyType == typeof(string))
             {
                 var value = (string)pi.GetValue(config);
-                if(string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
                     return true;
                 }

@@ -20,7 +20,7 @@ public class PlayerService : IPlayerService
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerCallbacks _playerCallbacks;
 
-    private readonly List<Domain.Players.Player> _connectedPlayers = new ();
+    private readonly List<Domain.Players.Player> _connectedPlayers = new();
 
     public PlayerService(ILogger<PlayerService> logger, DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks)
     {
@@ -49,7 +49,7 @@ public class PlayerService : IPlayerService
                 var detailedInfo = await _gbxRemoteClient.GetDetailedPlayerInfoAsync(playerOnline.Login);
                 player = await CreatePlayer(detailedInfo);
             }
-            
+
             _connectedPlayers.Add(player);
         }
     }
@@ -63,13 +63,13 @@ public class PlayerService : IPlayerService
             var playerInfo = await _gbxRemoteClient.GetDetailedPlayerInfoAsync(login);
             player = await CreatePlayer(playerInfo);
         }
-        
+
         _connectedPlayers.Add(player);
         _playerCallbacks.OnPlayerConnect(new PlayerConnectEventArgs(player));
-        
+
         _logger.LogInformation($"Player {player.UbisoftName} ({login}) connected to the server.");
     }
-    
+
     public async Task ClientOnPlayerDisconnect(string login, string reason)
     {
         var player = _connectedPlayers.FirstOrDefault(player => player.Login == login);
@@ -79,13 +79,13 @@ public class PlayerService : IPlayerService
             _logger.LogWarning($"A disconnecting player was not found in the connected players list. Something went wrong. Player login: {login}");
             return;
         }
-        
+
         _connectedPlayers.Remove(player);
         player.LastVisit = DateTime.UtcNow;
-        
+
         _databaseContext.Players.Update(player);
         await _databaseContext.SaveChangesAsync();
-        
+
         _playerCallbacks.OnPlayerDisconnect(new PlayerDisconnectEventArgs(player, reason));
     }
 

@@ -12,7 +12,7 @@ public class PlayerEventHandler : IPlayerEventHandler
     {
         _playerCallbacks = playerCallbacks;
     }
-    
+
     public void HandleEvents()
     {
         _playerCallbacks.PlayerConnect += PlayerCallbacksOnPlayerConnect;

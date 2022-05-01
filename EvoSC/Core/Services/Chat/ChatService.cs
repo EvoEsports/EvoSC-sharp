@@ -18,9 +18,9 @@ public class ChatService : IChatService
         _databaseContext = databaseContext;
         _gbxRemoteClient = gbxRemoteClient;
     }
-    
+
     public Task ClientOnPlayerChat(int playeruid, string login, string text, bool isregisteredcmd)
     {
-        throw new System.NotImplementedException();
+        return Task.CompletedTask;
     }
 }

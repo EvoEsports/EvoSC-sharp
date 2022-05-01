@@ -25,7 +25,7 @@ namespace EvoSC.Domain.Players
         public IEnumerable<PersonalBest> PersonalBests { get; set; }
         public IEnumerable<MapRecord> MapRecords { get; set; }
         public IEnumerable<MapKarma> MapKarmas { get; set; }
-        
+
         [NotMapped]
         public bool IsSpectator { get; set; }
     }

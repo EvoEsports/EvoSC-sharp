@@ -12,7 +12,7 @@ public class PlayerGbxEventHandler : IGbxEventHandler
     {
         _playerService = playerService;
     }
-    
+
     public void HandleEvents(GbxRemoteClient client)
     {
         client.OnPlayerConnect += _playerService.ClientOnPlayerConnect;

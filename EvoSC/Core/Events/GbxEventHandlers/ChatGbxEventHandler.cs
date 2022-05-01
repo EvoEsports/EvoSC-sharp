@@ -17,5 +17,5 @@ public class ChatGbxEventHandler : IGbxEventHandler
         client.OnPlayerChat += _chatService.ClientOnPlayerChat;
     }
 
-    
+
 }

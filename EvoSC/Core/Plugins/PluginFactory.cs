@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using EvoSC.Core.Services;
+using EvoSC.Interfaces.Players;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;

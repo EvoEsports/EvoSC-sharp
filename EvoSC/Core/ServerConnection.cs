@@ -14,7 +14,7 @@ public class ServerConnection
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IEnumerable<IGbxEventHandler> _eventHandlers;
     private readonly IPlayerService _playerService;
-    
+
     public ServerConnection(GbxRemoteClient gbxRemoteClient, IEnumerable<IGbxEventHandler> eventHandlers, IPlayerService playerService)
     {
         _gbxRemoteClient = gbxRemoteClient;
@@ -31,17 +31,17 @@ public class ServerConnection
         }
 
         var authenticated = await _gbxRemoteClient.AuthenticateAsync(config.AdminLogin, config.AdminPassword);
-        
+
         if (!authenticated)
         {
             throw new AuthenticationException("Could not authenticate to server - login or password is incorrect!");
         }
-        
+
         await _gbxRemoteClient.EnableCallbackTypeAsync();
 
         await _playerService.AddConnectedPlayers();
     }
-    
+
     public void InitializeEventHandlers()
     {
         foreach (var eventHandler in _eventHandlers)
