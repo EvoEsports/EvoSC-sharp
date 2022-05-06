@@ -3,18 +3,18 @@ using EvoSC.Domain;
 using EvoSC.Interfaces.Chat;
 using GbxRemoteNet;
 using Microsoft.Extensions.Logging;
-using ILogger = NLog.ILogger;
+using NLog;
 
 namespace EvoSC.Core.Services.Chat;
 
 public class ChatService : IChatService
 {
-    private readonly ILogger<ChatService> _logger;
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly DatabaseContext _databaseContext;
     private readonly GbxRemoteClient _gbxRemoteClient;
-    public ChatService(ILogger<ChatService> logger, DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient)
+    public ChatService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient)
     {
-        _logger = logger;
+
         _databaseContext = databaseContext;
         _gbxRemoteClient = gbxRemoteClient;
     }

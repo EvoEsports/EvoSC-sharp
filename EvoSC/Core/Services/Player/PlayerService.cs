@@ -6,6 +6,8 @@ using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Domain;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
+using GbxRemoteNet.XmlRpc.Types;
+using GbxRemoteNet.XmlRpc;
 using GbxRemoteNet.Structs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,16 +17,15 @@ namespace EvoSC.Core.Services.Player;
 
 public class PlayerService : IPlayerService
 {
-    private readonly ILogger<PlayerService> _logger;
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly DatabaseContext _databaseContext;
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerCallbacks _playerCallbacks;
 
     private readonly List<Domain.Players.Player> _connectedPlayers = new();
 
-    public PlayerService(ILogger<PlayerService> logger, DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks)
+    public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks)
     {
-        _logger = logger;
         _databaseContext = databaseContext;
         _gbxRemoteClient = gbxRemoteClient;
         _playerCallbacks = playerCallbacks;
@@ -36,7 +37,7 @@ public class PlayerService : IPlayerService
 
         if (playersOnline == null || !playersOnline.Any())
         {
-            _logger.LogDebug("No players connected");
+            _logger.Debug("No players connected");
             return;
         }
 
@@ -56,10 +57,12 @@ public class PlayerService : IPlayerService
 
     public async Task ClientOnPlayerConnect(string login, bool isspectator)
     {
+        var firstConnect = false;
         var player = await _databaseContext.Players.FirstOrDefaultAsync(player => player.Login == login);
 
         if (player == null)
         {
+            firstConnect = true;
             var playerInfo = await _gbxRemoteClient.GetDetailedPlayerInfoAsync(login);
             player = await CreatePlayer(playerInfo);
         }
@@ -67,7 +70,16 @@ public class PlayerService : IPlayerService
         _connectedPlayers.Add(player);
         _playerCallbacks.OnPlayerConnect(new PlayerConnectEventArgs(player));
 
-        _logger.LogInformation($"Player {player.UbisoftName} ({login}) connected to the server.");
+        _logger.Info($"Player {player.UbisoftName} ({login}) connected to the server.");
+
+        if (firstConnect)
+        {
+            await _gbxRemoteClient.ChatSendServerMessageAsync($"$fff\uF05A $29bPlayer $fff{player.UbisoftName}$29b connected to the server for the first time.");
+        }
+        else
+        {
+            await _gbxRemoteClient.ChatSendServerMessageAsync($"$fff\uF05A $29bPlayer $fff{player.UbisoftName}$29b connected to the server.");
+        }
     }
 
     public async Task ClientOnPlayerDisconnect(string login, string reason)
@@ -76,7 +88,7 @@ public class PlayerService : IPlayerService
 
         if (player == null)
         {
-            _logger.LogWarning($"A disconnecting player was not found in the connected players list. Something went wrong. Player login: {login}");
+            _logger.Warn($"A disconnecting player was not found in the connected players list. Something went wrong. Player login: {login}");
             return;
         }
 

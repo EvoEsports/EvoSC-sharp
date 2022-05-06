@@ -1,15 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace EvoSC.Core.Events;
 
 public class EventManager : IDisposable
 {
-    private ILogger _logger;
-    public EventManager(ILogger<EventManager> logger)
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    public EventManager()
     {
-        _logger = logger;
     }
 
     private Dictionary<EventType, Dictionary<Guid, Action>> _eventCache = new Dictionary<EventType, Dictionary<Guid, Action>>();
@@ -23,7 +22,7 @@ public class EventManager : IDisposable
         if (!_eventCache[eventType].ContainsKey(pluginId))
             _eventCache[eventType].Add(pluginId, action);
 
-        _logger.LogTrace($"Added new event of type '{eventType} for plugin {pluginId}");
+        _logger.Trace($"Added new event of type '{eventType} for plugin {pluginId}");
     }
 
     public void UnregisterEvent(EventType eventType, Guid pluginId)
@@ -31,7 +30,7 @@ public class EventManager : IDisposable
         if (_eventCache.ContainsKey(eventType))
             _eventCache[eventType].Remove(pluginId);
 
-        _logger.LogTrace($"Removed event of type '{eventType} for plugin {pluginId}");
+        _logger.Trace($"Removed event of type '{eventType} for plugin {pluginId}");
     }
 
     protected virtual void Dispose(bool disposing)

@@ -79,11 +79,11 @@ await serverConnection.ConnectToServer(serverConnectionConfig);
 
 logger.Info("Completed initialization");
 
-var sample = app.Services.GetRequiredService<ISampleService>();
-logger.Info(sample.GetName());
+//var sample = app.Services.GetRequiredService<ISampleService>();
+//logger.Info(sample.GetName());
 var module = app.Services.GetService<IPlugin>();
 module.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
-//Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
+Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
 
 app.Run();
 
@@ -96,3 +96,4 @@ void PlayerCallbacks_PlayerConnect(object sender, EvoSC.Core.Events.Callbacks.Ar
 {
     logger.Info("A player has connected");
 }
+
