@@ -2,3 +2,11 @@
 port = 5000
 login = "SuperAdmin"
 password = "SuperAdmin"
+
+[theme]
+default = "$fff"
+info =  "$29b"
+highlight = "$eee"
+success = "$5b6"
+warning = "$e83"
+danger = "$c44"

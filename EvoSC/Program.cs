@@ -34,6 +34,8 @@ builder.ConfigureLogging((context, builder) =>
 });
 
 var serverConnectionConfig = ConfigurationLoader.LoadServerConnectionConfig();
+var Theme = ConfigurationLoader.LoadTheme();
+
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? "server=localhost;uid=evosc;password=evosc123!;database=evosc";
 
 builder.ConfigureServices(services =>
@@ -46,6 +48,8 @@ builder.ConfigureServices(services =>
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
+    services.AddSingleton<Theme>(Theme);
+
 
     // Callbacks
     services.AddSingleton<IPlayerCallbacks, PlayerCallbacks>();

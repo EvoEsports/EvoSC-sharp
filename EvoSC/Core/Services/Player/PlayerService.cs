@@ -11,6 +11,8 @@ using GbxRemoteNet.XmlRpc;
 using GbxRemoteNet.Structs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using EvoSC.Core.Configuration;
+using EvoSC.Core.Helpers;
 using NLog;
 
 namespace EvoSC.Core.Services.Player;
@@ -21,14 +23,16 @@ public class PlayerService : IPlayerService
     private readonly DatabaseContext _databaseContext;
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerCallbacks _playerCallbacks;
+    private readonly Theme _Theme;
 
     private readonly List<Domain.Players.Player> _connectedPlayers = new();
 
-    public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks)
+    public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks, Theme theme)
     {
         _databaseContext = databaseContext;
         _gbxRemoteClient = gbxRemoteClient;
         _playerCallbacks = playerCallbacks;
+        _Theme = theme;
     }
 
     public async Task AddConnectedPlayers()
@@ -74,12 +78,24 @@ public class PlayerService : IPlayerService
 
         if (firstConnect)
         {
-            await _gbxRemoteClient.ChatSendServerMessageAsync($"$fff\uF05A $29bPlayer $fff{player.UbisoftName}$29b connected to the server for the first time.");
+            var msg = new ChatMessage();
+            msg.SetMessage($"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} connected to the server for the first time.");
+            msg.SetInfo();
+            msg.SetIcon(Icon.Globe);
+
+            await _gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
         }
         else
         {
-            await _gbxRemoteClient.ChatSendServerMessageAsync($"$fff\uF05A $29bPlayer $fff{player.UbisoftName}$29b connected to the server.");
+            var msg = new ChatMessage();
+            msg.SetMessage($"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} connected to the server. Last Visit: {ChatMessage.GetHighlightedString(player.LastVisit.ToString())}");
+            msg.SetInfo();
+            msg.SetIcon(Icon.Globe);
+
+            await _gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
         }
+        player.LastVisit = DateTime.UtcNow;
+        await _databaseContext.SaveChangesAsync();
     }
 
     public async Task ClientOnPlayerDisconnect(string login, string reason)
