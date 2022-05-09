@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Domain;
@@ -13,9 +14,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Helpers;
+using EvoSC.Core.Services.UI;
+using EvoSC.Domain.Players;
 using NLog;
 
-namespace EvoSC.Core.Services.Player;
+namespace EvoSC.Core.Services.PlayerService;
 
 public class PlayerService : IPlayerService
 {
@@ -24,7 +27,8 @@ public class PlayerService : IPlayerService
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerCallbacks _playerCallbacks;
 
-    private readonly List<Domain.Players.Player> _connectedPlayers = new();
+    private readonly List<Player> _connectedPlayers = new();
+    private readonly UiService _uiService;
 
     public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks)
     {
@@ -94,6 +98,10 @@ public class PlayerService : IPlayerService
         }
         player.LastVisit = DateTime.UtcNow;
         await _databaseContext.SaveChangesAsync();
+        var manialink = new Helpers.Manialink(_gbxRemoteClient);
+        Thread.Sleep(3000);
+        await manialink.Send(player);
+        
     }
 
     public async Task ClientOnPlayerDisconnect(string login, string reason)
@@ -123,14 +131,14 @@ public class PlayerService : IPlayerService
         _playerCallbacks.OnPlayerDisconnect(new PlayerDisconnectEventArgs(player, reason));
     }
 
-    public List<Domain.Players.Player> GetConnectedPlayers()
+    public List<Player> GetConnectedPlayers()
     {
         return _connectedPlayers;
     }
 
-    private async Task<Domain.Players.Player> CreatePlayer(PlayerDetailedInfo playerInfo)
+    private async Task<Player> CreatePlayer(PlayerDetailedInfo playerInfo)
     {
-        var player = new Domain.Players.Player
+        var player = new Player
         {
             Login = playerInfo.Login,
             UbisoftName = playerInfo.NickName,

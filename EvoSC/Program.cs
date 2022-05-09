@@ -9,10 +9,12 @@ using EvoSC.Core.Configuration;
 using EvoSC.Core.Events.Callbacks;
 using EvoSC.Core.Events.GbxEventHandlers;
 using EvoSC.Core.Services.Chat;
-using EvoSC.Core.Services.Player;
+using EvoSC.Core.Services.PlayerService;
+using EvoSC.Core.Services.UI;
 using EvoSC.Interfaces;
 using EvoSC.Interfaces.Chat;
 using EvoSC.Interfaces.Players;
+using EvoSC.Interfaces.UI;
 using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,18 +46,20 @@ builder.ConfigureServices(services =>
 
     // GbxClient
     services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
-
+    services.AddSingleton<IUiService, UiService>();
+    
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
     services.AddSingleton<Theme>(theme);
-
+    
 
     // Callbacks
     services.AddSingleton<IPlayerCallbacks, PlayerCallbacks>();
 
     // Services
     services.AddSingleton<IPlayerService, PlayerService>();
+    
     services.AddSingleton<IChatService, ChatService>();
 
     // Load plugins

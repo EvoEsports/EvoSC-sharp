@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?component tag="Button" src="components/button.xml"?>
+
+<manialink version="3">
+	<frame id="{{ id }}" pos="{{ pos }}">
+		{{ _super_ }}
+		{{ for i in (1..5) }}
+			<Button id="btn_{{ i }}" text="Apply" pos="0 {{i * 6}}" width="40" />
+		{{ end }}
+	</frame>
+	<script><!--
+
+	***OnInit***
+	***
+		declare donothing;
+	***
+	--></script>
+</manialink>

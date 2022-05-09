@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manialink version="3">
+	{{ arr = pos|string.split " " }}
+	{{ div = arr|array.last|string.to_double }}
+    {{ wnum = width|string.to_float }}
+    {{ height = 6 }}
+    
+    <frame pos="{{arr|array.first|string.to_float + (wnum / 2)}} {{arr|array.last|string.to_float - (height/2)}}" class="uiContainer uiButton" data-action="{{action}}">
+        <quad size="{{wnum*2}} {{height*2}}" style="Bgs1InRace" substyle="BgColorContour" halign="center"  valign="center2" scale="0.5"/>
+        <label size="{{wnum-0.5}} {{height-0.5}}" text="{{text}}" focusareacolor1="0000" class="{{class}} uiButtonElement" halign="center" valign="center2" textfont="GameFontSemiBold" scriptevents="1" translate="0" />
+    </frame>
+
+	<script><!--
+		Void TriggerButtonClick(CMlControl Control) {
+			declare Parent = Control.Parent;
+			if (Parent.HasClass("uiButton")) {
+				Parent.RelativeScale = 0.75;
+				AnimMgr.Flush(Parent);
+				AnimMgr.Add(Parent, "<elem scale=\"1.\" />", 200, CAnimManager::EAnimManagerEasing::QuadIn);
+				TriggerPageAction(Parent.DataAttributeGet("action"));
+			}
+		}
+
+		Void TriggerButtonClick(Text ControlId) {
+			declare Control <=> Page.GetFirstChild(ControlId);
+			TriggerButtonClick(Control);
+		}
+
+		***OnMouseClick***
+		***
+		if (Event.Control.HasClass("uiButtonElement") ) {
+			TriggerButtonClick(Event.Control);
+		}
+		***
+
+		***OnMouseOver***
+		***
+		if (Event.Control.Parent.HasClass("uiButton")) {
+			(Event.Control.Parent as CMlFrame).RelativeScale=1.;
+		}
+		***
+
+		***OnMouseOut***
+		***
+		if (Event.Control.Parent.HasClass("uiButton")) {
+			(Event.Control.Parent as CMlFrame).RelativeScale=1.;
+		}
+		***
+	--></script>
+
+</manialink>
