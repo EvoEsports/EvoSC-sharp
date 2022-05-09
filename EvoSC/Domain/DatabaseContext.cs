@@ -29,7 +29,7 @@ namespace EvoSC.Domain
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = Environment.GetEnvironmentVariable("DOTNET_CONNECTION_STRING") ?? "server=localhost;uid=evosc;pwd=evosc123!;database=evosc;SslMode=none";
+            var connectionString = Environment.GetEnvironmentVariable("DOTNET_CONNECTION_STRING") ?? "server=localhost;uid=evosc;password=evosc123!;database=evosc";
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
 

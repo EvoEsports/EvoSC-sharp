@@ -14,6 +14,7 @@ namespace EvoSC.Domain.Players
         public string Login { get; set; }
         public string Nickname { get; set; }
         public string UbisoftName { get; set; }
+        // TODO: Needs to be changed to correct group
         public int Group { get; set; }
         public string Path { get; set; }
         public bool Banned { get; set; }
@@ -24,5 +25,8 @@ namespace EvoSC.Domain.Players
         public IEnumerable<PersonalBest> PersonalBests { get; set; }
         public IEnumerable<MapRecord> MapRecords { get; set; }
         public IEnumerable<MapKarma> MapKarmas { get; set; }
+
+        [NotMapped]
+        public bool IsSpectator { get; set; }
     }
 }

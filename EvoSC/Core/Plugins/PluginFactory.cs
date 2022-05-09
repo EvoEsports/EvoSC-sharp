@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using EvoSC.Core.Services;
+using EvoSC.Interfaces.Players;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
@@ -42,7 +43,7 @@ internal class PluginFactory
 
         foreach (var dir in Directory.GetDirectories(pluginsDir))
         {
-            string dirName = Path.GetFileName(dir);
+            string dirName = Path.GetRelativePath(pluginsDir, dir);
             string pluginFileName = Path.Combine(dir, dirName + ".dll");
 
             if (File.Exists(pluginFileName))
@@ -62,11 +63,11 @@ internal class PluginFactory
                         PluginWrapper wrapper = new(loadedPlugin, loader);
                         _cache.Add(wrapper.Id, wrapper);
 
-                        _logger.Debug($"Instantiated new plugin. ('{pluginFileName}')");
+                        _logger.Debug($"Instantiated new plugin ('{pluginFileName}') with ID {wrapper.Id}");
                     }
                     else
                     {
-                        _logger.Warn($"Couldn't instantiate plugin! ('{pluginFileName}')");
+                        _logger.Warn($"Could not instantiate plugin! ('{pluginFileName}')");
                     }
                 }
                 catch (Exception ex)
