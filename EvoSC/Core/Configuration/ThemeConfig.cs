@@ -25,13 +25,13 @@ namespace EvoSC.Core.Configuration
         [TomlProperty("theme.danger")]
         public string Danger { get; set; }
 
-        public bool IsAnyNullOrEmpty(Theme config)
+        public bool IsAnyNullOrEmpty()
         {
-            foreach (PropertyInfo pi in config.GetType().GetProperties())
+            foreach (PropertyInfo pi in this.GetType().GetProperties())
             {
                 if (pi.PropertyType == typeof(string))
                 {
-                    var value = (string)pi.GetValue(config);
+                    var value = (string)pi.GetValue(this);
                     if (string.IsNullOrEmpty(value))
                     {
                         return true;

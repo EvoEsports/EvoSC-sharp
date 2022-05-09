@@ -27,7 +27,7 @@ public class ServerConnection
         _playerService = playerService;
     }
 
-    public async Task ConnectToServer(ServerConnectionConfig config)
+    public async Task ConnectToServer(Dedicated config)
     {
         var connected = await _gbxRemoteClient.ConnectAsync();
         if (!connected)

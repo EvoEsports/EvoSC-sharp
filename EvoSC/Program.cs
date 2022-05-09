@@ -33,11 +33,10 @@ builder.ConfigureLogging((context, builder) =>
         .SetMinimumLevel(LogLevel.Trace);
 });
 
-var serverConnectionConfig = ConfigurationLoader.LoadServerConnectionConfig();
-var Theme = ConfigurationLoader.LoadTheme();
-var databaseConfig = ConfigurationLoader.LoadDatabaseConfig();
-
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? databaseConfig.GetConnectionString();
+var serverConnectionConfig = Config.GetDedicatedConfig();
+var theme = Config.GetTheme();
+var dbConfig = Config.GetDatabaseConfig();
+var connectionString = dbConfig.GetConnectionString();
 
 builder.ConfigureServices(services =>
 {
@@ -49,7 +48,7 @@ builder.ConfigureServices(services =>
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
-    services.AddSingleton<Theme>(Theme);
+    services.AddSingleton<Theme>(theme);
 
 
     // Callbacks
@@ -87,7 +86,7 @@ logger.Info("Completed initialization");
 //var sample = app.Services.GetRequiredService<ISampleService>();
 //logger.Info(sample.GetName());
 var module = app.Services.GetService<IPlugin>();
-module.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
+module?.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
 Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
 
 app.Run();

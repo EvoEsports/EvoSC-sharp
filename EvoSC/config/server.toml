@@ -1,19 +1,21 @@
-﻿host = "127.0.0.1"
-port = 5010
-login = "SuperAdmin"
-password = "SuperAdmin"
+﻿[dedicated]
+    host = "127.0.0.1"
+    port = 5001
+    login = "SuperAdmin"
+    password = "SuperAdmin"
 
 [database]
-host = "127.0.0.1"
-port = 3306
-username = "evosc"
-password = "evosc123!"
-dbname = "evosc"
-
+    type = "mysql"
+    host = "localhost"
+    port = 3306
+    dbname = "evosc"
+    user = "evosc"
+    password = "evosc123!"
+    
 [theme]
-default = "$fff"
-info =  "$29b"
-highlight = "$eee"
-success = "$5b6"
-warning = "$e83"
-danger = "$c44"
+    default = "$fff"
+    info =  "$29b"
+    highlight = "$eee"
+    success = "$5b6"
+    warning = "$e83"
+    danger = "$c44"
