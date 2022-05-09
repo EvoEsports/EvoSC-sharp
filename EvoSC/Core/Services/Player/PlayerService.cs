@@ -23,16 +23,14 @@ public class PlayerService : IPlayerService
     private readonly DatabaseContext _databaseContext;
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerCallbacks _playerCallbacks;
-    private readonly Theme _Theme;
 
     private readonly List<Domain.Players.Player> _connectedPlayers = new();
 
-    public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks, Theme theme)
+    public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks)
     {
         _databaseContext = databaseContext;
         _gbxRemoteClient = gbxRemoteClient;
         _playerCallbacks = playerCallbacks;
-        _Theme = theme;
     }
 
     public async Task AddConnectedPlayers()
@@ -79,7 +77,7 @@ public class PlayerService : IPlayerService
         if (firstConnect)
         {
             var msg = new ChatMessage();
-            msg.SetMessage($"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} connected to the server for the first time.");
+            msg.SetMessage($"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} joined the server for the first time.");
             msg.SetInfo();
             msg.SetIcon(Icon.Globe);
 
@@ -88,7 +86,7 @@ public class PlayerService : IPlayerService
         else
         {
             var msg = new ChatMessage();
-            msg.SetMessage($"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} connected to the server. Last Visit: {ChatMessage.GetHighlightedString(player.LastVisit.ToString())}");
+            msg.SetMessage($"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} joined the server. Last Visit: {ChatMessage.GetHighlightedString(Snippets.GetRelativeTimeToNow(player.LastVisit))}");
             msg.SetInfo();
             msg.SetIcon(Icon.Globe);
 
@@ -100,6 +98,7 @@ public class PlayerService : IPlayerService
 
     public async Task ClientOnPlayerDisconnect(string login, string reason)
     {
+        _logger.Info("PLAYERDISCONNECT FIRED");
         var player = _connectedPlayers.FirstOrDefault(player => player.Login == login);
 
         if (player == null)
@@ -107,6 +106,13 @@ public class PlayerService : IPlayerService
             _logger.Warn($"A disconnecting player was not found in the connected players list. Something went wrong. Player login: {login}");
             return;
         }
+
+        var msg = new ChatMessage();
+        msg.SetMessage($"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} left the server. Time played: {ChatMessage.GetHighlightedString(Snippets.GetTimeSpentUntilNow(player.LastVisit))}");
+        msg.SetInfo();
+        msg.SetIcon(Icon.UserRemove);
+
+        await _gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
 
         _connectedPlayers.Remove(player);
         player.LastVisit = DateTime.UtcNow;

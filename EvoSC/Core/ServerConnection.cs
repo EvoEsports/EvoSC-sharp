@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Authentication;
+using System.Text;
 using System.Threading.Tasks;
 using EvoSC.Core.Configuration;
 using EvoSC.Interfaces;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
+using Newtonsoft.Json.Linq;
+using NLog;
 
 namespace EvoSC.Core;
 
@@ -14,6 +18,7 @@ public class ServerConnection
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IEnumerable<IGbxEventHandler> _eventHandlers;
     private readonly IPlayerService _playerService;
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public ServerConnection(GbxRemoteClient gbxRemoteClient, IEnumerable<IGbxEventHandler> eventHandlers, IPlayerService playerService)
     {

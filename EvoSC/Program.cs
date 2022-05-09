@@ -35,8 +35,9 @@ builder.ConfigureLogging((context, builder) =>
 
 var serverConnectionConfig = ConfigurationLoader.LoadServerConnectionConfig();
 var Theme = ConfigurationLoader.LoadTheme();
+var databaseConfig = ConfigurationLoader.LoadDatabaseConfig();
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? "server=localhost;uid=evosc;password=evosc123!;database=evosc";
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? databaseConfig.GetConnectionString();
 
 builder.ConfigureServices(services =>
 {
@@ -94,6 +95,7 @@ app.Run();
 void Subscribe(IPlayerCallbacks playerCallbacks)
 {
     playerCallbacks.PlayerConnect += PlayerCallbacks_PlayerConnect;
+    playerCallbacks.PlayerDisconnect += PlayerCallbacks_PlayerDisconnect;
 }
 
 void PlayerCallbacks_PlayerConnect(object sender, EvoSC.Core.Events.Callbacks.Args.PlayerConnectEventArgs e)
@@ -101,3 +103,7 @@ void PlayerCallbacks_PlayerConnect(object sender, EvoSC.Core.Events.Callbacks.Ar
     logger.Info("A player has connected");
 }
 
+void PlayerCallbacks_PlayerDisconnect(object sender, EvoSC.Core.Events.Callbacks.Args.PlayerDisconnectEventArgs e)
+{
+    logger.Info("A player has disconnected");
+}

@@ -1,7 +1,14 @@
 ﻿host = "127.0.0.1"
-port = 5000
+port = 5010
 login = "SuperAdmin"
 password = "SuperAdmin"
+
+[database]
+host = "127.0.0.1"
+port = 3306
+username = "evosc"
+password = "evosc123!"
+dbname = "evosc"
 
 [theme]
 default = "$fff"

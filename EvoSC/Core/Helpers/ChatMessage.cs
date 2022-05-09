@@ -66,7 +66,7 @@ namespace EvoSC.Core.Helpers
 
         public string Render()
         {
-            var message = (_icon != "" ? $"$fff{_icon}" : "") + $"{_color}{_message}";
+            var message = (_icon != "" ? $"$fff{_icon} " : "") + $"{_color}{_message}";
             return message;
         }
 
