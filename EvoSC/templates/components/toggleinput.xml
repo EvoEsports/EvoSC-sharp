@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manialink version="3">
+    {{ arr = pos|string.split " " }}
+    {{ pos_x = arr|array.first|string.to_float }}
+    {{ pos_y = arr|array.last|string.to_float }}
+    {{ width = width|string.to_float }}
+
+    <frame pos="{{ pos_x }} {{ pos_y }}" class="uiContainer uiInputMasked" data-type="Password" id="{{id}}">
+        <entry pos="0 0" size="{{ (width - 5) }} 5" valign="center" class="{{class}} uiEntry"
+               selecttext="1" default="{{ text }}" textformat="Password" name="{{ name }}" textfont="GameFontSemiBold"/>
+        <frame pos="{{ (width - 2.5) }} 0">
+            <quad size="10 10" scale="0.5" style="Bgs1InRace" colorize="ddd" substyle="BgColorContour" halign="center" valign="center2"/>
+            <label size="4 4" text="" class="{{class}} uiMaskedToggle" halign="center" valign="center2" scriptevents="1" translate="0" />
+        </frame>
+    </frame>
+	<script><!--
+		***OnMouseClick***
+        ***
+            if (Event.Control.HasClass("uiMaskedToggle") ) {
+                 declare CMlFrame frame <=> Event.Control.Parent.Parent;
+                 declare CMlEntry input <=> (frame.Controls[0] as CMlEntry);
+                 if (input.DataAttributeGet("type") == "Basic") {
+                   input.DataAttributeSet("type", "Password");
+                   input.TextFormat = CMlEntry::ETextFormat::Password;
+                   (Event.Control as CMlLabel).Value = "";
+                 } else {
+                   input.DataAttributeSet("type", "Basic");
+                   input.TextFormat = CMlEntry::ETextFormat::Basic;
+                   (Event.Control as CMlLabel).Value = "";
+                 }
+            }
+        ***
+	--></script>
+
+</manialink>

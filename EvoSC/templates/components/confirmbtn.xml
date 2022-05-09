@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manialink version="3">
+    {{ arr = pos|string.split " " }}
+    {{ div = arr|array.last|string.to_double }}
+    {{ wnum = width|string.to_float }}
+    {{ height = 6 }}
+
+    <frame id="{{id}}" pos="{{arr|array.first|string.to_float + (wnum / 2)}} {{arr|array.last|string.to_float - (height/2)}}" class="uiContainer uiButton" data-action="{{action}}">
+        <quad size="{{wnum*2}} {{height*2}}" style="Bgs1InRace" substyle="BgColorContour" halign="center"  valign="center2" scale="0.5"/>
+        <label size="{{width|string.to_float - 0.5}} 5.5" text="{{text}}" focusareacolor1="0000" class="{{class}} uiConfirmButtonElement" halign="center" valign="center2" scriptevents="1" translate="0"  textfont="GameFontSemiBold"/>
+    </frame>
+    
+	<script><!-- 
+	***OnInit***
+    ***
+    declare Integer[Ident] pendingConfirms for Page = Integer[Ident];
+    declare Text[Ident] pendingConfirmIds for Page = Text[Ident];
+    declare CMlLabel[Ident] pendingConfirmControls for Page = CMlLabel[Ident];
+
+    pendingConfirms.clear();
+    pendingConfirmIds.clear();
+    pendingConfirmControls.clear();
+    ***
+
+    ***Loop***
+    ***
+foreach (Id => Time in pendingConfirms) {
+    if (Now > Time + (3 * 1000) ) {
+       if (pendingConfirmIds.existskey(Id))  {
+            pendingConfirmControls[Id].Value = pendingConfirmIds[Id];
+            pendingConfirmIds.removekey(Id);
+            pendingConfirms.removekey(Id);
+            pendingConfirmControls.removekey(Id);
+        }
+    }
+}
+    ***
+
+***OnMouseClick***
+***
+if (Event.Control.HasClass("uiConfirmButtonElement") ) {
+    TriggerConfirmButtonClick((Event.Control as CMlLabel));
+}
+***
+
+
+Void TriggerConfirmButtonClick(CMlLabel Control) {
+       declare Integer[Ident] pendingConfirms for Page = Integer[Ident];
+       declare Text[Ident] pendingConfirmIds for Page = Text[Ident];
+       declare CMlLabel[Ident] pendingConfirmControls for Page = CMlLabel[Ident];
+
+       if (Control.Parent.HasClass("uiButton")) {
+              if (pendingConfirmIds.existskey(Control.Id) == False) {
+                    pendingConfirmIds[Control.Id] = Control.Value;
+                    pendingConfirmControls[Control.Id] = Control;
+                    pendingConfirms[Control.Id] = Now;
+                    Control.Value = "Confirm ?";
+                    Control.Parent.RelativeScale = 0.75;
+                    AnimMgr.Flush(Control.Parent);
+                    AnimMgr.Add(Control.Parent, "<elem scale=\"1.\" />", 200, CAnimManager::EAnimManagerEasing::QuadIn);
+              } else {
+                 Control.Value = pendingConfirmIds[Control.Id];
+                 pendingConfirmIds.removekey(Control.Id);
+                 pendingConfirms.removekey(Control.Id);
+                 pendingConfirmControls.removekey(Control.Id);
+                 Control.Parent.RelativeScale = 0.75;
+                 AnimMgr.Flush(Control.Parent);
+                 AnimMgr.Add(Control.Parent, "<elem scale=\"1.\" />", 200, CAnimManager::EAnimManagerEasing::QuadIn);
+                 TriggerPageAction(Control.Parent.DataAttributeGet("action"));
+             }
+       }
+}
+
+
+Void TriggerConfirmButtonClick(Text ControlId) {
+    declare CMlLabel Control = (Page.GetFirstChild(ControlId) as CMlLabel);
+    TriggerConfirmButtonClick(Control);
+}
+
+--></script>
+
+</manialink>

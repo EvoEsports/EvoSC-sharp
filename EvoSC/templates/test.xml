@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?component tag="Widget" src="components/widget.xml" ?>
+<?component tag="Button" src="components/button.xml" ?>
+<?component tag="BasicButton" src="components/basicbutton.xml" ?>
+<?component tag="ConfirmButton" src="components/confirmbtn.xml" ?>
+<?component tag="Checkbox" src="components/checkbox.xml" ?>
+<?component tag="Input" src="components/input.xml" ?>
+<?component tag="ToggleInput" src="components/toggleinput.xml" ?>
+<?component tag="MaskedInput" src="components/maskedinput.xml" ?>
+
+
+
+<manialink id="manialink_test" name="EvoSC:{{name}}" version="3">
+    <stylesheet>
+        <style class="success" focusareacolor1="050" focusareacolor2="070" colorize="0d0" />
+        <style class="danger" focusareacolor1="500" focusareacolor2="700" colorize="d00" />
+        <style class="info" focusareacolor1="055" focusareacolor2="077" colorize="0dd" />
+        <style class="warning" focusareacolor1="550" focusareacolor2="770" colorize="dd0" />
+        <style class="transparent" focusareacolor1="0000" focusareacolor2="555a" colorize="fff0" />
+        <style class="closeButton" focusareacolor1="0000" focusareacolor2="d00" />
+        <style class="textButton" textsize="1" focusareacolor1="0000" focusareacolor2="777a" />
+        <!-- element styles -->
+
+        <style class="uiButtonElement" focusareacolor1="555" focusareacolor2="777" textcolor="fff" textsize="1.2"/>
+        <style class="uiButtonOutline" focusareacolor1="0000" focusareacolor2="777" textcolor="fff" textsize="1.2"/>
+        <style class="uiConfirmButtonElement" focusareacolor2="777a" textcolor="fff" textsize="1.2"/>
+        <style class="uiSelectElement" focusareacolor1="000" focusareacolor2="222" textsize="1"/>
+        <style class="uiCheckboxElement" focusareacolor1="0000" focusareacolor2="0000" textsize="1.2"/>
+        <style class="uiCheck" focusareacolor1="0000" focusareacolor2="0000" textcolor="fff" textsize="3" />
+        <style class="uiMaskedToggle" focusareacolor1="0000" focusareacolor2="0000" textsize="1.2" />
+        <style class="uiEntry" focusareacolor1="0003" focusareacolor2="fff2" textcolor="fff" textsize="1.2"/>
+        <style class="uiScrollbar" bgcolor="fffa" bgcolorfocus="ffff" />
+
+        <!-- ui styles-->
+        <style class="widgetTitle" bgcolor="0009"/>
+        <style class="widgetBg" bgcolor="0006" />
+    </stylesheet>
+        <Widget id="widget" size="{{size}}">
+            <frame scale="0.7" pos="-50 0">
+            <label text="The quick brown fox jumps over the lazy dog." textfont="Arial" pos="-100 36"/>
+            <label text="The quick brown fox jumps over the lazy dog." textfont="RajdhaniMono" pos="-100 30"/>
+            <label text="The quick brown fox jumps over the lazy dog." textfont="GameFontRegular" pos="-100 24"/>
+            <label text="The quick brown fox jumps over the lazy dog." textfont="GameFontSemiBold" pos="-100 18"/>
+            <label text="The quick brown fox jumps over the lazy dog." textfont="GameFontExtraBold" pos="-100 12"/>
+            <label text="The quick brown fox jumps over the lazy dog." textfont="GameFontBlack" pos="-100 6"/>
+            <label text="The quick brown fox jumps over the lazy dog." textfont="Oswald" pos="-100 0"/>
+            <label text="The quick brown fox jumps over the lazy dog." textfont="RobotoCondensed" pos="-100 -6"/>
+            </frame>
+            
+            <Input text="input field" pos="-50 36" width="40" />
+            <MaskedInput text="masked input" pos="-50 30" width="40" />
+            <ToggleInput text="toggle input" pos="-50 24" width="40" />
+            
+            
+            <Checkbox text="Group 1" pos="30 30" test="check" name="name" checked="1" disabled="0" group="grp1" />
+            <Checkbox text="Group 2 " pos="30 24" test="check" name="name" checked="0" disabled="0" group="grp1" />
+            <Checkbox text="Group 3" pos="30 18" test="check" name="name" checked="0" disabled="0" group="grp1" />
+            <!-- -->
+            <Checkbox text="Checkbox element" pos="-30 6" test="check" name="name" checked="1" disabled="0" />
+            <!--buttons-->
+            <ConfirmButton text="Ok" pos="-20 0" width="24" />
+            <Button text="Cancel" pos="20 0" width="24" />
+            <BasicButton text="Close" pos="60 0" width="24" />
+            
+            
+            <quad id="bg" bgcolor="000" size="240 120" opacity="0.8" valign="center" halign="center"/>
+        </Widget>
+</manialink>

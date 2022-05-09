@@ -2,7 +2,6 @@
 using EvoSC.Domain;
 using EvoSC.Interfaces.Chat;
 using GbxRemoteNet;
-using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace EvoSC.Core.Services.Chat;
