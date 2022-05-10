@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Domain;
+using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 using GbxRemoteNet.XmlRpc.Types;
@@ -15,7 +16,7 @@ using EvoSC.Core.Configuration;
 using EvoSC.Core.Helpers;
 using NLog;
 
-namespace EvoSC.Core.Services.Player;
+namespace EvoSC.Core.Services.Players;
 
 public class PlayerService : IPlayerService
 {
@@ -24,7 +25,7 @@ public class PlayerService : IPlayerService
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerCallbacks _playerCallbacks;
 
-    private readonly List<Domain.Players.Player> _connectedPlayers = new();
+    private readonly List<Player> _connectedPlayers = new();
 
     public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IPlayerCallbacks playerCallbacks)
     {

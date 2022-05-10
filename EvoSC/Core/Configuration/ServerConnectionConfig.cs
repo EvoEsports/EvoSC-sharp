@@ -14,20 +14,5 @@ public class Dedicated
     public string AdminLogin { get; set; }
     [TomlProperty("dedicated.password")]
     public string AdminPassword { get; set; }
-
-    public bool IsAnyNullOrEmpty()
-    {
-        foreach (PropertyInfo pi in this.GetType().GetProperties())
-        {
-            if (pi.PropertyType == typeof(string))
-            {
-                var value = (string)pi.GetValue(this);
-                if (string.IsNullOrEmpty(value))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    
 }

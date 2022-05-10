@@ -27,7 +27,7 @@ public static class Config
         s_dedicated = TomletMain.To<Dedicated>(document);
         if (Environment.GetEnvironmentVariable("RPC_HOST") == null)
         {
-            if (s_dedicated == null || s_dedicated.IsAnyNullOrEmpty())
+            if (s_dedicated == null || ConfigHelper.IsAnyNullOrEmpty(s_dedicated))
             {
                 throw new ApplicationException("The server configuration is empty or missing values");
             }
@@ -41,7 +41,7 @@ public static class Config
         }
 
         s_theme = TomletMain.To<Theme>(document);
-        if (s_theme == null || s_theme.IsAnyNullOrEmpty())
+        if (s_theme == null || ConfigHelper.IsAnyNullOrEmpty(s_theme))
         {
             throw new ApplicationException("The Theme configuration is empty or missing values");
         }
@@ -49,7 +49,7 @@ public static class Config
         s_database = TomletMain.To<Database>(document);
         if (Environment.GetEnvironmentVariable("DB_HOST") == null)
         {
-            if (s_database == null || s_database.IsAnyNullOrEmpty())
+            if (s_database == null || ConfigHelper.IsAnyNullOrEmpty(s_database))
             {
                 throw new ApplicationException("The database configuration is empty or missing values");
             }
