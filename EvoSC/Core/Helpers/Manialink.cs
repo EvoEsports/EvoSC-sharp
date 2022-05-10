@@ -21,7 +21,9 @@ public class Manialink
     {
         try
         {
-            var xml = new TemplateEngine(@"templates", "test.xml").Render(new {title = "test", name = "test", size="200 200"});
+            var template = new TemplateEngine(@"templates", "test.xml");
+            var xml = template.Render(new {title = "test", name = "test", size="200 200"});
+            xml = template.Render(new {title = "asd", name = "asd", size="100 100"});
             await _gbxRemoteClient.SendDisplayManialinkPageToLoginAsync(player.Login, xml, 0, false);
             xml = null;
         }
@@ -29,7 +31,6 @@ public class Manialink
         {
             _logger.Error(e);
         }
-
-      
+        
     }
 }
