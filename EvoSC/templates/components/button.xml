@@ -10,7 +10,7 @@
         <label size="{{wnum-0.5}} {{height-0.5}}" text="{{text}}" focusareacolor1="0000" class="{{class}} uiButtonElement" halign="center" valign="center2" textfont="GameFontSemiBold" scriptevents="1" translate="0" />
     </frame>
 
-	<script><!--
+	<script><![CDATA[
 		Void TriggerButtonClick(CMlControl Control) {
 			declare Parent = Control.Parent;
 			if (Parent.HasClass("uiButton")) {
@@ -46,6 +46,6 @@
 			(Event.Control.Parent as CMlFrame).RelativeScale=1.;
 		}
 		***
-	--></script>
+        ]]></script>
 
 </manialink>

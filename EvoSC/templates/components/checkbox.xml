@@ -27,9 +27,9 @@ Void uiRenderCheckbox(CMlFrame frame) {
     }
 
     if (frame.DataAttributeGet("checked") == "1") {         
-       AnimMgr.Add(uiControl, "<frame scale=\"1.\" />", 250, CAnimManager::EAnimManagerEasing::BackOut);
+       AnimMgr.Add(uiControl, "<frame scale=\"1.\" />", 150, CAnimManager::EAnimManagerEasing::CircOut);
     } else {        
-       AnimMgr.Add(uiControl, "<frame scale=\"0.\" />", 250, CAnimManager::EAnimManagerEasing::BackOut);
+       AnimMgr.Add(uiControl, "<frame scale=\"0.\" />", 150, CAnimManager::EAnimManagerEasing::CircOut);
 	}
     declare CMlEntry entry = (frame.Controls[0] as CMlEntry);
 	entry.Value = frame.DataAttributeGet("checked") ;
