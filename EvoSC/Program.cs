@@ -1,21 +1,19 @@
-﻿using System;
-using EvoSC.Core.Plugins;
-using EvoSC.Core.Services;
-using EvoSC.Domain;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Authentication;
-using EvoSC.Core;
+﻿using EvoSC.Core;
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Events.Callbacks;
+using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Events.GbxEventHandlers;
+using EvoSC.Core.Plugins;
 using EvoSC.Core.Services.Chat;
-using EvoSC.Core.Services.PlayerService;
+using EvoSC.Core.Services.Players;
 using EvoSC.Core.Services.UI;
+using EvoSC.Domain;
 using EvoSC.Interfaces;
 using EvoSC.Interfaces.Chat;
 using EvoSC.Interfaces.Players;
 using EvoSC.Interfaces.UI;
 using GbxRemoteNet;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -42,7 +40,8 @@ var connectionString = dbConfig.GetConnectionString();
 
 builder.ConfigureServices(services =>
 {
-    services.AddDbContext<DatabaseContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    services.AddDbContext<DatabaseContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
     // GbxClient
     services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
@@ -51,15 +50,13 @@ builder.ConfigureServices(services =>
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
-    services.AddSingleton<Theme>(theme);
-    
+    services.AddSingleton(theme);
 
     // Callbacks
     services.AddSingleton<IPlayerCallbacks, PlayerCallbacks>();
-
+    services.AddSingleton<IChatCallbacks, ChatCallbacks>();
     // Services
     services.AddSingleton<IPlayerService, PlayerService>();
-    
     services.AddSingleton<IChatService, ChatService>();
 
     // Load plugins
@@ -101,12 +98,12 @@ void Subscribe(IPlayerCallbacks playerCallbacks)
     playerCallbacks.PlayerDisconnect += PlayerCallbacks_PlayerDisconnect;
 }
 
-void PlayerCallbacks_PlayerConnect(object sender, EvoSC.Core.Events.Callbacks.Args.PlayerConnectEventArgs e)
+void PlayerCallbacks_PlayerConnect(object sender, PlayerConnectEventArgs e)
 {
     logger.Info("A player has connected");
 }
 
-void PlayerCallbacks_PlayerDisconnect(object sender, EvoSC.Core.Events.Callbacks.Args.PlayerDisconnectEventArgs e)
+void PlayerCallbacks_PlayerDisconnect(object sender, PlayerDisconnectEventArgs e)
 {
     logger.Info("A player has disconnected");
 }

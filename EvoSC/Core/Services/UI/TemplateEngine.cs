@@ -145,7 +145,7 @@ public class TemplateEngine
                     PreProcess(_basePath + "/" + srcMatch.Groups[1].Value);
                 }
             }
-
+            
             doc.RemoveChild(instruction);
         }
 

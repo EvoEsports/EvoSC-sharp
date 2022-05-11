@@ -33,4 +33,9 @@ public class Manialink
         }
         
     }
+
+    public async Task Hide(Player player)
+    {
+        await _gbxRemoteClient.SendHideManialinkPageToLoginAsync(player.Login);
+    }
 }
