@@ -1,19 +1,17 @@
-﻿using System;
-using EvoSC.Core.Plugins;
-using EvoSC.Core.Services;
-using EvoSC.Domain;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Authentication;
-using EvoSC.Core;
+﻿using EvoSC.Core;
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Events.Callbacks;
+using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Events.GbxEventHandlers;
+using EvoSC.Core.Plugins;
 using EvoSC.Core.Services.Chat;
-using EvoSC.Core.Services.Player;
+using EvoSC.Core.Services.Players;
+using EvoSC.Domain;
 using EvoSC.Interfaces;
 using EvoSC.Interfaces.Chat;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -33,14 +31,15 @@ builder.ConfigureLogging((context, builder) =>
         .SetMinimumLevel(LogLevel.Trace);
 });
 
-var serverConnectionConfig = ConfigurationLoader.LoadServerConnectionConfig();
-var Theme = ConfigurationLoader.LoadTheme();
-
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? "server=localhost;uid=evosc;password=evosc123!;database=evosc";
+var serverConnectionConfig = Config.GetDedicatedConfig();
+var theme = Config.GetTheme();
+var dbConfig = Config.GetDatabaseConfig();
+var connectionString = dbConfig.GetConnectionString();
 
 builder.ConfigureServices(services =>
 {
-    services.AddDbContext<DatabaseContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    services.AddDbContext<DatabaseContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
     // GbxClient
     services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
@@ -48,7 +47,7 @@ builder.ConfigureServices(services =>
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
-    services.AddSingleton<Theme>(Theme);
+    services.AddSingleton(theme);
 
 
     // Callbacks
@@ -86,7 +85,7 @@ logger.Info("Completed initialization");
 //var sample = app.Services.GetRequiredService<ISampleService>();
 //logger.Info(sample.GetName());
 var module = app.Services.GetService<IPlugin>();
-module.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
+module?.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
 Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
 
 app.Run();
@@ -94,10 +93,15 @@ app.Run();
 void Subscribe(IPlayerCallbacks playerCallbacks)
 {
     playerCallbacks.PlayerConnect += PlayerCallbacks_PlayerConnect;
+    playerCallbacks.PlayerDisconnect += PlayerCallbacks_PlayerDisconnect;
 }
 
-void PlayerCallbacks_PlayerConnect(object sender, EvoSC.Core.Events.Callbacks.Args.PlayerConnectEventArgs e)
+void PlayerCallbacks_PlayerConnect(object sender, PlayerConnectEventArgs e)
 {
     logger.Info("A player has connected");
 }
 
+void PlayerCallbacks_PlayerDisconnect(object sender, PlayerDisconnectEventArgs e)
+{
+    logger.Info("A player has disconnected");
+}

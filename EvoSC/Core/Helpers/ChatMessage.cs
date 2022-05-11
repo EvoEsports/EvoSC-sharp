@@ -2,6 +2,7 @@
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Helpers;
 
+
 namespace EvoSC.Core.Helpers
 {
     public class ChatMessage
@@ -9,17 +10,16 @@ namespace EvoSC.Core.Helpers
         private string _message { get; set; }
         private string _color { get; set; }
         private string _icon { get; set; }
-        private Theme _theme;
+        private static Theme _theme;
 
         public ChatMessage()
         {
-            _theme = ConfigurationLoader.GetTheme();
+            _theme = Config.GetTheme();
         }
 
         public static string GetHighlightedString(string txt)
         {
-            var theme = ConfigurationLoader.GetTheme();
-            return $"$<$fff{theme.Highlight}{txt}$>";
+            return $"$<$fff{ _theme.Highlight}{txt}$>";
         }
 
         public void SetMessage(string message)
@@ -66,7 +66,7 @@ namespace EvoSC.Core.Helpers
 
         public string Render()
         {
-            var message = (_icon != "" ? $"$fff{_icon}" : "") + $"{_color}{_message}";
+            var message = (_icon != "" ? $"$fff{_icon} " : "") + $"{_color}{_message}";
             return message;
         }
 
