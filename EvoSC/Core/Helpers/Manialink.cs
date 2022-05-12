@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain.Players;
 using GbxRemoteNet;
+using Microsoft.AspNetCore.Http.Features;
 using NLog;
 
 namespace EvoSC.Core.Helpers;
@@ -22,8 +23,7 @@ public class Manialink
         try
         {
             var template = new TemplateEngine(@"templates", "test.xml");
-            var xml = template.Render(new {title = "test", name = "test", size="200 200"});
-            xml = template.Render(new {title = "asd", name = "asd", size="100 100"});
+            var xml = template.Render(new {title = "test", name = "test", size="200 200", items="Race|Tech|FullSpeed|Speed fun"});
             await _gbxRemoteClient.SendDisplayManialinkPageToLoginAsync(player.Login, xml, 0, false);
             xml = null;
         }

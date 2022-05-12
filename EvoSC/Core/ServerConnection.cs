@@ -43,7 +43,7 @@ public class ServerConnection
         }
 
         await _gbxRemoteClient.EnableCallbackTypeAsync();
-
+        await _gbxRemoteClient.SendHideManialinkPageAsync();
         await _playerService.AddConnectedPlayers();
     }
 

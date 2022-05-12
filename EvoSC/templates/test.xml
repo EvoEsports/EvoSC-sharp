@@ -7,8 +7,7 @@
 <?component tag="Input" src="components/input.xml" ?>
 <?component tag="ToggleInput" src="components/toggleinput.xml" ?>
 <?component tag="MaskedInput" src="components/maskedinput.xml" ?>
-
-
+<?component tag="Dropdown" src="components/dropdown.xml" ?>
 
 <manialink id="manialink_test" name="EvoSC:{{name}}" version="3">
     <stylesheet>
@@ -28,7 +27,7 @@
         <style class="uiCheckboxElement" focusareacolor1="0000" focusareacolor2="0000" textsize="1.2"/>
         <style class="uiCheck" focusareacolor1="0000" focusareacolor2="0000" textcolor="fff" textsize="3" />
         <style class="uiMaskedToggle" focusareacolor1="0000" focusareacolor2="0000" textsize="1.2" />
-        <style class="uiEntry" focusareacolor1="0003" focusareacolor2="fff2" textcolor="fff" textsize="1.2"/>
+        <style class="uiEntry" focusareacolor1="0000" focusareacolor2="0000" textcolor="fff" textsize="1.2" z-index="2"/>
         <style class="uiScrollbar" bgcolor="fffa" bgcolorfocus="ffff" />
 
         <!-- ui styles-->
@@ -56,12 +55,16 @@
             <Checkbox text="Group 2 " pos="30 24" test="check" name="name" checked="0" disabled="0" group="grp1" />
             <Checkbox text="Group 3" pos="30 18" test="check" name="name" checked="0" disabled="0" group="grp1" />
             <!-- -->
+            
             <Checkbox text="Checkbox element" pos="-30 6" test="check" name="name" checked="1" disabled="0" />
+            
+            <!-- dropdowns -->
+            <Dropdown pos="0 40" name="dd_1" width="30" items="{{items}}" />
+            <Dropdown pos="40 40" name="dd_1" width="20" items="asd|das|kekek" />
             <!--buttons-->
             <ConfirmButton text="Ok" pos="-20 0" width="24" />
             <Button text="Cancel" pos="20 0" width="24" />
             <BasicButton text="Close" pos="60 0" width="24" />
-            
             
             <quad id="bg" bgcolor="000" size="240 120" opacity="0.8" valign="center" halign="center"/>
         </Widget>

@@ -33,35 +33,9 @@ public class TemplateEngine
 
         var scriptNode = _doc.CreateElement("script");
         var scripts = _doc.CreateCDataSection(File.ReadAllText(@"templates/scripts/initScript.Script.txt"));
-
         foreach (var tagName in _components)
         {
-            var nodes = _doc.SelectNodes("//" + tagName.Key);
             scripts.Data += _scripts[tagName.Key];
-            if (nodes == null) continue;
-            foreach (XmlNode node in nodes)
-            {
-                if (node == null) continue;
-                var context = new TemplateContext();
-                var obj = new ScriptObject();
-                if (node.Attributes != null)
-                    foreach (XmlAttribute attrib in node.Attributes)
-                    {
-                        obj.Add(attrib.Name, attrib.Value);
-                    }
-
-                if (node.HasChildNodes)
-                {
-                    obj.Add("__super__", node.InnerXml);
-                }
-
-                context.PushGlobal(obj);
-                var nod = _doc.CreateDocumentFragment();
-                var newText = Template.Parse(tagName.Value.DocumentElement?.InnerXml).Render(context);
-                nod.InnerXml = newText.Trim();
-
-                if (nod.FirstChild != null) node.ParentNode?.ReplaceChild(nod.FirstChild, node);
-            }
         }
 
         scripts.Value += _scripts["__main__"];
@@ -97,6 +71,7 @@ public class TemplateEngine
                 text += node.Value?.Replace("{{{", "«««").Replace("}}}", "»»»");
                 node.ParentNode?.ParentNode?.RemoveChild(node.ParentNode);
             }
+
         _scripts.Add(component, text);
     }
 
@@ -145,7 +120,7 @@ public class TemplateEngine
                     PreProcess(_basePath + "/" + srcMatch.Groups[1].Value);
                 }
             }
-            
+
             doc.RemoveChild(instruction);
         }
 
@@ -163,7 +138,7 @@ public class TemplateEngine
         }
 
         context.PushGlobal(scriptObject);
-
+        
         var template = Template.Parse(_doc.OuterXml);
         if (template.HasErrors)
         {
@@ -182,22 +157,55 @@ public class TemplateEngine
                 }
             }
         }
+        
+        var doc = new XmlDocument();
+        doc.LoadXml(template.Render(context));
 
-        var outString = RemoveWhitespace(template.Render(context));
+        foreach (var tagName in _components)
+        {
+            var nodes = doc.SelectNodes("//" + tagName.Key);
+            if (nodes == null) continue;
+            foreach (XmlNode node in nodes)
+            {
+                if (node == null) continue;
+                var ctx = new TemplateContext();
+                var sobj = new ScriptObject();
+                if (node.Attributes != null)
+                    foreach (XmlAttribute attrib in node.Attributes)
+                    {
+                        sobj.Add(attrib.Name, attrib.Value);
+                    }
+
+                if (node.HasChildNodes)
+                {
+                    sobj.Add("__super__", node.InnerXml);
+                }
+                if (sobj.GetType().GetProperty("size") != null)
+                {
+                    sobj.Add("__size__", obj.size);
+                }
+                ctx.PushGlobal(sobj);
+                var nod = doc.CreateDocumentFragment();
+                var newText = Template.Parse(tagName.Value.DocumentElement?.InnerXml).Render(ctx);
+                Console.WriteLine(newText);
+                nod.InnerXml = newText.Trim();
+
+                if (nod.FirstChild != null) node.ParentNode?.ReplaceChild(nod.FirstChild, node);
+            }
+        }
+
         if (validate)
         {
-            var validatorDoc = new XmlDocument();
-            validatorDoc.LoadXml(outString);
             _errors = "";
             var validator = new ValidationEventHandler(XmlValidatorErrorHandler);
-            validatorDoc.Schemas.Add("", Path.Join(@"templates/manialink_v3.xsd"));
-            validatorDoc.Validate(validator);
+            doc.Schemas.Add("", Path.Join(@"templates/manialink_v3.xsd"));
+            doc.Validate(validator);
             if (_errors != "")
             {
                 //  throw new Exception("XML Validation errors:\n"+_errors);
             }
         }
-
-        return outString;
+        
+        return RemoveWhitespace(doc.OuterXml);
     }
 }
