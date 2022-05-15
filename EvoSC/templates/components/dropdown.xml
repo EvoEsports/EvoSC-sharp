@@ -10,7 +10,7 @@
     }}
     
     <frame pos="{{pos_x}} {{pos_y}}" class="uiContainer uiDropdown" data-selected="{{selectedIndex}}" data-open="0"
-           id="{{id}}">
+           id="{{id}}" z-index="10">
         <label pos="{{width - 5}} -{{height/2}}" size="{{width}} {{height}}" z-index="2" class="{{class}} uiSelectElement" text="⏷"
                textcolor="fff" valign="center2"/>
         <label pos="0 -{{height/2}}" size="{{width}} {{height}}" textprefix=" " text="Select..." valign="center"

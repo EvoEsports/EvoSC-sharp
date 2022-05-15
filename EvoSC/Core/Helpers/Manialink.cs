@@ -23,9 +23,30 @@ public class Manialink
         try
         {
             var template = new TemplateEngine(@"templates", "test.xml");
-            var xml = template.Render(new {title = "test", name = "test", size="200 200", items="Race|Tech|FullSpeed|Speed fun"});
-            await _gbxRemoteClient.SendDisplayManialinkPageToLoginAsync(player.Login, xml, 0, false);
-            xml = null;
+            var xml = template
+                .Render(new
+                {
+                    title = "testWindow 1",
+                    name = "test1",
+                    size = "120 60",
+                    pos = "0 0",
+                    id = "test1",
+                    items = "Race|Tech|FullSpeed|Speed fun"
+                }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+            var template2 = new TemplateEngine(@"templates", "test.xml");
+            var xml2 = template2
+                .Render(new
+                {
+                    title = "testWindow2",
+                    id = "test2",
+                    name = "test2",
+                    size = "120 60",
+                    pos = "30 -30",
+                    items = "Race|Tech|FullSpeed|Speed fun"
+                }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+            var outXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><manialinks>" + xml + xml2 + "</manialinks>";
+            await _gbxRemoteClient.SendDisplayManialinkPageToLoginAsync(player.Login, outXml, 0, false);
+            
         }
         catch (Exception e)
         {

@@ -1,18 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?component tag="Button" src="components/button.xml"?>
 
-<manialink version="3">
-	<frame id="{{ id }}" pos="{{ pos }}">
-		{{ _super_ }}
-		{{ for i in (1..5) }}
-			<Button id="btn_{{ i }}" text="Apply" pos="0 {{i * 6}}" width="40" />
-		{{ end }}
-	</frame>
+<manialink version="3" name="{{name}}">
+    {{
+    arr = pos|string.split " "
+    pos_x = arr|array.first|string.to_float
+    pos_y = arr|array.last|string.to_float
+    sarr = size|string.split " "
+    size_x = sarr|array.first|string.to_float
+    size_y = sarr|array.last|string.to_float
+    }}
+    <frame id="{{id}}" pos="{{pos_x}} {{pos_y + size_y/2}}" class="window">
+        <label pos="-{{size_x/2 - 2}} 0.2" z-index="0" size="{{size_x - 3}} 3" textsize="1.25" halign="left" valign="center" text="{{title}}" textfont="GameFontSemiBold" textemboss="1" opacity="1" textprefix="$t$i"/>
+        <label pos="{{size_x/2 - 3}} 0" z-index="0" size="6 4" halign="center" valign="center2" text="✖" textsize="0.8" focusareacolor1="0000" focusareacolor2="f00" scriptevents="1" id="close"/>
+        <frame id="gradient">
+            <quad pos="0 0" z-index="-1" size="{{size_x}} 4" bgcolor="505" id="Titlebar" halign="center" valign="center" scriptevents="1"/>
+            <quad pos="0 0" z-index="0" size="{{size_x}} 4" rot="0" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" opacity="" modulatecolor="507" id="gradient-left" valign="center" halign="center"/>
+            <!-- <quad pos="0 0" z-index="0" size="{{size_x}} 4" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" modulatecolor="600" id="gradient-right" rot="180" valign="center" halign="center" hidden="1"/> -->
+        </frame>
+        <frame pos="-{{size_x/2}} -2" size="{{size}}">
+            {{ __super__ }}
+            <quad size="{{size}}" bgcolor="100010fa" scriptevents="1" id="body"/>
+            <quad z-index="-1" size="20 {{size_x}}" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" opacity="0.5" modulatecolor="80f" id="background-gradient" rot="90"  pos="{{size_x/2}} -10" halign="center"/>
+        </frame>
+    </frame>
+    
 	<script><!--
+declare Text PreviousActiveWindow;
 
-	***OnInit***
-	***
-		declare donothing;
-	***
+Void RenderActive() {
+    declare Text Evosc_ActiveWindow for UI;   
+    Page.GetClassChildren("window", Page.MainFrame, True);  
+    foreach(window in Page.GetClassChildren_Result) {
+        window.ZIndex = 0.1;
+        if (window.ControlId == Evosc_ActiveWindow){
+            window.ZIndex = 1.;	
+        }
+    }    
+}	
+
+Void SetActive(CMlFrame frame) {
+    declare Text Evosc_ActiveWindow for UI;   
+    Evosc_ActiveWindow = frame.ControlId;    
+    RenderActive();
+}
+
+Void MoveWindow(CMlFrame frame) {
+    SetActive(frame);
+    declare Vec2 startPos = frame.RelativePosition_V3 - <MouseX, MouseY>;
+    while (MouseLeftButton) {
+        yield;	
+        frame.RelativePosition_V3 = startPos +<MouseX, MouseY>;
+    }
+}
+
+
+
+***OnInit***
+***
+    declare CMlFrame windowFrame = Page.GetFirstChild("{{id}}") as CMlFrame;
+    declare Text Evosc_ActiveWindow for UI;    
+	Evosc_ActiveWindow = "{{id}}";
+***
+
+	
+***Loop***
+***
+    if (PreviousActiveWindow != Evosc_ActiveWindow) {
+        RenderActive();
+        PreviousActiveWindow = Evosc_ActiveWindow; 
+    }		
+***
+	
+	
+***OnMouseClick***
+***
+    if (Event.ControlId == "body") {
+        declare CMlFrame frame = Event.Control.Parent.Parent as CMlFrame;
+        SetActive(frame);
+        continue;
+    }				
+    if (Event.ControlId == "Titlebar") {
+        declare CMlFrame frame = Event.Control.Parent.Parent as CMlFrame;
+        MoveWindow(frame);
+        continue;
+    }
+    if (Event.ControlId == "close") {
+        Event.Control.Parent.Hide();
+        continue;
+    }
+***
+	
 	--></script>
 </manialink>
