@@ -36,7 +36,7 @@
 		***OnMouseOver***
 		***
 		if (Event.Control.Parent.HasClass("uiButton")) {
-			(Event.Control.Parent as CMlFrame).RelativeScale=1.;
+			(Event.Control.Parent as CMlFrame).RelativeScale=1.025;
 		}
 		***
 

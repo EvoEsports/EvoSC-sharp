@@ -18,7 +18,7 @@
 		***OnMouseOver***
 		***
 		if (Event.Control.Parent.HasClass("uiBasicButton")) {
-			(Event.Control.Parent as CMlFrame).RelativeScale=1.;
+			(Event.Control.Parent as CMlFrame).RelativeScale=1.025;
 		}
 		***
 

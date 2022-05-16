@@ -10,17 +10,16 @@
     size_y = sarr|array.last|string.to_float
     }}
     <frame id="{{id}}" pos="{{pos_x}} {{pos_y + size_y/2}}" class="window">
-        <label pos="-{{size_x/2 - 2}} 0.2" z-index="0" size="{{size_x - 3}} 3" textsize="1.25" halign="left" valign="center" text="{{title}}" textfont="GameFontSemiBold" textemboss="1" opacity="1" textprefix="$t$i"/>
+        <label pos="-{{size_x/2 - 2}} 0.2" z-index="0" size="{{size_x - 3}} 3" textsize="1.25" halign="left" valign="center" text="{{title}}" textcolor="{{colors.text}}" textfont="GameFontSemiBold" textemboss="1" opacity="1" textprefix="$t$i"/>
         <label pos="{{size_x/2 - 3}} 0" z-index="0" size="6 4" halign="center" valign="center2" text="✖" textsize="0.8" focusareacolor1="0000" focusareacolor2="f00" scriptevents="1" id="close"/>
         <frame id="gradient">
-            <quad pos="0 0" z-index="-1" size="{{size_x}} 4" bgcolor="505" id="Titlebar" halign="center" valign="center" scriptevents="1"/>
-            <quad pos="0 0" z-index="0" size="{{size_x}} 4" rot="0" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" opacity="" modulatecolor="507" id="gradient-left" valign="center" halign="center"/>
-            <!-- <quad pos="0 0" z-index="0" size="{{size_x}} 4" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" modulatecolor="600" id="gradient-right" rot="180" valign="center" halign="center" hidden="1"/> -->
+            <quad pos="0 0" z-index="-1" size="{{size_x}} 4" bgcolor="{{colors.accent_dark}}" id="Titlebar" halign="center" valign="center" scriptevents="1"/>
+            <quad pos="0 0" z-index="0" size="{{size_x}} 4" rot="0" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" modulatecolor="{{colors.accent}}" id="gradient-left" valign="center" halign="center"/>
         </frame>
         <frame pos="-{{size_x/2}} -2" size="{{size}}">
             {{ __super__ }}
-            <quad size="{{size}}" bgcolor="100010fa" scriptevents="1" id="body"/>
-            <quad z-index="-1" size="20 {{size_x}}" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" opacity="0.5" modulatecolor="80f" id="background-gradient" rot="90"  pos="{{size_x/2}} -10" halign="center"/>
+            <quad size="40 {{size_x}}" image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga" opacity="0.2" modulatecolor="{{colors.accent}}" id="background-gradient" rot="90"  pos="{{size_x/2}} -20" valign="center" halign="center"/>
+            <quad size="{{size}}" bgcolor="{{colors.background}}" opacity="0.99" scriptevents="1" id="body"/>
         </frame>
     </frame>
     

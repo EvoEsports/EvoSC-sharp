@@ -11,10 +11,10 @@
         <entry pos="0 0" size="{{ (width - 5) }} {{height}}" valign="center" class="{{class}} uiEntry"
                selecttext="1" default="{{ text }}" textformat="Password" name="{{ name }}" textfont="GameFontSemiBold"/>
         <frame pos="{{ (width - height/2) }} 0">
-            <quad size="10 10" scale="0.5" style="Bgs1InRace" colorize="ddd" substyle="BgColorContour" halign="center" valign="center2"/>
+            <quad size="10 10" scale="0.5" style="Bgs1InRace" colorize="{{colors.accent}}" substyle="BgColorContour" halign="center" valign="center2"/>
             <label size="4 4" text="" class="{{class}} uiMaskedToggle" halign="center" valign="center2" scriptevents="1" translate="0" />
         </frame>
-        <quad pos="0 -{{height/2}}" bgcolor="fff" size="{{width - 5}} 0.25" valing="top" />
+        <quad pos="0 -{{height/2}}" bgcolor="{{colors.accent_dark}}" size="{{width-5}} 0.25" valing="top" />
     </frame>
 	<script><!--
 		***OnMouseClick***

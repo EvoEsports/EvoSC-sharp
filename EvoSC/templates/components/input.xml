@@ -7,7 +7,7 @@
     {{ height = 5 }}
     
     <frame pos="{{ pos_x }} {{ pos_y }}" class="uiContainer uiInput" id="{{id}}">
-        <quad pos="0 -{{height/2}}" bgcolor="fff" size="{{width}} 0.25" valing="top" />
+        <quad pos="0 -{{height/2}}" bgcolor="{{colors.accent_dark}}" size="{{width}} 0.25" valing="top" />
         <entry pos="0 0" size="{{ width }} {{height}}" textsize="1.2" valign="center" class="{{class}} uiEntry" default="{{ text }}" selecttext="1" scriptevents="1" textformat="Basic" name="{{ name }}" textfont="GameFontSemiBold" />
     </frame>
 </manialink>

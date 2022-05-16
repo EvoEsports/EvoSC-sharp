@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ColorHelper" Version="1.6.2" />
     <PackageReference Include="Flurl" Version="3.0.2" />
     <PackageReference Include="GbxRemote.Net" Version="1.1.6" />
     <PackageReference Include="McMaster.NETCore.Plugins" Version="1.4.0" />

@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
+using EvoSC.Core.Configuration;
 using Scriban;
 using Scriban.Runtime;
 using NLog;
@@ -12,22 +13,46 @@ using Scriban.Parsing;
 
 namespace EvoSC.Core.Services.UI;
 
+public class Colors
+{
+    public string accent { get; set; } = "";
+    public string accent_dark { get; set; } = "";
+    public string accent_bg { get; set; } = "";
+    public string accent_light { get; set; } = "";
+    public string background { get; set; } = "";
+    public string text { get; set; } = "";
+}
+
 public class TemplateEngine
 {
     private const bool PreserveWhiteSpace = false; // false for formatted xml string
-    private const bool validate = true; // enable validation of the output xmldocument
+    private const bool Validate = true; // enable validation of the output xmlDocument
     private static readonly Logger s_logger = LogManager.GetCurrentClassLogger();
-
     private readonly string _basePath;
     private string _errors;
     private readonly Dictionary<string, XmlDocument> _components = new();
     private readonly Dictionary<string, string> _scripts = new();
     private readonly XmlDocument _doc;
+    private readonly ScriptObject _colors;
 
     public TemplateEngine(string path, string file)
     {
         _basePath = path;
         _errors = "";
+        var theme = Config.GetTheme();
+    
+        var colors = new Colors()
+        {
+            accent = theme.Accent,
+            accent_dark = theme.Darken(theme.Accent, 30),
+            accent_light = theme.Lighten(theme.Accent, 30),
+            accent_bg = theme.Dark(theme.Accent),
+            background = theme.Background(theme.Accent),
+            text = "f0f0f0"
+        };
+        _colors = new ScriptObject();
+        _colors.Import(colors);
+        
         _doc = PreProcess(path + "/" + file);
         ProcessScripts(_doc, "__main__");
 
@@ -132,13 +157,15 @@ public class TemplateEngine
         var context = new TemplateContext() {AutoIndent = true, NewLine = "\n",};
         var scriptObject = new ScriptObject();
         scriptObject.Import((object)obj);
+        scriptObject.Add("colors", _colors);
+        
         if (obj.GetType().GetProperty("size") != null)
         {
             scriptObject.Add("__size__", obj.size);
         }
 
         context.PushGlobal(scriptObject);
-        
+
         var template = Template.Parse(_doc.OuterXml);
         if (template.HasErrors)
         {
@@ -157,7 +184,7 @@ public class TemplateEngine
                 }
             }
         }
-        
+
         var doc = new XmlDocument();
         doc.LoadXml(template.Render(context));
 
@@ -169,22 +196,25 @@ public class TemplateEngine
             {
                 if (node == null) continue;
                 var ctx = new TemplateContext();
-                var sobj = new ScriptObject();
+                var sObj = new ScriptObject();
+                sObj.Add("colors", _colors);
                 if (node.Attributes != null)
                     foreach (XmlAttribute attrib in node.Attributes)
                     {
-                        sobj.Add(attrib.Name, attrib.Value);
+                        sObj.Add(attrib.Name, attrib.Value);
                     }
 
                 if (node.HasChildNodes)
                 {
-                    sobj.Add("__super__", node.InnerXml);
+                    sObj.Add("__super__", node.InnerXml);
                 }
-                if (sobj.GetType().GetProperty("size") != null)
+
+                if (sObj.GetType().GetProperty("size") != null)
                 {
-                    sobj.Add("__size__", obj.size);
+                    sObj.Add("__size__", obj.size);
                 }
-                ctx.PushGlobal(sobj);
+                
+                ctx.PushGlobal(sObj);
                 var nod = doc.CreateDocumentFragment();
                 var newText = Template.Parse(tagName.Value.DocumentElement?.InnerXml).Render(ctx);
                 Console.WriteLine(newText);
@@ -194,7 +224,7 @@ public class TemplateEngine
             }
         }
 
-        if (validate)
+        if (Validate)
         {
             _errors = "";
             var validator = new ValidationEventHandler(XmlValidatorErrorHandler);
@@ -205,7 +235,7 @@ public class TemplateEngine
                 //  throw new Exception("XML Validation errors:\n"+_errors);
             }
         }
-        
+
         return RemoveWhitespace(doc.OuterXml);
     }
 }

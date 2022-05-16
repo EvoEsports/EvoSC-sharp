@@ -9,9 +9,9 @@
            textformat="Basic" name="{{ name }}" scriptevents="1"/>
     <label pos="6 -2.5" z-index="0" size="100 5" text="{{ text }}" textsize="2" scriptevents="1" focusareacolor1="0000"
            focusareacolor2="0000" valign="center" textfont="GameFontRegular" />
-    <label pos="2.5 -2" z-index="0" size="6 6" textemboss="0" textsize="3" scale="0" text="✓" valign="center2"
+    <label pos="2.5 -2" z-index="0" size="6 6" textemboss="0" textsize="4" scale="0" text="✓" valign="center2"
            halign="center" class="{{class}} uiCheck uiCheckboxElement" />
-    <label pos="2 -2.5" z-index="0" size="6 6" textemboss="0" textsize="4" text="⬜" valign="center2" halign="center"
+    <label pos="2 -2.5" z-index="0" size="6 6" textemboss="0" textsize="3" text="⬜" valign="center2" halign="center"
            class="uiCheckboxElement" scriptevents="1" focusareacolor1="0000" focusareacolor2="0000" data-group="{{group}}"/>
     </frame>
     
