@@ -32,7 +32,7 @@
         <style class="uiScrollbar" bgcolor="fffa" bgcolorfocus="ffff"/>
         
     </stylesheet>
-    <Window id="{{id}}" title="{{title}}" size="{{size}}" pos="{{pos}}">
+    <Window id="{{id}}" title="{{title}}" size="{{size}}" pos="{{pos}}" closeaction="{{closeaction}}">
         <frame scale="0.6" pos="0 0">
             <label text="The quick brown fox jumps over the lazy dog." textfont="Arial" pos="0 0"/>
             <label text="The quick brown fox jumps over the lazy dog." textfont="RajdhaniMono" pos="0 -6"/>

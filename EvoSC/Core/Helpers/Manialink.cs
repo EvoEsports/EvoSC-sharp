@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain.Players;
 using GbxRemoteNet;
-using Microsoft.AspNetCore.Http.Features;
 using NLog;
 
 namespace EvoSC.Core.Helpers;
@@ -12,7 +11,7 @@ public class Manialink
 {
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    private string _ActionClose;
+    private string _actionClose;
     
     public Manialink(GbxRemoteClient gbxRemoteClient)
     {
@@ -24,8 +23,7 @@ public class Manialink
         try
         {
             var action = new ManialinkAction(async (action) => await Hide(player));
-            action.Payload.Data = player;
-            _ActionClose = UiService.RegisterAction(action);
+            _actionClose = UiService.RegisterAction(action);
             var template = new TemplateEngine(@"templates", "test.xml");
             var xml = template
                 .Render(new
@@ -35,7 +33,7 @@ public class Manialink
                     size = "120 60",
                     pos = "0 0",
                     id = "test1",
-                    closeaction = _ActionClose,
+                    closeaction = _actionClose,
                     items = "Race|Tech|FullSpeed|Speed fun"
                 }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
             var template2 = new TemplateEngine(@"templates", "test.xml");
@@ -47,7 +45,7 @@ public class Manialink
                     name = "test2",
                     size = "120 60",
                     pos = "30 -30",
-                    closeaction = _ActionClose,
+                    closeaction = _actionClose,
                     items = "Race|Tech|FullSpeed|Speed fun"
                 }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
             var outXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><manialinks>" + xml + xml2 + "</manialinks>";
@@ -62,6 +60,6 @@ public class Manialink
     public async Task Hide(Player player)
     {
         await _gbxRemoteClient.SendHideManialinkPageToLoginAsync(player.Login);
-        UiService.UnregisterAction(_ActionClose);
+        UiService.UnregisterAction(_actionClose);
     }
 }

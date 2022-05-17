@@ -18,7 +18,7 @@ public class ChatService : IChatService
     private readonly DatabaseContext _databaseContext;
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    private Manialink _manialink;
+    private readonly Manialink _manialink;
     public ChatService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IChatCallbacks chatCallbacks)
     {
         _databaseContext = databaseContext;

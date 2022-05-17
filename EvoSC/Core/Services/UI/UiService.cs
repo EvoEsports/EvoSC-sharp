@@ -34,21 +34,21 @@ public class UiService : IUiService
         var values = new Dictionary<string, object>();
         foreach (Dictionary<string, object> para in (dynamic[])param[3])
         {
-            var vals = para.Values.ToList();
-            if (!values.ContainsKey((string)vals[0]))
+            var list = para.Values.ToList();
+            if (!values.ContainsKey((string)list[0]))
             {
-                values.Add((string)vals[0], (string)vals[1]);
+                values.Add((string)list[0], (string)list[1]);
             }
         }
 
-        //_manialinkPageCallbacks.OnPlayerManialinkPageAnswer(
-        //    new ManialinkPageEventArgs(player, (string)param[2], values)
-        //);
+        _manialinkPageCallbacks.OnPlayerManialinkPageAnswer(
+            new ManialinkPageEventArgs(player, (string)param[2], values)
+        );
 
         var compare = s_actions.ContainsKey((string)param[2]);
         if (compare)
         {
-            await s_actions[(string)param[2]].TriggerManialinkEvent(values);
+            await s_actions[(string)param[2]].TriggerManialinkAction(values);
         }
     }
 
