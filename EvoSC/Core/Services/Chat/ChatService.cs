@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Helpers;
 using EvoSC.Core.Services.Players;
+using EvoSC.Core.Services.UI;
 using EvoSC.Domain;
 using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Chat;
@@ -17,12 +18,13 @@ public class ChatService : IChatService
     private readonly DatabaseContext _databaseContext;
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
+    private Manialink _manialink;
     public ChatService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IChatCallbacks chatCallbacks)
     {
         _databaseContext = databaseContext;
         _gbxRemoteClient = gbxRemoteClient;
         _chatCallbacks = chatCallbacks;
+        _manialink = new Manialink(_gbxRemoteClient);
     }
 
     public async Task ClientOnPlayerChat(int playeruid, string login, string text, bool isregisteredcmd)
@@ -51,14 +53,12 @@ public class ChatService : IChatService
         {
             case "show":
                 {
-                    var manialink = new Manialink(_gbxRemoteClient);
-                    await manialink.Send(player);
+                    await _manialink.Send(player);
                     break;
                 }
             case "hide":
                 {
-                    var manialink = new Manialink(_gbxRemoteClient);
-                    await manialink.Hide(player);
+                    await _manialink.Hide(player);
                     break;
                 }
         }

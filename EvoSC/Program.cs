@@ -45,19 +45,22 @@ builder.ConfigureServices(services =>
 
     // GbxClient
     services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
-    services.AddSingleton<IUiService, UiService>();
     
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
+    services.AddSingleton<IGbxEventHandler, ManialinkPageGbxEventHandler>();
     services.AddSingleton(theme);
 
     // Callbacks
     services.AddSingleton<IPlayerCallbacks, PlayerCallbacks>();
     services.AddSingleton<IChatCallbacks, ChatCallbacks>();
+    services.AddSingleton<IManialinkPageCallbacks, ManialinkPageCallbacks>();
     // Services
+    
     services.AddSingleton<IPlayerService, PlayerService>();
     services.AddSingleton<IChatService, ChatService>();
+    services.AddSingleton<IUiService, UiService>();
 
     // Load plugins
     PluginFactory.Instance.LoadPlugins(services);

@@ -67,6 +67,7 @@ Void TriggerConfirmButtonClick(CMlLabel Control) {
                  AnimMgr.Flush(Control.Parent);
                  AnimMgr.Add(Control.Parent, "<elem scale=\"1.\" />", 200, CAnimManager::EAnimManagerEasing::QuadIn);
                  TriggerPageAction(Control.Parent.DataAttributeGet("action"));
+                 log(Control.Parent.DataAttributeGet("action"));
              }
        }
 }

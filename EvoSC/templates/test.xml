@@ -61,7 +61,7 @@
         <Dropdown pos="100 0" name="dd_1" width="20" items="asd|das|kekek"/>
         <!--buttons-->
         
-        <ConfirmButton text="Ok" pos="30 -50" width="24"/>
+        <ConfirmButton text="Ok" pos="30 -50" width="24" action="{{closeaction}}"/>
         <Button text="Cancel" pos="60 -50" width="24"/>
         <BasicButton text="Close" pos="90 -50" size="24 6"/>
         
