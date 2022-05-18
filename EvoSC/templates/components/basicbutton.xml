@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manialink version="3">
+    {{
+    arr = pos|string.split " "
+    pos_x = arr|array.first|string.to_float
+    pos_y = arr|array.last|string.to_float
+    sarr = size|string.split " "
+    size_x = sarr|array.first|string.to_float
+    size_y = sarr|array.last|string.to_float
+    }}
+    
+    <frame pos="{{pos_x + size_x/2 }} {{pos_y -size_y/2}}" class="uiContainer uiBasicButton">
+		<label id="{{id}}" size="{{size}}" text="{{text}}" class="uiButtonElement" halign="center"
+		valign="center2" scriptevents="1" translate="0" textsize="1.2" action="{{action}}" textfont="GameFontSemiBold"/>
+	</frame>
+
+	<script><!--		
+		***OnMouseOver***
+		***
+		if (Event.Control.Parent.HasClass("uiBasicButton")) {
+			(Event.Control.Parent as CMlFrame).RelativeScale=1.025;
+		}
+		***
+
+		***OnMouseOut***
+		***
+		if (Event.Control.Parent.HasClass("uiBasicButton")) {
+			(Event.Control.Parent as CMlFrame).RelativeScale=1.;
+		}
+		***
+	--></script>
+</manialink>

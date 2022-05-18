@@ -34,7 +34,7 @@ public class ServerConnection
         {
             Console.WriteLine(await _gbxRemoteClient.GetLastConnectionErrorMessageAsync());
         }
-
+        await _gbxRemoteClient.SetApiVersionAsync("2022-03-21");
         var authenticated = await _gbxRemoteClient.AuthenticateAsync(config.AdminLogin, config.AdminPassword);
 
         if (!authenticated)
@@ -43,7 +43,7 @@ public class ServerConnection
         }
 
         await _gbxRemoteClient.EnableCallbackTypeAsync();
-
+        await _gbxRemoteClient.SendHideManialinkPageAsync();
         await _playerService.AddConnectedPlayers();
     }
 

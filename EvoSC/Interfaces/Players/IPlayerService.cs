@@ -7,7 +7,7 @@ namespace EvoSC.Interfaces.Players;
 public interface IPlayerService
 {
     public Task AddConnectedPlayers();
-    public Task ClientOnPlayerConnect(string login, bool isspectator);
+    public Task ClientOnPlayerConnect(string login, bool isSpectator);
     public Task ClientOnPlayerDisconnect(string login, string reason);
-    public List<Domain.Players.Player> GetConnectedPlayers();
+    public List<Player> GetConnectedPlayers();
 }
