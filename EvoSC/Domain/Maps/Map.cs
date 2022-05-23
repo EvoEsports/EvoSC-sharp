@@ -11,21 +11,31 @@ namespace EvoSC.Domain.Maps
     {
         [Key]
         public int Id { get; set; }
+
         public string Uid { get; set; }
+
         public string FilePath { get; set; }
+
         public bool Enabled { get; set; }
+
         public string Name { get; set; }
+
         public int ManiaExchangeId { get; set; }
+
         public DateTime ManiaExchangeVersion { get; set; }
 
         public Player Player { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
         public DateTime UpdatedAt { get; set; }
 
         public IEnumerable<MapFavorite> FavoritedMaps { get; set; }
+
         public IEnumerable<PersonalBest> PersonalBests { get; set; }
+
         public IEnumerable<MapRecord> MapRecords { get; set; }
+
         public IEnumerable<MapKarma> MapKarmas { get; set; }
 
         public MapStatistic MapStatistic { get; set; }

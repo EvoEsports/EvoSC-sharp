@@ -10,11 +10,17 @@ namespace EvoSC.Domain.Maps
     {
         [Key]
         public int Id { get; set; }
+
         public int Rating { get; set; }
+
         public bool New { get; set; }
+
         public Map Map { get; set; }
+
         public Player Player { get; set; }
+
         public DateTime CreatedAt { get; set; }
+
         public DateTime UpdatedAt { get; set; }
     }
 }

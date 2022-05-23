@@ -34,6 +34,7 @@ public class ServerConnection
         {
             Console.WriteLine(await _gbxRemoteClient.GetLastConnectionErrorMessageAsync());
         }
+
         await _gbxRemoteClient.SetApiVersionAsync("2022-03-21");
         var authenticated = await _gbxRemoteClient.AuthenticateAsync(config.AdminLogin, config.AdminPassword);
 

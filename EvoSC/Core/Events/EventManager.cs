@@ -7,6 +7,7 @@ namespace EvoSC.Core.Events;
 public class EventManager : IDisposable
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
     public EventManager()
     {
     }
@@ -17,10 +18,14 @@ public class EventManager : IDisposable
     public void RegisterEventType(EventType eventType, Guid pluginId, Action action)
     {
         if (!_eventCache.ContainsKey(eventType))
+        {
             _eventCache.Add(eventType, new Dictionary<Guid, Action>());
+        }
 
         if (!_eventCache[eventType].ContainsKey(pluginId))
+        {
             _eventCache[eventType].Add(pluginId, action);
+        }
 
         _logger.Trace($"Added new event of type '{eventType} for plugin {pluginId}");
     }
@@ -28,7 +33,9 @@ public class EventManager : IDisposable
     public void UnregisterEvent(EventType eventType, Guid pluginId)
     {
         if (_eventCache.ContainsKey(eventType))
+        {
             _eventCache[eventType].Remove(pluginId);
+        }
 
         _logger.Trace($"Removed event of type '{eventType} for plugin {pluginId}");
     }

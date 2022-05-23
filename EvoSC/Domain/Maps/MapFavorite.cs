@@ -10,7 +10,9 @@ namespace EvoSC.Domain.Maps
     {
         [Key]
         public int Id { get; set; }
+
         public Player Player { get; set; }
+
         public Map Map { get; set; }
     }
 }

@@ -6,5 +6,4 @@ namespace EvoSC.Interfaces.UI;
 public interface IUiService
 {
     public Task OnAnyCallback(MethodCall call, object[] param);
-    
 }

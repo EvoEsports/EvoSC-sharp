@@ -8,10 +8,9 @@ namespace EvoSC.Core.Events.Callbacks;
 public class ManialinkPageCallbacks : IManialinkPageCallbacks
 {
     public event EventHandler<ManialinkPageEventArgs> PlayerManialinkPageAnswer;
-    
+
     public virtual void OnPlayerManialinkPageAnswer(ManialinkPageEventArgs e)
     {
         PlayerManialinkPageAnswer?.Invoke(this, e);
     }
-    
 }

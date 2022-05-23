@@ -1,6 +1,6 @@
-namespace EvoSC.Core.Events;
+﻿namespace EvoSC.Core.Events;
 
 public enum EventType
 {
-    Default
+    Default,
 }

@@ -65,7 +65,6 @@ public static class Config
         }
     }
 
-
     public static Dedicated GetDedicatedConfig()
     {
         return s_dedicated;

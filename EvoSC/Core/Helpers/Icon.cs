@@ -360,6 +360,5 @@
         public const string Bicycle = "";
         public const string Ambulance = "";
         public const string Wheelchair = "";
-
     }
 }

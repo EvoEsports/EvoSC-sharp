@@ -19,6 +19,7 @@ public class ChatService : IChatService
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly Manialink _manialink;
+
     public ChatService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IChatCallbacks chatCallbacks)
     {
         _databaseContext = databaseContext;
@@ -46,7 +47,6 @@ public class ChatService : IChatService
         }
     }
 
-
     private async Task HandleCommand(Player player, ChatCommand chatCommand)
     {
         switch (chatCommand.CommandName)
@@ -56,6 +56,7 @@ public class ChatService : IChatService
                     await _manialink.Send(player);
                     break;
                 }
+
             case "hide":
                 {
                     await _manialink.Hide(player);
@@ -66,21 +67,29 @@ public class ChatService : IChatService
 
     private ChatCommand ParseChatCommand(string text)
     {
-        var command = new ChatCommand();
-        command.IsAdminCommand = false || text.StartsWith("//");
+        var command = new ChatCommand
+        {
+            IsAdminCommand = false || text.StartsWith("//"),
+        };
         var commandRegex = new Regex("^/{1,2}(\\w+)");
         var whitespaceRegex = new Regex("\\s+");
         var match = commandRegex.Match(text);
-        if (!match.Success) return null;
+        if (!match.Success)
+        {
+            return null;
+        }
+
         command.CommandName = match.Groups[1].Value;
-        command.Arguments = whitespaceRegex.Split(text.Replace($"{match.Groups[0].Value} ", ""));
+        command.Arguments = whitespaceRegex.Split(text.Replace($"{match.Groups[0].Value} ", string.Empty));
         return command;
     }
 
     private class ChatCommand
     {
         public string CommandName { get; set; }
+
         public string[] Arguments { get; set; }
+
         public bool IsAdminCommand { get; set; }
     }
 }

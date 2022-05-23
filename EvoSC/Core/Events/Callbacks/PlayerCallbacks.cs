@@ -7,6 +7,7 @@ namespace EvoSC.Core.Events.Callbacks;
 public class PlayerCallbacks : IPlayerCallbacks
 {
     public event EventHandler<PlayerConnectEventArgs> PlayerConnect;
+
     public event EventHandler<PlayerDisconnectEventArgs> PlayerDisconnect;
 
     public virtual void OnPlayerConnect(PlayerConnectEventArgs e)

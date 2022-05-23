@@ -6,6 +6,7 @@ namespace EvoSC.Core.Plugins;
 internal class PluginWrapper
 {
     public Guid Id { get; }
+
     public IPlugin Instance { get; }
 
     /// <summary>Gets the plugin loader.</summary>
