@@ -7,5 +7,6 @@ namespace EvoSC.Interfaces.UI;
 public interface IManialinkPageCallbacks
 {
     public event EventHandler<ManialinkPageEventArgs> PlayerManialinkPageAnswer;
+
     public void OnPlayerManialinkPageAnswer(ManialinkPageEventArgs e);
 }

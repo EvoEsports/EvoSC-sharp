@@ -45,7 +45,7 @@ builder.ConfigureServices(services =>
 
     // GbxClient
     services.AddSingleton(new GbxRemoteClient(serverConnectionConfig.Host, serverConnectionConfig.Port));
-    
+
     // Event Handlers
     services.AddSingleton<IGbxEventHandler, PlayerGbxEventHandler>();
     services.AddSingleton<IGbxEventHandler, ChatGbxEventHandler>();
@@ -56,8 +56,8 @@ builder.ConfigureServices(services =>
     services.AddSingleton<IPlayerCallbacks, PlayerCallbacks>();
     services.AddSingleton<IChatCallbacks, ChatCallbacks>();
     services.AddSingleton<IManialinkPageCallbacks, ManialinkPageCallbacks>();
+
     // Services
-    
     services.AddSingleton<IPlayerService, PlayerService>();
     services.AddSingleton<IChatService, ChatService>();
     services.AddSingleton<IUiService, UiService>();
@@ -77,18 +77,16 @@ logger.Info($"Connecting to server with IP {serverConnectionConfig.Host} and por
 var serverConnection = new ServerConnection(
     app.Services.GetRequiredService<GbxRemoteClient>(),
     app.Services.GetServices<IGbxEventHandler>(),
-    app.Services.GetService<IPlayerService>()
-);
+    app.Services.GetService<IPlayerService>());
 
 serverConnection.InitializeEventHandlers();
-
 
 await serverConnection.ConnectToServer(serverConnectionConfig);
 
 logger.Info("Completed initialization");
 
-//var sample = app.Services.GetRequiredService<ISampleService>();
-//logger.Info(sample.GetName());
+// var sample = app.Services.GetRequiredService<ISampleService>();
+// logger.Info(sample.GetName());
 var module = app.Services.GetService<IPlugin>();
 module?.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
 Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());

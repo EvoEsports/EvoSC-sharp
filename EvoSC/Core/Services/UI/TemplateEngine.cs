@@ -6,21 +6,26 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
 using EvoSC.Core.Configuration;
-using Scriban;
-using Scriban.Runtime;
 using NLog;
+using Scriban;
 using Scriban.Parsing;
+using Scriban.Runtime;
 
 namespace EvoSC.Core.Services.UI;
 
 public class Colors
 {
-    public string accent { get; set; } = "";
-    public string accent_dark { get; set; } = "";
-    public string accent_bg { get; set; } = "";
-    public string accent_light { get; set; } = "";
-    public string background { get; set; } = "";
-    public string text { get; set; } = "";
+    public string accent { get; set; } = string.Empty;
+
+    public string accent_dark { get; set; } = string.Empty;
+
+    public string accent_bg { get; set; } = string.Empty;
+
+    public string accent_light { get; set; } = string.Empty;
+
+    public string background { get; set; } = string.Empty;
+
+    public string text { get; set; } = string.Empty;
 }
 
 public class TemplateEngine
@@ -38,9 +43,9 @@ public class TemplateEngine
     public TemplateEngine(string path, string file)
     {
         _basePath = path;
-        _errors = "";
+        _errors = string.Empty;
         var theme = Config.GetTheme();
-    
+
         var colors = new Colors()
         {
             accent = theme.Accent,
@@ -48,11 +53,11 @@ public class TemplateEngine
             accent_light = theme.Lighten(theme.Accent, 30),
             accent_bg = theme.Dark(theme.Accent),
             background = theme.Background(theme.Accent),
-            text = "f0f0f0"
+            text = "f0f0f0",
         };
         _colors = new ScriptObject();
         _colors.Import(colors);
-        
+
         _doc = PreProcess(path + "/" + file);
         ProcessScripts(_doc, "__main__");
 
@@ -88,7 +93,7 @@ public class TemplateEngine
 
     private void ProcessScripts(XmlDocument doc, string component)
     {
-        var text = "";
+        var text = string.Empty;
         var scripts = doc.SelectNodes("//script/comment()|//script/text()");
         if (scripts != null)
             foreach (dynamic node in scripts)
@@ -100,10 +105,17 @@ public class TemplateEngine
         _scripts.Add(component, text);
     }
 
-    private string RemoveWhitespace(string? xml)
+    private static string RemoveWhitespace(string? xml)
     {
-        if (xml == null) return "";
-        if (PreserveWhiteSpace) return xml;
+        if (xml == null)
+        {
+            return string.Empty;
+        }
+
+        if (PreserveWhiteSpace)
+        {
+            return xml;
+        }
 
         var regex = new Regex(@">\s*<");
         xml = regex.Replace(xml, "><");
@@ -112,12 +124,14 @@ public class TemplateEngine
 
     private XmlDocument LoadDoc(string file, string component)
     {
-        var doc = new XmlDocument {PreserveWhitespace = false};
+        var doc = new XmlDocument { PreserveWhitespace = false };
         doc.Load(file);
         var instructions = doc.SelectNodes("//processing-instruction()");
         if (instructions != null)
             foreach (XmlProcessingInstruction instruction in instructions)
+            {
                 doc.RemoveChild(instruction);
+            }
 
         ProcessScripts(doc, component);
         return doc;
@@ -125,13 +139,21 @@ public class TemplateEngine
 
     private XmlDocument PreProcess(string file)
     {
-        var doc = new XmlDocument {PreserveWhitespace = false};
+        var doc = new XmlDocument { PreserveWhitespace = false };
         doc.Load(file);
         var instructions = doc.SelectNodes("//processing-instruction()");
-        if (instructions == null) return doc;
+        if (instructions == null)
+        {
+            return doc;
+        }
+
         foreach (XmlProcessingInstruction instruction in instructions)
         {
-            if (instruction.Target != "component") continue;
+            if (instruction.Target != "component")
+            {
+                continue;
+            }
+
             var tagRegex = new Regex("tag=\"(.*?)\"");
             var tagMatch = tagRegex.Match(instruction.Value);
             var srcRegex = new Regex("src=\"(.*?)\"");
@@ -140,7 +162,8 @@ public class TemplateEngine
             {
                 if (!_components.ContainsKey(tagMatch.Groups[1].Value))
                 {
-                    _components.Add(tagMatch.Groups[1].Value,
+                    _components.Add(
+                        tagMatch.Groups[1].Value,
                         LoadDoc(_basePath + "/" + srcMatch.Groups[1].Value, tagMatch.Groups[1].Value));
                     PreProcess(_basePath + "/" + srcMatch.Groups[1].Value);
                 }
@@ -154,11 +177,11 @@ public class TemplateEngine
 
     public string Render(dynamic obj)
     {
-        var context = new TemplateContext() {AutoIndent = true, NewLine = "\n",};
+        var context = new TemplateContext() { AutoIndent = true, NewLine = "\n", };
         var scriptObject = new ScriptObject();
         scriptObject.Import((object)obj);
         scriptObject.Add("colors", _colors);
-        
+
         if (obj.GetType().GetProperty("size") != null)
         {
             scriptObject.Add("__size__", obj.size);
@@ -191,10 +214,18 @@ public class TemplateEngine
         foreach (var tagName in _components)
         {
             var nodes = doc.SelectNodes("//" + tagName.Key);
-            if (nodes == null) continue;
+            if (nodes == null)
+            {
+                continue;
+            }
+
             foreach (XmlNode node in nodes)
             {
-                if (node == null) continue;
+                if (node == null)
+                {
+                    continue;
+                }
+
                 var ctx = new TemplateContext();
                 var sObj = new ScriptObject();
                 sObj.Add("colors", _colors);
@@ -213,24 +244,27 @@ public class TemplateEngine
                 {
                     sObj.Add("__size__", obj.size);
                 }
-                
+
                 ctx.PushGlobal(sObj);
                 var nod = doc.CreateDocumentFragment();
                 var newText = Template.Parse(tagName.Value.DocumentElement?.InnerXml).Render(ctx);
                 Console.WriteLine(newText);
                 nod.InnerXml = newText.Trim();
 
-                if (nod.FirstChild != null) node.ParentNode?.ReplaceChild(nod.FirstChild, node);
+                if (nod.FirstChild != null)
+                {
+                    node.ParentNode?.ReplaceChild(nod.FirstChild, node);
+                }
             }
         }
 
         if (Validate)
         {
-            _errors = "";
+            _errors = string.Empty;
             var validator = new ValidationEventHandler(XmlValidatorErrorHandler);
-            doc.Schemas.Add("", Path.Join(@"templates/manialink_v3.xsd"));
+            doc.Schemas.Add(string.Empty, Path.Join(@"templates/manialink_v3.xsd"));
             doc.Validate(validator);
-            if (_errors != "")
+            if (_errors != string.Empty)
             {
                 //  throw new Exception("XML Validation errors:\n"+_errors);
             }

@@ -13,16 +13,16 @@ public class Database
 
     [TomlProperty("database.host")]
     public string Host { get; set; }
-    
+
     [TomlProperty("database.port")]
     public int Port { get; set; }
-    
+
     [TomlProperty("database.user")]
     public string User { get; set; }
 
     [TomlProperty("database.password")]
     public string Password { get; set; }
-    
+
     [TomlProperty("database.dbname")]
     public string DbName { get; set; }
 
@@ -31,4 +31,3 @@ public class Database
         return $"server={Host};port={Port};uid={User};password={Password};database={DbName}";
     }
 }
-

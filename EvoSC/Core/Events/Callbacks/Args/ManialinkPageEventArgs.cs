@@ -14,6 +14,8 @@ public class ManialinkPageEventArgs : EventArgs
     }
 
     public Player Player { get; set; }
+
     public string Answer { get; set; }
+
     public Dictionary<string, object> Entries { get; set; }
 }

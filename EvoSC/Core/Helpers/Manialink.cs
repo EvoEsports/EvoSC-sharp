@@ -12,12 +12,12 @@ public class Manialink
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private string _actionClose;
-    
+
     public Manialink(GbxRemoteClient gbxRemoteClient)
     {
         _gbxRemoteClient = gbxRemoteClient;
     }
-    
+
     public async Task Send(Player player)
     {
         try
@@ -34,8 +34,8 @@ public class Manialink
                     pos = "0 0",
                     id = "test1",
                     closeaction = _actionClose,
-                    items = "Race|Tech|FullSpeed|Speed fun"
-                }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+                    items = "Race|Tech|FullSpeed|Speed fun",
+                }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", string.Empty);
             var template2 = new TemplateEngine(@"templates", "test.xml");
             var xml2 = template2
                 .Render(new
@@ -46,8 +46,8 @@ public class Manialink
                     size = "120 60",
                     pos = "30 -30",
                     closeaction = _actionClose,
-                    items = "Race|Tech|FullSpeed|Speed fun"
-                }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+                    items = "Race|Tech|FullSpeed|Speed fun",
+                }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", string.Empty);
             var outXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><manialinks>" + xml + xml2 + "</manialinks>";
             await _gbxRemoteClient.SendDisplayManialinkPageToLoginAsync(player.Login, outXml, 0, false);
         }

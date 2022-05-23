@@ -22,7 +22,9 @@ public class PlayerService : IPlayerService
 
     private static readonly List<Player> s_connectedPlayers = new();
 
-    public PlayerService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient,
+    public PlayerService(
+        DatabaseContext databaseContext,
+        GbxRemoteClient gbxRemoteClient,
         IPlayerCallbacks playerCallbacks)
     {
         s_databaseContext = databaseContext;
@@ -126,7 +128,7 @@ public class PlayerService : IPlayerService
             Path = playerInfo.Path,
             Banned = false,
             LastVisit = DateTime.MinValue,
-            IsSpectator = playerInfo.IsSpectator
+            IsSpectator = playerInfo.IsSpectator,
         };
 
         s_databaseContext.Players.Add(player);

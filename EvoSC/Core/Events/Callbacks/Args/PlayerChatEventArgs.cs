@@ -13,6 +13,8 @@ public class PlayerChatEventArgs : EventArgs
     }
 
     public Player Player { get; set; }
+
     public string Text { get; set; }
+
     public bool IsRegisteredCmd { get; set; }
 }

@@ -17,6 +17,7 @@ public static class ConfigHelper
                 }
             }
         }
+
         return false;
     }
 }

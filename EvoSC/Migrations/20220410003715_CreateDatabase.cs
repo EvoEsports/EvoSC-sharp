@@ -29,7 +29,7 @@ namespace EvoSC.Migrations
                     Path = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Banned = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    LastVisit = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    LastVisit = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -54,7 +54,7 @@ namespace EvoSC.Migrations
                     ManiaExchangeVersion = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     PlayerId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -85,7 +85,7 @@ namespace EvoSC.Migrations
                     Rank = table.Column<int>(type: "int", nullable: false),
                     SpectatorTime = table.Column<int>(type: "int", nullable: false),
                     CheckpointsDriven = table.Column<int>(type: "int", nullable: false),
-                    ConsecutiveDaysPlayed = table.Column<int>(type: "int", nullable: false)
+                    ConsecutiveDaysPlayed = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -108,7 +108,7 @@ namespace EvoSC.Migrations
                     Rating = table.Column<int>(type: "int", nullable: false),
                     New = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     MapId = table.Column<int>(type: "int", nullable: true),
-                    PlayerId = table.Column<int>(type: "int", nullable: true)
+                    PlayerId = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -139,7 +139,7 @@ namespace EvoSC.Migrations
                     PlayerId = table.Column<int>(type: "int", nullable: true),
                     MapId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -167,7 +167,7 @@ namespace EvoSC.Migrations
                     NumberOfPlays = table.Column<int>(type: "int", nullable: false),
                     Cooldown = table.Column<int>(type: "int", nullable: false),
                     LastPlayed = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    AmountSkipped = table.Column<int>(type: "int", nullable: false)
+                    AmountSkipped = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -188,7 +188,7 @@ namespace EvoSC.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     PlayerId = table.Column<int>(type: "int", nullable: true),
-                    MapId = table.Column<int>(type: "int", nullable: true)
+                    MapId = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -217,7 +217,7 @@ namespace EvoSC.Migrations
                     PlayerId = table.Column<int>(type: "int", nullable: true),
                     MapId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                 },
                 constraints: table =>
                 {

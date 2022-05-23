@@ -39,7 +39,9 @@ internal class PluginFactory
         string pluginsDir = Path.Combine(AppContext.BaseDirectory, path);
 
         if (!Directory.Exists(pluginsDir))
+        {
             Directory.CreateDirectory(pluginsDir);
+        }
 
         foreach (var dir in Directory.GetDirectories(pluginsDir))
         {
@@ -159,8 +161,12 @@ internal class PluginFactory
         }
 
         if (weakRef.IsAlive)
+        {
             throw new InvalidOperationException("There are still some references to the plugin assembly!");
+        }
         else if (!string.IsNullOrEmpty(logMessage))
+        {
             _logger.Trace(logMessage);
+        }
     }
 }

@@ -12,10 +12,9 @@ public class ChatGbxEventHandler : IGbxEventHandler
     {
         _chatService = chatService;
     }
+
     public void HandleEvents(GbxRemoteClient client)
     {
         client.OnPlayerChat += _chatService.ClientOnPlayerChat;
     }
-
-
 }
