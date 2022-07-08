@@ -8,6 +8,7 @@ using EvoSC.Domain;
 using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
+using GbxRemoteNet.Structs;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 
@@ -21,12 +22,9 @@ public class PlayerService : IPlayerService
     private readonly IPlayerCallbacks _playerCallbacks;
 
     private static readonly List<IPlayer> s_connectedPlayers = new();
-
-    /// <summary>
-    /// List of connected players.
-    /// </summary>
-    public List<IPlayer> ConnectedPlayers => s_connectedPlayers;
     
+    public List<IPlayer> ConnectedPlayers => s_connectedPlayers;
+
     public PlayerService(
         DatabaseContext databaseContext,
         GbxRemoteClient gbxRemoteClient,
@@ -37,6 +35,16 @@ public class PlayerService : IPlayerService
         _playerCallbacks = playerCallbacks;
     }
 
+    private async Task AddConnectedPlayer(string login)
+    {
+        var dbPlayer =
+            await s_databaseContext.Players.FirstOrDefaultAsync(dbPlayer => dbPlayer.Login == login) ??
+            await CreateDatabasePlayer(login);
+            
+        var player = await Player.Create(s_gbxRemoteClient, dbPlayer);
+        s_connectedPlayers.Add(player);
+    }
+    
     public async Task AddConnectedPlayers()
     {
         var playersOnline = await s_gbxRemoteClient.GetPlayerListAsync();
@@ -49,12 +57,21 @@ public class PlayerService : IPlayerService
 
         foreach (var playerOnline in playersOnline)
         {
-            var dbPlayer =
-                await s_databaseContext.Players.FirstOrDefaultAsync(dbPlayer => dbPlayer.Login == playerOnline.Login) ??
-                await CreateDatabasePlayer(playerOnline.Login);
-            
-            var player = await Player.Create(s_gbxRemoteClient, dbPlayer);
-            s_connectedPlayers.Add(player);
+            AddConnectedPlayer(playerOnline.Login);
+        }
+    }
+    
+    public async Task ClientOnPlayerInfoChanged(SPlayerInfo playerInfo)
+    {
+        var player = s_connectedPlayers.FirstOrDefault(p => p.Login == playerInfo.Login);
+
+        if (player == null)
+        {
+            AddConnectedPlayer(playerInfo.Login);
+        }
+        else
+        {
+            (player as Player).Update(playerInfo);
         }
     }
 

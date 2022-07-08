@@ -38,8 +38,15 @@ public class ChatService : IChatService
     public async Task ClientOnPlayerChat(int playeruid, string login, string text, bool isregisteredcmd)
     {
         var player = await PlayerService.GetPlayer(login);
-
         var chatMessage = new ServerChatMessage(_gbxRemoteClient, (IServerPlayer)player, text, playeruid);
-        await ServerChatMessage?.Invoke(chatMessage)!;
+
+        try
+        {
+            await ServerChatMessage?.Invoke(chatMessage)!;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("Failed to invoke ServerChatMessage event: {Msg}", ex.Message);
+        }
     }
 }

@@ -12,8 +12,17 @@ namespace EvoSC.Interfaces.Players;
 
 public interface IServerPlayer : IPlayer
 {
+    /// <summary>
+    /// Extra information about the player on the server.
+    /// </summary>
     public PlayerDetailedInfo? DetailedInfo { get; }
+    /// <summary>
+    /// Information about the player on the server.
+    /// </summary>
     public PlayerInfo Info { get; }
+    /// <summary>
+    /// Various flags about the player on the server.
+    /// </summary>
     public PlayerFlags Flags => new(Info.Flags);
     protected GbxRemoteClient Client { get; }
 }
