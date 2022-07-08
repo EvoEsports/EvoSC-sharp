@@ -9,7 +9,7 @@ namespace EvoSC.Domain.Players
         [Key]
         public int PlayerStatisticId { get; set; }
 
-        public Player Player { get; set; }
+        public DatabasePlayer DatabasePlayer { get; set; }
 
         public int PlayerId { get; set; }
 

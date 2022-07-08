@@ -1,14 +1,15 @@
 ﻿using System;
 using EvoSC.Domain.Players;
+using EvoSC.Interfaces.Players;
 
 namespace EvoSC.Core.Events.Callbacks.Args;
 
 public class PlayerConnectEventArgs : EventArgs
 {
-    private Player Player { get; }
+    private IPlayer Player { get; }
 
-    public PlayerConnectEventArgs(Player player)
+    public PlayerConnectEventArgs(IPlayer databasePlayer)
     {
-        Player = player;
+        Player = databasePlayer;
     }
 }

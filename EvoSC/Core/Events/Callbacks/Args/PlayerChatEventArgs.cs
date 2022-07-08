@@ -5,14 +5,14 @@ namespace EvoSC.Core.Events.Callbacks.Args;
 
 public class PlayerChatEventArgs : EventArgs
 {
-    public PlayerChatEventArgs(Player player, string text, bool isRegisteredCmd)
+    public PlayerChatEventArgs(DatabasePlayer databasePlayer, string text, bool isRegisteredCmd)
     {
-        Player = player;
+        DatabasePlayer = databasePlayer;
         Text = text;
         IsRegisteredCmd = isRegisteredCmd;
     }
 
-    public Player Player { get; set; }
+    public DatabasePlayer DatabasePlayer { get; set; }
 
     public string Text { get; set; }
 

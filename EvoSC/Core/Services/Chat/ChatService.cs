@@ -8,6 +8,7 @@ using EvoSC.Core.Services.UI;
 using EvoSC.Domain;
 using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 using NLog;
 
@@ -38,7 +39,7 @@ public class ChatService : IChatService
     {
         var player = await PlayerService.GetPlayer(login);
 
-        var chatMessage = new ServerChatMessage(_gbxRemoteClient, player, text, playeruid);
+        var chatMessage = new ServerChatMessage(_gbxRemoteClient, (IServerPlayer)player, text, playeruid);
         await ServerChatMessage?.Invoke(chatMessage)!;
     }
 }

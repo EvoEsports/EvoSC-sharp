@@ -18,11 +18,11 @@ public class Manialink
         _gbxRemoteClient = gbxRemoteClient;
     }
 
-    public async Task Send(Player player)
+    public async Task Send(DatabasePlayer databasePlayer)
     {
         try
         {
-            var action = new ManialinkAction(async (action) => await Hide(player));
+            var action = new ManialinkAction(async (action) => await Hide(databasePlayer));
             _actionClose = UiService.RegisterAction(action);
             var template = new TemplateEngine(@"templates", "test.xml");
             var xml = template
@@ -49,7 +49,7 @@ public class Manialink
                     items = "Race|Tech|FullSpeed|Speed fun",
                 }).Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", string.Empty);
             var outXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><manialinks>" + xml + xml2 + "</manialinks>";
-            await _gbxRemoteClient.SendDisplayManialinkPageToLoginAsync(player.Login, outXml, 0, false);
+            await _gbxRemoteClient.SendDisplayManialinkPageToLoginAsync(databasePlayer.Login, outXml, 0, false);
         }
         catch (Exception e)
         {
@@ -57,9 +57,9 @@ public class Manialink
         }
     }
 
-    public async Task Hide(Player player)
+    public async Task Hide(DatabasePlayer databasePlayer)
     {
-        await _gbxRemoteClient.SendHideManialinkPageToLoginAsync(player.Login);
+        await _gbxRemoteClient.SendHideManialinkPageToLoginAsync(databasePlayer.Login);
         UiService.UnregisterAction(_actionClose);
     }
 }

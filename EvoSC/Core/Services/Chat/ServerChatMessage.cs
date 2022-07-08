@@ -3,13 +3,14 @@ using System.Threading.Tasks;
 using EvoSC.Core.Helpers;
 using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 
 namespace EvoSC.Core.Services.Chat;
 
 public class ServerChatMessage : IServerChatMessage
 {
-    public Player Player { get; }
+    public IServerPlayer Player { get; }
     public string Content { get; }
     public int PlayerServerId { get; }
     /// <summary>
@@ -23,7 +24,7 @@ public class ServerChatMessage : IServerChatMessage
 
     private GbxRemoteClient _client;
 
-    public ServerChatMessage(GbxRemoteClient client, Player player, string content, int playerServerId)
+    public ServerChatMessage(GbxRemoteClient client, IServerPlayer player, string content, int playerServerId)
     {
         Player = player;
         Content = content;

@@ -14,7 +14,7 @@ public class ChatCommandsService : IChatCommandsService
 {
     private readonly Dictionary<string, Command> _commands = new();
 
-    public Task ClientOnPlayerChatCommand(Player player, Command command)
+    public Task ClientOnPlayerChatCommand(DatabasePlayer databasePlayer, Command command)
     {
         throw new NotImplementedException();
     }

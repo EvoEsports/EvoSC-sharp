@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using EvoSC.Core.Helpers;
 using EvoSC.Domain.Players;
+using EvoSC.Interfaces.Players;
 
 namespace EvoSC.Interfaces.Chat;
 
@@ -9,7 +10,7 @@ public interface IServerChatMessage
     /// <summary>
     /// Player that sent the message.
     /// </summary>
-    public Player Player { get; }
+    public IServerPlayer Player { get; }
     
     /// <summary>
     /// Content of the message.

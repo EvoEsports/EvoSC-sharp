@@ -28,7 +28,7 @@ namespace EvoSC.Domain
 
         public DbSet<PersonalBest> PersonalBests { get; set; }
 
-        public DbSet<Player> Players { get; set; }
+        public DbSet<DatabasePlayer> Players { get; set; }
 
         public DbSet<PlayerStatistic> PlayerStatistics { get; set; }
 
@@ -47,9 +47,9 @@ namespace EvoSC.Domain
                 .WithOne(ms => ms.Map)
                 .HasForeignKey<MapStatistic>(ms => ms.MapId);
 
-            modelBuilder.Entity<Player>()
+            modelBuilder.Entity<DatabasePlayer>()
                 .HasOne(p => p.PlayerStatistic)
-                .WithOne(ps => ps.Player)
+                .WithOne(ps => ps.DatabasePlayer)
                 .HasForeignKey<PlayerStatistic>(ps => ps.PlayerId);
         }
     }

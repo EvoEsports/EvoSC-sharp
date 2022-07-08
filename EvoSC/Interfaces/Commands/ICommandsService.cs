@@ -8,7 +8,7 @@ namespace EvoSC.Interfaces.Commands;
 
 public interface ICommandsService
 {
-    public Task ClientOnPlayerChatCommand(Player player, Command command);
+    public Task ClientOnPlayerChatCommand(DatabasePlayer databasePlayer, Command command);
 
     /// <summary>
     /// Register commands from a commands group's type.

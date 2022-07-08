@@ -12,5 +12,5 @@ public interface IPlayerService
 
     public Task ClientOnPlayerDisconnect(string login, string reason);
 
-    public List<Player> GetConnectedPlayers();
+    public List<IPlayer> ConnectedPlayers { get; }
 }
