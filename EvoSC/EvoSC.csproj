@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Core\Commands\Generic\Exceptions" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

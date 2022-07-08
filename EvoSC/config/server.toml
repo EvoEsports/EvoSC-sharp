@@ -1,6 +1,6 @@
 ﻿[dedicated]
-    host = "127.0.0.1"
-    port = 5001
+    host = "172.28.238.241"
+    port = 5000
     login = "SuperAdmin"
     password = "SuperAdmin"
 
@@ -19,5 +19,5 @@
     success = "5b6"
     warning = "e83"
     danger = "c44"
-    accent = "2062b5"
+    accent = "ff0058"
     #accent = "ff0058"

@@ -28,7 +28,6 @@ public class MyPlugin : IPlugin
         services.AddSingleton<ISampleService, SampleService>();
         services.AddSingleton<IPlayerEventHandler, PlayerEventHandler>();
         services.AddSingleton<IPlugin, MyPlugin>();
-
     }
 
     public void Unload(IServiceCollection services)
