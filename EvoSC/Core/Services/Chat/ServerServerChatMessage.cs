@@ -8,7 +8,7 @@ using GbxRemoteNet;
 
 namespace EvoSC.Core.Services.Chat;
 
-public class ServerChatMessage : IServerChatMessage
+public class ServerServerChatMessage : IServerServerChatMessage
 {
     public IServerPlayer Player { get; }
     public string Content { get; }
@@ -24,7 +24,7 @@ public class ServerChatMessage : IServerChatMessage
 
     private GbxRemoteClient _client;
 
-    public ServerChatMessage(GbxRemoteClient client, IServerPlayer player, string content, int playerServerId)
+    public ServerServerChatMessage(GbxRemoteClient client, IServerPlayer player, string content, int playerServerId)
     {
         Player = player;
         Content = content;

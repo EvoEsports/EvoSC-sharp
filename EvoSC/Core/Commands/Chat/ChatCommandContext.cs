@@ -12,9 +12,9 @@ public class ChatCommandContext : IChatCommandContext
 {
     public GbxRemoteClient Client { get; }
     public IServerPlayer Player { get; }
-    public IServerChatMessage Message { get; }
+    public IServerServerChatMessage Message { get; }
 
-    public ChatCommandContext(GbxRemoteClient client, IServerPlayer player, IServerChatMessage message)
+    public ChatCommandContext(GbxRemoteClient client, IServerPlayer player, IServerServerChatMessage message)
     {
         Client = client;
         Player = player;

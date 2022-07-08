@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using EvoSC.Attributes;
-using EvoSC.Domain.Commands;
+using EvoSC.Core.Commands.Chat;
+using EvoSC.Core.Commands.Generic;
+using EvoSC.Core.Commands.Generic.Attributes;
 using EvoSC.Domain.Players;
+using EvoSC.Interfaces.Chat;
 using EvoSC.Interfaces.Commands;
+using Scriban.Parsing;
 
 namespace EvoSC.Core.Services.Commands;
 
-public class ChatCommandsService : IChatCommandsService
+public class ChatCommandsService : CommandsManager<ChatCommandGroup>, IChatCommandsService
 {
-    private readonly Dictionary<string, Command> _commands = new();
-
-    public Task ClientOnPlayerChatCommand(DatabasePlayer databasePlayer, Command command)
+    public ChatCommandsService(IServiceProvider services) : base(services)
     {
-        throw new NotImplementedException();
     }
 
-    public void RegisterCommands(Type type)
+    public Task OnChatMessage(IServerServerChatMessage message)
     {
-        throw new NotImplementedException();
-    }
-
-    public void UnregisterCommands(Type type)
-    {
-        throw new NotImplementedException();
+        Console.WriteLine(message.Content);
+        return Task.CompletedTask;
     }
 }

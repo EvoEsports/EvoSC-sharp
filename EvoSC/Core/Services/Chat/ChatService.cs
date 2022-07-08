@@ -22,10 +22,7 @@ public class ChatService : IChatService
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly Manialink _manialink;
 
-    /// <summary>
-    /// Triggered when a server message from the server is sent.
-    /// </summary>
-    public event Func<IServerChatMessage, Task> ServerChatMessage;
+    public event Func<IServerServerChatMessage, Task> ServerChatMessage;
 
     public ChatService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IChatCallbacks chatCallbacks)
     {
@@ -38,7 +35,7 @@ public class ChatService : IChatService
     public async Task ClientOnPlayerChat(int playeruid, string login, string text, bool isregisteredcmd)
     {
         var player = await PlayerService.GetPlayer(login);
-        var chatMessage = new ServerChatMessage(_gbxRemoteClient, (IServerPlayer)player, text, playeruid);
+        var chatMessage = new ServerServerChatMessage(_gbxRemoteClient, (IServerPlayer)player, text, playeruid);
 
         try
         {

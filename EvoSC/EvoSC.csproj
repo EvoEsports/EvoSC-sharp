@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Core\Commands\Generic\Exceptions" />
+    <Folder Include="Domain\Commands" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>
