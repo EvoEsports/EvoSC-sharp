@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using EvoSC.Interfaces.Commands;
 
 namespace EvoSC.Core.Commands.Generic.Interfaces;
 

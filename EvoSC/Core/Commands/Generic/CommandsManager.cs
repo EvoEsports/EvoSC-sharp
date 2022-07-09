@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
 using EvoSC.Core.Commands.Generic.Attributes;
+using EvoSC.Core.Commands.Generic.Exceptions;
 using EvoSC.Core.Commands.Generic.Interfaces;
 using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Chat;
@@ -46,16 +47,16 @@ public abstract class CommandsManager<TGroupType> : ICommandsService
             
             // paramters
             var parameters = method.GetParameters();
-            List<CommandParameter> cmdParams = new();
+            List<ICommandParameter> cmdParams = new();
             
             foreach (var param in parameters)
             {
                 var description = param.GetCustomAttribute<DescriptionAttribute>();
-                var cmdParam = new CommandParameter(param.ParameterType, param.Name, description?.Description);
+                var cmdParam = new CommandParameter(param.ParameterType, param.Name, param.IsOptional, description?.Description);
             }
             
             // register the command
-            var command = new Command(method, type, parameters, cmdAttr.Name, cmdAttr.Description, permission,
+            var command = new Command(method, type, cmdParams, cmdAttr.Name, cmdAttr.Description, permission,
                 groupAttr?.Name);
             
             _commands.Add(command);
@@ -70,6 +71,19 @@ public abstract class CommandsManager<TGroupType> : ICommandsService
         throw new NotImplementedException();
     }
 
-    public Task ExecuteCommand(ICommandContext context, ICommandParserResult parserResult) =>
-        parserResult.Command.Invoke(_services, context, parserResult.Arguments);
+    public Task<ICommandResult> ExecuteCommand(ICommandContext context, ICommandParserResult parserResult)
+    {
+        // todo: check permissions
+        return parserResult.Command.Invoke(_services, context, parserResult.Arguments);
+    }
+
+    public ICommand GetCommand(string group, string name)
+    {
+        if (_commands.TryGetValue(group, out var command))
+        {
+            return command;
+        }
+
+        throw new CommandException($"Command '{group}' not found");
+    }
 }

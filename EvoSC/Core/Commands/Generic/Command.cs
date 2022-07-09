@@ -13,14 +13,14 @@ namespace EvoSC.Core.Commands.Generic;
 public class Command : ICommand
 {
     public MethodInfo CmdMethod { get; private set; }
-    public ParameterInfo[] Parameters { get; private set; }
+    public ICommandParameter[] Parameters { get; private set; }
     public Type GroupType { get; private set; }
     public string Description { get; private set; }
     public string Name { get; private set; }
     public string? Permission { get; private set; }
     public string? Group { get; private set; }
 
-    public Command(MethodInfo methodInfo, Type groupType, IEnumerable<ParameterInfo> pars, string name,
+    public Command(MethodInfo methodInfo, Type groupType, IEnumerable<ICommandParameter> pars, string name,
         string description, string? permission = null, string? group = null)
     {
         CmdMethod = methodInfo;
@@ -43,7 +43,7 @@ public class Command : ICommand
 
         if (instance == null)
         {
-            throw new InvalidOperationException("Could not create command group instance.");
+            return new CommandResult(false, new InvalidOperationException("Could not create command group instance."));
         }
 
         instance.SetContext(context);
@@ -59,4 +59,6 @@ public class Command : ICommand
             return new CommandResult(false, ex);
         }
     }
+
+    public int RequiredParameters() => Parameters.Count(p => p.Optional);
 }

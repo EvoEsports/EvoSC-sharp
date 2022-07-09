@@ -9,7 +9,8 @@ namespace EvoSC.Core.Commands.Generic;
 public class CommandCollection : ICollection<Command>, IReadOnlyDictionary<string, Command>
 {
     private Dictionary<string, Command> _commands = new();
-    
+    private Dictionary<string, List<Command>> _groupsMap = new();
+
     public int Count => _commands.Count;
     public bool IsReadOnly => false;
 

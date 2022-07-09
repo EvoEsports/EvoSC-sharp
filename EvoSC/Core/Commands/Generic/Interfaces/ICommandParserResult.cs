@@ -2,8 +2,8 @@
 
 namespace EvoSC.Core.Commands.Generic.Interfaces;
 
-public class ICommandParserResult
+public interface ICommandParserResult : IResult
 {
-    public Command Command { get; }
+    public ICommand? Command { get; }
     public IEnumerable<object> Arguments { get; }
 }

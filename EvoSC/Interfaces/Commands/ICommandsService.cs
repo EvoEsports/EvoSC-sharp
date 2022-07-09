@@ -31,5 +31,12 @@ public interface ICommandsService
     /// </summary>
     /// <param name="parserResult"></param>s
     /// <returns></returns>
-    public Task ExecuteCommand(ICommandContext context, ICommandParserResult parserResult);
+    public Task<ICommandResult> ExecuteCommand(ICommandContext context, ICommandParserResult parserResult);
+    /// <summary>
+    /// Get a command from it's name.
+    /// </summary>
+    /// <param name="group"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public ICommand GetCommand(string group, string name);
 }

@@ -2,8 +2,6 @@
 
 namespace EvoSC.Core.Commands.Generic.Interfaces;
 
-public interface ICommandResult
+public interface ICommandResult : IResult
 {
-    public bool IsSuccess { get; }
-    public Exception ExceptionThrown { get; }
 }
