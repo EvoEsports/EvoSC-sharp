@@ -29,7 +29,7 @@ public class ServerServerChatMessage : IServerServerChatMessage
         Player = player;
         Content = content;
         PlayerServerId = playerServerId;
-        IsCommand = content.TrimStart().StartsWith('/');
+        IsCommand = content.StartsWith('/');
         _client = client;
     }
 
