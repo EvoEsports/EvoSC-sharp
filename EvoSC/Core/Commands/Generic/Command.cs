@@ -39,18 +39,20 @@ public class Command : ICommand
 
     public async Task<ICommandResult> Invoke(IServiceProvider services, ICommandContext context, params object[] args)
     {
-        var instance = (ICommandGroup)ActivatorUtilities.CreateInstance(services, GroupType);
-
-        if (instance == null)
-        {
-            return new CommandResult(false, new InvalidOperationException("Could not create command group instance."));
-        }
-
-        instance.SetContext(context);
-
         try
         {
-            await (Task)CmdMethod.Invoke(instance, args);
+            // create instance and execute
+            var groupInstance = ActivatorUtilities.CreateInstance(services, GroupType);
+
+            if (groupInstance == null)
+            {
+                return new CommandResult(false, new InvalidOperationException("Could not create command group instance."));
+            }
+
+            ((ICommandGroup)groupInstance).SetContext(context);
+
+        
+            await (Task)CmdMethod.Invoke(groupInstance, args);
 
             return new CommandResult(true);
         }
