@@ -1,6 +1,6 @@
 ﻿using EvoSC.Core.Commands.Generic.Interfaces;
 using EvoSC.Domain.Players;
-using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Messages;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 

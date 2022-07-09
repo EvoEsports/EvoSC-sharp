@@ -3,7 +3,7 @@ using EvoSC.Core.Helpers;
 using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Players;
 
-namespace EvoSC.Interfaces.Chat;
+namespace EvoSC.Interfaces.Messages;
 
 public interface IServerServerChatMessage : IServerMessage
 {

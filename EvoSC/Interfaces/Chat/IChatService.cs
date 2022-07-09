@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace EvoSC.Interfaces.Chat;
+namespace EvoSC.Interfaces.Messages;
 
 public interface IChatService
 {

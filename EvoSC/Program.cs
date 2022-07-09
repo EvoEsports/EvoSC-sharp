@@ -11,7 +11,7 @@ using EvoSC.Core.Services.Plugins;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain;
 using EvoSC.Interfaces;
-using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Messages;
 using EvoSC.Interfaces.Commands;
 using EvoSC.Interfaces.Players;
 using EvoSC.Interfaces.Plugins;

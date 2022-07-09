@@ -1,5 +1,5 @@
 ﻿using EvoSC.Interfaces;
-using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Messages;
 using GbxRemoteNet;
 
 namespace EvoSC.Core.Events.GbxEventHandlers;

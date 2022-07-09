@@ -11,7 +11,7 @@ using EvoSC.Core.Commands.Generic.Exceptions;
 using EvoSC.Core.Commands.Generic.Parsing;
 using EvoSC.Core.Commands.Generic.Parsing.Readers;
 using EvoSC.Domain.Players;
-using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Messages;
 using EvoSC.Interfaces.Commands;
 using GbxRemoteNet;
 using NLog;

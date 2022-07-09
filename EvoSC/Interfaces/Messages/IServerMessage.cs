@@ -1,6 +1,6 @@
 ﻿using EvoSC.Interfaces.Players;
 
-namespace EvoSC.Interfaces.Chat;
+namespace EvoSC.Interfaces.Messages;
 
 public interface IServerMessage
 {

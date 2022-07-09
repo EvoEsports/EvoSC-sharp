@@ -7,7 +7,7 @@ using EvoSC.Core.Services.Players;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain;
 using EvoSC.Domain.Players;
-using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Messages;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 using NLog;
