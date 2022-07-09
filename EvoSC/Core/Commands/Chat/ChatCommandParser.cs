@@ -32,6 +32,7 @@ public class ChatCommandParser : ICommandParser
             while (input[i] == '/')
             {
                 input = input[(i + 1)..];
+                i++;
             }
 
             // check command and parameters
