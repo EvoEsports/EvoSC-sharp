@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EvoSC.Core.Commands.Chat;
 
-public class ChatCommandParser : ICommandParser
+public class ChatCommandParser : ICommandParser<ChatCommandParserResult>
 {
     private readonly IChatCommandsService _chatCommands;
     private readonly ValueReaderManager _valueReader;
@@ -21,7 +21,7 @@ public class ChatCommandParser : ICommandParser
         _valueReader = valueReader;
     }
     
-    public async Task<ICommandParserResult> Parse(string input)
+    public async Task<ChatCommandParserResult> Parse(string input)
     {
         try
         {
