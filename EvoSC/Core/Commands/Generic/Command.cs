@@ -51,7 +51,6 @@ public class Command : ICommand
 
             ((ICommandGroup)groupInstance).SetContext(context);
 
-        
             await (Task)CmdMethod.Invoke(groupInstance, args);
 
             return new CommandResult(true);
