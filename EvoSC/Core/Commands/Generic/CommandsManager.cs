@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using EvoSC.Core.Commands.Generic.Attributes;
@@ -53,6 +54,7 @@ public abstract class CommandsManager<TGroupType> : ICommandsService
             {
                 var description = param.GetCustomAttribute<DescriptionAttribute>();
                 var cmdParam = new CommandParameter(param.ParameterType, param.Name, param.IsOptional, description?.Description);
+                cmdParams.Add(cmdParam);
             }
             
             // register the command
@@ -63,18 +65,19 @@ public abstract class CommandsManager<TGroupType> : ICommandsService
         }
     }
 
-    public void RegisterCommands<T>() =>
-        RegisterCommands(typeof(T));
+    public void RegisterCommands<T>() => RegisterCommands(typeof(T));
 
     public void UnregisterCommands(Type type)
     {
-        throw new NotImplementedException();
+        
     }
+
+    public void UnregisterCommands<T>() => UnregisterCommands(typeof(T));
 
     public Task<ICommandResult> ExecuteCommand(ICommandContext context, ICommandParserResult parserResult)
     {
         // todo: check permissions
-        return parserResult.Command.Invoke(_services, context, parserResult.Arguments);
+        return parserResult.Command.Invoke(_services, context, parserResult.Arguments.ToArray());
     }
 
     public ICommand GetCommand(string group, string name)

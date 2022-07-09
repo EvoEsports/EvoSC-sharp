@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using EvoSC.Interfaces.Players;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,9 +13,9 @@ public interface IPlugin
 
     public void HandleEvents(IPlayerCallbacks playerCallbacks);
 
-    void Load(IServiceCollection services);
+    void Register(IServiceCollection services);
 
     void Execute();
 
-    void Unload(IServiceCollection services);
+    void Unregister(IServiceCollection services);
 }

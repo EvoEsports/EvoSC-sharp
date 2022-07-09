@@ -7,12 +7,14 @@ using EvoSC.Core.Plugins;
 using EvoSC.Core.Services.Chat;
 using EvoSC.Core.Services.Commands;
 using EvoSC.Core.Services.Players;
+using EvoSC.Core.Services.Plugins;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain;
 using EvoSC.Interfaces;
 using EvoSC.Interfaces.Chat;
 using EvoSC.Interfaces.Commands;
 using EvoSC.Interfaces.Players;
+using EvoSC.Interfaces.Plugins;
 using EvoSC.Interfaces.UI;
 using GbxRemoteNet;
 using Microsoft.EntityFrameworkCore;
@@ -64,9 +66,11 @@ builder.ConfigureServices(services =>
     services.AddSingleton<IChatService, ChatService>();
     services.AddSingleton<IUiService, UiService>();
     services.AddSingleton<IChatCommandsService, ChatCommandsService>();
+    services.AddTransient<IPluginsService, PluginsService>();
+    services.AddHostedService<PluginsLoaderService>();
 
-    // Load plugins
-    PluginFactory.Instance.LoadPlugins(services);
+    // Register plugins
+    PluginFactory.Instance.RegisterPlugins(services);
 });
 
 var app = builder.Build();

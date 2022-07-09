@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EvoSC.Core.Commands.Generic.Exceptions;
 using EvoSC.Core.Commands.Generic.Parsing.Readers;
 
 namespace EvoSC.Core.Commands.Generic.Parsing;
@@ -59,11 +60,15 @@ public class ValueReaderManager
             {
                 return await reader.Read(type, input);
             }
+            catch (ValueConversionException)
+            {
+            }
             catch (Exception ex)
             {
+                throw ex;
             }
         }
 
-        throw new InvalidOperationException();
+        throw new FormatException();
     }
 }

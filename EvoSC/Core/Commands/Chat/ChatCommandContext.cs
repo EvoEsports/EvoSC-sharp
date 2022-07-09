@@ -11,13 +11,7 @@ namespace EvoSC.Core.Commands.Chat;
 public class ChatCommandContext : IChatCommandContext
 {
     public GbxRemoteClient Client { get; }
-    IPlayer ICommandContext.Player => Player;
-
-    public IServerPlayer Player
-    {
-        get => (IServerPlayer)Player;
-        set => Player = value;
-    }
+    public IPlayer Player { get; }
 
     public IServerServerChatMessage Message { get; }
 

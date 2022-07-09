@@ -47,14 +47,14 @@ public class ChatCommandParser : ICommandParser
             var command = _chatCommands.GetCommand(cmdName, ""); // todo: implement group/sub commands
             var numInputArgs = parts.Length - 1;
 
-            if (numInputArgs - 1 < command.RequiredParameters())
+            if (numInputArgs < command.RequiredParameters())
             {
                 return new ChatCommandParserResult(false, command, Array.Empty<object>(),
                     new CommandException("Missing parameters"));
             }
 
             // combine last parameter if string
-            if (numInputArgs > command.Parameters.Length && command.Parameters.Last().ParameterType == typeof(string))
+            if (command.Parameters.Length > 0 && numInputArgs > command.Parameters.Length && command.Parameters.Last().ParameterType == typeof(string))
             {
                 parts[numInputArgs - 1] = string.Join(' ', parts[(numInputArgs - 1)..]);
             }
@@ -62,25 +62,25 @@ public class ChatCommandParser : ICommandParser
             // convert args
             var args = new List<object>();
 
-            try
+            for (i = 0; i < command.Parameters.Length; i++)
             {
-                for (i = 0; i < command.Parameters.Length; i++)
+                var inputParam = parts[i + 1];
+                var paramInfo = command.Parameters[i];
+                
+                try
                 {
-                    var inputParam = parts[i + 1];
-                    var paramInfo = command.Parameters[i];
-
-                    var argValue = _valueReader.ConvertValue(paramInfo.ParameterType, inputParam);
+                    var argValue = await _valueReader.ConvertValue(paramInfo.ParameterType, inputParam);
 
                     // value converted, add it
                     args.Add(argValue);
                 }
+                catch (FormatException)
+                {
+                    return new ChatCommandParserResult(false, command, Array.Empty<object>(),
+                        new CommandException($"Argument '{paramInfo.Name}' is in an invalid format."));
+                }
             }
-            catch (Exception ex)
-            {
-                return new ChatCommandParserResult(false, command, Array.Empty<object>(),
-                    new CommandException("Invalid arguments to command: " + ex.Message));
-            }
-            
+
             return new ChatCommandParserResult(true, command, args, null);
         }
         catch (CommandException ex)

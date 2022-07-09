@@ -29,12 +29,28 @@ internal class PluginFactory
     {
     }
 
+    /// <summary>
+    /// Get a plugin from it's Guid.
+    /// </summary>
+    /// <param name="pluginId"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public PluginWrapper GetPlugin(Guid pluginId)
+    {
+        if (_cache.TryGetValue(pluginId, out var plugin))
+        {
+            return plugin;
+        }
+
+        throw new ArgumentException("Plugin not found");
+    }
+
     /// <summary>Scans for available plugins at the specified path and loads them.</summary>
     /// <param name="path">The path to the plugins location. (Default: "\plugins\")</param>
     /// <returns>
     ///   <para>Returns the plugins ids of successfully loaded plugins.<br /></para>
     /// </returns>
-    public Guid[] LoadPlugins(IServiceCollection services, string path = "plugins")
+    public Guid[] RegisterPlugins(IServiceCollection services, string path = "plugins")
     {
         string pluginsDir = Path.Combine(AppContext.BaseDirectory, path);
 
@@ -58,7 +74,7 @@ internal class PluginFactory
                             sharedTypes: new[] { typeof(IPlugin), typeof(ISampleService) },
                             config => config.EnableHotReload = true);
 
-                    IPlugin loadedPlugin = InitializePlugin(loader, services);
+                    IPlugin loadedPlugin = InitializePluginRegistration(loader, services);
 
                     if (loadedPlugin != null)
                     {
@@ -86,7 +102,7 @@ internal class PluginFactory
     /// <param name="loader">The plugin loader.</param>
     /// <returns>Returns true if the plugin execution was successful, otherwise returns false.<br /></returns>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private IPlugin InitializePlugin(PluginLoader loader, IServiceCollection services)
+    private IPlugin InitializePluginRegistration(PluginLoader loader, IServiceCollection services)
     {
         try
         {
@@ -99,7 +115,7 @@ internal class PluginFactory
             {
                 if (Activator.CreateInstance(pluginType) is IPlugin instance)
                 {
-                    instance.Load(services);
+                    instance.Register(services);
                     instance.Execute();
 
                     _logger.Trace($"Created new instance of type '{pluginType}'.");
@@ -130,7 +146,7 @@ internal class PluginFactory
     /// <summary>Unloads the plugin contained by the PluginLoader instance.</summary>
     /// <param name="loader">The plugin loader.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void UnloadPlugin(Guid id, IServiceCollection services)
+    public void UnregisterPlugin(Guid id, IServiceCollection services)
     {
         if (!_cache.ContainsKey(id))
         {
@@ -147,7 +163,7 @@ internal class PluginFactory
             logMessage = $"Unloaded plugin. ('{wrapper.Instance.GetType()}')";
 
             weakRef = new WeakReference(wrapper.Instance.GetType().Assembly, true);
-            wrapper.Instance.Unload(services);
+            wrapper.Instance.Unregister(services);
             wrapper.Loader.Dispose();
             _cache.Remove(id);
             wrapper = null;

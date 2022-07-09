@@ -60,5 +60,5 @@ public class Command : ICommand
         }
     }
 
-    public int RequiredParameters() => Parameters.Count(p => p.Optional);
+    public int RequiredParameters() => Parameters.Count(p => !p.Optional);
 }

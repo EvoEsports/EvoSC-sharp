@@ -16,27 +16,36 @@ public class MyPlugin : IPlugin
 
     public Version Version => Assembly.GetExecutingAssembly().GetName().Version!;
 
-
     public void Execute()
     {
         Console.WriteLine("Executing...");
-
     }
 
-    public void Load(IServiceCollection services)
+    public void Register(IServiceCollection services)
     {
         services.AddSingleton<ISampleService, SampleService>();
         services.AddSingleton<IPlayerEventHandler, PlayerEventHandler>();
         services.AddSingleton<IPlugin, MyPlugin>();
     }
 
-    public void Unload(IServiceCollection services)
+    public void Unregister(IServiceCollection services)
     {
         services.Remove<SampleService>();
 
         Console.WriteLine("Unloading...");
     }
 
+    public Task Load(IChatCommandsService chatCommands)
+    {
+        chatCommands.RegisterCommands<ExampleChatCommands>();
+        return Task.CompletedTask;
+    }
+
+    public Task Unload(IChatCommandsService chatCommands)
+    {
+        chatCommands.UnregisterCommands<ExampleChatCommands>();
+        return Task.CompletedTask;
+    }
 
     public void HandleEvents(IPlayerCallbacks playerCallbacks)
     {

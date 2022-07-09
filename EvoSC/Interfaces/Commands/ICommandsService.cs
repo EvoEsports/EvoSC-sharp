@@ -27,6 +27,11 @@ public interface ICommandsService
     /// <param name="type"></param>
     public void UnregisterCommands(Type type);
     /// <summary>
+    /// Remove commands of a given commands group's type.
+    /// </summary>
+    /// <param name="type"></param>
+    public void UnregisterCommands<T>();
+    /// <summary>
     /// Execute a command based on the parser result.
     /// </summary>
     /// <param name="parserResult"></param>s

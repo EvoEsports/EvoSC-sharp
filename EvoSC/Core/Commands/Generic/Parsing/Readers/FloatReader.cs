@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
+using EvoSC.Core.Commands.Generic.Exceptions;
 
 namespace EvoSC.Core.Commands.Generic.Parsing.Readers;
 
@@ -14,15 +16,18 @@ public class FloatReader : IValueReader
     
     public Task<object> Read(Type type, string input)
     {
-        if (type == typeof(float))
+        try
         {
-            return Task.FromResult((object)float.Parse(input));
-        }
-        else if (type == typeof(double))
-        {
-            return Task.FromResult((object)double.Parse(input));
-        }
+            if (type == typeof(float))
+            {
+                return Task.FromResult((object)float.Parse(input, NumberStyles.Any, CultureInfo.InvariantCulture));
+            }
+            else if (type == typeof(double))
+            {
+                return Task.FromResult((object)double.Parse(input, NumberStyles.Any, CultureInfo.InvariantCulture));
+            }
+        } catch (Exception ex){}
 
-        throw new InvalidOperationException("Can only convert from int, uint, long or ulong.");
+        throw new ValueConversionException();
     }
 }

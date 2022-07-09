@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
+using EvoSC.Core.Commands.Generic.Exceptions;
 
 namespace EvoSC.Core.Commands.Generic.Parsing.Readers;
 
@@ -16,23 +18,26 @@ public class IntegerReader : IValueReader
     
     public Task<object> Read(Type type, string input)
     {
-        if (type == typeof(int))
+        try
         {
-            return Task.FromResult((object)int.Parse(input));
-        } 
-        else if (type == typeof(uint))
-        {
-            return Task.FromResult((object)uint.Parse(input));
-        }
-        else if (type == typeof(long))
-        {
-            return Task.FromResult((object)long.Parse(input));
-        }
-        else if (type == typeof(ulong))
-        {
-            return Task.FromResult((object)ulong.Parse(input));
-        }
+            if (type == typeof(int))
+            {
+                return Task.FromResult((object)int.Parse(input));
+            } 
+            else if (type == typeof(uint))
+            {
+                return Task.FromResult((object)uint.Parse(input));
+            }
+            else if (type == typeof(long))
+            {
+                return Task.FromResult((object)long.Parse(input));
+            }
+            else if (type == typeof(ulong))
+            {
+                return Task.FromResult((object)ulong.Parse(input));
+            }
+        } catch (Exception ex) {}
 
-        throw new InvalidOperationException("Can only convert from int, uint, long or ulong.");
+        throw new ValueConversionException();
     }
 }

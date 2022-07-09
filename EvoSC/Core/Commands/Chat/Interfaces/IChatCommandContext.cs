@@ -8,6 +8,5 @@ namespace EvoSC.Core.Commands.Chat.Interfaces;
 
 public interface IChatCommandContext : ICommandContext
 {
-    public IServerPlayer Player { get; }
     public IServerServerChatMessage Message { get;}
 }

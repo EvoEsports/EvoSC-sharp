@@ -13,4 +13,12 @@ public class ExampleChatCommands : ChatCommandGroup
     [Permission("admin")]
     public Task Echo(string message) =>
         Context.Client.ChatSendServerMessageAsync("[Server] " + message);
+
+    [Command("test", "Do some stuff")]
+    public async Task Test(string someStr, int myNumber, float floatNumber)
+    {
+        Context.Message.ReplyAsync("Parameter 1 (string): " + someStr);
+        Context.Message.ReplyAsync("Parameter 1 (int): " + myNumber);
+        Context.Message.ReplyAsync("Parameter 1 (float): " + floatNumber);
+    }
 }
