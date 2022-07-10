@@ -22,4 +22,6 @@ public interface IPlayerService
     public List<IPlayer> ConnectedPlayers { get; }
 
     public Task ClientOnPlayerInfoChanged(SPlayerInfo playerInfo);
+
+    public Task<IPlayer> GetPlayer(string login);
 }

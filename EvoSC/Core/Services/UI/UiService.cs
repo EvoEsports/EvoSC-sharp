@@ -21,22 +21,25 @@ public class UiService : IUiService
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IManialinkPageCallbacks _manialinkPageCallbacks;
+    private readonly IPlayerService _playerService;
     private static Dictionary<string, ManialinkAction> s_actions;
 
-    public UiService(GbxRemoteClient gbxRemoteClient, IManialinkPageCallbacks iManialinkPageCallbacks)
+    public UiService(GbxRemoteClient gbxRemoteClient, IManialinkPageCallbacks iManialinkPageCallbacks,
+        IPlayerService playerService)
     {
         _gbxRemoteClient = gbxRemoteClient;
         _manialinkPageCallbacks = iManialinkPageCallbacks;
+        _playerService = playerService;
         s_actions = new Dictionary<string, ManialinkAction>();
     }
 
     public async Task OnPlayerManialinkPageAnswer(int playerUid, string login, string answer, SEntryVal[] entries)
     {
-        var player = (IServerPlayer)await PlayerService.GetPlayer(login);
+        var player = (IServerPlayer)await _playerService.GetPlayer(login);
         var message = new ManialinkPageAnswer(player, answer, entries, playerUid);
-        
+
         _manialinkPageCallbacks.OnPlayerManialinkPageAnswer(new ManialinkPageEventArgs(message));
-        
+
         var values = new Dictionary<string, object>();
         foreach (var entry in entries)
         {
@@ -45,7 +48,7 @@ public class UiService : IUiService
                 values.Add(entry.Name, entry.Value);
             }
         }
-        
+
         var compare = s_actions.ContainsKey(answer);
         if (compare)
         {

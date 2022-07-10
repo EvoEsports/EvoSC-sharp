@@ -14,13 +14,13 @@ public class ChatCommandParser : ICommandParser<ChatCommandParserResult>
 {
     private readonly IChatCommandsService _chatCommands;
     private readonly ValueReaderManager _valueReader;
-    
+
     public ChatCommandParser(IChatCommandsService chatCommands, ValueReaderManager valueReader)
     {
         _chatCommands = chatCommands;
         _valueReader = valueReader;
     }
-    
+
     public async Task<ChatCommandParserResult> Parse(string input)
     {
         try
@@ -55,7 +55,8 @@ public class ChatCommandParser : ICommandParser<ChatCommandParserResult>
             }
 
             // combine last parameter if string
-            if (command.Parameters.Length > 0 && numInputArgs > command.Parameters.Length && command.Parameters.Last().ParameterType == typeof(string))
+            if (command.Parameters.Length > 0 && numInputArgs > command.Parameters.Length &&
+                command.Parameters.Last().ParameterType == typeof(string))
             {
                 parts[numInputArgs - 1] = string.Join(' ', parts[(numInputArgs - 1)..]);
             }
@@ -67,7 +68,7 @@ public class ChatCommandParser : ICommandParser<ChatCommandParserResult>
             {
                 var inputParam = parts[i + 1];
                 var paramInfo = command.Parameters[i];
-                
+
                 try
                 {
                     var argValue = await _valueReader.ConvertValue(paramInfo.ParameterType, inputParam);

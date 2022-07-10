@@ -7,14 +7,15 @@ namespace EvoSC.Domain.Groups;
 [Table("Groups")]
 public class Group
 {
-    [Key]
-    public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public string Name { get; set; }
 
     public string Prefix { get; set; }
 
     public string Color { get; set; }
+
+    public bool SystemGroup { get; set; }
 
     public IEnumerable<Permission> Permissions { get; set; }
 }

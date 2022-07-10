@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using EvoSC.Domain.Groups;
 using EvoSC.Domain.Maps;
 using EvoSC.Interfaces.Players;
 using McMaster.NETCore.Plugins;
@@ -23,8 +24,7 @@ namespace EvoSC.Domain.Players
 
         public string UbisoftName { get; set; }
 
-        // TODO: Needs to be changed to correct group
-        public int Group { get; set; }
+        public Group Group { get; set; }
 
         public string Path { get; set; }
 
@@ -39,7 +39,7 @@ namespace EvoSC.Domain.Players
         public IEnumerable<MapRecord> MapRecords { get; set; }
 
         public IEnumerable<MapKarma> MapKarmas { get; set; }
-        
+
         public DatabasePlayer(){}
 
         public DatabasePlayer(DatabasePlayer player)
@@ -56,6 +56,11 @@ namespace EvoSC.Domain.Players
             PersonalBests = player.PersonalBests;
             MapRecords = player.MapRecords;
             MapKarmas = player.MapKarmas;
+        }
+        
+        public bool HasPermission(string permission)
+        {
+            throw new NotImplementedException();
         }
     }
 }

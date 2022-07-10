@@ -30,4 +30,10 @@ public class ServerPlayer : IServerPlayer
 
         return new ServerPlayer(client, info, detailed);
     }
+    
+    public bool HasPermission(string permission)
+    {
+        // todo: implement this in some way?
+        return false;
+    }
 }

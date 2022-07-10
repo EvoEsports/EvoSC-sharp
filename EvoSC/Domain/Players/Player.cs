@@ -1,9 +1,8 @@
-﻿
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 using GbxRemoteNet.Structs;
+using Microsoft.EntityFrameworkCore;
 using NLog.LayoutRenderers;
 
 namespace EvoSC.Domain.Players;
@@ -12,15 +11,17 @@ public class Player : DatabasePlayer, IServerPlayer
 {
     GbxRemoteClient IServerPlayer.Client => this.Client;
     private GbxRemoteClient Client { get; set; }
-    
+
     /// <summary>
     /// Player's Ubisoft name.
     /// </summary>
     public string Name => UbisoftName;
+
     /// <summary>
     /// Extra information about the player on the server.
     /// </summary>
     public PlayerDetailedInfo? DetailedInfo { get; private set; }
+
     /// <summary>
     /// Information about the player on the server.
     /// </summary>
@@ -33,15 +34,17 @@ public class Player : DatabasePlayer, IServerPlayer
         Info = info;
         DetailedInfo = detailedInfo;
     }
-    
+
     /// <summary>
     /// Fetch player info from the server and create a new instance.
     /// </summary>
     /// <param name="client"></param>
     /// <param name="dbPlayer"></param>
     /// <returns></returns>
-    public static async Task<Player> Create(GbxRemoteClient client, DatabasePlayer dbPlayer)
+    public static async Task<Player> Create(GbxRemoteClient client, DatabaseContext dbContext, DatabasePlayer dbPlayer)
     {
+        dbContext.Entry(dbPlayer).State = EntityState.Detached;
+
         var info = await client.GetPlayerInfoAsync(dbPlayer.Login);
         var detailed = await client.GetDetailedPlayerInfoAsync(dbPlayer.Login);
 
@@ -53,7 +56,7 @@ public class Player : DatabasePlayer, IServerPlayer
     /// </summary>
     /// <param name="info"></param>
     /// <param name="detailedInfo"></param>
-    public void Update(PlayerInfo info, PlayerDetailedInfo? detailedInfo=null)
+    public void Update(PlayerInfo info, PlayerDetailedInfo? detailedInfo = null)
     {
         Info = info;
 
