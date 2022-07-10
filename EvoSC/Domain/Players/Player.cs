@@ -8,39 +8,28 @@ using NLog.LayoutRenderers;
 
 namespace EvoSC.Domain.Players;
 
-public class Player : IServerPlayer
+public class Player : DatabasePlayer, IServerPlayer
 {
     GbxRemoteClient IServerPlayer.Client => this.Client;
     private GbxRemoteClient Client { get; set; }
     
     /// <summary>
-    /// Player's login UID.
-    /// </summary>
-    public string Login => Info.Login;
-    /// <summary>
     /// Player's Ubisoft name.
     /// </summary>
-    public string Name => Info.NickName;
-    /// <summary>
-    /// Player's Nickname as saved in the database.
-    /// </summary>
-    public string NickName => DbPlayer.Nickname;
+    public string Name => UbisoftName;
     /// <summary>
     /// Extra information about the player on the server.
     /// </summary>
-    public PlayerDetailedInfo? DetailedInfo { get;  private set; }
+    public PlayerDetailedInfo? DetailedInfo { get; private set; }
     /// <summary>
     /// Information about the player on the server.
     /// </summary>
     public PlayerInfo Info { get; private set; }
 
-    public DatabasePlayer DbPlayer { get; private set; }
-
     public Player(GbxRemoteClient client, DatabasePlayer dbPlayer, PlayerInfo info,
-        PlayerDetailedInfo? detailedInfo = null)
+        PlayerDetailedInfo? detailedInfo = null) : base(dbPlayer)
     {
         Client = client;
-        DbPlayer = dbPlayer;
         Info = info;
         DetailedInfo = detailedInfo;
     }
@@ -72,15 +61,6 @@ public class Player : IServerPlayer
         {
             DetailedInfo = detailedInfo;
         }
-    }
-
-    /// <summary>
-    /// Update the player model's database state.
-    /// </summary>
-    /// <param name="dbPlayer"></param>
-    public void Update(DatabasePlayer dbPlayer)
-    {
-        DbPlayer = dbPlayer;
     }
 
     /// <summary>

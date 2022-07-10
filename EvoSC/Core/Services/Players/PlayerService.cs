@@ -98,7 +98,7 @@ public class PlayerService : IPlayerService
         msg.SetInfo();
         msg.SetIcon(Icon.Globe);
         msg.SetMessage(
-            $"Player {ChatMessage.GetHighlightedString(player.Name)} joined the server. Last Visit: {ChatMessage.GetHighlightedString(Snippets.GetRelativeTimeToNow(player.DbPlayer.LastVisit))}");
+            $"Player {ChatMessage.GetHighlightedString(player.Name)} joined the server. Last Visit: {ChatMessage.GetHighlightedString(Snippets.GetRelativeTimeToNow(player.LastVisit))}");
         if (firstConnect)
         {
             msg.SetMessage(
@@ -106,7 +106,7 @@ public class PlayerService : IPlayerService
         }
 
         await s_gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
-        player.DbPlayer.LastVisit = DateTime.UtcNow;
+        player.LastVisit = DateTime.UtcNow;
         await s_databaseContext.SaveChangesAsync();
     }
 
@@ -124,16 +124,16 @@ public class PlayerService : IPlayerService
 
         var msg = new ChatMessage();
         msg.SetMessage(
-            $"Player {ChatMessage.GetHighlightedString(player.Name)} left the server. Time played: {ChatMessage.GetHighlightedString(Snippets.GetTimeSpentUntilNow(player.DbPlayer.LastVisit))}");
+            $"Player {ChatMessage.GetHighlightedString(player.Name)} left the server. Time played: {ChatMessage.GetHighlightedString(Snippets.GetTimeSpentUntilNow(player.LastVisit))}");
         msg.SetInfo();
         msg.SetIcon(Icon.UserRemove);
 
         await s_gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
 
         s_connectedPlayers.Remove(player);
-        player.DbPlayer.LastVisit = DateTime.UtcNow;
+        player.LastVisit = DateTime.UtcNow;
 
-        s_databaseContext.Players.Update(player.DbPlayer);
+        s_databaseContext.Players.Update((DatabasePlayer)player);
         await s_databaseContext.SaveChangesAsync();
 
         _playerCallbacks.OnPlayerDisconnect(new PlayerDisconnectEventArgs(player, reason));
