@@ -15,28 +15,33 @@ public interface ICommandsService
     /// Register commands from a commands group's type.
     /// </summary>
     /// <param name="type"></param>
-    public void RegisterCommands(Type type);
+    public Task RegisterCommands(Type type);
+
     /// <summary>
     /// Register commands from a commands group's type.
     /// </summary>
     /// <param name="type"></param>
-    public void RegisterCommands<T>();
+    public Task RegisterCommands<T>();
+
     /// <summary>
     /// Remove commands of a given commands group's type.
     /// </summary>
     /// <param name="type"></param>
-    public void UnregisterCommands(Type type);
+    public Task UnregisterCommands(Type type);
+
     /// <summary>
     /// Remove commands of a given commands group's type.
     /// </summary>
     /// <param name="type"></param>
-    public void UnregisterCommands<T>();
+    public Task UnregisterCommands<T>();
+
     /// <summary>
     /// Execute a command based on the parser result.
     /// </summary>
     /// <param name="parserResult"></param>s
     /// <returns></returns>
     public Task<ICommandResult> ExecuteCommand(ICommandContext context, ICommandParserResult parserResult);
+
     /// <summary>
     /// Get a command from it's name.
     /// </summary>

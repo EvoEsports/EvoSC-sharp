@@ -12,13 +12,11 @@ namespace EvoSC.Domain.Players
     [Table("Players")]
     public class DatabasePlayer : IPlayer
     {
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
 
         public string Login { get; set; }
-        
-        [NotMapped]
-        public string Name => UbisoftName;
+
+        [NotMapped] public string Name => UbisoftName;
 
         public string Nickname { get; set; }
 
@@ -40,7 +38,7 @@ namespace EvoSC.Domain.Players
 
         public IEnumerable<MapKarma> MapKarmas { get; set; }
 
-        public DatabasePlayer(){}
+        public DatabasePlayer() { }
 
         public DatabasePlayer(DatabasePlayer player)
         {
@@ -57,10 +55,23 @@ namespace EvoSC.Domain.Players
             MapRecords = player.MapRecords;
             MapKarmas = player.MapKarmas;
         }
-        
-        public bool HasPermission(string permission)
+
+        public bool HasPermission(string requiredPermission)
         {
-            throw new NotImplementedException();
+            if (Group == null)
+            {
+                return false;
+            }
+
+            foreach (var permission in Group.Permissions)
+            {
+                if (permission.Name == requiredPermission)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

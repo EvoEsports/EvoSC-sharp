@@ -4,6 +4,7 @@ using EvoSC.Core.Helpers;
 using EvoSC.Core.Plugins;
 using EvoSC.Interfaces.Players;
 using EvoSC.Interfaces.Plugins;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 
 namespace EvoSC.Core.Services.Plugins;
@@ -19,8 +20,8 @@ public class PluginsService : IPluginsService
     {
         _services = services;
     }
-    
-    public Task LoadPlugin(IPlugin plugin)
+
+    public async Task LoadPlugin(IPlugin plugin)
     {
         try
         {
@@ -28,40 +29,38 @@ public class PluginsService : IPluginsService
 
             if (method == null)
             {
-                return Task.CompletedTask;
+                return;
             }
 
-            return (Task)ReflectionUtils.ExecuteMethod(plugin, method, _services);
+            using var scope = _services.CreateScope();
+            await (Task)ReflectionUtils.ExecuteMethod(plugin, method, scope.ServiceProvider);
         }
         catch (Exception ex)
         {
             _logger.Error("Failed to load plugin: {Msg} | Stacktrace: {St}",
                 ex.Message, ex.StackTrace);
         }
-
-        return Task.CompletedTask;
     }
 
-    public Task UnloadPlugin(IPlugin plugin)
+    public async Task UnloadPlugin(IPlugin plugin)
     {
         try
         {
             var method = ReflectionUtils.GetInstanceMethod(plugin, "Unload");
-            
+
             if (method == null)
             {
-                return Task.CompletedTask;
+                return;
             }
-            
-            return (Task)ReflectionUtils.ExecuteMethod(plugin, method, _services);
+
+            using var scope = _services.CreateScope();
+            await (Task)ReflectionUtils.ExecuteMethod(plugin, method, scope.ServiceProvider);
         }
         catch (Exception ex)
         {
             _logger.Error("Failed to unload plugin: {Msg} | Stacktrace: {St}",
                 ex.Message, ex.StackTrace);
         }
-        
-        return Task.CompletedTask;
     }
 
     public async Task LoadPlugins()

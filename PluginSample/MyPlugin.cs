@@ -6,6 +6,7 @@ using System.Reflection;
 using PluginSample.Events;
 using PluginSample.Interfaces;
 using EvoSC.Core.Events.Callbacks.Args;
+using EvoSC.Interfaces.Commands;
 using EvoSC.Interfaces.Players;
 
 namespace PluginSample;
@@ -35,16 +36,15 @@ public class MyPlugin : IPlugin
         Console.WriteLine("Unloading...");
     }
 
-    public Task Load(IChatCommandsService chatCommands)
+    public async Task Load(IChatCommandsService chatCommands, IPermissionsService permissions)
     {
-        chatCommands.RegisterCommands<ExampleChatCommands>();
-        return Task.CompletedTask;
+        await permissions.AddPermission("admin", "Admin stuff");
+        await chatCommands.RegisterCommands<ExampleChatCommands>();
     }
 
-    public Task Unload(IChatCommandsService chatCommands)
+    public async Task Unload(IChatCommandsService chatCommands)
     {
-        chatCommands.UnregisterCommands<ExampleChatCommands>();
-        return Task.CompletedTask;
+        await chatCommands.UnregisterCommands<ExampleChatCommands>();
     }
 
     public void HandleEvents(IPlayerCallbacks playerCallbacks)

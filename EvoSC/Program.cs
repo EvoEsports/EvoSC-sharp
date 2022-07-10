@@ -68,6 +68,7 @@ builder.ConfigureServices(services =>
     services.AddSingleton<IChatCommandsService, ChatCommandsService>();
     services.AddTransient<IPluginsService, PluginsService>();
     services.AddHostedService<PluginsLoaderService>();
+    services.AddScoped<IPermissionsService, PermissionsService>();
 
     // Register plugins
     PluginFactory.Instance.RegisterPlugins(services);

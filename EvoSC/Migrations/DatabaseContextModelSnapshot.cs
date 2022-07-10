@@ -80,15 +80,10 @@ namespace EvoSC.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -372,13 +367,19 @@ namespace EvoSC.Migrations
                     b.ToTable("Player_Statistics");
                 });
 
-            modelBuilder.Entity("EvoSC.Domain.Groups.Permission", b =>
+            modelBuilder.Entity("GroupPermission", b =>
                 {
-                    b.HasOne("EvoSC.Domain.Groups.Group", "Group")
-                        .WithMany("Permissions")
-                        .HasForeignKey("GroupId");
+                    b.Property<int>("GroupsId")
+                        .HasColumnType("int");
 
-                    b.Navigation("Group");
+                    b.Property<int>("PermissionsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupsId", "PermissionsId");
+
+                    b.HasIndex("PermissionsId");
+
+                    b.ToTable("GroupPermission");
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.Map", b =>
@@ -481,9 +482,19 @@ namespace EvoSC.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("EvoSC.Domain.Groups.Group", b =>
+            modelBuilder.Entity("GroupPermission", b =>
                 {
-                    b.Navigation("Permissions");
+                    b.HasOne("EvoSC.Domain.Groups.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EvoSC.Domain.Groups.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.Map", b =>

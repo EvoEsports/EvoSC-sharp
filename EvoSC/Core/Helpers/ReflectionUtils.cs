@@ -15,7 +15,8 @@ public static class ReflectionUtils
     /// <param name="services"></param>
     /// <param name="pars"></param>
     /// <returns></returns>
-    public static object ExecuteMethod(object instance, MethodInfo method, IServiceProvider services, params object[] pars)
+    public static object ExecuteMethod(object instance, MethodInfo method, IServiceProvider services,
+        params object[] pars)
     {
         List<object> args = new List<object>(pars);
 
@@ -33,7 +34,7 @@ public static class ReflectionUtils
     public static MethodInfo GetInstanceMethod(object obj, string name)
     {
         var type = obj.GetType();
-        var method = type.GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
+        var method = type.GetMethod(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
         return method;
     }
 }

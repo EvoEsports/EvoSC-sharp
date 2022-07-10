@@ -10,5 +10,5 @@ public interface IPlayer
     /// </summary>
     /// <param name="permission"></param>
     /// <returns></returns>
-    public bool HasPermission(string permission);
+    public bool HasPermission(string requiredPermission);
 }

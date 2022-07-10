@@ -10,7 +10,7 @@ public class InfoPlugin : IPlugin
 {
     public string Name => "Info";
     public Version Version => new(1, 0, 0);
-    
+
     public void HandleEvents(IPlayerCallbacks playerCallbacks)
     {
     }
@@ -27,15 +27,13 @@ public class InfoPlugin : IPlugin
     {
     }
 
-    public Task Load(IChatCommandsService commands)
+    public async Task Load(IChatCommandsService commands)
     {
-        commands.RegisterCommands<ChatCommands>();
-        return Task.CompletedTask;
+        await commands.RegisterCommands<ChatCommands>();
     }
 
-    public Task Unload(IChatCommandsService commands)
+    public async Task Unload(IChatCommandsService commands)
     {
-        commands.UnregisterCommands<ChatCommands>();
-        return Task.CompletedTask;
+        await commands.UnregisterCommands<ChatCommands>();
     }
 }

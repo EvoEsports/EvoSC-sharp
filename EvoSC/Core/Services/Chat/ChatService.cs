@@ -18,7 +18,6 @@ namespace EvoSC.Core.Services.Chat;
 public class ChatService : IChatService
 {
     private readonly IChatCallbacks _chatCallbacks;
-    private readonly DatabaseContext _databaseContext;
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerService _playerService;
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -26,10 +25,9 @@ public class ChatService : IChatService
 
     public event Func<IServerServerChatMessage, Task> ServerChatMessage;
 
-    public ChatService(DatabaseContext databaseContext, GbxRemoteClient gbxRemoteClient, IChatCallbacks chatCallbacks,
+    public ChatService(GbxRemoteClient gbxRemoteClient, IChatCallbacks chatCallbacks,
         IPlayerService playerService)
     {
-        _databaseContext = databaseContext;
         _gbxRemoteClient = gbxRemoteClient;
         _chatCallbacks = chatCallbacks;
         _manialink = new Manialink(_gbxRemoteClient);

@@ -52,17 +52,16 @@ namespace EvoSC.Domain
             {
                 e.HasIndex(p => p.Login).IsUnique();
                 e.HasOne(p => p.Group);
+
+                e.HasOne(p => p.PlayerStatistic)
+                    .WithOne(ps => ps.Player)
+                    .HasForeignKey<PlayerStatistic>(ps => ps.PlayerId);
             });
 
             modelBuilder.Entity<Map>()
                 .HasOne(m => m.MapStatistic)
                 .WithOne(ms => ms.Map)
                 .HasForeignKey<MapStatistic>(ms => ms.MapId);
-
-            modelBuilder.Entity<DatabasePlayer>()
-                .HasOne(p => p.PlayerStatistic)
-                .WithOne(ps => ps.Player)
-                .HasForeignKey<PlayerStatistic>(ps => ps.PlayerId);
 
             modelBuilder.Entity<Permission>(e =>
             {
@@ -73,7 +72,7 @@ namespace EvoSC.Domain
             {
                 e.HasIndex(p => p.Name).IsUnique();
 
-                e.HasMany(p => p.Permissions).WithOne(p => p.Group);
+                e.HasMany(p => p.Permissions).WithMany(p => p.Groups);
 
                 e.HasData(new Group[]
                 {

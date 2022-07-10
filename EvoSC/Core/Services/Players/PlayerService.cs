@@ -193,19 +193,24 @@ public class PlayerService : IPlayerService
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
-        foreach (var connectedPlayer in _connectedPlayers.Where(player => player.Login == login))
+        var player = _connectedPlayers.FirstOrDefault(p => p.Login == login);
+
+        if ((player as DatabasePlayer)?.Group?.Permissions != null)
         {
-            return connectedPlayer;
+            return player;
         }
 
-        var dbPlayer = await dbContext.Players.FirstOrDefaultAsync(p => p.Login == login);
+        var dbPlayer = await dbContext.Players
+            .Include(p => p.Group)
+            .ThenInclude(g => g.Permissions)
+            .FirstOrDefaultAsync(p => p.Login == login);
 
         if (dbPlayer == null)
         {
             dbPlayer = await CreateDatabasePlayer(login);
         }
 
-        var player = await Player.Create(_gbxRemoteClient, dbContext, dbPlayer);
+        player = await Player.Create(_gbxRemoteClient, dbContext, dbPlayer);
         _connectedPlayers.Add(player);
 
         return player;

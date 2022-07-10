@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EvoSC.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220410003715_CreateDatabase")]
-    partial class CreateDatabase
+    [Migration("20220710134603_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,78 @@ namespace EvoSC.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("EvoSC.Domain.Groups.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Prefix")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("SystemGroup")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Groups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Color = "F00",
+                            Name = "MasterAdmin",
+                            Prefix = "",
+                            SystemGroup = true
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Color = "FFF",
+                            Name = "Player",
+                            Prefix = "",
+                            SystemGroup = true
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Color = "F55",
+                            Name = "Admin",
+                            Prefix = "",
+                            SystemGroup = false
+                        });
+                });
+
+            modelBuilder.Entity("EvoSC.Domain.Groups.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Permissions");
+                });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.Map", b =>
                 {
@@ -29,6 +101,9 @@ namespace EvoSC.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("DatabasePlayerId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Enabled")
                         .HasColumnType("tinyint(1)");
@@ -45,9 +120,6 @@ namespace EvoSC.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Uid")
                         .HasColumnType("longtext");
 
@@ -56,7 +128,7 @@ namespace EvoSC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("DatabasePlayerId");
 
                     b.ToTable("Maps");
                 });
@@ -67,17 +139,17 @@ namespace EvoSC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("MapId")
+                    b.Property<int?>("DatabasePlayerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlayerId")
+                    b.Property<int?>("MapId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MapId");
+                    b.HasIndex("DatabasePlayerId");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("MapId");
 
                     b.ToTable("Player_MapFavorites");
                 });
@@ -88,23 +160,29 @@ namespace EvoSC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("DatabasePlayerId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("MapId")
                         .HasColumnType("int");
 
                     b.Property<bool>("New")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("MapId");
+                    b.HasIndex("DatabasePlayerId");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("MapId");
 
                     b.ToTable("Map_Karma");
                 });
@@ -121,10 +199,10 @@ namespace EvoSC.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("MapId")
+                    b.Property<int?>("DatabasePlayerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlayerId")
+                    b.Property<int?>("MapId")
                         .HasColumnType("int");
 
                     b.Property<int>("Rank")
@@ -138,9 +216,9 @@ namespace EvoSC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MapId");
+                    b.HasIndex("DatabasePlayerId");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("MapId");
 
                     b.ToTable("Map_Records");
                 });
@@ -174,40 +252,7 @@ namespace EvoSC.Migrations
                     b.ToTable("Map_Statistics");
                 });
 
-            modelBuilder.Entity("EvoSC.Domain.Players.PersonalBest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("Checkpoints")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("MapId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MapId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("Player_PersonalBests");
-                });
-
-            modelBuilder.Entity("EvoSC.Domain.Players.Player", b =>
+            modelBuilder.Entity("EvoSC.Domain.Players.DatabasePlayer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,14 +261,14 @@ namespace EvoSC.Migrations
                     b.Property<bool>("Banned")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("Group")
+                    b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("LastVisit")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Login")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Nickname")
                         .HasColumnType("longtext");
@@ -236,7 +281,45 @@ namespace EvoSC.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("Login")
+                        .IsUnique();
+
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("EvoSC.Domain.Players.PersonalBest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("Checkpoints")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("DatabasePlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MapId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DatabasePlayerId");
+
+                    b.HasIndex("MapId");
+
+                    b.ToTable("Player_PersonalBests");
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Players.PlayerStatistic", b =>
@@ -245,14 +328,8 @@ namespace EvoSC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CheckpointsDriven")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ConsecutiveDaysPlayed")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Donations")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Finishes")
                         .HasColumnType("int");
@@ -275,8 +352,8 @@ namespace EvoSC.Migrations
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.Property<int>("SpectatorTime")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Visits")
                         .HasColumnType("int");
@@ -292,58 +369,73 @@ namespace EvoSC.Migrations
                     b.ToTable("Player_Statistics");
                 });
 
+            modelBuilder.Entity("GroupPermission", b =>
+                {
+                    b.Property<int>("GroupsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PermissionsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupsId", "PermissionsId");
+
+                    b.HasIndex("PermissionsId");
+
+                    b.ToTable("GroupPermission");
+                });
+
             modelBuilder.Entity("EvoSC.Domain.Maps.Map", b =>
                 {
-                    b.HasOne("EvoSC.Domain.Players.Player", "Player")
+                    b.HasOne("EvoSC.Domain.Players.DatabasePlayer", "DatabasePlayer")
                         .WithMany()
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("DatabasePlayerId");
 
-                    b.Navigation("Player");
+                    b.Navigation("DatabasePlayer");
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.MapFavorite", b =>
                 {
+                    b.HasOne("EvoSC.Domain.Players.DatabasePlayer", "DatabasePlayer")
+                        .WithMany()
+                        .HasForeignKey("DatabasePlayerId");
+
                     b.HasOne("EvoSC.Domain.Maps.Map", "Map")
                         .WithMany("FavoritedMaps")
                         .HasForeignKey("MapId");
 
-                    b.HasOne("EvoSC.Domain.Players.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId");
+                    b.Navigation("DatabasePlayer");
 
                     b.Navigation("Map");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.MapKarma", b =>
                 {
+                    b.HasOne("EvoSC.Domain.Players.DatabasePlayer", "DatabasePlayer")
+                        .WithMany("MapKarmas")
+                        .HasForeignKey("DatabasePlayerId");
+
                     b.HasOne("EvoSC.Domain.Maps.Map", "Map")
                         .WithMany("MapKarmas")
                         .HasForeignKey("MapId");
 
-                    b.HasOne("EvoSC.Domain.Players.Player", "Player")
-                        .WithMany("MapKarmas")
-                        .HasForeignKey("PlayerId");
+                    b.Navigation("DatabasePlayer");
 
                     b.Navigation("Map");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.MapRecord", b =>
                 {
+                    b.HasOne("EvoSC.Domain.Players.DatabasePlayer", "DatabasePlayer")
+                        .WithMany("MapRecords")
+                        .HasForeignKey("DatabasePlayerId");
+
                     b.HasOne("EvoSC.Domain.Maps.Map", "Map")
                         .WithMany("MapRecords")
                         .HasForeignKey("MapId");
 
-                    b.HasOne("EvoSC.Domain.Players.Player", "Player")
-                        .WithMany("MapRecords")
-                        .HasForeignKey("PlayerId");
+                    b.Navigation("DatabasePlayer");
 
                     b.Navigation("Map");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.MapStatistic", b =>
@@ -357,30 +449,54 @@ namespace EvoSC.Migrations
                     b.Navigation("Map");
                 });
 
+            modelBuilder.Entity("EvoSC.Domain.Players.DatabasePlayer", b =>
+                {
+                    b.HasOne("EvoSC.Domain.Groups.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId");
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("EvoSC.Domain.Players.PersonalBest", b =>
                 {
+                    b.HasOne("EvoSC.Domain.Players.DatabasePlayer", "DatabasePlayer")
+                        .WithMany("PersonalBests")
+                        .HasForeignKey("DatabasePlayerId");
+
                     b.HasOne("EvoSC.Domain.Maps.Map", "Map")
                         .WithMany("PersonalBests")
                         .HasForeignKey("MapId");
 
-                    b.HasOne("EvoSC.Domain.Players.Player", "Player")
-                        .WithMany("PersonalBests")
-                        .HasForeignKey("PlayerId");
+                    b.Navigation("DatabasePlayer");
 
                     b.Navigation("Map");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Players.PlayerStatistic", b =>
                 {
-                    b.HasOne("EvoSC.Domain.Players.Player", "Player")
+                    b.HasOne("EvoSC.Domain.Players.DatabasePlayer", "Player")
                         .WithOne("PlayerStatistic")
                         .HasForeignKey("EvoSC.Domain.Players.PlayerStatistic", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("GroupPermission", b =>
+                {
+                    b.HasOne("EvoSC.Domain.Groups.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EvoSC.Domain.Groups.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EvoSC.Domain.Maps.Map", b =>
@@ -396,7 +512,7 @@ namespace EvoSC.Migrations
                     b.Navigation("PersonalBests");
                 });
 
-            modelBuilder.Entity("EvoSC.Domain.Players.Player", b =>
+            modelBuilder.Entity("EvoSC.Domain.Players.DatabasePlayer", b =>
                 {
                     b.Navigation("MapKarmas");
 

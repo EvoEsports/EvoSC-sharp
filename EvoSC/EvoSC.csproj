@@ -27,9 +27,4 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Domain\Commands" />
-    <Folder Include="Migrations\" />
-  </ItemGroup>
 </Project>
