@@ -4,7 +4,7 @@ using EvoSC.Core.Commands.Manialink.Interfaces;
 
 namespace EvoSC.Core.Commands.Manialink;
 
-public class ManialinkCommandGroup : ICommandGroup
+public class ManialinkCommandGroup : IManialinkCommandGroup
 {
     protected IManialinkCommandContext Context { get; private set; }
 

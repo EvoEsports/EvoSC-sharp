@@ -1,12 +1,20 @@
 ﻿using EvoSC.Core.Commands.Chat;
 using EvoSC.Core.Commands.Generic.Attributes;
 using EvoSC.Core.Helpers;
+using EvoSC.Core.Services.UI;
 using Newtonsoft.Json.Serialization;
 
 namespace Info;
 
 public class ChatCommands : ChatCommandGroup
 {
+    private readonly UiService _uiService;
+    
+    public ChatCommands(UiService uiService)
+    {
+        _uiService = uiService;
+    }
+    
     [Command("version", "Controller version.")]
     public Task Version()
     {
