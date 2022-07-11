@@ -48,7 +48,7 @@ public class ChatCommandParser : ICommandParser<ChatCommandParserResult>
             var cmdName = parts.Length > 1 ? parts[1] : null;
             var command = _chatCommands.GetCommand(groupName, cmdName); // todo: implement group/sub commands
 
-            if (_chatCommands.Commands.ContainsGroup(command.Group))
+            if (command.Group != null && _chatCommands.Commands.ContainsGroup(command.Group))
             {
                 parts = parts[1..];
             }

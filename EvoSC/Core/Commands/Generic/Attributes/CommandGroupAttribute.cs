@@ -7,10 +7,10 @@ namespace EvoSC.Core.Commands.Generic.Attributes;
 public class CommandGroupAttribute : Attribute
 {
     public string Name { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public string? Permission { get; set; }
 
-    public CommandGroupAttribute(string name, string description, string? permission = null)
+    public CommandGroupAttribute(string name, string? description = null, string? permission = null)
     {
         Name = name;
         Description = description;

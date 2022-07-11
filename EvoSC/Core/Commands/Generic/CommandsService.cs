@@ -67,6 +67,11 @@ public abstract class CommandsService<TGroupType> : ICommandsService
                 continue;
             }
 
+            if (_commands.ContainsKey(cmdAttr.Name))
+            {
+                throw new InvalidOperationException($"A command with the name '{cmdAttr.Name}' already exists.");
+            }
+
             // setup permissions
             var cmdPermission = method.GetCustomAttribute<PermissionAttribute>();
             var permission = cmdPermission?.Name ?? group?.Permission ?? null;
@@ -106,23 +111,20 @@ public abstract class CommandsService<TGroupType> : ICommandsService
     public Task<ICommandResult> ExecuteCommand(ICommandContext context, ICommandParserResult parserResult)
     {
         // todo: check permissions
-        if (!context.Player.HasPermission(parserResult.Command.Permission))
+        if (parserResult.Command.Permission == null || context.Player.HasPermission(parserResult.Command.Permission))
         {
-            var result = new CommandResult(false, new CommandException("Permission denied."));
-            return Task.FromResult((ICommandResult)result);
+            return parserResult.Command.Invoke(_services, context, parserResult.Arguments.ToArray());
         }
 
-        return parserResult.Command.Invoke(_services, context, parserResult.Arguments.ToArray());
+        var result = new CommandResult(false, new CommandException("Permission denied."));
+        return Task.FromResult((ICommandResult)result);
     }
 
     public ICommand GetCommand(string group, string? name = null)
     {
-        if (_commands.ContainsGroup(group))
+        if (_commands.ContainsGroup(group) && name != null && _commands.ContainsKey(name))
         {
-            if (name != null && _commands.ContainsKey(name))
-            {
-                return _commands[name];
-            }
+            return _commands[name];
         }
         else if (_commands.ContainsKey(group))
         {
