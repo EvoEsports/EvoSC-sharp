@@ -6,21 +6,21 @@ using GbxRemoteNet;
 
 namespace PluginSample;
 
+[CommandGroup("test", "test group", "admin")]
 public class ExampleChatCommands : ChatCommandGroup
 {
     private readonly Manialink _manialink;
-    
+
     public ExampleChatCommands(GbxRemoteClient client)
     {
         _manialink = new Manialink(client);
     }
-    
+
     [Command("ping", "Ping the server!")]
     public Task Ping() =>
         Context.Message.ReplyAsync("Pong!");
 
     [Command("echo", "Have the server echo something")]
-    [Permission("admin")]
     public Task Echo(string message) =>
         Context.Client.ChatSendServerMessageAsync("[Server] " + message);
 

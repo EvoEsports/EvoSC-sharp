@@ -18,12 +18,12 @@ using NLog;
 
 namespace EvoSC.Core.Services.Commands;
 
-public class ChatCommandsService : CommandsManager<ChatCommandGroup>, IChatCommandsService
+public class ChatCommandsService : CommandsService<ChatCommandGroup>, IChatCommandsService
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly GbxRemoteClient _gbxClient;
     private readonly ValueReaderManager _valueReader;
-    
+
     public ChatCommandsService(IServiceProvider services, GbxRemoteClient gbxClient) : base(services)
     {
         _gbxClient = gbxClient;
@@ -65,7 +65,7 @@ public class ChatCommandsService : CommandsManager<ChatCommandGroup>, IChatComma
             }
         }
     }
-    
+
     public async Task ReplyError(Exception ex, IServerServerChatMessage message)
     {
         if (ex.GetType() == typeof(CommandException))

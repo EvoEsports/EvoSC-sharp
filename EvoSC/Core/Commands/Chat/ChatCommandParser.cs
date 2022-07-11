@@ -44,8 +44,15 @@ public class ChatCommandParser : ICommandParser<ChatCommandParserResult>
                     new CommandException("Not a command. Provide a name."));
             }
 
-            var cmdName = parts[0];
-            var command = _chatCommands.GetCommand(cmdName, ""); // todo: implement group/sub commands
+            var groupName = parts[0];
+            var cmdName = parts.Length > 1 ? parts[1] : null;
+            var command = _chatCommands.GetCommand(groupName, cmdName); // todo: implement group/sub commands
+
+            if (_chatCommands.Commands.ContainsGroup(command.Group))
+            {
+                parts = parts[1..];
+            }
+
             var numInputArgs = parts.Length - 1;
 
             if (numInputArgs < command.RequiredParameters())

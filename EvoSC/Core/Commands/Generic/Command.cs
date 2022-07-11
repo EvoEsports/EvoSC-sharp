@@ -18,10 +18,10 @@ public class Command : ICommand
     public string Description { get; private set; }
     public string Name { get; private set; }
     public string? Permission { get; private set; }
-    public string? Group { get; private set; }
+    public ICommandGroupInfo? Group { get; private set; }
 
     public Command(MethodInfo methodInfo, Type groupType, IEnumerable<ICommandParameter> pars, string name,
-        string description, string? permission = null, string? group = null)
+        string description, string? permission = null, ICommandGroupInfo? group = null)
     {
         CmdMethod = methodInfo;
         GroupType = groupType;
@@ -30,11 +30,6 @@ public class Command : ICommand
         Permission = permission;
         Parameters = pars.ToArray();
         Group = group;
-    }
-
-    public void SetGroup(string groupName)
-    {
-        Group = groupName;
     }
 
     public async Task<ICommandResult> Invoke(IServiceProvider services, ICommandContext context, params object[] args)
@@ -46,7 +41,8 @@ public class Command : ICommand
 
             if (groupInstance == null)
             {
-                return new CommandResult(false, new InvalidOperationException("Could not create command group instance."));
+                return new CommandResult(false,
+                    new InvalidOperationException("Could not create command group instance."));
             }
 
             ((ICommandGroup)groupInstance).SetContext(context);

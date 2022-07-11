@@ -11,6 +11,8 @@ namespace EvoSC.Interfaces.Commands;
 
 public interface ICommandsService
 {
+    public CommandCollection Commands { get; }
+
     /// <summary>
     /// Register commands from a commands group's type.
     /// </summary>
@@ -48,5 +50,5 @@ public interface ICommandsService
     /// <param name="group"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public ICommand GetCommand(string group, string name);
+    public ICommand GetCommand(string group, string? name = null);
 }

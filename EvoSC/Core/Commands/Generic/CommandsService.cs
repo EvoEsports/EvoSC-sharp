@@ -17,21 +17,42 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Core.Commands.Generic;
 
-public abstract class CommandsManager<TGroupType> : ICommandsService
+public abstract class CommandsService<TGroupType> : ICommandsService
 {
     private CommandCollection _commands = new();
     private IServiceProvider _services;
 
-    public CommandsManager(IServiceProvider services)
+    public CommandCollection Commands => _commands;
+
+    public CommandsService(IServiceProvider services)
     {
         _services = services;
+    }
+
+    private ICommandGroupInfo TryAddGroup(CommandGroupAttribute groupAttr)
+    {
+        if (groupAttr != null)
+        {
+            if (_commands.ContainsGroup(groupAttr.Name))
+            {
+                return _commands.GetGroup(groupAttr.Name);
+            }
+            else
+            {
+                var group = new CommandGroupInfo(groupAttr.Name, groupAttr.Description, groupAttr.Permission);
+                _commands.AddGroup(group);
+                return group;
+            }
+        }
+
+        return null;
     }
 
     public async Task RegisterCommands(Type type)
     {
         // group info & group permission
         var groupAttr = type.GetCustomAttribute<CommandGroupAttribute>();
-        var groupPermission = type.GetCustomAttribute<PermissionAttribute>();
+        var group = TryAddGroup(groupAttr);
 
         // commands
         var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
@@ -48,7 +69,11 @@ public abstract class CommandsManager<TGroupType> : ICommandsService
 
             // setup permissions
             var cmdPermission = method.GetCustomAttribute<PermissionAttribute>();
-            var permission = cmdPermission ?? groupPermission ?? null;
+            var permission = cmdPermission?.Name ?? group?.Permission ?? null;
+
+            // cmd group
+            var cmdGroupAttr = method.GetCustomAttribute<CommandGroupAttribute>();
+            var cmdGroup = TryAddGroup(cmdGroupAttr) ?? group;
 
             // parameters
             var parameters = method.GetParameters();
@@ -63,8 +88,7 @@ public abstract class CommandsManager<TGroupType> : ICommandsService
             }
 
             // register the command
-            var command = new Command(method, type, cmdParams, cmdAttr.Name, cmdAttr.Description, permission?.Name,
-                groupAttr?.Name);
+            var command = new Command(method, type, cmdParams, cmdAttr.Name, cmdAttr.Description, permission, cmdGroup);
 
             _commands.Add(command);
         }
@@ -91,11 +115,23 @@ public abstract class CommandsManager<TGroupType> : ICommandsService
         return parserResult.Command.Invoke(_services, context, parserResult.Arguments.ToArray());
     }
 
-    public ICommand GetCommand(string group, string name)
+    public ICommand GetCommand(string group, string? name = null)
     {
-        if (_commands.TryGetValue(group, out var command))
+        if (_commands.ContainsGroup(group))
         {
-            return command;
+            if (name != null && _commands.ContainsKey(name))
+            {
+                return _commands[name];
+            }
+        }
+        else if (_commands.ContainsKey(group))
+        {
+            var cmd = _commands[group];
+
+            if (cmd.Group == null || !_commands.ContainsGroup(cmd.Group))
+            {
+                return cmd;
+            }
         }
 
         throw new CommandException($"Command '{group}' not found");

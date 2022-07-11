@@ -12,9 +12,8 @@ public interface ICommand
     public string Description { get; }
     public string Name { get; }
     public string? Permission { get; }
-    public string? Group { get; }
+    public ICommandGroupInfo? Group { get; }
 
-    public void SetGroup(string groupName);
     public Task<ICommandResult> Invoke(IServiceProvider services, ICommandContext context, params object[] args);
     public int RequiredParameters();
 }
