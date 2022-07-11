@@ -138,3 +138,12 @@ public class ExampleChatCommands : ChatCommandGroup
 ```
 
 Note that the description of the first defined permission will take effect.
+
+## Registering commands
+
+To register a command, get an instance of the `IChatCommandsService` and call the `RegisterCommands` method, and pass
+the type of the commands group class.
+
+To unregister, call the `UnregisterCommands` commands.
+
+It's recommended to unregister commands when the plugin unloads to clear any commands a plugin added.
