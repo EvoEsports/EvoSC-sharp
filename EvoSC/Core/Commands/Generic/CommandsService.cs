@@ -29,7 +29,7 @@ public abstract class CommandsService<TGroupType> : ICommandsService
         _services = services;
     }
 
-    private ICommandGroupInfo TryAddGroup(CommandGroupAttribute groupAttr)
+    private ICommandGroupInfo TryAddGroup(CommandGroupAttribute groupAttr, string? permission = null)
     {
         if (groupAttr != null)
         {
@@ -39,7 +39,7 @@ public abstract class CommandsService<TGroupType> : ICommandsService
             }
             else
             {
-                var group = new CommandGroupInfo(groupAttr.Name, groupAttr.Description, groupAttr.Permission);
+                var group = new CommandGroupInfo(groupAttr.Name, groupAttr.Description, permission);
                 _commands.AddGroup(group);
                 return group;
             }
@@ -52,6 +52,7 @@ public abstract class CommandsService<TGroupType> : ICommandsService
     {
         // group info & group permission
         var groupAttr = type.GetCustomAttribute<CommandGroupAttribute>();
+        var groupPermission = type.GetCustomAttribute<PermissionAttribute>();
         var group = TryAddGroup(groupAttr);
 
         // commands
@@ -74,7 +75,7 @@ public abstract class CommandsService<TGroupType> : ICommandsService
 
             // setup permissions
             var cmdPermission = method.GetCustomAttribute<PermissionAttribute>();
-            var permission = cmdPermission?.Name ?? group?.Permission ?? null;
+            var permission = cmdPermission?.Name ?? groupPermission?.Name ?? null;
 
             // cmd group
             var cmdGroupAttr = method.GetCustomAttribute<CommandGroupAttribute>();

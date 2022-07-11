@@ -8,12 +8,10 @@ public class CommandGroupAttribute : Attribute
 {
     public string Name { get; set; }
     public string? Description { get; set; }
-    public string? Permission { get; set; }
 
-    public CommandGroupAttribute(string name, string? description = null, string? permission = null)
+    public CommandGroupAttribute(string name, string? description = null)
     {
         Name = name;
         Description = description;
-        Permission = permission;
     }
 }
