@@ -19,7 +19,6 @@ public class ExampleChatCommands : ChatCommandGroup
         _commands = commands;
     }
 
-    [CommandGroup("test")]
     [Command("ping", "Ping the server!")]
     public Task Ping() =>
         Context.Message.ReplyAsync("Pong!");
@@ -43,4 +42,12 @@ public class ExampleChatCommands : ChatCommandGroup
 
     [Command("show", "Show manialink")]
     public Task Show() => _manialink.Send(Context.Player);
+
+    [Command("hunt", "Enable hunt mode")]
+    public async Task Hunt()
+    {
+        var settings = await Context.Client.GetModeScriptSettingsAsync();
+        settings["S_TimeLimit"] = 0;
+        await Context.Client.SetModeScriptSettingsAsync(settings);
+    }
 }
