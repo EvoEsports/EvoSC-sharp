@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?component tag="Window" src="components/window.xml" ?>
+<manialink id="{{name}}" name="EvoSC:{{name}}" version="3">
+    <Window id="help-window" title="Help" size="10 10" pos="0 0">
+        
+    </Window>
+</manialink>

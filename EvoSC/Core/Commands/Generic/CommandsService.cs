@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.ObjectiveC;
 using System.Threading.Tasks;
+using EvoSC.Core.Commands.Chat;
 using EvoSC.Core.Commands.Generic.Attributes;
 using EvoSC.Core.Commands.Generic.Exceptions;
 using EvoSC.Core.Commands.Generic.Interfaces;
@@ -17,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Core.Commands.Generic;
 
-public abstract class CommandsService<TGroupType> : ICommandsService
+public abstract class CommandsService<TGroup> : ICommandsService
 {
     private CommandCollection _commands = new();
     private IServiceProvider _services;
@@ -104,6 +106,30 @@ public abstract class CommandsService<TGroupType> : ICommandsService
 
     public Task UnregisterCommands(Type type)
     {
+        var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+
+        foreach (var method in methods)
+        {
+            var cmdAttr = method.GetCustomAttribute<CommandAttribute>();
+
+            if (cmdAttr == null)
+            {
+                continue;
+            }
+
+            if (_commands.ContainsKey(cmdAttr.Name))
+            {
+                // unmap from groups
+                foreach (var group in _commands.GetCommandGroups(cmdAttr.Name))
+                {
+                    _commands.UnmapCommandFromGroup(group.Name, cmdAttr.Name);
+                }
+
+                // remove the command
+                _commands.Remove(cmdAttr.Name);
+            }
+        }
+
         return Task.CompletedTask;
     }
 
@@ -111,7 +137,6 @@ public abstract class CommandsService<TGroupType> : ICommandsService
 
     public Task<ICommandResult> ExecuteCommand(ICommandContext context, ICommandParserResult parserResult)
     {
-        // todo: check permissions
         if (parserResult.Command.Permission == null || context.Player.HasPermission(parserResult.Command.Permission))
         {
             return parserResult.Command.Invoke(_services, context, parserResult.Arguments.ToArray());

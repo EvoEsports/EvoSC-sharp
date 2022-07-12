@@ -1,20 +1,19 @@
-﻿using EvoSC.Core.Commands.Chat;
+﻿using System.Reflection;
+using EvoSC.Core.Commands.Chat;
 using EvoSC.Core.Commands.Generic.Attributes;
 using EvoSC.Core.Helpers;
+using EvoSC.Core.Plugins;
 using EvoSC.Core.Services.UI;
+using EvoSC.Interfaces.Plugins;
 using Newtonsoft.Json.Serialization;
+using NLog;
 
 namespace Info;
 
 public class ChatCommands : ChatCommandGroup
 {
-    private readonly UiService _uiService;
-    
-    public ChatCommands(UiService uiService)
-    {
-        _uiService = uiService;
-    }
-    
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
     [Command("version", "Controller version.")]
     public Task Version()
     {
@@ -32,8 +31,19 @@ public class ChatCommands : ChatCommandGroup
     }
 
     [Command("help", "Show information and help on controller usage.")]
-    public Task Help()
+    public async Task Help()
     {
-        throw new NotImplementedException();
+        var pluginDir = @"E:\projects\evo\trackmania\evosc-sharp\EvoSC\bin\Debug\net6.0\plugins\Info\Templates";
+
+        _logger.Info(pluginDir);
+
+        var template = new TemplateEngine(pluginDir, "help.xml");
+
+        var xml = template.Render(new
+        {
+            name = "help"
+        });
+
+        await Context.Client.SendDisplayManialinkPageToLoginAsync(Context.Player.Login, xml, 0, false);
     }
 }

@@ -15,4 +15,11 @@
       </ProjectReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Templates\help.xml" />
+      <Content Include="Templates\help.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

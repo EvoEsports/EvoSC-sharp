@@ -125,6 +125,16 @@ public class CommandCollection : ICollection<ICommand>, IReadOnlyDictionary<stri
     }
 
     /// <summary>
+    /// Remove a command.
+    /// </summary>
+    /// <param name="cmd"></param>
+    /// <returns></returns>
+    public bool Remove(string cmdName)
+    {
+        return _commands.Remove(cmdName);
+    }
+
+    /// <summary>
     /// Remove a group and all it's mapped commands.
     /// </summary>
     /// <param name="group">The group to remove.</param>
@@ -137,6 +147,26 @@ public class CommandCollection : ICollection<ICommand>, IReadOnlyDictionary<stri
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Get all groups a command is a part of.
+    /// </summary>
+    /// <param name="cmdName"></param>
+    /// <returns></returns>
+    public IEnumerable<ICommandGroupInfo> GetCommandGroups(string cmdName)
+    {
+        var groups = new List<ICommandGroupInfo>();
+
+        foreach (var (_, group) in _groups)
+        {
+            if (CommandContainsInGroup(group.Name, cmdName))
+            {
+                groups.Add(group);
+            }
+        }
+
+        return groups;
     }
 
     public ICommandGroupInfo GetGroup(string groupName) => _groups[groupName];
