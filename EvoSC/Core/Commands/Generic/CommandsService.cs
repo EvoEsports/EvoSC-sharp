@@ -134,25 +134,12 @@ public abstract class CommandsService<TGroup> : ICommandsService
         if (_commands.CommandExists(name, group))
         {
             return _commands.GetCommand(name, group);
-        } else if (_commands.CommandExists(group))
+        } 
+        else if (_commands.CommandExists(group))
         {
             return _commands.GetCommand(group);
         }
         
-        /* if (_commands.ContainsGroup(group) && name != null && _commands.ContainsKey(name))
-        {
-            return _commands[name];
-        }
-        else if (_commands.ContainsKey(group))
-        {
-            var cmd = _commands[group];
-
-            if (cmd.Group == null || !_commands.ContainsGroup(cmd.Group))
-            {
-                return cmd;
-            }
-        } */
-
         throw new CommandException($"Command '{group}' not found");
     }
 }

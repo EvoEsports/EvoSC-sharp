@@ -36,7 +36,7 @@ public class ChatService : IChatService
 
     public async Task ClientOnPlayerChat(int playeruid, string login, string text, bool isregisteredcmd)
     {
-        var player = await _playerService.GetPlayer(login);
+        var player = await _playerService.GetPlayer(login, true);
         var chatMessage = new ServerServerChatMessage(_gbxRemoteClient, (IServerPlayer)player, text, playeruid);
 
         try

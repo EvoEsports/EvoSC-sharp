@@ -23,5 +23,5 @@ public interface IPlayerService
 
     public Task ClientOnPlayerInfoChanged(SPlayerInfo playerInfo);
 
-    public Task<IPlayer> GetPlayer(string login);
+    public Task<IPlayer> GetPlayer(string login, bool refreshDb=false);
 }

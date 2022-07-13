@@ -18,8 +18,6 @@ public class ManialinkPageGbxEventHandler : IGbxEventHandler
 
     public void HandleEvents(GbxRemoteClient client)
     {
-        // @todo change to appropriate callback when it becomes available from gbxclient.net
-        // client.OnAnyCallback += _uiService.OnAnyCallback;
         client.OnPlayerManialinkPageAnswer += _uiService.OnPlayerManialinkPageAnswer;
     }
 }

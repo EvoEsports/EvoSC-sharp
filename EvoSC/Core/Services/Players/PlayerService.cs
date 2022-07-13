@@ -79,7 +79,11 @@ public class PlayerService : IPlayerService
         }
     }
 
-    // todo: trigger this with an player connect event so that we can pass a IServerPlayer instance.
+    public Task<IPlayer> GetPlayer(string login)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task ClientOnPlayerConnect(string login, bool isSpectator)
     {
         using var scope = _serviceProvider.CreateScope();
@@ -188,14 +192,14 @@ public class PlayerService : IPlayerService
         return player;
     }
 
-    public async Task<IPlayer> GetPlayer(string login)
+    public async Task<IPlayer> GetPlayer(string login, bool refreshDb=false)
     {
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
         var player = _connectedPlayers.FirstOrDefault(p => p.Login == login);
 
-        if ((player as DatabasePlayer)?.Group?.Permissions != null)
+        if (!refreshDb && (player as DatabasePlayer)?.Group?.Permissions != null)
         {
             return player;
         }
