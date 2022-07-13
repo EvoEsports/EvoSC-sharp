@@ -18,12 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ExamplePlugin2\Properties" />
       <Folder Include="Properties" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="ExamplePlugin2\ExamplePlugin.csproj" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

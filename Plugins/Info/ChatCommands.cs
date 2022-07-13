@@ -10,11 +10,13 @@ using NLog;
 
 namespace Info;
 
+[Permission("test")]
 public class ChatCommands : ChatCommandGroup
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
-    [Command("version", "Controller version.")]
+    
+    [CommandGroup("test")]
+    [Command("cmd", "Controller version.")]
     public Task Version()
     {
         var evoscAssembly = AppDomain.CurrentDomain.GetAssemblies()
@@ -29,6 +31,11 @@ public class ChatCommands : ChatCommandGroup
 
         return Context.Message.ReplyAsync(message.Render());
     }
+
+    [CommandGroup("test2")]
+    [Command("cmd", "sdgfadg")]
+    public Task EvoSC() =>
+        Context.Message.ReplyAsync("test");
 
     [Command("help", "Show information and help on controller usage.")]
     public async Task Help()

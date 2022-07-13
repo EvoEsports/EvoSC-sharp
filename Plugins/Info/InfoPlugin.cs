@@ -28,8 +28,9 @@ public class InfoPlugin : IPlugin
     {
     }
 
-    public async Task Load(IChatCommandsService commands)
+    public async Task Load(IChatCommandsService commands, IPermissionsService permissions)
     {
+        permissions.AddPermission("test", "something");
         await commands.RegisterCommands<ChatCommands>();
     }
 

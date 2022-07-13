@@ -31,31 +31,14 @@ public abstract class CommandsService<TGroup> : ICommandsService
         _services = services;
     }
 
-    private ICommandGroupInfo TryAddGroup(CommandGroupAttribute groupAttr, string? permission = null)
-    {
-        if (groupAttr != null)
-        {
-            if (_commands.ContainsGroup(groupAttr.Name))
-            {
-                return _commands.GetGroup(groupAttr.Name);
-            }
-            else
-            {
-                var group = new CommandGroupInfo(groupAttr.Name, groupAttr.Description, permission);
-                _commands.AddGroup(group);
-                return group;
-            }
-        }
-
-        return null;
-    }
-
     public async Task RegisterCommands(Type type)
     {
         // group info & group permission
         var groupAttr = type.GetCustomAttribute<CommandGroupAttribute>();
         var groupPermission = type.GetCustomAttribute<PermissionAttribute>();
-        var group = TryAddGroup(groupAttr);
+        var group = groupAttr == null
+            ? null
+            : new CommandGroupInfo(groupAttr.Name, groupAttr.Description, groupPermission?.Name);
 
         // commands
         var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
@@ -70,7 +53,7 @@ public abstract class CommandsService<TGroup> : ICommandsService
                 continue;
             }
 
-            if (_commands.ContainsKey(cmdAttr.Name))
+            if (_commands.CommandExists(cmdAttr.Name, group?.Name))
             {
                 throw new InvalidOperationException($"A command with the name '{cmdAttr.Name}' already exists.");
             }
@@ -81,7 +64,9 @@ public abstract class CommandsService<TGroup> : ICommandsService
 
             // cmd group
             var cmdGroupAttr = method.GetCustomAttribute<CommandGroupAttribute>();
-            var cmdGroup = TryAddGroup(cmdGroupAttr) ?? group;
+            var cmdGroup = cmdGroupAttr == null
+                ? group
+                : new CommandGroupInfo(cmdGroupAttr.Name, cmdGroupAttr.Description, permission);
 
             // parameters
             var parameters = method.GetParameters();
@@ -98,7 +83,7 @@ public abstract class CommandsService<TGroup> : ICommandsService
             // register the command
             var command = new Command(method, type, cmdParams, cmdAttr.Name, cmdAttr.Description, permission, cmdGroup);
 
-            _commands.Add(command);
+            _commands.AddCommand(command);
         }
     }
 
@@ -106,6 +91,8 @@ public abstract class CommandsService<TGroup> : ICommandsService
 
     public Task UnregisterCommands(Type type)
     {
+        var groupAttr = type.GetCustomAttribute<CommandGroupAttribute>();
+        
         var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
         foreach (var method in methods)
@@ -116,17 +103,13 @@ public abstract class CommandsService<TGroup> : ICommandsService
             {
                 continue;
             }
+            
+            var cmdGroupAttr = method.GetCustomAttribute<CommandGroupAttribute>();
+            var cmdGroup = cmdGroupAttr ?? groupAttr;
 
-            if (_commands.ContainsKey(cmdAttr.Name))
+            if (_commands.CommandExists(cmdAttr.Name, cmdGroup?.Name))
             {
-                // unmap from groups
-                foreach (var group in _commands.GetCommandGroups(cmdAttr.Name))
-                {
-                    _commands.UnmapCommandFromGroup(group.Name, cmdAttr.Name);
-                }
-
-                // remove the command
-                _commands.Remove(cmdAttr.Name);
+                _commands.RemoveCommand(cmdAttr.Name, cmdGroup?.Name);
             }
         }
 
@@ -148,7 +131,15 @@ public abstract class CommandsService<TGroup> : ICommandsService
 
     public ICommand GetCommand(string group, string? name = null)
     {
-        if (_commands.ContainsGroup(group) && name != null && _commands.ContainsKey(name))
+        if (_commands.CommandExists(name, group))
+        {
+            return _commands.GetCommand(name, group);
+        } else if (_commands.CommandExists(group))
+        {
+            return _commands.GetCommand(group);
+        }
+        
+        /* if (_commands.ContainsGroup(group) && name != null && _commands.ContainsKey(name))
         {
             return _commands[name];
         }
@@ -160,7 +151,7 @@ public abstract class CommandsService<TGroup> : ICommandsService
             {
                 return cmd;
             }
-        }
+        } */
 
         throw new CommandException($"Command '{group}' not found");
     }
