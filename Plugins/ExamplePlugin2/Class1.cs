@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using EvoSC.Core.Plugins;
 using EvoSC.Interfaces.Commands;
 using EvoSC.Interfaces.Players;
@@ -7,9 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Info;
 
-public class InfoPlugin : IPlugin
+public class ExamplePlugin2 : IPlugin
 {
-    public string Name => "Info";
+    public string Name => "Example2";
     public Version Version => new(1, 0, 0);
 
     public void HandleEvents(IPlayerCallbacks playerCallbacks)
@@ -18,6 +20,7 @@ public class InfoPlugin : IPlugin
 
     public void Register(IServiceCollection services)
     {
+        Console.WriteLine("hallo");
     }
 
     public void Execute()
@@ -28,13 +31,13 @@ public class InfoPlugin : IPlugin
     {
     }
 
-    public async Task Load(IChatCommandsService commands)
+    public Task Load(IChatCommandsService commands)
     {
-        await commands.RegisterCommands<ChatCommands>();
+        return Task.CompletedTask;
     }
 
-    public async Task Unload(IChatCommandsService commands)
+    public Task Unload(IChatCommandsService commands)
     {
-        await commands.UnregisterCommands<ChatCommands>();
+        return Task.CompletedTask;
     }
 }

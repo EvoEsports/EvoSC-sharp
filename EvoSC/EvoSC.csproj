@@ -27,4 +27,8 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="plugins\" />
+  </ItemGroup>
 </Project>

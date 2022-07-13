@@ -1,4 +1,6 @@
-﻿using EvoSC.Core;
+﻿using System;
+using System.IO;
+using EvoSC.Core;
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Events.Callbacks;
 using EvoSC.Core.Events.Callbacks.Args;
@@ -42,7 +44,7 @@ var theme = Config.GetTheme();
 var dbConfig = Config.GetDatabaseConfig();
 var connectionString = dbConfig.GetConnectionString();
 
-builder.ConfigureServices(services =>
+builder.ConfigureServices((builder, services) =>
 {
     services.AddDbContext<DatabaseContext>(options =>
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
@@ -71,7 +73,7 @@ builder.ConfigureServices(services =>
     services.AddScoped<IPermissionsService, PermissionsService>();
 
     // Register plugins
-    PluginFactory.Instance.RegisterPlugins(services);
+    PluginFactory.Instance.RegisterPlugins(services, Environment.CurrentDirectory + "/plugins");
 });
 
 var app = builder.Build();

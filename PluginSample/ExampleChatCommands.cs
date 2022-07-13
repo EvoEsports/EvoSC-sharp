@@ -49,5 +49,11 @@ public class ExampleChatCommands : ChatCommandGroup
         var settings = await Context.Client.GetModeScriptSettingsAsync();
         settings["S_TimeLimit"] = 0;
         await Context.Client.SetModeScriptSettingsAsync(settings);
+
+        var msg = new ChatMessage();
+        msg.SetSuccess();
+        msg.SetMessage("Hunt mode enabled.");
+        msg.SetIcon(Icon.Checkmark);
+        await Context.Message.ReplyAsync(msg);
     }
 }

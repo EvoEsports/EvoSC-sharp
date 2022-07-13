@@ -9,8 +9,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginSample", "PluginSample\PluginSample.csproj", "{4A2B6B9F-52AF-48DB-A3B7-9B98D9F3FC47}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{45E0B8B8-7B0B-471A-8136-98ED82A1B96B}"
+	ProjectSection(SolutionItems) = preProject
+		Plugins\README.md = Plugins\README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Info", "Plugins\Info\Info.csproj", "{7A6BAC47-CEC1-4CEE-9F2D-EE25686884DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "Plugins\ExamplePlugin\ExamplePlugin.csproj", "{59F7A323-5C64-4377-B5E8-E557E8FA4E40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +39,10 @@ Global
 		{7A6BAC47-CEC1-4CEE-9F2D-EE25686884DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A6BAC47-CEC1-4CEE-9F2D-EE25686884DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A6BAC47-CEC1-4CEE-9F2D-EE25686884DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F7A323-5C64-4377-B5E8-E557E8FA4E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F7A323-5C64-4377-B5E8-E557E8FA4E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F7A323-5C64-4377-B5E8-E557E8FA4E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F7A323-5C64-4377-B5E8-E557E8FA4E40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,5 +52,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7A6BAC47-CEC1-4CEE-9F2D-EE25686884DA} = {45E0B8B8-7B0B-471A-8136-98ED82A1B96B}
+		{59F7A323-5C64-4377-B5E8-E557E8FA4E40} = {45E0B8B8-7B0B-471A-8136-98ED82A1B96B}
 	EndGlobalSection
 EndGlobal
