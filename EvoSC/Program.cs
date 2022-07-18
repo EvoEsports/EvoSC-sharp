@@ -6,17 +6,16 @@ using EvoSC.Core.Events.Callbacks;
 using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Events.GbxEventHandlers;
 using EvoSC.Core.Plugins;
+using EvoSC.Core.Plugins.Abstractions;
 using EvoSC.Core.Services.Chat;
 using EvoSC.Core.Services.Commands;
 using EvoSC.Core.Services.Players;
-using EvoSC.Core.Services.Plugins;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain;
 using EvoSC.Interfaces;
 using EvoSC.Interfaces.Messages;
 using EvoSC.Interfaces.Commands;
 using EvoSC.Interfaces.Players;
-using EvoSC.Interfaces.Plugins;
 using EvoSC.Interfaces.UI;
 using GbxRemoteNet;
 using Microsoft.EntityFrameworkCore;
@@ -35,8 +34,8 @@ logger.Info("Initializing EvoSC...");
 builder.ConfigureLogging((context, builder) =>
 {
     builder.ClearProviders();
-    builder.AddNLog("nlog.config")
-        .SetMinimumLevel(LogLevel.Trace);
+    builder.AddNLog("nlog.config");
+    builder.SetMinimumLevel(LogLevel.Trace);
 });
 
 var serverConnectionConfig = Config.GetDedicatedConfig();
@@ -68,12 +67,13 @@ builder.ConfigureServices((builder, services) =>
     services.AddSingleton<IChatService, ChatService>();
     services.AddSingleton<IUiService, UiService>();
     services.AddSingleton<IChatCommandsService, ChatCommandsService>();
-    services.AddTransient<IPluginsService, PluginsService>();
-    services.AddHostedService<PluginsLoaderService>();
     services.AddScoped<IPermissionsService, PermissionsService>();
+});
 
-    // Register plugins
-    PluginFactory.Instance.RegisterPlugins(services, Environment.CurrentDirectory + "/plugins");
+// plugins
+builder.UsePlugins(config =>
+{
+    config.PluginsDir = "ext_plugins";
 });
 
 var app = builder.Build();
@@ -95,10 +95,6 @@ await serverConnection.ConnectToServer(serverConnectionConfig);
 
 logger.Info("Completed initialization");
 
-// var sample = app.Services.GetRequiredService<ISampleService>();
-// logger.Info(sample.GetName());
-var module = app.Services.GetService<IPlugin>();
-module?.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
 Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
 
 app.Run();
