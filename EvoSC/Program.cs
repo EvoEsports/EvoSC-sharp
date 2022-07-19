@@ -24,7 +24,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 var builder = Host.CreateDefaultBuilder(args);
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -35,7 +34,7 @@ builder.ConfigureLogging((context, builder) =>
 {
     builder.ClearProviders();
     builder.AddNLog("nlog.config");
-    builder.SetMinimumLevel(LogLevel.Trace);
+    builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
 });
 
 var serverConnectionConfig = Config.GetDedicatedConfig();
@@ -73,7 +72,7 @@ builder.ConfigureServices((builder, services) =>
 // plugins
 builder.UsePlugins(config =>
 {
-    config.PluginsDir = "ext_plugins";
+    config.PluginsDir = Path.GetFullPath(Environment.CurrentDirectory + "/ext_plugins");
 });
 
 var app = builder.Build();

@@ -1,0 +1,11 @@
+[info]
+name = "ExamplePlugin"
+title = "Example Plugin"
+version = "1.0.0"
+author = "Evo"
+summary = "An example plugin to show how it all works."
+
+[dependencies]
+dependency1 = "1.0.0"
+dependency2 = "1.0.0"
+dependency3 = "1.0.0"

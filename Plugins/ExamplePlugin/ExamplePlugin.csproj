@@ -4,29 +4,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Title>Example Plugin</Title>
-        <Description>An example plugin</Description>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
-        <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\EvoSC\EvoSC.csproj">
-            <ExcludeAssets>runtime</ExcludeAssets>
-            <Private>false</Private>
-        </ProjectReference>
+      <ProjectReference Include="..\..\EvoSC\EvoSC.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Properties" />
-    </ItemGroup>
-
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="mkdir $(SolutionDir)EvoSC\ext_plugins\$(ProjectName)&#xA;xcopy $(OutDir)* $(SolutionDir)EvoSC\ext_plugins\$(ProjectName)\ /Y /I /E" />
-    </Target>
-
-    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-      <Exec Command="rmdir $(SolutionDir)EvoSC\ext_plugins\$(ProjectName)" />
-    </Target>
 
 </Project>
