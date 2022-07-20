@@ -46,8 +46,7 @@ public abstract class ISortedPluginCollection : IPluginCollection
             {
                 if (!Plugins.ContainsKey(dependency))
                 {
-                    throw new InvalidOperationException(
-                        $"The plugin '{dependent}' depend on '{dependency}' which doesn't exist.");
+                    throw new DependencyNotFoundException(dependent, dependency);
                 }
             }
         }

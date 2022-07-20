@@ -38,6 +38,11 @@ public class DependencyCycleDetectedException : DependencyException
         return false;
     }
 
+    /// <summary>
+    /// A list representing the path of dependencies that leads to a cycle.
+    /// The last element is equal to the first.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerable<string> GetCycle()
     {
         foreach (var name in _remainingGraph.Keys)
@@ -54,5 +59,5 @@ public class DependencyCycleDetectedException : DependencyException
         return Array.Empty<string>();
     }
 
-    public override string Message { get => string.Join(" -> ", GetCycle()); }
+    public override string Message { get => $"Cycle detected ({string.Join(" -> ", GetCycle())})"; }
 }
