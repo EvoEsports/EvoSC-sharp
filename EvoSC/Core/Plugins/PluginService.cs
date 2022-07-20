@@ -120,25 +120,29 @@ public class PluginService : IPluginService
                 var assembly = loadContext.LoadFromAssemblyPath(asmFile.FullName);
             
                 // find main plugin class
-                var found = false;
-                foreach (var module in assembly.Modules)
+                if (pluginClass == null)
                 {
-                    foreach (var type in module.GetTypes())
+                    var found = false;
+                    
+                    foreach (var module in assembly.Modules)
                     {
-                        if (typeof(IPlugin).IsAssignableFrom(type))
+                        foreach (var type in module.GetTypes())
                         {
-                            pluginClass = type;
-                            found = true;
+                            if (typeof(IPlugin).IsAssignableFrom(type))
+                            {
+                                pluginClass = type;
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found)
+                        {
                             break;
                         }
                     }
-
-                    if (found)
-                    {
-                        break;
-                    }
                 }
-            
+
                 assemblies.Add(assembly);
             }   
         }
@@ -149,7 +153,7 @@ public class PluginService : IPluginService
 
         if (pluginClass == null)
         {
-            throw new NoPluginClassException(pluginMeta.Name);
+            throw new PluginClassNotFoundException(pluginMeta.Name);
         }
         
         // set up load contextd
@@ -163,11 +167,11 @@ public class PluginService : IPluginService
         loadInfo.SetPluginClass(pluginClass);
         
         // services
-        var method = ReflectionUtils.GetStaticMethod(pluginClass, "Setup");
         var pluginServiceCollection = new ServiceCollection();
         pluginServiceCollection.AddSingleton<IPluginMetaInfo>(pluginMeta);
 
         // call setup method
+        var method = ReflectionUtils.GetStaticMethod(pluginClass, "Setup");
         method?.Invoke(null, new object?[] {pluginServiceCollection});
 
         var pluginServices = pluginServiceCollection.BuildServiceProvider();
