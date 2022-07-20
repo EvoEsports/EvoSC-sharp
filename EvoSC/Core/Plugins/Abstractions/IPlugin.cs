@@ -2,5 +2,5 @@
 
 public interface IPlugin
 {
-    
+    public void SetInfo(IPluginMetaInfo metaInfo);
 }

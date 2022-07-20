@@ -97,12 +97,6 @@ logger.Info("Completed initialization");
 
 Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
 
-Task.Run(async () =>
-{
-    await Task.Delay(2000);
-    await app.StopAsync();
-});
-
 app.Run();
 
 void Subscribe(IPlayerCallbacks playerCallbacks)

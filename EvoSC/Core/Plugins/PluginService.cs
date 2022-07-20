@@ -124,12 +124,7 @@ public class PluginService : IPluginService
             throw new PluginException($"Plugin class not found for '{pluginMeta.Name}'");
         }
         
-        // set up plugin
-        var method = ReflectionUtils.GetStaticMethod(pluginClass, "Setup");
-        var pluginServiceCollection = new ServiceCollection();
-
-        method?.Invoke(null, new object?[] {pluginServiceCollection});
-
+        // set up load contextd
         var loadInfo = new PluginLoadContext
         {
             MetaInfo = pluginMeta,
@@ -138,8 +133,15 @@ public class PluginService : IPluginService
         
         loadInfo.SetAssemblyContext(loadContext);
         loadInfo.SetPluginClass(pluginClass);
-
+        
         // services
+        var method = ReflectionUtils.GetStaticMethod(pluginClass, "Setup");
+        var pluginServiceCollection = new ServiceCollection();
+        pluginServiceCollection.AddSingleton<IPluginMetaInfo>(pluginMeta);
+
+        // call setup method
+        method?.Invoke(null, new object?[] {pluginServiceCollection});
+
         var pluginServices = pluginServiceCollection.BuildServiceProvider();
         var pluginServiceProvider = new PluginServiceProvider(_mainServices);
         pluginServiceProvider.AddProvider(loadId, pluginServices);
