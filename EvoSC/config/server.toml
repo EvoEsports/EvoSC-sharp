@@ -1,5 +1,5 @@
 ﻿[dedicated]
-host = "172.18.70.158"
+host = "172.18.78.127"
 port = 5000
 login = "SuperAdmin"
 password = "SuperAdmin"

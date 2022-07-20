@@ -49,6 +49,6 @@ public class PluginLoadContext : IPluginLoadContext
 
     public void SetPluginClass(Type type)
     {
-        PluginClass = PluginClass;
+        PluginClass = type;
     }
 }

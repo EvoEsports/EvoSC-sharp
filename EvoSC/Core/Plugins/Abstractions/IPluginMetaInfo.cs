@@ -20,4 +20,5 @@ public interface IPluginMetaInfo
     public IEnumerable<FileInfo> AssemblyFiles { get; }
     
     public bool IsInternal { get; }
+    Type? InternalClass { get; }
 }

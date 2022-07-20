@@ -8,6 +8,7 @@ using System.Runtime.Loader;
 using System.Threading.Tasks;
 using EvoSC.Core.Helpers;
 using EvoSC.Core.Plugins.Abstractions;
+using EvoSC.Core.Plugins.Exceptions;
 using EvoSC.Core.Plugins.Info;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +37,22 @@ public class PluginService : IPluginService
         _pluginCollections = new();
     }
 
+    private bool IsInternal(string pluginName)
+    {
+        foreach (var collection in _pluginCollections)
+        {
+            foreach (var (name, plugin) in collection.Plugins)
+            {
+                if (name == pluginName && plugin.IsInternal)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
     [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task<IPluginLoadContext> InitializePlugin(IPluginMetaInfo pluginMeta)
     {
@@ -45,9 +62,9 @@ public class PluginService : IPluginService
 
         foreach (var dependency in pluginMeta.Dependencies)
         {
-            if (dependency.ResolvedPath is null)
+            if (dependency.ResolvedPath is null && !IsInternal(dependency.Name))
             {
-                // todo: check if the dependency is an internal plugin, and throw an error if not
+                throw new PluginException($"The dependency '{dependency.Name}' was not found.");
             }
 
             var dependencyMeta = PluginMetaInfo.FromDirectory(dependency.ResolvedPath);
@@ -64,31 +81,43 @@ public class PluginService : IPluginService
         // todo: load assemblies from dependencies
         
         // get all assemblies
-        foreach (var asmFile in pluginMeta.AssemblyFiles)
+        if (!pluginMeta.IsInternal)
         {
-            var assembly = loadContext.LoadFromAssemblyPath(asmFile.FullName);
-            
-            // find main plugin class
-            var found = false;
-            foreach (var module in assembly.Modules)
+            foreach (var asmFile in pluginMeta.AssemblyFiles)
             {
-                foreach (var type in module.GetTypes())
+                var assembly = loadContext.LoadFromAssemblyPath(asmFile.FullName);
+            
+                // find main plugin class
+                var found = false;
+                foreach (var module in assembly.Modules)
                 {
-                    if (typeof(IPlugin).IsAssignableFrom(type))
+                    foreach (var type in module.GetTypes())
                     {
-                        pluginClass = type;
-                        found = true;
+                        if (typeof(IPlugin).IsAssignableFrom(type))
+                        {
+                            pluginClass = type;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
                         break;
                     }
                 }
-
-                if (found)
-                {
-                    break;
-                }
-            }
             
-            assemblies.Add(assembly);
+                assemblies.Add(assembly);
+            }   
+        }
+        else
+        {
+            pluginClass = pluginMeta.InternalClass;
+        }
+
+        if (pluginClass == null)
+        {
+            throw new PluginException($"Plugin class not found for '{pluginMeta.Name}'");
         }
         
         // set up plugin
@@ -104,6 +133,7 @@ public class PluginService : IPluginService
         };
         
         loadInfo.SetAssemblyContext(loadContext);
+        loadInfo.SetPluginClass(pluginClass);
 
         // services
         var pluginServices = pluginServiceCollection.BuildServiceProvider();
@@ -148,7 +178,7 @@ public class PluginService : IPluginService
         // check if plugin files exists
         if (!Directory.Exists(pluginDir))
         {
-            throw new InvalidOperationException("Plugin directory not found.");
+            throw new DirectoryNotFoundException("Plugin directory not found.");
         }
 
         var metaInfo = PluginMetaInfo.FromDirectory(pluginDir);
@@ -170,6 +200,8 @@ public class PluginService : IPluginService
 
     public async Task LoadCollection(ISortedPluginCollection collection)
     {
+        _pluginCollections.Add(collection);
+        
         foreach (var plugin in collection.SortedLoadOrder())
         {
             await InternalLoad(plugin);

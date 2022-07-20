@@ -8,7 +8,7 @@ using DependencyGraph = Dictionary<string, IList<string>>;
 
 public abstract class ISortedPluginCollection : IPluginCollection
 {
-    public Dictionary<string, IPluginMetaInfo> Plugins { get; }
+    public abstract Dictionary<string, IPluginMetaInfo> Plugins { get; }
     public abstract void Add(IPluginMetaInfo pluginMeta);
     
     /// <summary>

@@ -8,6 +8,7 @@ using EvoSC.Core.Helpers;
 using EvoSC.Core.Plugins.Abstractions;
 using Tomlet;
 using Tomlet.Exceptions;
+using Tomlet.Models;
 
 namespace EvoSC.Core.Plugins.Info;
 
@@ -26,6 +27,7 @@ public class PluginMetaInfo : IPluginMetaInfo
     public IEnumerable<FileInfo> AssemblyFiles { get; init; }
     
     public bool IsInternal { get; init; }
+    public Type? InternalClass { get; init; }
 
     public static bool MetaFileExists(string pluginDir) =>
         File.Exists(Path.GetFullPath($"{pluginDir}/{MetaFileName}"));
@@ -34,7 +36,7 @@ public class PluginMetaInfo : IPluginMetaInfo
     {
         if (!MetaFileExists(pluginDir))
         {
-            throw new InvalidOperationException("info.json not found in the plugin directory.");
+            throw new FileNotFoundException("info.json not found in the plugin directory.");
         }
         
         var metaFile = Path.GetFullPath($"{pluginDir}/{MetaFileName}");
@@ -45,8 +47,8 @@ public class PluginMetaInfo : IPluginMetaInfo
         var name = metaDocument.ValidateEntry<string>("info.name", value => Regex.IsMatch(value.StringValue, "[\\w_]+"));
         var title = metaDocument.ValidateEntry<string>("info.title", value => value.StringValue.Trim() != string.Empty);
         var version = metaDocument.ValidateEntry<string>("info.version", value => System.Version.TryParse(value.StringValue, out _));
-        var author = metaDocument.ValidateEntry<string>("author", value => value.StringValue.Trim() != string.Empty);
-        var summary = metaDocument.ValidateEntry<string>("summary");
+        var author = metaDocument.ValidateEntry<string>("info.author", value => value.StringValue.Trim() != string.Empty);
+        var summary = metaDocument.ValidateEntry<string>("info.summary");
         
         // plugin dir
         var pluginDirectory = new DirectoryInfo(pluginDir);

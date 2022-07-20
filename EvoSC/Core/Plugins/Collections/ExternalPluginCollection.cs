@@ -10,11 +10,11 @@ namespace EvoSC.Core.Plugins;
 /// <summary>
 /// A collection to keep track of external plugins.
 /// </summary>
-public class ExternalSortedPluginCollection : ISortedPluginCollection
+public class ExternalPluginCollection : ISortedPluginCollection
 {
     private Dictionary<string, IPluginMetaInfo> _plugins = new();
 
-    public Dictionary<string, IPluginMetaInfo> Plugins => _plugins;
+    public override Dictionary<string, IPluginMetaInfo> Plugins => _plugins;
     
     public override void Add(IPluginMetaInfo pluginMeta) => _plugins.Add(pluginMeta.Name, pluginMeta);
 
