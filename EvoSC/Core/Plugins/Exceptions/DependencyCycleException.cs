@@ -6,11 +6,11 @@ namespace EvoSC.Core.Plugins.Exceptions;
 
 using DependencyGraph = Dictionary<string, IList<string>>;
 
-public class DependencyCycleDetectedException : DependencyException
+public class DependencyCycleException : DependencyException
 {
     private readonly DependencyGraph _remainingGraph;
     
-    public DependencyCycleDetectedException(DependencyGraph remainingGraph)
+    public DependencyCycleException(DependencyGraph remainingGraph)
     {
         _remainingGraph = remainingGraph;
     }

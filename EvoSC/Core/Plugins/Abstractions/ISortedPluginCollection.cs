@@ -105,7 +105,7 @@ public abstract class ISortedPluginCollection : IPluginCollection
         // check if we have a dependency cycle
         if (pluginDependencies.Count > 0)
         {
-            throw new DependencyCycleDetectedException(pluginDependencies);
+            throw new DependencyCycleException(pluginDependencies);
         }
 
         return sorted;
