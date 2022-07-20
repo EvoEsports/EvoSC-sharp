@@ -93,14 +93,28 @@ public class PluginService : IPluginService
         var assemblies = new List<Assembly>();
 
         _logger.LogDebug("Plugin '{Name}' was assigned load ID: '{Id}'", pluginMeta.Name, loadId);
-        
-        // todo: load assemblies from dependencies
-        
+
         // get all assemblies
         if (!pluginMeta.IsInternal)
         {
             loadContext = new AssemblyLoadContext(loadId.ToString(), true); 
             
+            // load assemblies from dependencies
+            var dependencyAssemblies = new HashSet<string>();
+            foreach (var dependency in dependencyInfos)
+            {
+                foreach (var asm in dependency.LoadContext.Assemblies)
+                {
+                    dependencyAssemblies.Add(asm.Location);
+                }
+            }
+
+            foreach (var asm in dependencyAssemblies)
+            {
+                loadContext.LoadFromAssemblyPath(asm);
+            }
+            
+            // load the plugin's assemblies
             foreach (var asmFile in pluginMeta.AssemblyFiles)
             {
                 var assembly = loadContext.LoadFromAssemblyPath(asmFile.FullName);
