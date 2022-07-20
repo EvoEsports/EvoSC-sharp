@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using EvoSC.Core;
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Events.Callbacks;
@@ -95,6 +96,12 @@ await serverConnection.ConnectToServer(serverConnectionConfig);
 logger.Info("Completed initialization");
 
 Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
+
+Task.Run(async () =>
+{
+    await Task.Delay(2000);
+    await app.StopAsync();
+});
 
 app.Run();
 

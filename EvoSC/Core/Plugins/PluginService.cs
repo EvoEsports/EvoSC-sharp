@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
@@ -10,6 +11,7 @@ using EvoSC.Core.Helpers;
 using EvoSC.Core.Plugins.Abstractions;
 using EvoSC.Core.Plugins.Exceptions;
 using EvoSC.Core.Plugins.Info;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,7 +76,7 @@ public class PluginService : IPluginService
         
         // load all assemblies
         var loadId = Guid.NewGuid();
-        var loadContext = new AssemblyLoadContext(loadId.ToString(), true); // todo: set isCollectible to false if internal plugin
+        AssemblyLoadContext? loadContext = null;
         Type? pluginClass = null;
         var assemblies = new List<Assembly>();
 
@@ -83,6 +85,8 @@ public class PluginService : IPluginService
         // get all assemblies
         if (!pluginMeta.IsInternal)
         {
+            loadContext = new AssemblyLoadContext(loadId.ToString(), true); 
+            
             foreach (var asmFile in pluginMeta.AssemblyFiles)
             {
                 var assembly = loadContext.LoadFromAssemblyPath(asmFile.FullName);
@@ -160,9 +164,45 @@ public class PluginService : IPluginService
         var instance = (IPlugin)ActivatorUtilities.CreateInstance(loadInfo.ServiceProvider, loadInfo.PluginClass);
         loadInfo.SetInstance(instance);
         
+        _loadedPlugins.Add(loadInfo.LoadId, loadInfo);
+        
         return loadInfo;
     }
-    
+
+    private IEnumerable<Guid> FindGuidByName(string pluginName)
+    {
+        var guids = new List<Guid>();
+
+        foreach (var plugin in _loadedPlugins)
+        {
+            if (plugin.Value.MetaInfo.Name == pluginName)
+            {
+                guids.Add(plugin.Key);
+            }
+        }
+
+        return guids;
+    }
+
+    private IEnumerable<IPluginLoadContext> FindDependentPlugins(string name)
+    {
+        var plugins = new List<IPluginLoadContext>();
+
+        foreach (var (loadId, plugin) in _loadedPlugins)
+        {
+            foreach (var dep in plugin.MetaInfo.Dependencies)
+            {
+                if (dep.Name == name)
+                {
+                    plugins.Add(plugin);
+                    break;
+                }
+            }
+        }
+
+        return plugins;
+    }
+
     [MethodImpl(MethodImplOptions.NoInlining)]
     public Task LoadPlugin(string dir)
     {
@@ -187,15 +227,42 @@ public class PluginService : IPluginService
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public Task UnloadPlugin(Guid loadId)
+    public Task UnloadPlugin(Guid loadId, bool throwIfNotUnloaded=false)
     {
-        /*
-         * 1. Check if any plugin depend on it.
-         * 2. Unload dependent plugins.
-         * 3. Remove the plugin's service provider.
-         * 4. Unload the plugin.
-         */
-        throw new System.NotImplementedException();
+        if (!_loadedPlugins.ContainsKey(loadId))
+        {
+            throw new InvalidOperationException($"The plugin with load id '{loadId}' does not exit.");
+        }
+
+        var plugin = _loadedPlugins[loadId];
+        
+        // unload plugins depending on this one first
+        foreach (var dependentPlugin in FindDependentPlugins(plugin.MetaInfo.Name))
+        {
+            ((PluginServiceProvider)plugin.ServiceProvider).RemoveProvider(dependentPlugin.LoadId);
+            UnloadPlugin(dependentPlugin.LoadId);
+        }
+
+        _logger.LogInformation("Unloading {Name}", plugin.MetaInfo.Name);
+        
+        // unload the plugin
+        if (!plugin.MetaInfo.IsInternal && !plugin.UnloadAssemblies() && throwIfNotUnloaded)
+        {
+            throw new InvalidOperationException("Failed to unload.");
+        }
+
+        // try to make sure references are gone
+        plugin.SetServiceProvider(null);
+        plugin.SetInstance(null);
+        plugin.SetAssemblyContext(null);
+        plugin.SetPluginClass(null);
+        
+        _loadedPlugins.Remove(loadId);
+        
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+
+        return Task.CompletedTask;
     }
 
     public async Task LoadCollection(ISortedPluginCollection collection)
@@ -205,6 +272,14 @@ public class PluginService : IPluginService
         foreach (var plugin in collection.SortedLoadOrder())
         {
             await InternalLoad(plugin);
+        }
+    }
+
+    public async Task UnloadAll()
+    {
+        foreach (var (name, plugin) in _loadedPlugins.Reverse())
+        {
+            await UnloadPlugin(plugin.LoadId);
         }
     }
 }

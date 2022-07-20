@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using EvoSC.Core.Plugins.Abstractions;
 
@@ -16,14 +17,15 @@ public class PluginLoadContext : IPluginLoadContext
     public bool UnloadAssemblies()
     {
         var weakRef = new WeakReference(Instance);
+
+        LoadContext.Unload();
+        
         Instance = null;
         PluginClass = null;
         ServiceProvider = null;
-        
-        LoadContext.Unload();
         LoadContext = null;
 
-        for (var i = 0; i < 10 && weakRef.IsAlive; i++)
+        for (var i = 0; weakRef.IsAlive && i < 10; i++)
         {
             GC.Collect();
             GC.WaitForPendingFinalizers();

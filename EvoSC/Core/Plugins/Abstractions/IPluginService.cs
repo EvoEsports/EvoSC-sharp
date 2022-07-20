@@ -15,12 +15,18 @@ public interface IPluginService
     /// Unload a plugin.
     /// </summary>
     /// <param name="loadId"></param>
+    /// <param name="throwIfNotUnloaded">Throw an exception if the GC cannot collect all references.</param>
     /// <returns></returns>
-    public Task UnloadPlugin(Guid loadId);
+    public Task UnloadPlugin(Guid loadId, bool throwIfNotUnloaded=false);
     /// <summary>
     /// Load plugins from a collection.
     /// </summary>
     /// <param name="collection">A sortable (by dependency) collection of plugins.</param>
     /// <returns></returns>
     public Task LoadCollection(ISortedPluginCollection collection);
+    /// <summary>
+    /// Unload all plugins.
+    /// </summary>
+    /// <returns></returns>
+    public Task UnloadAll();
 }
