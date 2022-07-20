@@ -6,8 +6,8 @@ namespace EvoSC.Core.Modules.Info;
 
 public class Info : EvoSCPlugin
 {
-    public Info(IPluginMetaInfo info)
+    public Info(IChatCommandsService commands)
     {
-        Console.WriteLine($"hello from {info.Name}");
+        commands.RegisterCommands<Commands>();
     }
 }
