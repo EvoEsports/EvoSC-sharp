@@ -32,5 +32,6 @@
     <_ContentIncludedByDefault Remove="plugins\ExamplePlugin2\ExamplePlugin2.deps.json" />
     <_ContentIncludedByDefault Remove="plugins\ExamplePlugin\ExamplePlugin.deps.json" />
     <_ContentIncludedByDefault Remove="plugins\Info\Info.deps.json" />
+    <_ContentIncludedByDefault Remove="ext_plugins\ExamplePlugin\ExamplePlugin.deps.json" />
   </ItemGroup>
 </Project>
