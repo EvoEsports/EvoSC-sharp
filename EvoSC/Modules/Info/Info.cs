@@ -1,7 +1,7 @@
 ﻿using System;
 using EvoSC.Core.Plugins;
 
-namespace EvoSC.Core.Modules.Info;
+namespace EvoSC.Modules.Info;
 
 public class Info : EvoSCPlugin
 {

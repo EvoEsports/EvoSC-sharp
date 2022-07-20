@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using EvoSC.Core.Helpers.Builders;
-using EvoSC.Core.Modules;
+using EvoSC.Modules;
 using EvoSC.Core.Plugins.Abstractions;
 using EvoSC.Core.Plugins.Info;
 using Microsoft.Extensions.Hosting;

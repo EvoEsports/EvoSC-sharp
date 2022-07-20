@@ -1,7 +1,7 @@
 ﻿using EvoSC.Core.Helpers.Builders;
 using EvoSC.Core.Plugins;
 
-namespace EvoSC.Core.Modules;
+namespace EvoSC.Modules;
 
 public static class InternalPlugins
 {

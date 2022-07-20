@@ -7,3 +7,4 @@ summary = "An example plugin to show how it all works."
 test = 2
 
 [dependencies]
+ExamplePlugin2 = "1.0.0"

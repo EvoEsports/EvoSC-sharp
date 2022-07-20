@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using EvoSC.Core.Commands.Chat;
 using EvoSC.Core.Commands.Generic.Attributes;
 
-namespace EvoSC.Core.Modules.Info;
+namespace EvoSC.Modules.Info;
 
 public class Commands : ChatCommandGroup
 {

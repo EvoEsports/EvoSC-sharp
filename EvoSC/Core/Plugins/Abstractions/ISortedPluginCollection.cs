@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using EvoSC.Core.Plugins.Exceptions;
 
 namespace EvoSC.Core.Plugins.Abstractions;
 
@@ -105,8 +106,7 @@ public abstract class ISortedPluginCollection : IPluginCollection
         // check if we have a dependency cycle
         if (pluginDependencies.Count > 0)
         {
-            // todo: give a formatted output to show the user which plugins have a cycle?
-            throw new Exception("Dependency cycle detected.");
+            throw new DependencyCycleDetectedException(pluginDependencies);
         }
 
         return sorted;
