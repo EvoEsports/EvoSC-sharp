@@ -66,7 +66,7 @@ public class PluginService : IPluginService
         {
             if (dependency.ResolvedPath is null && !IsInternal(dependency.Name))
             {
-                throw new PluginException($"The dependency '{dependency.Name}' was not found.");
+                throw new DependencyNotFoundException(pluginMeta.Name, dependency.Name);
             }
 
             var dependencyMeta = PluginMetaInfo.FromDirectory(dependency.ResolvedPath);
@@ -121,7 +121,7 @@ public class PluginService : IPluginService
 
         if (pluginClass == null)
         {
-            throw new PluginException($"Plugin class not found for '{pluginMeta.Name}'");
+            throw new NoPluginClassException(pluginMeta.Name);
         }
         
         // set up load contextd
@@ -233,7 +233,7 @@ public class PluginService : IPluginService
     {
         if (!_loadedPlugins.ContainsKey(loadId))
         {
-            throw new InvalidOperationException($"The plugin with load id '{loadId}' does not exit.");
+            throw new PluginNotLoadedException(loadId);
         }
 
         var plugin = _loadedPlugins[loadId];
@@ -250,7 +250,7 @@ public class PluginService : IPluginService
         // unload the plugin
         if (!plugin.MetaInfo.IsInternal && !plugin.UnloadAssemblies() && throwIfNotUnloaded)
         {
-            throw new InvalidOperationException("Failed to unload.");
+            throw new PluginUnloadException("Failed to unload.");
         }
 
         // try to make sure references are gone
