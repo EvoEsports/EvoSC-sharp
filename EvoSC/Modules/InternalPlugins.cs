@@ -11,7 +11,7 @@ public static class InternalPlugins
 
         plugins.Add(
             PluginMetaInfoBuilder.NewInternal<Info.Info>()
-                .WithName("info")
+                .WithName("Info")
                 .WithTitle("Information")
                 .WithAuthor("snixtho")
                 .WithVersion("1.0.0")

@@ -11,6 +11,7 @@
             <ExcludeAssets>runtime</ExcludeAssets>
             <Private>false</Private>
         </ProjectReference>
+        <ProjectReference Include="..\ExamplePlugin2\ExamplePlugin2.csproj" />
     </ItemGroup>
 
     <ItemGroup>

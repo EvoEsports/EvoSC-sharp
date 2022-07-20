@@ -8,6 +8,7 @@ using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Events.GbxEventHandlers;
 using EvoSC.Core.Plugins;
 using EvoSC.Core.Plugins.Abstractions;
+using EvoSC.Core.Plugins.Extensions;
 using EvoSC.Core.Services.Chat;
 using EvoSC.Core.Services.Commands;
 using EvoSC.Core.Services.Players;

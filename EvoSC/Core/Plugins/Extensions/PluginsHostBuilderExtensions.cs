@@ -3,7 +3,7 @@ using EvoSC.Core.Plugins.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace EvoSC.Core.Plugins;
+namespace EvoSC.Core.Plugins.Extensions;
 
 public static class PluginsHostBuilderExtensions
 {

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using EvoSC.Core.Helpers;
 using EvoSC.Core.Plugins.Abstractions;
 using EvoSC.Core.Plugins.Exceptions;
+using EvoSC.Core.Plugins.Extensions;
 using EvoSC.Core.Plugins.Info;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -30,6 +31,8 @@ public class PluginService : IPluginService
     private Dictionary<Guid, IPluginLoadContext> _loadedPlugins;
     private List<ISortedPluginCollection> _pluginCollections;
 
+    public IReadOnlyList<IPluginLoadContext> LoadedPlugins => _loadedPlugins.Values.ToList();
+    
     public PluginService(IOptions<PluginsHostConfiguration> options, ILogger<PluginService> logger, IServiceProvider mainServices)
     {
         _options = options.Value;
@@ -58,6 +61,8 @@ public class PluginService : IPluginService
     [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task<IPluginLoadContext> InitializePlugin(IPluginMetaInfo pluginMeta)
     {
+        _logger.LogDebug("Initializing plugin '{Name}'", pluginMeta.Name);
+        
         // load dependencies first
         var dependencies = new List<IPluginMetaInfo>();
         var dependencyInfos = new List<IPluginLoadContext>();
@@ -70,8 +75,15 @@ public class PluginService : IPluginService
             }
 
             var dependencyMeta = PluginMetaInfo.FromDirectory(dependency.ResolvedPath);
-            var depLoadInfo = await InternalLoad(dependencyMeta);
-            dependencyInfos.Add(depLoadInfo);
+
+            var loadedDependency = _loadedPlugins.Values.FirstOrDefault(p => p.MetaInfo.Name == dependency.Name);
+            if (loadedDependency == null)
+            {
+                // load if its not already loaded
+                loadedDependency = await InternalLoad(dependencyMeta);
+            }
+            
+            dependencyInfos.Add(loadedDependency);
         }
         
         // load all assemblies
@@ -80,6 +92,8 @@ public class PluginService : IPluginService
         Type? pluginClass = null;
         var assemblies = new List<Assembly>();
 
+        _logger.LogDebug("Plugin '{Name}' was assigned load ID: '{Id}'", pluginMeta.Name, loadId);
+        
         // todo: load assemblies from dependencies
         
         // get all assemblies
@@ -160,6 +174,8 @@ public class PluginService : IPluginService
     [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task<IPluginLoadContext> InternalLoad(IPluginMetaInfo pluginMeta)
     {
+        _logger.LogInformation("Loading plugin '{Name}'", pluginMeta.Name);
+        
         var loadInfo = await InitializePlugin(pluginMeta);
 
         // instantiate the plugin
@@ -167,6 +183,8 @@ public class PluginService : IPluginService
         loadInfo.SetInstance(instance);
         
         _loadedPlugins.Add(loadInfo.LoadId, loadInfo);
+        
+        _logger.LogInformation("Plugin '{Name}' was loaded with ID: '{Id}'", pluginMeta.Name, loadInfo.LoadId);
         
         return loadInfo;
     }
@@ -231,6 +249,8 @@ public class PluginService : IPluginService
     [MethodImpl(MethodImplOptions.NoInlining)]
     public Task UnloadPlugin(Guid loadId, bool throwIfNotUnloaded=false)
     {
+        _logger.LogDebug("Unloading plugin with ID '{Id}'", loadId);
+        
         if (!_loadedPlugins.ContainsKey(loadId))
         {
             throw new PluginNotLoadedException(loadId);
@@ -264,6 +284,8 @@ public class PluginService : IPluginService
         GC.Collect();
         GC.WaitForPendingFinalizers();
 
+        _logger.LogInformation("Plugin '{Name}' with ID '{Id}' was unloaded.", plugin.MetaInfo.Name, loadId);
+        
         return Task.CompletedTask;
     }
 

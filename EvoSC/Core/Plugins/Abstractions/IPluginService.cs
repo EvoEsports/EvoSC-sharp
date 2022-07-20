@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EvoSC.Core.Plugins.Abstractions;
 
 public interface IPluginService
 {
+    /// <summary>
+    /// List of loaded plugins.
+    /// </summary>
+    public IReadOnlyList<IPluginLoadContext> LoadedPlugins { get; }
     /// <summary>
     /// Load a plugin.
     /// </summary>
