@@ -37,4 +37,10 @@ public static class ReflectionUtils
         var method = type.GetMethod(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
         return method;
     }
+
+    public static MethodInfo GetStaticMethod(Type type, string name) =>
+        type.GetMethod(name, BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static);
+
+    public static bool HasReturnType(this MethodInfo? method, Type type) => method != null && method.ReturnType == type;
+    public static bool HasReturnType<T>(this MethodInfo? method) => HasReturnType(method, typeof(T));
 }

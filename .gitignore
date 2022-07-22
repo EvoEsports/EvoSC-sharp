@@ -39,3 +39,4 @@ msbuild.wrn
 # logs
 */logs/*
 EvoSC/plugins/*
+EvoSC/ext_plugins/*

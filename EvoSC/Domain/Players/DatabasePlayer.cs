@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using EvoSC.Domain.Groups;
 using EvoSC.Domain.Maps;
 using EvoSC.Interfaces.Players;
-using McMaster.NETCore.Plugins;
 
 namespace EvoSC.Domain.Players
 {
