@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Helpers;
 using EvoSC.Domain;
+using EvoSC.Domain.Groups;
 using EvoSC.Domain.Players;
 using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
+using GbxRemoteNet.Structs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 
 namespace EvoSC.Core.Services.Players;
@@ -16,25 +19,39 @@ namespace EvoSC.Core.Services.Players;
 public class PlayerService : IPlayerService
 {
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    private static DatabaseContext s_databaseContext;
-    private static GbxRemoteClient s_gbxRemoteClient;
+    private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IPlayerCallbacks _playerCallbacks;
+    private readonly IServiceProvider _serviceProvider;
 
-    private static readonly List<Player> s_connectedPlayers = new();
+    private readonly List<IPlayer> _connectedPlayers = new();
+
+    public List<IPlayer> ConnectedPlayers => _connectedPlayers;
 
     public PlayerService(
-        DatabaseContext databaseContext,
         GbxRemoteClient gbxRemoteClient,
-        IPlayerCallbacks playerCallbacks)
+        IPlayerCallbacks playerCallbacks, IServiceProvider serviceProvider)
     {
-        s_databaseContext = databaseContext;
-        s_gbxRemoteClient = gbxRemoteClient;
+        _serviceProvider = serviceProvider;
+        _gbxRemoteClient = gbxRemoteClient;
         _playerCallbacks = playerCallbacks;
+    }
+
+    private async Task AddConnectedPlayer(string login)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        var dbPlayer =
+            await dbContext.Players.FirstOrDefaultAsync(dbPlayer => dbPlayer.Login == login) ??
+            await CreateDatabasePlayer(login);
+
+        var player = await Player.Create(_gbxRemoteClient, dbContext, dbPlayer);
+        _connectedPlayers.Add(player);
     }
 
     public async Task AddConnectedPlayers()
     {
-        var playersOnline = await s_gbxRemoteClient.GetPlayerListAsync();
+        var playersOnline = await _gbxRemoteClient.GetPlayerListAsync();
 
         if (playersOnline == null || !playersOnline.Any())
         {
@@ -44,49 +61,74 @@ public class PlayerService : IPlayerService
 
         foreach (var playerOnline in playersOnline)
         {
-            var player =
-                await s_databaseContext.Players.FirstOrDefaultAsync(dbPlayer => dbPlayer.Login == playerOnline.Login) ??
-                await CreatePlayer(playerOnline.Login);
-
-            s_connectedPlayers.Add(player);
+            AddConnectedPlayer(playerOnline.Login);
         }
+    }
+
+    public async Task ClientOnPlayerInfoChanged(SPlayerInfo playerInfo)
+    {
+        var player = _connectedPlayers.FirstOrDefault(p => p.Login == playerInfo.Login);
+
+        if (player == null)
+        {
+            AddConnectedPlayer(playerInfo.Login);
+        }
+        else
+        {
+            (player as Player).Update(playerInfo);
+        }
+    }
+
+    public Task<IPlayer> GetPlayer(string login)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task ClientOnPlayerConnect(string login, bool isSpectator)
     {
-        var firstConnect = false;
-        var player = await s_databaseContext.Players.FirstOrDefaultAsync(player => player.Login == login);
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
-        if (player == null)
+        var firstConnect = false;
+        var dbPlayer = await dbContext.Players.FirstOrDefaultAsync(player => player.Login == login);
+
+        if (dbPlayer == null)
         {
             firstConnect = true;
-            player = await CreatePlayer(login);
+            dbPlayer = await CreateDatabasePlayer(login);
         }
 
-        s_connectedPlayers.Add(player);
+        var player = await Player.Create(_gbxRemoteClient, dbContext, dbPlayer);
+        player.LastVisit = DateTime.UtcNow;
+
+        _connectedPlayers.Add(player);
         _playerCallbacks.OnPlayerConnect(new PlayerConnectEventArgs(player));
 
-        _logger.Info($"Player {player.UbisoftName} ({login}) connected to the server.");
+        _logger.Info($"Player {player.Name} ({login}) connected to the server.");
         var msg = new ChatMessage();
         msg.SetInfo();
         msg.SetIcon(Icon.Globe);
         msg.SetMessage(
-            $"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} joined the server. Last Visit: {ChatMessage.GetHighlightedString(Snippets.GetRelativeTimeToNow(player.LastVisit))}");
+            $"Player {ChatMessage.GetHighlightedString(player.Name)} joined the server. Last Visit: {ChatMessage.GetHighlightedString(Snippets.GetRelativeTimeToNow(player.LastVisit))}");
         if (firstConnect)
         {
             msg.SetMessage(
-                $"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} joined the server for the first time.");
+                $"Player {ChatMessage.GetHighlightedString(player.Name)} joined the server for the first time.");
         }
 
-        await s_gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
-        player.LastVisit = DateTime.UtcNow;
-        await s_databaseContext.SaveChangesAsync();
+        await _gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
+        dbContext.Players.Update(player);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task ClientOnPlayerDisconnect(string login, string reason)
     {
-        _logger.Info("PLAYERDISCONNECT FIRED");
-        var player = s_connectedPlayers.FirstOrDefault(player => player.Login == login);
+        _logger.Debug("PLAYERDISCONNECT FIRED");
+
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        var player = (Player)_connectedPlayers.FirstOrDefault(player => player.Login == login);
 
         if (player == null)
         {
@@ -97,54 +139,84 @@ public class PlayerService : IPlayerService
 
         var msg = new ChatMessage();
         msg.SetMessage(
-            $"Player {ChatMessage.GetHighlightedString(player.UbisoftName)} left the server. Time played: {ChatMessage.GetHighlightedString(Snippets.GetTimeSpentUntilNow(player.LastVisit))}");
+            $"Player {ChatMessage.GetHighlightedString(player.Name)} left the server. Time played: {ChatMessage.GetHighlightedString(Snippets.GetTimeSpentUntilNow(player.LastVisit))}");
         msg.SetInfo();
         msg.SetIcon(Icon.UserRemove);
 
-        await s_gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
+        await _gbxRemoteClient.ChatSendServerMessageAsync(msg.Render());
 
-        s_connectedPlayers.Remove(player);
+        _connectedPlayers.Remove(player);
         player.LastVisit = DateTime.UtcNow;
 
-        s_databaseContext.Players.Update(player);
-        await s_databaseContext.SaveChangesAsync();
+        dbContext.Players.Update((DatabasePlayer)player);
+        await dbContext.SaveChangesAsync();
 
         _playerCallbacks.OnPlayerDisconnect(new PlayerDisconnectEventArgs(player, reason));
     }
 
-    public List<Player> GetConnectedPlayers()
+    private async Task<DatabasePlayer> CreateDatabasePlayer(string login)
     {
-        return s_connectedPlayers;
-    }
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
-    private static async Task<Player> CreatePlayer(string login)
-    {
-        var playerInfo = await s_gbxRemoteClient.GetDetailedPlayerInfoAsync(login);
-        var player = new Player
+        var detailedPlayerInfo = await _gbxRemoteClient.GetDetailedPlayerInfoAsync(login);
+        var playerGroup = await dbContext.Groups.FirstOrDefaultAsync(g => g.Id == SystemGroups.Player);
+
+        var playerStats = new PlayerStatistic
         {
-            Login = playerInfo.Login,
-            UbisoftName = playerInfo.NickName,
-            Group = 0,
-            Path = playerInfo.Path,
-            Banned = false,
-            LastVisit = DateTime.MinValue,
-            IsSpectator = playerInfo.IsSpectator,
+            Visits = 1,
+            PlayTime = 0,
+            Finishes = 0,
+            LocalRecords = 0,
+            Ratings = 0,
+            Wins = 0,
+            Score = 0,
+            Rank = 0
         };
 
-        s_databaseContext.Players.Add(player);
-        await s_databaseContext.SaveChangesAsync();
+        var player = new DatabasePlayer
+        {
+            Login = detailedPlayerInfo.Login,
+            UbisoftName = detailedPlayerInfo.NickName,
+            Nickname = detailedPlayerInfo.NickName,
+            Group = playerGroup,
+            Path = detailedPlayerInfo.Path,
+            Banned = false,
+            LastVisit = DateTime.MinValue,
+            PlayerStatistic = playerStats
+        };
+
+        await dbContext.Players.AddAsync(player);
+        await dbContext.SaveChangesAsync();
+
         return player;
     }
 
-    public static async Task<Player> GetPlayer(string login)
+    public async Task<IPlayer> GetPlayer(string login, bool refreshDb=false)
     {
-        foreach (var player in s_connectedPlayers.Where(player => player.Login == login))
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        var player = _connectedPlayers.FirstOrDefault(p => p.Login == login);
+
+        if (!refreshDb && (player as DatabasePlayer)?.Group?.Permissions != null)
         {
             return player;
         }
 
-        var newPlayer = await CreatePlayer(login);
-        s_connectedPlayers.Add(newPlayer);
-        return newPlayer;
+        var dbPlayer = await dbContext.Players
+            .Include(p => p.Group)
+            .ThenInclude(g => g.Permissions)
+            .FirstOrDefaultAsync(p => p.Login == login);
+
+        if (dbPlayer == null)
+        {
+            dbPlayer = await CreateDatabasePlayer(login);
+        }
+
+        player = await Player.Create(_gbxRemoteClient, dbContext, dbPlayer);
+        _connectedPlayers.Add(player);
+
+        return player;
     }
 }

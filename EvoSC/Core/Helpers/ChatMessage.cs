@@ -21,7 +21,7 @@ namespace EvoSC.Core.Helpers
 
         public static string GetHighlightedString(string txt)
         {
-            return $"$<$fff{_theme.Highlight}{txt}$>";
+            return $"$<$fff${_theme.Highlight}{txt}$>";
         }
 
         public void SetMessage(string message)
@@ -67,7 +67,7 @@ namespace EvoSC.Core.Helpers
 
         public string Render()
         {
-            var message = (_icon != string.Empty ? $"$fff{_icon} " : string.Empty) + $"{_color}{_message}";
+            var message = (_icon != string.Empty ? $"$fff{_icon} " : string.Empty) + $"${_color}{_message}";
             return message;
         }
     }

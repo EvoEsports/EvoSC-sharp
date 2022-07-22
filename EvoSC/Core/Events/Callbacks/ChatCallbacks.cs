@@ -1,6 +1,6 @@
 ﻿using System;
 using EvoSC.Core.Events.Callbacks.Args;
-using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Messages;
 
 namespace EvoSC.Core.Events.Callbacks;
 

@@ -1,16 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace EvoSC.Domain.Players
 {
     [Table("Player_Statistics")]
     public class PlayerStatistic
     {
-        [Key]
-        public int PlayerStatisticId { get; set; }
+        [Key] public int PlayerStatisticId { get; set; }
 
-        public Player Player { get; set; }
-
+        public DatabasePlayer Player { get; set; }
         public int PlayerId { get; set; }
 
         public int Visits { get; set; }
@@ -25,16 +25,11 @@ namespace EvoSC.Domain.Players
 
         public int Wins { get; set; }
 
-        public int Donations { get; set; }
-
         public int Score { get; set; }
 
         public int Rank { get; set; }
 
-        public int SpectatorTime { get; set; }
-
-        public int CheckpointsDriven { get; set; }
-
-        public int ConsecutiveDaysPlayed { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

@@ -1,15 +1,22 @@
-﻿using EvoSC.Core;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using EvoSC.Core;
 using EvoSC.Core.Configuration;
 using EvoSC.Core.Events.Callbacks;
 using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Events.GbxEventHandlers;
 using EvoSC.Core.Plugins;
+using EvoSC.Core.Plugins.Abstractions;
+using EvoSC.Core.Plugins.Extensions;
 using EvoSC.Core.Services.Chat;
+using EvoSC.Core.Services.Commands;
 using EvoSC.Core.Services.Players;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain;
 using EvoSC.Interfaces;
-using EvoSC.Interfaces.Chat;
+using EvoSC.Interfaces.Messages;
+using EvoSC.Interfaces.Commands;
 using EvoSC.Interfaces.Players;
 using EvoSC.Interfaces.UI;
 using GbxRemoteNet;
@@ -19,7 +26,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 var builder = Host.CreateDefaultBuilder(args);
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -29,8 +35,8 @@ logger.Info("Initializing EvoSC...");
 builder.ConfigureLogging((context, builder) =>
 {
     builder.ClearProviders();
-    builder.AddNLog("nlog.config")
-        .SetMinimumLevel(LogLevel.Trace);
+    builder.AddNLog("nlog.config");
+    builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
 });
 
 var serverConnectionConfig = Config.GetDedicatedConfig();
@@ -38,7 +44,7 @@ var theme = Config.GetTheme();
 var dbConfig = Config.GetDatabaseConfig();
 var connectionString = dbConfig.GetConnectionString();
 
-builder.ConfigureServices(services =>
+builder.ConfigureServices((builder, services) =>
 {
     services.AddDbContext<DatabaseContext>(options =>
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
@@ -61,9 +67,14 @@ builder.ConfigureServices(services =>
     services.AddSingleton<IPlayerService, PlayerService>();
     services.AddSingleton<IChatService, ChatService>();
     services.AddSingleton<IUiService, UiService>();
+    services.AddSingleton<IChatCommandsService, ChatCommandsService>();
+    services.AddScoped<IPermissionsService, PermissionsService>();
+});
 
-    // Load plugins
-    PluginFactory.Instance.LoadPlugins(services);
+// plugins
+builder.UsePlugins(config =>
+{
+    config.PluginsDir = Path.GetFullPath(Environment.CurrentDirectory + "/ext_plugins");
 });
 
 var app = builder.Build();
@@ -85,10 +96,6 @@ await serverConnection.ConnectToServer(serverConnectionConfig);
 
 logger.Info("Completed initialization");
 
-// var sample = app.Services.GetRequiredService<ISampleService>();
-// logger.Info(sample.GetName());
-var module = app.Services.GetService<IPlugin>();
-module?.HandleEvents(app.Services.GetRequiredService<IPlayerCallbacks>());
 Subscribe(app.Services.GetRequiredService<IPlayerCallbacks>());
 
 app.Run();

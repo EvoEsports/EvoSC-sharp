@@ -17,5 +17,6 @@ public class PlayerGbxEventHandler : IGbxEventHandler
     {
         client.OnPlayerConnect += _playerService.ClientOnPlayerConnect;
         client.OnPlayerDisconnect += _playerService.ClientOnPlayerDisconnect;
+        client.OnPlayerInfoChanged += _playerService.ClientOnPlayerInfoChanged;
     }
 }

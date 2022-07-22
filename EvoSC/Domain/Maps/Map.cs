@@ -24,7 +24,7 @@ namespace EvoSC.Domain.Maps
 
         public DateTime ManiaExchangeVersion { get; set; }
 
-        public Player Player { get; set; }
+        public DatabasePlayer DatabasePlayer { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

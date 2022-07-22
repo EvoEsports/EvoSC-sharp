@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using EvoSC.Domain.Players;
+using EvoSC.Interfaces.Messages;
+using EvoSC.Interfaces.Players;
 
 namespace EvoSC.Core.Events.Callbacks.Args;
 
 public class ManialinkPageEventArgs : EventArgs
 {
-    public ManialinkPageEventArgs(Player player, string answer, Dictionary<string, object> entries)
+    public ManialinkPageEventArgs(IManiaLinkPageAnswer answer)
     {
-        Player = player;
+        Player = answer.Player;
         Answer = answer;
-        Entries = entries;
     }
 
-    public Player Player { get; set; }
-
-    public string Answer { get; set; }
-
-    public Dictionary<string, object> Entries { get; set; }
+    public IPlayer Player { get;}
+    
+    public IManiaLinkPageAnswer Answer { get; }
 }

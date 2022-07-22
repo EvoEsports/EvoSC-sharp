@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using EvoSC.Core.Services.UI;
 using EvoSC.Domain.Players;
+using EvoSC.Interfaces.Players;
 using GbxRemoteNet;
 using NLog;
 
@@ -18,7 +19,7 @@ public class Manialink
         _gbxRemoteClient = gbxRemoteClient;
     }
 
-    public async Task Send(Player player)
+    public async Task Send(IPlayer player)
     {
         try
         {
@@ -57,7 +58,7 @@ public class Manialink
         }
     }
 
-    public async Task Hide(Player player)
+    public async Task Hide(IPlayer player)
     {
         await _gbxRemoteClient.SendHideManialinkPageToLoginAsync(player.Login);
         UiService.UnregisterAction(_actionClose);

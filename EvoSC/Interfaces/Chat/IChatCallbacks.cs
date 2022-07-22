@@ -1,7 +1,7 @@
 ﻿using System;
 using EvoSC.Core.Events.Callbacks.Args;
 
-namespace EvoSC.Interfaces.Chat;
+namespace EvoSC.Interfaces.Messages;
 
 public interface IChatCallbacks
 {

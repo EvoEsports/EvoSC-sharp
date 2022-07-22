@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 using EvoSC.Core.Events.Callbacks.Args;
 using EvoSC.Core.Services.Players;
 using EvoSC.Domain.Players;
+using EvoSC.Interfaces.Messages;
+using EvoSC.Interfaces.Players;
 using EvoSC.Interfaces.UI;
 using GbxRemoteNet;
+using GbxRemoteNet.Structs;
 using GbxRemoteNet.XmlRpc.ExtraTypes;
 using GbxRemoteNet.XmlRpc.Packets;
 using NLog;
@@ -18,40 +21,38 @@ public class UiService : IUiService
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly GbxRemoteClient _gbxRemoteClient;
     private readonly IManialinkPageCallbacks _manialinkPageCallbacks;
+    private readonly IPlayerService _playerService;
     private static Dictionary<string, ManialinkAction> s_actions;
 
-    public UiService(GbxRemoteClient gbxRemoteClient, IManialinkPageCallbacks iManialinkPageCallbacks)
+    public UiService(GbxRemoteClient gbxRemoteClient, IManialinkPageCallbacks iManialinkPageCallbacks,
+        IPlayerService playerService)
     {
         _gbxRemoteClient = gbxRemoteClient;
         _manialinkPageCallbacks = iManialinkPageCallbacks;
+        _playerService = playerService;
         s_actions = new Dictionary<string, ManialinkAction>();
     }
 
-    public async Task OnAnyCallback(MethodCall call, object[] param)
+    public async Task OnPlayerManialinkPageAnswer(int playerUid, string login, string answer, SEntryVal[] entries)
     {
-        if (call.Method != "ManiaPlanet.PlayerManialinkPageAnswer")
-        {
-            return;
-        }
+        var player = (IServerPlayer)await _playerService.GetPlayer(login);
+        var message = new ManialinkPageAnswer(player, answer, entries, playerUid);
 
-        var player = await PlayerService.GetPlayer((string)param[1]);
+        _manialinkPageCallbacks.OnPlayerManialinkPageAnswer(new ManialinkPageEventArgs(message));
+
         var values = new Dictionary<string, object>();
-        foreach (Dictionary<string, object> para in (dynamic[])param[3])
+        foreach (var entry in entries)
         {
-            var list = para.Values.ToList();
-            if (!values.ContainsKey((string)list[0]))
+            if (!values.ContainsKey(entry.Name))
             {
-                values.Add((string)list[0], (string)list[1]);
+                values.Add(entry.Name, entry.Value);
             }
         }
 
-        _manialinkPageCallbacks.OnPlayerManialinkPageAnswer(
-            new ManialinkPageEventArgs(player, (string)param[2], values));
-
-        var compare = s_actions.ContainsKey((string)param[2]);
+        var compare = s_actions.ContainsKey(answer);
         if (compare)
         {
-            await s_actions[(string)param[2]].TriggerManialinkAction(values);
+            await s_actions[answer].TriggerManialinkAction(values);
         }
     }
 

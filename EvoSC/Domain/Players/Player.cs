@@ -1,41 +1,92 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using EvoSC.Domain.Maps;
+﻿using System.Threading.Tasks;
+using EvoSC.Interfaces.Players;
+using GbxRemoteNet;
+using GbxRemoteNet.Structs;
+using Microsoft.EntityFrameworkCore;
+using NLog.LayoutRenderers;
 
-namespace EvoSC.Domain.Players
+namespace EvoSC.Domain.Players;
+
+public class Player : DatabasePlayer, IServerPlayer
 {
-    [Table("Players")]
-    public class Player
+    GbxRemoteClient IServerPlayer.Client => this.Client;
+    private GbxRemoteClient Client { get; set; }
+
+    /// <summary>
+    /// Player's Ubisoft name.
+    /// </summary>
+    public string Name => UbisoftName;
+
+    /// <summary>
+    /// Extra information about the player on the server.
+    /// </summary>
+    public PlayerDetailedInfo? DetailedInfo { get; private set; }
+
+    /// <summary>
+    /// Information about the player on the server.
+    /// </summary>
+    public PlayerInfo Info { get; private set; }
+
+    public Player(GbxRemoteClient client, DatabasePlayer dbPlayer, PlayerInfo info,
+        PlayerDetailedInfo? detailedInfo = null) : base(dbPlayer)
     {
-        [Key]
-        public int Id { get; set; }
+        Client = client;
+        Info = info;
+        DetailedInfo = detailedInfo;
+    }
 
-        public string Login { get; set; }
+    /// <summary>
+    /// Fetch player info from the server and create a new instance.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <param name="dbPlayer"></param>
+    /// <returns></returns>
+    public static async Task<Player> Create(GbxRemoteClient client, DatabaseContext dbContext, DatabasePlayer dbPlayer)
+    {
+        dbContext.Entry(dbPlayer).State = EntityState.Detached;
 
-        public string Nickname { get; set; }
+        var info = await client.GetPlayerInfoAsync(dbPlayer.Login);
+        var detailed = await client.GetDetailedPlayerInfoAsync(dbPlayer.Login);
 
-        public string UbisoftName { get; set; }
+        return new Player(client, dbPlayer, info, detailed);
+    }
 
-        // TODO: Needs to be changed to correct group
-        public int Group { get; set; }
+    /// <summary>
+    /// Update the player model's server state.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="detailedInfo"></param>
+    public void Update(PlayerInfo info, PlayerDetailedInfo? detailedInfo = null)
+    {
+        Info = info;
 
-        public string Path { get; set; }
+        if (detailedInfo != null)
+        {
+            DetailedInfo = detailedInfo;
+        }
+    }
 
-        public bool Banned { get; set; }
+    /// <summary>
+    /// Update the player model's server state.
+    /// </summary>
+    /// <param name="playerInfo"></param>
+    /// <returns></returns>
+    public void Update(SPlayerInfo playerInfo)
+    {
+        Info.Login = playerInfo.Login;
+        Info.NickName = playerInfo.NickName;
+        Info.PlayerId = playerInfo.PlayerId;
+        Info.TeamId = playerInfo.TeamId;
+        Info.SpectatorStatus = playerInfo.SpectatorStatus;
+        Info.LadderRanking = playerInfo.LadderRanking;
+        Info.Flags = playerInfo.Flags;
 
-        public DateTime LastVisit { get; set; }
-
-        public PlayerStatistic PlayerStatistic { get; set; }
-
-        public IEnumerable<PersonalBest> PersonalBests { get; set; }
-
-        public IEnumerable<MapRecord> MapRecords { get; set; }
-
-        public IEnumerable<MapKarma> MapKarmas { get; set; }
-
-        [NotMapped]
-        public bool IsSpectator { get; set; }
+        if (DetailedInfo != null)
+        {
+            DetailedInfo.Login = playerInfo.Login;
+            DetailedInfo.NickName = playerInfo.NickName;
+            DetailedInfo.PlayerId = playerInfo.PlayerId;
+            DetailedInfo.TeamId = playerInfo.TeamId;
+        }
     }
 }

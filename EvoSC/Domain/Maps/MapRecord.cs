@@ -17,7 +17,7 @@ namespace EvoSC.Domain.Maps
 
         public string Checkpoints { get; set; }
 
-        public Player Player { get; set; }
+        public DatabasePlayer DatabasePlayer { get; set; }
 
         public Map Map { get; set; }
 
