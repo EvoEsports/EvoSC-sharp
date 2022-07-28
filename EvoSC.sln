@@ -1,11 +1,16 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31321.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoSC", "EvoSC\EvoSC.csproj", "{E32A580C-D9F4-4E4C-92B4-10AD665A1D75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Tests", "EvoSC.Tests\EvoSC.Tests.csproj", "{509D2739-D17C-4C20-969F-30EC4DE36DB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoSC.Tests", "EvoSC.Tests\EvoSC.Tests.csproj", "{509D2739-D17C-4C20-969F-30EC4DE36DB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{5678FCFA-B741-4A21-B1BF-869271D21612}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "Plugins\ExamplePlugin\ExamplePlugin.csproj", "{A8755E0A-2623-4F7E-BBF3-FBAE26DA4A86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin2", "Plugins\ExamplePlugin2\ExamplePlugin2.csproj", "{4DFADBA8-8DD0-4F5C-9084-5190DC56368A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,11 +26,23 @@ Global
 		{509D2739-D17C-4C20-969F-30EC4DE36DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{509D2739-D17C-4C20-969F-30EC4DE36DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509D2739-D17C-4C20-969F-30EC4DE36DB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8755E0A-2623-4F7E-BBF3-FBAE26DA4A86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8755E0A-2623-4F7E-BBF3-FBAE26DA4A86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8755E0A-2623-4F7E-BBF3-FBAE26DA4A86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8755E0A-2623-4F7E-BBF3-FBAE26DA4A86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DFADBA8-8DD0-4F5C-9084-5190DC56368A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DFADBA8-8DD0-4F5C-9084-5190DC56368A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DFADBA8-8DD0-4F5C-9084-5190DC56368A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DFADBA8-8DD0-4F5C-9084-5190DC56368A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B420040-3D8C-4169-A5F0-30BDB8324F71}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A8755E0A-2623-4F7E-BBF3-FBAE26DA4A86} = {5678FCFA-B741-4A21-B1BF-869271D21612}
+		{4DFADBA8-8DD0-4F5C-9084-5190DC56368A} = {5678FCFA-B741-4A21-B1BF-869271D21612}
 	EndGlobalSection
 EndGlobal

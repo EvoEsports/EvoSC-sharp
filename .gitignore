@@ -35,3 +35,8 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+# logs
+*/logs/*
+EvoSC/plugins/*
+EvoSC/ext_plugins/*

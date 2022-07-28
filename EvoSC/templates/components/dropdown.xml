@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<manialink version="3">
+    {{
+     arr = pos|string.split " "
+     pos_x = arr|array.first|string.to_float 
+     pos_y = arr|array.last|string.to_float 
+     width = width|string.to_float 
+     dd_arr = items|string.split "|"
+     height = 6 
+    }}
+    
+    <frame pos="{{pos_x}} {{pos_y}}" class="uiContainer uiDropdown" data-selected="{{selectedIndex}}" data-open="0"
+           id="{{id}}" z-index="10">
+        <label pos="{{width - 5}} -{{height/2}}" size="{{width}} {{height}}" z-index="2" class="{{class}} uiSelectElement" text="⏷"
+               textcolor="fff" valign="center2"/>
+        <label pos="0 -{{height/2}}" size="{{width}} {{height}}" textprefix=" " text="Select..." valign="center"
+               scriptevents="1" class="{{class}} uiSelectElement"/>
+        <entry pos="900 900" size="26 5" textemboss="1" text="1" textsize="1.2" valign="center2" halign="center"
+               textformat="Basic" name="{{name}}"/>
+        {{ for item in dd_arr }}
+            {{ if for.first == true }} 
+        <frame pos="0 -{{height}}" z-index="10" class="uiDropdownSelect" size="{{width}} {{( dd_arr|array.size +1)*5}}"> 
+            {{ end }}         
+            <label pos="0 -{{(for.index+1) * height - height/2}}" size="{{width}} {{height}}" text="{{item}}"
+                   data-value="{{for.index}}" valign="center" data-index="{{for.index}}" scriptevents="1"
+                   class="{{class}} uiSelectElement"/>
+            {{ end }}
+        </frame>
+    </frame>
+    <script><!-- 
+       
+Void uiRenderDropdown(CMlFrame frame) {
+        declare selected = TL::ToInteger(frame.DataAttributeGet("selected"));
+        declare index = 0;
+
+        declare options = (frame.Controls[3] as CMlFrame);
+
+            if (frame.DataAttributeGet("open") == "1") {
+                frame.Controls[3].Show();
+            } else {
+                 frame.Controls[3].Hide();
+            }
+
+            foreach (option in options.Controls) {
+                if (selected == index) {
+                    (frame.Controls[1] as CMlLabel).Value = (option as CMlLabel).Value;
+                    (frame.Controls[2] as CMlEntry).Value = option.DataAttributeGet("value");
+                }
+            index+= 1;
+        }
+    }
+
+    Void uiToggleDropdown (CMlFrame frame) {
+        if (frame.DataAttributeGet("open") == "1") {
+            frame.DataAttributeSet("open","0");
+        } else {
+            frame.DataAttributeSet("open","1");
+        }
+         uiRenderDropdown(frame);
+    }
+
+    Void uiSelectDropdown (CMlLabel label) {
+        declare uiDropdown = label.Parent.Parent;
+        uiDropdown.DataAttributeSet("selected", label.DataAttributeGet("index"));
+        uiDropdown.DataAttributeSet("value", label.DataAttributeGet("value"));
+        uiRenderDropdown(uiDropdown);
+        uiToggleDropdown(uiDropdown);
+        +++onSelectDropdown+++
+    }
+
+    ***OnInit***
+    ***
+    Page.GetClassChildren("uiDropdown", Page.MainFrame, True);
+    foreach (frame in Page.GetClassChildren_Result) {
+            uiRenderDropdown((frame as CMlFrame));
+    }
+    ***
+    
+    ***OnMouseClick***
+    ***
+    if (Event.Control.HasClass("uiSelectElement")) {
+    
+            if (Event.Control.Parent.HasClass("uiDropdown")) {
+                uiToggleDropdown(Event.Control.Parent);
+            }
+    
+            if (Event.Control.Parent.HasClass("uiDropdownSelect")) {
+                uiSelectDropdown((Event.Control as CMlLabel));
+            }
+    }
+    ***
+ 
+    --></script>
+    
+    
+    
+    
+</manialink>

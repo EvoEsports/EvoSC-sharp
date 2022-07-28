@@ -1,80 +1,73 @@
-## Introduction
+<div align="center"><img src="https://user-images.githubusercontent.com/5523125/181507462-7a34c892-6565-436d-80ea-a7ec63836cbb.png" width="250px"></div>
 
-This is a simple pipeline example for a .NET Core application, showing just
-how easy it is to get up and running with .NET development using GitLab.
 
-# Reference links
+# EvoSC#
 
-- [GitLab CI Documentation](https://docs.gitlab.com/ee/ci/)
-- [.NET Hello World tutorial](https://dotnet.microsoft.com/learn/dotnet/hello-world-tutorial/)
+EvoSC# (spoken: EvoSC Sharp) is a server controller for Trackmania 2020 dedicated servers.
 
-If you're new to .NET you'll want to check out the tutorial, but if you're
-already a seasoned developer considering building your own .NET app with GitLab,
-this should all look very familiar.
+It has been written from the ground up to be modular, performant and easy to use.
 
-## What's contained in this project
+It is currently still in development, so expect braking changes to happen at any time.
 
-The root of the repository contains the out of the `dotnet new console` command,
-which generates a new console application that just prints out "Hello, World."
-It's a simple example, but great for demonstrating how easy GitLab CI is to
-use with .NET. Check out the `Program.cs` and `dotnetcore.csproj` files to
-see how these work.
+### Goals
 
-In addition to the .NET Core content, there is a ready-to-go `.gitignore` file
-sourced from the the .NET Core [.gitignore](https://github.com/dotnet/core/blob/master/.gitignore). This
-will help keep your repository clean of build files and other configuration.
+The goal of this server controller is to replicate the functionality of the existing [EvoSC](https://github.com/evotm/EvoSC) and expand on it.
 
-Finally, the `.gitlab-ci.yml` contains the configuration needed for GitLab
-to build your code. Let's take a look, section by section.
+In general, we want to make it more user-friendly, more robust and generally also implement functionality that users have long wished for but we weren't able to implement in the older version due to Technical Debt.
 
-First, we note that we want to use the official Microsoft .NET SDK image
-to build our project.
+For a roadmap of planned features and what we're currently working on, have a look at the [Project board](https://github.com/orgs/EvoTM/projects/8) to see what we are working on currently.
 
+### Support
+
+* **WE WILL NOT BE RESPONSIBLE FOR ANY DAMAGE OR DATA LOST DUE TO USAGE OF THIS SOFTWARE.**
+
+* **DO NOT USE IN A PRODUCTION SCENARIO, THE SOFTWARE IS STILL HEAVILY IN DEVELOPMENT.**
+
+* **DO NOT ASK FOR ASSISTANCE IN USING THE SOFTWARE IN ITS UNFINISHED STATE.**
+
+### Developing for EvoSC#
+
+To setup a development environment for EvoSC#, we recommend having Docker installed and using the following Docker Compose template.
+It sets up a TM2020 dedicated server for you as well as all the required other services.
+
+```yml
+version: "3.8"
+services:
+  trackmania:
+    image: evotm/trackmania
+    ports:
+      - 2351:2350/udp
+      - 2351:2350/tcp
+      - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC to other hosts! Only if you really need to.
+    environment:
+      MASTER_LOGIN: "SERVERLOGIN" # Create server credentials at https://players.trackmania.com
+      MASTER_PASSWORD: "SERVERPASS" # Create server credentials at https://players.trackmania.com
+      XMLRPC_ALLOWREMOTE: "True"
+    volumes:
+      - UserData:/server/UserData
+  db:
+    image: mariadb
+    restart: always
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - MariaDBData:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: CHANGEME
+      MARIADB_USER: evosc
+      MARIADB_PASSWORD: evosc123!
+      MARIADB_DATABASE: evosc
+      MARIADB_AUTO_UPGRADE: always
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "127.0.0.1:8081:8080"
+volumes:
+  UserData: null
+  MariaDBData: null
 ```
-image: microsoft/dotnet:latest
-```
 
-We're defining two stages here: `build`, and `test`. As your project grows
-in complexity you can add more of these.
+We also have a documentation of the current code base available at TODO:ADDLINK.
 
-```
-stages:
-    - build
-    - test
-```
 
-Next, we define our build job which simply runs the `dotnet build` command and
-identifies the `bin` folder as the output directory. Anything in the `bin` folder
-will be automatically handed off to future stages, and is also downloadable through
-the web UI.
-
-```
-build:
-    stage: build
-    script:
-        - "dotnet build"
-    artifacts:
-      paths:
-        - bin/
-```
-
-Similar to the build step, we get our test output simply by running `dotnet test`.
-
-```
-test:
-    stage: test
-    script: 
-        - "dotnet test"
-```
-
-This should be enough to get you started. There are many, many powerful options 
-for your `.gitlab-ci.yml`. You can read about them in our documentation 
-[here](https://docs.gitlab.com/ee/ci/yaml/).
-
-## Developing with Gitpod
-
-This template repository also has a fully-automated dev setup for [Gitpod](https://docs.gitlab.com/ee/integration/gitpod.html).
-
-The `.gitpod.yml` ensures that, when you open this repository in Gitpod, you'll get a cloud workspace with .NET Core pre-installed, and your project will automatically be built and start running.
-
-## test
