@@ -1,56 +1,71 @@
-# EvoSC# Prototype
+![](EvoSC/evosc_full.png | width=250)
+# EvoSC#
 
-## Projects
-- [Controller](Prototype.EvoSC/README.md)
-- [Plugin.Samples](Plugin.Samples/README.md)
+EvoSC# (spoken: EvoSC Sharp) is a server controller for Trackmania 2020 dedicated servers.
 
-## First Run
+It has been written from the ground up to be modular, performant and easy to use.
 
-For a single-file output check [Publishing](#publishing)
+It is currently still in development, so expect braking changes to happen at any time.
 
-1. Build the project:
-`dotnet build`
-2. Create the server config file at:
-`<Binary>/Config/server.json`
-```json
-{
-  "host": "127.0.0.1",
-  "port": 5000,
-  
-  "login": "SuperAdmin",
-  "password": "SuperAdmin"
-}
+### Goals
+
+The goal of this server controller is to replicate the functionality of the existing [EvoSC](https://github.com/evotm/EvoSC) and expand on it.
+
+In general, we want to make it more user-friendly, more robust and generally also implement functionality that users have long wished for but we weren't able to implement in the older version due to Technical Debt.
+
+For a roadmap of planned features and what we're currently working on, have a look at the [Project board](https://github.com/orgs/EvoTM/projects/8) to see what we are working on currently.
+
+### Support
+
+* **WE WILL NOT BE RESPONSIBLE FOR ANY DAMAGE OR DATA LOST DUE TO USAGE OF THIS SOFTWARE.**
+
+* **DO NOT USE IN A PRODUCTION SCENARIO, THE SOFTWARE IS STILL HEAVILY IN DEVELOPMENT.**
+
+* **DO NOT ASK FOR ASSISTANCE IN USING THE SOFTWARE IN ITS UNFINISHED STATE.**
+
+### Developing for EvoSC#
+
+To setup a development environment for EvoSC#, we recommend having Docker installed and using the following Docker Compose template.
+It sets up a TM2020 dedicated server for you as well as all the required other services.
+
+```yml
+version: "3.8"
+services:
+  trackmania:
+    image: evotm/trackmania
+    ports:
+      - 2351:2350/udp
+      - 2351:2350/tcp
+      - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC to other hosts! Only if you really need to.
+    environment:
+      MASTER_LOGIN: "SERVERLOGIN" # Create server credentials at https://players.trackmania.com
+      MASTER_PASSWORD: "SERVERPASS" # Create server credentials at https://players.trackmania.com
+      XMLRPC_ALLOWREMOTE: "True"
+    volumes:
+      - UserData:/server/UserData
+  db:
+    image: mariadb
+    restart: always
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - MariaDBData:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: CHANGEME
+      MARIADB_USER: evosc
+      MARIADB_PASSWORD: evosc123!
+      MARIADB_DATABASE: evosc
+      MARIADB_AUTO_UPGRADE: always
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "127.0.0.1:8081:8080"
+volumes:
+  UserData: null
+  MariaDBData: null
 ```
-3. Run the project:
-`dotnet <Binary>/Prototype.EvoSC.dll run`
 
-## Run with samples
+We also have a documentation of the current code base available at TODO:ADDLINK.
 
-1. Follow steps from [the First Run](#first-run)
-2. Create an autoload config file at:
-`<Binary>/Config/modules.json`
-3. Include the Plugin.Samples module:
-```json
-{
-  "load": [
-    "Plugin.Samples"
-  ]
-}
-```
-4. Run the project:
-   `dotnet <Binary>/Prototype.EvoSC.dll run`
 
-## Publishing
-Used for generating a single-file executable.
-
-`dotnet publish -r [TARGET] --self-contained true`
-- The **TARGET** can be:
-  - linux-x64
-  - win-x64
-- If **self-contained** is set to:
-  - False, then the .NET Runtime will not be included in the app (it will need to be installed in the OS).
-  - True, then users who download the controller will not need to install the .NET Runtime since it will be already included in the app.
-
-The file will be in `Prototype.EvoSC/bin/Debug/net5.0/[TARGET]/publish`
-
-Then run it `./Prototype.EvoSC run` or `./Prototype.EvoSC.exe run`
