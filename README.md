@@ -1,4 +1,4 @@
-<div align="center"><img src="https://user-images.githubusercontent.com/5523125/181507462-7a34c892-6565-436d-80ea-a7ec63836cbb.png" width="250px"></div>
+<div align="center"><img src="./EvoSC/evosc_full.png" width="60%"></div>
 
 
 # EvoSC#
