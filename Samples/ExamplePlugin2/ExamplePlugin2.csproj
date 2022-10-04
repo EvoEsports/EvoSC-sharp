@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\EvoSC\EvoSC.csproj">
+            <ExcludeAssets>runtime</ExcludeAssets>
+            <Private>false</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\..\src\EvoSC\EvoSC.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="info.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="mkdir $(SolutionDir)EvoSC\plugins\$(ProjectName)&#xA;xcopy $(OutDir)* $(SolutionDir)EvoSC\ext_plugins\$(ProjectName)\ /Y /I /E" />
+    </Target>
+
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Exec Command="rmdir $(SolutionDir)EvoSC\plugins\$(ProjectName)" />
+    </Target>
+
+</Project>
