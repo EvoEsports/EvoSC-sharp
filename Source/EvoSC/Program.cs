@@ -1,10 +1,8 @@
-﻿using EvoSC;
-using SimpleInjector;
+﻿
+using System.CommandLine;
+using EvoSC;
+using EvoSC.CLI;
 
-
-var container = new Container();
-
-/* var app = new Application(args);
-
-await app.RunAsync();
-*/
+return await new CliHandler(args)
+    .RegisterCommand(new RunCommand())
+    .Handle();
