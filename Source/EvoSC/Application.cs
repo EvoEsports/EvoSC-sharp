@@ -19,6 +19,8 @@ public class Application : IEvoSCApplication
     private bool _isDebug;
     private ILogger<Application> _logger;
 
+    private readonly CancellationTokenSource _runningToken = new();
+
     public Application(string[] args)
     {
         _args = args;
@@ -37,12 +39,17 @@ public class Application : IEvoSCApplication
         
         _logger.LogDebug("Startup time: {Time}ms", sw.ElapsedMilliseconds);
 
-        await Task.Delay(-1);
+        // wait indefinitely
+        WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
     }
 
-    public Task ShutdownAsync()
+    public async Task ShutdownAsync()
     {
-        throw new NotImplementedException();
+        var serverClient = _serviceProvider.GetRequiredService<IServerClient>();
+        await serverClient.StopAsync(_runningToken.Token);
+        
+        // cancel the token to stop the application itself
+        _runningToken.Cancel();
     }
 
     private void SetupServices()
@@ -61,6 +68,7 @@ public class Application : IEvoSCApplication
     private async Task StartBackgroundServices()
     {
         var serverClient = _serviceProvider.GetRequiredService<IServerClient>();
+        await serverClient.StartAsync(_runningToken.Token);
         
         _logger.LogDebug("Starting background services");
     }

@@ -23,12 +23,15 @@ public class ServerClient : IServerClient
     
     public async Task StartAsync(CancellationToken token)
     {
-        if (!await _gbxRemote.AuthenticateAsync(_config.Username, _config.Password))
+        if (!await _gbxRemote.LoginAsync(_config.Username, _config.Password))
         {
             throw new GbxRemoteAuthenticationException();
         }
-
+        
         _logger.LogDebug("Authenticated to the remote server as: {Username}", _config.Username);
+
+        await _gbxRemote.EnableCallbackTypeAsync();
+        _logger.LogDebug("Enabled GbxRemote callbacks");
     }
 
     public Task StopAsync(CancellationToken token)
