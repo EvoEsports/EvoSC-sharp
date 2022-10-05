@@ -9,6 +9,7 @@ public class EvoScConfig : IConfig
 {
     public const string ConfigDir = "config";
     public const string MainConfigFile = "main.toml";
+    
     public const string ServerConfigKey = "server";
     public const string LoggingConfigKey = "logging";
 
@@ -57,6 +58,9 @@ public class EvoScConfig : IConfig
         return mainFile;
     }
 
-    public TOption Get<TOption>(string key) =>
-        TomletMain.To<TOption>(_document.GetValue(key));
+    public TOption Get<TOption>(string key)
+    {
+        var value = _document.GetValue(key);
+        return TomletMain.To<TOption>(value);
+    }
 }

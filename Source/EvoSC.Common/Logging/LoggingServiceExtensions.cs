@@ -19,7 +19,10 @@ public static class LoggingServiceExtensions
     {
         services.AddLogging(builder =>
         {
+            var logLevel = config.GetLogLevel();
+            
             builder.ClearProviders();
+            //builder.AddFilter(level => level == logLevel);
             builder.SetMinimumLevel(config.GetLogLevel());
 
             if (config.UseJson)
