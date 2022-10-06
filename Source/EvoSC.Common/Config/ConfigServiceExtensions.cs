@@ -14,6 +14,7 @@ public static class ConfigServiceExtensions
         // register configs for easy access
         services.AddSingleton(config.Get<ServerConfig>(EvoScConfig.ServerConfigKey));
         services.AddSingleton(config.Get<LoggingConfig>(EvoScConfig.LoggingConfigKey));
+        services.AddSingleton(config.Get<DatabaseConfig>(EvoScConfig.DatabaseConfigKey));
 
         return config;
     }

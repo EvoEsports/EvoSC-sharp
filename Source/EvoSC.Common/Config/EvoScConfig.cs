@@ -12,6 +12,7 @@ public class EvoScConfig : IConfig
     
     public const string ServerConfigKey = "server";
     public const string LoggingConfigKey = "logging";
+    public const string DatabaseConfigKey = "database";
 
     private TomlDocument _document;
     
@@ -35,6 +36,7 @@ public class EvoScConfig : IConfig
         
         document.Put(LoggingConfigKey, new LoggingConfig());
         document.Put(ServerConfigKey, new ServerConfig());
+        document.Put(DatabaseConfigKey, new DatabaseConfig());
 
         return document;
     }

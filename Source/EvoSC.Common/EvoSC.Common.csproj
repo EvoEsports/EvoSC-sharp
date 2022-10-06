@@ -7,9 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.0.123" />
+      <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+      <PackageReference Include="Dapper.Rainbow" Version="2.0.78" />
       <PackageReference Include="GbxRemote.Net" Version="2.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+      <PackageReference Include="MySqlConnector" Version="2.1.13" />
       <PackageReference Include="Samboy063.Tomlet" Version="5.0.0" />
     </ItemGroup>
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Remote;
@@ -59,6 +60,7 @@ public class Application : IEvoSCApplication
         var config = _services.AddEvoScConfig();
         
         _services.AddEvoScLogging(config.Get<LoggingConfig>(EvoScConfig.LoggingConfigKey));
+        _services.AddEvoScDatabase(config.Get<DatabaseConfig>(EvoScConfig.DatabaseConfigKey));
         _services.AddGbxRemoteClient();
 
         _services.AddSingleton<IEvoSCApplication>(this);
@@ -69,9 +71,9 @@ public class Application : IEvoSCApplication
 
     private async Task StartBackgroundServices()
     {
+        _logger.LogDebug("Starting background services");
+        
         var serverClient = _serviceProvider.GetRequiredService<IServerClient>();
         await serverClient.StartAsync(_runningToken.Token);
-        
-        _logger.LogDebug("Starting background services");
     }
 }
