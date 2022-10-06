@@ -13,6 +13,7 @@ public class EventManager : IEventManager
     public EventManager(ILogger<EventManager> logger)
     {
         _logger = logger;
+        _logger.LogInformation("event manager");
     }
 
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler)

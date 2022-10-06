@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database;
+using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Remote;
@@ -62,6 +63,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScLogging(config.Get<LoggingConfig>(EvoScConfig.LoggingConfigKey));
         _services.AddEvoScDatabase(config.Get<DatabaseConfig>(EvoScConfig.DatabaseConfigKey));
         _services.AddGbxRemoteClient();
+        _services.AddEvoScEvents();
 
         _services.AddSingleton<IEvoSCApplication>(this);
         _serviceProvider = _services.BuildServiceProvider();
@@ -73,6 +75,10 @@ public class Application : IEvoSCApplication
     {
         _logger.LogDebug("Starting background services");
         
+        // initialize event manager before anything else
+        _serviceProvider.GetRequiredService<EventManager>();
+        
+        // connect to the dedicated server
         var serverClient = _serviceProvider.GetRequiredService<IServerClient>();
         await serverClient.StartAsync(_runningToken.Token);
     }
