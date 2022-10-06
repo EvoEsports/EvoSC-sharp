@@ -20,13 +20,15 @@ public class Application : IEvoSCApplication
     private ILogger<Application> _logger;
 
     private readonly CancellationTokenSource _runningToken = new();
-
+    
+    public CancellationToken MainCancellationToken => _runningToken.Token;
+    
     public Application(string[] args)
     {
         _args = args;
         _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
     }
-    
+
     public async Task RunAsync()
     {
         var sw = new Stopwatch();

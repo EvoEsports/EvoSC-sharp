@@ -11,31 +11,76 @@ public class ServerClient : IServerClient
     private readonly GbxRemoteClient _gbxRemote;
     private readonly ServerConfig _config;
     private readonly ILogger<ServerClient> _logger;
+    private readonly IEvoSCApplication _app;
 
     public GbxRemoteClient Remote => _gbxRemote;
     
-    public ServerClient(ServerConfig config, ILogger<ServerClient> logger)
+    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
     {
         _config = config;
         _logger = logger;
+        _app = app;
         _gbxRemote = new GbxRemoteClient(config.Host, config.Port, logger);
+        
+        _gbxRemote.OnDisconnected += OnDisconnected;
+    }
+
+    private async Task OnDisconnected()
+    {
+        await ConnectOrShutdown(_app.MainCancellationToken, true);
+    }
+
+    private async Task<bool> TryConnect()
+    {
+        if (!await _gbxRemote.ConnectAsync())
+        {
+            return false;
+        }
+
+        if (!await _gbxRemote.AuthenticateAsync(_config.Username, _config.Password))
+        {
+            _logger.LogError("Failed to authenticate to the server");
+            return false;
+        }
+
+        await _gbxRemote.EnableCallbackTypeAsync();
+
+        return true;
+    }
+
+    private async Task ConnectOrShutdown(CancellationToken cancelToken, bool disconnected=false)
+    {
+        try
+        {
+            do
+            {
+                if (!disconnected || (disconnected && _config.RetryConnection))
+                {
+                    if (await TryConnect())
+                    {
+                        return;
+                    }
+                }
+
+                await Task.Delay(1000);
+                
+            } while (!cancelToken.IsCancellationRequested && _config.RetryConnection);
+
+            throw new Exception();
+        }
+        catch (Exception e)
+        {
+            await _app.ShutdownAsync();
+        }
     }
     
     public async Task StartAsync(CancellationToken token)
     {
-        if (!await _gbxRemote.LoginAsync(_config.Username, _config.Password))
-        {
-            throw new GbxRemoteAuthenticationException();
-        }
-        
-        _logger.LogDebug("Authenticated to the remote server as: {Username}", _config.Username);
-
-        await _gbxRemote.EnableCallbackTypeAsync();
-        _logger.LogDebug("Enabled GbxRemote callbacks");
+        await ConnectOrShutdown(token);
     }
 
-    public Task StopAsync(CancellationToken token)
+    public async Task StopAsync(CancellationToken token)
     {
-        throw new NotImplementedException();
+        await _gbxRemote.DisconnectAsync();
     }
 }
