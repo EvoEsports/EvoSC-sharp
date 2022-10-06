@@ -30,7 +30,11 @@ public class ServerClient : IServerClient
         await ConnectOrShutdown(_app.MainCancellationToken, true);
     }
 
-    private async Task<bool> TryConnect()
+    /// <summary>
+    /// Try to set up the connection, authenticate and enable callbacks.
+    /// </summary>
+    /// <returns></returns>
+    private async Task<bool> SetupConnection()
     {
         if (!await _gbxRemote.ConnectAsync())
         {
@@ -48,6 +52,13 @@ public class ServerClient : IServerClient
         return true;
     }
 
+    /// <summary>
+    /// Try to connect to the server. If it fails and there are no re-tries, the application
+    /// is shut down.
+    /// </summary>
+    /// <param name="cancelToken"></param>
+    /// <param name="disconnected"></param>
+    /// <exception cref="Exception"></exception>
     private async Task ConnectOrShutdown(CancellationToken cancelToken, bool disconnected=false)
     {
         try
@@ -56,7 +67,7 @@ public class ServerClient : IServerClient
             {
                 if (!disconnected || (disconnected && _config.RetryConnection))
                 {
-                    if (await TryConnect())
+                    if (await SetupConnection())
                     {
                         return;
                     }
