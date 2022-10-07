@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using EvoSC.Common.Events;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace EvoSC.Common.Tests;
@@ -11,19 +12,24 @@ public class EventManagerTests
     class HandlerRanException2 : Exception {}
     
     [Fact]
-    public void Event_Added_AndFired_Dont_Throw_Exception()
+    public async Task Event_Added_AndFired_Dont_Throw_Exception()
     {
-        var manager = new EventManager(null);
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
 
-        manager.Subscribe<EventArgs>("test", (sender, args) => Task.CompletedTask);
-
-        manager.Fire("test", EventArgs.Empty);
+        manager.Subscribe("test", (object sender, EventArgs args) =>
+        {
+            Console.WriteLine();
+            return Task.CompletedTask;
+        });
+        var ex = await Record.ExceptionAsync(() => manager.Fire("test", EventArgs.Empty));
+        
+        Assert.Null(ex);
     }
 
     [Fact]
     public void Event_Added_And_Fired()
     {
-        var manager = new EventManager(null);
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
 
         manager.Subscribe<EventArgs>("test", (sender, args) => throw new HandlerRanException());
 
@@ -34,22 +40,24 @@ public class EventManagerTests
     }
 
     [Fact]
-    public void Event_Added_And_Removed()
+    public async Task Event_Added_And_Removed()
     {
-        var manager = new EventManager(null);
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
 
         var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
         
         manager.Subscribe("test", handler);
         manager.Unsubscribe("test", handler);
 
-        manager.Fire("test", EventArgs.Empty);
+        var ex = await Record.ExceptionAsync(() => manager.Fire("test", EventArgs.Empty));
+        
+        Assert.Null(ex);
     }
 
     [Fact]
     public void Only_Equal_Event_Handler_Removed()
     {
-        var manager = new EventManager(null);
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
 
         var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
         var handler2 = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException2());

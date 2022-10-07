@@ -2,10 +2,10 @@
 
 public class EventSubscription
 {
-    public AsyncEventHandler Handler { get; init; }
+    public AsyncEventHandler<EventArgs> Handler { get; init; }
     public bool RunAsync { get; set; }
 
-    public EventSubscription(AsyncEventHandler handler, bool runAsync=false)
+    public EventSubscription(AsyncEventHandler<EventArgs> handler, bool runAsync=false)
     {
         Handler = handler;
     }

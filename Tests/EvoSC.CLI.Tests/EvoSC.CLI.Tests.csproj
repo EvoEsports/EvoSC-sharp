@@ -25,4 +25,8 @@
       <ProjectReference Include="..\..\src\EvoSC.CLI\EvoSC.CLI.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="EvoSC.Benchmark\EvoSC.Benchmark.csproj" />
+    </ItemGroup>
+
 </Project>

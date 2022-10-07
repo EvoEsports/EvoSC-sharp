@@ -4,7 +4,7 @@ public class PluginEventSubscription : EventSubscription
 {
     public Guid PluginId { get; set; }
     
-    public PluginEventSubscription(AsyncEventHandler handler, Guid pluginId, bool runAsync=false) : base(handler, runAsync)
+    public PluginEventSubscription(AsyncEventHandler<EventArgs> handler, Guid pluginId, bool runAsync=false) : base(handler, runAsync)
     {
         PluginId = pluginId;
     }

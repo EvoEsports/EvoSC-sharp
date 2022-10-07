@@ -16,25 +16,25 @@ public class EventManager : IEventManager
         _logger.LogInformation("event manager");
     }
 
-    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler)
+    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, bool runAsync=false) where TArgs : EventArgs
     {
         if (!_subscriptions.ContainsKey(name))
         {
             _subscriptions.Add(name, new List<EventSubscription>());
         }
 
-        var subscription = new EventSubscription(handler as AsyncEventHandler);
+        var subscription = new EventSubscription(handler as AsyncEventHandler<EventArgs>, runAsync);
         _subscriptions[name].Add(subscription);
     }
 
-    public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler)
+    public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs
     {
         if (!_subscriptions.ContainsKey(name))
         {
             throw new EventSubscriptionNotFound();
         }
 
-        var subscription = _subscriptions[name].FirstOrDefault(s => s.Handler == handler as AsyncEventHandler);
+        var subscription = _subscriptions[name].FirstOrDefault(s => s.Handler == handler as AsyncEventHandler<EventArgs>);
 
         if (subscription == null)
         {
