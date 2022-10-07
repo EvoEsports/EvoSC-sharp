@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EvoSC.CLI\EvoSC.CLI.csproj" />
+      <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
     </ItemGroup>
 
 </Project>

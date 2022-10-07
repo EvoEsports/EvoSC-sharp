@@ -8,6 +8,7 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Remote;
+using EvoSC.Modules;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -64,6 +65,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScDatabase(config.Get<DatabaseConfig>(EvoScConfig.DatabaseConfigKey));
         _services.AddGbxRemoteClient();
         _services.AddEvoScEvents();
+        _services.AddEvoScModules();
 
         _services.AddSingleton<IEvoSCApplication>(this);
         _serviceProvider = _services.BuildServiceProvider();

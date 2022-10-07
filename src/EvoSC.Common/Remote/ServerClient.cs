@@ -1,7 +1,9 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Events;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using GbxRemoteNet;
+using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;
@@ -12,10 +14,11 @@ public class ServerClient : IServerClient
     private readonly ServerConfig _config;
     private readonly ILogger<ServerClient> _logger;
     private readonly IEvoSCApplication _app;
+    private GbxRemoteEventDispatcher _eventDispatcher;
 
     public GbxRemoteClient Remote => _gbxRemote;
     
-    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
+    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app, EventManager events)
     {
         _config = config;
         _logger = logger;
@@ -23,6 +26,8 @@ public class ServerClient : IServerClient
         _gbxRemote = new GbxRemoteClient(config.Host, config.Port, logger);
         
         _gbxRemote.OnDisconnected += OnDisconnected;
+
+        _eventDispatcher = new GbxRemoteEventDispatcher(_gbxRemote, events);
     }
 
     private async Task OnDisconnected()

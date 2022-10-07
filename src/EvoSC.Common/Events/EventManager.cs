@@ -48,7 +48,7 @@ public class EventManager : IEventManager
     {
         if (!_subscriptions.ContainsKey(name))
         {
-            throw new EventSubscriptionNotFound();
+            return;
         }
 
         foreach (var subscription in _subscriptions[name])
