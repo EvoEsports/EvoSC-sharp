@@ -18,7 +18,7 @@ public class ServerClient : IServerClient
 
     public GbxRemoteClient Remote => _gbxRemote;
     
-    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app, EventManager events)
+    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app, IEventManager events)
     {
         _config = config;
         _logger = logger;

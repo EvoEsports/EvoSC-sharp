@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Events;
+using EvoSC.Common.Interfaces;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
 
@@ -7,9 +8,9 @@ namespace EvoSC.Common.Remote;
 public class GbxRemoteEventDispatcher
 {
     private readonly GbxRemoteClient _gbxRemote;
-    private readonly EventManager _events;
+    private readonly IEventManager _events;
     
-    public GbxRemoteEventDispatcher(GbxRemoteClient gbxRemote, EventManager events)
+    public GbxRemoteEventDispatcher(GbxRemoteClient gbxRemote, IEventManager events)
     {
         _gbxRemote = gbxRemote;
         _events = events;

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using System.Diagnostics.Tracing;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database;
 using EvoSC.Common.Database.Models;
 using EvoSC.Common.Events;
@@ -23,7 +24,7 @@ public class PlayerModule : EvoScModule
         _server = server;
     }
 
-    [Subscribe(GbxRemoteEvent.PlayerConnect, EventPriority.High)]
+    [Subscribe( GbxRemoteEvent.PlayerConnect, EventPriority.High)]
     public async Task OnPlayerConnect(object sender, PlayerConnectEventArgs args)
     {
         var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = args.Login});

@@ -9,6 +9,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Remote;
 using EvoSC.Modules;
+using EvoSC.Modules.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -38,6 +39,7 @@ public class Application : IEvoSCApplication
         sw.Start();
 
         SetupServices();
+        await SetupModules();
         await StartBackgroundServices();
         
         sw.Stop();
@@ -71,6 +73,11 @@ public class Application : IEvoSCApplication
         _serviceProvider = _services.BuildServiceProvider();
         
         _logger = _serviceProvider.GetRequiredService<ILogger<Application>>();
+    }
+
+    private async Task SetupModules()
+    {
+        var modules = _serviceProvider.GetRequiredService<ModuleManager>();
     }
 
     private async Task StartBackgroundServices()
