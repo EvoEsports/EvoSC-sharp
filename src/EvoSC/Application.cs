@@ -87,6 +87,8 @@ public class Application : IEvoSCApplication
     {
         using var scope = _serviceProvider.CreateScope();
         var manager = scope.ServiceProvider.GetRequiredService<IMigrationManager>();
+        
+        // internal modules
         manager.MigrateFromAssembly(typeof(ModuleManager).Assembly);
     }
     

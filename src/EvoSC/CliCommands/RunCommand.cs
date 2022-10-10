@@ -4,7 +4,7 @@ using EvoSC.CLI;
 using EvoSC.CLI.Attributes;
 using EvoSC.CLI.Interfaces;
 
-namespace EvoSC;
+namespace EvoSC.CliCommands;
 
 [CliCommand("run", "Start the server controller.")]
 [CliOption(typeof(int), "Verbosity level of the output.", "--verbosity", "-v")]

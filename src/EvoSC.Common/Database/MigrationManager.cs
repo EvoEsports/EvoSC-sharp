@@ -21,15 +21,18 @@ public class MigrationManager : IMigrationManager
     
     public void MigrateFromAssembly(Assembly asm)
     {
-        new ServiceCollection()
+        var provider = new ServiceCollection()
             .AddFluentMigratorCore()
             .ConfigureRunner(c => c
                 .AddMySql5()
                 .WithGlobalConnectionString(_dbConfig.GetConnectionString())
                 .ScanIn(asm).For.Migrations())
             .AddEvoScLogging(_loggingConfig)
-            .BuildServiceProvider(false)
-            .GetRequiredService<IMigrationRunner>()
+            .BuildServiceProvider(false);
+
+        provider.GetRequiredService<IMigrationRunner>()
             .MigrateUp();
+        
+        provider.Dispose();
     }
 }
