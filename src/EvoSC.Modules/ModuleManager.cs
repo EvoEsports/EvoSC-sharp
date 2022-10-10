@@ -17,16 +17,18 @@ public class ModuleManager : IModuleManager
 
     
     
-    public Task LoadModulesFromAssembly(Assembly assembly)
+    public async Task LoadModulesFromAssembly(Assembly assembly)
     {
         foreach (var asmModule in assembly.Modules)
         {
             foreach (var moduleType in asmModule.GetTypes())
             {
-                if (moduleType.IsEvoScModuleType())
+                if (!moduleType.IsEvoScModuleType())
                 {
-                    
+                    continue;
                 }
+
+                var moduleAttr = moduleType.GetModuleAttribute();
             }
         }
     }

@@ -12,9 +12,11 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Builtin.Player;
 
-[Module]
+[InternalModule(Name, "Module to handle players.")]
 public class PlayerModule : EvoScModule
 {
+    public const string Name = "Player";
+    
     private readonly EvoScDb _db;
     private readonly ServerClient _server;
     

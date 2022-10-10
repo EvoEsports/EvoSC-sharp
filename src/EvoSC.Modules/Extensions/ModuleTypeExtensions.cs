@@ -17,5 +17,5 @@ public static class ModuleTypeExtensions
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static bool IsEvoScModuleType(this Type type) => type.IsClass && type.GetModuleAttribute() != null;
+    public static bool IsEvoScModuleType(this Type type) => type.IsClass && type.IsAssignableTo(typeof(IEvoScModule)) && type.GetModuleAttribute() != null;
 }

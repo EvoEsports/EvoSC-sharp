@@ -1,4 +1,7 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using System.Reflection;
+using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces;
+using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 
@@ -20,6 +23,9 @@ public static class DatabaseServiceExtensions
         
         return services;
     }
-    
-    
+
+    public static IServiceCollection AddEvoScMigrations(this IServiceCollection services)
+    {
+        return services.AddScoped<IMigrationManager, MigrationManager>();
+    }
 }
