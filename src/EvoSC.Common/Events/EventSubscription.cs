@@ -1,12 +1,23 @@
-﻿namespace EvoSC.Common.Events;
+﻿using System.Reflection;
+
+namespace EvoSC.Common.Events;
 
 public class EventSubscription
 {
-    public AsyncEventHandler<EventArgs> Handler { get; init; }
-    public bool RunAsync { get; set; }
+    public string Name { get; init; }
+    public Type InstanceClass { get; init; }
+    public object? Instance { get; init; }
+    public MethodInfo HandlerMethod { get; init; }
+    public EventPriority Priority { get; init; }
+    public bool RunAsync { get; init; }
 
-    public EventSubscription(AsyncEventHandler<EventArgs> handler, bool runAsync=false)
+    public EventSubscription(string name, Type instanceClass, MethodInfo handlerMethod, object? instance=null, EventPriority priority=EventPriority.Medium, bool runAsync=false)
     {
-        Handler = handler;
+        Name = name;
+        InstanceClass = instanceClass;
+        Instance = instance;
+        HandlerMethod = handlerMethod;
+        Priority = priority;
+        RunAsync = runAsync;
     }
 }

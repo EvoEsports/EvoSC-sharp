@@ -14,7 +14,7 @@ public class EventManagerTests
     [Fact]
     public async Task Event_Added_AndFired_Dont_Throw_Exception()
     {
-        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>(), null);
 
         manager.Subscribe("test", (object sender, EventArgs args) =>
         {
@@ -29,7 +29,7 @@ public class EventManagerTests
     [Fact]
     public void Event_Added_And_Fired()
     {
-        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>(), null);
 
         manager.Subscribe<EventArgs>("test", (sender, args) => throw new HandlerRanException());
 
@@ -42,7 +42,7 @@ public class EventManagerTests
     [Fact]
     public async Task Event_Added_And_Removed()
     {
-        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>(), null);
 
         var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
         
@@ -57,7 +57,7 @@ public class EventManagerTests
     [Fact]
     public void Only_Equal_Event_Handler_Removed()
     {
-        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>());
+        var manager = new EventManager(LoggerFactory.Create(c => {}).CreateLogger<EventManager>(), null);
 
         var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
         var handler2 = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException2());

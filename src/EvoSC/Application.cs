@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Controllers;
 using EvoSC.Common.Database;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
@@ -76,6 +77,7 @@ public class Application : IEvoSCApplication
         _services.AddGbxRemoteClient();
         _services.AddEvoScEvents();
         _services.AddEvoScModules();
+        _services.AddEvoScControllers();
 
         _services.AddSingleton<IEvoSCApplication>(this);
         _serviceProvider = _services.BuildServiceProvider();

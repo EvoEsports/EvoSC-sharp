@@ -1,9 +1,9 @@
 ﻿using System.Runtime.Loader;
 using EvoSC.Modules.Attributes;
 
-namespace EvoSC.Modules;
+namespace EvoSC.Modules.Info;
 
-public interface IModuleLoadContext
+public class ModuleLoadContext : IModuleLoadContext
 {
     public IEvoScModule? Instance { get; init; }
     public AssemblyLoadContext? LoadContext { get; init; }

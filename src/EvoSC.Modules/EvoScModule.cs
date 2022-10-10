@@ -1,6 +1,8 @@
-﻿namespace EvoSC.Modules;
+﻿using EvoSC.Common.Interfaces;
 
-public class EvoScModule : IEvoScModule
+namespace EvoSC.Modules;
+
+public abstract class EvoScModule : IEvoScModule
 {
-    
+    public virtual Type[] Controllers { get; } = Array.Empty<Type>();
 }

@@ -56,6 +56,7 @@ public class ServerClient : IServerClient
             return false;
         }
 
+        await _gbxRemote.SetApiVersionAsync(GbxRemoteClient.DefaultApiVersion);
         await _gbxRemote.EnableCallbackTypeAsync();
 
         return true;

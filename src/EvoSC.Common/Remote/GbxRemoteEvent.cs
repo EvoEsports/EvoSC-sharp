@@ -14,37 +14,37 @@ public class GbxRemoteEvent
     /// When a player disconnects from the server.
     /// </summary>
     /// <returns></returns>
-    public static string PlayerDisconnect = "GbxRemote.PlayerDisconnect";
+    public const string PlayerDisconnect = "GbxRemote.PlayerDisconnect";
     /// <summary>
     /// When a player's state has changed.
     /// </summary>
-    public static string PlayerInfoChanged = "GbxRemote.PlayerInfoChanged";
+    public const string PlayerInfoChanged = "GbxRemote.PlayerInfoChanged";
     /// <summary>
     /// When a map has ended.
     /// </summary>
-    public static string EndMap = "GbxRemote.EndMap";
+    public const string EndMap = "GbxRemote.EndMap";
     /// <summary>
     /// When the match has ended.
     /// </summary>
-    public static string EndMatch = "GbxRemote.EndMatch";
+    public const string EndMatch = "GbxRemote.EndMatch";
     /// <summary>
     /// When the map starts.
     /// </summary>
-    public static string BeginMap = "GbxRemote.BeginMap";
+    public const string BeginMap = "GbxRemote.BeginMap";
     /// <summary>
     /// When a match is about to start.
     /// </summary>
-    public static string BeginMatch = "GbxRemote.BeginMatch";
+    public const string BeginMatch = "GbxRemote.BeginMatch";
     /// <summary>
     /// When a echo message has been sent.
     /// </summary>
-    public static string Echo = "GbxRemote.Echo";
+    public const string Echo = "GbxRemote.Echo";
     /// <summary>
     /// When an answer from a manialink has been triggered.
     /// </summary>
-    public static string ManialinkPageAnswer = "GbxRemote.ManialinkPageAnswer";
+    public const string ManialinkPageAnswer = "GbxRemote.ManialinkPageAnswer";
     /// <summary>
     /// When the map list got modified.
     /// </summary>
-    public static string MapListModified = "GbxRemote.MapListModified";
+    public const string MapListModified = "GbxRemote.MapListModified";
 }
