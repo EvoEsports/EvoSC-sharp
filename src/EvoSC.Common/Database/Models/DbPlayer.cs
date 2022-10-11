@@ -2,6 +2,7 @@
 
 namespace EvoSC.Common.Database.Models;
 
+[Table("players")]
 public class DbPlayer
 {
     /// <summary>

@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Data.Common;
+using System.Reflection;
+using Dapper;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using FluentMigrator.Runner;
@@ -15,11 +17,8 @@ public static class DatabaseServiceExtensions
     {
         var connection = new MySqlConnection(config.GetConnectionString());
         connection.Open();
-        
-        var db = EvoScDb.Init(connection, CommandTimeout);
 
-        services.AddSingleton(connection);
-        services.AddSingleton(db);
+        services.AddSingleton<DbConnection>(connection);
         
         return services;
     }
