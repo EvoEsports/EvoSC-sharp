@@ -1,6 +1,11 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using EvoSC.Common.Controllers.Context;
+using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Util;
 using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,13 +16,15 @@ public class EventManager : IEventManager
 {
     private readonly ILogger<EventManager> _logger;
     private readonly IServiceProvider _services;
+    private readonly IControllerManager _controllers;
     
     private Dictionary<string, List<EventSubscription>> _subscriptions = new();
 
-    public EventManager(ILogger<EventManager> logger, IServiceProvider services)
+    public EventManager(ILogger<EventManager> logger, IServiceProvider services, IControllerManager controllers)
     {
         _logger = logger;
         _services = services;
+        _controllers = controllers;
     }
 
     public void Subscribe(EventSubscription subscription)
@@ -55,13 +62,12 @@ public class EventManager : IEventManager
         }
 
         object senderArg = sender ?? this;
+        List<Task> tasks = new List<Task>();
 
         foreach (var subscription in _subscriptions[name])
         {
             Task? task = null;
-            var target = subscription.Instance == null
-                ? ActivatorUtilities.CreateInstance(_services, subscription.InstanceClass)
-                : subscription.Instance;
+            var target = GetTarget(subscription);
             
             task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {senderArg, args});
 
@@ -70,10 +76,49 @@ public class EventManager : IEventManager
                 throw new InvalidOperationException("An error occured while calling event, task is null.");
             }
             
-            if (!subscription.RunAsync)
+            tasks.Add(task);
+        }
+
+        Task.WaitAll(tasks.ToArray());
+    }
+
+    private object GetTarget(EventSubscription subscription)
+    {
+        if (subscription.Instance != null)
+        {
+            return subscription.Instance;
+        }
+
+        if (subscription.IsController)
+        {
+            return CreateControllerInstance(subscription);
+        }
+        
+        return ActivatorUtilities.CreateInstance(_services, subscription.InstanceClass);
+    }
+
+    private IController CreateControllerInstance(EventSubscription subscription)
+    {
+        var context = new EventControllerContext(); 
+        var instance = _controllers.CreateInstance(subscription.InstanceClass, context);
+        return instance;
+    }
+
+    public void RegisterForController(Type controllerType)
+    {
+        var methods = controllerType.GetMethods(ReflectionUtils.InstanceMethods);
+
+        foreach (var method in methods)
+        {
+            var attr = method.GetCustomAttribute<Subscribe>();
+
+            if (attr == null)
             {
-                await task;
+                continue;
             }
+
+            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority, attr.IsAsync);
+            Subscribe(subscription);
         }
     }
 }

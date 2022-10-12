@@ -10,8 +10,9 @@ public class EventSubscription
     public MethodInfo HandlerMethod { get; init; }
     public EventPriority Priority { get; init; }
     public bool RunAsync { get; init; }
+    public bool IsController { get; init; }
 
-    public EventSubscription(string name, Type instanceClass, MethodInfo handlerMethod, object? instance=null, EventPriority priority=EventPriority.Medium, bool runAsync=false)
+    public EventSubscription(string name, Type instanceClass, MethodInfo handlerMethod, object? instance=null, EventPriority priority=EventPriority.Medium, bool runAsync=false, bool isController=false)
     {
         Name = name;
         InstanceClass = instanceClass;
@@ -19,5 +20,6 @@ public class EventSubscription
         HandlerMethod = handlerMethod;
         Priority = priority;
         RunAsync = runAsync;
+        IsController = isController;
     }
 }

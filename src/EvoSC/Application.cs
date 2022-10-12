@@ -7,6 +7,7 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Database;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Remote;
 using EvoSC.Modules;
@@ -44,6 +45,7 @@ public class Application : IEvoSCApplication
 
         SetupServices();
         MigrateDatabase();
+        SetupControllerManager();
         await SetupModules();
         await StartBackgroundServices();
         
@@ -92,6 +94,13 @@ public class Application : IEvoSCApplication
         
         // internal modules
         manager.MigrateFromAssembly(typeof(ModuleManager).Assembly);
+    }
+    
+    private void SetupControllerManager()
+    {
+        var controllers = _serviceProvider.GetRequiredService<IControllerManager>();
+        
+        controllers.AddControllerActionRegistry(_serviceProvider.GetRequiredService<IEventManager>());
     }
     
     private async Task SetupModules()

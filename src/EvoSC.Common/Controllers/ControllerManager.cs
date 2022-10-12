@@ -1,10 +1,14 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Util;
 using GbxRemoteNet;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Controllers;
@@ -12,48 +16,31 @@ namespace EvoSC.Common.Controllers;
 public class ControllerManager : IControllerManager
 {
     private readonly ILogger<ControllerManager> _logger;
-    private readonly IEventManager _events;
+    private readonly IServiceProvider _services;
 
-    private List<ControllerInfo> _controllers = new();
+    private Dictionary<Type, ControllerInfo> _controllers = new();
+    private List<IControllerActionRegistry> _registries = new();
 
-    public IEnumerable<ControllerInfo> Controllers => _controllers;
+    public IEnumerable<ControllerInfo> Controllers => _controllers.Values;
     
-    public ControllerManager(ILogger<ControllerManager> logger, IEventManager events)
+    public ControllerManager(ILogger<ControllerManager> logger, IServiceProvider services)
     {
         _logger = logger;
-        _events = events;
+        _services = services;
     }
 
-    public void Add(Type controllerType)
+    public void AddController(Type controllerType, Guid moduleId)
     {
         var controllerInfo = GetControllerInfo(controllerType);
-        
-        RegisterEvents(controllerType);
-        
-        _controllers.Add(new ControllerInfo
+
+        foreach (var registry in _registries)
         {
-            ControllerType = controllerType
-        });
-    }
-
-    private void RegisterEvents(Type controllerType)
-    {
-        var methods = controllerType.GetMethods(ReflectionUtils.InstanceMethods);
-
-        foreach (var method in methods)
-        {
-            var attr = method.GetCustomAttribute<Subscribe>();
-
-            if (attr == null)
-            {
-                continue;
-            }
-
-            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority, attr.IsAsync);
-            _events.Subscribe(subscription);
+            registry.RegisterForController(controllerType);
         }
+        
+        _controllers.Add(controllerType, new ControllerInfo(controllerType, moduleId));
     }
-    
+
     private ControllerAttribute GetControllerInfo(Type controllerType)
     {
         if (!controllerType.IsAssignableTo(typeof(IController)))
@@ -71,16 +58,38 @@ public class ControllerManager : IControllerManager
         return attr;
     }
 
-    public void Add<TController>() where TController : IController
-        => Add(typeof(TController));
+    public void AddController<TController>(Guid moduleId) where TController : IController
+        => AddController(typeof(TController), moduleId);
 
-    public void Remove(Type controllerType)
+    public void AddControllerActionRegistry(IControllerActionRegistry registry)
     {
-        
+        _registries.Add(registry);
     }
 
-    public void Remove<TController>() where TController : IController
+    public ControllerInfo GetInfo(Type controllerType)
     {
+        if (!_controllers.ContainsKey(controllerType))
+        {
+            throw new ControllerException("Controller not found.");
+        }
+
+        return _controllers[controllerType];
+    }
+
+    public IController CreateInstance(Type controllerType, IControllerContext context)
+    {
+        var controllerInfo = GetInfo(controllerType);
+        var scope = _services.CreateScope();
+        var instance = ActivatorUtilities.CreateInstance(scope.ServiceProvider, controllerType) as IController;
+
+        if (instance == null)
+        {
+            throw new ControllerException($"Failed to instantiate controller of type '{controllerType}'.");
+        }
         
+        context.SetScope(scope);
+        instance.SetContext(context);
+        
+        return instance;
     }
 }

@@ -2,6 +2,7 @@
 using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSc.Commands.Attributes;
+using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Database;
 using EvoSC.Common.Database.Models;
@@ -10,30 +11,31 @@ using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Remote;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Builtin.Player;
 
 [Controller]
-public class PlayerController : IController
+public class PlayerController : EvoScController
 {
-    private readonly DbConnection _db;
-    private readonly IServerClient _server;
+    private readonly ILogger<PlayerController> _logger;
     
-    public PlayerController(DbConnection db, IServerClient server)
+    public PlayerController(ILogger<PlayerController> logger)
     {
-        _db = db;
-        _server = server;
+        _logger = logger;
     }
-    
-    [Subscribe(GbxRemoteEvent.PlayerConnect, EventPriority.High)]
-    public async Task OnPlayerConnect(object sender, PlayerConnectEventArgs args)
+
+    [Subscribe(GbxRemoteEvent.PlayerChat, EventPriority.High)]
+    public async Task OnPlayerConnect(object sender, PlayerChatEventArgs args)
     {
-        var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = "'"});
+        _logger.LogInformation("player {Login} said: {Msg}", args.Login, args.Text);
+
+        /* var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = "'"});
         var player = players.FirstOrDefault();
 
         if (player == null)
         {
-            var playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(args.Login);
+            var playerInfo = await Context.Server.Remote.GetDetailedPlayerInfoAsync(args.Login);
 
             player = new DbPlayer
             {
@@ -46,6 +48,6 @@ public class PlayerController : IController
             await _db.InsertAsync(player);
         }
 
-        _server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined.");
+        Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined."); */
     }
 }

@@ -1,9 +1,10 @@
 ﻿using EvoSC.Common.Events;
+using EvoSC.Common.Interfaces.Controllers;
 using GbxRemoteNet;
 
 namespace EvoSC.Common.Interfaces;
 
-public interface IEventManager
+public interface IEventManager : IControllerActionRegistry
 {
     public void Subscribe(EventSubscription subscription);
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority=EventPriority.Medium, bool runAsync=false) where TArgs : EventArgs;

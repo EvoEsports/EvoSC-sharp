@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Extensions;
@@ -73,7 +74,7 @@ public class ModuleManager : IModuleManager
         {
             foreach (var controller in moduleContext.Instance.Controllers)
             {
-                _controllers.Add(controller);
+                _controllers.AddController(controller, moduleContext.LoadId);
             }
         }
 

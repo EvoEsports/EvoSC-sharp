@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Common.Controllers;
