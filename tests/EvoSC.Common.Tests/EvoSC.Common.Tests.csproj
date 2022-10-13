@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Source\EvoSC.Common\EvoSC.Common.csproj" />
       <ProjectReference Include="..\..\src\EvoSC.Common\EvoSC.Common.csproj" />
     </ItemGroup>
 

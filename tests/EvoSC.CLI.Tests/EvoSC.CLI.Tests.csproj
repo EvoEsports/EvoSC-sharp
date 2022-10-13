@@ -21,7 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Source\EvoSC.CLI\EvoSC.CLI.csproj" />
       <ProjectReference Include="..\..\src\EvoSC.CLI\EvoSC.CLI.csproj" />
     </ItemGroup>
 

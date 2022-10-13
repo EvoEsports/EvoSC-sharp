@@ -7,11 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\EvoSC\EvoSC.csproj">
+        <ProjectReference Include="..\..\src\EvoSC\EvoSC.csproj">
             <ExcludeAssets>runtime</ExcludeAssets>
             <Private>false</Private>
         </ProjectReference>
-        <ProjectReference Include="..\..\src\EvoSC\EvoSC.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -29,3 +28,4 @@
     </Target>
 
 </Project>
+
