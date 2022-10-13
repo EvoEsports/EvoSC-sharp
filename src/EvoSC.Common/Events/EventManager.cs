@@ -49,9 +49,24 @@ public class EventManager : IEventManager
         );
     }
 
+    public void Unsubscribe(EventSubscription subscription)
+    {
+        if (!_subscriptions.ContainsKey(subscription.Name))
+        {
+            throw new EventSubscriptionNotFound();
+        }
+
+        _subscriptions[subscription.Name].Remove(subscription);
+
+        if (_subscriptions[subscription.Name].Count == 0)
+        {
+            _subscriptions.Remove(subscription.Name);
+        }
+    }
+
     public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs
     {
-        
+        Unsubscribe(new EventSubscription(name, handler.Target.GetType(), handler.Method));
     }
 
     public async Task Fire(string name, EventArgs args, object? sender=null)

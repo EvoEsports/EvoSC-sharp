@@ -8,6 +8,7 @@ public interface IEventManager : IControllerActionRegistry
 {
     public void Subscribe(EventSubscription subscription);
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority=EventPriority.Medium, bool runAsync=false) where TArgs : EventArgs;
+    public void Unsubscribe(EventSubscription subscription);
     public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs;
     public Task Fire(string name, EventArgs args, object? sender=null);
 }

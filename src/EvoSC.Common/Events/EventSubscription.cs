@@ -2,7 +2,7 @@
 
 namespace EvoSC.Common.Events;
 
-public class EventSubscription
+public class EventSubscription : IEquatable<EventSubscription>
 {
     public string Name { get; init; }
     public Type InstanceClass { get; init; }
@@ -21,5 +21,25 @@ public class EventSubscription
         Priority = priority;
         RunAsync = runAsync;
         IsController = isController;
+    }
+
+    public bool Equals(EventSubscription? other)
+    {
+        if (ReferenceEquals(null, other))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return HandlerMethod.Equals(other.HandlerMethod);
+    }
+
+    public override int GetHashCode()
+    {
+        return HandlerMethod.GetHashCode();
     }
 }
