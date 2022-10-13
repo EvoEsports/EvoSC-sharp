@@ -1,4 +1,4 @@
-<div align="center"><img src="./Images/evosc_full.png" width="60%"></div>
+<div align="center"><img src="./images/evosc_full.png" width="60%"></div>
 
 
 # EvoSC#

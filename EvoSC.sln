@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoSC.Tests", "Tests\EvoSC.Tests\EvoSC.Tests.csproj", "{509D2739-D17C-4C20-969F-30EC4DE36DB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoSC.Tests", "tests\EvoSC.Tests\EvoSC.Tests.csproj", "{509D2739-D17C-4C20-969F-30EC4DE36DB9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{5678FCFA-B741-4A21-B1BF-869271D21612}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "samples", "{5678FCFA-B741-4A21-B1BF-869271D21612}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Common", "src\EvoSC.Common\EvoSC.Common.csproj", "{CC4D3C92-46D2-4F66-A9F4-1134B8B95EE5}"
 EndProject
@@ -14,9 +14,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.CLI", "src\EvoSC.CLI\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC", "src\EvoSC\EvoSC.csproj", "{89E09B46-B31C-473E-AD6F-E43E04285125}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.CLI.Tests", "Tests\EvoSC.CLI.Tests\EvoSC.CLI.Tests.csproj", "{4B574E49-9840-4548-A75D-C538FC691444}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.CLI.Tests", "tests\EvoSC.CLI.Tests\EvoSC.CLI.Tests.csproj", "{4B574E49-9840-4548-A75D-C538FC691444}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Common.Tests", "Tests\EvoSC.Common.Tests\EvoSC.Common.Tests.csproj", "{A9A7689C-3848-47B7-A718-554BB0778B97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Common.Tests", "tests\EvoSC.Common.Tests\EvoSC.Common.Tests.csproj", "{A9A7689C-3848-47B7-A718-554BB0778B97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Modules", "src\EvoSC.Modules\EvoSC.Modules.csproj", "{30365FB7-7E09-49A8-85AE-AA280365784A}"
 EndProject
