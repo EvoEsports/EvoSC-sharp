@@ -14,13 +14,13 @@ public class ServerClient : IServerClient
     private readonly ServerConfig _config;
     private readonly ILogger<ServerClient> _logger;
     private readonly IEvoSCApplication _app;
-    private GbxRemoteEventDispatcher _eventDispatcher;
 
     private bool _connected;
 
-    public GbxRemoteClient Remote => _connected ? _gbxRemote : throw new ServerClientNotConnectedException();
-    
-    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app, IEventManager events)
+    public GbxRemoteClient Remote => _gbxRemote;
+    public bool Connected => _connected;
+
+    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
     {
         _config = config;
         _logger = logger;
@@ -29,8 +29,6 @@ public class ServerClient : IServerClient
         _gbxRemote = new GbxRemoteClient(config.Host, config.Port, logger);
         
         _gbxRemote.OnDisconnected += OnDisconnected;
-
-        _eventDispatcher = new GbxRemoteEventDispatcher(_gbxRemote, events);
     }
 
     private async Task OnDisconnected()

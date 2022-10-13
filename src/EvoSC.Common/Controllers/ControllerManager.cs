@@ -75,8 +75,8 @@ public class ControllerManager : IControllerManager
 
         return _controllers[controllerType];
     }
-
-    public IController CreateInstance(Type controllerType, IControllerContext context)
+    
+    public IController CreateInstance(Type controllerType)
     {
         var controllerInfo = GetInfo(controllerType);
         var scope = _services.CreateScope();
@@ -86,10 +86,20 @@ public class ControllerManager : IControllerManager
         {
             throw new ControllerException($"Failed to instantiate controller of type '{controllerType}'.");
         }
-        
-        context.SetScope(scope);
+
+        var context = CreateContext(scope);
         instance.SetContext(context);
         
         return instance;
+    }
+
+    private IControllerContext CreateContext(IServiceScope scope)
+    {
+        var serverClient = scope.ServiceProvider.GetRequiredService<IServerClient>();
+        
+        IControllerContext context = new GenericControllerContext(scope, serverClient);
+        context.SetScope(scope);
+
+        return context;
     }
 }

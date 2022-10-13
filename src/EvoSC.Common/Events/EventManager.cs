@@ -99,8 +99,10 @@ public class EventManager : IEventManager
 
     private IController CreateControllerInstance(EventSubscription subscription)
     {
-        var context = new EventControllerContext(); 
-        var instance = _controllers.CreateInstance(subscription.InstanceClass, context);
+        var instance = _controllers.CreateInstance(subscription.InstanceClass);
+        var context = new EventControllerContext(instance.Context);
+        instance.SetContext(context);
+        
         return instance;
     }
 
@@ -117,7 +119,7 @@ public class EventManager : IEventManager
                 continue;
             }
 
-            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority, attr.IsAsync);
+            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority, attr.IsAsync, true);
             Subscribe(subscription);
         }
     }

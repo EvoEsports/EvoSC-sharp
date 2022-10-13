@@ -8,6 +8,7 @@ public interface IServerClient
     /// The GBXRemote client instance.
     /// </summary>
     public GbxRemoteClient Remote { get; }
+    public bool Connected { get; }
 
     /// <summary>
     /// Start the client and set up a connection.

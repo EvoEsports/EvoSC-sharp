@@ -10,5 +10,5 @@ public interface IControllerManager
     public void AddController<TController>(Guid moduleId) where TController : IController;
     public void AddControllerActionRegistry(IControllerActionRegistry registry);
     public ControllerInfo GetInfo(Type controllerType);
-    public IController CreateInstance(Type controllerType, IControllerContext context);
+    public IController CreateInstance(Type controllerType);
 }

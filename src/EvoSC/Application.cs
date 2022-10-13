@@ -117,8 +117,9 @@ public class Application : IEvoSCApplication
         // initialize event manager before anything else
         _serviceProvider.GetRequiredService<IEventManager>();
         
-        // connect to the dedicated server
+        // connect to the dedicated server and setup callbacks
         var serverClient = _serviceProvider.GetRequiredService<IServerClient>();
+        var serverCallbacks = _serviceProvider.GetRequiredService<IServerCallbackHandler>();
         await serverClient.StartAsync(_runningToken.Token);
     }
 }

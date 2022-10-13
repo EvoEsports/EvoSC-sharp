@@ -28,7 +28,8 @@ public class PlayerController : EvoScController
     [Subscribe(GbxRemoteEvent.PlayerChat, EventPriority.High)]
     public async Task OnPlayerConnect(object sender, PlayerChatEventArgs args)
     {
-        _logger.LogInformation("player {Login} said: {Msg}", args.Login, args.Text);
+        var playerinfo = await Context.Server.Remote.GetDetailedPlayerInfoAsync(args.Login);
+        _logger.LogInformation("player {Name} said: {Msg}", playerinfo.NickName, args.Text);
 
         /* var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = "'"});
         var player = players.FirstOrDefault();

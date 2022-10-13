@@ -9,6 +9,7 @@ public static class RemoteClientServiceExtensions
     public static IServiceCollection AddGbxRemoteClient(this IServiceCollection services)
     {
         services.AddSingleton<IServerClient, ServerClient>();
+        services.AddSingleton<IServerCallbackHandler, ServerCallbackHandler>();
         
         return services;
     }
