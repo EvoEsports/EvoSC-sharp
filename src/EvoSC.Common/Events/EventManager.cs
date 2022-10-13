@@ -69,7 +69,8 @@ public class EventManager : IEventManager
         Unsubscribe(new EventSubscription(name, handler.Target.GetType(), handler.Method));
     }
 
-    public async Task Fire(string name, EventArgs args, object? sender=null)
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public async Task Fire(string name, EventArgs args, object? sender = null)
     {
         if (!_subscriptions.ContainsKey(name))
         {
@@ -77,24 +78,43 @@ public class EventManager : IEventManager
         }
 
         object senderArg = sender ?? this;
-        List<Task> tasks = new List<Task>();
+        List<(Task, EventSubscription)> tasks = new List<(Task, EventSubscription)>();
 
         foreach (var subscription in _subscriptions[name])
         {
             Task? task = null;
             var target = GetTarget(subscription);
-            
+
             task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {senderArg, args});
 
             if (task == null)
             {
-                throw new InvalidOperationException("An error occured while calling event, task is null.");
+                _logger.LogError("An error occured while calling event, task is null for event: {Name}", subscription.Name);
+                continue;
             }
-            
-            tasks.Add(task);
+
+            tasks.Add((task, subscription));
         }
 
-        Task.WaitAll(tasks.ToArray());
+        foreach (var (task, sub) in tasks)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex) {}
+
+            if (!task.IsCompletedSuccessfully)
+            {
+                _logger.LogError("Event execution failed for {Name}, status: {Status}", sub.Name, task.Status);
+
+                if (task.IsFaulted)
+                {
+                    _logger.LogError("Event handler faulted, exception: {Msg} | Stacktrace: {St}",
+                        task.Exception?.InnerException?.Message, task.Exception?.InnerException?.StackTrace);
+                }
+            }
+        }
     }
 
     private object GetTarget(EventSubscription subscription)

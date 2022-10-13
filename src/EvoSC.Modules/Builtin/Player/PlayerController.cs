@@ -19,17 +19,18 @@ namespace EvoSC.Modules.Builtin.Player;
 public class PlayerController : EvoScController
 {
     private readonly ILogger<PlayerController> _logger;
+    private readonly DbConnection _db;
     
-    public PlayerController(ILogger<PlayerController> logger)
+    public PlayerController(ILogger<PlayerController> logger, DbConnection db)
     {
         _logger = logger;
+        _db = db;
     }
 
     [Subscribe(GbxRemoteEvent.PlayerChat, EventPriority.High)]
     public async Task OnPlayerConnect(object sender, PlayerChatEventArgs args)
     {
-        var playerinfo = await Context.Server.Remote.GetDetailedPlayerInfoAsync(args.Login);
-        _logger.LogInformation("player {Name} said: {Msg}", playerinfo.NickName, args.Text);
+        throw new Exception("hello!");
 
         /* var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = "'"});
         var player = players.FirstOrDefault();
