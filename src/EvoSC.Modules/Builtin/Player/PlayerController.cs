@@ -27,12 +27,10 @@ public class PlayerController : EvoScController
         _db = db;
     }
 
-    [Subscribe(GbxRemoteEvent.PlayerChat, EventPriority.High)]
-    public async Task OnPlayerConnect(object sender, PlayerChatEventArgs args)
+    [Subscribe(GbxRemoteEvent.PlayerConnect, EventPriority.High)]
+    public async Task OnPlayerConnect(object sender, PlayerConnectEventArgs args)
     {
-        throw new Exception("hello!");
-
-        /* var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = "'"});
+        var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = args.Login});
         var player = players.FirstOrDefault();
 
         if (player == null)
@@ -44,12 +42,20 @@ public class PlayerController : EvoScController
                 Login = args.Login,
                 UbisoftName = playerInfo.NickName,
                 Zone = playerInfo.Path,
-                LastVisit = DateTime.UtcNow
+                LastVisit = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             await _db.InsertAsync(player);
+            Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined for the first time.");
         }
-
-        Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined."); */
+        else
+        {
+            player.LastVisit = DateTime.UtcNow;
+            player.UpdatedAt = DateTime.UtcNow;
+            await _db.UpdateAsync(player);
+            Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined.");
+        }
     }
 }
