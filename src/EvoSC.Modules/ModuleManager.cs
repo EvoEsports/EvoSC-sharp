@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using EvoSC.Common.Controllers;
+using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Modules.Attributes;
@@ -37,7 +39,8 @@ public class ModuleManager : IModuleManager
             LoadContext = null,
             LoadId = loadId,
             ModuleClass = moduleClass,
-            ModuleInfo = moduleInfo
+            ModuleInfo = moduleInfo,
+            Assembly = moduleClass.Assembly
         };
         
         _loadedModules.Add(loadId, loadContext);
@@ -70,11 +73,26 @@ public class ModuleManager : IModuleManager
     
     private Task EnableControllers(IModuleLoadContext moduleContext)
     {
-        if (moduleContext.ModuleInfo.IsInternal)
+        /* if (moduleContext.ModuleInfo.IsInternal)
         {
             foreach (var controller in moduleContext.Instance.Controllers)
             {
                 _controllers.AddController(controller, moduleContext.LoadId);
+            }
+        } */
+
+        foreach (var module in moduleContext.Assembly.Modules)
+        {
+            foreach (var type in module.GetTypes())
+            {
+                var controllerAttr = type.GetCustomAttribute<ControllerAttribute>();
+
+                if (controllerAttr == null || !type.IsAssignableTo(typeof(EvoScController)))
+                {
+                    continue;
+                }
+                
+                _controllers.AddController(type, moduleContext.LoadId);
             }
         }
 
@@ -93,15 +111,22 @@ public class ModuleManager : IModuleManager
                 }
 
                 var moduleAttr = moduleType.GetModuleAttribute();
-                var loadId = Guid.Empty;
-
-                if (moduleAttr.IsInternal)
-                {
-                    loadId = await LoadInternalModule(moduleType, moduleAttr);
-                }
+                var loadId = await LoadModule(moduleType, moduleAttr);
 
                 await EnableModule(loadId);
             }
         }
+    }
+
+    private async Task<Guid> LoadModule(Type moduleType, ModuleAttribute moduleAttr)
+    {
+        var loadId = Guid.Empty;
+
+        if (moduleAttr.IsInternal)
+        {
+            loadId = await LoadInternalModule(moduleType, moduleAttr);
+        }
+        
+        return loadId;
     }
 }

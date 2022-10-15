@@ -12,6 +12,7 @@ using EvoSC.Common.Logging;
 using EvoSC.Common.Remote;
 using EvoSC.Modules;
 using EvoSC.Modules.Extensions;
+using EvoSC.Modules.Official.Player;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;
@@ -93,7 +94,7 @@ public class Application : IEvoSCApplication
         var manager = scope.ServiceProvider.GetRequiredService<IMigrationManager>();
         
         // internal modules
-        manager.MigrateFromAssembly(typeof(ModuleManager).Assembly);
+        manager.RunInternalModuleMigrations();
     }
     
     private void SetupControllerManager()
@@ -107,7 +108,7 @@ public class Application : IEvoSCApplication
     {
         var modules = _serviceProvider.GetRequiredService<IModuleManager>();
 
-        modules.LoadModulesFromAssembly(typeof(ModuleManager).Assembly);
+        modules.LoadInternalModules();
     }
 
     private async Task StartBackgroundServices()

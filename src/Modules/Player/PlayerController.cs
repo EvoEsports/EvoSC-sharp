@@ -1,19 +1,16 @@
 ﻿using System.Data.Common;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using EvoSc.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Database;
 using EvoSC.Common.Database.Models;
 using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Remote;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Modules.Builtin.Player;
+namespace EvoSC.Modules.Official.Player;
 
 [Controller]
 public class PlayerController : EvoScController
@@ -30,7 +27,9 @@ public class PlayerController : EvoScController
     [Subscribe(GbxRemoteEvent.PlayerConnect, EventPriority.High)]
     public async Task OnPlayerConnect(object sender, PlayerConnectEventArgs args)
     {
-        var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = args.Login});
+        Console.WriteLine("test");
+        
+        /* var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = args.Login});
         var player = players.FirstOrDefault();
 
         if (player == null)
@@ -56,6 +55,6 @@ public class PlayerController : EvoScController
             player.UpdatedAt = DateTime.UtcNow;
             await _db.UpdateAsync(player);
             Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined.");
-        }
+        } */
     }
 }

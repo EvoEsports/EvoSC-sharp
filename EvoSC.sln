@@ -26,6 +26,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "samples\Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin2", "samples\ExamplePlugin2\ExamplePlugin2.csproj", "{9BF91DE6-5FB6-40CB-A56F-D5883F82CD5B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{DC47658A-F421-4BA4-B617-090A7DFB3900}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Player", "src\Modules\Player\Player.csproj", "{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +76,10 @@ Global
 		{9BF91DE6-5FB6-40CB-A56F-D5883F82CD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BF91DE6-5FB6-40CB-A56F-D5883F82CD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BF91DE6-5FB6-40CB-A56F-D5883F82CD5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,5 +93,6 @@ Global
 		{A9A7689C-3848-47B7-A718-554BB0778B97} = {46D790A2-EA9B-44A0-ABD2-A2A2CDC670D4}
 		{0D8BE152-FA12-45F1-9170-E2F7FF3B0E36} = {A5CE9164-4813-4AAA-A98F-B3B756AFCF22}
 		{9BF91DE6-5FB6-40CB-A56F-D5883F82CD5B} = {A5CE9164-4813-4AAA-A98F-B3B756AFCF22}
+		{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 	EndGlobalSection
 EndGlobal
