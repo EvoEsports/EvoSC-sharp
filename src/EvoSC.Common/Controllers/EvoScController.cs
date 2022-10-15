@@ -4,11 +4,11 @@ using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Common.Controllers;
 
-public abstract class EvoScController<TContext> : IController where TContext : IControllerContext
+public abstract class EvoScController<TContext> : IController<TContext> where TContext : IControllerContext
 {
-    public IControllerContext Context { get; private set; }
+    public TContext Context { get; private set; }
 
-    void IController.SetContext(IControllerContext context)
+    void IController<TContext>.SetContext(TContext context)
     {
         Context = context;
     }
