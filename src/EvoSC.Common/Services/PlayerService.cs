@@ -21,9 +21,13 @@ public class PlayerService : IPlayerService
     public Task<DbPlayer> GetPlayerById(int id) =>
         _db.GetAsync<DbPlayer>(id);
 
-    public async Task<DbPlayer> GetPlayerByLogin(string login) =>
-        (await _db.QueryAsync("select * from players where Login=@Login limit 1", new {Login = login}))
-        .FirstOrDefault();
+    public async Task<DbPlayer> GetPlayerByLogin(string login)
+    {
+        var query = "select * from `players` where `Login`=@Login limit 1";
+        var player = await _db.QueryAsync<DbPlayer>(query, new {Login = login});
+
+        return player?.FirstOrDefault();
+    }
 
     public async Task<DbPlayer> NewPlayer(string login, string ubisoftName, string? zone = null)
     {

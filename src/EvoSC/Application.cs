@@ -10,6 +10,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Remote;
+using EvoSC.Common.Services;
 using EvoSC.Modules;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Official.Player;
@@ -81,6 +82,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScEvents();
         _services.AddEvoScModules();
         _services.AddEvoScControllers();
+        _services.AddEvoScCommonServices();
 
         _services.AddSingleton<IEvoSCApplication>(this);
         _serviceProvider = _services.BuildServiceProvider();
