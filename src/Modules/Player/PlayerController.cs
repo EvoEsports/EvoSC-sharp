@@ -27,9 +27,7 @@ public class PlayerController : EvoScController
     [Subscribe(GbxRemoteEvent.PlayerConnect, EventPriority.High)]
     public async Task OnPlayerConnect(object sender, PlayerConnectEventArgs args)
     {
-        Console.WriteLine("test");
-        
-        /* var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = args.Login});
+        var players = await _db.QueryAsync<DbPlayer>("select * from players where Login=@Login", new {Login = args.Login});
         var player = players.FirstOrDefault();
 
         if (player == null)
@@ -55,6 +53,6 @@ public class PlayerController : EvoScController
             player.UpdatedAt = DateTime.UtcNow;
             await _db.UpdateAsync(player);
             Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined.");
-        } */
+        }
     }
 }

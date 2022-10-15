@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace EvoSC.Modules.Official.Player.Migrations;
+namespace EvoSC.Common.Database.Migrations;
 
 [Migration(1665390396)]
 public class AddPlayersTable : Migration
