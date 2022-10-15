@@ -9,17 +9,15 @@ namespace EvoSC.Common.Controllers.Context;
 public class GenericControllerContext : IControllerContext
 {
     public IServiceScope ServiceScope { get; private set; }
-    public IServerClient Server { get; }
 
     void IControllerContext.SetScope(IServiceScope scope)
     {
         ServiceScope = scope;
     }
 
-    public GenericControllerContext(IServiceScope serviceScope, IServerClient serverClient)
+    public GenericControllerContext(IServiceScope serviceScope)
     {
         ServiceScope = serviceScope;
-        Server = serverClient;
     }
     
     public GenericControllerContext()
@@ -29,6 +27,5 @@ public class GenericControllerContext : IControllerContext
     public GenericControllerContext(IControllerContext context)
     {
         ServiceScope = context.ServiceScope;
-        Server = context.Server;
     }
 }

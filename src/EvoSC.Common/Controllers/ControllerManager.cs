@@ -95,9 +95,7 @@ public class ControllerManager : IControllerManager
 
     private IControllerContext CreateContext(IServiceScope scope)
     {
-        var serverClient = scope.ServiceProvider.GetRequiredService<IServerClient>();
-        
-        IControllerContext context = new GenericControllerContext(scope, serverClient);
+        IControllerContext context = new GenericControllerContext(scope);
         context.SetScope(scope);
 
         return context;

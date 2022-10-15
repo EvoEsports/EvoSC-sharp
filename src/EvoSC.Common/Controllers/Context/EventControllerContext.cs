@@ -8,7 +8,7 @@ namespace EvoSC.Common.Controllers.Context;
 
 public class EventControllerContext : GenericControllerContext
 {
-    public EventControllerContext(IControllerContext context) : base(context.ServiceScope, context.Server)
+    public EventControllerContext(IControllerContext context) : base(context.ServiceScope)
     {
     }
 }

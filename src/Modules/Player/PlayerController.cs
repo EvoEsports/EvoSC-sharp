@@ -3,11 +3,14 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Database.Models;
 using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
+using EvoSC.Common.Util;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
@@ -18,28 +21,32 @@ public class PlayerController : EvoScController
 {
     private readonly ILogger<PlayerController> _logger;
     private readonly IPlayerService _players;
+    private readonly IServerClient _server;
     
-    public PlayerController(ILogger<PlayerController> logger, IPlayerService players)
+    public PlayerController(ILogger<PlayerController> logger, IPlayerService players, IServerClient server)
     {
         _logger = logger;
         _players = players;
+        _server = server;
     }
 
-    [Subscribe(GbxRemoteEvent.PlayerConnect, EventPriority.High)]
-    public async Task OnPlayerConnect(object sender, PlayerConnectEventArgs args)
+    [Subscribe(GbxRemoteEvent.PlayerConnect)]
+    public Task OnPlayerConnect(object sender, PlayerConnectEventArgs args) => UpdateAndGreetPlayer(args.Login);
+    
+    private async Task UpdateAndGreetPlayer(string login)
     {
-        var player = await _players.GetPlayerByLogin(args.Login);
+        var player = await _players.GetPlayerByLogin(login);
 
         if (player == null)
         {
-            var playerServerInfo = await Context.Server.Remote.GetDetailedPlayerInfoAsync(args.Login);
-            player = await _players.NewPlayer(args.Login, playerServerInfo.NickName, playerServerInfo.Path);
+            var playerServerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(login);
+            player = await _players.NewPlayer(login, playerServerInfo.NickName, playerServerInfo.Path);
             
-            Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined for the first time.");
+            await _server.SendChatMessage($"{player.UbisoftName} has joined for the first time.");
         }
         else
         {
-            Context.Server.Remote.ChatSendServerMessageAsync($"{player.UbisoftName} has joined.");
+            await _server.SendChatMessage($"{player.UbisoftName} has joined.");
         }
 
         player.LastVisit = DateTime.UtcNow;

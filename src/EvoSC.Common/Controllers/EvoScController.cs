@@ -4,7 +4,7 @@ using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Common.Controllers;
 
-public abstract class EvoScController : IController
+public abstract class EvoScController<TContext> : IController where TContext : IControllerContext
 {
     public IControllerContext Context { get; private set; }
 
@@ -19,3 +19,5 @@ public abstract class EvoScController : IController
         Context.ServiceScope.Dispose();
     }
 }
+
+public abstract class EvoScController : EvoScController<IControllerContext> {}
