@@ -80,7 +80,8 @@ public class EventManager : IEventManager
         var tasks = InvokeEventTasks(name, args, sender ?? this);
         await WaitEventTasks(tasks);
     }
-
+    
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private List<(Task, EventSubscription)> InvokeEventTasks(string name, EventArgs args, object? sender)
     {
         List<(Task, EventSubscription)> tasks = new List<(Task, EventSubscription)>();
@@ -104,6 +105,7 @@ public class EventManager : IEventManager
         return tasks;
     }
     
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task WaitEventTasks(List<(Task, EventSubscription)> tasks)
     {
         foreach (var (task, sub) in tasks)
