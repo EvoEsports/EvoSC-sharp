@@ -132,7 +132,7 @@ public class EventManager : IEventManager
         return ActivatorUtilities.CreateInstance(_services, subscription.InstanceClass);
     }
 
-    private IController CreateControllerInstance(EventSubscription subscription)
+    private IController<IControllerContext> CreateControllerInstance(EventSubscription subscription)
     {
         var instance = _controllers.CreateInstance(subscription.InstanceClass);
         var context = new EventControllerContext(instance.Context);

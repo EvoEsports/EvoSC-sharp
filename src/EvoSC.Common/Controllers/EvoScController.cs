@@ -8,9 +8,9 @@ public abstract class EvoScController<TContext> : IController<TContext> where TC
 {
     public TContext Context { get; private set; }
 
-    void IController<TContext>.SetContext(TContext context)
+    void IController<TContext>.SetContext(IControllerContext context)
     {
-        Context = context;
+        Context = (TContext)context;
     }
 
     public void Dispose()

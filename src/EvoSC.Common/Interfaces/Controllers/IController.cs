@@ -12,7 +12,7 @@ public interface IController<TContext> : IDisposable where TContext : IControlle
     /// Set the controller's context object.
     /// </summary>
     /// <param name="context"></param>
-    public void SetContext(TContext context);
+    public void SetContext(IControllerContext context);
 }
 
 public interface IController : IController<IControllerContext> {}

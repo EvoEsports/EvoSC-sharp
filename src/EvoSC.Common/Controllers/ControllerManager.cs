@@ -89,11 +89,11 @@ public class ControllerManager : IControllerManager
         return _controllers[controllerType];
     }
     
-    public IController CreateInstance(Type controllerType)
+    public IController<TContext> CreateInstance<TContext>(Type controllerType) where TContext : IControllerContext
     {
         var controllerInfo = GetInfo(controllerType);
         var scope = _services.CreateScope();
-        var instance = ActivatorUtilities.CreateInstance(scope.ServiceProvider, controllerType) as IController;
+        var instance = ActivatorUtilities.CreateInstance(scope.ServiceProvider, controllerType) as IController<TContext>;
 
         if (instance == null)
         {
@@ -105,6 +105,9 @@ public class ControllerManager : IControllerManager
         
         return instance;
     }
+
+    public IController<IControllerContext> CreateInstance(Type controllerType) =>
+        CreateInstance<IControllerContext>(controllerType);
 
     private IControllerContext CreateContext(IServiceScope scope)
     {

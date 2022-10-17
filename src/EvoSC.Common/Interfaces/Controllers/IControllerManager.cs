@@ -32,10 +32,18 @@ public interface IControllerManager
     /// <param name="controllerType"></param>
     /// <returns></returns>
     public ControllerInfo GetInfo(Type controllerType);
+
     /// <summary>
     /// Create a new scoped instance of a controller with a context.
     /// </summary>
     /// <param name="controllerType"></param>
     /// <returns></returns>
-    public IController CreateInstance(Type controllerType);
+    public IController<IControllerContext> CreateInstance(Type controllerType);
+    /// <summary>
+    /// Create a new scoped instance of a controller with a context.
+    /// </summary>
+    /// <param name="controllerType"></param>
+    /// <returns></returns>
+    public IController<TContext> CreateInstance<TContext>(Type controllerType) where TContext : IControllerContext;
+    
 }
