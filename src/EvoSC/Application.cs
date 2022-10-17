@@ -13,7 +13,6 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
 using EvoSC.Modules;
 using EvoSC.Modules.Extensions;
-using EvoSC.Modules.Official.Player;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;

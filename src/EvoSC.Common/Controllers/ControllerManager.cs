@@ -41,9 +41,22 @@ public class ControllerManager : IControllerManager
         _controllers.Add(controllerType, new ControllerInfo(controllerType, moduleId));
     }
 
+    private bool IsControllerClass(Type controllerType)
+    {
+        foreach (var intf in controllerType.GetInterfaces())
+        {
+            if (intf.IsGenericType && intf.GetGenericTypeDefinition() == typeof(IController<>))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private ControllerAttribute GetControllerInfo(Type controllerType)
     {
-        if (!controllerType.IsAssignableTo(typeof(IController)))
+        if (!IsControllerClass(controllerType))
         {
             throw new InvalidControllerClassException("The controller must implement IController.");
         }

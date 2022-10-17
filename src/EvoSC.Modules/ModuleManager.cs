@@ -127,6 +127,8 @@ public class ModuleManager : IModuleManager
             loadId = await LoadInternalModule(moduleType, moduleAttr);
         }
         
+        _logger.LogDebug("Loaded module: {Type}", moduleType);
+        
         return loadId;
     }
 }

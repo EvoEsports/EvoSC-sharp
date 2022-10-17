@@ -15,5 +15,4 @@ public interface IController<TContext> : IDisposable where TContext : IControlle
     public void SetContext(TContext context);
 }
 
-
 public interface IController : IController<IControllerContext> {}
