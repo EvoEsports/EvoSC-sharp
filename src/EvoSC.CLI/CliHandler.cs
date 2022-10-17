@@ -71,8 +71,6 @@ public class CliHandler
 
     private Option CreateOption(CliOptionAttribute cmdOption)
     {
-        // TODO: using reflection to instantiate the option until generic attributes are implemented
-        // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-10.0/generic-attributes
         var cmdOptionType = typeof(Option<>).MakeGenericType(new[] {cmdOption.TOption});
         var option = (Option) Activator.CreateInstance(cmdOptionType, cmdOption.Aliases, cmdOption.Description);
         

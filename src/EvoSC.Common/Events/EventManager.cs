@@ -77,7 +77,12 @@ public class EventManager : IEventManager
             return;
         }
 
-        object senderArg = sender ?? this;
+        var tasks = InvokeEventTasks(name, args, sender ?? this);
+        await WaitEventTasks(tasks);
+    }
+
+    private List<(Task, EventSubscription)> InvokeEventTasks(string name, EventArgs args, object? sender)
+    {
         List<(Task, EventSubscription)> tasks = new List<(Task, EventSubscription)>();
 
         foreach (var subscription in _subscriptions[name])
@@ -85,7 +90,7 @@ public class EventManager : IEventManager
             Task? task = null;
             var target = GetTarget(subscription);
 
-            task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {senderArg, args});
+            task = (Task?) subscription.HandlerMethod.Invoke(target, new[] {sender, args});
 
             if (task == null)
             {
@@ -96,13 +101,20 @@ public class EventManager : IEventManager
             tasks.Add((task, subscription));
         }
 
+        return tasks;
+    }
+    
+    private async Task WaitEventTasks(List<(Task, EventSubscription)> tasks)
+    {
         foreach (var (task, sub) in tasks)
         {
             try
             {
                 await task;
             }
-            catch (Exception ex) {}
+            catch (Exception ex)
+            {
+            }
 
             if (!task.IsCompletedSuccessfully)
             {
