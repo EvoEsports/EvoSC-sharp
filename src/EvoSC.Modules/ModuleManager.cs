@@ -4,6 +4,7 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Extensions;
@@ -87,7 +88,7 @@ public class ModuleManager : IModuleManager
             {
                 var controllerAttr = type.GetCustomAttribute<ControllerAttribute>();
 
-                if (controllerAttr == null || !type.IsAssignableTo(typeof(EvoScController)))
+                if (controllerAttr == null || !type.IsControllerClass())
                 {
                     continue;
                 }

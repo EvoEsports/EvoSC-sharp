@@ -41,22 +41,9 @@ public class ControllerManager : IControllerManager
         _controllers.Add(controllerType, new ControllerInfo(controllerType, moduleId));
     }
 
-    private bool IsControllerClass(Type controllerType)
-    {
-        foreach (var intf in controllerType.GetInterfaces())
-        {
-            if (intf.IsGenericType && intf.GetGenericTypeDefinition() == typeof(IController<>))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private ControllerAttribute GetControllerInfo(Type controllerType)
     {
-        if (!IsControllerClass(controllerType))
+        if (!controllerType.IsControllerClass())
         {
             throw new InvalidControllerClassException("The controller must implement IController.");
         }
@@ -89,11 +76,11 @@ public class ControllerManager : IControllerManager
         return _controllers[controllerType];
     }
     
-    public IController<TContext> CreateInstance<TContext>(Type controllerType) where TContext : IControllerContext
+    public IController CreateInstance(Type controllerType)
     {
         var controllerInfo = GetInfo(controllerType);
         var scope = _services.CreateScope();
-        var instance = ActivatorUtilities.CreateInstance(scope.ServiceProvider, controllerType) as IController<TContext>;
+        var instance = ActivatorUtilities.CreateInstance(scope.ServiceProvider, controllerType) as IController;
 
         if (instance == null)
         {
@@ -105,9 +92,6 @@ public class ControllerManager : IControllerManager
         
         return instance;
     }
-
-    public IController<IControllerContext> CreateInstance(Type controllerType) =>
-        CreateInstance<IControllerContext>(controllerType);
 
     private IControllerContext CreateContext(IServiceScope scope)
     {

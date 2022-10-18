@@ -88,18 +88,26 @@ public class EventManager : IEventManager
 
         foreach (var subscription in _subscriptions[name])
         {
-            Task? task = null;
-            var target = GetTarget(subscription);
-
-            task = (Task?) subscription.HandlerMethod.Invoke(target, new[] {sender, args});
-
-            if (task == null)
+            try
             {
-                _logger.LogError("An error occured while calling event, task is null for event: {Name}", subscription.Name);
-                continue;
-            }
+                Task? task = null;
+                var target = GetTarget(subscription);
 
-            tasks.Add((task, subscription));
+                task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+
+                if (task == null)
+                {
+                    _logger.LogError("An error occured while calling event, task is null for event: {Name}",
+                        subscription.Name);
+                    continue;
+                }
+
+                tasks.Add((task, subscription));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to execute subscription: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
+            }
         }
 
         return tasks;
@@ -146,7 +154,7 @@ public class EventManager : IEventManager
         return ActivatorUtilities.CreateInstance(_services, subscription.InstanceClass);
     }
 
-    private IController<IControllerContext> CreateControllerInstance(EventSubscription subscription)
+    private IController CreateControllerInstance(EventSubscription subscription)
     {
         var instance = _controllers.CreateInstance(subscription.InstanceClass);
         var context = new EventControllerContext(instance.Context);

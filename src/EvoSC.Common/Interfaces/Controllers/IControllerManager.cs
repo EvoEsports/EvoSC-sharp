@@ -38,12 +38,5 @@ public interface IControllerManager
     /// </summary>
     /// <param name="controllerType"></param>
     /// <returns></returns>
-    public IController<IControllerContext> CreateInstance(Type controllerType);
-    /// <summary>
-    /// Create a new scoped instance of a controller with a context.
-    /// </summary>
-    /// <param name="controllerType"></param>
-    /// <returns></returns>
-    public IController<TContext> CreateInstance<TContext>(Type controllerType) where TContext : IControllerContext;
-    
+    public IController CreateInstance(Type controllerType);
 }

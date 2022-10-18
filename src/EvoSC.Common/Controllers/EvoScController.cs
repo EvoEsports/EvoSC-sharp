@@ -4,13 +4,13 @@ using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Common.Controllers;
 
-public abstract class EvoScController<TContext> : IController<TContext> where TContext : IControllerContext
+public abstract class EvoScController : IController
 {
-    public TContext Context { get; private set; }
+    public IControllerContext Context { get; private set; }
 
-    void IController<TContext>.SetContext(IControllerContext context)
+    void IController.SetContext(IControllerContext context)
     {
-        Context = (TContext)context;
+        Context = context;
     }
 
     public void Dispose()
@@ -19,5 +19,3 @@ public abstract class EvoScController<TContext> : IController<TContext> where TC
         Context.ServiceScope.Dispose();
     }
 }
-
-public abstract class EvoScController : EvoScController<IControllerContext> {}

@@ -1,12 +1,12 @@
 ﻿namespace EvoSC.Common.Interfaces.Controllers;
 
-public interface IController<TContext> : IDisposable where TContext : IControllerContext
+public interface IController : IDisposable
 {
     /// <summary>
     /// The context contains information about the current action and easy access to
     /// internal resource.
     /// </summary>
-    public TContext Context { get; }
+    public IControllerContext Context { get; }
     
     /// <summary>
     /// Set the controller's context object.
@@ -14,5 +14,3 @@ public interface IController<TContext> : IDisposable where TContext : IControlle
     /// <param name="context"></param>
     public void SetContext(IControllerContext context);
 }
-
-public interface IController : IController<IControllerContext> {}
