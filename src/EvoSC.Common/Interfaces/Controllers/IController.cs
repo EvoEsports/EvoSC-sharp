@@ -13,4 +13,6 @@ public interface IController : IDisposable
     /// </summary>
     /// <param name="context"></param>
     public void SetContext(IControllerContext context);
+
+    public event Action Disposed;
 }

@@ -13,9 +13,12 @@ public abstract class EvoScController : IController
         Context = context;
     }
 
+    public event Action? Disposed;
+
     public void Dispose()
     {
         // make sure to dispose of the service scope
-        Context.ServiceScope.Dispose();
+        Context.ServiceScope.Dispose(); 
+        Disposed?.Invoke();
     }
 }

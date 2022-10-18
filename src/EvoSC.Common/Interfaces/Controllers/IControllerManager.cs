@@ -27,12 +27,21 @@ public interface IControllerManager
     /// <param name="registry"></param>
     public void AddControllerActionRegistry(IControllerActionRegistry registry);
     /// <summary>
+    /// Remove a controller and dispose any current instances.
+    /// </summary>
+    /// <param name="controllerType"></param>
+    public void RemoveController(Type controllerType);
+    /// <summary>
+    /// Remove all controllers of a certain module.
+    /// </summary>
+    /// <param name="moduleId"></param>
+    public void RemoveModuleControllers(Guid moduleId);
+    /// <summary>
     /// Get info about a registered controller.
     /// </summary>
     /// <param name="controllerType"></param>
     /// <returns></returns>
     public ControllerInfo GetInfo(Type controllerType);
-
     /// <summary>
     /// Create a new scoped instance of a controller with a context.
     /// </summary>

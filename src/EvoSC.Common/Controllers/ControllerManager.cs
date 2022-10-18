@@ -19,6 +19,7 @@ public class ControllerManager : IControllerManager
     private readonly IServiceProvider _services;
 
     private Dictionary<Type, ControllerInfo> _controllers = new();
+    private Dictionary<Type, List<IController>> _instances = new();
     private List<IControllerActionRegistry> _registries = new();
 
     public IEnumerable<ControllerInfo> Controllers => _controllers.Values;
@@ -66,6 +67,52 @@ public class ControllerManager : IControllerManager
         _registries.Add(registry);
     }
 
+    public void RemoveController(Type controllerType)
+    {
+        if (!_controllers.ContainsKey(controllerType))
+        {
+            throw new ControllerException("Controller not found.");
+        }
+
+        _controllers.Remove(controllerType);
+
+        if (_instances.ContainsKey(controllerType))
+        {
+            DisposeControllerInstances(controllerType);
+        }
+    }
+
+    private void DisposeControllerInstances(Type controllerType)
+    {
+        foreach (var instance in _instances[controllerType])
+        {
+            try
+            {
+                instance.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to dispose controller instance of type '{Type}'", controllerType);
+            }
+        }
+
+        _instances.Remove(controllerType);
+
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+    }
+
+    public void RemoveModuleControllers(Guid moduleId)
+    {
+        foreach (var (controllerType, controllerInfo) in _controllers)
+        {
+            if (controllerInfo.ModuleId == moduleId)
+            {
+                RemoveController(controllerType);
+            }
+        }
+    }
+
     public ControllerInfo GetInfo(Type controllerType)
     {
         if (!_controllers.ContainsKey(controllerType))
@@ -89,10 +136,15 @@ public class ControllerManager : IControllerManager
 
         var context = CreateContext(scope);
         instance.SetContext(context);
-        
+
         return instance;
     }
 
+    private void DisposeInstance(IController instance)
+    {
+        
+    }
+    
     private IControllerContext CreateContext(IServiceScope scope)
     {
         IControllerContext context = new GenericControllerContext(scope);
