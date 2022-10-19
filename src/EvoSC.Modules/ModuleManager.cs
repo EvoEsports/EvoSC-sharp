@@ -9,6 +9,7 @@ using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Info;
+using EvoSC.Modules.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
@@ -20,14 +21,16 @@ public class ModuleManager : IModuleManager
     private readonly ILogger<ModuleManager> _logger;
     private readonly Container _services;
     private readonly IControllerManager _controllers;
+    private readonly IModuleServicesManager _servicesManager;
 
     private Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
-    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers)
+    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers, IModuleServicesManager servicesManager)
     {
         _logger = logger;
         _services = services;
         _controllers = controllers;
+        _servicesManager = servicesManager;
     }
 
     private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleInfo)
@@ -42,7 +45,8 @@ public class ModuleManager : IModuleManager
             LoadId = loadId,
             ModuleClass = moduleClass,
             ModuleInfo = moduleInfo,
-            Assembly = moduleClass.Assembly
+            Assembly = moduleClass.Assembly,
+            Services = CreateServiceContainer(moduleClass.Assembly)
         };
         
         _loadedModules.Add(loadId, loadContext);
@@ -60,7 +64,13 @@ public class ModuleManager : IModuleManager
         var moduleContext = _loadedModules[loadId];
 
         await EnableControllers(moduleContext);
+        await EnableServices(moduleContext);
         await TryCallModuleEnable(moduleContext);
+    }
+
+    private async Task EnableServices(IModuleLoadContext moduleContext)
+    {
+        _servicesManager.AddContainer(moduleContext.LoadId, moduleContext.Services);
     }
 
     private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
@@ -75,14 +85,6 @@ public class ModuleManager : IModuleManager
     
     private Task EnableControllers(IModuleLoadContext moduleContext)
     {
-        /* if (moduleContext.ModuleInfo.IsInternal)
-        {
-            foreach (var controller in moduleContext.Instance.Controllers)
-            {
-                _controllers.AddController(controller, moduleContext.LoadId);
-            }
-        } */
-
         foreach (var module in moduleContext.Assembly.Modules)
         {
             foreach (var type in module.GetTypes())
@@ -94,11 +96,41 @@ public class ModuleManager : IModuleManager
                     continue;
                 }
                 
-                _controllers.AddController(type, moduleContext.LoadId);
+                _controllers.AddController(type, moduleContext.LoadId, moduleContext.Services);
             }
         }
 
         return Task.CompletedTask;
+    }
+
+    public Container CreateServiceContainer(Assembly assembly)
+    {
+        var container = new Container();
+
+        foreach (var module in assembly.Modules)
+        {
+            foreach (var type in module.GetTypes())
+            {
+                var serviceAttr = type.GetCustomAttribute<ServiceAttribute>();
+
+                if (serviceAttr == null)
+                {
+                    continue;
+                }
+
+                switch (serviceAttr.LifeStyle)
+                {
+                    case ServiceLifeStyle.Singleton:
+                        container.RegisterSingleton(type);
+                        break;
+                    case ServiceLifeStyle.Transient:
+                        container.Register(type);
+                        break;
+                }
+            }
+        }
+
+        return container;
     }
     
     public async Task LoadModulesFromAssembly(Assembly assembly)

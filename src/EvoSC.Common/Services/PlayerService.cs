@@ -3,12 +3,10 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Services.Attributes;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
-[Service]
 public class PlayerService : IPlayerService
 {
     private readonly ILogger<PlayerService> _logger;

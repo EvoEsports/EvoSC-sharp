@@ -22,12 +22,14 @@ public class PlayerController : EvoScController<EventControllerContext>
     private readonly ILogger<PlayerController> _logger;
     private readonly IPlayerService _players;
     private readonly IServerClient _server;
+    private readonly MyPlayerService _myPlayerService;
     
-    public PlayerController(ILogger<PlayerController> logger, IPlayerService players, IServerClient server)
+    public PlayerController(ILogger<PlayerController> logger, IPlayerService players, IServerClient server, MyPlayerService myPlayerService)
     {
         _logger = logger;
         _players = players;
         _server = server;
+        _myPlayerService = myPlayerService;
     }
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
@@ -35,6 +37,8 @@ public class PlayerController : EvoScController<EventControllerContext>
     
     private async Task UpdateAndGreetPlayer(string login)
     {
+        _myPlayerService.LogIt();
+        
         var player = await _players.GetPlayerByLogin(login);
 
         if (player == null)

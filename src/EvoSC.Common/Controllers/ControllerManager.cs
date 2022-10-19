@@ -17,7 +17,6 @@ namespace EvoSC.Common.Controllers;
 public class ControllerManager : IControllerManager
 {
     private readonly ILogger<ControllerManager> _logger;
-    private readonly IEvoSCApplication _app;
 
     private Dictionary<Type, ControllerInfo> _controllers = new();
     private Dictionary<Type, List<IController>> _instances = new();
@@ -25,13 +24,12 @@ public class ControllerManager : IControllerManager
 
     public IEnumerable<ControllerInfo> Controllers => _controllers.Values;
     
-    public ControllerManager(ILogger<ControllerManager> logger, IEvoSCApplication app)
+    public ControllerManager(ILogger<ControllerManager> logger)
     {
         _logger = logger;
-        _app = app;
     }
 
-    public void AddController(Type controllerType, Guid moduleId)
+    public void AddController(Type controllerType, Guid moduleId, Container services)
     {
         var controllerInfo = GetControllerInfo(controllerType);
 
@@ -40,7 +38,7 @@ public class ControllerManager : IControllerManager
             registry.RegisterForController(controllerType);
         }
         
-        _controllers.Add(controllerType, new ControllerInfo(controllerType, moduleId));
+        _controllers.Add(controllerType, new ControllerInfo(controllerType, moduleId, services));
     }
 
     private ControllerAttribute GetControllerInfo(Type controllerType)
@@ -60,8 +58,8 @@ public class ControllerManager : IControllerManager
         return attr;
     }
 
-    public void AddController<TController>(Guid moduleId) where TController : IController
-        => AddController(typeof(TController), moduleId);
+    public void AddController<TController>(Guid moduleId, Container services) where TController : IController
+        => AddController(typeof(TController), moduleId, services);
 
     public void AddControllerActionRegistry(IControllerActionRegistry registry)
     {
@@ -127,7 +125,7 @@ public class ControllerManager : IControllerManager
     public (IController, IControllerContext) CreateInstance(Type controllerType)
     {
         var controllerInfo = GetInfo(controllerType);
-        var scope = new Scope(_app.Services);
+        var scope = new Scope(controllerInfo.Services);
         var instance = ActivatorUtilities.CreateInstance(scope.Container, controllerType) as IController;
 
         if (instance == null)
