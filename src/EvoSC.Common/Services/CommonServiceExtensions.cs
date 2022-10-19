@@ -1,12 +1,14 @@
 ﻿using EvoSC.Common.Interfaces.Services;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleInjector;
 
 namespace EvoSC.Common.Services;
 
 public static class CommonServiceExtensions
 {
-    public static IServiceCollection AddEvoScCommonServices(this IServiceCollection services)
+    public static Container AddEvoScCommonServices(this Container services)
     {
-        return services.AddTransient<IPlayerService, PlayerService>();
+        services.Register<IPlayerService, PlayerService>(Lifestyle.Transient);
+        return services;
     }
 }

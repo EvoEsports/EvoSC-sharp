@@ -9,21 +9,22 @@ using EvoSC.Common.Util;
 using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleInjector;
 
 namespace EvoSC.Common.Events;
 
 public class EventManager : IEventManager
 {
     private readonly ILogger<EventManager> _logger;
-    private readonly IServiceProvider _services;
+    private readonly IEvoSCApplication _app;
     private readonly IControllerManager _controllers;
     
     private Dictionary<string, List<EventSubscription>> _subscriptions = new();
 
-    public EventManager(ILogger<EventManager> logger, IServiceProvider services, IControllerManager controllers)
+    public EventManager(ILogger<EventManager> logger, IEvoSCApplication app, IControllerManager controllers)
     {
         _logger = logger;
-        _services = services;
+        _app = app;
         _controllers = controllers;
     }
 
@@ -151,7 +152,7 @@ public class EventManager : IEventManager
             return CreateControllerInstance(subscription);
         }
         
-        return ActivatorUtilities.CreateInstance(_services, subscription.InstanceClass);
+        return ActivatorUtilities.CreateInstance(_app.Services, subscription.InstanceClass);
     }
 
     private IController CreateControllerInstance(EventSubscription subscription)

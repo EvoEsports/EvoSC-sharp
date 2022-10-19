@@ -11,18 +11,19 @@ using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Info;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleInjector;
 
 namespace EvoSC.Modules;
 
 public class ModuleManager : IModuleManager
 {
     private readonly ILogger<ModuleManager> _logger;
-    private readonly IServiceProvider _services;
+    private readonly Container _services;
     private readonly IControllerManager _controllers;
 
     private Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
-    public ModuleManager(ILogger<ModuleManager> logger, IServiceProvider services, IControllerManager controllers)
+    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers)
     {
         _logger = logger;
         _services = services;

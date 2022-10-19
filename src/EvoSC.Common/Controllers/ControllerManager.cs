@@ -10,13 +10,14 @@ using EvoSC.Common.Util;
 using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleInjector;
 
 namespace EvoSC.Common.Controllers;
 
 public class ControllerManager : IControllerManager
 {
     private readonly ILogger<ControllerManager> _logger;
-    private readonly IServiceProvider _services;
+    private readonly IEvoSCApplication _app;
 
     private Dictionary<Type, ControllerInfo> _controllers = new();
     private Dictionary<Type, List<IController>> _instances = new();
@@ -24,10 +25,10 @@ public class ControllerManager : IControllerManager
 
     public IEnumerable<ControllerInfo> Controllers => _controllers.Values;
     
-    public ControllerManager(ILogger<ControllerManager> logger, IServiceProvider services)
+    public ControllerManager(ILogger<ControllerManager> logger, IEvoSCApplication app)
     {
         _logger = logger;
-        _services = services;
+        _app = app;
     }
 
     public void AddController(Type controllerType, Guid moduleId)
@@ -126,8 +127,8 @@ public class ControllerManager : IControllerManager
     public (IController, IControllerContext) CreateInstance(Type controllerType)
     {
         var controllerInfo = GetInfo(controllerType);
-        var scope = _services.CreateScope();
-        var instance = ActivatorUtilities.CreateInstance(scope.ServiceProvider, controllerType) as IController;
+        var scope = new Scope(_app.Services);
+        var instance = ActivatorUtilities.CreateInstance(scope.Container, controllerType) as IController;
 
         if (instance == null)
         {
@@ -138,7 +139,7 @@ public class ControllerManager : IControllerManager
         return (instance, context);
     }
 
-    private IControllerContext CreateContext(IServiceScope scope)
+    private IControllerContext CreateContext(Scope scope)
     {
         IControllerContext context = new GenericControllerContext(scope);
         context.SetScope(scope);

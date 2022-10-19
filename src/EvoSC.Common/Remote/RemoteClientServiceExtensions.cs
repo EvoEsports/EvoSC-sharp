@@ -1,15 +1,16 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleInjector;
 
 namespace EvoSC.Common.Remote;
 
 public static class RemoteClientServiceExtensions
 {
-    public static IServiceCollection AddGbxRemoteClient(this IServiceCollection services)
+    public static Container AddGbxRemoteClient(this Container services)
     {
-        services.AddSingleton<IServerClient, ServerClient>();
-        services.AddSingleton<IServerCallbackHandler, ServerCallbackHandler>();
+        services.RegisterSingleton<IServerClient, ServerClient>();
+        services.RegisterSingleton<IServerCallbackHandler, ServerCallbackHandler>();
         
         return services;
     }

@@ -3,19 +3,20 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleInjector;
 
 namespace EvoSC.Common.Controllers.Context;
 
 public class GenericControllerContext : IControllerContext
 {
-    public IServiceScope ServiceScope { get; private set; }
+    public Scope ServiceScope { get; private set; }
 
-    void IControllerContext.SetScope(IServiceScope scope)
+    void IControllerContext.SetScope(Scope scope)
     {
         ServiceScope = scope;
     }
 
-    public GenericControllerContext(IServiceScope serviceScope)
+    public GenericControllerContext(Scope serviceScope)
     {
         ServiceScope = serviceScope;
     }

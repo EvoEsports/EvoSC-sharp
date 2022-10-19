@@ -1,4 +1,5 @@
 ﻿
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using EvoSC.Common.Config;
@@ -18,25 +19,35 @@ using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace EvoSC;
 
 public class Application : IEvoSCApplication
 {
     private readonly string[] _args;
-    private IServiceCollection _services = new ServiceCollection();
-    private IServiceProvider _serviceProvider;
+    private Container _services;
     private bool _isDebug;
     private ILogger<Application> _logger;
 
     private readonly CancellationTokenSource _runningToken = new();
     
     public CancellationToken MainCancellationToken => _runningToken.Token;
-    
+    public Container Services => _services;
+
     public Application(string[] args)
     {
         _args = args;
         _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
+        
+        ConfigureServiceContainer();
+    }
+
+    private void ConfigureServiceContainer()
+    {
+        _services = new Container();
+        _services.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
     }
 
     public async Task RunAsync()
@@ -60,7 +71,7 @@ public class Application : IEvoSCApplication
 
     public async Task ShutdownAsync()
     {
-        var serverClient = _serviceProvider.GetRequiredService<IServerClient>();
+        var serverClient = _services.GetRequiredService<IServerClient>();
         await serverClient.StopAsync(_runningToken.Token);
         
         // cancel the token to stop the application itself
@@ -83,16 +94,15 @@ public class Application : IEvoSCApplication
         _services.AddEvoScControllers();
         _services.AddEvoScCommonServices();
 
-        _services.AddSingleton<IEvoSCApplication>(this);
-        _serviceProvider = _services.BuildServiceProvider();
+        _services.RegisterInstance<IEvoSCApplication>(this);
         
-        _logger = _serviceProvider.GetRequiredService<ILogger<Application>>();
+        _logger = _services.GetRequiredService<ILogger<Application>>();
     }
 
     private void MigrateDatabase()
     {
-        using var scope = _serviceProvider.CreateScope();
-        var manager = scope.ServiceProvider.GetRequiredService<IMigrationManager>();
+        using var scope = new Scope(_services);
+        var manager = scope.GetRequiredService<IMigrationManager>();
         
         // main migrations
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
@@ -103,14 +113,14 @@ public class Application : IEvoSCApplication
     
     private void SetupControllerManager()
     {
-        var controllers = _serviceProvider.GetRequiredService<IControllerManager>();
+        var controllers = _services.GetRequiredService<IControllerManager>();
         
-        controllers.AddControllerActionRegistry(_serviceProvider.GetRequiredService<IEventManager>());
+        controllers.AddControllerActionRegistry(_services.GetRequiredService<IEventManager>());
     }
     
     private async Task SetupModules()
     {
-        var modules = _serviceProvider.GetRequiredService<IModuleManager>();
+        var modules = _services.GetRequiredService<IModuleManager>();
 
         modules.LoadInternalModules();
     }
@@ -120,11 +130,11 @@ public class Application : IEvoSCApplication
         _logger.LogDebug("Starting background services");
         
         // initialize event manager before anything else
-        _serviceProvider.GetRequiredService<IEventManager>();
-        
+        _services.GetRequiredService<IEventManager>();
+
         // connect to the dedicated server and setup callbacks
-        var serverClient = _serviceProvider.GetRequiredService<IServerClient>();
-        var serverCallbacks = _serviceProvider.GetRequiredService<IServerCallbackHandler>();
+        var serverClient = _services.GetRequiredService<IServerClient>();
+        var serverCallbacks = _services.GetRequiredService<IServerCallbackHandler>();
         await serverClient.StartAsync(_runningToken.Token);
     }
 }

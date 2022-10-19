@@ -1,8 +1,11 @@
-﻿namespace EvoSC.Common.Interfaces;
+﻿using SimpleInjector;
+
+namespace EvoSC.Common.Interfaces;
 
 public interface IEvoSCApplication
 {
     public CancellationToken MainCancellationToken { get; }
+    public Container Services { get; }
     
     /// <summary>
     /// Initialize and start EvoSC#.

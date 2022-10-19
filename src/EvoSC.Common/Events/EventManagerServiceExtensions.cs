@@ -1,13 +1,14 @@
 ﻿using EvoSC.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleInjector;
 
 namespace EvoSC.Common.Events;
 
 public static class EventManagerServiceExtensions
 {
-    public static IServiceCollection AddEvoScEvents(this IServiceCollection services)
+    public static Container AddEvoScEvents(this Container services)
     {
-        services.AddSingleton<IEventManager, EventManager>();
+        services.RegisterSingleton<IEventManager, EventManager>();
         return services;
     }
 }

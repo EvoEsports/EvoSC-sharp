@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
+using SimpleInjector;
 
 namespace EvoSC.Common.Database;
 
@@ -13,18 +14,19 @@ public static class DatabaseServiceExtensions
 {
     private const int CommandTimeout = 3;
     
-    public static IServiceCollection AddEvoScDatabase(this IServiceCollection services, DatabaseConfig config)
+    public static Container AddEvoScDatabase(this Container services, DatabaseConfig config)
     {
         var connection = new MySqlConnection(config.GetConnectionString());
         connection.Open();
 
-        services.AddSingleton<DbConnection>(connection);
+        services.RegisterInstance<DbConnection>(connection);
         
         return services;
     }
 
-    public static IServiceCollection AddEvoScMigrations(this IServiceCollection services)
+    public static Container AddEvoScMigrations(this Container services)
     {
-        return services.AddScoped<IMigrationManager, MigrationManager>();
+        services.Register<IMigrationManager, MigrationManager>(Lifestyle.Scoped);
+        return services;
     }
 }
