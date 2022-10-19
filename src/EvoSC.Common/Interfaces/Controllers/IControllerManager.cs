@@ -47,5 +47,5 @@ public interface IControllerManager
     /// </summary>
     /// <param name="controllerType"></param>
     /// <returns></returns>
-    public IController CreateInstance(Type controllerType);
+    public (IController, IControllerContext) CreateInstance(Type controllerType);
 }

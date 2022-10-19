@@ -4,14 +4,16 @@ using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Common.Controllers;
 
-public abstract class EvoScController : IController
+public abstract class EvoScController<TContext> : IController where TContext : class, IControllerContext
 {
-    public IControllerContext Context { get; private set; }
+    public TContext Context { get; private set; }
 
     void IController.SetContext(IControllerContext context)
     {
-        Context = context;
+        Context = (TContext)context;
     }
+
+    public IControllerContext GetContext() => Context;
 
     public event Action? Disposed;
 

@@ -156,8 +156,8 @@ public class EventManager : IEventManager
 
     private IController CreateControllerInstance(EventSubscription subscription)
     {
-        var instance = _controllers.CreateInstance(subscription.InstanceClass);
-        var context = new EventControllerContext(instance.Context);
+        var (instance, scopeContext) = _controllers.CreateInstance(subscription.InstanceClass);
+        var context = new EventControllerContext(scopeContext);
         instance.SetContext(context);
         
         return instance;

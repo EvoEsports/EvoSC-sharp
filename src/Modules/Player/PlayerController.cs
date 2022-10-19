@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.Player;
 
 [Controller]
-public class PlayerController : EvoScController
+public class PlayerController : EvoScController<EventControllerContext>
 {
     private readonly ILogger<PlayerController> _logger;
     private readonly IPlayerService _players;

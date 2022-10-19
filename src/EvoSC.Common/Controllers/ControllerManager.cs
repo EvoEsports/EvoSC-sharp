@@ -123,7 +123,7 @@ public class ControllerManager : IControllerManager
         return _controllers[controllerType];
     }
     
-    public IController CreateInstance(Type controllerType)
+    public (IController, IControllerContext) CreateInstance(Type controllerType)
     {
         var controllerInfo = GetInfo(controllerType);
         var scope = _services.CreateScope();
@@ -135,16 +135,9 @@ public class ControllerManager : IControllerManager
         }
 
         var context = CreateContext(scope);
-        instance.SetContext(context);
-
-        return instance;
+        return (instance, context);
     }
 
-    private void DisposeInstance(IController instance)
-    {
-        
-    }
-    
     private IControllerContext CreateContext(IServiceScope scope)
     {
         IControllerContext context = new GenericControllerContext(scope);
