@@ -71,7 +71,7 @@ public class Application : IEvoSCApplication
 
     public async Task ShutdownAsync()
     {
-        var serverClient = _services.GetRequiredService<IServerClient>();
+        var serverClient = _services.GetInstance<IServerClient>();
         await serverClient.StopAsync(_runningToken.Token);
         
         // cancel the token to stop the application itself
@@ -96,13 +96,13 @@ public class Application : IEvoSCApplication
 
         _services.RegisterInstance<IEvoSCApplication>(this);
         
-        _logger = _services.GetRequiredService<ILogger<Application>>();
+        _logger = _services.GetInstance<ILogger<Application>>();
     }
 
     private void MigrateDatabase()
     {
         using var scope = new Scope(_services);
-        var manager = scope.GetRequiredService<IMigrationManager>();
+        var manager = scope.GetInstance<IMigrationManager>();
         
         // main migrations
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
@@ -113,14 +113,14 @@ public class Application : IEvoSCApplication
     
     private void SetupControllerManager()
     {
-        var controllers = _services.GetRequiredService<IControllerManager>();
+        var controllers = _services.GetInstance<IControllerManager>();
         
-        controllers.AddControllerActionRegistry(_services.GetRequiredService<IEventManager>());
+        controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
     }
     
     private async Task SetupModules()
     {
-        var modules = _services.GetRequiredService<IModuleManager>();
+        var modules = _services.GetInstance<IModuleManager>();
 
         modules.LoadInternalModules();
     }
@@ -130,11 +130,11 @@ public class Application : IEvoSCApplication
         _logger.LogDebug("Starting background services");
         
         // initialize event manager before anything else
-        _services.GetRequiredService<IEventManager>();
+        _services.GetInstance<IEventManager>();
 
         // connect to the dedicated server and setup callbacks
-        var serverClient = _services.GetRequiredService<IServerClient>();
-        var serverCallbacks = _services.GetRequiredService<IServerCallbackHandler>();
+        var serverClient = _services.GetInstance<IServerClient>();
+        var serverCallbacks = _services.GetInstance<IServerCallbackHandler>();
         await serverClient.StartAsync(_runningToken.Token);
     }
 }
