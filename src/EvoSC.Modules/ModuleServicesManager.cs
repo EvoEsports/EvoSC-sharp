@@ -52,12 +52,22 @@ public class ModuleServicesManager : IModuleServicesManager
         {
             e.Register(() =>
             {
-                return _app.Services.GetInstance(e.UnregisteredServiceType);
+                try
+                {
+                    return _app.Services.GetInstance(e.UnregisteredServiceType);
+                }
+                catch (ActivationException ex)
+                {
+                    _logger.LogError("Failed to get EvoSC core service: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
+                    throw ex;
+                }
             });
         }
-        catch (ActivationException ex)
+        catch (Exception ex)
         {
-            _logger.LogError("Failed to get core service: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
+            _logger.LogError(
+                "An unknown error occured while trying to resolve a core service: {Msg} | Stacktrace: {St}", ex.Message,
+                ex.StackTrace);
         }
     }
 }

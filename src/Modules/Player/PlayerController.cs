@@ -7,6 +7,7 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Database.Models;
 using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
