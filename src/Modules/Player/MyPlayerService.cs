@@ -1,4 +1,5 @@
-﻿using EvoSC.Modules.Attributes;
+﻿using EvoSC.Common.Interfaces;
+using EvoSC.Modules.Attributes;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -9,6 +10,8 @@ namespace EvoSC.Modules.Official.Player;
 public class MyPlayerService : IMyPlayerService
 {
     private readonly ILogger<MyPlayerService> _logger;
+
+    private int counter = 1;
     
     public MyPlayerService(ILogger<MyPlayerService> logger)
     {
@@ -17,6 +20,7 @@ public class MyPlayerService : IMyPlayerService
 
     public void LogIt()
     {
-        _logger.LogInformation("message from player service!");
+        _logger.LogInformation("counter: {N}", counter);
+        counter++;
     }
 }

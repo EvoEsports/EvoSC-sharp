@@ -2,5 +2,5 @@
 
 public interface IMyPlayerService
 {
-    
+    public void LogIt();
 }

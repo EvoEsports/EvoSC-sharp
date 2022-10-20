@@ -109,8 +109,9 @@ public class ModuleManager : IModuleManager
     public Container CreateServiceContainer(Assembly assembly)
     {
         var container = new Container();
-        container.Options.EnableAutoVerification = true;
+        container.Options.EnableAutoVerification = false;
         container.Options.SuppressLifestyleMismatchVerification = true;
+        container.Options.UseStrictLifestyleMismatchBehavior = false;
 
         foreach (var module in assembly.Modules)
         {
@@ -133,8 +134,7 @@ public class ModuleManager : IModuleManager
                 switch (serviceAttr.LifeStyle)
                 {
                     case ServiceLifeStyle.Singleton:
-                        //container.RegisterSingleton(intf, type);
-                        container.Collection.Register(type);
+                        container.RegisterSingleton(intf, type);
                         break;
                     case ServiceLifeStyle.Transient:
                         container.Register(type);

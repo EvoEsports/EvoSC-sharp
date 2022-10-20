@@ -13,7 +13,7 @@ public class ServiceAttribute : Attribute
 {
     public ServiceLifeStyle LifeStyle { get; init; }
 
-    public ServiceAttribute(ServiceLifeStyle lifeStyle=ServiceLifeStyle.Transient)
+    public ServiceAttribute(ServiceLifeStyle lifeStyle)
     {
         LifeStyle = lifeStyle;
     }

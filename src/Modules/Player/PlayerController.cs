@@ -23,9 +23,9 @@ public class PlayerController : EvoScController<EventControllerContext>
     private readonly ILogger<PlayerController> _logger;
     private readonly IPlayerService _players;
     private readonly IServerClient _server;
-    private readonly MyPlayerService _myPlayerService;
+    private readonly IMyPlayerService _myPlayerService;
     
-    public PlayerController(ILogger<PlayerController> logger, IPlayerService players, IServerClient server, MyPlayerService myPlayerService)
+    public PlayerController(ILogger<PlayerController> logger, IPlayerService players, IServerClient server, IMyPlayerService myPlayerService)
     {
         _logger = logger;
         _players = players;
