@@ -7,12 +7,14 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
+using EvoSC.Modules.Exceptions.ModuleServices;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Info;
 using EvoSC.Modules.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace EvoSC.Modules;
 
@@ -36,7 +38,8 @@ public class ModuleManager : IModuleManager
     private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleInfo)
     {
         var loadId = Guid.NewGuid();
-        var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(_services, moduleClass);
+        var moduleServices = CreateServiceContainer(moduleClass.Assembly);
+        var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
 
         var loadContext = new ModuleLoadContext
         {
@@ -46,7 +49,7 @@ public class ModuleManager : IModuleManager
             ModuleClass = moduleClass,
             ModuleInfo = moduleInfo,
             Assembly = moduleClass.Assembly,
-            Services = CreateServiceContainer(moduleClass.Assembly)
+            Services = moduleServices
         };
         
         _loadedModules.Add(loadId, loadContext);
@@ -106,6 +109,8 @@ public class ModuleManager : IModuleManager
     public Container CreateServiceContainer(Assembly assembly)
     {
         var container = new Container();
+        container.Options.EnableAutoVerification = true;
+        container.Options.SuppressLifestyleMismatchVerification = true;
 
         foreach (var module in assembly.Modules)
         {
@@ -118,10 +123,18 @@ public class ModuleManager : IModuleManager
                     continue;
                 }
 
+                var intf = type.GetInterfaces().FirstOrDefault();
+
+                if (intf == null)
+                {
+                    throw new ModuleServicesException($"Service {type} must implement a custom interface.");
+                }
+
                 switch (serviceAttr.LifeStyle)
                 {
                     case ServiceLifeStyle.Singleton:
-                        container.RegisterSingleton(type);
+                        //container.RegisterSingleton(intf, type);
+                        container.Collection.Register(type);
                         break;
                     case ServiceLifeStyle.Transient:
                         container.Register(type);

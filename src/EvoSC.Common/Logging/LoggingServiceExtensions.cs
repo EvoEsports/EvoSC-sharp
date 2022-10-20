@@ -20,10 +20,10 @@ public static class LoggingServiceExtensions
     /// <returns></returns>
     public static Container AddEvoScLogging(this Container services, LoggingConfig config)
     {
-        services.RegisterInstance<ILoggerFactory>(LoggerFactory.Create(builder =>
+        var loggerFactory = LoggerFactory.Create(builder =>
         {
             var logLevel = config.GetLogLevel();
-            
+
             builder.ClearProviders();
             //builder.AddFilter(level => level == logLevel);
             builder.SetMinimumLevel(config.GetLogLevel());
@@ -46,11 +46,12 @@ public static class LoggingServiceExtensions
                     c.TimestampFormat = "[dd.MM.yyyy hh:mm:ss.ffff] ";
                 });
             }
-        }));
+        });
         
+        
+        services.RegisterInstance<ILoggerFactory>(loggerFactory);
         services.RegisterSingleton(typeof(ILogger<>), typeof(Logger<>));
-        services.Collection.Register<IConfigureOptions<LoggerFilterOptions>>(
-            new ConfigureOptions<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Information));
+        
         return services;
     }
 

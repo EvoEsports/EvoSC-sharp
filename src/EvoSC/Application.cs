@@ -1,4 +1,5 @@
 ﻿
+using System.CommandLine;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -48,6 +49,8 @@ public class Application : IEvoSCApplication
     {
         _services = new Container();
         _services.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+        _services.Options.EnableAutoVerification = false;
+        _services.Options.ResolveUnregisteredConcreteTypes = true;
     }
 
     public async Task RunAsync()
@@ -96,6 +99,8 @@ public class Application : IEvoSCApplication
 
         _services.RegisterInstance<IEvoSCApplication>(this);
         
+        _services.Verify(VerificationOption.VerifyAndDiagnose);
+        
         _logger = _services.GetInstance<ILogger<Application>>();
     }
 
@@ -122,7 +127,7 @@ public class Application : IEvoSCApplication
     {
         var modules = _services.GetInstance<IModuleManager>();
 
-        modules.LoadInternalModules();
+        await modules.LoadInternalModules();
     }
 
     private async Task StartBackgroundServices()
