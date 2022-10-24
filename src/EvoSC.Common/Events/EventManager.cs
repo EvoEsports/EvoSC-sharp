@@ -38,6 +38,19 @@ public class EventManager : IEventManager
         }
         
         _subscriptions[subscription.Name].Add(subscription);
+        _subscriptions[subscription.Name].Sort((a, b) =>
+        {
+            int ap = (int)a.Priority;
+            int bp = (int)b.Priority;
+
+            if (ap > bp)
+                return -1;
+            else if (ap < bp)
+                return 1;
+            return 0;
+        });
+        _subscriptions[subscription.Name].Sort((a, b) =>
+            a.RunAsync ? -1 : (b.RunAsync ? 1 : 0));
     }
 
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority=EventPriority.Medium, bool runAsync=false) where TArgs : EventArgs
@@ -73,7 +86,7 @@ public class EventManager : IEventManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public async Task Fire(string name, EventArgs args, object? sender = null)
+    public async Task Raise(string name, EventArgs args, object? sender = null)
     {
         if (!_subscriptions.ContainsKey(name))
         {
@@ -89,49 +102,61 @@ public class EventManager : IEventManager
     {
         ConcurrentQueue<(Task, EventSubscription)> tasks = new ConcurrentQueue<(Task, EventSubscription)>();
 
-        var sw = new Stopwatch();
-        sw.Start();
-
         foreach (var subscription in _subscriptions[name])
         {
-            Task.Run(() =>
+            if (subscription.RunAsync)
             {
-                try
+                Task.Run(() =>
                 {
-                    Task? task = null;
-                    var target = GetTarget(subscription);
-
-                    task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
-
-                    if (task == null)
-                    {
-                        _logger.LogError("An error occured while calling event, task is null for event: {Name}",
-                            subscription.Name);
-                        return;
-                    }
-
-                    tasks.Enqueue((task, subscription));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Failed to execute subscription: {Msg} | Stacktrace: {St}", ex.Message,
-                        ex.StackTrace);
-                }
-            });
+                    _logger.LogInformation("run async");
+                    InvokeTaskMethod(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                });
+            }
+            else
+            {
+                InvokeTaskMethod(args, sender, subscription, tasks).GetAwaiter().GetResult();
+            }
         }
-        
-        sw.Stop();
-        
-        _logger.LogInformation("Took {Time}ms to invoke all event tasks", sw.ElapsedMilliseconds);
 
         return tasks;
     }
-    
+
+    private Task InvokeTaskMethod(EventArgs args, object? sender, EventSubscription subscription, ConcurrentQueue<(Task, EventSubscription)> tasks)
+    {
+        try
+        {
+            Task? task = null;
+            var target = GetTarget(subscription);
+
+            task = (Task?) subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+
+            if (task == null)
+            {
+                _logger.LogError("An error occured while calling event, task is null for event: {Name}",
+                    subscription.Name);
+                return Task.CompletedTask;
+            }
+
+            tasks.Enqueue((task, subscription));
+
+            return task;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Failed to execute subscription: {Msg} | Stacktrace: {St}", ex.Message,
+                ex.StackTrace);
+        }
+
+        return Task.CompletedTask;
+    }
+
     [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task WaitEventTasks(ConcurrentQueue<(Task, EventSubscription)> tasks)
     {
-        foreach (var (task, sub) in tasks)
+        while (tasks.TryDequeue(out var result))
         {
+            var (task, sub) = result;
+            
             try
             {
                 await task;

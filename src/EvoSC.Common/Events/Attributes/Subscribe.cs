@@ -20,6 +20,7 @@ public class Subscribe : Attribute
     public Subscribe(string name, EventPriority priority = EventPriority.Medium, bool isAsync = false)
     {
         Name = name;
+        Priority = priority;
         IsAsync = isAsync;
     }
 }

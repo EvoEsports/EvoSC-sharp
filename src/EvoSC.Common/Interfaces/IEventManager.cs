@@ -39,5 +39,5 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="args">Event arguments.</param>
     /// <param name="sender">The entity that triggered the event.</param>
     /// <returns></returns>
-    public Task Fire(string name, EventArgs args, object? sender=null);
+    public Task Raise(string name, EventArgs args, object? sender=null);
 }

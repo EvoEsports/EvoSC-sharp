@@ -35,7 +35,7 @@ public class EventManagerTests
             Console.WriteLine();
             return Task.CompletedTask;
         });
-        var ex = await Record.ExceptionAsync(() => manager.Fire("test", EventArgs.Empty));
+        var ex = await Record.ExceptionAsync(() => manager.Raise("test", EventArgs.Empty));
         
         Assert.Null(ex);
     }
@@ -49,7 +49,7 @@ public class EventManagerTests
 
         Assert.ThrowsAsync<HandlerRanException>(async () =>
         {
-            await manager.Fire("test", EventArgs.Empty);
+            await manager.Raise("test", EventArgs.Empty);
         });
     }
 
@@ -63,7 +63,7 @@ public class EventManagerTests
         manager.Subscribe("test", handler);
         manager.Unsubscribe("test", handler);
 
-        var ex = await Record.ExceptionAsync(() => manager.Fire("test", EventArgs.Empty));
+        var ex = await Record.ExceptionAsync(() => manager.Raise("test", EventArgs.Empty));
         
         Assert.Null(ex);
     }
@@ -82,7 +82,7 @@ public class EventManagerTests
 
         Assert.ThrowsAsync<HandlerRanException2>(async () =>
         {
-            await manager.Fire("test", EventArgs.Empty);
+            await manager.Raise("test", EventArgs.Empty);
         });
     }
 }
