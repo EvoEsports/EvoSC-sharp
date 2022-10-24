@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Modules;
+using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.Player;
 using FluentMigrator.Runner.Exceptions;
 
@@ -9,7 +10,8 @@ public static class InternalModules
 {
     public static List<Type> Modules = new()
     {
-        typeof(PlayerModule)
+        typeof(PlayerModule),
+        typeof(ExampleModule)
     };
 
     /// <summary>

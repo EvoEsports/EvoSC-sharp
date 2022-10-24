@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
@@ -83,39 +85,50 @@ public class EventManager : IEventManager
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private List<(Task, EventSubscription)> InvokeEventTasks(string name, EventArgs args, object? sender)
+    private ConcurrentQueue<(Task, EventSubscription)> InvokeEventTasks(string name, EventArgs args, object? sender)
     {
-        List<(Task, EventSubscription)> tasks = new List<(Task, EventSubscription)>();
+        ConcurrentQueue<(Task, EventSubscription)> tasks = new ConcurrentQueue<(Task, EventSubscription)>();
+
+        var sw = new Stopwatch();
+        sw.Start();
 
         foreach (var subscription in _subscriptions[name])
         {
-            try
+            Task.Run(() =>
             {
-                Task? task = null;
-                var target = GetTarget(subscription);
-
-                task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
-
-                if (task == null)
+                try
                 {
-                    _logger.LogError("An error occured while calling event, task is null for event: {Name}",
-                        subscription.Name);
-                    continue;
-                }
+                    Task? task = null;
+                    var target = GetTarget(subscription);
 
-                tasks.Add((task, subscription));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to execute subscription: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
-            }
+                    task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+
+                    if (task == null)
+                    {
+                        _logger.LogError("An error occured while calling event, task is null for event: {Name}",
+                            subscription.Name);
+                        return;
+                    }
+
+                    tasks.Enqueue((task, subscription));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Failed to execute subscription: {Msg} | Stacktrace: {St}", ex.Message,
+                        ex.StackTrace);
+                }
+            });
         }
+        
+        sw.Stop();
+        
+        _logger.LogInformation("Took {Time}ms to invoke all event tasks", sw.ElapsedMilliseconds);
 
         return tasks;
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private async Task WaitEventTasks(List<(Task, EventSubscription)> tasks)
+    private async Task WaitEventTasks(ConcurrentQueue<(Task, EventSubscription)> tasks)
     {
         foreach (var (task, sub) in tasks)
         {
