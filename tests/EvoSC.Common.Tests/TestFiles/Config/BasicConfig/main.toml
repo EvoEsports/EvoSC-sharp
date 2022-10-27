@@ -1,10 +1,10 @@
-[logging]
+[Logging]
 # Possible values lowest to highest verbosity: none, critical, error, warning, information, debug, trace
 logLevel = "debug"
 # Whether to output logs to the console in JSON.
 useJson = false
 
-[server]
+[Server]
 # Address to the Trackmania server
 host = "123.123.123.123"
 # Port that the XMLRPC is listening to

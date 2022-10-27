@@ -14,7 +14,7 @@ public static class DatabaseServiceExtensions
 {
     private const int CommandTimeout = 3;
     
-    public static Container AddEvoScDatabase(this Container services, DatabaseConfig config)
+    public static Container AddEvoScDatabase(this Container services, IDatabaseConfig config)
     {
         var connection = new MySqlConnection(config.GetConnectionString());
         connection.Open();

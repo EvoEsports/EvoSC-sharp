@@ -85,11 +85,10 @@ public class Application : IEvoSCApplication
     {
         var config = _services.AddEvoScConfig();
 
-        var dbConfig = config.Get<DatabaseConfig>(EvoScConfig.DatabaseConfigKey);
-        _services.AddEvoScLogging(config.Get<LoggingConfig>(EvoScConfig.LoggingConfigKey));
+        _services.AddEvoScLogging(config.Logging);
         
         _services.AddEvoScMigrations();
-        _services.AddEvoScDatabase(dbConfig);
+        _services.AddEvoScDatabase(config.Database);
         
         _services.AddGbxRemoteClient();
         _services.AddEvoScEvents();

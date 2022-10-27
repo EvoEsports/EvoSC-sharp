@@ -22,4 +22,36 @@ public static class ReflectionUtils
 
         return false;
     }
+
+    /// <summary>
+    /// Get a default non-null value of a given type. If the type is a custom type,
+    /// the method assumes a default constructor exists.
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public static object GetDefaultTypeValue(this Type t)
+    {
+        if (t == typeof(string))
+        {
+            return "";
+        }
+        
+        if (t == typeof(int) || t == typeof(uint) || t == typeof(short) || t == typeof(ushort) ||
+            t == typeof(long) || t == typeof(ulong))
+        {
+            return 0;
+        } 
+        
+        if (t == typeof(float) || t == typeof(double))
+        {
+            return 0.0;
+        }
+
+        if (t.GetInterfaces().FirstOrDefault(ti => ti.IsGenericType && ti.GetGenericTypeDefinition().IsAssignableTo(typeof(IEnumerable<>))) != null)
+        {
+            return Array.CreateInstance(t, 0);
+        }
+        
+        return Activator.CreateInstance(t);
+    }
 }

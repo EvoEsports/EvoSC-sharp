@@ -1,5 +1,7 @@
-﻿using EvoSC.Common.Config;
+﻿using Config.Net;
+using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Config.Stores;
 using Xunit;
 
 namespace EvoSC.Common.Tests.TestFiles;
@@ -9,14 +11,14 @@ public class ConfigTests
     [Fact]
     public void Test_Server_Config_Is_Properly_Parsed()
     {
-        var config = new EvoScConfig("TestFiles/Config/BasicConfig");
+        var config = new ConfigurationBuilder<IEvoScBaseConfig>()
+            .UseTomlFile("TestFiles/Config/BasicConfig/main.toml")
+            .Build();
         
-        var serverConfig = config.Get<ServerConfig>(EvoScConfig.ServerConfigKey);
-        
-        Assert.Equal("123.123.123.123", serverConfig.Host);
-        Assert.Equal(1234, serverConfig.Port);
-        Assert.Equal("My Admin ", serverConfig.Username);
-        Assert.Equal(" My Admin", serverConfig.Password);
-        Assert.False(serverConfig.RetryConnection);
+        Assert.Equal("123.123.123.123", config.Server.Host);
+        Assert.Equal(1234, config.Server.Port);
+        Assert.Equal("My Admin ", config.Server.Username);
+        Assert.Equal(" My Admin", config.Server.Password);
+        Assert.False(config.Server.RetryConnection);
     }
 }

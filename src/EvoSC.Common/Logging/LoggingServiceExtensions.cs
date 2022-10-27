@@ -18,7 +18,7 @@ public static class LoggingServiceExtensions
     /// <param name="services"></param>
     /// <param name="isDebug"></param>
     /// <returns></returns>
-    public static Container AddEvoScLogging(this Container services, LoggingConfig config)
+    public static Container AddEvoScLogging(this Container services, ILoggingConfig config)
     {
         var loggerFactory = LoggerFactory.Create(builder =>
         {
@@ -61,7 +61,7 @@ public static class LoggingServiceExtensions
     /// <param name="services"></param>
     /// <param name="config"></param>
     /// <returns></returns>
-    public static IServiceCollection AddEvoScLogging(this IServiceCollection services, LoggingConfig config)
+    public static IServiceCollection AddEvoScLogging(this IServiceCollection services, ILoggingConfig config)
     {
         return services.AddLogging(builder =>
         {
@@ -92,7 +92,7 @@ public static class LoggingServiceExtensions
         });
     }
 
-    private static LogLevel GetLogLevel(this LoggingConfig config)
+    private static LogLevel GetLogLevel(this ILoggingConfig config)
     {
         switch (config.LogLevel.ToLower())
         {

@@ -11,7 +11,7 @@ namespace EvoSC.Common.Remote;
 public class ServerClient : IServerClient
 {
     private readonly GbxRemoteClient _gbxRemote;
-    private readonly ServerConfig _config;
+    private readonly IEvoScBaseConfig _config;
     private readonly ILogger<ServerClient> _logger;
     private readonly IEvoSCApplication _app;
 
@@ -20,13 +20,13 @@ public class ServerClient : IServerClient
     public GbxRemoteClient Remote => _gbxRemote;
     public bool Connected => _connected;
 
-    public ServerClient(ServerConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
+    public ServerClient(IEvoScBaseConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
     {
         _config = config;
         _logger = logger;
         _app = app;
         _connected = false;
-        _gbxRemote = new GbxRemoteClient(config.Host, config.Port, logger);
+        _gbxRemote = new GbxRemoteClient(config.Server.Host, config.Server.Port, logger);
         
         _gbxRemote.OnDisconnected += OnDisconnected;
     }
@@ -48,7 +48,7 @@ public class ServerClient : IServerClient
             return false;
         }
 
-        if (!await _gbxRemote.AuthenticateAsync(_config.Username, _config.Password))
+        if (!await _gbxRemote.AuthenticateAsync(_config.Server.Username, _config.Server.Password))
         {
             _logger.LogError("Failed to authenticate to the server");
             return false;
@@ -73,7 +73,7 @@ public class ServerClient : IServerClient
         {
             do
             {
-                if (!disconnected || (disconnected && _config.RetryConnection))
+                if (!disconnected || (disconnected && _config.Server.RetryConnection))
                 {
                     if (await SetupConnection())
                     {
@@ -84,7 +84,7 @@ public class ServerClient : IServerClient
 
                 await Task.Delay(1000);
                 
-            } while (!cancelToken.IsCancellationRequested && _config.RetryConnection);
+            } while (!cancelToken.IsCancellationRequested && _config.Server.RetryConnection);
 
             throw new Exception();
         }

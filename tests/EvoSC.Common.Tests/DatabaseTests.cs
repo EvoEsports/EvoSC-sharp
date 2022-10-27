@@ -6,10 +6,21 @@ namespace EvoSC.Common.Tests;
 
 public class DatabaseTests
 {
+    class DbConfig : IDatabaseConfig
+    {
+        public IDatabaseConfig.DatabaseType Type => IDatabaseConfig.DatabaseType.MySql;
+        public string Host => "127.0.0.1";
+        public int Port => 3306;
+        public string Name => "evosc";
+        public string Username => "evosc";
+        public string Password => "evosc";
+        public string TablePrefix => "";
+    }
+    
     [Fact]
     public void Correct_Connection_String_Returned_From_Config()
     {
-        var config = new DatabaseConfig();
+        var config = new DbConfig();
 
         var connectionString = config.GetConnectionString();
 

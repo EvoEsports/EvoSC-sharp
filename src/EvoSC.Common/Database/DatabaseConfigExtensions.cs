@@ -4,11 +4,11 @@ namespace EvoSC.Common.Database;
 
 public static class DatabaseConfigExtensions
 {
-    public static string GetConnectionString(this DatabaseConfig config)
+    public static string GetConnectionString(this IDatabaseConfig config)
     {
         switch (config.Type)
         {
-            case DatabaseConfig.DatabaseType.MySql:
+            case IDatabaseConfig.DatabaseType.MySql:
                 return $"Server={config.Host};Port={config.Port};Database={config.Name};Uid={config.Username};Pwd={config.Password}";
         }
 
