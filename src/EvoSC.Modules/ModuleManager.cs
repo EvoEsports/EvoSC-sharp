@@ -194,7 +194,7 @@ public class ModuleManager : IModuleManager
                     continue;
                 }
 
-                var moduleAttr = moduleType.GetModuleAttribute();
+                var moduleAttr = moduleType.GetEvoScModuleAttribute();
                 var loadId = await LoadModule(moduleType, moduleAttr);
 
                 await EnableModule(loadId);
