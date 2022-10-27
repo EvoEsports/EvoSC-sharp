@@ -31,7 +31,10 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     {
         var rootType = typeof(TConfig);
         var document = BuildSubDocument(TomlDocument.CreateEmpty(), rootType, "");
+        
+        // avoid inline writing which is more human readable
         document.ForceNoInline = false;
+        
         return document;
     }
     
@@ -48,18 +51,22 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
                 var descAttr = property.GetCustomAttribute<DescriptionAttribute>();
                 var optionAttr = property.GetCustomAttribute<OptionAttribute>();
 
+                // get property name
                 var propName = optionAttr?.Alias ?? property.Name;
                 propName = name == "" ? propName : $"{name}.{propName}";
+                
+                // get property value
                 var value = TomletMain.ValueFrom(property.PropertyType,
                     optionAttr?.DefaultValue ?? property.PropertyType.GetDefaultTypeValue());
 
+                // add description/comment if defined
                 if (descAttr != null)
                 {
                     value.Comments.PrecedingComment = descAttr.Description;
                 }
                 
+                // write to document
                 document.Put(propName, value);
-                Console.WriteLine(propName);
             }
         }
         
