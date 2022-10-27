@@ -55,19 +55,8 @@ public class Application : IEvoSCApplication
 
     public async Task RunAsync()
     {
-        var sw = new Stopwatch();
-        sw.Start();
-
-        SetupServices();
-        MigrateDatabase();
-        SetupControllerManager();
-        await SetupModules();
-        await StartBackgroundServices();
+        await SetupApplication();
         
-        sw.Stop();
-        
-        _logger.LogDebug("Startup time: {Time}ms", sw.ElapsedMilliseconds);
-
         // wait indefinitely
         WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
     }
@@ -79,6 +68,22 @@ public class Application : IEvoSCApplication
         
         // cancel the token to stop the application itself
         _runningToken.Cancel();
+    }
+
+    public async Task SetupApplication()
+    {
+        var sw = new Stopwatch();
+        sw.Start();
+        
+        SetupServices();
+        MigrateDatabase();
+        SetupControllerManager();
+        await SetupModules();
+        await StartBackgroundServices();
+        
+        sw.Stop();
+        
+        _logger.LogDebug("Startup time: {Time}ms", sw.ElapsedMilliseconds);
     }
 
     private void SetupServices()
