@@ -75,7 +75,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
     public void Dispose()
     {
-        throw new NotImplementedException();
     }
 
     public string? Read(string key)

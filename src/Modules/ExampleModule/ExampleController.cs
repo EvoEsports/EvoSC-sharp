@@ -15,8 +15,18 @@ namespace EvoSC.Modules.Official.ExampleModule;
 [Controller]
 public class ExampleController : EvoScController<IControllerContext>
 {
-    public ExampleController()
+    private readonly IMySettings _settings;
+    
+    public ExampleController(IMySettings settings)
     {
-        // ...
+        _settings = settings;
+    }
+
+    [Subscribe(GbxRemoteEvent.PlayerChat)]
+    public Task OnChat(object sender, PlayerChatEventArgs args)
+    {
+        Console.WriteLine("option: " + _settings.MyOption);
+        
+        return Task.CompletedTask;
     }
 }

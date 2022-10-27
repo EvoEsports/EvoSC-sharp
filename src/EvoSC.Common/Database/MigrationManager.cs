@@ -11,12 +11,10 @@ namespace EvoSC.Common.Database;
 public class MigrationManager : IMigrationManager
 {
     private readonly IEvoScBaseConfig _config;
-    private readonly ILoggingConfig _iLoggingConfig;
     
-    public MigrationManager(IEvoScBaseConfig config, ILoggingConfig iLoggingConfig)
+    public MigrationManager(IEvoScBaseConfig config)
     {
         _config = config;
-        _iLoggingConfig = iLoggingConfig;
     }
     
     public void MigrateFromAssembly(Assembly asm)
@@ -27,7 +25,7 @@ public class MigrationManager : IMigrationManager
                 .AddMySql5()
                 .WithGlobalConnectionString(_config.Database.GetConnectionString())
                 .ScanIn(asm).For.Migrations())
-            .AddEvoScLogging(_iLoggingConfig)
+            .AddEvoScLogging(_config.Logging)
             .BuildServiceProvider(false);
 
         provider.GetRequiredService<IMigrationRunner>()

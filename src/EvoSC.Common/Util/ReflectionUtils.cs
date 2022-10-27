@@ -54,4 +54,28 @@ public static class ReflectionUtils
         
         return Activator.CreateInstance(t);
     }
+
+    public static object CreateGenericInstance(Type genericType, Type t, params object[] args)
+    {
+        var genericTypeType = genericType.MakeGenericType(t);
+        return Activator.CreateInstance(genericTypeType, args);
+    }
+
+    public static object CallMethod(Type type, object instance, string methodName, params object[] args)
+    {
+        var method = type.GetMethod(methodName);
+        return method.Invoke(instance, args);
+    }
+    
+    public static object CallMethod(object instance, string methodName, params object[] args)
+    {
+        var method = instance.GetType().GetMethod(methodName);
+        return method.Invoke(instance, args);
+    }
+
+    public static object CallStaticMethod(Type type, string methodName, params object[] args)
+    {
+        var method = type.GetMethod(methodName);
+        return method.Invoke(null, args);
+    }
 }

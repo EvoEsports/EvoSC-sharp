@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Data.Common;
+using System.Diagnostics;
 using System.Reflection;
+using Config.Net;
+using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
@@ -24,21 +27,26 @@ public class ModuleManager : IModuleManager
     private readonly Container _services;
     private readonly IControllerManager _controllers;
     private readonly IModuleServicesManager _servicesManager;
+    private readonly DbConnection _db;
 
     private Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
-    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers, IModuleServicesManager servicesManager)
+    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers, IModuleServicesManager servicesManager, DbConnection db)
     {
         _logger = logger;
         _services = services;
         _controllers = controllers;
         _servicesManager = servicesManager;
+        _db = db;
     }
 
     private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleInfo)
     {
         var loadId = Guid.NewGuid();
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
+        
+        AddModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
+        
         var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
 
         var loadContext = new ModuleLoadContext
@@ -144,6 +152,35 @@ public class ModuleManager : IModuleManager
         }
 
         return container;
+    }
+
+    public void AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
+    {
+        foreach (var module in assembly.Modules)
+        {
+            foreach (var type in module.GetTypes())
+            {
+                var configAttr = type.GetCustomAttribute<SettingsAttribute>();
+
+                if (configAttr == null)
+                {
+                    continue;
+                }
+
+                if (!type.IsInterface)
+                {
+                    throw new ModuleServicesException($"Settings type {type} must be an interface.");
+                }
+
+                var builder = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), type);
+                var dbStore = new DatabaseStore(moduleInfo.Name, _db);
+
+                ReflectionUtils.CallMethod(builder, "UseConfigStore", dbStore);
+                var config = ReflectionUtils.CallMethod(builder, "Build");
+                
+                container.RegisterInstance(type, config);
+            }
+        }
     }
     
     public async Task LoadModulesFromAssembly(Assembly assembly)
