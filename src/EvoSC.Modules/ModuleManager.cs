@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using System.Diagnostics;
+using System.Reactive.Linq;
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Config.Stores;
@@ -45,7 +46,7 @@ public class ModuleManager : IModuleManager
         var loadId = Guid.NewGuid();
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
         
-        AddModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
+        await AddModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
         
         var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
 
@@ -154,7 +155,7 @@ public class ModuleManager : IModuleManager
         return container;
     }
 
-    public void AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
+    public async Task AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
     {
         foreach (var module in assembly.Modules)
         {
@@ -173,7 +174,9 @@ public class ModuleManager : IModuleManager
                 }
 
                 var builder = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), type);
-                var dbStore = new DatabaseStore(moduleInfo.Name, _db);
+                var dbStore = new DatabaseStore(moduleInfo.Name, type, _db);
+
+                await dbStore.SetupDefaultSettingsAsync();
 
                 ReflectionUtils.CallMethod(builder, "UseConfigStore", dbStore);
                 var config = ReflectionUtils.CallMethod(builder, "Build");
@@ -182,7 +185,7 @@ public class ModuleManager : IModuleManager
             }
         }
     }
-    
+
     public async Task LoadModulesFromAssembly(Assembly assembly)
     {
         foreach (var asmModule in assembly.Modules)
