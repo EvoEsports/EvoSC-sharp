@@ -1,3 +1,0 @@
-#Include "MathLib" as ML
-#Include "TextLib" as TL
-#Include "ColorLib" as CL
