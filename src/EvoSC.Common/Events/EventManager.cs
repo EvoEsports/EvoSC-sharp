@@ -53,7 +53,8 @@ public class EventManager : IEventManager
             a.RunAsync ? -1 : (b.RunAsync ? 1 : 0));
     }
 
-    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority=EventPriority.Medium, bool runAsync=false) where TArgs : EventArgs
+    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler,
+        EventPriority priority = EventPriority.Medium, bool runAsync = false) where TArgs : EventArgs
     {
         Subscribe(new EventSubscription(
             name,
@@ -121,14 +122,15 @@ public class EventManager : IEventManager
         return tasks;
     }
 
-    private Task InvokeTaskMethod(EventArgs args, object? sender, EventSubscription subscription, ConcurrentQueue<(Task, EventSubscription)> tasks)
+    private Task InvokeTaskMethod(EventArgs args, object? sender, EventSubscription subscription,
+        ConcurrentQueue<(Task, EventSubscription)> tasks)
     {
         try
         {
             Task? task = null;
             var target = GetTarget(subscription);
 
-            task = (Task?) subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+            task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
 
             if (task == null)
             {
@@ -156,7 +158,7 @@ public class EventManager : IEventManager
         while (tasks.TryDequeue(out var result))
         {
             var (task, sub) = result;
-            
+
             try
             {
                 await task;
@@ -215,7 +217,8 @@ public class EventManager : IEventManager
                 continue;
             }
 
-            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority, attr.IsAsync, true);
+            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority,
+                attr.IsAsync, true);
             Subscribe(subscription);
         }
     }
