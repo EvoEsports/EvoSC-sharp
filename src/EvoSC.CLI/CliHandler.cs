@@ -14,7 +14,7 @@ public class CliHandler
     public CliHandler(string[] args)
     {
         _args = args;
-        _rootCommand = new RootCommand("EvoSC TrackMania Server Controller.");
+        _rootCommand = new RootCommand("EvoSC# TrackMania Server Controller.");
     }
 
     public CliHandler RegisterCommand(ICliCommand cliCmd)
