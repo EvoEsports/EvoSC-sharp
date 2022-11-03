@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Controllers;
+﻿using EvoSC.Commands.Attributes;
+using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events;
@@ -20,5 +21,11 @@ public class ExampleController : EvoScController<IControllerContext>
     public ExampleController(IMySettings settings)
     {
         _settings = settings;
+    }
+
+    [Command("tmx add", "Add map from TMX.")]
+    public Task TmxAddMap(int mxId)
+    {
+        
     }
 }

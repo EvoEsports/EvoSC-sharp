@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace EvoSc.Commands.Attributes;
+namespace EvoSC.Commands.Attributes;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class CommandAttribute : Attribute

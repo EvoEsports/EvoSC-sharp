@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Common.Tests", "tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Modules", "src\EvoSC.Modules\EvoSC.Modules.csproj", "{30365FB7-7E09-49A8-85AE-AA280365784A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSc.Commands", "src\EvoSc.Commands\EvoSc.Commands.csproj", "{AF7C5B3F-5FB5-49E3-83E6-809AB0FFBBE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Commands", "src\EvoSC.Commands\EvoSC.Commands.csproj", "{AF7C5B3F-5FB5-49E3-83E6-809AB0FFBBE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{DC47658A-F421-4BA4-B617-090A7DFB3900}"
 EndProject

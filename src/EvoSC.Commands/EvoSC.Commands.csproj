@@ -4,6 +4,8 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AssemblyName>EvoSC.Commands</AssemblyName>
+        <RootNamespace>EvoSC.Commands</RootNamespace>
     </PropertyGroup>
 
 </Project>
