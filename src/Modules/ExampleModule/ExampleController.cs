@@ -21,12 +21,4 @@ public class ExampleController : EvoScController<IControllerContext>
     {
         _settings = settings;
     }
-
-    [Subscribe(GbxRemoteEvent.PlayerChat)]
-    public Task OnChat(object sender, PlayerChatEventArgs args)
-    {
-        Console.WriteLine("option: " + _settings.MyOption);
-        
-        return Task.CompletedTask;
-    }
 }
