@@ -8,4 +8,12 @@
         <RootNamespace>EvoSC.Commands</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="SimpleInjector" Version="5.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EvoSC.Common\EvoSC.Common.csproj" />
+    </ItemGroup>
+
 </Project>

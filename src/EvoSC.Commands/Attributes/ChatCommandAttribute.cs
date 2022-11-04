@@ -1,9 +1,10 @@
 ﻿using System.Text.RegularExpressions;
+using EvoSC.Commands.Util;
 
 namespace EvoSC.Commands.Attributes;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class CommandAttribute : Attribute
+public class ChatCommandAttribute : Attribute
 {
     /// <summary>
     /// Name of the command.
@@ -14,13 +15,15 @@ public class CommandAttribute : Attribute
     /// Summary/Description of the command.
     /// </summary>
     public string Description { get; }
+    
+    /// <summary>
+    /// The permission required to execute this command.
+    /// </summary>
+    public string? Permission { get; }
 
-    public CommandAttribute(string name, string description)
+    public ChatCommandAttribute(string name, string description, string? permission=null)
     {
-        if (!Regex.IsMatch(name, "[\\w\\d]+"))
-        {
-            throw new ArgumentException("Command name must be alphanumeric", "name");
-        }
+        CommandUtils.ValidateCommandName(name);
 
         if (description.Trim() == string.Empty)
         {
@@ -29,6 +32,7 @@ public class CommandAttribute : Attribute
 
         Name = name;
         Description = description;
+        Permission = permission;
     }
 }
 

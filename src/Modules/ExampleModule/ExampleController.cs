@@ -1,4 +1,7 @@
-﻿using EvoSC.Commands.Attributes;
+﻿using System.ComponentModel;
+using EvoSC.Commands;
+using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
@@ -18,14 +21,15 @@ public class ExampleController : EvoScController<IControllerContext>
 {
     private readonly IMySettings _settings;
     
-    public ExampleController(IMySettings settings)
+    public ExampleController(IMySettings settings, IChatCommandManager cmds)
     {
         _settings = settings;
     }
-
-    [Command("tmx add", "Add map from TMX.")]
-    public Task TmxAddMap(int mxId)
+    
+    [ChatCommand("tmx add", "Add map from TMX.")]
+    [CommandAlias("//addmap")]
+    public Task TmxAddMap([Description("The TMX ID of the map to add.")] int mxId)
     {
-        
+        return Task.CompletedTask;
     }
 }
