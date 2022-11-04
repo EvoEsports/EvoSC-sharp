@@ -28,7 +28,7 @@ public class ChatCommandManager : IChatCommandManager
         
         _events.Subscribe(builder => builder
             .WithName(GbxRemoteEvent.PlayerChat)
-            .WithInstanceClass(this.GetType())
+            .WithInstanceClass<ChatCommandManager>()
             .WithInstance(this)
             .WithHandlerMethod<PlayerChatEventArgs>(OnPlayerChatEvent)
         );
