@@ -31,6 +31,7 @@ public class ChatCommandManager : IChatCommandManager
             .WithInstanceClass<ChatCommandManager>()
             .WithInstance(this)
             .WithHandlerMethod<PlayerChatEventArgs>(OnPlayerChatEvent)
+            .AsAsync()
         );
     }
 
