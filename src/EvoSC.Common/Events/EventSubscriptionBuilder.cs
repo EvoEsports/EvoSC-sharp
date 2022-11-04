@@ -12,7 +12,7 @@ public class EventSubscriptionBuilder
     private bool _runAsync = false;
     private bool _isController = false;
 
-    public EventSubscriptionBuilder WithName(string name)
+    public EventSubscriptionBuilder WithEvent(string name)
     {
         _name = name;
         return this;
@@ -88,7 +88,7 @@ public class EventSubscriptionBuilder
     {
         if (_name == null)
         {
-            throw new InvalidOperationException("Name must be set for event.");
+            throw new InvalidOperationException("Event name must be set.");
         }
         
         if (_instanceClass == null)
