@@ -6,9 +6,12 @@ using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
+using EvoSC.Common.TextParsing;
+using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
+using StringReader = EvoSC.Common.TextParsing.ValueReaders.StringReader;
 
 namespace EvoSC.Commands;
 
@@ -27,6 +30,7 @@ public class ChatCommandManager : IChatCommandManager
         _events = events;
         _controllers = controllers;
         _cmds = new Dictionary<string, IChatCommand>();
+        _aliasMap = new Dictionary<string, string>();
         
         _events.Subscribe(builder => builder
             .WithEvent(GbxRemoteEvent.PlayerChat)
@@ -37,13 +41,40 @@ public class ChatCommandManager : IChatCommandManager
         );
     }
 
-    public Task OnPlayerChatEvent(object sender, PlayerChatEventArgs args)
+    public async Task OnPlayerChatEvent(object sender, PlayerChatEventArgs args)
     {
         // parse
         // execute
         // handle errors
+
+        if (!args.Text.StartsWith("/"))
+        {
+            return;
+        }
+
+        var cmdArgs = args.Text.Substring(1).Split(" ");
+        var cmdName = cmdArgs[0];
+        var argValues = new List<object>();
+
+        var valueReader = new ValueReaderManager();
+        valueReader.AddReader(new StringReader());
+        
+        for (int i = 1; i < cmdArgs.Length; i++)
+        {
+            argValues.Add(await valueReader.ConvertValue(typeof(string), cmdArgs[i]));
+        }
+
+        if (!_cmds.ContainsKey(cmdName))
+        {
+            _logger.LogError("Command not found!");
+            return;
+        }
+
+        var cmd = _cmds[cmdName];
+        var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
+        var task = (Task)cmd.HandlerMethod.Invoke(controller, argValues.ToArray());
+
         _logger.LogInformation("hello from chat commands manager");
-        return Task.CompletedTask;
     }
 
     public void RegisterForController(Type controllerType)

@@ -20,16 +20,18 @@ namespace EvoSC.Modules.Official.ExampleModule;
 public class ExampleController : EvoScController<IControllerContext>
 {
     private readonly IMySettings _settings;
+    private readonly IServerClient _server;
     
-    public ExampleController(IMySettings settings, IChatCommandManager cmds)
+    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server)
     {
         _settings = settings;
+        _server = server;
     }
     
-    [ChatCommand("tmx add", "Add map from TMX.")]
+    [ChatCommand("hey", "Add map from TMX.")]
     [CommandAlias("//addmap")]
-    public Task TmxAddMap([Description("The TMX ID of the map to add.")] int mxId)
+    public async Task TmxAddMap([Description("The TMX ID of the map to add.")] string mxId)
     {
-        return Task.CompletedTask;
+        await _server.SendChatMessage($"hello, {mxId}!");
     }
 }
