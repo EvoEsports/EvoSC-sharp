@@ -14,6 +14,7 @@ public class ChatCommandBuilder
     /// </summary>
     public ChatCommandBuilder()
     {
+        _aliases = new List<string>();
     }
 
     /// <summary>

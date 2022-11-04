@@ -12,6 +12,11 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="subscription"></param>
     public void Subscribe(EventSubscription subscription);
     /// <summary>
+    /// Create a new event subscription that has a callback method.
+    /// </summary>
+    /// <param name="subscription"></param>
+    public void Subscribe(Action<EventSubscriptionBuilder> builder);
+    /// <summary>
     /// Subscribe to an event given the provided callback handler.
     /// </summary>
     /// <param name="name"></param>

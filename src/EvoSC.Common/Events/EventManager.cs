@@ -53,6 +53,13 @@ public class EventManager : IEventManager
             a.RunAsync ? -1 : (b.RunAsync ? 1 : 0));
     }
 
+    public void Subscribe(Action<EventSubscriptionBuilder> builderAction)
+    {
+        var builder = new EventSubscriptionBuilder();
+        builderAction(builder);
+        Subscribe(builder.Build());
+    }
+
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler,
         EventPriority priority = EventPriority.Medium, bool runAsync = false) where TArgs : EventArgs
     {
