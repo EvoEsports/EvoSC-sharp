@@ -1,4 +1,5 @@
-﻿using EvoSC.Commands.Interfaces;
+﻿using System.Reflection;
+using EvoSC.Commands.Interfaces;
 
 namespace EvoSC.Commands;
 
@@ -8,6 +9,8 @@ public class ChatCommandBuilder
     private string _description;
     private string? _permission;
     private List<string> _aliases;
+    private Type _controllerType;
+    private MethodInfo _handlerMethod;
 
     /// <summary>
     /// Create a new chat command.
@@ -52,6 +55,20 @@ public class ChatCommandBuilder
         _aliases.Add(alias);
         return this;
     }
+
+    public ChatCommandBuilder WithController(Type controllerType)
+    {
+        _controllerType = controllerType;
+        return this;
+    }
+
+    public ChatCommandBuilder WithController<TController>() => WithController(typeof(TController));
+
+    public ChatCommandBuilder WithHandlerMethod(MethodInfo method)
+    {
+        _handlerMethod = method;
+        return this;
+    }
     
     public IChatCommand Build()
     {
@@ -65,11 +82,24 @@ public class ChatCommandBuilder
             throw new InvalidOperationException("Chat command description must be set.");
         }
         
+        if (_controllerType == null)
+        {
+            throw new InvalidOperationException("Chat command controller type must be set.");
+        }
+        
+        if (_handlerMethod == null)
+        {
+            throw new InvalidOperationException("Chat command handler method type must be set.");
+        }
+        
         return new ChatCommand
         {
             Name = _name,
             Description = _description,
-            Permission = _permission
+            Permission = _permission,
+            Aliases = _aliases,
+            ControllerType = _controllerType,
+            HandlerMethod = _handlerMethod
         };
     }
 }

@@ -19,11 +19,13 @@ public class ChatCommandManager : IChatCommandManager
 
     private readonly ILogger<ChatCommandManager> _logger;
     private readonly IEventManager _events;
+    private readonly IControllerManager _controllers;
 
-    public ChatCommandManager(ILogger<ChatCommandManager> logger, IEventManager events)
+    public ChatCommandManager(ILogger<ChatCommandManager> logger, IEventManager events, IControllerManager controllers)
     {
         _logger = logger;
         _events = events;
+        _controllers = controllers;
         _cmds = new Dictionary<string, IChatCommand>();
         
         _events.Subscribe(builder => builder
@@ -37,6 +39,9 @@ public class ChatCommandManager : IChatCommandManager
 
     public Task OnPlayerChatEvent(object sender, PlayerChatEventArgs args)
     {
+        // parse
+        // execute
+        // handle errors
         _logger.LogInformation("hello from chat commands manager");
         return Task.CompletedTask;
     }
@@ -61,7 +66,9 @@ public class ChatCommandManager : IChatCommandManager
                 builder
                     .WithName(cmdAttr.Name)
                     .WithDescription(cmdAttr.Description)
-                    .WithPermission(cmdAttr.Permission);
+                    .WithPermission(cmdAttr.Permission)
+                    .WithHandlerMethod(method)
+                    .WithController(controllerType);
 
                 foreach (var alias in aliasAttrs)
                 {
