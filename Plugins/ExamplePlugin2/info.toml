@@ -1,9 +1,0 @@
-[info]
-name = "ExamplePlugin2"
-title = "Example Plugin 2"
-version = "1.0.0"
-author = "Evo"
-summary = "An example plugin 2 to show how it all works."
-test = 2
-
-[dependencies]
