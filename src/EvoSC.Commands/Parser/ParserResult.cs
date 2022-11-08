@@ -9,7 +9,7 @@ public class ParserResult : IParserResult
     public bool Success { get; init; }
     public Exception Exception { get; }
 
-    public ParserResult(IChatCommand? cmd, IEnumerable<object> args, bool success, Exception ex=null)
+    public ParserResult(IChatCommand? cmd, IEnumerable<object> args, bool success, Exception ex)
     {
         Command = cmd;
         Arguments = args;
