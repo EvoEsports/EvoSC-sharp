@@ -9,7 +9,7 @@ public class ChatCommandBuilder
     private string _name;
     private string _description;
     private string? _permission;
-    private List<string> _aliases;
+    private Dictionary<string, ICommandAlias> _aliases;
     private Type _controllerType;
     private MethodInfo _handlerMethod;
     private List<ICommandParameter> _parameters;
@@ -20,7 +20,7 @@ public class ChatCommandBuilder
     /// </summary>
     public ChatCommandBuilder()
     {
-        _aliases = new List<string>();
+        _aliases = new Dictionary<string, ICommandAlias>();
         _parameters = new List<ICommandParameter>();
         _usePrefix = true;
     }
@@ -34,7 +34,7 @@ public class ChatCommandBuilder
         _name = cmd.Name;
         _description = cmd.Description;
         _permission = cmd.Permission;
-        _aliases = cmd.Aliases.ToList();
+        _aliases = cmd.Aliases;
         _parameters = cmd.Parameters.ToList();
     }
 
@@ -56,11 +56,13 @@ public class ChatCommandBuilder
         return this;
     }
 
-    public ChatCommandBuilder AddAlias(string alias)
+    public ChatCommandBuilder AddAlias(ICommandAlias alias)
     {
-        _aliases.Add(alias);
+        _aliases.Add(alias.Name, alias);
         return this;
     }
+
+    public ChatCommandBuilder AddAlias(string name, params object[] args) => AddAlias(new CommandAlias(name, args));
 
     public ChatCommandBuilder WithController(Type controllerType)
     {

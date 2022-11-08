@@ -62,7 +62,7 @@ public class ChatCommandManager : IChatCommandManager
 
                 foreach (var alias in aliasAttrs)
                 {
-                    builder.AddAlias(alias.Alias);
+                    builder.AddAlias(new CommandAlias(alias));
                 }
             });
         }
@@ -86,15 +86,15 @@ public class ChatCommandManager : IChatCommandManager
         if (cmd.Aliases != null)
         {
             var prefix = cmd.UsePrefix ? CommandPrefix : "";
-            foreach (var alias in cmd.Aliases)
+            foreach (var (aliasName, alias) in cmd.Aliases)
             {
-                if (_aliasMap.ContainsKey(alias))
+                if (_aliasMap.ContainsKey(aliasName))
                 {
                     throw new InvalidOperationException(
                         $"Chat command {cmd.Name} tried to register an alias '{alias}' which already exists.");
                 }
 
-                _aliasMap[alias] = prefix + cmd.Name;
+                _aliasMap[aliasName] = prefix + cmd.Name;
             }
         }
     }

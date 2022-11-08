@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Controllers;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
@@ -17,21 +18,48 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [Controller]
-public class ExampleController : EvoScController<IControllerContext>
+public class ExampleController : EvoScController<ChatCommandContext>
 {
     private readonly IMySettings _settings;
     private readonly IServerClient _server;
+    private readonly IChatCommandManager _chatCommands;
     
-    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server)
+    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server, IChatCommandManager chatCommands)
     {
         _settings = settings;
         _server = server;
+        _chatCommands = chatCommands;
     }
     
-    [ChatCommand("hey", "Add map from TMX.")]
-    [CommandAlias("//addmap")]
-    public async Task TmxAddMap([Description("The TMX ID of the map to add.")] string mxId)
+    [ChatCommand("hey", "Say hey!")]
+    public async Task TmxAddMap(string name)
     {
-        await _server.SendChatMessage($"hello, {mxId}!");
+        await _server.SendChatMessage($"hello, {name}!");
+    }
+
+    [ChatCommand("ratemap", "Rate the current map.")]
+    [CommandAlias("+++", 100)]
+    [CommandAlias("++", 80)]
+    [CommandAlias("+", 60)]
+    [CommandAlias("-", 40)]
+    [CommandAlias("--", 20)]
+    [CommandAlias("---", 0)]
+    public async Task RateMap(int rating)
+    {
+        if (rating < 0 || rating > 100)
+        {
+            await _server.SendChatMessage("Rating must be between 0 and 100 inclusively.");
+        }
+        else
+        {
+            await _server.SendChatMessage($"Your rating: {rating}");
+        }
+    }
+
+    [ChatCommand("test", "Some testing.")]
+    [CommandAlias("testAlias", 10)]
+    public async Task TestCommand(int arg1, int arg2)
+    {
+        await _server.SendChatMessage($"Args: {arg1}, {arg2}");
     }
 }

@@ -5,10 +5,12 @@ namespace EvoSC.Commands.Attributes;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class CommandAliasAttribute : Attribute
 {
-    public string Alias { get; }
+    public string Name { get; }
+    public object[] Arguments { get; }
 
-    public CommandAliasAttribute(string alias)
+    public CommandAliasAttribute(string name, params object[] args)
     {
-        Alias = alias;
+        Name = name;
+        Arguments = args;
     }
 }

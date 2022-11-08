@@ -37,7 +37,7 @@ public class ChatCommandParser
             }
 
             parts = parts[1..];
-            var args = await ConvertArguments(cmd, parts, intendedCommand);
+            var args = await ConvertArguments(cmd, parts, intendedCommand ? null : cmdAlias);
 
             return new ParserResult(cmd, args, true);
         }
@@ -47,13 +47,25 @@ public class ChatCommandParser
         }
     }
 
-    private async Task<List<object>> ConvertArguments(IChatCommand cmd, string[] parts, bool intendedCommand)
+    private async Task<List<object>> ConvertArguments(IChatCommand cmd, string[] parts, string aliasName=null)
     {
         var requiredCount = cmd.Parameters.Count(p => !p.Optional);
+        var aliasArgCount = 0;
+        var convertedArgs = new List<object>();
+
+        if (aliasName != null)
+        {
+            // pre-add alias's default arguments
+            var alias = cmd.Aliases[aliasName];
+            convertedArgs.AddRange(alias.DefaultArgs);
+            aliasArgCount = alias.DefaultArgs.Length;
+        }
+        
+        requiredCount -= aliasArgCount;
         
         if (requiredCount > parts.Length)
         {
-            throw new NotEnoughArgumentsException(requiredCount, intendedCommand);
+            throw new NotEnoughArgumentsException(requiredCount, true);
         }
 
         // combine last parameters if the input args are bigger than par count and last par is string
@@ -62,19 +74,17 @@ public class ChatCommandParser
             parts[cmd.Parameters.Length - 1] = string.Join(' ', parts[(cmd.Parameters.Length - 1)..]);
         }
 
-        var convertedArgs = new List<object>();
-        
-        for (int i = 0; i < cmd.Parameters.Length; i++)
+        for (int i = aliasArgCount; i < cmd.Parameters.Length; i++)
         {
             var parameter = cmd.Parameters[i];
             try
             {
-                var value = await _valueReader.ConvertValue(parameter.Type, parts[i]);
+                var value = await _valueReader.ConvertValue(parameter.Type, parts[i - aliasArgCount]);
                 convertedArgs.Add(value);
             }
             catch (FormatException e)
             {
-                throw new InvalidCommandArgumentException(parameter.Type.Name ?? "<unknown>", intendedCommand);
+                throw new InvalidCommandArgumentException(parameter.Name ?? "<unknown>", true);
             }
         }
 
