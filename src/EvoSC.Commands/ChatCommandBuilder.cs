@@ -28,7 +28,7 @@ public class ChatCommandBuilder
     /// <summary>
     /// Modify an existing chat command.
     /// </summary>
-    /// <param name="cmd"></param>
+    /// <param name="cmd">The existing command to modify.</param>
     public ChatCommandBuilder(IChatCommand cmd)
     {
         _name = cmd.Name;
