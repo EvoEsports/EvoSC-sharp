@@ -11,6 +11,7 @@ public class AddPlayersTable : Migration
             .WithColumn("Id").AsInt32().PrimaryKey().Identity()
             .WithColumn("Login").AsString().Unique()
             .WithColumn("UbisoftName").AsString().Indexed()
+            .WithColumn("NickName").AsString()
             .WithColumn("Zone").AsString().Nullable()
             .WithColumn("LastVisit").AsDateTime().Nullable()
             .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)

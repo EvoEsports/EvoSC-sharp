@@ -1,27 +1,16 @@
 ﻿using Dapper.Contrib.Extensions;
+using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Database.Models;
 
 [Table("players")]
-public class DbPlayer
+public class DbPlayer : IPlayer
 {
     /// <summary>
     /// Database ID of the player.
     /// </summary>
     [Key]
     public long Id { get; set; }
-    /// <summary>
-    /// Player's account login, unique and can't change.
-    /// </summary>
-    public string Login { get; set; }
-    /// <summary>
-    /// The known ubisoft name of the player, may change.
-    /// </summary>
-    public string UbisoftName { get; set; }
-    /// <summary>
-    /// The zone/location path of a player.
-    /// </summary>
-    public string Zone { get; set; }
     /// <summary>
     /// Time at which the player was last seen on the server.
     /// </summary>
@@ -34,4 +23,9 @@ public class DbPlayer
     /// Time at which the player was updated the last time in the database.
     /// </summary>
     public DateTime UpdatedAt { get; set; }
+
+    public string AccountId { get; set; }
+    public string NickName { get; set; }
+    public string UbisoftName { get; set; }
+    public string Zone { get; set; }
 }

@@ -2,12 +2,16 @@
 using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Commands.Parser;
+using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Parsing;
+using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
+using EvoSC.Common.Util;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 using StringReader = EvoSC.Common.TextParsing.ValueReaders.StringReader;
@@ -62,7 +66,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
             }
             
             var message = $"Error: {result.Exception.Message}";
-            await _serverClient.Remote.ChatSendServerMessageToLoginAsync($"Error: {message}", playerLogin);
+            await _serverClient.SendChatMessage($"Error: {message}", playerLogin);
         }
         else
         {
@@ -71,8 +75,30 @@ public class CommandInteractionHandler : ICommandInteractionHandler
                 result.Exception.StackTrace);
         }
     }
+
+    private async Task ExecuteCommand(IChatCommand cmd, object[] args, PlayerChatEventArgs eventArgs)
+    {
+        var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
+        
+        // todo: use player service for this instead
+        var onlinePlayerInfo = await _serverClient.Remote.GetDetailedPlayerInfoAsync(eventArgs.Login);
+        var player = new OnlinePlayer
+        {
+            AccountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login),
+            NickName = onlinePlayerInfo.NickName,
+            UbisoftName = onlinePlayerInfo.NickName,
+            Zone = onlinePlayerInfo.Path,
+            State = onlinePlayerInfo.IsSpectator ? PlayerState.Spectating : PlayerState.Playing
+        };
+
+        var playerInteractionContext = new PlayerInteractionContext(player, context);
+        controller.SetContext(playerInteractionContext);
+
+        var task = (Task)cmd.HandlerMethod.Invoke(controller, args);
+        await task;
+    }
     
-    public async Task OnPlayerChatEvent(object sender, PlayerChatEventArgs args)
+    public async Task OnPlayerChatEvent(object sender, PlayerChatEventArgs eventArgs)
     {
         // parse
         // execute
@@ -80,18 +106,15 @@ public class CommandInteractionHandler : ICommandInteractionHandler
 
         try
         {
-            var parserResult = await _parser.Parse(args.Text);
+            var parserResult = await _parser.Parse(eventArgs.Text);
 
             if (parserResult.Success)
             {
-                var (controller, context) = _controllers.CreateInstance(parserResult.Command.ControllerType);
-                var task = (Task)parserResult.Command.HandlerMethod.Invoke(controller,
-                    parserResult.Arguments.ToArray());
-                await task;
+                await ExecuteCommand(parserResult.Command, parserResult.Arguments.ToArray(), eventArgs);
             }
             else if (parserResult.Exception != null)
             {
-                await HandleUserErrors(parserResult, args.Login);
+                await HandleUserErrors(parserResult, eventArgs.Login);
             }
             else
             {

@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Util;
 
@@ -20,6 +21,9 @@ public static class ServerClientExtensions
     /// <param name="message"></param>
     /// <param name="login"></param>
     /// <returns></returns>
+    public static Task SendChatMessage(this IServerClient server, string message, IPlayer player) =>
+        server.Remote.ChatSendServerMessageToLoginAsync(message, PlayerUtils.ConvertAccountIdToLogin(player.AccountId));
+    
     public static Task SendChatMessage(this IServerClient server, string message, string login) =>
         server.Remote.ChatSendServerMessageToLoginAsync(message, login);
 }

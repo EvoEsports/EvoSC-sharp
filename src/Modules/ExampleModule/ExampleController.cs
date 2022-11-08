@@ -14,11 +14,12 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
+using Container = SimpleInjector.Container;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [Controller]
-public class ExampleController : EvoScController<ChatCommandContext>
+public class ExampleController : EvoScController<PlayerInteractionContext>
 {
     private readonly IMySettings _settings;
     private readonly IServerClient _server;
@@ -34,7 +35,7 @@ public class ExampleController : EvoScController<ChatCommandContext>
     [ChatCommand("hey", "Say hey!")]
     public async Task TmxAddMap(string name)
     {
-        await _server.SendChatMessage($"hello, {name}!");
+        await _server.SendChatMessage($"hello, {name}!", Context.Player);
     }
 
     [ChatCommand("ratemap", "Rate the current map.")]
@@ -48,7 +49,7 @@ public class ExampleController : EvoScController<ChatCommandContext>
     {
         if (rating < 0 || rating > 100)
         {
-            await _server.SendChatMessage("Rating must be between 0 and 100 inclusively.");
+            await _server.SendChatMessage("Rating must be between 0 and 100 inclusively.", Context.Player);
         }
         else
         {
@@ -60,6 +61,6 @@ public class ExampleController : EvoScController<ChatCommandContext>
     [CommandAlias("testAlias", 10)]
     public async Task TestCommand(int arg1, int arg2)
     {
-        await _server.SendChatMessage($"Args: {arg1}, {arg2}");
+        await _server.SendChatMessage($"Args: {arg1}, {arg2}", Context.Player);
     }
 }

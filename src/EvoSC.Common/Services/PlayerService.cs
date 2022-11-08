@@ -29,13 +29,14 @@ public class PlayerService : IPlayerService
         return player?.FirstOrDefault();
     }
 
-    public async Task<DbPlayer> NewPlayer(string login, string ubisoftName, string? zone = null)
+    public async Task<DbPlayer> NewPlayer(string accountId, string ubisoftName, string? zone = null)
     {
         var newPlayer = new DbPlayer
         {
-            Login = login,
+            AccountId = accountId,
             UbisoftName = ubisoftName,
             Zone = zone,
+            NickName = ubisoftName,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
