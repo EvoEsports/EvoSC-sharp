@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Commands.Parser;
 using EvoSC.Common.Events;
@@ -72,7 +73,7 @@ public class ChatCommandManager : IChatCommandManager
     {
         if (_cmds.ContainsKey(cmd.Name))
         {
-            throw new InvalidOperationException($"Chat command with name '{cmd.Name}' already exists.");
+            throw new DuplicateChatCommandException(cmd.Name);
         }
 
         var lookupName = (cmd.UsePrefix ? CommandPrefix : "") + cmd.Name;
@@ -90,8 +91,7 @@ public class ChatCommandManager : IChatCommandManager
             {
                 if (_aliasMap.ContainsKey(aliasName))
                 {
-                    throw new InvalidOperationException(
-                        $"Chat command {cmd.Name} tried to register an alias '{alias}' which already exists.");
+                    throw new DuplicateChatCommandException(alias.Name);
                 }
 
                 _aliasMap[aliasName] = prefix + cmd.Name;
