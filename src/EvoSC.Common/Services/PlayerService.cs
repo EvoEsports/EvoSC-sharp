@@ -34,7 +34,7 @@ public class PlayerService : IPlayerService
         return player?.FirstOrDefault();
     }
 
-    public async Task<DbPlayer> NewPlayer(string accountId, string ubisoftName, string? zone = null)
+    public async Task<DbPlayer> NewPlayer(string accountId, string ubisoftName, string? zone)
     {
         var newPlayer = new DbPlayer
         {
@@ -49,6 +49,8 @@ public class PlayerService : IPlayerService
         var id = await _db.InsertAsync(newPlayer);
         return await GetPlayerById(id);
     }
+
+    public Task<DbPlayer> NewPlayer(string login, string ubisoftName) => NewPlayer(login, ubisoftName, null);
 
     public Task<bool> UpdatePlayer(DbPlayer player)
     {

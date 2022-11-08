@@ -72,17 +72,21 @@ public class EventSubscriptionBuilder
         return this;
     }
 
-    public EventSubscriptionBuilder AsAsync(bool runAsync = true)
+    public EventSubscriptionBuilder AsAsync(bool runAsync)
     {
         _runAsync = runAsync;
         return this;
     }
 
-    public EventSubscriptionBuilder AsController(bool isController = true)
+    public EventSubscriptionBuilder AsAsync() => AsAsync(true);
+
+    public EventSubscriptionBuilder AsController(bool isController)
     {
         _isController = isController;
         return this;
     }
+
+    public EventSubscriptionBuilder AsController() => AsController(true);
     
     public EventSubscription Build()
     {

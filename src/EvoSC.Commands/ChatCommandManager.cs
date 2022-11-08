@@ -20,7 +20,7 @@ namespace EvoSC.Commands;
 
 public class ChatCommandManager : IChatCommandManager
 {
-    public const string CommandPrefix = "/";
+    public static string CommandPrefix = "/";
     
     public Dictionary<string, IChatCommand> _cmds;
     public Dictionary<string, string> _aliasMap;
@@ -106,7 +106,9 @@ public class ChatCommandManager : IChatCommandManager
         AddCommand(builder.Build());
     }
 
-    public IChatCommand FindCommand(string alias, bool withPrefix=true)
+    public IChatCommand FindCommand(string alias) => FindCommand(alias, true);
+
+    public IChatCommand FindCommand(string alias, bool withPrefix)
     {
         var lookupName = (withPrefix ? CommandPrefix : "") + alias;
         

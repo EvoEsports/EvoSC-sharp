@@ -23,7 +23,14 @@ public interface IPlayerService
     /// <param name="ubisoftName"></param>
     /// <param name="zone"></param>
     /// <returns></returns>
-    public Task<DbPlayer> NewPlayer(string login, string ubisoftName, string? zone=null);
+    public Task<DbPlayer> NewPlayer(string login, string ubisoftName, string? zone);
+    /// <summary>
+    /// Create a new player in the database and return the new player object.
+    /// </summary>
+    /// <param name="login"></param>
+    /// <param name="ubisoftName"></param>
+    /// <returns></returns>
+    public Task<DbPlayer> NewPlayer(string login, string ubisoftName);
     /// <summary>
     /// Update a player's database entry.
     /// </summary>
