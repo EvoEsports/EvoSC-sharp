@@ -25,7 +25,7 @@ public class ChatCommandAttribute : Attribute
     /// </summary>
     public bool UsePrefix { get; }
 
-    public ChatCommandAttribute(string name, string description, string? permission=null, bool usePrefix=true)
+    public ChatCommandAttribute(string name, string description, string? permission, bool usePrefix)
     {
         if (description.Trim() == string.Empty)
         {
@@ -36,6 +36,15 @@ public class ChatCommandAttribute : Attribute
         Description = description;
         Permission = permission;
         UsePrefix = usePrefix;
+    }
+
+    public ChatCommandAttribute(string name, string description, string? permission = null) : this(name, description,
+        permission, true)
+    {
+    }
+
+    public ChatCommandAttribute(string name, string description) : this(name, description, null, true)
+    {
     }
 }
 
