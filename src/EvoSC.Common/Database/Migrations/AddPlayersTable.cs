@@ -9,7 +9,7 @@ public class AddPlayersTable : Migration
     {
         Create.Table("Players")
             .WithColumn("Id").AsInt32().PrimaryKey().Identity()
-            .WithColumn("Login").AsString().Unique()
+            .WithColumn("AccountId").AsString().Unique()
             .WithColumn("UbisoftName").AsString().Indexed()
             .WithColumn("NickName").AsString()
             .WithColumn("Zone").AsString().Nullable()

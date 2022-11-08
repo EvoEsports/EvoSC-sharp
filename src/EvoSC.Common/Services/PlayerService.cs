@@ -3,6 +3,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Util;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
@@ -23,8 +24,12 @@ public class PlayerService : IPlayerService
 
     public async Task<DbPlayer> GetPlayerByLogin(string login)
     {
-        var query = "select * from `players` where `Login`=@Login limit 1";
-        var player = await _db.QueryAsync<DbPlayer>(query, new {Login = login});
+        var query = "select * from `players` where `AccountId`=@AccountId limit 1";
+        var player =
+            await _db.QueryAsync<DbPlayer>(query, new
+            {
+                AccountId = PlayerUtils.ConvertLoginToAccountId(login)
+            });
 
         return player?.FirstOrDefault();
     }
