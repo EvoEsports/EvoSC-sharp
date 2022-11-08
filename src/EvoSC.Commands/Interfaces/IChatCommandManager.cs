@@ -14,4 +14,11 @@ public interface IChatCommandManager : IControllerActionRegistry
     /// </summary>
     /// <param name="builder"></param>
     public void AddCommand(Action<ChatCommandBuilder> builder);
+
+    /// <summary>
+    /// Find a command by it's name.
+    /// </summary>
+    /// <param name="alias"></param>
+    /// <returns></returns>
+    public IChatCommand FindCommand(string alias, bool withPrefix = true);
 }

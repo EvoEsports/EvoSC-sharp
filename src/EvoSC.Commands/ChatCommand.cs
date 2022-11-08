@@ -11,4 +11,6 @@ public class ChatCommand : IChatCommand
     public IEnumerable<string> Aliases { get; init; }
     public Type ControllerType { get; init; }
     public MethodInfo HandlerMethod { get; init; }
+    public ICommandParameter[] Parameters { get; init; }
+    public bool UsePrefix { get; init; }
 }

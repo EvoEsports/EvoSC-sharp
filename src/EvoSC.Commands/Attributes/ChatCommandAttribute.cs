@@ -20,11 +20,13 @@ public class ChatCommandAttribute : Attribute
     /// The permission required to execute this command.
     /// </summary>
     public string? Permission { get; }
+    /// <summary>
+    /// Do not automatically prefix the command with the command prefix.
+    /// </summary>
+    public bool UsePrefix { get; }
 
-    public ChatCommandAttribute(string name, string description, string? permission=null)
+    public ChatCommandAttribute(string name, string description, string? permission=null, bool usePrefix=true)
     {
-        CommandUtils.ValidateCommandName(name);
-
         if (description.Trim() == string.Empty)
         {
             throw new ArgumentException("Command description cannot be empty.", "description");
@@ -33,6 +35,7 @@ public class ChatCommandAttribute : Attribute
         Name = name;
         Description = description;
         Permission = permission;
+        UsePrefix = usePrefix;
     }
 }
 

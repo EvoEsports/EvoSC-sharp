@@ -10,4 +10,6 @@ public interface IChatCommand
     public IEnumerable<string> Aliases { get; }
     public Type ControllerType { get; }
     public MethodInfo HandlerMethod { get; }
+    public ICommandParameter[] Parameters { get; }
+    public bool UsePrefix { get; }
 }

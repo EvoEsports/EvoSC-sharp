@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using EvoSC.Commands.Interfaces;
 
 namespace EvoSC.Commands;
@@ -11,6 +12,8 @@ public class ChatCommandBuilder
     private List<string> _aliases;
     private Type _controllerType;
     private MethodInfo _handlerMethod;
+    private List<ICommandParameter> _parameters;
+    private bool _usePrefix;
 
     /// <summary>
     /// Create a new chat command.
@@ -18,6 +21,8 @@ public class ChatCommandBuilder
     public ChatCommandBuilder()
     {
         _aliases = new List<string>();
+        _parameters = new List<ICommandParameter>();
+        _usePrefix = true;
     }
 
     /// <summary>
@@ -30,6 +35,7 @@ public class ChatCommandBuilder
         _description = cmd.Description;
         _permission = cmd.Permission;
         _aliases = cmd.Aliases.ToList();
+        _parameters = cmd.Parameters.ToList();
     }
 
     public ChatCommandBuilder WithName(string name)
@@ -69,6 +75,40 @@ public class ChatCommandBuilder
         _handlerMethod = method;
         return this;
     }
+
+    public ChatCommandBuilder WithHandlerMethod(Action method) => WithHandlerMethod(method.Method);
+    public ChatCommandBuilder WithHandlerMethod<T>(Action<T> method) => WithHandlerMethod(method.Method);
+    public ChatCommandBuilder WithHandlerMethod<T1, T2>(Action<T1, T2> method) => WithHandlerMethod(method.Method);
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3>(Action<T1, T2, T3> method) => WithHandlerMethod(method.Method);
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method) => WithHandlerMethod(method.Method);
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> method) => WithHandlerMethod(method.Method);
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4, T5, T6>(Action<T1, T2, T3, T4, T5, T6> method) => WithHandlerMethod(method.Method);
+
+    public ChatCommandBuilder AddParameter(ICommandParameter parameter)
+    {
+        _parameters.Add(parameter);
+        return this;
+    }
+
+    public ChatCommandBuilder AddParameter(ParameterInfo parInfo)
+    {
+        var descAttr = parInfo.GetCustomAttribute<DescriptionAttribute>();
+
+        AddParameter(new CommandParameter(
+            parInfo,
+            descAttr == null ? null : descAttr.Description
+        ));
+
+        return this;
+    }
+
+    public ChatCommandBuilder UsePrefix(bool usePrefix)
+    {
+        _usePrefix = usePrefix;
+        return this;
+    }
+
+    public ChatCommandBuilder WithNoPrefix() => UsePrefix(false);
     
     public IChatCommand Build()
     {
@@ -91,6 +131,11 @@ public class ChatCommandBuilder
         {
             throw new InvalidOperationException("Chat command handler method type must be set.");
         }
+
+        foreach (var param in _handlerMethod.GetParameters())
+        {
+            AddParameter(param);
+        }
         
         return new ChatCommand
         {
@@ -99,7 +144,9 @@ public class ChatCommandBuilder
             Permission = _permission,
             Aliases = _aliases,
             ControllerType = _controllerType,
-            HandlerMethod = _handlerMethod
+            HandlerMethod = _handlerMethod,
+            Parameters = _parameters.ToArray(),
+            UsePrefix = _usePrefix
         };
     }
 }

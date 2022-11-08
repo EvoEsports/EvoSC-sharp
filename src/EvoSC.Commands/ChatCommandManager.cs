@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
 using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
+using EvoSC.Commands.Parser;
 using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Remote;
 using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
@@ -17,66 +19,21 @@ namespace EvoSC.Commands;
 
 public class ChatCommandManager : IChatCommandManager
 {
+    public const string CommandPrefix = "/";
+    
     public Dictionary<string, IChatCommand> _cmds;
     public Dictionary<string, string> _aliasMap;
 
     private readonly ILogger<ChatCommandManager> _logger;
-    private readonly IEventManager _events;
-    private readonly IControllerManager _controllers;
 
-    public ChatCommandManager(ILogger<ChatCommandManager> logger, IEventManager events, IControllerManager controllers)
+
+    public ChatCommandManager(ILogger<ChatCommandManager> logger)
     {
         _logger = logger;
-        _events = events;
-        _controllers = controllers;
         _cmds = new Dictionary<string, IChatCommand>();
         _aliasMap = new Dictionary<string, string>();
-        
-        _events.Subscribe(builder => builder
-            .WithEvent(GbxRemoteEvent.PlayerChat)
-            .WithInstanceClass<ChatCommandManager>()
-            .WithInstance(this)
-            .WithHandlerMethod<PlayerChatEventArgs>(OnPlayerChatEvent)
-            .AsAsync()
-        );
     }
-
-    public async Task OnPlayerChatEvent(object sender, PlayerChatEventArgs args)
-    {
-        // parse
-        // execute
-        // handle errors
-
-        if (!args.Text.StartsWith("/"))
-        {
-            return;
-        }
-
-        var cmdArgs = args.Text.Substring(1).Split(" ");
-        var cmdName = cmdArgs[0];
-        var argValues = new List<object>();
-
-        var valueReader = new ValueReaderManager();
-        valueReader.AddReader(new StringReader());
-        
-        for (int i = 1; i < cmdArgs.Length; i++)
-        {
-            argValues.Add(await valueReader.ConvertValue(typeof(string), cmdArgs[i]));
-        }
-
-        if (!_cmds.ContainsKey(cmdName))
-        {
-            _logger.LogError("Command not found!");
-            return;
-        }
-
-        var cmd = _cmds[cmdName];
-        var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
-        var task = (Task)cmd.HandlerMethod.Invoke(controller, argValues.ToArray());
-
-        _logger.LogInformation("hello from chat commands manager");
-    }
-
+    
     public void RegisterForController(Type controllerType)
     {
         var methods = controllerType.GetMethods(ReflectionUtils.InstanceMethods);
@@ -91,6 +48,7 @@ public class ChatCommandManager : IChatCommandManager
             }
 
             var aliasAttrs = method.GetCustomAttributes<CommandAliasAttribute>();
+            var prefix = cmdAttr.UsePrefix ? CommandPrefix : "";
 
             AddCommand(builder =>
             {
@@ -99,7 +57,8 @@ public class ChatCommandManager : IChatCommandManager
                     .WithDescription(cmdAttr.Description)
                     .WithPermission(cmdAttr.Permission)
                     .WithHandlerMethod(method)
-                    .WithController(controllerType);
+                    .WithController(controllerType)
+                    .UsePrefix(cmdAttr.UsePrefix);
 
                 foreach (var alias in aliasAttrs)
                 {
@@ -116,15 +75,17 @@ public class ChatCommandManager : IChatCommandManager
             throw new InvalidOperationException($"Chat command with name '{cmd.Name}' already exists.");
         }
 
+        var lookupName = (cmd.UsePrefix ? CommandPrefix : "") + cmd.Name;
         
         MapCommandAliases(cmd);
-        _cmds[cmd.Name] = cmd;
+        _cmds[lookupName] = cmd;
     }
 
     private void MapCommandAliases(IChatCommand cmd)
     {
         if (cmd.Aliases != null)
         {
+            var prefix = cmd.UsePrefix ? CommandPrefix : "";
             foreach (var alias in cmd.Aliases)
             {
                 if (_aliasMap.ContainsKey(alias))
@@ -133,7 +94,7 @@ public class ChatCommandManager : IChatCommandManager
                         $"Chat command {cmd.Name} tried to register an alias '{alias}' which already exists.");
                 }
 
-                _aliasMap[alias] = cmd.Name;
+                _aliasMap[alias] = prefix + cmd.Name;
             }
         }
     }
@@ -143,5 +104,22 @@ public class ChatCommandManager : IChatCommandManager
         var builder = new ChatCommandBuilder();
         builderAction(builder);
         AddCommand(builder.Build());
+    }
+
+    public IChatCommand FindCommand(string alias, bool withPrefix=true)
+    {
+        var lookupName = (withPrefix ? CommandPrefix : "") + alias;
+        
+        if (_cmds.ContainsKey(lookupName))
+        {
+            return _cmds[lookupName];
+        }
+
+        if (_aliasMap.ContainsKey(alias))
+        {
+            return _cmds[_aliasMap[alias]];
+        }
+
+        return null;
     }
 }
