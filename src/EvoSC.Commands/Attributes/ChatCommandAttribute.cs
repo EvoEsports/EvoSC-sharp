@@ -38,7 +38,7 @@ public class ChatCommandAttribute : Attribute
         UsePrefix = usePrefix;
     }
 
-    public ChatCommandAttribute(string name, string description, string? permission = null) : this(name, description,
+    public ChatCommandAttribute(string name, string description, string permission) : this(name, description,
         permission, true)
     {
     }
