@@ -20,7 +20,7 @@ namespace EvoSC.Commands;
 
 public class ChatCommandManager : IChatCommandManager
 {
-    public static string CommandPrefix = "/";
+    public static readonly string CommandPrefix = "/";
     
     public Dictionary<string, IChatCommand> _cmds;
     public Dictionary<string, string> _aliasMap;

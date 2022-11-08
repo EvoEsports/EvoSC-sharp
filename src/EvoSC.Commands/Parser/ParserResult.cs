@@ -16,4 +16,8 @@ public class ParserResult : IParserResult
         Success = success;
         Exception = ex;
     }
+
+    public ParserResult(IChatCommand? cmd, IEnumerable<object> args, bool success) : this(cmd, args, success, null)
+    {
+    }
 }
