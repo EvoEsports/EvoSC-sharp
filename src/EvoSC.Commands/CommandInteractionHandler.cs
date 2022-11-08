@@ -54,8 +54,13 @@ public class CommandInteractionHandler : ICommandInteractionHandler
 
     async Task HandleUserErrors(IParserResult result, string playerLogin)
     {
-        if (result.Exception as CommandParserException is not null && ((CommandParserException)result.Exception).IntendedCommand)
+        if (result.Exception as CommandParserException is not null)
         {
+            if (!((CommandParserException)result.Exception).IntendedCommand)
+            {
+                return;
+            }
+            
             var message = $"Error: {result.Exception.Message}";
             await _serverClient.Remote.ChatSendServerMessageToLoginAsync($"Error: {message}", playerLogin);
         }
