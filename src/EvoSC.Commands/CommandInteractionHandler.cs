@@ -126,6 +126,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         {
             _logger.LogCritical("A fatal error occured while trying to handle chat command: {Msg} | Stacktrace: {St}",
                 ex.Message, ex.StackTrace);
+            throw ex;
         }
     }
 }
