@@ -3,7 +3,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace EvoSC.Common.Util;
 
-public class PlayerUtils
+public static class PlayerUtils
 {
     /// <summary>
     /// Convert a Trackmania player's account ID to the old "login" format.

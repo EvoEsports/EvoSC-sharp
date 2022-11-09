@@ -13,24 +13,12 @@ namespace EvoSC.Commands.Tests;
 
 public class ChatCommandManagerTests
 {
-    private ILogger<ChatCommandManager> _logger;
-    private IEvoSCApplication _app;
-    private IEventManager _events;
-
     [Controller]
     public class MyController : EvoScController<IControllerContext>
     {
         
     }
 
-    public ChatCommandManagerTests()
-    {
-        _app = new Application(Array.Empty<string>());
-        
-        var eventLogger = LoggerFactory.Create(c => { }).CreateLogger<EventManager>();
-        _events = new EventManager(eventLogger, _app, null);
-    }
-    
     [Fact]
     public void Command_Is_Added()
     {
@@ -41,7 +29,7 @@ public class ChatCommandManagerTests
             .WithHandlerMethod(() => {})
             .Build();
 
-        var cmdManager = new ChatCommandManager(_logger);
+        var cmdManager = new ChatCommandManager(null);
         
         cmdManager.AddCommand(cmd);
 
@@ -60,7 +48,7 @@ public class ChatCommandManagerTests
             .WithHandlerMethod(() => {})
             .Build();
 
-        var cmdManager = new ChatCommandManager(_logger);
+        var cmdManager = new ChatCommandManager(null);
         
         cmdManager.AddCommand(cmd);
 
@@ -80,7 +68,7 @@ public class ChatCommandManagerTests
             .AddAlias("myAlias")
             .Build();
 
-        var cmdManager = new ChatCommandManager(_logger);
+        var cmdManager = new ChatCommandManager(null);
         
         cmdManager.AddCommand(cmd);
 

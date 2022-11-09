@@ -18,10 +18,7 @@ namespace EvoSC.Commands.Tests;
 
 public class CommandParserTests
 {
-    private ILogger<ChatCommandManager> _logger;
-    private IEvoSCApplication _app;
-    private IEventManager _events;
-    private IChatCommandManager _cmdManager;
+    private readonly IChatCommandManager _cmdManager;
 
     [Controller]
     public class MyController : EvoScController<IControllerContext>
@@ -31,11 +28,6 @@ public class CommandParserTests
 
     public CommandParserTests()
     {
-        _app = new Application(Array.Empty<string>());
-        
-        var eventLogger = LoggerFactory.Create(c => { }).CreateLogger<EventManager>();
-        _events = new EventManager(eventLogger, _app, null);
-        
         var cmd = new ChatCommandBuilder()
             .WithName("myCmd")
             .WithDescription("This is my command.")
@@ -43,7 +35,7 @@ public class CommandParserTests
             .WithHandlerMethod(() => {})
             .Build();
 
-        _cmdManager = new ChatCommandManager(_logger);
+        _cmdManager = new ChatCommandManager(null);
         _cmdManager.AddCommand(cmd);
     }
 

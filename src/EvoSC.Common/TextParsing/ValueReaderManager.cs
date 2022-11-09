@@ -46,7 +46,7 @@ public class ValueReaderManager : IValueReaderManager
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
