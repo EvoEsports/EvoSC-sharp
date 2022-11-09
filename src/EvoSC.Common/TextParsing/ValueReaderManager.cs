@@ -44,10 +44,6 @@ public class ValueReaderManager : IValueReaderManager
             {
                 // ignore this exception so we can try the next reader
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
         throw new FormatException();
