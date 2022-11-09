@@ -4,7 +4,7 @@ namespace EvoSC.Commands.Exceptions;
 
 public class CommandParserException : CommandException
 {
-    private bool _intendedCommand;
+    private readonly bool _intendedCommand;
 
     public CommandParserException( bool intendedCommand)
     {

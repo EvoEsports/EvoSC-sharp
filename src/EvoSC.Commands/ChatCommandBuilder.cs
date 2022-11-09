@@ -9,10 +9,10 @@ public class ChatCommandBuilder
     private string _name;
     private string _description;
     private string? _permission;
-    private Dictionary<string, ICommandAlias> _aliases;
+    private readonly Dictionary<string, ICommandAlias> _aliases;
     private Type _controllerType;
     private MethodInfo _handlerMethod;
-    private List<ICommandParameter> _parameters;
+    private readonly List<ICommandParameter> _parameters;
     private bool _usePrefix;
 
     /// <summary>

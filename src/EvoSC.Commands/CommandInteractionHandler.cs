@@ -21,7 +21,6 @@ namespace EvoSC.Commands;
 public class CommandInteractionHandler : ICommandInteractionHandler
 {
     private readonly ILogger<CommandInteractionHandler> _logger;
-    private readonly IEventManager _events;
     private readonly IControllerManager _controllers;
     private readonly IServerClient _serverClient;
     
@@ -30,11 +29,10 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager, IEventManager events, IControllerManager controllers, IServerClient serverClient)
     {
         _logger = logger;
-        _events = events;
         _controllers = controllers;
         _serverClient = serverClient;
         
-        _events.Subscribe(builder => builder
+        events.Subscribe(builder => builder
             .WithEvent(GbxRemoteEvent.PlayerChat)
             .WithInstanceClass<ChatCommandManager>()
             .WithInstance(this)
@@ -126,7 +124,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         {
             _logger.LogCritical("A fatal error occured while trying to handle chat command: {Msg} | Stacktrace: {St}",
                 ex.Message, ex.StackTrace);
-            throw ex;
+            throw;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace EvoSC.Common.TextParsing;
 
 public class ValueReaderManager : IValueReaderManager
 {
-    private Dictionary<Type, List<IValueReader>> _readers = new();
+    private readonly Dictionary<Type, List<IValueReader>> _readers = new();
 
     public void AddReader(IValueReader reader)
     {
@@ -42,6 +42,7 @@ public class ValueReaderManager : IValueReaderManager
             }
             catch (ValueConversionException)
             {
+                // ignore this exception so we can try the next reader
             }
             catch (Exception ex)
             {

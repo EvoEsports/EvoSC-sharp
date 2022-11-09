@@ -9,8 +9,8 @@ public class EventSubscriptionBuilder
     private object? _instance;
     private MethodInfo _handlerMethod;
     private EventPriority _priority = EventPriority.Medium;
-    private bool _runAsync = false;
-    private bool _isController = false;
+    private bool _runAsync;
+    private bool _isController;
 
     public EventSubscriptionBuilder WithEvent(string name)
     {

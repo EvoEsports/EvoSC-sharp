@@ -27,7 +27,11 @@ public class FloatReader : IValueReader
             {
                 return Task.FromResult((object)double.Parse(input, NumberStyles.Any, CultureInfo.InvariantCulture));
             }
-        } catch (Exception ex){}
+        }
+        catch (Exception ex)
+        {
+            // ignore parsing exception so that we can throw ValueConversionException
+        }
 
         throw new ValueConversionException();
     }

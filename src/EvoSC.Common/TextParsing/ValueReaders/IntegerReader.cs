@@ -24,7 +24,7 @@ public class IntegerReader : IValueReader
             if (type == typeof(int))
             {
                 return Task.FromResult((object)int.Parse(input));
-            } 
+            }
             else if (type == typeof(uint))
             {
                 return Task.FromResult((object)uint.Parse(input));
@@ -37,7 +37,11 @@ public class IntegerReader : IValueReader
             {
                 return Task.FromResult((object)ulong.Parse(input));
             }
-        } catch (Exception ex) {}
+        }
+        catch (Exception ex)
+        {
+            // ignore parsing exception so that we can throw ValueConversionException
+        }
 
         throw new ValueConversionException();
     }

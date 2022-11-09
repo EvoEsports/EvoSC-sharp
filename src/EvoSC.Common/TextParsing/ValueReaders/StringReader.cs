@@ -14,6 +14,6 @@ public class StringReader : IValueReader
     
     public Task<object> Read(Type type, string input)
     {
-        return Task.FromResult((object)input.ToString());
+        return Task.FromResult((object)input);
     }
 }

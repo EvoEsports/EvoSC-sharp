@@ -1,4 +1,7 @@
-﻿namespace EvoSC.Common.Util;
+﻿using System.Text;
+using Microsoft.Extensions.Primitives;
+
+namespace EvoSC.Common.Util;
 
 public class PlayerUtils
 {
@@ -28,22 +31,23 @@ public class PlayerUtils
             .Replace("-", "+")
             .Replace("_", "/");
 
+        var sb = new StringBuilder(base64);
         for (int i = 0; i < login.Length % 4; i++)
         {
-            base64 += "=";
+            sb.Append("=");
         }
         
-        var bytes = Convert.FromBase64String(base64);
-        
+        var bytes = Convert.FromBase64String(sb.ToString());
+
         var accountId = Convert.ToHexString(bytes[0..4])
-            + "-"
-            + Convert.ToHexString(bytes[4..6])
-            + "-"
-            + Convert.ToHexString(bytes[6..8])
-            + "-"
-            + Convert.ToHexString(bytes[8..10])
-            + "-"
-            + Convert.ToHexString(bytes[10..16]);
+                        + "-"
+                        + Convert.ToHexString(bytes[4..6])
+                        + "-"
+                        + Convert.ToHexString(bytes[6..8])
+                        + "-"
+                        + Convert.ToHexString(bytes[8..10])
+                        + "-"
+                        + Convert.ToHexString(bytes[10..16]);
 
         return accountId.ToLower();
     }

@@ -22,8 +22,8 @@ public class ChatCommandManager : IChatCommandManager
 {
     public static readonly string CommandPrefix = "/";
     
-    public Dictionary<string, IChatCommand> _cmds;
-    public Dictionary<string, string> _aliasMap;
+    private readonly Dictionary<string, IChatCommand> _cmds;
+    private readonly Dictionary<string, string> _aliasMap;
 
     private readonly ILogger<ChatCommandManager> _logger;
 
@@ -49,7 +49,6 @@ public class ChatCommandManager : IChatCommandManager
             }
 
             var aliasAttrs = method.GetCustomAttributes<CommandAliasAttribute>();
-            var prefix = cmdAttr.UsePrefix ? CommandPrefix : "";
 
             AddCommand(builder =>
             {
