@@ -58,7 +58,7 @@ public class CommandParserTests
         var result = await parser.Parse("/myCmd");
         
         Assert.True(result.Success);
-        Assert.Equal(result.Command.Name, "myCmd");
+        Assert.Equal("myCmd", result.Command.Name);
     }
 
     [Fact]
