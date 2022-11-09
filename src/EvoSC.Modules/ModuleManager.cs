@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using System.Diagnostics;
-using System.Reactive.Linq;
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Config.Stores;

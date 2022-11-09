@@ -39,13 +39,13 @@ public class PlayerController : EvoScController<EventControllerContext>
     private async Task UpdateAndGreetPlayer(string login)
     {
         _myPlayerService.LogIt();
-        
         var player = await _players.GetPlayerByLogin(login);
 
         if (player == null)
         {
             var playerServerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(login);
-            player = await _players.NewPlayer(login, playerServerInfo.NickName, playerServerInfo.Path);
+            var accountId = PlayerUtils.ConvertLoginToAccountId(login);
+            player = await _players.NewPlayer(accountId, playerServerInfo.NickName, playerServerInfo.Path);
             
             await _server.SendChatMessage($"{player.UbisoftName} has joined for the first time.");
         }
