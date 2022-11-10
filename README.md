@@ -1,6 +1,5 @@
 <div align="center"><img src="./images/evosc_full.png" width="60%"></div>
 
-
 # EvoSC#
 
 EvoSC# (spoken: EvoSC Sharp) is a server controller for Trackmania 2020 dedicated servers.
@@ -19,13 +18,11 @@ For a roadmap of planned features and what we're currently working on, have a lo
 
 ## Support
 
-* **WE WILL NOT BE RESPONSIBLE FOR ANY DAMAGE OR DATA LOST DUE TO USAGE OF THIS SOFTWARE.**
+  * **WE WILL NOT BE RESPONSIBLE FOR ANY DAMAGE OR DATA LOST DUE TO USAGE OF THIS SOFTWARE.**
 
+  * **DO NOT USE IN A PRODUCTION SCENARIO, THE SOFTWARE IS STILL HEAVILY IN DEVELOPMENT.**
 
-* **DO NOT USE IN A PRODUCTION SCENARIO, THE SOFTWARE IS STILL HEAVILY IN DEVELOPMENT.**
-
-
-* **DO NOT ASK FOR ASSISTANCE IN USING THE SOFTWARE IN ITS UNFINISHED STATE.**
+  * **DO NOT ASK FOR ASSISTANCE IN USING THE SOFTWARE IN ITS UNFINISHED STATE.**
 
 ## Developing for EvoSC#
 
