@@ -31,7 +31,7 @@ public class ControllerManager : IControllerManager
 
     public void AddController(Type controllerType, Guid moduleId, Container services)
     {
-        var controllerInfo = GetControllerInfo(controllerType);
+        ValidateController(controllerType);
 
         foreach (var registry in _registries)
         {
@@ -45,21 +45,17 @@ public class ControllerManager : IControllerManager
         });
     }
 
-    private ControllerAttribute GetControllerInfo(Type controllerType)
+    private void ValidateController(Type controllerType)
     {
         if (!controllerType.IsControllerClass())
         {
             throw new InvalidControllerClassException("The controller must implement IController.");
         }
 
-        var attr = controllerType.GetCustomAttribute<ControllerAttribute>();
-
-        if (attr == null)
+        if (controllerType.GetCustomAttribute<ControllerAttribute>() == null)
         {
             throw new InvalidControllerClassException("The controller must annotate the Controller attribute.");
         }
-
-        return attr;
     }
 
     public void AddController<TController>(Guid moduleId, Container services) where TController : IController

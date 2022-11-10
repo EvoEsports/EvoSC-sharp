@@ -106,7 +106,7 @@ public class ChatCommandBuilder
 
         AddParameter(new CommandParameter
         {
-            Description = descAttr?.Description ?? descAttr.Description, ParameterInfo = parInfo
+            Description = descAttr?.Description ?? "", ParameterInfo = parInfo
         });
 
         return this;

@@ -33,18 +33,6 @@ public class EventSubscription : IEquatable<EventSubscription>
     /// </summary>
     public bool IsController { get; init; }
 
-    /* public EventSubscription(string name, Type instanceClass, MethodInfo handlerMethod, object? instance = null,
-        EventPriority priority = EventPriority.Medium, bool runAsync = false, bool isController = false)
-    {
-        Name = name;
-        InstanceClass = instanceClass;
-        Instance = instance;
-        HandlerMethod = handlerMethod;
-        Priority = priority;
-        RunAsync = runAsync;
-        IsController = isController;
-    } */
-
     public bool Equals(EventSubscription? other)
     {
         if (ReferenceEquals(null, other))
