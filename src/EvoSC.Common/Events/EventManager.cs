@@ -60,8 +60,8 @@ public class EventManager : IEventManager
         Subscribe(builder.Build());
     }
 
-    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler,
-        EventPriority priority = EventPriority.Medium, bool runAsync = false) where TArgs : EventArgs
+    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority, bool runAsync)
+        where TArgs : EventArgs
     {
         Subscribe(new EventSubscription(
             name,

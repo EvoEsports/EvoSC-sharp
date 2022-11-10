@@ -17,6 +17,7 @@ public interface IEventManager : IControllerActionRegistry
     /// </summary>
     /// <param name="subscription">Builder that provides a way to create the subscription info.</param>
     public void Subscribe(Action<EventSubscriptionBuilder> builder);
+
     /// <summary>
     /// Subscribe to an event given the provided callback handler.
     /// </summary>
@@ -25,7 +26,26 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="priority">Callback priority.</param>
     /// <param name="runAsync">If true, the callback is run in a new thread.</param>
     /// <typeparam name="TArgs"></typeparam>
-    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority=EventPriority.Medium, bool runAsync=false) where TArgs : EventArgs;
+    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority, bool runAsync)
+        where TArgs : EventArgs;
+    /// <summary>
+    /// Subscribe to an event given the provided callback handler.
+    /// </summary>
+    /// <param name="name">The name of the event to subscribe to.</param>
+    /// <param name="handler">The callback method of the subscription.</param>
+    /// <param name="priority">Callback priority.</param>
+    /// <typeparam name="TArgs"></typeparam>
+    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority)
+        where TArgs : EventArgs => Subscribe(name, handler, priority, false);
+    /// <summary>
+    /// Subscribe to an event given the provided callback handler.
+    /// </summary>
+    /// <param name="name">The name of the event to subscribe to.</param>
+    /// <param name="handler">The callback method of the subscription.</param>
+    /// <typeparam name="TArgs"></typeparam>
+    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs =>
+        Subscribe(name, handler, EventPriority.Medium, false);
+
     /// <summary>
     /// Remove an event subscription.
     /// </summary>
