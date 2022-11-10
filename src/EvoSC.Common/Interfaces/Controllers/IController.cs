@@ -7,8 +7,10 @@ public interface IController : IDisposable
     /// </summary>
     /// <param name="context">The context of the action that was executed.</param>
     public void SetContext(IControllerContext context);
+    
     /// <summary>
-    /// Get the action context of this controller instance.
+    /// Get the controller context which is assigned to the current action that instantiated
+    /// the controller.
     /// </summary>
     /// <returns></returns>
     public IControllerContext GetContext();

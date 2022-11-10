@@ -7,7 +7,7 @@ public interface IChatCommandManager : IControllerActionRegistry
     /// <summary>
     /// Register a new chat command.
     /// </summary>
-    /// <param name="cmd">An instance containing registration info about a command.</param>
+    /// <param name="cmd">An instance containing registration info of a command.</param>
     public void AddCommand(IChatCommand cmd);
     /// <summary>
     /// Register a new chat command with a builder action.

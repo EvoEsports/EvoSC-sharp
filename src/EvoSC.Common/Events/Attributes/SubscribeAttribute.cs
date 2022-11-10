@@ -60,12 +60,14 @@ public class SubscribeAttribute : Attribute
     /// </summary>
     /// <param name="name">Must be an enumeration. Name of the event.</param>
     public SubscribeAttribute(object name) : this((name as Enum).GetEventIdentifier()) {}
+    
     /// <summary>
     /// Create a new event subscription.
     /// </summary>
     /// <param name="name">Must be an enumeration. Name of the event.</param>
     /// <param name="priority">Callback priority of the event</param>
     public SubscribeAttribute(object name, EventPriority priority) : this((name as Enum).GetEventIdentifier(), priority) {}
+    
     /// <summary>
     /// Create a new event subscription.
     /// </summary>

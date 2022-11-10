@@ -10,7 +10,7 @@ public enum GbxRemoteEvent
     [EventIdentifier(Name = "GbxRemote.PlayerChat")]
     PlayerChat,
     /// <summary>
-    /// when a player successfully connects to the server.
+    /// When a player successfully connects to the server.
     /// </summary>
     [EventIdentifier(Name = "GbxRemote.PlayerConnect")]
     PlayerConnect,

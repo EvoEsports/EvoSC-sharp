@@ -78,6 +78,9 @@ public class ChatCommandBuilder
         return this;
     }
 
+    /*
+     * Helper methods for adding a an action as a direct reference or lambda.
+     */
     public ChatCommandBuilder WithHandlerMethod(Action method) => WithHandlerMethod(method.Method);
     public ChatCommandBuilder WithHandlerMethod<T>(Action<T> method) => WithHandlerMethod(method.Method);
     public ChatCommandBuilder WithHandlerMethod<T1, T2>(Action<T1, T2> method) => WithHandlerMethod(method.Method);

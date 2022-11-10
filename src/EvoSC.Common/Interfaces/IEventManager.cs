@@ -25,7 +25,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="handler">The callback method of the subscription.</param>
     /// <param name="priority">Callback priority.</param>
     /// <param name="runAsync">If true, the callback is run in a new thread.</param>
-    /// <typeparam name="TArgs"></typeparam>
+    /// <typeparam name="TArgs">The event argument's type.</typeparam>
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority, bool runAsync)
         where TArgs : EventArgs;
     /// <summary>
@@ -34,7 +34,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="name">The name of the event to subscribe to.</param>
     /// <param name="handler">The callback method of the subscription.</param>
     /// <param name="priority">Callback priority.</param>
-    /// <typeparam name="TArgs"></typeparam>
+    /// <typeparam name="TArgs">The event argument's type.</typeparam>
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority)
         where TArgs : EventArgs => Subscribe(name, handler, priority, false);
     /// <summary>
@@ -42,7 +42,7 @@ public interface IEventManager : IControllerActionRegistry
     /// </summary>
     /// <param name="name">The name of the event to subscribe to.</param>
     /// <param name="handler">The callback method of the subscription.</param>
-    /// <typeparam name="TArgs"></typeparam>
+    /// <typeparam name="TArgs">The event argument's type.</typeparam>
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs =>
         Subscribe(name, handler, EventPriority.Medium, false);
 
@@ -56,7 +56,7 @@ public interface IEventManager : IControllerActionRegistry
     /// </summary>
     /// <param name="name">The name of the event.</param>
     /// <param name="handler">Callback handler of the subscription.</param>
-    /// <typeparam name="TArgs"></typeparam>
+    /// <typeparam name="TArgs">The event argument's type.</typeparam>
     public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs;
     /// <summary>
     /// Dispatch an event with event args.

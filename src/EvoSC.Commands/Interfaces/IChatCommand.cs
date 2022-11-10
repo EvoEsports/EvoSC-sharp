@@ -18,7 +18,8 @@ public interface IChatCommand
     public string? Permission { get; }
     /// <summary>
     /// Alternative names or keywords that can be used to execute the command. Aliases can be used to execute
-    /// commands with default arguments or have the user also provide arguments.
+    /// commands with default arguments. If no default arguments are provided for the alias, the user must provide
+    /// all required arguments.
     /// </summary>
     public Dictionary<string, ICommandAlias> Aliases { get; }
     /// <summary>

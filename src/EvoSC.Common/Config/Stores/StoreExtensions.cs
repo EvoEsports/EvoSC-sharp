@@ -9,7 +9,7 @@ public static class StoreExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="path">The path to the config file.</param>
-    /// <typeparam name="TInterface"></typeparam>
+    /// <typeparam name="TInterface">The interface which defines the config options.</typeparam>
     /// <returns></returns>
     public static ConfigurationBuilder<TInterface> UseTomlFile<TInterface>(
         this ConfigurationBuilder<TInterface> builder, string path) where TInterface : class

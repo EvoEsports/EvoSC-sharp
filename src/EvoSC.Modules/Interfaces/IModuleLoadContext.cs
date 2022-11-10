@@ -32,7 +32,7 @@ public interface IModuleLoadContext
     /// </summary>
     public Type? ModuleClass { get; init; }
     /// <summary>
-    /// Meta info about a module-
+    /// Meta info about a module.
     /// </summary>
     public ModuleAttribute ModuleInfo { get; init; }
     /// <summary>
