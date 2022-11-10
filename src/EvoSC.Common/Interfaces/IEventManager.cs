@@ -65,7 +65,14 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="args">Event arguments.</param>
     /// <param name="sender">The entity that triggered the event.</param>
     /// <returns></returns>
-    public Task Raise(string name, EventArgs args, object? sender=null);
+    public Task Raise(string name, EventArgs args, object? sender);
+    /// <summary>
+    /// Dispatch an event with event args.
+    /// </summary>
+    /// <param name="name">Name of the event to dispatch.</param>
+    /// <param name="args">Event arguments.</param>
+    /// <returns></returns>
+    public Task Raise(string name, EventArgs args) => Raise(name, args, null);
     /// <summary>
     /// Dispatch an event with event args.
     /// </summary>
@@ -73,6 +80,14 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="args">Event arguments.</param>
     /// <param name="sender">The entity that triggered the event.</param>
     /// <returns></returns>
-    public Task Raise(Enum name, EventArgs args, object? sender = null) =>
+    public Task Raise(Enum name, EventArgs args, object? sender) =>
         Raise(name.GetEventIdentifier(), args, sender);
+    /// <summary>
+    /// Dispatch an event with event args.
+    /// </summary>
+    /// <param name="name">Name of the event to dispatch.</param>
+    /// <param name="args">Event arguments.</param>
+    /// <returns></returns>
+    public Task Raise(Enum name, EventArgs args) =>
+        Raise(name, args, null);
 }
