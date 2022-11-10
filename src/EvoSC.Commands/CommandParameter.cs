@@ -5,16 +5,6 @@ namespace EvoSC.Commands;
 
 public class CommandParameter : ICommandParameter
 {
-    public string? Description { get; init; }
-    public ParameterInfo ParameterInfo { get; }
-
-    public CommandParameter(ParameterInfo parInfo, string? description)
-    {
-        Description = description;
-        ParameterInfo = parInfo;
-    }
-    
-    public CommandParameter(ParameterInfo parInfo) : this(parInfo, null)
-    {
-    }
+    public required string? Description { get; init; }
+    public required ParameterInfo ParameterInfo { get; init; }
 }

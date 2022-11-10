@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Commands.Exceptions;
 
+/// <summary>
+/// Thrown when a command that does not exist was attempted retrieval.
+/// </summary>
 public class CommandNotFoundException : CommandParserException
 {
     private readonly string _cmdName;

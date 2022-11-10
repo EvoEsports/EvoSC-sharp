@@ -37,8 +37,12 @@ public class ControllerManager : IControllerManager
         {
             registry.RegisterForController(controllerType);
         }
-        
-        _controllers.Add(controllerType, new ControllerInfo(controllerType, moduleId, services));
+
+        _controllers.Add(controllerType, new ControllerInfo
+        {
+            ControllerType = controllerType, ModuleId = moduleId, Services = services
+            
+        });
     }
 
     private ControllerAttribute GetControllerInfo(Type controllerType)

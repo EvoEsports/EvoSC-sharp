@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
-using EvoSC.Commands.Controllers;
 using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
@@ -24,7 +24,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IMySettings _settings;
     private readonly IServerClient _server;
     private readonly IChatCommandManager _chatCommands;
-    
+
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server, IChatCommandManager chatCommands)
     {
         _settings = settings;

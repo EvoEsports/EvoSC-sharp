@@ -17,6 +17,11 @@ public class CliHandler
         _rootCommand = new RootCommand("EvoSC# TrackMania Server Controller.");
     }
 
+    /// <summary>
+    /// Register a command to the command handler.
+    /// </summary>
+    /// <param name="cliCmd">An instance that implements the command.</param>
+    /// <returns></returns>
     public CliHandler RegisterCommand(ICliCommand cliCmd)
     {
         var cmdAttr = GetCommandInfo(cliCmd);
@@ -30,7 +35,7 @@ public class CliHandler
         
         cmd.SetHandler((invocationContext) =>
         {
-            var context = new CliCommandContext(invocationContext, _args);
+            var context = new CliCommandContext {InvocationContext = invocationContext, Args = _args};
             cliCmd.ExecuteAsync(CancellationToken.None, context).GetAwaiter().GetResult();
         });
         
@@ -38,6 +43,10 @@ public class CliHandler
         return this;
     }
 
+    /// <summary>
+    /// Check user input and run the appropriate commands if possible.
+    /// </summary>
+    /// <returns></returns>
     public Task<int> Handle()
     {
         return _rootCommand.InvokeAsync(_args);

@@ -2,6 +2,9 @@
 
 namespace EvoSC.Commands.Exceptions;
 
+/// <summary>
+/// General exception for formatting errors of user input during parsing.
+/// </summary>
 public class InvalidCommandFormatException : CommandParserException
 {
     public InvalidCommandFormatException(bool intendedCommand) : base(intendedCommand)

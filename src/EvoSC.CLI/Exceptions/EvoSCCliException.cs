@@ -2,6 +2,9 @@
 
 namespace EvoSC.CLI.Exceptions;
 
+/// <summary>
+/// General exception for the CLI handler.
+/// </summary>
 public class EvoSCCliException : EvoSCException
 {
     public EvoSCCliException(string? message) : base(message)

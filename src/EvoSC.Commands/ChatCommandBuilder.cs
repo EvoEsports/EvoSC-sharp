@@ -81,10 +81,18 @@ public class ChatCommandBuilder
     public ChatCommandBuilder WithHandlerMethod(Action method) => WithHandlerMethod(method.Method);
     public ChatCommandBuilder WithHandlerMethod<T>(Action<T> method) => WithHandlerMethod(method.Method);
     public ChatCommandBuilder WithHandlerMethod<T1, T2>(Action<T1, T2> method) => WithHandlerMethod(method.Method);
-    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3>(Action<T1, T2, T3> method) => WithHandlerMethod(method.Method);
-    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method) => WithHandlerMethod(method.Method);
-    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> method) => WithHandlerMethod(method.Method);
-    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4, T5, T6>(Action<T1, T2, T3, T4, T5, T6> method) => WithHandlerMethod(method.Method);
+
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3>(Action<T1, T2, T3> method) =>
+        WithHandlerMethod(method.Method);
+
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method) =>
+        WithHandlerMethod(method.Method);
+
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> method) =>
+        WithHandlerMethod(method.Method);
+
+    public ChatCommandBuilder WithHandlerMethod<T1, T2, T3, T4, T5, T6>(Action<T1, T2, T3, T4, T5, T6> method) =>
+        WithHandlerMethod(method.Method);
 
     public ChatCommandBuilder AddParameter(ICommandParameter parameter)
     {
@@ -96,10 +104,10 @@ public class ChatCommandBuilder
     {
         var descAttr = parInfo.GetCustomAttribute<DescriptionAttribute>();
 
-        AddParameter(new CommandParameter(
-            parInfo,
-            descAttr == null ? null : descAttr.Description
-        ));
+        AddParameter(new CommandParameter
+        {
+            Description = descAttr?.Description ?? descAttr.Description, ParameterInfo = parInfo
+        });
 
         return this;
     }

@@ -6,6 +6,9 @@ namespace EvoSC.Common.Config.Models;
 
 public interface IDatabaseConfig
 {
+    /// <summary>
+    /// Database types supported by the application.
+    /// </summary>
     public enum DatabaseType
     {
         MySql

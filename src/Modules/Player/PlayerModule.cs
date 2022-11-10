@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Modules.Official.Player;
 
-[Module("Player", "General player handling.", IsInternal = true)]
+[Module(Name = "Player", Description = "General player handling.", IsInternal = true)]
 public class PlayerModule : EvoScModule
 {
     

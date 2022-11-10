@@ -2,12 +2,12 @@
 
 public class CliCommandAttribute : Attribute
 {
-    public string Name { get; }
-    public string Description { get; }
-
-    public CliCommandAttribute(string name, string description)
-    {
-        Name = name;
-        Description = description;
-    }
+    /// <summary>
+    /// The name of the command.
+    /// </summary>
+    public required string Name { get; init; }
+    /// <summary>
+    /// Description of the command.
+    /// </summary>
+    public required string Description { get; init; }
 }
