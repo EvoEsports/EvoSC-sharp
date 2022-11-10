@@ -94,7 +94,7 @@ public class EventManager : IEventManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public async Task Raise(string name, EventArgs args, object? sender = null)
+    public async Task Raise(string name, EventArgs args, object? sender)
     {
         if (!_subscriptions.ContainsKey(name))
         {
