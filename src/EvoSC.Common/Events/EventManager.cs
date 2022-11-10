@@ -217,7 +217,7 @@ public class EventManager : IEventManager
 
         foreach (var method in methods)
         {
-            var attr = method.GetCustomAttribute<Subscribe>();
+            var attr = method.GetCustomAttribute<SubscribeAttribute>();
 
             if (attr == null)
             {

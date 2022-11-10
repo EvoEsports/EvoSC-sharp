@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using EvoSC.Common.Util;
 
 namespace EvoSC.Common.Events;
 
@@ -17,6 +18,8 @@ public class EventSubscriptionBuilder
         _name = name;
         return this;
     }
+
+    public EventSubscriptionBuilder WithEvent(Enum name) => WithEvent(name.GetEventIdentifier());
 
     public EventSubscriptionBuilder WithInstanceClass(Type classType)
     {

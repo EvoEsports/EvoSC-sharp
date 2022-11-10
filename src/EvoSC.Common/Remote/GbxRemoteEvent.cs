@@ -1,50 +1,63 @@
-﻿namespace EvoSC.Common.Remote;
+﻿using EvoSC.Common.Events.Attributes;
 
-public class GbxRemoteEvent
+namespace EvoSC.Common.Remote;
+
+public enum GbxRemoteEvent
 {
     /// <summary>
     /// When a player sends a message through in-game chat.
     /// </summary>
-    public static readonly string PlayerChat = "GbxRemote.PlayerChat";
+    [EventIdentifier(Name = "GbxRemote.PlayerChat")]
+    PlayerChat,
     /// <summary>
     /// when a player successfully connects to the server.
     /// </summary>
-    public static readonly string PlayerConnect = "GbxRemote.PlayerConnect";
+    [EventIdentifier(Name = "GbxRemote.PlayerConnect")]
+    PlayerConnect,
     /// <summary>
     /// When a player disconnects from the server.
     /// </summary>
     /// <returns></returns>
-    public static readonly string PlayerDisconnect = "GbxRemote.PlayerDisconnect";
+    [EventIdentifier(Name = "GbxRemote.PlayerDisconnect")]
+    PlayerDisconnect,
     /// <summary>
     /// When a player's state has changed.
     /// </summary>
-    public static readonly string PlayerInfoChanged = "GbxRemote.PlayerInfoChanged";
+    [EventIdentifier(Name = "GbxRemote.PlayerInfoChanged")]
+    PlayerInfoChanged,
     /// <summary>
     /// When a map has ended.
     /// </summary>
-    public static readonly string EndMap = "GbxRemote.EndMap";
+    [EventIdentifier(Name = "GbxRemote.EndMap")]
+    EndMap,
     /// <summary>
     /// When the match has ended.
     /// </summary>
-    public static readonly string EndMatch = "GbxRemote.EndMatch";
+    [EventIdentifier(Name = "GbxRemote.EndMatch")]
+    EndMatch,
     /// <summary>
     /// When the map starts.
     /// </summary>
-    public static readonly string BeginMap = "GbxRemote.BeginMap";
+    [EventIdentifier(Name = "GbxRemote.BeginMap")]
+    BeginMap,
     /// <summary>
     /// When a match is about to start.
     /// </summary>
-    public static readonly string BeginMatch = "GbxRemote.BeginMatch";
+    [EventIdentifier(Name = "GbxRemote.BeginMatch")]
+    BeginMatch,
     /// <summary>
     /// When a echo message has been sent.
     /// </summary>
-    public static readonly string Echo = "GbxRemote.Echo";
+    [EventIdentifier(Name = "GbxRemote.Echo")]
+    Echo,
     /// <summary>
     /// When an answer from a manialink has been triggered.
     /// </summary>
-    public static readonly string ManialinkPageAnswer = "GbxRemote.ManialinkPageAnswer";
+    [EventIdentifier(Name = "GbxRemote.ManialinkPageAnswer")]
+    ManialinkPageAnswer,
     /// <summary>
     /// When the map list got modified.
     /// </summary>
-    public static readonly string MapListModified = "GbxRemote.MapListModified";
+    [EventIdentifier(Name = "GbxRemote.MapListModified")]
+    MapListModified
 }

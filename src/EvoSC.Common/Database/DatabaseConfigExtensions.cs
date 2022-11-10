@@ -9,9 +9,16 @@ public static class DatabaseConfigExtensions
         switch (config.Type)
         {
             case IDatabaseConfig.DatabaseType.MySql:
-                return $"Server={config.Host};Port={config.Port};Database={config.Name};Uid={config.Username};Pwd={config.Password}";
+                return GetMySqlString(config);
+            default:
+                return "";
         }
 
         return "";
+    }
+
+    private static string GetMySqlString(IDatabaseConfig config)
+    {
+        return $"Server={config.Host};Port={config.Port};Database={config.Name};Uid={config.Username};Pwd={config.Password}";
     }
 }
