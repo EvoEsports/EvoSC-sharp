@@ -31,7 +31,7 @@ public class Application : IEvoSCApplication
 {
     private readonly string[] _args;
     private Container _services;
-    private bool _isDebug;
+    private readonly bool _isDebug;
     private ILogger<Application> _logger;
 
     private readonly CancellationTokenSource _runningToken = new();
@@ -147,7 +147,7 @@ public class Application : IEvoSCApplication
 
         // connect to the dedicated server and setup callbacks
         var serverClient = _services.GetInstance<IServerClient>();
-        var serverCallbacks = _services.GetInstance<IServerCallbackHandler>();
+        _services.GetInstance<IServerCallbackHandler>();
         await serverClient.StartAsync(_runningToken.Token);
         
         // setup command handler

@@ -22,10 +22,7 @@ public static class LoggingServiceExtensions
     {
         var loggerFactory = LoggerFactory.Create(builder =>
         {
-            var logLevel = config.GetLogLevel();
-
             builder.ClearProviders();
-            //builder.AddFilter(level => level == logLevel);
             builder.SetMinimumLevel(config.GetLogLevel());
 
             if (config.UseJson)
@@ -65,10 +62,7 @@ public static class LoggingServiceExtensions
     {
         return services.AddLogging(builder =>
         {
-            var logLevel = config.GetLogLevel();
-            
             builder.ClearProviders();
-            //builder.AddFilter(level => level == logLevel);
             builder.SetMinimumLevel(config.GetLogLevel());
 
             if (config.UseJson)

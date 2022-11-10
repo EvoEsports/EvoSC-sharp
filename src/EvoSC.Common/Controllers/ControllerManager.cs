@@ -18,9 +18,9 @@ public class ControllerManager : IControllerManager
 {
     private readonly ILogger<ControllerManager> _logger;
 
-    private Dictionary<Type, ControllerInfo> _controllers = new();
-    private Dictionary<Type, List<IController>> _instances = new();
-    private List<IControllerActionRegistry> _registries = new();
+    private readonly Dictionary<Type, ControllerInfo> _controllers = new();
+    private readonly Dictionary<Type, List<IController>> _instances = new();
+    private readonly List<IControllerActionRegistry> _registries = new();
 
     public IEnumerable<ControllerInfo> Controllers => _controllers.Values;
     
@@ -31,31 +31,31 @@ public class ControllerManager : IControllerManager
 
     public void AddController(Type controllerType, Guid moduleId, Container services)
     {
-        var controllerInfo = GetControllerInfo(controllerType);
+        ValidateController(controllerType);
 
         foreach (var registry in _registries)
         {
             registry.RegisterForController(controllerType);
         }
-        
-        _controllers.Add(controllerType, new ControllerInfo(controllerType, moduleId, services));
+
+        _controllers.Add(controllerType, new ControllerInfo
+        {
+            ControllerType = controllerType, ModuleId = moduleId, Services = services
+            
+        });
     }
 
-    private ControllerAttribute GetControllerInfo(Type controllerType)
+    private void ValidateController(Type controllerType)
     {
         if (!controllerType.IsControllerClass())
         {
             throw new InvalidControllerClassException("The controller must implement IController.");
         }
 
-        var attr = controllerType.GetCustomAttribute<ControllerAttribute>();
-
-        if (attr == null)
+        if (controllerType.GetCustomAttribute<ControllerAttribute>() == null)
         {
             throw new InvalidControllerClassException("The controller must annotate the Controller attribute.");
         }
-
-        return attr;
     }
 
     public void AddController<TController>(Guid moduleId, Container services) where TController : IController

@@ -8,7 +8,7 @@ public static class PlayerUtils
     /// <summary>
     /// Convert a Trackmania player's account ID to the old "login" format.
     /// </summary>
-    /// <param name="accountId"></param>
+    /// <param name="accountId">The account ID format of the user.</param>
     /// <returns></returns>
     public static string ConvertAccountIdToLogin(string accountId)
     {
@@ -23,7 +23,7 @@ public static class PlayerUtils
     /// <summary>
     /// Convert a Trackmania player's old "login" format to the account ID format.
     /// </summary>
-    /// <param name="login"></param>
+    /// <param name="login">Login format of the user.</param>
     /// <returns></returns>
     public static string ConvertLoginToAccountId(string login)
     {

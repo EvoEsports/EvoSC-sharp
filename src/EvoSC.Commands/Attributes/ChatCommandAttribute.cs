@@ -31,6 +31,11 @@ public class ChatCommandAttribute : Attribute
         {
             throw new ArgumentException("Command description cannot be empty.", "description");
         }
+        
+        if (name.Trim() == string.Empty)
+        {
+            throw new ArgumentException("Command name cannot be empty.", "name");
+        }
 
         Name = name;
         Description = description;

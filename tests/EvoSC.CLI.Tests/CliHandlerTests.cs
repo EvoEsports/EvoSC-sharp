@@ -20,7 +20,7 @@ public class CliHandlerTests
 
     class MyCommandRanException : Exception {}
     
-    [CliCommand("mycmd", "My command.")]
+    [CliCommand(Name="mycmd", Description="My command.")]
     class MyCmd : ICliCommand
     {
         public Task ExecuteAsync(CancellationToken cancelToken, CliCommandContext context)

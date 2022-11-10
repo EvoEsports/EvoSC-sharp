@@ -4,25 +4,34 @@ namespace EvoSC.Common.Events;
 
 public class EventSubscription : IEquatable<EventSubscription>
 {
-    public string Name { get; init; }
-    public Type InstanceClass { get; init; }
+    /// <summary>
+    /// Name of the event that the subscription is subscribed to.
+    /// </summary>
+    public required string Name { get; init; }
+    /// <summary>
+    /// The class type that contains the callback method.
+    /// </summary>
+    public required Type InstanceClass { get; init; }
+    /// <summary>
+    /// The class instance to call the callback upon.
+    /// </summary>
     public object? Instance { get; init; }
-    public MethodInfo HandlerMethod { get; init; }
-    public EventPriority Priority { get; init; }
+    /// <summary>
+    /// The callback method used to handle this event subscription.
+    /// </summary>
+    public required MethodInfo HandlerMethod { get; init; }
+    /// <summary>
+    /// Callback priority. Higher priority callbacks are called first.
+    /// </summary>
+    public EventPriority Priority { get; init; } = EventPriority.Medium;
+    /// <summary>
+    /// Whether to run the handler async in its own thread or not.
+    /// </summary>
     public bool RunAsync { get; init; }
+    /// <summary>
+    /// Whether the instance class is a controller or not.
+    /// </summary>
     public bool IsController { get; init; }
-
-    public EventSubscription(string name, Type instanceClass, MethodInfo handlerMethod, object? instance = null,
-        EventPriority priority = EventPriority.Medium, bool runAsync = false, bool isController = false)
-    {
-        Name = name;
-        InstanceClass = instanceClass;
-        Instance = instance;
-        HandlerMethod = handlerMethod;
-        Priority = priority;
-        RunAsync = runAsync;
-        IsController = isController;
-    }
 
     public bool Equals(EventSubscription? other)
     {

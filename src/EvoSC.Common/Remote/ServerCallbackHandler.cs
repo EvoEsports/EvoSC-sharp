@@ -20,16 +20,16 @@ public class ServerCallbackHandler : IServerCallbackHandler
 
     private void SetupCallbacks()
     {
-        _server.Remote.OnPlayerChat += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerChat, e);
-        _server.Remote.OnPlayerConnect += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerConnect, e);
-        _server.Remote.OnPlayerDisconnect += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerDisconnect, e);
-        _server.Remote.OnPlayerInfoChanged += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerInfoChanged, e);
-        _server.Remote.OnEndMap += (sender, e) => _events.Raise(GbxRemoteEvent.EndMap, e);
-        _server.Remote.OnEndMatch += (sender, e) => _events.Raise(GbxRemoteEvent.EndMatch, e);
-        _server.Remote.OnBeginMap += (sender, e) => _events.Raise(GbxRemoteEvent.BeginMap, e);
-        _server.Remote.OnBeginMatch += (sender, e) => _events.Raise(GbxRemoteEvent.BeginMatch, e);
-        _server.Remote.OnEcho += (sender, e) => _events.Raise(GbxRemoteEvent.Echo, e);
-        _server.Remote.OnPlayerManialinkPageAnswer += (sender, e) => _events.Raise(GbxRemoteEvent.ManialinkPageAnswer, e);
-        _server.Remote.OnMapListModified += (sender, e) => _events.Raise(GbxRemoteEvent.MapListModified, e);
+        _server.Remote.OnPlayerChat += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerChat, e, sender);
+        _server.Remote.OnPlayerConnect += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerConnect, e, sender);
+        _server.Remote.OnPlayerDisconnect += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerDisconnect, e, sender);
+        _server.Remote.OnPlayerInfoChanged += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerInfoChanged, e, sender);
+        _server.Remote.OnEndMap += (sender, e) => _events.Raise(GbxRemoteEvent.EndMap, e, sender);
+        _server.Remote.OnEndMatch += (sender, e) => _events.Raise(GbxRemoteEvent.EndMatch, e, sender);
+        _server.Remote.OnBeginMap += (sender, e) => _events.Raise(GbxRemoteEvent.BeginMap, e, sender);
+        _server.Remote.OnBeginMatch += (sender, e) => _events.Raise(GbxRemoteEvent.BeginMatch, e, sender);
+        _server.Remote.OnEcho += (sender, e) => _events.Raise(GbxRemoteEvent.Echo, e, sender);
+        _server.Remote.OnPlayerManialinkPageAnswer += (sender, e) => _events.Raise(GbxRemoteEvent.ManialinkPageAnswer, e, sender);
+        _server.Remote.OnMapListModified += (sender, e) => _events.Raise(GbxRemoteEvent.MapListModified, e, sender);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
-[Module("ExampleModule", "An example module to get people started.", IsInternal = true)]
+[Module(Name = "ExampleModule", Description = "An example module to get people started.", IsInternal = true)]
 public class ExampleModule : EvoScModule
 {
 }

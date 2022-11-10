@@ -39,11 +39,11 @@ public class ChatCommandParser
             parts = parts[1..];
             var args = await ConvertArguments(cmd, parts, intendedCommand ? null : cmdAlias);
 
-            return new ParserResult(cmd, args, true);
+            return new ParserResult {Command = cmd, Arguments = args, Success = true};
         }
         catch (Exception ex)
         {
-            return new ParserResult(null, null, false, ex);
+            return new ParserResult {Command = null, Arguments = null, Success = false, Exception = ex};
         }
     }
 
