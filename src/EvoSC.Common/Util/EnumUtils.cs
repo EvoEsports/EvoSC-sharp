@@ -21,6 +21,6 @@ public static class EnumUtils
         var name = enumValue.ToString();
         var member = enumValue.GetType().GetMember(enumValue.ToString()).FirstOrDefault();
 
-        return member.GetCustomAttribute<EventIdentifierAttribute>()?.Name ?? name;
+        return member?.GetCustomAttribute<EventIdentifierAttribute>()?.Name ?? name;
     }
 }
