@@ -63,14 +63,15 @@ public class EventManager : IEventManager
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority, bool runAsync)
         where TArgs : EventArgs
     {
-        Subscribe(new EventSubscription(
-            name,
-            handler.Target.GetType(),
-            handler.Method,
-            handler.Target,
-            priority,
-            runAsync)
-        );
+        Subscribe(new EventSubscription
+        {
+            Name = name,
+            InstanceClass = handler.Target.GetType(),
+            HandlerMethod = handler.Method,
+            Instance = handler.Target,
+            Priority = priority,
+            RunAsync = runAsync
+        });
     }
 
     public void Unsubscribe(EventSubscription subscription)
@@ -90,7 +91,10 @@ public class EventManager : IEventManager
 
     public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs
     {
-        Unsubscribe(new EventSubscription(name, handler.Target.GetType(), handler.Method));
+        Unsubscribe(new EventSubscription
+        {
+            Name = name, InstanceClass = handler.Target.GetType(), HandlerMethod = handler.Method
+        });
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -224,8 +228,17 @@ public class EventManager : IEventManager
                 continue;
             }
 
-            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority,
-                attr.IsAsync, true);
+            var subscription = new EventSubscription
+            {
+                Name = attr.Name,
+                InstanceClass = controllerType,
+                HandlerMethod = method,
+                Instance = null,
+                Priority = attr.Priority,
+                RunAsync = attr.IsAsync,
+                IsController = true,
+            };
+            
             Subscribe(subscription);
         }
     }
