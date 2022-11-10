@@ -176,6 +176,7 @@ public class EventManager : IEventManager
             }
             catch (Exception ex)
             {
+                // ignore exception to handle it later when checking for task errors
             }
 
             if (!task.IsCompletedSuccessfully)
