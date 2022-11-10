@@ -10,7 +10,7 @@ public interface IModuleManager
     /// <summary>
     /// Load all modules from a provided assembly.
     /// </summary>
-    /// <param name="assembly">The assembly to search modules in.</param>
+    /// <param name="assembly">The assembly which should be scanned for modules.</param>
     /// <returns></returns>
     public Task LoadModulesFromAssembly(Assembly assembly);
 }
