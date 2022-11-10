@@ -8,7 +8,7 @@ namespace EvoSC.CLI;
 
 public class CliHandler
 {
-    private RootCommand _rootCommand;
+    private readonly RootCommand _rootCommand;
     private readonly string[] _args;
     
     public CliHandler(string[] args)

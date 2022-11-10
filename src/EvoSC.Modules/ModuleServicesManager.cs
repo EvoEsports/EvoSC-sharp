@@ -11,7 +11,7 @@ public class ModuleServicesManager : IModuleServicesManager
     private readonly IEvoSCApplication _app;
     private readonly ILogger<ModuleServicesManager> _logger;
 
-    private Dictionary<Guid, Container> _moduleContainers = new();
+    private readonly Dictionary<Guid, Container> _moduleContainers = new();
 
     public ModuleServicesManager(IEvoSCApplication app, ILogger<ModuleServicesManager> logger)
     {

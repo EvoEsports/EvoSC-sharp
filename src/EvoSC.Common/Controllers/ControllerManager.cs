@@ -18,9 +18,9 @@ public class ControllerManager : IControllerManager
 {
     private readonly ILogger<ControllerManager> _logger;
 
-    private Dictionary<Type, ControllerInfo> _controllers = new();
-    private Dictionary<Type, List<IController>> _instances = new();
-    private List<IControllerActionRegistry> _registries = new();
+    private readonly Dictionary<Type, ControllerInfo> _controllers = new();
+    private readonly Dictionary<Type, List<IController>> _instances = new();
+    private readonly List<IControllerActionRegistry> _registries = new();
 
     public IEnumerable<ControllerInfo> Controllers => _controllers.Values;
     

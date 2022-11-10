@@ -14,9 +14,9 @@ public class EventManagerTests
     class HandlerRanException : Exception {}
     class HandlerRanException2 : Exception {}
 
-    private ILogger<EventManager> _logger;
-    private IServiceProvider _services;
-    private IEvoSCApplication _app;
+    private readonly ILogger<EventManager> _logger;
+    private readonly IServiceProvider _services;
+    private readonly IEvoSCApplication _app;
 
     public EventManagerTests()
     {

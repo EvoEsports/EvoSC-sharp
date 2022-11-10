@@ -31,7 +31,7 @@ public class Application : IEvoSCApplication
 {
     private readonly string[] _args;
     private Container _services;
-    private bool _isDebug;
+    private readonly bool _isDebug;
     private ILogger<Application> _logger;
 
     private readonly CancellationTokenSource _runningToken = new();

@@ -9,7 +9,7 @@ namespace EvoSC.Common.Config.Stores;
 
 public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 {
-    private TomlDocument _document;
+    private readonly TomlDocument _document;
     private readonly string _path;
     
     public TomlConfigStore(string path)

@@ -21,7 +21,7 @@ public class EventManager : IEventManager
     private readonly IEvoSCApplication _app;
     private readonly IControllerManager _controllers;
     
-    private Dictionary<string, List<EventSubscription>> _subscriptions = new();
+    private readonly Dictionary<string, List<EventSubscription>> _subscriptions = new();
 
     public EventManager(ILogger<EventManager> logger, IEvoSCApplication app, IControllerManager controllers)
     {

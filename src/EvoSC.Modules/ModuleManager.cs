@@ -29,7 +29,7 @@ public class ModuleManager : IModuleManager
     private readonly IModuleServicesManager _servicesManager;
     private readonly DbConnection _db;
 
-    private Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
+    private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
     public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers, IModuleServicesManager servicesManager, DbConnection db)
     {
