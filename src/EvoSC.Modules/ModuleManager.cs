@@ -147,6 +147,8 @@ public class ModuleManager : IModuleManager
                     case ServiceLifeStyle.Transient:
                         container.Register(type);
                         break;
+                    default:
+                        throw new ModuleServicesException($"Unsupported lifetime type for module service: {type}");
                 }
             }
         }
