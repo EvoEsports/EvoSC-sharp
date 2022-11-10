@@ -59,7 +59,7 @@ public class ModuleServicesManager : IModuleServicesManager
                 catch (ActivationException ex)
                 {
                     _logger.LogError("Failed to get EvoSC core service: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
-                    throw ex;
+                    throw;
                 }
             });
         }
