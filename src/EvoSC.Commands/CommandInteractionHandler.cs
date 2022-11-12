@@ -1,15 +1,12 @@
 ﻿using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Commands.Parser;
-using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
-using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;

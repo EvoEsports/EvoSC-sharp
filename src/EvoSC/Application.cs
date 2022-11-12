@@ -1,5 +1,4 @@
-﻿
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -38,7 +37,7 @@ public class Application : IEvoSCApplication
     private ILogger<Application> _logger;
 
     private readonly CancellationTokenSource _runningToken = new();
-    
+
     public CancellationToken MainCancellationToken => _runningToken.Token;
     public Container Services => _services;
 
@@ -46,7 +45,7 @@ public class Application : IEvoSCApplication
     {
         _args = args;
         _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
-        
+
         ConfigureServiceContainer();
     }
 
@@ -63,16 +62,16 @@ public class Application : IEvoSCApplication
     public async Task RunAsync()
     {
         await SetupApplication();
-        
+
         // wait indefinitely
-        WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
+        WaitHandle.WaitAll(new[] { _runningToken.Token.WaitHandle });
     }
 
     public async Task ShutdownAsync()
     {
         var serverClient = _services.GetInstance<IServerClient>();
         await serverClient.StopAsync(_runningToken.Token);
-        
+
         // cancel the token to stop the application itself
         _runningToken.Cancel();
     }
@@ -81,15 +80,15 @@ public class Application : IEvoSCApplication
     {
         var sw = new Stopwatch();
         sw.Start();
-        
+
         SetupServices();
         MigrateDatabase();
         SetupControllerManager();
         await SetupModules();
         await StartBackgroundServices();
-        
+
         sw.Stop();
-        
+
         _logger.LogDebug("Startup time: {Time}ms", sw.ElapsedMilliseconds);
     }
 
@@ -98,10 +97,10 @@ public class Application : IEvoSCApplication
         var config = _services.AddEvoScConfig();
 
         _services.AddEvoScLogging(config.Logging);
-        
+
         _services.AddEvoScMigrations();
         _services.AddEvoScDatabase(config.Database);
-        
+
         _services.AddGbxRemoteClient();
         _services.AddEvoScEvents();
         _services.AddEvoScModules();
@@ -120,24 +119,25 @@ public class Application : IEvoSCApplication
     {
         using var scope = new Scope(_services);
         var manager = scope.GetInstance<IMigrationManager>();
-        
+
         // main migrations
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
-        
+
         // internal modules
         manager.RunInternalModuleMigrations();
     }
-    
+
     private void SetupControllerManager()
     {
         var controllers = _services.GetInstance<IControllerManager>();
+        
         controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
         controllers.AddControllerActionRegistry(_services.GetInstance<IChatCommandManager>());
         
         var pipelineManager = _services.GetInstance<IActionPipelineManager>();
         pipelineManager.UseEvoScCommands(_services);
     }
-    
+
     private async Task SetupModules()
     {
         var modules = _services.GetInstance<IModuleManager>();
@@ -148,7 +148,7 @@ public class Application : IEvoSCApplication
     private async Task StartBackgroundServices()
     {
         _logger.LogDebug("Starting background services");
-        
+
         // initialize event manager before anything else
         _services.GetInstance<IEventManager>();
 
@@ -156,7 +156,7 @@ public class Application : IEvoSCApplication
         var serverClient = _services.GetInstance<IServerClient>();
         _services.GetInstance<IServerCallbackHandler>();
         await serverClient.StartAsync(_runningToken.Token);
-        
+
         // setup command handler
         _services.GetInstance<ICommandInteractionHandler>();
     }
