@@ -2,8 +2,8 @@
 
 namespace EvoSC.Common.Database.Models;
 
-[Table("configoptions")]
-public class DbConfigOption
+[Table("ConfigOptions")]
+public class DbConfigOptions
 {
     [Key]
     public string Key { get; set; }

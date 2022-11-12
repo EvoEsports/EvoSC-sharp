@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Commands.Exceptions;
 
+/// <summary>
+/// Thrown when a command or alias is registered more than one time.
+/// </summary>
 public class DuplicateChatCommandException : CommandException
 {
     private readonly string _name;

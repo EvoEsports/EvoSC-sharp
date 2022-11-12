@@ -4,14 +4,7 @@ namespace EvoSC.Common.Controllers;
 
 public class ControllerInfo
 {
-    public Type ControllerType { get; init; }
-    public Guid ModuleId { get; init; }
-    public Container Services { get; init; }
-
-    public ControllerInfo(Type type, Guid moduleId, Container services)
-    {
-        ControllerType = type;
-        ModuleId = moduleId;
-        Services = services;
-    }
+    public required Type ControllerType { get; init; }
+    public required Guid ModuleId { get; init; }
+    public required Container Services { get; init; }
 }

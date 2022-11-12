@@ -1,8 +1,8 @@
-﻿using EvoSC.Common.Interfaces;
+﻿namespace EvoSC.Modules.Interfaces;
 
-namespace EvoSC.Modules;
-
+/// <summary>
+/// Base interface for all modules.
+/// </summary>
 public interface IEvoScModule
 {
-    public Type[] Controllers { get; }
 }

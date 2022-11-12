@@ -11,7 +11,7 @@ public class ConfigTests
     [Fact]
     public void Test_Server_Config_Is_Properly_Parsed()
     {
-        var config = new ConfigurationBuilder<IEvoScBaseConfig>()
+        var config = new ConfigurationBuilder<IEvoSCBaseConfig>()
             .UseTomlFile("TestFiles/Config/BasicConfig/main.toml")
             .Build();
         

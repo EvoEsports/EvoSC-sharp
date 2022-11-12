@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Commands.Exceptions;
 
+/// <summary>
+/// Thrown when the user input has an invalid format for a given command's parameter.
+/// </summary>
 public class InvalidCommandArgumentException : InvalidCommandFormatException
 {
     private readonly string _name;

@@ -2,6 +2,9 @@
 
 namespace EvoSC.Commands.Exceptions;
 
+/// <summary>
+/// General exception for handling errors during parsing of user input.
+/// </summary>
 public class CommandParserException : CommandException
 {
     private readonly bool _intendedCommand;
@@ -26,5 +29,9 @@ public class CommandParserException : CommandException
         _intendedCommand = intendedCommand;
     }
 
+    /// <summary>
+    /// Whether the command was intended by the user to be an actual command. Eg. prefixing with "/".
+    /// If this is false, the message was either an alias or not supposed to be a command at all.
+    /// </summary>
     public bool IntendedCommand => _intendedCommand;
 }

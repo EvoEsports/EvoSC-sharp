@@ -11,7 +11,7 @@ namespace EvoSC.Common.Remote;
 public class ServerClient : IServerClient
 {
     private readonly GbxRemoteClient _gbxRemote;
-    private readonly IEvoScBaseConfig _config;
+    private readonly IEvoSCBaseConfig _config;
     private readonly ILogger<ServerClient> _logger;
     private readonly IEvoSCApplication _app;
 
@@ -20,7 +20,7 @@ public class ServerClient : IServerClient
     public GbxRemoteClient Remote => _gbxRemote;
     public bool Connected => _connected;
 
-    public ServerClient(IEvoScBaseConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
+    public ServerClient(IEvoSCBaseConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
     {
         _config = config;
         _logger = logger;

@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Common.Interfaces.Models;
 
+/// <summary>
+/// Represents an online or offline player.
+/// </summary>
 public interface IPlayer : IUser
 {
     /// <summary>

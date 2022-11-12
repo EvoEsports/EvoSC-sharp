@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using EvoSC.Common.Util;
 
 namespace EvoSC.Common.Events;
 
@@ -17,6 +18,8 @@ public class EventSubscriptionBuilder
         _name = name;
         return this;
     }
+
+    public EventSubscriptionBuilder WithEvent(Enum name) => WithEvent(name.GetEventIdentifier());
 
     public EventSubscriptionBuilder WithInstanceClass(Type classType)
     {
@@ -105,14 +108,15 @@ public class EventSubscriptionBuilder
             throw new InvalidOperationException("Handler method must be set for event.");
         }
 
-        return new EventSubscription(
-            _name,
-            _instanceClass,
-            _handlerMethod,
-            _instance,
-            _priority,
-            _runAsync,
-            _isController
-        );
+        return new EventSubscription
+        {
+            Name = _name,
+            InstanceClass = _instanceClass,
+            HandlerMethod = _handlerMethod,
+            Instance = _instance,
+            Priority = _priority,
+            RunAsync = _runAsync,
+            IsController = _isController
+        };
     }
 }

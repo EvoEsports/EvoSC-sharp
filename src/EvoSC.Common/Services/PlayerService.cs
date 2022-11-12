@@ -22,7 +22,7 @@ public class PlayerService : IPlayerService
     public Task<DbPlayer> GetPlayerById(int id) =>
         _db.GetAsync<DbPlayer>(id);
 
-    public async Task<DbPlayer> GetPlayerByLogin(string login)
+    public async Task<DbPlayer?> GetPlayerByLogin(string login)
     {
         var query = "select * from `players` where `AccountId`=@AccountId limit 1";
         var player =

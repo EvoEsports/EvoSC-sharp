@@ -1,6 +1,5 @@
 <div align="center"><img src="./images/evosc_full.png" width="60%"></div>
 
-
 # EvoSC#
 
 EvoSC# (spoken: EvoSC Sharp) is a server controller for Trackmania 2020 dedicated servers.
@@ -9,7 +8,7 @@ It has been written from the ground up to be modular, performant and easy to use
 
 It is currently still in development, so expect braking changes to happen at any time.
 
-### Goals
+## Goals
 
 The goal of this server controller is to replicate the functionality of the existing [EvoSC](https://github.com/evotm/EvoSC) and expand on it.
 
@@ -17,15 +16,13 @@ In general, we want to make it more user-friendly, more robust and generally als
 
 For a roadmap of planned features and what we're currently working on, have a look at the [Project board](https://github.com/orgs/EvoTM/projects/8) to see what we are working on currently.
 
-### Support
+## Support
 
 * **WE WILL NOT BE RESPONSIBLE FOR ANY DAMAGE OR DATA LOST DUE TO USAGE OF THIS SOFTWARE.**
-
 * **DO NOT USE IN A PRODUCTION SCENARIO, THE SOFTWARE IS STILL HEAVILY IN DEVELOPMENT.**
-
 * **DO NOT ASK FOR ASSISTANCE IN USING THE SOFTWARE IN ITS UNFINISHED STATE.**
 
-### Developing for EvoSC#
+## Developing for EvoSC#
 
 To setup a development environment for EvoSC#, we recommend having Docker installed and using the following Docker Compose template.
 It sets up a TM2020 dedicated server for you as well as all the required other services.
@@ -69,5 +66,3 @@ volumes:
 ```
 
 We also have a documentation of the current code base available at TODO:ADDLINK.
-
-

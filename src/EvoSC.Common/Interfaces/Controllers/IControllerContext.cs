@@ -14,6 +14,6 @@ public interface IControllerContext
     /// <summary>
     /// Set the service scope for this context.
     /// </summary>
-    /// <param name="scope"></param>
+    /// <param name="scope">Service scope to set for this context.</param>
     public void SetScope(Scope scope);
 }

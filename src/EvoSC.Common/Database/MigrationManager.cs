@@ -10,9 +10,9 @@ namespace EvoSC.Common.Database;
 
 public class MigrationManager : IMigrationManager
 {
-    private readonly IEvoScBaseConfig _config;
+    private readonly IEvoSCBaseConfig _config;
     
-    public MigrationManager(IEvoScBaseConfig config)
+    public MigrationManager(IEvoSCBaseConfig config)
     {
         _config = config;
     }

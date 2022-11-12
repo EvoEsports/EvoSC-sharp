@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 using EvoSC.Modules.Attributes;
+using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 
 namespace EvoSC.Modules.Info;

@@ -6,7 +6,7 @@ using EvoSC.CLI.Interfaces;
 
 namespace EvoSC.CliCommands;
 
-[CliCommand("run", "Start the server controller.")]
+[CliCommand(Name = "run", Description = "Start the server controller.")]
 [CliOption(typeof(int), "Verbosity level of the output.", "--verbosity", "-v")]
 public class RunCommand : ICliCommand
 {

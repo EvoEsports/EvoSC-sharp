@@ -7,6 +7,11 @@ namespace EvoSC.Common.Remote;
 
 public static class RemoteClientServiceExtensions
 {
+    /// <summary>
+    /// Add the GbxRemote client to the service container.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
     public static Container AddGbxRemoteClient(this Container services)
     {
         services.RegisterSingleton<IServerClient, ServerClient>();

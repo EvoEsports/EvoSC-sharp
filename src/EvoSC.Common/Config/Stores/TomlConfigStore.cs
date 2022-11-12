@@ -9,7 +9,7 @@ namespace EvoSC.Common.Config.Stores;
 
 public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 {
-    private TomlDocument _document;
+    private readonly TomlDocument _document;
     private readonly string _path;
     
     public TomlConfigStore(string path)
@@ -75,6 +75,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
     public void Dispose()
     {
+        // do nothing because the document lives for the entire application and is disposed on shutdown
     }
 
     public string? Read(string key)

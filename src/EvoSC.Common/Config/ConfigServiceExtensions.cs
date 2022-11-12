@@ -11,13 +11,19 @@ public static class ConfigServiceExtensions
 {
     private const string MainConfigFile = "config/main.toml";
     
-    public static IEvoScBaseConfig AddEvoScConfig(this Container services)
+    /// <summary>
+    /// Set up and parse EvoSC's base configuration. This method also adds the configuration
+    /// to the service container.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IEvoSCBaseConfig AddEvoScConfig(this Container services)
     {
-        var baseConfig = new ConfigurationBuilder<IEvoScBaseConfig>()
+        var baseConfig = new ConfigurationBuilder<IEvoSCBaseConfig>()
             .UseTomlFile(MainConfigFile)
             .Build();
 
-        services.RegisterInstance<IEvoScBaseConfig>(baseConfig);
+        services.RegisterInstance<IEvoSCBaseConfig>(baseConfig);
         
         return baseConfig;
     }
