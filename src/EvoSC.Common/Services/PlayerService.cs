@@ -3,6 +3,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Util;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
@@ -23,19 +24,24 @@ public class PlayerService : IPlayerService
 
     public async Task<DbPlayer> GetPlayerByLogin(string login)
     {
-        var query = "select * from `players` where `Login`=@Login limit 1";
-        var player = await _db.QueryAsync<DbPlayer>(query, new {Login = login});
+        var query = "select * from `players` where `AccountId`=@AccountId limit 1";
+        var player =
+            await _db.QueryAsync<DbPlayer>(query, new
+            {
+                AccountId = PlayerUtils.ConvertLoginToAccountId(login)
+            });
 
         return player?.FirstOrDefault();
     }
 
-    public async Task<DbPlayer> NewPlayer(string login, string ubisoftName, string? zone = null)
+    public async Task<DbPlayer> NewPlayer(string accountId, string ubisoftName, string? zone)
     {
         var newPlayer = new DbPlayer
         {
-            Login = login,
+            AccountId = accountId,
             UbisoftName = ubisoftName,
             Zone = zone,
+            NickName = ubisoftName,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -43,6 +49,8 @@ public class PlayerService : IPlayerService
         var id = await _db.InsertAsync(newPlayer);
         return await GetPlayerById(id);
     }
+
+    public Task<DbPlayer> NewPlayer(string login, string ubisoftName) => NewPlayer(login, ubisoftName, null);
 
     public Task<bool> UpdatePlayer(DbPlayer player)
     {

@@ -3,6 +3,9 @@ using EvoSC.Common.Exceptions;
 
 namespace EvoSC.Modules.Exceptions;
 
+/// <summary>
+/// General exception for errors occuring with modules.
+/// </summary>
 public class EvoScModuleException : EvoSCException
 {
     public EvoScModuleException()

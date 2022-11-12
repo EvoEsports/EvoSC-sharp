@@ -3,6 +3,8 @@ using System.CommandLine;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using EvoSC.Commands;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers;
@@ -29,7 +31,7 @@ public class Application : IEvoSCApplication
 {
     private readonly string[] _args;
     private Container _services;
-    private bool _isDebug;
+    private readonly bool _isDebug;
     private ILogger<Application> _logger;
 
     private readonly CancellationTokenSource _runningToken = new();
@@ -100,6 +102,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScModules();
         _services.AddEvoScControllers();
         _services.AddEvoScCommonServices();
+        _services.AddEvoScChatCommands();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
         
@@ -125,6 +128,7 @@ public class Application : IEvoSCApplication
         var controllers = _services.GetInstance<IControllerManager>();
         
         controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
+        controllers.AddControllerActionRegistry(_services.GetInstance<IChatCommandManager>());
     }
     
     private async Task SetupModules()
@@ -143,7 +147,10 @@ public class Application : IEvoSCApplication
 
         // connect to the dedicated server and setup callbacks
         var serverClient = _services.GetInstance<IServerClient>();
-        var serverCallbacks = _services.GetInstance<IServerCallbackHandler>();
+        _services.GetInstance<IServerCallbackHandler>();
         await serverClient.StartAsync(_runningToken.Token);
+        
+        // setup command handler
+        _services.GetInstance<ICommandInteractionHandler>();
     }
 }

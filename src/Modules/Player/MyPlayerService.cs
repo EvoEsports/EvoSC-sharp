@@ -6,7 +6,7 @@ using SimpleInjector.Lifestyles;
 
 namespace EvoSC.Modules.Official.Player;
 
-[Service(ServiceLifeStyle.Singleton)]
+[Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class MyPlayerService : IMyPlayerService
 {
     private readonly ILogger<MyPlayerService> _logger;

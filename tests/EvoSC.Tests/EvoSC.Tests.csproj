@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Flurl" Version="3.0.2" />
+        <PackageReference Include="Flurl" Version="3.0.6" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">

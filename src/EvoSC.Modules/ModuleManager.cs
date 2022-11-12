@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using System.Diagnostics;
-using System.Reactive.Linq;
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Config.Stores;
@@ -30,7 +29,7 @@ public class ModuleManager : IModuleManager
     private readonly IModuleServicesManager _servicesManager;
     private readonly DbConnection _db;
 
-    private Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
+    private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
     public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers, IModuleServicesManager servicesManager, DbConnection db)
     {
@@ -148,6 +147,8 @@ public class ModuleManager : IModuleManager
                     case ServiceLifeStyle.Transient:
                         container.Register(type);
                         break;
+                    default:
+                        throw new ModuleServicesException($"Unsupported lifetime type for module service: {type}");
                 }
             }
         }

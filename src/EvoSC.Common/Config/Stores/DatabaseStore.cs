@@ -97,7 +97,7 @@ public class DatabaseStore : IConfigStore
         if (option == null)
         {
             option = new DbConfigOption {Key = $"{_prefix}.{key}", Value = value};
-            // _db.InsertAsync(option).GetAwaiter().GetResult();
+            
             _db.QueryAsync("insert into `configoptions`(`Key`, `Value`) VALUES(@Key, @Value)", new
             {
                 Key = option.Key,

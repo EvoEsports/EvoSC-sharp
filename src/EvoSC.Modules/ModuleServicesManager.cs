@@ -11,7 +11,7 @@ public class ModuleServicesManager : IModuleServicesManager
     private readonly IEvoSCApplication _app;
     private readonly ILogger<ModuleServicesManager> _logger;
 
-    private Dictionary<Guid, Container> _moduleContainers = new();
+    private readonly Dictionary<Guid, Container> _moduleContainers = new();
 
     public ModuleServicesManager(IEvoSCApplication app, ILogger<ModuleServicesManager> logger)
     {
@@ -59,7 +59,7 @@ public class ModuleServicesManager : IModuleServicesManager
                 catch (ActivationException ex)
                 {
                     _logger.LogError("Failed to get EvoSC core service: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
-                    throw ex;
+                    throw;
                 }
             });
         }

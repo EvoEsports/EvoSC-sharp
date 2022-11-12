@@ -21,7 +21,7 @@ public class EventManager : IEventManager
     private readonly IEvoSCApplication _app;
     private readonly IControllerManager _controllers;
     
-    private Dictionary<string, List<EventSubscription>> _subscriptions = new();
+    private readonly Dictionary<string, List<EventSubscription>> _subscriptions = new();
 
     public EventManager(ILogger<EventManager> logger, IEvoSCApplication app, IControllerManager controllers)
     {
@@ -53,17 +53,25 @@ public class EventManager : IEventManager
             a.RunAsync ? -1 : (b.RunAsync ? 1 : 0));
     }
 
-    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler,
-        EventPriority priority = EventPriority.Medium, bool runAsync = false) where TArgs : EventArgs
+    public void Subscribe(Action<EventSubscriptionBuilder> builderAction)
     {
-        Subscribe(new EventSubscription(
-            name,
-            handler.Target.GetType(),
-            handler.Method,
-            handler.Target,
-            priority,
-            runAsync)
-        );
+        var builder = new EventSubscriptionBuilder();
+        builderAction(builder);
+        Subscribe(builder.Build());
+    }
+
+    public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority, bool runAsync)
+        where TArgs : EventArgs
+    {
+        Subscribe(new EventSubscription
+        {
+            Name = name,
+            InstanceClass = handler.Target.GetType(),
+            HandlerMethod = handler.Method,
+            Instance = handler.Target,
+            Priority = priority,
+            RunAsync = runAsync
+        });
     }
 
     public void Unsubscribe(EventSubscription subscription)
@@ -83,11 +91,14 @@ public class EventManager : IEventManager
 
     public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs
     {
-        Unsubscribe(new EventSubscription(name, handler.Target.GetType(), handler.Method));
+        Unsubscribe(new EventSubscription
+        {
+            Name = name, InstanceClass = handler.Target.GetType(), HandlerMethod = handler.Method
+        });
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public async Task Raise(string name, EventArgs args, object? sender = null)
+    public async Task Raise(string name, EventArgs args, object? sender)
     {
         if (!_subscriptions.ContainsKey(name))
         {
@@ -165,6 +176,7 @@ public class EventManager : IEventManager
             }
             catch (Exception ex)
             {
+                // ignore exception to handle it later when checking for task errors
             }
 
             if (!task.IsCompletedSuccessfully)
@@ -210,15 +222,24 @@ public class EventManager : IEventManager
 
         foreach (var method in methods)
         {
-            var attr = method.GetCustomAttribute<Subscribe>();
+            var attr = method.GetCustomAttribute<SubscribeAttribute>();
 
             if (attr == null)
             {
                 continue;
             }
 
-            var subscription = new EventSubscription(attr.Name, controllerType, method, null, attr.Priority,
-                attr.IsAsync, true);
+            var subscription = new EventSubscription
+            {
+                Name = attr.Name,
+                InstanceClass = controllerType,
+                HandlerMethod = method,
+                Instance = null,
+                Priority = attr.Priority,
+                RunAsync = attr.IsAsync,
+                IsController = true,
+            };
+            
             Subscribe(subscription);
         }
     }

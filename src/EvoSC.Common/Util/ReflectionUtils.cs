@@ -8,7 +8,9 @@ public static class ReflectionUtils
     /// <summary>
     /// Binding flags for public declared methods of a type that can be instantiated.
     /// </summary>
-    public const BindingFlags InstanceMethods = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public;
+    public static readonly BindingFlags InstanceMethods = BindingFlags.Instance 
+                                                          | BindingFlags.DeclaredOnly 
+                                                          | BindingFlags.Public;
 
     public static bool IsControllerClass(this Type controllerType)
     {
@@ -55,24 +57,53 @@ public static class ReflectionUtils
         return Activator.CreateInstance(t);
     }
 
+    /// <summary>
+    /// Create an instance of a type using the provided generic type.
+    /// </summary>
+    /// <param name="genericType">Type of the generic parameter.</param>
+    /// <param name="t">Type of the object to instantiate.</param>
+    /// <param name="args">Arguments to pass to the constructor.</param>
+    /// <returns></returns>
     public static object CreateGenericInstance(Type genericType, Type t, params object[] args)
     {
         var genericTypeType = genericType.MakeGenericType(t);
         return Activator.CreateInstance(genericTypeType, args);
     }
 
+    /// <summary>
+    /// Call a method on an instance by using a string name representing the name of the method.
+    /// </summary>
+    /// <param name="type">The type of the object's instance.</param>
+    /// <param name="instance">The instance of the object type</param>
+    /// <param name="methodName">The name of the method to call.</param>
+    /// <param name="args">Arguments to pass to the method.</param>
+    /// <returns></returns>
     public static object CallMethod(Type type, object instance, string methodName, params object[] args)
     {
         var method = type.GetMethod(methodName);
         return method.Invoke(instance, args);
     }
     
+    /// <summary>
+    /// Call a method on an instance by using a string name representing the name of the method.
+    /// </summary>
+    /// <param name="instance">Object instance that contains the method to call.</param>
+    /// <param name="methodName">Name of the method to call.</param>
+    /// <param name="args">Arguments to pass to the method.</param>
+    /// <returns></returns>
     public static object CallMethod(object instance, string methodName, params object[] args)
     {
         var method = instance.GetType().GetMethod(methodName);
         return method.Invoke(instance, args);
     }
 
+    /// <summary>
+    /// Call a static method on a type by using a string name representation of the method's name.
+    /// </summary>
+    /// <param name="type">The type to call the method on.</param>
+    /// <param name="methodName">Name of the method to call.</param>
+    /// <param name="args">Arguments to pass to the method.</param>
+    /// <returns></returns>
     public static object CallStaticMethod(Type type, string methodName, params object[] args)
     {
         var method = type.GetMethod(methodName);

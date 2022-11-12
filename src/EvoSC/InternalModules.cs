@@ -8,7 +8,7 @@ namespace EvoSC;
 
 public static class InternalModules
 {
-    public static List<Type> Modules = new()
+    public static readonly List<Type> Modules = new()
     {
         typeof(PlayerModule),
         typeof(ExampleModule)
@@ -27,10 +27,9 @@ public static class InternalModules
             {
                 migrations.MigrateFromAssembly(module.Assembly);
             }
-            catch (MissingMigrationsException ex){}
-            catch (Exception ex)
+            catch (MissingMigrationsException ex)
             {
-                throw ex;
+                // ignore this as modules don't always have migrations, but we still try to find them
             }
         }
     }

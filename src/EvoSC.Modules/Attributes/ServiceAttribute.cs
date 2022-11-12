@@ -11,10 +11,8 @@ namespace EvoSC.Modules.Attributes;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class ServiceAttribute : Attribute
 {
-    public ServiceLifeStyle LifeStyle { get; init; }
-
-    public ServiceAttribute(ServiceLifeStyle lifeStyle)
-    {
-        LifeStyle = lifeStyle;
-    }
+    /// <summary>
+    /// The lifestyle of this service.
+    /// </summary>
+    public required ServiceLifeStyle LifeStyle { get; init; }
 }
