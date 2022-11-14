@@ -3,7 +3,7 @@ using SimpleInjector;
 
 namespace EvoSC.Common.Middleware;
 
-public static class ActionPipelineServiceExtensions
+public static class ActionPipelineExtensions
 {
     /// <summary>
     /// Add the acton pipeline manager which manages the application's middlewares.

@@ -94,7 +94,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
             State = onlinePlayerInfo.IsSpectator ? PlayerState.Spectating : PlayerState.Playing
         };
 
-        var playerInteractionContext = new PlayerInteractionContext(player, context);
+        var playerInteractionContext = new CommandInteractionContext(player, context) {CommandExecuted = cmd};
         controller.SetContext(playerInteractionContext);
 
         var actionChain = _actionPipeline.BuildChain(context =>

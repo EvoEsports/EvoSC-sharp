@@ -38,7 +38,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         await _server.SendChatMessage($"hello, {name}!", Context.Player);
     }
 
-    [ChatCommand("ratemap", "Rate the current map.")]
+    [ChatCommand("ratemap", "Rate the current map.", "test")]
     [CommandAlias("+++", 100)]
     [CommandAlias("++", 80)]
     [CommandAlias("+", 60)]

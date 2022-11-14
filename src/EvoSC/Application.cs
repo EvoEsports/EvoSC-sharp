@@ -12,6 +12,7 @@ using EvoSC.Common.Database;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Remote;
@@ -128,9 +129,11 @@ public class Application : IEvoSCApplication
     private void SetupControllerManager()
     {
         var controllers = _services.GetInstance<IControllerManager>();
-        
         controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
         controllers.AddControllerActionRegistry(_services.GetInstance<IChatCommandManager>());
+        
+        var pipelineManager = _services.GetInstance<IActionPipelineManager>();
+        pipelineManager.UseEvoScCommands(_services);
     }
     
     private async Task SetupModules()

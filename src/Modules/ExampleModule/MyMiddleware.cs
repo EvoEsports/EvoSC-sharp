@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Commands;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Middleware.Attributes;
 using Microsoft.Extensions.Logging;
