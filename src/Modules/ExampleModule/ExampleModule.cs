@@ -7,7 +7,7 @@ namespace EvoSC.Modules.Official.ExampleModule;
 [Module(Name = "ExampleModule", Description = "An example module to get people started.", IsInternal = true)]
 public class ExampleModule : EvoScModule
 {
-    public ExampleModule(IActionPipeline pipeline, ILogger<ExampleModule> logger)
+    /* public ExampleModule(IActionPipeline pipeline, ILogger<ExampleModule> logger)
     {
         pipeline.AddComponent(next =>
         {
@@ -17,5 +17,5 @@ public class ExampleModule : EvoScModule
                 return next(context);
             };
         });
-    }
+    } */
 }

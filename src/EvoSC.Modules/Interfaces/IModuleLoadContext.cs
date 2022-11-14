@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Modules.Attributes;
 using SimpleInjector;
 
@@ -39,4 +40,6 @@ public interface IModuleLoadContext
     /// The module's assembly object.
     /// </summary>
     public Assembly Assembly { get; init; }
+    
+    public IActionPipeline ActionPipeline { get; init; }
 }

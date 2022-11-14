@@ -24,13 +24,13 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private readonly ILogger<CommandInteractionHandler> _logger;
     private readonly IControllerManager _controllers;
     private readonly IServerClient _serverClient;
-    private readonly IActionPipeline _actionPipeline;
+    private readonly IActionPipelineManager _actionPipeline;
     
     private readonly ChatCommandParser _parser;
 
     public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager,
         IEventManager events, IControllerManager controllers, IServerClient serverClient,
-        IActionPipeline actionPipeline)
+        IActionPipelineManager actionPipeline)
     {
         _logger = logger;
         _controllers = controllers;
@@ -97,7 +97,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         var playerInteractionContext = new PlayerInteractionContext(player, context);
         controller.SetContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.Build(context =>
+        var actionChain = _actionPipeline.BuildChain(context =>
         {
             return (Task)cmd.HandlerMethod.Invoke(controller, args);
         });

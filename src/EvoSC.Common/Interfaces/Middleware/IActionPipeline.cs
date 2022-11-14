@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Middleware;
+using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Middleware;
 
@@ -10,6 +11,8 @@ public interface IActionPipeline
     /// </summary>
     /// <param name="middleware">A function delegate that represents the middleware.</param>
     public IActionPipeline AddComponent(Func<ActionDelegate, ActionDelegate> middleware);
+    public IActionPipeline AddComponent<TMiddleware>(Container services);
+    public IActionPipeline AddComponent(Type middlewareType, Container services);
     /// <summary>
     /// Build the pipeline chain and return a callable function to execute it.
     /// </summary>

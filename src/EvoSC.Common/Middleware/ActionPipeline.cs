@@ -1,5 +1,8 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Util;
+using Microsoft.Extensions.DependencyInjection;
+using SimpleInjector;
 
 namespace EvoSC.Common.Middleware;
 
@@ -12,7 +15,29 @@ public class ActionPipeline : IActionPipeline
         _components.Add(middleware);
         return this;
     }
-    
+
+    public IActionPipeline AddComponent<TMiddleware>(Container services) => AddComponent(typeof(TMiddleware), services);
+
+    public IActionPipeline AddComponent(Type middlewareType, Container services) => AddComponent(next =>
+    {
+        var args = new object[] {next};
+        var instance = ActivatorUtilities.CreateInstance(services, middlewareType, args);
+        var method = instance.GetInstanceMethod("ExecuteAsync");
+
+        if (method == null)
+        {
+            throw new InvalidOperationException("Middleware must include method 'ExecuteAsync'.");
+        }
+
+        return context =>
+        {
+            var invokeArgs = new object[] {context};
+            var task = (Task)method.Invoke(instance, invokeArgs);
+
+            return task;
+        };
+    });
+
     public ActionDelegate Build(ActionDelegate chain)
     {
         // execute in reverse, otherwise last added will be executed first

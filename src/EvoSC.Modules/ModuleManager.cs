@@ -7,6 +7,9 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Middleware;
+using EvoSC.Common.Middleware.Attributes;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
@@ -28,16 +31,19 @@ public class ModuleManager : IModuleManager
     private readonly IControllerManager _controllers;
     private readonly IModuleServicesManager _servicesManager;
     private readonly DbConnection _db;
+    private readonly IActionPipelineManager _pipelineManager;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
-    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers, IModuleServicesManager servicesManager, DbConnection db)
+    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers,
+        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db)
     {
         _logger = logger;
         _services = services;
         _controllers = controllers;
         _servicesManager = servicesManager;
         _db = db;
+        _pipelineManager = pipelineManager;
     }
 
     private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleInfo)
@@ -58,10 +64,13 @@ public class ModuleManager : IModuleManager
             ModuleClass = moduleClass,
             ModuleInfo = moduleInfo,
             Assembly = moduleClass.Assembly,
-            Services = moduleServices
+            Services = moduleServices,
+            ActionPipeline = new ActionPipeline()
         };
         
         _loadedModules.Add(loadId, loadContext);
+
+        await AddMiddlewares(loadContext);
 
         return loadId;
     }
@@ -76,7 +85,41 @@ public class ModuleManager : IModuleManager
         var moduleContext = _loadedModules[loadId];
 
         await EnableControllers(moduleContext);
+        await EnableMiddlewares(moduleContext);
         await TryCallModuleEnable(moduleContext);
+    }
+
+    private async Task EnableMiddlewares(IModuleLoadContext moduleContext)
+    {
+        _pipelineManager.AddPipeline(moduleContext.LoadId, moduleContext.ActionPipeline);
+    }
+
+    private async Task AddMiddlewares(IModuleLoadContext moduleContext)
+    {
+        foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
+        {
+            moduleContext.ActionPipeline.AddComponent(middlewareType, moduleContext.Services);
+
+            /* moduleContext.ActionPipeline.AddComponent(next =>
+            {
+                var args = new object[] {next};
+                var instance = ActivatorUtilities.CreateInstance(moduleContext.Services, middlewareType, args);
+                var method = instance.GetInstanceMethod("ExecuteAsync");
+
+                if (method == null)
+                {
+                    throw new InvalidOperationException("Middleware must include method 'ExecuteAsync'.");
+                }
+
+                return context =>
+                {
+                    var invokeArgs = new object[] {context};
+                    var task = (Task)method.Invoke(instance, invokeArgs);
+
+                    return task;
+                };
+            }); */
+        }
     }
 
     private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
