@@ -5,6 +5,7 @@ using EvoSC.Commands.Parser;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Models;
@@ -23,15 +24,19 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private readonly ILogger<CommandInteractionHandler> _logger;
     private readonly IControllerManager _controllers;
     private readonly IServerClient _serverClient;
+    private readonly IActionPipeline _actionPipeline;
     
     private readonly ChatCommandParser _parser;
-    
-    public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager, IEventManager events, IControllerManager controllers, IServerClient serverClient)
+
+    public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager,
+        IEventManager events, IControllerManager controllers, IServerClient serverClient,
+        IActionPipeline actionPipeline)
     {
         _logger = logger;
         _controllers = controllers;
         _serverClient = serverClient;
-        
+        _actionPipeline = actionPipeline;
+
         events.Subscribe(builder => builder
             .WithEvent(GbxRemoteEvent.PlayerChat)
             .WithInstanceClass<ChatCommandManager>()
@@ -39,10 +44,10 @@ public class CommandInteractionHandler : ICommandInteractionHandler
             .WithHandlerMethod<PlayerChatEventArgs>(OnPlayerChatEvent)
             .AsAsync()
         );
-        
+
         _parser = new ChatCommandParser(cmdManager, GetValueReader());
     }
-    
+
     private IValueReaderManager GetValueReader()
     {
         var valueReader = new ValueReaderManager();
@@ -92,8 +97,13 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         var playerInteractionContext = new PlayerInteractionContext(player, context);
         controller.SetContext(playerInteractionContext);
 
-        var task = (Task)cmd.HandlerMethod.Invoke(controller, args);
-        await task;
+        var actionChain = _actionPipeline.Build(context =>
+        {
+            return (Task)cmd.HandlerMethod.Invoke(controller, args);
+        });
+
+        // var task = (Task)cmd.HandlerMethod.Invoke(controller, args);
+        await actionChain(playerInteractionContext);
     }
     
     public async Task OnPlayerChatEvent(object sender, PlayerChatEventArgs eventArgs)

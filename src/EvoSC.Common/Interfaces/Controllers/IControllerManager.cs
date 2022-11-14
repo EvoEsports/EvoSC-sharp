@@ -1,4 +1,6 @@
-﻿using EvoSC.Common.Controllers;
+﻿using System.Reflection;
+using EvoSC.Common.Controllers;
+using GbxRemoteNet;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;
@@ -49,4 +51,12 @@ public interface IControllerManager
     /// <param name="controllerType">The type of the controller's class.</param>
     /// <returns></returns>
     public (IController, IControllerContext) CreateInstance(Type controllerType);
+    /// <summary>
+    /// Invoke a controller action.
+    /// </summary>
+    /// <param name="context">Context of the action.</param>
+    /// <param name="method">The action's callback method.</param>
+    /// <param name="args">Arguments for the callback method.</param>
+    /// <returns></returns>
+    public Task InvokeActionAsync(IControllerContext context, MethodInfo method, params object[] args);
 }

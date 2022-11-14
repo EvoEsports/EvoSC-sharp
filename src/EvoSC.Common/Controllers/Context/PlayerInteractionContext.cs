@@ -14,12 +14,6 @@ public class PlayerInteractionContext : GenericControllerContext
     /// </summary>
     public IPlayer Player { get; }
 
-    public PlayerInteractionContext(IPlayer player)
-    {
-        Player = player;
-    }
-
-
     public PlayerInteractionContext(IPlayer player, IControllerContext context) : base(context)
     {
         Player = player;

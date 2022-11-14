@@ -44,7 +44,8 @@ public class ModuleManager : IModuleManager
     {
         var loadId = Guid.NewGuid();
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
-        
+        _servicesManager.AddContainer(loadId, moduleServices);
+
         await AddModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
         
         var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
@@ -75,13 +76,7 @@ public class ModuleManager : IModuleManager
         var moduleContext = _loadedModules[loadId];
 
         await EnableControllers(moduleContext);
-        await EnableServices(moduleContext);
         await TryCallModuleEnable(moduleContext);
-    }
-
-    private async Task EnableServices(IModuleLoadContext moduleContext)
-    {
-        _servicesManager.AddContainer(moduleContext.LoadId, moduleContext.Services);
     }
 
     private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
