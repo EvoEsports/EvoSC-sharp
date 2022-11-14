@@ -102,7 +102,6 @@ public class CommandInteractionHandler : ICommandInteractionHandler
             return (Task)cmd.HandlerMethod.Invoke(controller, args);
         });
 
-        // var task = (Task)cmd.HandlerMethod.Invoke(controller, args);
         await actionChain(playerInteractionContext);
     }
     

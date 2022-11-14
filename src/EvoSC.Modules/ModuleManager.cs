@@ -99,26 +99,6 @@ public class ModuleManager : IModuleManager
         foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
         {
             moduleContext.ActionPipeline.AddComponent(middlewareType, moduleContext.Services);
-
-            /* moduleContext.ActionPipeline.AddComponent(next =>
-            {
-                var args = new object[] {next};
-                var instance = ActivatorUtilities.CreateInstance(moduleContext.Services, middlewareType, args);
-                var method = instance.GetInstanceMethod("ExecuteAsync");
-
-                if (method == null)
-                {
-                    throw new InvalidOperationException("Middleware must include method 'ExecuteAsync'.");
-                }
-
-                return context =>
-                {
-                    var invokeArgs = new object[] {context};
-                    var task = (Task)method.Invoke(instance, invokeArgs);
-
-                    return task;
-                };
-            }); */
         }
     }
 
