@@ -132,7 +132,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    public Container CreateServiceContainer(Assembly assembly)
+    private Container CreateServiceContainer(Assembly assembly)
     {
         var container = new Container();
         container.Options.EnableAutoVerification = false;
@@ -174,7 +174,7 @@ public class ModuleManager : IModuleManager
         return container;
     }
 
-    public async Task AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
+    private async Task AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
     {
         foreach (var module in assembly.Modules)
         {
