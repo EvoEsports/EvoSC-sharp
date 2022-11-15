@@ -10,4 +10,13 @@ public class DbPermission : IPermission
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+    
+    public DbPermission(){}
+
+    public DbPermission(IPermission permission)
+    {
+        Id = permission.Id;
+        Name = permission.Name;
+        Description = permission.Description;
+    }
 }

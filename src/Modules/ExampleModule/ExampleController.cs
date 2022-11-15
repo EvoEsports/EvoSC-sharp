@@ -61,12 +61,13 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.", "anotherperm")]
+    [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        // await _permissions.AddPermission(new Permission {Name = "my.perm", Description = "My permission."});
         var group = await _permissions.GetGroup(1);
 
-        await _server.SendChatMessage("hello!", Context.Player);
+        await _permissions.ClearGroupPermissions(group);
+        
+        Console.WriteLine();
     }
 }

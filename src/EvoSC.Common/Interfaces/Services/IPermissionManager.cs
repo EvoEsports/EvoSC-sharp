@@ -59,6 +59,12 @@ public interface IPermissionManager
     /// </summary>
     /// <param name="group">The group to remove.</param>
     /// <returns></returns>
+    public Task RemoveGroup(IGroup group);
+    /// <summary>
+    /// Remove a group from the database. This method cleans up any relations to the group.
+    /// </summary>
+    /// <param name="group">The group to remove.</param>
+    /// <returns></returns>
     public Task UpdateGroup(IGroup group);
     /// <summary>
     /// Get information about a group.
@@ -72,7 +78,14 @@ public interface IPermissionManager
     /// <param name="player">The player to add the group to.</param>
     /// <param name="group">The group to add to the player.</param>
     /// <returns></returns>
-    public Task AssignGroup(IPlayer player, IGroup group);
+    public Task AddPlayerToGroup(IPlayer player, IGroup group);
+    /// <summary>
+    /// Remove a group from a user. This removes all permissions assigned to the group from the user.
+    /// </summary>
+    /// <param name="player">The player to remove the group from.</param>
+    /// <param name="group">The group to remove from the player.</param>
+    /// <returns></returns>
+    public Task RemovePlayerFromGroup(IPlayer player, IGroup group);
     /// <summary>
     /// Add a permission to a group.
     /// </summary>
