@@ -184,14 +184,14 @@ public class PermissionManager : IPermissionManager
         await _db.InsertAsync(new DbUserGroup {GroupId = group.Id, UserId = dbPlayer.Id});
     }
 
-    public Task AddPermissionToGroup(IPermission permission, IGroup group)
+    public Task AddPermissionToGroup(IGroup group, IPermission permission)
     {
         var sql = "INSERT INTO `GroupPermissions`(`PermissionId`, `GroupId`) VALUES(@PermissionId, @GroupId)";
         var values = new {PermissionId = permission.Id, GroupId = group.Id};
         return _db.QueryAsync(sql, values);
     }
 
-    public Task RemovePermissionFromGroup(IPermission permission, IGroup group)
+    public Task RemovePermissionFromGroup(IGroup group, IPermission permission)
     {
         var sql = "DELETE FROM `GroupPermissions` WHERE `PermissionId`=@PermissionId AND `GroupId`=@GroupId";
         var values = new {PermissionId = permission.Id, GroupId = group.Id};
