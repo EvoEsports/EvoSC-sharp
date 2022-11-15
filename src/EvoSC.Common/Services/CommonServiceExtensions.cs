@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Permissions;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 
@@ -14,7 +15,7 @@ public static class CommonServiceExtensions
     public static Container AddEvoScCommonServices(this Container services)
     {
         services.Register<IPlayerService, PlayerService>(Lifestyle.Transient);
-        services.Register<IPermissionService, PermissionService>(Lifestyle.Transient);
+        services.Register<IPermissionManager, PermissionManager>(Lifestyle.Transient);
         
         return services;
     }

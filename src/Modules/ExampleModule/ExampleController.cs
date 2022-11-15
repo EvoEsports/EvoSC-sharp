@@ -10,6 +10,8 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
 using GbxRemoteNet.Events;
@@ -24,12 +26,14 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IMySettings _settings;
     private readonly IServerClient _server;
     private readonly IChatCommandManager _chatCommands;
+    private readonly IPermissionManager _permissions;
 
-    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server, IChatCommandManager chatCommands)
+    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server, IChatCommandManager chatCommands, IPermissionManager permissions)
     {
         _settings = settings;
         _server = server;
         _chatCommands = chatCommands;
+        _permissions = permissions;
     }
     
     [ChatCommand("hey", "Say hey!")]
@@ -57,10 +61,12 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.")]
-    [CommandAlias("testAlias", 10)]
-    public async Task TestCommand(int arg1, int arg2)
+    [ChatCommand("test", "Some testing.", "anotherperm")]
+    public async Task TestCommand()
     {
-        await _server.SendChatMessage($"Args: {arg1}, {arg2}", Context.Player);
+        // await _permissions.AddPermission(new Permission {Name = "my.perm", Description = "My permission."});
+        var group = await _permissions.GetGroup(1);
+
+        await _server.SendChatMessage("hello!", Context.Player);
     }
 }

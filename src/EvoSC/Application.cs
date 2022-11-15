@@ -55,6 +55,8 @@ public class Application : IEvoSCApplication
         _services.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
         _services.Options.EnableAutoVerification = false;
         _services.Options.ResolveUnregisteredConcreteTypes = true;
+        _services.Options.SuppressLifestyleMismatchVerification = true;
+        _services.Options.UseStrictLifestyleMismatchBehavior = false;
     }
 
     public async Task RunAsync()
@@ -109,7 +111,7 @@ public class Application : IEvoSCApplication
 
         _services.RegisterInstance<IEvoSCApplication>(this);
         
-        _services.Verify(VerificationOption.VerifyAndDiagnose);
+        //_services.Verify(VerificationOption.VerifyAndDiagnose);
         
         _logger = _services.GetInstance<ILogger<Application>>();
     }

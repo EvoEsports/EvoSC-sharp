@@ -8,6 +8,7 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Parsing;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.TextParsing;
@@ -25,17 +26,19 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private readonly IControllerManager _controllers;
     private readonly IServerClient _serverClient;
     private readonly IActionPipelineManager _actionPipeline;
+    private readonly IPlayerService _players;
     
     private readonly ChatCommandParser _parser;
 
     public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager,
         IEventManager events, IControllerManager controllers, IServerClient serverClient,
-        IActionPipelineManager actionPipeline)
+        IActionPipelineManager actionPipeline, IPlayerService players)
     {
         _logger = logger;
         _controllers = controllers;
         _serverClient = serverClient;
         _actionPipeline = actionPipeline;
+        _players = players;
 
         events.Subscribe(builder => builder
             .WithEvent(GbxRemoteEvent.PlayerChat)
@@ -85,8 +88,10 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         
         // todo: use player service for this instead
         var onlinePlayerInfo = await _serverClient.Remote.GetDetailedPlayerInfoAsync(eventArgs.Login);
+        var dbPlayer = await _players.GetPlayerByLogin(eventArgs.Login);
         var player = new OnlinePlayer
         {
+            Id = dbPlayer.Id,
             AccountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login),
             NickName = onlinePlayerInfo.NickName,
             UbisoftName = onlinePlayerInfo.NickName,

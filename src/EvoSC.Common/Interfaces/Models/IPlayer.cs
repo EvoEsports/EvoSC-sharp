@@ -3,8 +3,9 @@
 /// <summary>
 /// Represents an online or offline player.
 /// </summary>
-public interface IPlayer : IUser
+public interface IPlayer
 {
+    public long Id { get; }
     /// <summary>
     /// The Player's account ID.
     /// </summary>
@@ -20,5 +21,7 @@ public interface IPlayer : IUser
     /// <summary>
     /// The zone/path of the player's location.
     /// </summary>
-    public string Zone { get; }
+    public string? Zone { get; }
+    
+    public IEnumerable<IGroup> Groups { get; }
 }

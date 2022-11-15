@@ -12,11 +12,11 @@ public class PermissionMiddleware
 {
     private readonly ActionDelegate _next;
     private readonly ILogger<PermissionMiddleware> _logger;
-    private readonly IPermissionService _permissions;
+    private readonly IPermissionManager _permissions;
     private readonly IServerClient _server;
 
     public PermissionMiddleware(ActionDelegate next, ILogger<PermissionMiddleware> logger,
-        IPermissionService permissions, IServerClient server)
+        IPermissionManager permissions, IServerClient server)
     {
         _next = next;
         _logger = logger;
