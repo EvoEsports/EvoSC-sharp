@@ -61,7 +61,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.")]
+    [ChatCommand("test", "Some testing.", "test")]
     public async Task TestCommand()
     {
         var group = await _permissions.GetGroup(1);

@@ -15,6 +15,7 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Middleware;
+using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
 using EvoSC.Modules;
@@ -108,6 +109,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScCommonServices();
         _services.AddEvoScChatCommands();
         _services.AddEvoScMiddlewarePipelines();
+        _services.AddEvoScPermissions();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
         
