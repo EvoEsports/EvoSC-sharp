@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Attributes;
 using SimpleInjector;
 
@@ -42,4 +43,5 @@ public interface IModuleLoadContext
     public Assembly Assembly { get; init; }
     
     public IActionPipeline ActionPipeline { get; init; }
+    public List<IPermission> Permissions { get; init; }
 }

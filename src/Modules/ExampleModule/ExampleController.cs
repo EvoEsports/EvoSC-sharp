@@ -35,7 +35,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         _chatCommands = chatCommands;
         _permissions = permissions;
     }
-    
+
     [ChatCommand("hey", "Say hey!")]
     public async Task TmxAddMap(string name)
     {
@@ -61,13 +61,9 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.", "test")]
+    [ChatCommand("test", "Some testing.", MyPermissions.MyPerm1)]
     public async Task TestCommand()
     {
-        var group = await _permissions.GetGroup(1);
-
-        await _permissions.ClearGroupPermissions(group);
-        
-        Console.WriteLine();
+        await _server.SendChatMessage("command called!");
     }
 }

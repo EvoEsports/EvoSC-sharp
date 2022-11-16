@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.EnumIdentifier;
 using GbxRemoteNet;
 
 namespace EvoSC.Common.Interfaces;
@@ -81,7 +82,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="sender">The entity that triggered the event.</param>
     /// <returns></returns>
     public Task Raise(Enum name, EventArgs args, object? sender) =>
-        Raise(name.GetEventIdentifier(), args, sender);
+        Raise(name.GetIdentifier(), args, sender);
     /// <summary>
     /// Dispatch an event with event args.
     /// </summary>

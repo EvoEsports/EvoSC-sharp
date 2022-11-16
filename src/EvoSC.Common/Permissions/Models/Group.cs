@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Database.Models;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Common.Permissions.Models;
 
