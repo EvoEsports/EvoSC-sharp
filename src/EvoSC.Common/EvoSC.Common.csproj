@@ -21,8 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Interfaces\ModuleServices" />
-      <Folder Include="Interfaces\Permissions" />
       <Folder Include="Services\Attributes" />
     </ItemGroup>
 

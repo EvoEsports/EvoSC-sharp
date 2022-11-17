@@ -4,6 +4,11 @@ namespace EvoSC.Common.Util.EnumIdentifier;
 
 public static class EnumIdentifierUtils
 {
+    /// <summary>
+    /// Get the "prefix" which identifies a permission group.
+    /// </summary>
+    /// <param name="enumType">Type of the enumeration.</param>
+    /// <returns></returns>
     private static string GetIdentifierPrefix(Type enumType)
     {
         var customName = enumType.GetCustomAttribute<IdentifierAttribute>()?.Name;

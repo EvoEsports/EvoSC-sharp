@@ -17,5 +17,5 @@ public class ModuleLoadContext : IModuleLoadContext
     public ModuleAttribute ModuleInfo { get; init; }
     public Assembly Assembly { get; init; }
     public IActionPipeline ActionPipeline { get; init; }
-    public List<IPermission> Permissions { get; init; }
+    public List<IPermission> Permissions { get; set; }
 }

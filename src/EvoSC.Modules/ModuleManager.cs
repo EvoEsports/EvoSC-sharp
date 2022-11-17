@@ -43,7 +43,8 @@ public class ModuleManager : IModuleManager
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
     public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers,
-        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db, IPermissionManager permissions)
+        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db,
+        IPermissionManager permissions)
     {
         _logger = logger;
         _services = services;
@@ -135,6 +136,8 @@ public class ModuleManager : IModuleManager
 
     private async Task InstallPermissions(IModuleLoadContext moduleContext)
     {
+        var identifiedPermissions = new List<IPermission>();
+        
         foreach (var permission in moduleContext.Permissions)
         {
             var existingPermission = await _permissions.GetPermission(permission.Name);
@@ -142,12 +145,26 @@ public class ModuleManager : IModuleManager
             if (existingPermission != null)
             {
                 _logger.LogDebug("Wont install permission '{Name}' as it already exists", permission.Name);
+                identifiedPermissions.Add(existingPermission);
                 continue;
             }
 
             _logger.LogDebug("Installing permission: {Name}", permission.Name);
             await _permissions.AddPermission(permission);
+            var identifiedPermission = await _permissions.GetPermission(permission.Name);
+
+            if (identifiedPermission == null)
+            {
+                _logger.LogError(
+                    "Could not identify permission '{Name}' after installing it. Was it not added to the database?",
+                    permission.Name);
+                continue;
+            }
+            
+            identifiedPermissions.Add(identifiedPermission);
         }
+
+        moduleContext.Permissions = identifiedPermissions;
     }
 
     public async Task EnableModule(Guid loadId)
