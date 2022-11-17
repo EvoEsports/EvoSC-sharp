@@ -40,7 +40,7 @@ public class ActionPipeline : IActionPipeline
 
     public ActionDelegate Build(ActionDelegate chain)
     {
-        // execute in reverse, otherwise last added will be executed first
+        // execute in reverse order, otherwise last added will be executed first
         // but we want first to last order rather than last to first
         for (var i = _components.Count - 1; i >= 0; i--)
         {
