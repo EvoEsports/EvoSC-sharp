@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Reflection;
 using Config.Net;
@@ -7,7 +8,15 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Middleware;
+using EvoSC.Common.Middleware.Attributes;
+using EvoSC.Common.Permissions.Attributes;
+using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Exceptions.ModuleServices;
@@ -16,8 +25,8 @@ using EvoSC.Modules.Info;
 using EvoSC.Modules.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SimpleInjector;
 using SimpleInjector.Lifestyles;
+using Container = SimpleInjector.Container;
 
 namespace EvoSC.Modules;
 
@@ -28,23 +37,30 @@ public class ModuleManager : IModuleManager
     private readonly IControllerManager _controllers;
     private readonly IModuleServicesManager _servicesManager;
     private readonly DbConnection _db;
+    private readonly IActionPipelineManager _pipelineManager;
+    private readonly IPermissionManager _permissions;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
-    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers, IModuleServicesManager servicesManager, DbConnection db)
+    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers,
+        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db,
+        IPermissionManager permissions)
     {
         _logger = logger;
         _services = services;
         _controllers = controllers;
         _servicesManager = servicesManager;
         _db = db;
+        _pipelineManager = pipelineManager;
+        _permissions = permissions;
     }
 
     private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleInfo)
     {
         var loadId = Guid.NewGuid();
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
-        
+        _servicesManager.AddContainer(loadId, moduleServices);
+
         await AddModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
         
         var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
@@ -57,15 +73,20 @@ public class ModuleManager : IModuleManager
             ModuleClass = moduleClass,
             ModuleInfo = moduleInfo,
             Assembly = moduleClass.Assembly,
-            Services = moduleServices
+            Services = moduleServices,
+            ActionPipeline = new ActionPipeline(),
+            Permissions = new List<IPermission>()
         };
         
         _loadedModules.Add(loadId, loadContext);
 
+        await AddMiddlewares(loadContext);
+        await AddPermissions(loadContext);
+
         return loadId;
     }
-    
-    public async Task EnableModule(Guid loadId)
+
+    private IModuleLoadContext GetModuleById(Guid loadId)
     {
         if (loadId == Guid.Empty || !_loadedModules.ContainsKey(loadId))
         {
@@ -73,15 +94,99 @@ public class ModuleManager : IModuleManager
         }
 
         var moduleContext = _loadedModules[loadId];
+        return moduleContext;
+    }
+    
+    private async Task AddPermissions(ModuleLoadContext loadContext)
+    {
+        foreach (var permGroup in loadContext.Assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
+        {
+            var rootName = permGroup.Name;
+
+            var idAttr = permGroup.GetCustomAttribute<IdentifierAttribute>();
+            if (idAttr != null)
+            {
+                rootName = idAttr.Name;
+            }
+
+            foreach (var f in permGroup.GetFields())
+            {
+                if (f.FieldType != permGroup)
+                {
+                    continue;
+                }
+
+                var actualName = f.GetCustomAttribute<IdentifierAttribute>()?.Name ?? f.Name;
+                
+                loadContext.Permissions.Add(new Permission
+                {
+                    Name = $"{rootName}.{actualName}",
+                    Description = f.GetCustomAttribute<DescriptionAttribute>()?.Description ?? ""
+                });
+            }
+        }
+    }
+
+    private async Task InstallModule(Guid loadId)
+    {
+        var moduleContext = GetModuleById(loadId);
+
+        await InstallPermissions(moduleContext);
+    }
+
+    private async Task InstallPermissions(IModuleLoadContext moduleContext)
+    {
+        var identifiedPermissions = new List<IPermission>();
+        
+        foreach (var permission in moduleContext.Permissions)
+        {
+            var existingPermission = await _permissions.GetPermission(permission.Name);
+
+            if (existingPermission != null)
+            {
+                _logger.LogDebug("Wont install permission '{Name}' as it already exists", permission.Name);
+                identifiedPermissions.Add(existingPermission);
+                continue;
+            }
+
+            _logger.LogDebug("Installing permission: {Name}", permission.Name);
+            await _permissions.AddPermission(permission);
+            var identifiedPermission = await _permissions.GetPermission(permission.Name);
+
+            if (identifiedPermission == null)
+            {
+                _logger.LogError(
+                    "Could not identify permission '{Name}' after installing it. Was it not added to the database?",
+                    permission.Name);
+                continue;
+            }
+            
+            identifiedPermissions.Add(identifiedPermission);
+        }
+
+        moduleContext.Permissions = identifiedPermissions;
+    }
+
+    public async Task EnableModule(Guid loadId)
+    {
+        var moduleContext = GetModuleById(loadId);
 
         await EnableControllers(moduleContext);
-        await EnableServices(moduleContext);
+        await EnableMiddlewares(moduleContext);
         await TryCallModuleEnable(moduleContext);
     }
 
-    private async Task EnableServices(IModuleLoadContext moduleContext)
+    private async Task EnableMiddlewares(IModuleLoadContext moduleContext)
     {
-        _servicesManager.AddContainer(moduleContext.LoadId, moduleContext.Services);
+        _pipelineManager.AddPipeline(moduleContext.LoadId, moduleContext.ActionPipeline);
+    }
+
+    private async Task AddMiddlewares(IModuleLoadContext moduleContext)
+    {
+        foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
+        {
+            moduleContext.ActionPipeline.AddComponent(middlewareType, moduleContext.Services);
+        }
     }
 
     private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
@@ -114,7 +219,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    public Container CreateServiceContainer(Assembly assembly)
+    private Container CreateServiceContainer(Assembly assembly)
     {
         var container = new Container();
         container.Options.EnableAutoVerification = false;
@@ -156,7 +261,7 @@ public class ModuleManager : IModuleManager
         return container;
     }
 
-    public async Task AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
+    private async Task AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
     {
         foreach (var module in assembly.Modules)
         {
@@ -201,6 +306,7 @@ public class ModuleManager : IModuleManager
                 var moduleAttr = moduleType.GetEvoScModuleAttribute();
                 var loadId = await LoadModule(moduleType, moduleAttr);
 
+                await InstallModule(loadId);
                 await EnableModule(loadId);
             }
         }

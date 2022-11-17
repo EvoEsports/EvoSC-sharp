@@ -19,6 +19,7 @@ public interface IServerClient
     /// <param name="token">Cancellation token to cancel the startup.</param>
     /// <returns></returns>
     public Task StartAsync(CancellationToken token);
+    
     /// <summary>
     /// Stop and disconnect from the server.
     /// </summary>

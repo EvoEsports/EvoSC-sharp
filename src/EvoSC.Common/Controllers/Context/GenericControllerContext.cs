@@ -14,23 +14,29 @@ namespace EvoSC.Common.Controllers.Context;
 public class GenericControllerContext : IControllerContext
 {
     public Scope ServiceScope { get; private set; }
+    public IController Controller { get; init; }
+    
+    private readonly Dictionary<string, object> _customData = new();
+    public Dictionary<string, object> CustomData => _customData;
 
     void IControllerContext.SetScope(Scope scope)
     {
         ServiceScope = scope;
     }
 
+    public GenericControllerContext()
+    {
+        // default constructor, allows for custom context
+    }
+
     public GenericControllerContext(Scope serviceScope)
     {
         ServiceScope = serviceScope;
-    }
-    
-    public GenericControllerContext()
-    {
     }
 
     public GenericControllerContext(IControllerContext context)
     {
         ServiceScope = context.ServiceScope;
+        Controller = context.Controller;
     }
 }

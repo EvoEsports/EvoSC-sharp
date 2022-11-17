@@ -12,7 +12,10 @@ using EvoSC.Common.Database;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Logging;
+using EvoSC.Common.Middleware;
+using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
 using EvoSC.Modules;
@@ -53,6 +56,8 @@ public class Application : IEvoSCApplication
         _services.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
         _services.Options.EnableAutoVerification = false;
         _services.Options.ResolveUnregisteredConcreteTypes = true;
+        _services.Options.SuppressLifestyleMismatchVerification = true;
+        _services.Options.UseStrictLifestyleMismatchBehavior = false;
     }
 
     public async Task RunAsync()
@@ -103,11 +108,11 @@ public class Application : IEvoSCApplication
         _services.AddEvoScControllers();
         _services.AddEvoScCommonServices();
         _services.AddEvoScChatCommands();
+        _services.AddEvoScMiddlewarePipelines();
+        _services.AddEvoScPermissions();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
-        
-        _services.Verify(VerificationOption.VerifyAndDiagnose);
-        
+
         _logger = _services.GetInstance<ILogger<Application>>();
     }
 
@@ -126,9 +131,11 @@ public class Application : IEvoSCApplication
     private void SetupControllerManager()
     {
         var controllers = _services.GetInstance<IControllerManager>();
-        
         controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
         controllers.AddControllerActionRegistry(_services.GetInstance<IChatCommandManager>());
+        
+        var pipelineManager = _services.GetInstance<IActionPipelineManager>();
+        pipelineManager.UseEvoScCommands(_services);
     }
     
     private async Task SetupModules()

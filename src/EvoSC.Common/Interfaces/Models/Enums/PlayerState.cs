@@ -9,6 +9,7 @@ public enum PlayerState
     /// The player is in spectator mode.
     /// </summary>
     Spectating,
+    
     /// <summary>
     /// The player is currently playing.
     /// </summary>

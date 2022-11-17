@@ -133,13 +133,39 @@ public class ControllerManager : IControllerManager
             throw new ControllerException($"Failed to instantiate controller of type '{controllerType}'.");
         }
 
-        var context = CreateContext(scope);
+        TrackControllerInstance(controllerType, instance);
+
+        var context = CreateContext(scope, instance);
         return (instance, context);
     }
 
-    private IControllerContext CreateContext(Scope scope)
+    private void TrackControllerInstance(Type controllerType, IController instance)
     {
-        IControllerContext context = new GenericControllerContext(scope);
+        if (!_instances.ContainsKey(controllerType))
+        {
+            _instances[controllerType] = new List<IController>();
+        }
+
+        _instances[controllerType].Add(instance);
+    }
+
+    public Task InvokeActionAsync(IControllerContext context, MethodInfo method, params object[] args)
+    {
+        // todo: implement this
+        // get pipeline
+        // execute pipeline
+        // cancel
+
+        return Task.CompletedTask;
+    }
+
+    private IControllerContext CreateContext(Scope scope, IController controller)
+    {
+        IControllerContext context = new GenericControllerContext(scope)
+        {
+            Controller = controller
+        };
+        
         context.SetScope(scope);
 
         return context;
