@@ -1,4 +1,7 @@
-<div align="center"><img src="./images/evosc_full.png" width="60%"></div>
+<div align="center">
+    <img src="./images/evosc_full.png" width="60%">
+    ![Codacy Badge](https://app.codacy.com/project/badge/Grade/ffe07469f0f14d14aa3cb7218310a3c9)
+</div>
 
 # EvoSC#
 

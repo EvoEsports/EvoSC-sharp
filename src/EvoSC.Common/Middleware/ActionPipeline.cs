@@ -8,7 +8,7 @@ namespace EvoSC.Common.Middleware;
 
 public class ActionPipeline : IActionPipeline
 {
-    public List<Func<ActionDelegate, ActionDelegate>> _components = new();
+    private readonly List<Func<ActionDelegate, ActionDelegate>> _components = new();
 
     public IActionPipeline AddComponent(Func<ActionDelegate, ActionDelegate> middleware)
     {

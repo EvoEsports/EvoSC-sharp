@@ -112,9 +112,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScPermissions();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
-        
-        //_services.Verify(VerificationOption.VerifyAndDiagnose);
-        
+
         _logger = _services.GetInstance<ILogger<Application>>();
     }
 

@@ -16,7 +16,7 @@ public class GenericControllerContext : IControllerContext
     public Scope ServiceScope { get; private set; }
     public IController Controller { get; init; }
     
-    public Dictionary<string, object> _customData = new();
+    private readonly Dictionary<string, object> _customData = new();
     public Dictionary<string, object> CustomData => _customData;
 
     void IControllerContext.SetScope(Scope scope)

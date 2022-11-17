@@ -4,7 +4,7 @@ namespace EvoSC.Common.Middleware;
 
 public class ActionPipelineBuilder
 {
-    private List<IActionPipeline> _pipelines = new();
+    private readonly List<IActionPipeline> _pipelines = new();
 
     /// <summary>
     /// Add a new action pipeline to the builder.
