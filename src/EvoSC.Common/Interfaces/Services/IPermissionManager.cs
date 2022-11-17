@@ -92,7 +92,7 @@ public interface IPermissionManager
     public Task AddPlayerToGroup(IPlayer player, IGroup group);
     
     /// <summary>
-    /// Remove a group from a user. This removes all permissions assigned to the group from the user.
+    /// Remove a player from a group. This removes all permissions assigned to the player from the group.
     /// </summary>
     /// <param name="player">The player to remove the group from.</param>
     /// <param name="group">The group to remove from the player.</param>
