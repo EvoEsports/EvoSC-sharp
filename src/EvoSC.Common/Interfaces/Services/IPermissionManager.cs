@@ -86,7 +86,7 @@ public interface IPermissionManager
     /// <summary>
     /// Add a player to a group, giving them all permissions that are assigned to the group.
     /// </summary>
-    /// <param name="player">The player to add the group to.</param>
+    /// <param name="player">The player that should be added to the group.</param>
     /// <param name="group">The group to add to the player.</param>
     /// <returns></returns>
     public Task AddPlayerToGroup(IPlayer player, IGroup group);
@@ -94,7 +94,7 @@ public interface IPermissionManager
     /// <summary>
     /// Remove a player from a group. This removes all permissions assigned to the player from the group.
     /// </summary>
-    /// <param name="player">The player to remove the group from.</param>
+    /// <param name="player">The player that should be removed from the group.</param>
     /// <param name="group">The group which the player should be removed from.</param>
     /// <returns></returns>
     public Task RemovePlayerFromGroup(IPlayer player, IGroup group);
