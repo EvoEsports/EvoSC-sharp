@@ -9,7 +9,7 @@ public class ActionPipelineBuilder
     /// <summary>
     /// Add a new action pipeline to the builder.
     /// </summary>
-    /// <param name="pipeline"></param>
+    /// <param name="pipeline">Action pipeline.</param>
     /// <returns></returns>
     public ActionPipelineBuilder AddPipeline(IActionPipeline pipeline)
     {
