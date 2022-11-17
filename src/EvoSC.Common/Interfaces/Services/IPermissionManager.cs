@@ -84,7 +84,7 @@ public interface IPermissionManager
     public Task<IGroup?> GetGroup(int id);
     
     /// <summary>
-    /// Add a group to a player, giving them all permissions that are assigned to the group.
+    /// Add a player to a group, giving them all permissions that are assigned to the group.
     /// </summary>
     /// <param name="player">The player to add the group to.</param>
     /// <param name="group">The group to add to the player.</param>
