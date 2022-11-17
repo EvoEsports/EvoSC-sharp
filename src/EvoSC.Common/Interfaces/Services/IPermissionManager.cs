@@ -95,7 +95,7 @@ public interface IPermissionManager
     /// Remove a player from a group. This removes all permissions assigned to the player from the group.
     /// </summary>
     /// <param name="player">The player to remove the group from.</param>
-    /// <param name="group">The group to remove from the player.</param>
+    /// <param name="group">The group which the player should be removed from.</param>
     /// <returns></returns>
     public Task RemovePlayerFromGroup(IPlayer player, IGroup group);
     
