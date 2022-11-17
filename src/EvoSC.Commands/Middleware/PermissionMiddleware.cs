@@ -42,8 +42,6 @@ public class PermissionMiddleware
             return;
         }
 
-        _logger.LogInformation("hello cmd permissions");
-
         await _server.SendChatMessage("Insufficient permissions to run this command.", cmdContext.Player);
     }
 }
