@@ -17,7 +17,7 @@ public interface IPermissionManager
     /// Get information about a permission from it's name.
     /// </summary>
     /// <param name="name">The name of the permission.</param>
-    /// <returns></returns>
+    /// <returns>Permission information.</returns>
     public Task<IPermission?> GetPermission(string name);
     
     /// <summary>
