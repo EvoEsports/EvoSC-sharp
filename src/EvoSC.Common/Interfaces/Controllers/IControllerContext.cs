@@ -11,10 +11,12 @@ public interface IControllerContext
     /// The service scope used to create this context.
     /// </summary>
     public Scope ServiceScope { get; }
+    
     /// <summary>
     /// Pointer to the controller instance for this context.
     /// </summary>
     public IController Controller { get; }
+    
     /// <summary>
     /// This is any data that can be set to be included with the context.
     /// This is typically set in middlewares. Obviously, if the context supports

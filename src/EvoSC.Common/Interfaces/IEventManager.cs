@@ -13,6 +13,7 @@ public interface IEventManager : IControllerActionRegistry
     /// </summary>
     /// <param name="subscription">Subscription info that is used to subscribe to the event.</param>
     public void Subscribe(EventSubscription subscription);
+    
     /// <summary>
     /// Create a new event subscription that has a callback method.
     /// </summary>
@@ -29,6 +30,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <typeparam name="TArgs">The event argument's type.</typeparam>
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority, bool runAsync)
         where TArgs : EventArgs;
+    
     /// <summary>
     /// Subscribe to an event given the provided callback handler.
     /// </summary>
@@ -38,6 +40,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <typeparam name="TArgs">The event argument's type.</typeparam>
     public void Subscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler, EventPriority priority)
         where TArgs : EventArgs => Subscribe(name, handler, priority, false);
+    
     /// <summary>
     /// Subscribe to an event given the provided callback handler.
     /// </summary>
@@ -52,6 +55,7 @@ public interface IEventManager : IControllerActionRegistry
     /// </summary>
     /// <param name="subscription">The subscription to remove.</param>
     public void Unsubscribe(EventSubscription subscription);
+    
     /// <summary>
     /// Remove an event subscription of a provided callback handler.
     /// </summary>
@@ -59,6 +63,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="handler">Callback handler of the subscription.</param>
     /// <typeparam name="TArgs">The event argument's type.</typeparam>
     public void Unsubscribe<TArgs>(string name, AsyncEventHandler<TArgs> handler) where TArgs : EventArgs;
+    
     /// <summary>
     /// Dispatch an event with event args.
     /// </summary>
@@ -67,6 +72,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="sender">The entity that triggered the event.</param>
     /// <returns></returns>
     public Task Raise(string name, EventArgs args, object? sender);
+    
     /// <summary>
     /// Dispatch an event with event args.
     /// </summary>
@@ -74,6 +80,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="args">Event arguments.</param>
     /// <returns></returns>
     public Task Raise(string name, EventArgs args) => Raise(name, args, null);
+    
     /// <summary>
     /// Dispatch an event with event args.
     /// </summary>
@@ -83,6 +90,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <returns></returns>
     public Task Raise(Enum name, EventArgs args, object? sender) =>
         Raise(name.GetIdentifier(), args, sender);
+    
     /// <summary>
     /// Dispatch an event with event args.
     /// </summary>
