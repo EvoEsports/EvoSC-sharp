@@ -6,7 +6,7 @@ namespace EvoSC.Common.Interfaces.Services;
 public interface IPermissionManager
 {
     /// <summary>
-    /// Check if a has a certain permission.
+    /// Check if a player has the given permission.
     /// </summary>
     /// <param name="player">The player to check.</param>
     /// <param name="permission">Permission the user requires.</param>
