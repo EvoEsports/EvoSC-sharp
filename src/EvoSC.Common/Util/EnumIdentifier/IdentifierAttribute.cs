@@ -1,7 +1,7 @@
 ﻿namespace EvoSC.Common.Util.EnumIdentifier;
 
 /// <summary>
-/// Give a enum field a custom identifier name.
+/// Give an enum field a custom identifier name.
 /// </summary>
 [AttributeUsage(AttributeTargets.Enum | AttributeTargets.Field, AllowMultiple = false)]
 public class IdentifierAttribute : Attribute
