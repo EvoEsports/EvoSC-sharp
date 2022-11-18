@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using EvoSC.Commands.Util;
+using EvoSC.Common.Util;
+using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Commands.Attributes;
 
@@ -25,7 +27,7 @@ public class ChatCommandAttribute : Attribute
     /// </summary>
     public bool UsePrefix { get; }
 
-    public ChatCommandAttribute(string name, string description, string? permission, bool usePrefix)
+    public ChatCommandAttribute(string name, string description, string permission, bool usePrefix)
     {
         if (description.Trim() == string.Empty)
         {
@@ -43,10 +45,14 @@ public class ChatCommandAttribute : Attribute
         UsePrefix = usePrefix;
     }
 
+    public ChatCommandAttribute(string name, string description, object permission, bool usePrefix) : this(name, description, permission.AsEnum().GetIdentifier(), usePrefix) { }
+
     public ChatCommandAttribute(string name, string description, string permission) : this(name, description,
         permission, true)
     {
     }
+    
+    public ChatCommandAttribute(string name, string description, object permission) : this(name, description, permission.AsEnum().GetIdentifier()) {}
 
     public ChatCommandAttribute(string name, string description) : this(name, description, null, true)
     {

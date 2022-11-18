@@ -6,6 +6,7 @@ public interface IValueReader
     /// Types that can be read from this value reader.
     /// </summary>
     public IEnumerable<Type> AllowedTypes { get; }
+    
     /// <summary>
     /// Read a string value and convert it to the provided type if possible.
     /// </summary>

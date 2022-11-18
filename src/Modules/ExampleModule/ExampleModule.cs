@@ -1,4 +1,7 @@
-﻿using EvoSC.Modules.Attributes;
+﻿using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Modules.Attributes;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 

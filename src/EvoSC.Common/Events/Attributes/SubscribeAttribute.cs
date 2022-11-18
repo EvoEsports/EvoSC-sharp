@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Util;
+using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Common.Events.Attributes;
 
@@ -59,14 +60,14 @@ public class SubscribeAttribute : Attribute
     /// Create a new event subscription.
     /// </summary>
     /// <param name="name">Must be an enumeration. Name of the event.</param>
-    public SubscribeAttribute(object name) : this((name as Enum).GetEventIdentifier()) {}
+    public SubscribeAttribute(object name) : this(name.AsEnum().GetIdentifier()) {}
     
     /// <summary>
     /// Create a new event subscription.
     /// </summary>
     /// <param name="name">Must be an enumeration. Name of the event.</param>
     /// <param name="priority">Callback priority of the event</param>
-    public SubscribeAttribute(object name, EventPriority priority) : this((name as Enum).GetEventIdentifier(), priority) {}
+    public SubscribeAttribute(object name, EventPriority priority) : this(name.AsEnum().GetIdentifier(), priority) {}
     
     /// <summary>
     /// Create a new event subscription.
@@ -74,5 +75,5 @@ public class SubscribeAttribute : Attribute
     /// <param name="name">Must be an enumeration. Name of the event.</param>
     /// <param name="priority">Callback priority of the event</param>
     /// <param name="isAsync">If true, the callback is run in it's own thread and non-blocking.</param>
-    public SubscribeAttribute(object name, EventPriority priority, bool isAsync) : this((name as Enum).GetEventIdentifier(), priority, isAsync) {}
+    public SubscribeAttribute(object name, EventPriority priority, bool isAsync) : this(name.AsEnum().GetIdentifier(), priority, isAsync) {}
 }

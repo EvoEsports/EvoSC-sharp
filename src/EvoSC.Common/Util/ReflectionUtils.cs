@@ -109,4 +109,30 @@ public static class ReflectionUtils
         var method = type.GetMethod(methodName);
         return method.Invoke(null, args);
     }
+
+    /// <summary>
+    /// Get types of an assembly that annotates a specific attribute.
+    /// </summary>
+    /// <param name="assembly">Assembly to search in.</param>
+    /// <typeparam name="TAttribute">The attribute the type must annotate.</typeparam>
+    /// <returns></returns>
+    public static IEnumerable<Type> AssemblyTypesWithAttribute<TAttribute>(this Assembly assembly) where TAttribute : Attribute
+    {
+        foreach (var module in assembly.Modules)
+        {
+            foreach (var type in module.GetTypes())
+            {
+                if (type.GetCustomAttribute<TAttribute>() != null)
+                {
+                    yield return type;
+                }
+            }
+        }
+    }
+
+    public static MethodInfo GetInstanceMethod(this object obj, string method)
+    {
+        var methodInfo = obj.GetType().GetMethod(method);
+        return methodInfo;
+    }
 }
