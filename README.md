@@ -20,7 +20,7 @@ The goal of this server controller is to replicate the functionality of the exis
 
 In general, we want to make it more user-friendly, more robust and generally also implement functionality that users have long wished for but we weren't able to implement in the older version due to Technical Debt.
 
-For a roadmap of planned features and what we're currently working on, have a look at the [Project board](https://github.com/orgs/EvoTM/projects/8) to see what we are working on currently.
+For a roadmap of planned features and what we're currently working on, have a look at the [Project board](https://github.com/orgs/EvoTM/projects/8).
 
 ## Support
 
