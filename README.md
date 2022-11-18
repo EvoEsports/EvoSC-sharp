@@ -1,7 +1,7 @@
 <div align="center">
     <img src="./images/evosc_full.png" width="60%">
     <br>
-    <img alt="license" src="https://img.shields.io/badge/license-CC%20BY--NC--ND%204.0-brightgreen" />
+    <img alt="GitHub" src="https://img.shields.io/github/license/EvoTM/EvoSC-sharp">
     <a href="https://www.codacy.com/gh/EvoTM/EvoSC-sharp/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EvoTM/EvoSC-sharp&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/ffe07469f0f14d14aa3cb7218310a3c9"/></a>
     <a href="https://discord.gg/EvoTM"><img alt="Discord" src="https://img.shields.io/discord/384138149686935562?label=Discord&logo=discord&logoColor=fff"></a>
 </div>
