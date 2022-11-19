@@ -24,7 +24,6 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private readonly IServerClient _serverClient;
     private readonly IActionPipelineManager _actionPipeline;
     private readonly IPlayerManagerService _playersManager;
-
     private readonly ChatCommandParser _parser;
 
     public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager,

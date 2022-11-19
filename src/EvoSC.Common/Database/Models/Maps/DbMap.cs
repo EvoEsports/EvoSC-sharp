@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Dapper.Contrib.Extensions;
-using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.Models.Player;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Maps;
 
 [Dapper.Contrib.Extensions.Table("Maps")]
 public class DbMap
@@ -34,19 +34,4 @@ public class DbMap
 
     [ForeignKey("FK_Maps_Players")]
     public DbPlayer Player { get; set; }
-
-    /*[ForeignKey("MapFavorite")]
-    public IEnumerable<DbMapFavorite>? FavoritedMaps { get; set; }
-
-    [ForeignKey("PersonalBests")]
-    public IEnumerable<DbPersonalBest>? PersonalBests { get; set; }
-
-    [ForeignKey("MapRecords")]
-    public IEnumerable<DbMapRecord>? MapRecords { get; set; }
-
-    [ForeignKey("MapKarmas")]
-    public IEnumerable<DbMapKarma>? MapKarmas { get; set; }
-
-    [ForeignKey("MapStatistics")]
-    public DbMapStatistic? MapStatistic { get; set; }*/
 }

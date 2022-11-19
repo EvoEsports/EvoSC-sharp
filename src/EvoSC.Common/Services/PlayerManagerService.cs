@@ -4,6 +4,7 @@ using Castle.Components.DictionaryAdapter;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;

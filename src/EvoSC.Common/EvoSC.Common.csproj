@@ -19,5 +19,8 @@
       <PackageReference Include="Samboy063.Tomlet" Version="5.0.0" />
       <PackageReference Include="SimpleInjector" Version="5.4.1" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+      <Folder Include="Services\Attributes" />
+    </ItemGroup>
 </Project>

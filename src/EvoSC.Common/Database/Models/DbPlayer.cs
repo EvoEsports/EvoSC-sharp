@@ -1,7 +1,7 @@
 ﻿using Dapper.Contrib.Extensions;
 using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Player;
 
 [Table("Players")]
 public class DbPlayer : IPlayer
