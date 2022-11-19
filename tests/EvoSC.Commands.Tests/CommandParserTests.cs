@@ -35,7 +35,7 @@ public class CommandParserTests
             .WithHandlerMethod(() => {})
             .Build();
 
-        _cmdManager = new ChatCommandManager(null);
+        _cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()));
         _cmdManager.AddCommand(cmd);
     }
 

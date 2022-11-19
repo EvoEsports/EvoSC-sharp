@@ -4,6 +4,9 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Models;
+using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
 using Microsoft.Extensions.Logging;
@@ -16,14 +19,16 @@ public class MapService : IMapService
     private ILogger<MapService> _logger;
     private IEvoSCBaseConfig _config;
     private IPlayerService _playerService;
+    private IServerClient _serverClient;
 
     public MapService(DbConnection db, ILogger<MapService> logger, IEvoSCBaseConfig config,
-        IPlayerService playerService)
+        IPlayerService playerService, IServerClient serverClient)
     {
         _db = db;
         _logger = logger;
         _config = config;
         _playerService = playerService;
+        _serverClient = serverClient;
     }
     
     public async Task<DbMap?> GetMapById(int id)
@@ -44,14 +49,6 @@ public class MapService : IMapService
         });
     }
     
-    /// <summary>
-    /// Adds a map to the database and to storage. If the map already exists and the passed map is newer than the existing one, the existing one will be overwritten.
-    /// </summary>
-    /// <param name="mapStream">A stream of the map file.</param>
-    /// <param name="map">The map DTO to save the map info to the database.</param>
-    /// <param name="player">The player who added the map to the server.</param>
-    /// <exception cref="DuplicateNameException">Thrown if the map already exists within the database.</exception>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task<DbMap> AddMap(Stream mapStream, Map map)
     {
         var existingMap = await GetMapByUid(map.Uid);
@@ -76,7 +73,7 @@ public class MapService : IMapService
             dbMap = await SaveNewMapToDb(map, filePath);
         }
 
-        // TODO: GH-39 - Add map to MatchSettings
+        await _serverClient.Remote.InsertMapAsync($"{map.Name}.Map.Gbx");
 
         return dbMap;
     }

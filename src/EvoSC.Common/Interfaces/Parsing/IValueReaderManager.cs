@@ -10,6 +10,7 @@ public interface IValueReaderManager
     /// </summary>
     /// <param name="reader">Instance of the value reader.</param>
     public void AddReader(IValueReader reader);
+    
     /// <summary>
     /// Get all readers of a specific type.
     /// </summary>
@@ -17,6 +18,7 @@ public interface IValueReaderManager
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public IEnumerable<IValueReader> GetReaders(Type type);
+    
     /// <summary>
     /// Convert a single value to a specific type.
     /// </summary>

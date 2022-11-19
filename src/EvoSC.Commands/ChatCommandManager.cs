@@ -77,8 +77,11 @@ public class ChatCommandManager : IChatCommandManager
 
         var lookupName = (cmd.UsePrefix ? CommandPrefix : "") + cmd.Name;
         
-        MapCommandAliases(cmd);
         _cmds[lookupName] = cmd;
+        
+        _logger.LogDebug("Registered command: {Name}", cmd.Name);
+        
+        MapCommandAliases(cmd);
     }
 
     private void MapCommandAliases(IChatCommand cmd)
@@ -94,6 +97,7 @@ public class ChatCommandManager : IChatCommandManager
                 }
 
                 _aliasMap[aliasName] = prefix + cmd.Name;
+                _logger.LogDebug("Registered command alias '{Alias}' for command '{Cmd}'", aliasName, cmd.Name);
             }
         }
     }

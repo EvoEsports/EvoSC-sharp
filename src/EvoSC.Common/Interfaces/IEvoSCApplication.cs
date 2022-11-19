@@ -8,6 +8,7 @@ public interface IEvoSCApplication
     /// Global cancellation token of the application. This is set when ShutdownAsync is called.
     /// </summary>
     public CancellationToken MainCancellationToken { get; }
+    
     /// <summary>
     /// The core service container that the application uses.
     /// </summary>
@@ -18,6 +19,7 @@ public interface IEvoSCApplication
     /// </summary>
     /// <returns></returns>
     public Task RunAsync();
+    
     /// <summary>
     /// Graceful shutdown of EvoSC#.
     /// </summary>

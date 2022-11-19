@@ -10,6 +10,8 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
 using GbxRemoteNet.Events;
@@ -24,21 +26,23 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IMySettings _settings;
     private readonly IServerClient _server;
     private readonly IChatCommandManager _chatCommands;
+    private readonly IPermissionManager _permissions;
 
-    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server, IChatCommandManager chatCommands)
+    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server, IChatCommandManager chatCommands, IPermissionManager permissions)
     {
         _settings = settings;
         _server = server;
         _chatCommands = chatCommands;
+        _permissions = permissions;
     }
-    
+
     [ChatCommand("hey", "Say hey!")]
     public async Task TmxAddMap(string name)
     {
         await _server.SendChatMessage($"hello, {name}!", Context.Player);
     }
 
-    [ChatCommand("ratemap", "Rate the current map.")]
+    [ChatCommand("ratemap", "Rate the current map.", "test")]
     [CommandAlias("+++", 100)]
     [CommandAlias("++", 80)]
     [CommandAlias("+", 60)]
@@ -57,10 +61,9 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.")]
-    [CommandAlias("testAlias", 10)]
-    public async Task TestCommand(int arg1, int arg2)
+    [ChatCommand("test", "Some testing.", MyPermissions.MyPerm1)]
+    public async Task TestCommand()
     {
-        await _server.SendChatMessage($"Args: {arg1}, {arg2}", Context.Player);
+        await _server.SendChatMessage("command called!");
     }
 }

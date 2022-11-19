@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces.Services;
-using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 
 namespace EvoSC.Common.Services;
@@ -15,6 +14,7 @@ public static class CommonServiceExtensions
     {
         services.Register<IPlayerService, PlayerService>(Lifestyle.Transient);
         services.Register<IMapService, MapService>(Lifestyle.Transient);
+        
         return services;
     }
 }
