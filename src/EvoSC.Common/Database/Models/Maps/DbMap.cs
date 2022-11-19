@@ -1,14 +1,18 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Dapper.Contrib.Extensions;
+using EvoSC.Common.Database.Models.Maps;
 
 namespace EvoSC.Common.Database.Models;
 
-[Table("Maps")]
+[Dapper.Contrib.Extensions.Table("Maps")]
 public class DbMap
 {
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public string Uid { get; set; }
+    
+    public long Author { get; set; }
 
     public string FilePath { get; set; }
 
@@ -16,27 +20,33 @@ public class DbMap
 
     public string Name { get; set; }
 
-    public int ManiaExchangeId { get; set; }
+    public long? ManiaExchangeId { get; set; }
 
     public DateTime? ManiaExchangeVersion { get; set; }
     
-    public int TrackmaniaIoId { get; set; }
+    public long? TrackmaniaIoId { get; set; }
 
     public DateTime? TrackmaniaIoVersion { get; set; }
-
-    public DbPlayer Player { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
 
-    public IEnumerable<DbMapFavorite> FavoritedMaps { get; set; }
+    [ForeignKey("FK_Maps_Players")]
+    public DbPlayer Player { get; set; }
 
-    public IEnumerable<DbPersonalBest> PersonalBests { get; set; }
+    /*[ForeignKey("MapFavorite")]
+    public IEnumerable<DbMapFavorite>? FavoritedMaps { get; set; }
 
-    public IEnumerable<DbMapRecord> MapRecords { get; set; }
+    [ForeignKey("PersonalBests")]
+    public IEnumerable<DbPersonalBest>? PersonalBests { get; set; }
 
-    public IEnumerable<DbMapKarma> MapKarmas { get; set; }
+    [ForeignKey("MapRecords")]
+    public IEnumerable<DbMapRecord>? MapRecords { get; set; }
 
-    public DbMapStatistic MapStatistic { get; set; }
+    [ForeignKey("MapKarmas")]
+    public IEnumerable<DbMapKarma>? MapKarmas { get; set; }
+
+    [ForeignKey("MapStatistics")]
+    public DbMapStatistic? MapStatistic { get; set; }*/
 }

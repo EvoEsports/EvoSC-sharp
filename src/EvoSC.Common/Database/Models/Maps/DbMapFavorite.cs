@@ -1,14 +1,17 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Dapper.Contrib.Extensions;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Maps;
 
-[Table("Player_MapFavorites")]
+[Dapper.Contrib.Extensions.Table("MapFavorites")]
 public class DbMapFavorite
 {
     [Key]
-    public int Id { get; set; }
-
+    public long Id { get; set; }
+    
+    [ForeignKey("Players")]
     public DbPlayer Player { get; set; }
 
+    [ForeignKey("Maps")]
     public DbMap Map { get; set; }
 }

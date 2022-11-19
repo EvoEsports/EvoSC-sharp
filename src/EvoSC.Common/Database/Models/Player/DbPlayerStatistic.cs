@@ -1,8 +1,8 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Player;
 
-[Table("Player_Statistics")]
+[Table("PlayerStatistics")]
 public class DbPlayerStatistic
 {
     [Key]

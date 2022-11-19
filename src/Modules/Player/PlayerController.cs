@@ -1,13 +1,7 @@
-﻿using System.Data.Common;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using EvoSC.Common.Controllers;
+﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
-using EvoSC.Common.Database.Models;
-using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
-using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
@@ -55,6 +49,6 @@ public class PlayerController : EvoScController<EventControllerContext>
         }
 
         player.LastVisit = DateTime.UtcNow;
-        _players.UpdatePlayer(player);
+        await _players.UpdatePlayer(player);
     }
 }

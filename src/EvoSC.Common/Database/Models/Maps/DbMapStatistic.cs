@@ -1,22 +1,24 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Maps;
 
-[Table("Map_Statistics")]
+[Table("MapStatistics")]
 public class DbMapStatistic
 {
     [Key]
-    public int MapStatisticId { get; set; }
+    public long Id { get; set; }
 
     public DbMap Map { get; set; }
 
-    public int MapId { get; set; }
-
-    public int NumberOfPlays { get; set; }
+    public int TimesPlayed { get; set; }
 
     public int Cooldown { get; set; }
 
     public DateTime LastPlayed { get; set; }
 
     public int AmountSkipped { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
 }

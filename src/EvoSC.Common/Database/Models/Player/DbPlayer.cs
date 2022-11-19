@@ -3,7 +3,7 @@ using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Database.Models;
 
-[Table("players")]
+[Table("Players")]
 public class DbPlayer : IPlayer
 {
     /// <summary>

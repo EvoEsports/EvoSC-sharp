@@ -28,7 +28,7 @@ public class MapService : IMapService
     
     public async Task<DbMap?> GetMapById(int id)
     {
-        var query = "select * from `maps` where `Id`=@MapId limit 1";
+        var query = "select * from `Maps` where `Id`=@MapId limit 1";
         return await _db.QueryFirstOrDefaultAsync<DbMap>(query, new
         {
             MapId = id
@@ -37,7 +37,7 @@ public class MapService : IMapService
 
     public async Task<DbMap?> GetMapByUid(string uid)
     {
-        var query = "select * from `maps` where `Uid`=@MapUid limit 1";
+        var query = "select * from `Maps` where `Uid`=@MapUid limit 1";
         return await _db.QueryFirstOrDefaultAsync<DbMap>(query, new
         {
             MapUid = uid
@@ -63,7 +63,7 @@ public class MapService : IMapService
         
         var filePath = _config.Path.Maps + $"/{map.Name}.Map.Gbx";
 
-        await SaveMapFile(mapStream, map, filePath);
+        await SaveMapFile(mapStream, filePath);
 
         DbMap dbMap;
         
@@ -101,14 +101,8 @@ public class MapService : IMapService
             ManiaExchangeVersion = map.MxVersion,
             TrackmaniaIoId = map.TmIoId,
             TrackmaniaIoVersion = map.TmIoVersion,
-            Player = dbMap.Player,
             CreatedAt = dbMap.CreatedAt,
-            UpdatedAt = DateTime.Now,
-            FavoritedMaps = dbMap.FavoritedMaps,
-            PersonalBests = dbMap.PersonalBests,
-            MapRecords = dbMap.MapRecords,
-            MapKarmas = dbMap.MapKarmas,
-            MapStatistic = dbMap.MapStatistic
+            UpdatedAt = DateTime.Now
         };
 
         await _db.InsertAsync(updatedMap);
@@ -120,17 +114,16 @@ public class MapService : IMapService
         throw new NotImplementedException();
     }
 
-    private bool MapVersionExistsInDb(DbMap? dbMap, Map map)
+    private static bool MapVersionExistsInDb(DbMap dbMap, Map map)
     {
         return dbMap.ManiaExchangeVersion == map.MxVersion || dbMap.TrackmaniaIoVersion == map.TmIoVersion;
     }
 
-    private async Task SaveMapFile(Stream mapStream, Map map, string filePath)
+    private async Task SaveMapFile(Stream mapStream, string filePath)
     {
         try
         {
             var fileStream = File.Create(filePath);
-            mapStream.Seek(0, SeekOrigin.Begin);
             await mapStream.CopyToAsync(fileStream);
             fileStream.Close();
         }
@@ -147,6 +140,7 @@ public class MapService : IMapService
         var dbMap = new DbMap
         {
             Uid = map.Uid,
+            Author = dbPlayer.Id,
             FilePath = filePath,
             Enabled = true,
             Name = map.Name,
@@ -154,14 +148,8 @@ public class MapService : IMapService
             ManiaExchangeVersion = map.MxVersion,
             TrackmaniaIoId = map.TmIoId,
             TrackmaniaIoVersion = map.TmIoVersion,
-            Player = dbPlayer,
             CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            FavoritedMaps = null,
-            PersonalBests = null,
-            MapRecords = null,
-            MapKarmas = null,
-            MapStatistic = null
+            UpdatedAt = DateTime.Now
         };
         
         await _db.InsertAsync(dbMap);
