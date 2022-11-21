@@ -26,19 +26,19 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private readonly IControllerManager _controllers;
     private readonly IServerClient _serverClient;
     private readonly IActionPipelineManager _actionPipeline;
-    private readonly IPlayerService _players;
+    private readonly IPlayerManagerService _playersManager;
     
     private readonly ChatCommandParser _parser;
 
     public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager,
         IEventManager events, IControllerManager controllers, IServerClient serverClient,
-        IActionPipelineManager actionPipeline, IPlayerService players)
+        IActionPipelineManager actionPipeline, IPlayerManagerService playersManager)
     {
         _logger = logger;
         _controllers = controllers;
         _serverClient = serverClient;
         _actionPipeline = actionPipeline;
-        _players = players;
+        _playersManager = playersManager;
 
         events.Subscribe(builder => builder
             .WithEvent(GbxRemoteEvent.PlayerChat)
@@ -87,7 +87,8 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
         
         // todo: use player service for this instead
-        var onlinePlayerInfo = await _serverClient.Remote.GetDetailedPlayerInfoAsync(eventArgs.Login);
+        var player = await _playersManager.GetOnlinePlayerAsync(eventArgs.Login);
+        /* var onlinePlayerInfo = await _serverClient.Remote.GetDetailedPlayerInfoAsync(eventArgs.Login);
         var dbPlayer = await _players.GetPlayerByLogin(eventArgs.Login);
         var player = new OnlinePlayer
         {
@@ -97,7 +98,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
             UbisoftName = onlinePlayerInfo.NickName,
             Zone = onlinePlayerInfo.Path,
             State = onlinePlayerInfo.IsSpectator ? PlayerState.Spectating : PlayerState.Playing
-        };
+        }; */
 
         var playerInteractionContext = new CommandInteractionContext(player, context) {CommandExecuted = cmd};
         controller.SetContext(playerInteractionContext);
