@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Dapper.Contrib.Extensions;
+﻿using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models.Player;
 
 namespace EvoSC.Common.Database.Models.Maps;
 
-[Dapper.Contrib.Extensions.Table("Maps")]
+[Table("Maps")]
 public class DbMap
 {
     [Key]
@@ -31,7 +30,4 @@ public class DbMap
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
-
-    [ForeignKey("FK_Maps_Players")]
-    public DbPlayer Player { get; set; }
 }

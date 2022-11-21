@@ -1,6 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Permissions;
 
 [Table("UserGroups")]
 public class DbUserGroup

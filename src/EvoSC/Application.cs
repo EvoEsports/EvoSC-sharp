@@ -111,7 +111,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScPermissions();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
-
+        
         _logger = _services.GetInstance<ILogger<Application>>();
     }
 
