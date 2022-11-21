@@ -86,7 +86,7 @@ public class PlayerManagerService : IPlayerManagerService
 
         return new OnlinePlayer(player)
         {
-            State = onlinePlayerInfo.IsSpectator ? PlayerState.Spectating : PlayerState.Playing
+            State = onlinePlayerInfo.GetState()
         };
     }
 
@@ -98,5 +98,39 @@ public class PlayerManagerService : IPlayerManagerService
         var values = new {LastVisit = DateTime.UtcNow, Id = player.Id};
 
         return _db.QueryAsync(sql, values);
+    }
+
+    public async Task<IEnumerable<IOnlinePlayer>> GetOnlinePlayersAsync()
+    {
+        var players = new List<IOnlinePlayer>();
+        var onlinePlayers = await _server.Remote.GetPlayerListAsync();
+
+        foreach (var onlinePlayer in onlinePlayers)
+        {
+            var flags = onlinePlayer.GetFlags();
+            
+            if (flags.IsServer)
+            { 
+                // ignore server player as it's not a real player
+                continue;
+            }
+            
+            var accountId = PlayerUtils.ConvertLoginToAccountId(onlinePlayer.Login);
+            var playerDetails = await _server.Remote.GetDetailedPlayerInfoAsync(onlinePlayer.Login);
+            var player = await GetOrCreatePlayerAsync(accountId);
+            
+            players.Add(new OnlinePlayer(player)
+            {
+                State = playerDetails.GetState(),
+                Flags = flags
+            });
+        }
+
+        return players;
+    }
+
+    public Task<IEnumerable<IOnlinePlayer>> FindOnlinePlayerAsync(string nickname)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -86,19 +86,8 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     {
         var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
         
-        // todo: use player service for this instead
-        var player = await _playersManager.GetOnlinePlayerAsync(eventArgs.Login);
-        /* var onlinePlayerInfo = await _serverClient.Remote.GetDetailedPlayerInfoAsync(eventArgs.Login);
-        var dbPlayer = await _players.GetPlayerByLogin(eventArgs.Login);
-        var player = new OnlinePlayer
-        {
-            Id = dbPlayer.Id,
-            AccountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login),
-            NickName = onlinePlayerInfo.NickName,
-            UbisoftName = onlinePlayerInfo.NickName,
-            Zone = onlinePlayerInfo.Path,
-            State = onlinePlayerInfo.IsSpectator ? PlayerState.Spectating : PlayerState.Playing
-        }; */
+        var accountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login);
+        var player = await _playersManager.GetOnlinePlayerAsync(accountId);
 
         var playerInteractionContext = new CommandInteractionContext(player, context) {CommandExecuted = cmd};
         controller.SetContext(playerInteractionContext);

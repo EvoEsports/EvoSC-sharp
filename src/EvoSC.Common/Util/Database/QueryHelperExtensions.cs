@@ -14,7 +14,8 @@ public static class QueryHelperExtensions
     /// <param name="value">Value to compare with.</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static Task<IEnumerable<T>> SelectByColumnAsync<T>(this IDbConnection db, string table, string column, object value)
+    public static Task<IEnumerable<T>> SelectByColumnAsync<T>(this IDbConnection db, string table, string column,
+        object value)
     {
         return db.QueryAsync<T>($"select * from {table} where {column}=@Value",
             new {Table = table, Column = column, Value = value});
