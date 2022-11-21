@@ -2,6 +2,7 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using Microsoft.Extensions.Logging;
 
@@ -19,12 +20,16 @@ public class PlayerCommandsController : EvoScController<CommandInteractionContex
         _playerManager = playerManager;
     }
 
-    [ChatCommand("players", "Get a list of players.")]
-    public async Task GetPlayersAsync()
+    [ChatCommand("kick", "Kick a player.", ModPermissions.KickPlayer)]
+    public async Task GetPlayersAsync(string searchPattern)
     {
-        foreach (var player in await _playerManager.GetOnlinePlayersAsync())
+        _logger.LogInformation("Searching for: {pattern}", searchPattern);
+
+        var players = await _playerManager.FindOnlinePlayerAsync(searchPattern);
+
+        foreach (var player in players)
         {
-            _logger.LogInformation("Found player: {Name}", player.NickName);
+            _logger.LogDebug("Found player: {name}", player.NickName);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Castle.Components.DictionaryAdapter;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models;
@@ -9,7 +10,10 @@ using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.Algorithms;
 using EvoSC.Common.Util.Database;
+using GbxRemoteNet;
+using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
@@ -70,9 +74,10 @@ public class PlayerManagerService : IPlayerManagerService
     public async Task<IOnlinePlayer> GetOnlinePlayerAsync(string accountId)
     {
         var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
-        var onlinePlayerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
+        var onlinePlayerInfo = await _server.Remote.GetPlayerInfoAsync(playerLogin);
+        var onlinePlayerDetails = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
 
-        if (onlinePlayerInfo == null)
+        if (onlinePlayerDetails == null || onlinePlayerInfo == null)
         {
             throw new PlayerNotFoundException(accountId, $"Cannot find online player: {accountId}");
         }
@@ -86,7 +91,8 @@ public class PlayerManagerService : IPlayerManagerService
 
         return new OnlinePlayer(player)
         {
-            State = onlinePlayerInfo.GetState()
+            State = onlinePlayerDetails.GetState(),
+            Flags = onlinePlayerInfo.GetFlags()
         };
     }
 
@@ -129,8 +135,28 @@ public class PlayerManagerService : IPlayerManagerService
         return players;
     }
 
-    public Task<IEnumerable<IOnlinePlayer>> FindOnlinePlayerAsync(string nickname)
+    public async Task<IEnumerable<IOnlinePlayer>> FindOnlinePlayerAsync(string nickname)
     {
-        throw new NotImplementedException();
+        var players = (await GetOnlinePlayersAsync()).ToArray();
+        var distances = new List<dynamic>();
+
+        foreach (var player in players)
+        {
+            var cleanedName = FormattingUtils.CleanTmFormatting(player.NickName);
+            var editDistance = StringEditDistance.GetDistance(nickname, cleanedName);
+
+            // need at least 3 matching characters and ignore completely wrong names
+            if (editDistance >= cleanedName.Length - 2)
+            {
+                continue;
+            }
+            
+            distances.Add(new {Player = player, Distance = editDistance});
+        }
+
+        return distances
+            .OrderBy(e => e.Distance)
+            .Select(e => (IOnlinePlayer)e.Player)
+            .ToList();
     }
 }

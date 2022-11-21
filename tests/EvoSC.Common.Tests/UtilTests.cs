@@ -104,4 +104,18 @@ public class UtilTests
         
         Assert.Equal(actual, result);
     }
+    
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("a normal string", "a normal string")]
+    [InlineData("$f0Fcolor", "color")]
+    [InlineData("$obold", "bold")]
+    [InlineData("$o$fffcomb$gined", "combined")]
+    [InlineData("$l[http://google.com]a link", "a link")]
+    public void Trackmania_Text_Formatting_Cleaned(string text, string expected)
+    {
+        var result = FormattingUtils.CleanTmFormatting(text);
+        
+        Assert.Equal(expected, result);
+    }
 }
