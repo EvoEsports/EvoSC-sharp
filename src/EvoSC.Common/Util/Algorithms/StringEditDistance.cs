@@ -2,6 +2,14 @@
 
 public static class StringEditDistance
 {
+    /// <summary>
+    /// Find the number of operations required to edit one string to another.
+    /// Essentially how "similar" are the two strings.
+    /// O(n*m + n + m) - DP Levenshtein distance
+    /// </summary>
+    /// <param name="search">The text to search for.</param>
+    /// <param name="text">The text to search in.</param>
+    /// <returns></returns>
     public static int GetDistance(string search, string text)
     {
         var distances = new int[search.Length + 1, text.Length + 1];

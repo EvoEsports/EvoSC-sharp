@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
@@ -34,4 +35,7 @@ public class PlayerService : IPlayerService
             await _server.SendChatMessage($"$<{player.NickName}$> joined!");
         }
     }
+
+    public Task KickAsync(IPlayer player) =>
+        _server.Remote.KickAsync(PlayerUtils.ConvertAccountIdToLogin(player.AccountId));
 }

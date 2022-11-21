@@ -4,6 +4,7 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Modules.Official.Player.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Player.Controllers;
@@ -11,25 +12,10 @@ namespace EvoSC.Modules.Official.Player.Controllers;
 [Controller]
 public class PlayerCommandsController : EvoScController<CommandInteractionContext>
 {
-    private readonly ILogger<PlayerCommandsController> _logger;
-    private readonly IPlayerManagerService _playerManager;
-    
-    public PlayerCommandsController(ILogger<PlayerCommandsController> logger, IPlayerManagerService playerManager)
-    {
-        _logger = logger;
-        _playerManager = playerManager;
-    }
+    private readonly IPlayerService _players;
 
-    [ChatCommand("kick", "Kick a player.", ModPermissions.KickPlayer)]
-    public async Task GetPlayersAsync(string searchPattern)
-    {
-        _logger.LogInformation("Searching for: {pattern}", searchPattern);
+    public PlayerCommandsController(IPlayerService players) => _players = players;
 
-        var players = await _playerManager.FindOnlinePlayerAsync(searchPattern);
-
-        foreach (var player in players)
-        {
-            _logger.LogDebug("Found player: {name}", player.NickName);
-        }
-    }
+    [ChatCommand("kick", "Kick a player from the server.", ModPermissions.KickPlayer)]
+    public Task GetPlayersAsync(IOnlinePlayer player) => _players.KickAsync(player);
 }

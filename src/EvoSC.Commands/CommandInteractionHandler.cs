@@ -58,6 +58,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         valueReader.AddReader(new FloatReader());
         valueReader.AddReader(new IntegerReader());
         valueReader.AddReader(new StringReader());
+        valueReader.AddReader(new OnlinePlayerReader(_playersManager));
 
         return valueReader;
     }
