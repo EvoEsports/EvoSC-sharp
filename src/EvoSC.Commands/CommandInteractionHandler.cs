@@ -71,7 +71,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
                 return;
             }
             
-            var message = $"Error: {result.Exception.Message}";
+            var message = $"{result.Exception.Message}";
             await _serverClient.SendChatMessage($"Error: {message}", playerLogin);
         }
         else
@@ -91,7 +91,8 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         var dbPlayer = await _players.GetPlayerByLogin(eventArgs.Login);
         var player = new OnlinePlayer
         {
-            Id = dbPlayer.Id,
+            //Id = dbPlayer.Id,
+            Id = 1,
             AccountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login),
             NickName = onlinePlayerInfo.NickName,
             UbisoftName = onlinePlayerInfo.NickName,

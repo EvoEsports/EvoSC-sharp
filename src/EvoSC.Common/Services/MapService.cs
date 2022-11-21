@@ -73,7 +73,7 @@ public class MapService : IMapService
             dbMap = await SaveNewMapToDb(map, filePath);
         }
 
-        await _serverClient.Remote.InsertMapAsync($"{map.Name}.Map.Gbx");
+        await _serverClient.Remote.InsertMapAsync($"Downloaded/test69.Map.Gbx");
 
         return dbMap;
     }

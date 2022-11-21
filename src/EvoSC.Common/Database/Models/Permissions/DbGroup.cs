@@ -1,7 +1,7 @@
 ﻿using Dapper.Contrib.Extensions;
 using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Permissions;
 
 [Table("Groups")]
 public class DbGroup : IGroup

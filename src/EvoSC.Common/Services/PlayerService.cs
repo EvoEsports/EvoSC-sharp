@@ -29,7 +29,7 @@ public class PlayerService : IPlayerService
         var player =
             await _db.QueryAsync<DbPlayer>(query, new
             {
-                AccountId = PlayerUtils.ConvertLoginToAccountId(login)
+                AccountId = login
             });
 
         return player?.FirstOrDefault();
@@ -44,7 +44,8 @@ public class PlayerService : IPlayerService
             Zone = zone,
             NickName = ubisoftName,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            Groups = {  }
         };
 
         var id = await _db.InsertAsync(newPlayer);
