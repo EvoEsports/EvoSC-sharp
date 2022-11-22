@@ -71,14 +71,14 @@ public static class PlayerUtils
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public static bool IsForcedSpectator(this TmPlayerInfo player) => player.Flags % 10 == 1 || player.IsForcedSpectatorSelectable();
+    public static bool IsForcedSpectator(this TmPlayerInfo player) => (uint)player.Flags % 10 == 1 || player.IsForcedSpectatorSelectable();
     
     /// <summary>
     /// Check if the player is forced into spectator but they can chose to select out of it.
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public static bool IsForcedSpectatorSelectable(this TmPlayerInfo player) => player.Flags % 10 == 2;
+    public static bool IsForcedSpectatorSelectable(this TmPlayerInfo player) => (uint)player.Flags % 10 == 2;
     
     /// <summary>
     /// Get the player's stereo display mode.
@@ -92,35 +92,35 @@ public static class PlayerUtils
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public static bool IsManagedByAnOtherServer(this TmPlayerInfo player) => (player.Flags/10000) % 10 == 1;
+    public static bool IsManagedByAnOtherServer(this TmPlayerInfo player) => ((uint)player.Flags/10000) % 10 == 1;
     
     /// <summary>
     /// Check if this player is the server itself.
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public static bool IsServer(this TmPlayerInfo player) => (player.Flags/100000) % 10 == 1;
+    public static bool IsServer(this TmPlayerInfo player) => ((uint)player.Flags/100000) % 10 == 1;
     
     /// <summary>
     /// Check if this player has a player slot and can play.
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public static bool HasPlayerSlot(this TmPlayerInfo player) => (player.Flags/1000000) % 10 == 1;
+    public static bool HasPlayerSlot(this TmPlayerInfo player) => ((uint)player.Flags/1000000) % 10 == 1;
     
     /// <summary>
     /// Check if this player is broadcasting.
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public static bool IsBroadcasting(this TmPlayerInfo player) => (player.Flags/10000000) % 10 == 1;
+    public static bool IsBroadcasting(this TmPlayerInfo player) => ((uint)player.Flags/10000000) % 10 == 1;
     
     /// <summary>
     /// Check if this player has joined the game or not.
     /// </summary>
     /// <param name="player"></param>
     /// <returns></returns>
-    public static bool HasJoinedGame(this TmPlayerInfo player) => (player.Flags/100000000) % 10 == 1;
+    public static bool HasJoinedGame(this TmPlayerInfo player) => ((uint)player.Flags/100000000) % 10 == 1;
 
     /// <summary>
     /// Parse the player's flags and get an object of them.
