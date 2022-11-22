@@ -27,4 +27,7 @@ public class PlayerCommandsController : EvoScController<CommandInteractionContex
     
     [ChatCommand("ban", "Ban and blacklist a player from the server.", ModPermissions.BanPlayer)]
     public Task BanPlayerAsync(IOnlinePlayer player) => _players.BanAsync(player, Context.Player);
+    
+    [ChatCommand("unban", "Remove a player from the ban- and blacklist.", ModPermissions.BanPlayer)]
+    public Task UnbanPlayerAsync(string login) => _players.UnbanAsync(login, Context.Player);
 }

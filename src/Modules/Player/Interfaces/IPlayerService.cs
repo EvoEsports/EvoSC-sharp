@@ -11,9 +11,44 @@ public interface IPlayerService
     /// <param name="login">Login of the player that just joined.</param>
     /// <returns></returns>
     public Task UpdateAndGreetPlayer(string login);
-
+    
+    /// <summary>
+    /// Kick a player from the server.
+    /// </summary>
+    /// <param name="player">Player to kick.</param>
+    /// <param name="actor">The player that triggered the action.</param>
+    /// <returns></returns>
     public Task KickAsync(IPlayer player, IPlayer actor);
+    
+    /// <summary>
+    /// Mute a player from the chat.
+    /// </summary>
+    /// <param name="player">Player to mute.</param>
+    /// <param name="actor">The player that triggered the action.</param>
+    /// <returns></returns>
     public Task MuteAsync(IPlayer player, IPlayer actor);
+    
+    /// <summary>
+    /// Unmute a player from the chat.
+    /// </summary>
+    /// <param name="player">Player to unmute.</param>
+    /// <param name="actor">The player that triggered the action.</param>
+    /// <returns></returns>
     public Task UnmuteAsync(IPlayer player, IPlayer actor);
+    
+    /// <summary>
+    /// Ban and blacklist a player from the server.
+    /// </summary>
+    /// <param name="player">Player to ban.</param>
+    /// <param name="actor">The player that triggered the action.</param>
+    /// <returns></returns>
     public Task BanAsync(IPlayer player, IPlayer actor);
+    
+    /// <summary>
+    /// Unban and un-blacklist a player from the server.
+    /// </summary>
+    /// <param name="login">Login of the player to unban.</param>
+    /// <param name="actor">The player that triggered the action.</param>
+    /// <returns></returns>
+    public Task UnbanAsync(string login, IPlayer actor);
 }

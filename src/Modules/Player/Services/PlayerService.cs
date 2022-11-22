@@ -76,9 +76,43 @@ public class PlayerService : IPlayerService
 
     public async Task BanAsync(IPlayer player, IPlayer actor)
     {
-        await _server.Remote.BanAsync(player.GetLogin());
-        await _server.Remote.BlackListAsync(player.GetLogin());
+        try
+        {
+            await _server.Remote.BanAsync(player.GetLogin());
+        }
+        catch (Exception ex)
+        {
+            // ignore this as we don't need to handle it, we'll blacklist the player anyways
+        }
         
+        await _server.Remote.BlackListAsync(player.GetLogin());
         await _server.SendChatMessage($"$284{player.NickName} was banned.", actor);
+    }
+
+    public async Task UnbanAsync(string login, IPlayer actor)
+    {
+        try
+        {
+            if (await _server.Remote.UnBanAsync(login))
+            {
+                await _server.SendChatMessage($"$284Player with login '{login}' was unbanned.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await _server.SendChatMessage($"$f13The login '{login}' was not found in the banlist.");
+        }
+
+        try
+        {
+            if (await _server.Remote.UnBlackListAsync(login))
+            {
+                await _server.SendChatMessage($"$284Player with login '{login}' removed from the blacklist.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await _server.SendChatMessage($"$f13Player with login '{login}' was not found in the blacklist.");
+        }
     }
 }
