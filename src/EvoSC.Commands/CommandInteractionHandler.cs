@@ -1,8 +1,8 @@
-﻿
-using EvoSC.Commands.Exceptions;
+﻿using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Commands.Parser;
 using EvoSC.Common.Controllers.Context;
+using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
@@ -27,7 +27,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private readonly IServerClient _serverClient;
     private readonly IActionPipelineManager _actionPipeline;
     private readonly IPlayerManagerService _playersManager;
-    
+
     private readonly ChatCommandParser _parser;
 
     public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager,
@@ -54,7 +54,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private IValueReaderManager GetValueReader()
     {
         var valueReader = new ValueReaderManager();
-        
+
         valueReader.AddReader(new FloatReader());
         valueReader.AddReader(new IntegerReader());
         valueReader.AddReader(new StringReader());
@@ -71,9 +71,14 @@ public class CommandInteractionHandler : ICommandInteractionHandler
             {
                 return;
             }
-            
+
             var message = $"Error: {result.Exception.Message}";
             await _serverClient.SendChatMessage($"Error: {message}", playerLogin);
+        }
+
+        if (result.Exception is PlayerNotFoundException playerNotFoundException)
+        {
+            await _serverClient.SendChatMessage($"Error: {playerNotFoundException.Message}", playerLogin);
         }
         else
         {
@@ -86,7 +91,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private async Task ExecuteCommand(IChatCommand cmd, object[] args, PlayerChatEventArgs eventArgs)
     {
         var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
-        
+
         var accountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login);
         var player = await _playersManager.GetOnlinePlayerAsync(accountId);
 
@@ -100,7 +105,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
 
         await actionChain(playerInteractionContext);
     }
-    
+
     public async Task OnPlayerChatEvent(object sender, PlayerChatEventArgs eventArgs)
     {
         // parse

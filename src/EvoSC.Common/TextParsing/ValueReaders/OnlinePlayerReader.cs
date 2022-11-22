@@ -22,7 +22,7 @@ public class OnlinePlayerReader : IValueReader
 
         if (players.Count() == 0)
         {
-            throw new PlayerNotFoundException(input, $"Failed to find player with name: {input}");
+            throw new PlayerNotFoundException(input, $"Failed to find player with name '{input}'.");
         }
         
         return players.First();
