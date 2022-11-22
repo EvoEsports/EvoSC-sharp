@@ -12,5 +12,8 @@ public interface IPlayerService
     /// <returns></returns>
     public Task UpdateAndGreetPlayer(string login);
 
-    public Task KickAsync(IPlayer player);
+    public Task KickAsync(IPlayer player, IPlayer actor);
+    public Task MuteAsync(IPlayer player, IPlayer actor);
+    public Task UnmuteAsync(IPlayer player, IPlayer actor);
+    public Task BanAsync(IPlayer player, IPlayer actor);
 }

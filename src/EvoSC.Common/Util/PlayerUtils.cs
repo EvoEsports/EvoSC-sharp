@@ -141,4 +141,12 @@ public static class PlayerUtils
             HasJoinedGame = player.HasJoinedGame()
         };
     }
+
+    /// <summary>
+    /// Convert the player's account ID to the login format.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    public static string GetLogin(this IPlayer player) =>
+        ConvertAccountIdToLogin(player.AccountId);
 }
