@@ -5,6 +5,10 @@ using EvoSC.Common.Interfaces.Services;
 
 namespace EvoSC.Common.TextParsing.ValueReaders;
 
+/// <summary>
+/// Find a player online on the server from an input search pattern.
+/// Best match is returned.
+/// </summary>
 public class OnlinePlayerReader : IValueReader
 {
     public IEnumerable<Type> AllowedTypes => new[] {typeof(IOnlinePlayer)};

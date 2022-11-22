@@ -7,8 +7,8 @@ public static class StringEditDistance
     /// Essentially how "similar" are the two strings.
     /// O(n*m + n + m) - DP Levenshtein distance
     /// </summary>
-    /// <param name="search">The text to search for.</param>
-    /// <param name="text">The text to search in.</param>
+    /// <param name="search">The text to match.</param>
+    /// <param name="text">The text to compare to.</param>
     /// <returns></returns>
     public static int GetDistance(string search, string text)
     {
