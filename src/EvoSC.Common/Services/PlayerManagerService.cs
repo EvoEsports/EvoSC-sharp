@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Globalization;
 using Castle.Components.DictionaryAdapter;
 using Dapper;
 using Dapper.Contrib.Extensions;
@@ -57,7 +58,7 @@ public class PlayerManagerService : IPlayerManagerService
         
         var dbPlayer = new DbPlayer
         {
-            AccountId = accountId.ToLower(),
+            AccountId = accountId.ToLower(CultureInfo.InvariantCulture),
             NickName = playerInfo?.NickName ?? accountId,
             UbisoftName = playerInfo?.NickName ?? accountId,
             Zone = playerInfo?.Path ?? "World",
