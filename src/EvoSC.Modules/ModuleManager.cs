@@ -83,6 +83,8 @@ public class ModuleManager : IModuleManager
         await AddMiddlewares(loadContext);
         await AddPermissions(loadContext);
 
+        _logger.LogDebug("Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
+        
         return loadId;
     }
 
@@ -250,7 +252,7 @@ public class ModuleManager : IModuleManager
                         container.RegisterSingleton(intf, type);
                         break;
                     case ServiceLifeStyle.Transient:
-                        container.Register(type);
+                        container.Register(intf, type);
                         break;
                     default:
                         throw new ModuleServicesException($"Unsupported lifetime type for module service: {type}");

@@ -9,7 +9,7 @@ public class CommandInteractionContext : PlayerInteractionContext
 {
     public required IChatCommand CommandExecuted { get; init; }
     
-    public CommandInteractionContext(IPlayer player, IControllerContext context) : base(player, context)
+    public CommandInteractionContext(IOnlinePlayer player, IControllerContext context) : base(player, context)
     {
     }
 }
