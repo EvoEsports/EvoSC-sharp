@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.Player.Interfaces;
 using Microsoft.Extensions.Logging;
+using IPlayerService = EvoSC.Modules.Official.Player.Interfaces.IPlayerService;
 
 namespace EvoSC.Modules.Official.Player.Controllers;
 

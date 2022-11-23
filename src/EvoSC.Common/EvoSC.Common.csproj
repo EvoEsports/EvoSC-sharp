@@ -21,7 +21,6 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="Database\DbAccess" />
       <Folder Include="Services\Attributes" />
     </ItemGroup>
 </Project>

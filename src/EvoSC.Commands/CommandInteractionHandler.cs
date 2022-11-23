@@ -87,7 +87,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
     private async Task ExecuteCommand(IChatCommand cmd, object[] args, PlayerChatEventArgs eventArgs)
     {
         var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
-
+        
         var accountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login);
         var player = await _playersManager.GetOnlinePlayerAsync(accountId);
 
