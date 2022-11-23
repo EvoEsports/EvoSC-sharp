@@ -11,4 +11,9 @@ public interface IOnlinePlayer : IPlayer
     /// The current in-game state of the player.
     /// </summary>
     public PlayerState State { get; }
+    
+    /// <summary>
+    /// Flags assigned to the player.
+    /// </summary>
+    public IPlayerFlags Flags { get; }
 }

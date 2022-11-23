@@ -20,8 +20,4 @@
       <PackageReference Include="SimpleInjector" Version="5.4.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Services\Attributes" />
-    </ItemGroup>
-
 </Project>
