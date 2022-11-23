@@ -91,8 +91,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         var dbPlayer = await _players.GetPlayerByLogin(eventArgs.Login);
         var player = new OnlinePlayer
         {
-            //Id = dbPlayer.Id,
-            Id = 1,
+            Id = dbPlayer.Id,
             AccountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login),
             NickName = onlinePlayerInfo.NickName,
             UbisoftName = onlinePlayerInfo.NickName,

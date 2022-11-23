@@ -131,7 +131,6 @@ public class Application : IEvoSCApplication
     private void SetupControllerManager()
     {
         var controllers = _services.GetInstance<IControllerManager>();
-        
         controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
         controllers.AddControllerActionRegistry(_services.GetInstance<IChatCommandManager>());
         

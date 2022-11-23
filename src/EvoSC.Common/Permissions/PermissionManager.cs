@@ -1,12 +1,10 @@
 ﻿using System.Data.Common;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using EvoSC.Common.Database.Models;
 using EvoSC.Common.Database.Models.Permissions;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Permissions.Models;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Permissions;

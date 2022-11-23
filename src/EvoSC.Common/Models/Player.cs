@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Models;
-using EvoSC.Common.Database.Models.Player;
+﻿using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Models;

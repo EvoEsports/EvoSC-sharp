@@ -3,7 +3,8 @@
 namespace EvoSC.Common.Database.Migrations;
 
 [Migration(1668492589)]
-public class AddUserPermissionTables : Migration {
+public class AddUserPermissionTables : Migration
+{
     public override void Up()
     {
         Create.Table("Groups")
