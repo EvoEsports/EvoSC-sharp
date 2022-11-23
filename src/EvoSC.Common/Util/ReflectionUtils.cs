@@ -31,7 +31,7 @@ public static class ReflectionUtils
     /// </summary>
     /// <param name="t"></param>
     /// <returns></returns>
-    public static object GetDefaultTypeValue(this Type t)
+    public static object? GetDefaultTypeValue(this Type t)
     {
         if (t == typeof(string))
         {
@@ -64,7 +64,7 @@ public static class ReflectionUtils
     /// <param name="t">Type of the object to instantiate.</param>
     /// <param name="args">Arguments to pass to the constructor.</param>
     /// <returns></returns>
-    public static object CreateGenericInstance(Type genericType, Type t, params object[] args)
+    public static object? CreateGenericInstance(Type genericType, Type t, params object[] args)
     {
         var genericTypeType = genericType.MakeGenericType(t);
         return Activator.CreateInstance(genericTypeType, args);
@@ -78,9 +78,15 @@ public static class ReflectionUtils
     /// <param name="methodName">The name of the method to call.</param>
     /// <param name="args">Arguments to pass to the method.</param>
     /// <returns></returns>
-    public static object CallMethod(Type type, object instance, string methodName, params object[] args)
+    public static object? CallMethod(Type type, object instance, string methodName, params object[] args)
     {
         var method = type.GetMethod(methodName);
+        
+        if (method == null)
+        {
+            throw new InvalidOperationException($"The method '{methodName}' was not found");
+        }
+        
         return method.Invoke(instance, args);
     }
     
@@ -91,9 +97,15 @@ public static class ReflectionUtils
     /// <param name="methodName">Name of the method to call.</param>
     /// <param name="args">Arguments to pass to the method.</param>
     /// <returns></returns>
-    public static object CallMethod(object instance, string methodName, params object[] args)
+    public static object? CallMethod(object instance, string methodName, params object[] args)
     {
         var method = instance.GetType().GetMethod(methodName);
+        
+        if (method == null)
+        {
+            throw new InvalidOperationException($"The method '{methodName}' was not found");
+        }
+        
         return method.Invoke(instance, args);
     }
 
@@ -104,9 +116,15 @@ public static class ReflectionUtils
     /// <param name="methodName">Name of the method to call.</param>
     /// <param name="args">Arguments to pass to the method.</param>
     /// <returns></returns>
-    public static object CallStaticMethod(Type type, string methodName, params object[] args)
+    public static object? CallStaticMethod(Type type, string methodName, params object[] args)
     {
         var method = type.GetMethod(methodName);
+        
+        if (method == null)
+        {
+            throw new InvalidOperationException($"The method '{methodName}' was not found");
+        }
+        
         return method.Invoke(null, args);
     }
 
@@ -133,6 +151,12 @@ public static class ReflectionUtils
     public static MethodInfo GetInstanceMethod(this object obj, string method)
     {
         var methodInfo = obj.GetType().GetMethod(method);
+        
+        if (methodInfo == null)
+        {
+            throw new InvalidOperationException($"The method '{method}' was not found");
+        }
+        
         return methodInfo;
     }
 }
