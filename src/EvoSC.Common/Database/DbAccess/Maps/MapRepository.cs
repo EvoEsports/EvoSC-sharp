@@ -3,6 +3,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Repository;
 using EvoSC.Common.Models;
 
@@ -17,7 +18,7 @@ public class MapRepository : IMapRepository
         _db = db;
     }
 
-    public async Task<DbMap?> GetMapById(int id)
+    public async Task<DbMap?> GetMapById(long id)
     {
         var query = "select * from `Maps` where `Id`=@MapId limit 1";
         return await _db.QueryFirstOrDefaultAsync<DbMap>(query, new
@@ -35,7 +36,7 @@ public class MapRepository : IMapRepository
         });
     }
 
-    public async Task<DbMap> AddMap(Map map, DbPlayer author, string filePath)
+    public async Task<DbMap> AddMap(Map map, IPlayer author, string filePath)
     {
         var dbMap = new DbMap
         {
@@ -56,7 +57,7 @@ public class MapRepository : IMapRepository
         return dbMap;
     }
 
-    public async Task<DbMap> UpdateMap(int mapId, Map map)
+    public async Task<DbMap> UpdateMap(long mapId, Map map)
     {
         var updatedMap = new DbMap
         {
