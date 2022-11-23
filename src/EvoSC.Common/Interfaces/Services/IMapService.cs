@@ -19,6 +19,5 @@ public interface IMapService
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public Task<DbMap> AddMap(Stream mapStream, Map map);
     public Task<IEnumerable<DbMap>> AddMaps(List<Map> maps);
-    public Task<DbMap> UpdateMap(Map map);
     public Task RemoveMap(string mapUid);
 }

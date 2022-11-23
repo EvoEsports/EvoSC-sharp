@@ -6,9 +6,9 @@ namespace EvoSC.Common.Interfaces.Repository;
 
 public interface IMapRepository
 {
-    public Task<DbMap?> GetMapById(int id);
+    public Task<DbMap?> GetMapById(long id);
     public Task<DbMap?> GetMapByUid(string uid);
     public Task<DbMap> AddMap(Map map, DbPlayer player, string filePath);
-    public Task<DbMap> UpdateMap(int mapId, Map map);
+    public Task<DbMap> UpdateMap(long mapId, Map map);
     public Task RemoveMap(Map map);
 }
