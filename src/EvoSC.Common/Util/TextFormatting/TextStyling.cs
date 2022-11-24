@@ -91,7 +91,8 @@ public class TextStyling
     }
 
     /// <summary>
-    /// Add a link to this style.
+    /// Add a link to this style. The text after will be a clickable link
+    /// to the specified url.
     /// </summary>
     /// <param name="url">The url to link to.</param>
     /// <returns></returns>
@@ -99,6 +100,16 @@ public class TextStyling
     {
         IsLink = true;
         LinkUrl = url;
+        return this;
+    }
+
+    /// <summary>
+    /// Set this style as a link so that the text after is the link itself.
+    /// </summary>
+    /// <returns></returns>
+    public TextStyling AsLink()
+    {
+        IsLink = true;
         return this;
     }
 

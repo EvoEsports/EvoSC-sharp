@@ -56,6 +56,7 @@ public class TextFormattingTests
             .AsBold()
             .AsWide()
             .AsItalic()
+            .AsLink()
             .WithLink("test")
             .AsUppercase()
             .AsNarrow()
