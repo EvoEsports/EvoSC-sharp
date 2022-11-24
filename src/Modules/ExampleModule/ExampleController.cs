@@ -15,6 +15,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Common.Util.TextFormatting;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
@@ -66,10 +67,6 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var text = new TextFormatter()
-            .AddText("hello!", style => style
-                .WithColor(Color.Red)
-                .AsBold()
-            );
+        await _server.InfoMessage("hello!");
     }
 }

@@ -1,4 +1,5 @@
-﻿using GbxRemoteNet;
+﻿using EvoSC.Common.Interfaces.Models;
+using GbxRemoteNet;
 
 namespace EvoSC.Common.Interfaces;
 
@@ -26,4 +27,7 @@ public interface IServerClient
     /// <param name="token">Cancellation token to cancel the shutdown.</param>
     /// <returns></returns>
     public Task StopAsync(CancellationToken token);
+
+    public Task InfoMessage(string text);
+    public Task InfoMessage(string text, IPlayer player);
 }

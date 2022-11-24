@@ -7,6 +7,30 @@ public class TextFormatter
     private readonly List<FormattedText> _textParts = new();
 
     /// <summary>
+    /// Add a styling component to the text.
+    /// </summary>
+    /// <param name="style">The style to add.</param>
+    /// <returns></returns>
+    public TextFormatter AddStyle(TextStyling style)
+    {
+        _textParts.Add(new FormattedText("", style));
+        return this;
+    }
+    
+    /// <summary>
+    /// Add a styling component to the text using a builder action.
+    /// </summary>
+    /// <param name="styleBuilder">The- style to add.</param>
+    /// <returns></returns>
+    public TextFormatter AddStyle(Action<TextStyling> styleBuilder)
+    {
+        var style = new TextStyling();
+        styleBuilder(style);
+        _textParts.Add(new FormattedText("", style));
+        return this;
+    }
+    
+    /// <summary>
     /// Add text and styling.
     /// </summary>
     /// <param name="text">Text to add.</param>

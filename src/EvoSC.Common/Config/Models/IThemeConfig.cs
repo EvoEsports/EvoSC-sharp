@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel;
 using Config.Net;
+using EvoSC.Common.Config.Models.ThemeOptions;
+using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Common.Config.Models;
 
-public class IThemeConfig
+public interface IThemeConfig
 {
-    [Description("The primary text color to use.")]
-    [Option(Alias = "primaryTextColor", DefaultValue = "fff")]
-    public string PrimaryTextColor { get; }
-    [Description("The primary text color to use.")]
-    [Option(Alias = "primaryTextColor", DefaultValue = "396")]
-    public string SecondaryTextColor { get; }
+    public IChatThemeConfig Chat { get; }
 }
