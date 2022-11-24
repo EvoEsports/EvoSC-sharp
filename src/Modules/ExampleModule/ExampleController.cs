@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
@@ -14,6 +15,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.TextFormatting;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 using Container = SimpleInjector.Container;
@@ -61,9 +63,13 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.", MyPermissions.MyPerm1)]
+    [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        await _server.SendChatMessage("command called!");
+        var text = new TextFormatter()
+            .AddText("hello!", style => style
+                .SetColor(Color.Red)
+                .SetBold()
+            );
     }
 }
