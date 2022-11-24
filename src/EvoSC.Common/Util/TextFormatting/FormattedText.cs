@@ -59,21 +59,21 @@ public class FormattedText
         return this;
     }
 
-    public FormattedText SetStyle(TextStyling style)
+    public FormattedText WithStyle(TextStyling style)
     {
         Style = style;
         return this;
     }
     
-    public FormattedText SetStyle(Action<TextStyling> styleAction)
+    public FormattedText WithStyle(Action<TextStyling> styleAction)
     {
         var style = new TextStyling();
         styleAction(style);
         Style = style;
-        return SetStyle(style);
+        return WithStyle(style);
     }
 
-    public FormattedText SetIsolated()
+    public FormattedText AsIsolated()
     {
         IsIsolated = true;
         return this;

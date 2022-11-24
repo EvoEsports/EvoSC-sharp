@@ -68,8 +68,8 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     {
         var text = new TextFormatter()
             .AddText("hello!", style => style
-                .SetColor(Color.Red)
-                .SetBold()
+                .WithColor(Color.Red)
+                .AsBold()
             );
     }
 }

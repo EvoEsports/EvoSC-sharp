@@ -11,7 +11,7 @@ public class TextFormattingTests
     public void Style_Output_Formatted_Red_Color()
     {
         var style = new TextStyling()
-            .SetColor(Color.Red);
+            .WithColor(Color.Red);
 
         var result = style.ToString();
 
@@ -40,7 +40,7 @@ public class TextFormattingTests
     public void Style_Overrides_Color_When_Reset()
     {
         var style = new TextStyling()
-            .SetColor(Color.Red)
+            .WithColor(Color.Red)
             .AsColorReset();
 
         var result = style.ToString();
@@ -52,13 +52,14 @@ public class TextFormattingTests
     public void Style_Overrides_All_Styles_When_Reset()
     {
         var style = new TextStyling()
-            .SetColor(Color.Red)
-            .SetBold()
-            .SetWide()
-            .SetItalic()
-            .SetLink("test")
-            .SetUppercase()
-            .SetNarrow()
+            .WithColor(Color.Red)
+            .AsBold()
+            .AsWide()
+            .AsItalic()
+            .WithLink("test")
+            .AsUppercase()
+            .AsNarrow()
+            .AsDropShadow()
             .AsStyleReset();
 
         var result = style.ToString();
@@ -70,8 +71,8 @@ public class TextFormattingTests
     public void Style_Narrow_And_Wide_Dont_Conflict()
     {
         var style = new TextStyling()
-            .SetWide()
-            .SetNarrow();
+            .AsWide()
+            .AsNarrow();
 
         var result = style.ToString();
         

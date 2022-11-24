@@ -18,67 +18,114 @@ public class TextStyling
     public bool IsResetColor { get; set; }
     public bool IsStyleReset { get; set; }
 
-    public TextStyling SetColor(TextColor color)
+    /// <summary>
+    /// Set the color of this style.
+    /// </summary>
+    /// <param name="color">The color to use.</param>
+    /// <returns></returns>
+    public TextStyling WithColor(TextColor color)
     {
         Color = color;
         return this;
     }
     
-    public TextStyling SetColor(Color color)
+    /// <summary>
+    /// Set the color of this style.
+    /// </summary>
+    /// <param name="color">The color to use.</param>
+    /// <returns></returns>
+    public TextStyling WithColor(Color color)
     {
         Color = new TextColor(color);
         return this;
     }
 
-    public TextStyling SetBold()
+    /// <summary>
+    /// Set the text as bold.
+    /// </summary>
+    /// <returns></returns>
+    public TextStyling AsBold()
     {
         IsBold = true;
         return this;
     }
 
-    public TextStyling SetWide()
+    /// <summary>
+    /// Set the text as wide. This overrides narrow.
+    /// </summary>
+    /// <returns></returns>
+    public TextStyling AsWide()
     {
         IsWide = true;
         return this;
     }
 
-    public TextStyling SetNarrow()
+    /// <summary>
+    /// Set the text as narrow.
+    /// </summary>
+    /// <returns></returns>
+    public TextStyling AsNarrow()
     {
         IsNarrow = true;
         return this;
     }
     
-    public TextStyling SetDropShadow()
+    /// <summary>
+    /// Add drop shadow to this style.
+    /// </summary>
+    /// <returns></returns>
+    public TextStyling AsDropShadow()
     {
         IsShadow = true;
         return this;
     }
 
-    public TextStyling SetItalic()
+    /// <summary>
+    /// Set an italic style.
+    /// </summary>
+    /// <returns></returns>
+    public TextStyling AsItalic()
     {
         IsItalic = true;
         return this;
     }
 
-    public TextStyling SetLink(string url)
+    /// <summary>
+    /// Add a link to this style.
+    /// </summary>
+    /// <param name="url">The url to link to.</param>
+    /// <returns></returns>
+    public TextStyling WithLink(string url)
     {
         IsLink = true;
         LinkUrl = url;
         return this;
     }
 
-    public TextStyling SetUppercase()
+    /// <summary>
+    /// Force uppercase of all characters.
+    /// </summary>
+    /// <returns></returns>
+    public TextStyling AsUppercase()
     {
         IsUppercase = true;
         return this;
     }
 
+    /// <summary>
+    /// Set this style as a color reset. Overrides color.
+    /// </summary>
+    /// <returns></returns>
     public TextStyling AsColorReset()
     {
         IsResetColor = true;
         return this;
     }
 
+    /// <summary>
+    /// Set this style as a complete formatting reset. Overrides everything.
+    /// </summary>
+    /// <returns></returns>
     public TextStyling AsStyleReset()
     {
         IsStyleReset = true;

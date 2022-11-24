@@ -40,6 +40,10 @@ public class TextColor
         _ => ""
     };
     
+    /// <summary>
+    /// Convert this color to the formatted text representation.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
         return $"${ToHex(_r)}{ToHex(_g)}{ToHex(_b)}";
