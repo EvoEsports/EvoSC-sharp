@@ -19,12 +19,12 @@ public class TextFormattingTests
     }
 
     [Theory]
-    [InlineData("SetBold", "$o")]
-    [InlineData("SetWide", "$w")]
-    [InlineData("SetNarrow", "$n")]
-    [InlineData("SetDropShadow", "$s")]
-    [InlineData("SetItalic", "$i")]
-    [InlineData("SetUppercase", "$t")]
+    [InlineData("AsBold", "$o")]
+    [InlineData("AsWide", "$w")]
+    [InlineData("AsNarrow", "$n")]
+    [InlineData("AsDropShadow", "$s")]
+    [InlineData("AsItalic", "$i")]
+    [InlineData("AsUppercase", "$t")]
     public void Style_Outputs_Correct_Formatted_Style(string method, string expected)
     {
         var style = new TextStyling();

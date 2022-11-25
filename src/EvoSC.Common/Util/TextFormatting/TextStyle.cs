@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Common.Util.TextFormatting;
 
+/// <summary>
+/// TrackMania formatting syntax.
+/// </summary>
 public static class TextStyle
 {
     /// <summary>

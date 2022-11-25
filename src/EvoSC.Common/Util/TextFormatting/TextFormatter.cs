@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.TextFormatting;
 
+/// <summary>
+/// Represents a multi-formatted string.
+/// </summary>
 public class TextFormatter
 {
     private readonly List<FormattedText> _textParts = new();

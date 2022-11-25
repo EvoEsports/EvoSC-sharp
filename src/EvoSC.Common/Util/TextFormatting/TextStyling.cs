@@ -4,19 +4,22 @@ using Microsoft.Extensions.Primitives;
 
 namespace EvoSC.Common.Util.TextFormatting;
 
+/// <summary>
+/// Represents a style that a string can be formatted with.
+/// </summary>
 public class TextStyling
 {
-    public TextColor? Color { get; set; }
-    public bool IsBold { get; set; }
-    public bool IsWide { get; set; }
-    public bool IsShadow { get; set; }
-    public bool IsItalic { get; set; }
-    public bool IsLink { get; set; }
-    public string? LinkUrl { get; set; }
-    public bool IsUppercase { get; set; }
-    public bool IsNarrow { get; set; }
-    public bool IsResetColor { get; set; }
-    public bool IsStyleReset { get; set; }
+    private TextColor? _color { get; set; }
+    private bool _isBold { get; set; }
+    private bool _isWide { get; set; }
+    private bool _isShadow { get; set; }
+    private bool _isItalic { get; set; }
+    private bool _isLink { get; set; }
+    private string? _linkUrl { get; set; }
+    private bool _isUppercase { get; set; }
+    private bool _isNarrow { get; set; }
+    private bool _isResetColor { get; set; }
+    private bool _isStyleReset { get; set; }
 
     /// <summary>
     /// Set the color of this style.
@@ -25,7 +28,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling WithColor(TextColor color)
     {
-        Color = color;
+        _color = color;
         return this;
     }
     
@@ -36,7 +39,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling WithColor(Color color)
     {
-        Color = new TextColor(color);
+        _color = new TextColor(color);
         return this;
     }
 
@@ -46,7 +49,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsBold()
     {
-        IsBold = true;
+        _isBold = true;
         return this;
     }
 
@@ -56,7 +59,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsWide()
     {
-        IsWide = true;
+        _isWide = true;
         return this;
     }
 
@@ -66,7 +69,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsNarrow()
     {
-        IsNarrow = true;
+        _isNarrow = true;
         return this;
     }
     
@@ -76,7 +79,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsDropShadow()
     {
-        IsShadow = true;
+        _isShadow = true;
         return this;
     }
 
@@ -86,7 +89,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsItalic()
     {
-        IsItalic = true;
+        _isItalic = true;
         return this;
     }
 
@@ -98,8 +101,8 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling WithLink(string url)
     {
-        IsLink = true;
-        LinkUrl = url;
+        _isLink = true;
+        _linkUrl = url;
         return this;
     }
 
@@ -109,7 +112,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsLink()
     {
-        IsLink = true;
+        _isLink = true;
         return this;
     }
 
@@ -119,7 +122,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsUppercase()
     {
-        IsUppercase = true;
+        _isUppercase = true;
         return this;
     }
 
@@ -129,7 +132,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsColorReset()
     {
-        IsResetColor = true;
+        _isResetColor = true;
         return this;
     }
 
@@ -139,7 +142,7 @@ public class TextStyling
     /// <returns></returns>
     public TextStyling AsStyleReset()
     {
-        IsStyleReset = true;
+        _isStyleReset = true;
         return this;
     }
     
@@ -151,60 +154,60 @@ public class TextStyling
     {
         var formatting = new StringBuilder();
         
-        if (IsStyleReset)
+        if (_isStyleReset)
         {
             return TextStyle.StyleReset;
         }
 
-        if (IsResetColor)
+        if (_isResetColor)
         {
             formatting.Append(TextStyle.ColorReset);
         }
-        else if (this.Color != null)
+        else if (_color != null)
         {
-            formatting.Append(this.Color);
+            formatting.Append(_color);
         }
 
-        if (IsBold)
+        if (_isBold)
         {
             formatting.Append(TextStyle.Bold);
         }
         
-        if (IsWide)
+        if (_isWide)
         {
             formatting.Append(TextStyle.Wide);
         }
-        else if (IsNarrow)
+        else if (_isNarrow)
         {
             formatting.Append(TextStyle.Narrow);
         }
 
-        if (IsShadow)
+        if (_isShadow)
         {
             formatting.Append(TextStyle.DropShadow);
         }
 
-        if (IsItalic)
+        if (_isItalic)
         {
             formatting.Append(TextStyle.Italic);
         }
 
-        if (IsUppercase)
+        if (_isUppercase)
         {
             formatting.Append(TextStyle.Uppercase);
         }
 
-        if (!IsLink)
+        if (!_isLink)
         {
             return formatting.ToString();
         }
 
         formatting.Append(TextStyle.Link);
 
-        if (LinkUrl != null)
+        if (_linkUrl != null)
         {
             formatting.Append('[');
-            formatting.Append(LinkUrl);
+            formatting.Append(_linkUrl);
             formatting.Append(']');
         }
 
