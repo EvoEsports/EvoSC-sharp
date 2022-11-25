@@ -28,12 +28,12 @@ public class PlayerService : IPlayerService
         if (player == null)
         {
             player = await _playerManager.CreatePlayerAsync(accountId);
-            await _server.SendChatMessage($"$<{player.NickName}$> joined for the first time!");
+            await _server.InfoMessage($"$<{player.NickName}$> joined for the first time!");
         }
         else
         {
             await _playerManager.UpdateLastVisitAsync(player);
-            await _server.SendChatMessage($"$<{player.NickName}$> joined!");
+            await _server.InfoMessage($"$<{player.NickName}$> joined!");
         }
     }
 
@@ -41,11 +41,11 @@ public class PlayerService : IPlayerService
     {
         if (await _server.Remote.KickAsync(player.GetLogin()))
         {
-            await _server.SendChatMessage($"$284{player.NickName} was kicked.", actor);
+            await _server.SuccessMessage($"$284{player.NickName} was kicked.", actor);
         }
         else
         {
-            await _server.SendChatMessage("$f13Failed to kick the player. Did they leave already?", actor);
+            await _server.ErrorMessage("$f13Failed to kick the player. Did they leave already?", actor);
         }
     }
 
@@ -53,12 +53,12 @@ public class PlayerService : IPlayerService
     {
         if (await _server.Remote.IgnoreAsync(player.GetLogin()))
         {
-            await _server.SendChatMessage("$f13You were muted by an admin.", player);
-            await _server.SendChatMessage($"$284{player.NickName} was muted.", actor);
+            await _server.WarningMessage("$f13You were muted by an admin.", player);
+            await _server.SuccessMessage($"$284{player.NickName} was muted.", actor);
         }
         else
         {
-            await _server.SendChatMessage("$f13Failed to mute the player. Did they leave already?");
+            await _server.ErrorMessage("$f13Failed to mute the player. Did they leave already?");
         }
     }
 
@@ -66,12 +66,12 @@ public class PlayerService : IPlayerService
     {
         if (await _server.Remote.UnIgnoreAsync(player.GetLogin()))
         {
-            await _server.SendChatMessage("$284You got un-muted by an admin.", player);
-            await _server.SendChatMessage($"$284{player.NickName} was muted.", actor);
+            await _server.InfoMessage("$284You got un-muted by an admin.", player);
+            await _server.SuccessMessage($"$284{player.NickName} was muted.", actor);
         }
         else
         {
-            await _server.SendChatMessage("$f13Failed to mute the player. Did they leave already?", actor);
+            await _server.ErrorMessage("$f13Failed to mute the player. Did they leave already?", actor);
         }
     }
 
@@ -87,7 +87,7 @@ public class PlayerService : IPlayerService
         }
         
         await _server.Remote.BlackListAsync(player.GetLogin());
-        await _server.SendChatMessage($"$284{player.NickName} was banned.", actor);
+        await _server.SuccessMessage($"$284{player.NickName} was banned.", actor);
     }
 
     public async Task UnbanAsync(string login, IPlayer actor)
@@ -96,24 +96,24 @@ public class PlayerService : IPlayerService
         {
             if (await _server.Remote.UnBanAsync(login))
             {
-                await _server.SendChatMessage($"$284Player with login '{login}' was unbanned.");
+                await _server.SuccessMessage($"$284Player with login '{login}' was unbanned.");
             }
         }
         catch (Exception ex)
         {
-            await _server.SendChatMessage($"$f13The login '{login}' was not found in the banlist.");
+            await _server.ErrorMessage($"$f13The login '{login}' was not found in the banlist.");
         }
 
         try
         {
             if (await _server.Remote.UnBlackListAsync(login))
             {
-                await _server.SendChatMessage($"$284Player with login '{login}' removed from the blacklist.");
+                await _server.SuccessMessage($"$284Player with login '{login}' removed from the blacklist.");
             }
         }
         catch (Exception ex)
         {
-            await _server.SendChatMessage($"$f13Player with login '{login}' was not found in the blacklist.");
+            await _server.ErrorMessage($"$f13Player with login '{login}' was not found in the blacklist.");
         }
     }
 }
