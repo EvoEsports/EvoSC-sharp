@@ -26,7 +26,7 @@ public class MxClient
     /// <param name="mxId">ManiaExchange ID.</param>
     /// <param name="shortName">Needed to download unlisted maps.</param>
     /// <returns>Mapfile, .Gbx format.</returns>
-    public async Task<Stream> GetMapAsync(int mxId, string? shortName)
+    public async Task<Stream?> GetMapAsync(int mxId, string? shortName)
     {
         var downloadMapPath = MxUrl + $"/maps/download/{mxId}";
         if (shortName != null)

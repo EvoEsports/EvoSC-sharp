@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Models;
-using EvoSC.Common.Database.Models.Player;
+﻿using EvoSC.Common.Database.Models.Player;
 
 namespace EvoSC.Common.Interfaces.Services;
 
@@ -10,14 +9,14 @@ public interface IPlayerService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public Task<DbPlayer> GetPlayerById(int id);
+    public Task<DbPlayer?> GetPlayerById(long id);
     
     /// <summary>
     /// Get a player by it's login.
     /// </summary>
     /// <param name="login"></param>
     /// <returns></returns>
-    public Task<DbPlayer> GetPlayerByLogin(string login);
+    public Task<DbPlayer?> GetPlayerByLogin(string login);
     
     /// <summary>
     /// Create a new player in the database and return the new player object.

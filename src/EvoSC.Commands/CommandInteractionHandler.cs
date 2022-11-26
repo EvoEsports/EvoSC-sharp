@@ -88,7 +88,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         
         // todo: use player service for this instead
         var onlinePlayerInfo = await _serverClient.Remote.GetDetailedPlayerInfoAsync(eventArgs.Login);
-        var dbPlayer = await _players.GetPlayerByLogin(eventArgs.Login);
+        var dbPlayer = await _players.GetPlayerByLogin(PlayerUtils.ConvertLoginToAccountId(eventArgs.Login));
         var player = new OnlinePlayer
         {
             Id = dbPlayer.Id,

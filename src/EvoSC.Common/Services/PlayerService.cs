@@ -20,7 +20,7 @@ public class PlayerService : IPlayerService
         _db = db;
     }
 
-    public Task<DbPlayer?> GetPlayerById(int id) =>
+    public Task<DbPlayer?> GetPlayerById(long id) =>
         _db.GetAsync<DbPlayer?>(id);
 
     public async Task<DbPlayer?> GetPlayerByLogin(string login)

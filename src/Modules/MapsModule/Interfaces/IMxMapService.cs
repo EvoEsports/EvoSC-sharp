@@ -1,6 +1,10 @@
-﻿namespace EvoSC.Modules.Official.Maps.Interfaces;
+﻿using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Models;
+
+namespace EvoSC.Modules.Official.Maps.Interfaces;
 
 public interface IMxMapService
 {
-    Task FindAndDownloadMap(int mxId, string? shortName);
+    Task<Map?> FindAndDownloadMap(int mxId, string? shortName, IPlayer actor);
 }
