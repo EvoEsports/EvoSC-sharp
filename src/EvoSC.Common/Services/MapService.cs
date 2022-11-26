@@ -38,13 +38,13 @@ public class MapService : IMapService
         var map = mapObject.Map;
         var mapStream = mapObject.MapStream;
 
-        DbMap? existingMap = null; // await GetMapByUid(map.Uid);
-        /*if (existingMap != null && MapVersionExistsInDb(existingMap, map))
+        DbMap? existingMap = await GetMapByUid(map.Uid);
+        if (existingMap != null && MapVersionExistsInDb(existingMap, map))
         {
             // TODO: Change this with a more precise exception
             _logger.LogDebug($"Map with UID {map.Uid} already exists in database.");
             throw new DuplicateNameException($"Map with UID {map.Uid} already exists in database");
-        }*/
+        }
 
         var fileName = $"{map.Name}.Map.Gbx";
         var filePath = _config.Path.Maps + $"/EvoSC";
