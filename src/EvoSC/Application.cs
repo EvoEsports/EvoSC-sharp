@@ -64,14 +64,14 @@ public class Application : IEvoSCApplication
         await SetupApplication();
 
         // wait indefinitely
-        WaitHandle.WaitAll(new[] { _runningToken.Token.WaitHandle });
+        WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
     }
 
     public async Task ShutdownAsync()
     {
         var serverClient = _services.GetInstance<IServerClient>();
         await serverClient.StopAsync(_runningToken.Token);
-
+        
         // cancel the token to stop the application itself
         _runningToken.Cancel();
     }
@@ -80,15 +80,15 @@ public class Application : IEvoSCApplication
     {
         var sw = new Stopwatch();
         sw.Start();
-
+        
         SetupServices();
         MigrateDatabase();
         SetupControllerManager();
         await SetupModules();
         await StartBackgroundServices();
-
+        
         sw.Stop();
-
+        
         _logger.LogDebug("Startup time: {Time}ms", sw.ElapsedMilliseconds);
     }
 
@@ -97,10 +97,10 @@ public class Application : IEvoSCApplication
         var config = _services.AddEvoScConfig();
 
         _services.AddEvoScLogging(config.Logging);
-
+        
         _services.AddEvoScMigrations();
         _services.AddEvoScDatabase(config.Database);
-
+        
         _services.AddGbxRemoteClient();
         _services.AddEvoScEvents();
         _services.AddEvoScModules();
@@ -119,14 +119,14 @@ public class Application : IEvoSCApplication
     {
         using var scope = new Scope(_services);
         var manager = scope.GetInstance<IMigrationManager>();
-
+        
         // main migrations
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
-
+        
         // internal modules
         manager.RunInternalModuleMigrations();
     }
-
+    
     private void SetupControllerManager()
     {
         var controllers = _services.GetInstance<IControllerManager>();

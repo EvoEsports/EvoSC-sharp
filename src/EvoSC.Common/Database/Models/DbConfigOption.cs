@@ -2,7 +2,7 @@
 
 namespace EvoSC.Common.Database.Models;
 
-[Table("configoptions")]
+[Table("ConfigOptions")]
 public class DbConfigOption
 {
     [Key]

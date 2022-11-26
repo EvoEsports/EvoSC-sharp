@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;

@@ -1,4 +1,5 @@
-﻿using EvoSC.Commands.Attributes;
+﻿using EvoSC.Commands;
+using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.Maps.Controllers;
 
 [Controller]
-public class MapsController : EvoScController<PlayerInteractionContext>
+public class MapsController : EvoScController<CommandInteractionContext>
 {
     private readonly ILogger<MapsController> _logger;
     private readonly IMxMapService _mxMapService;
