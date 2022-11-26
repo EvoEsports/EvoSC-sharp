@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Castle.Core.Logging;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models.Maps;
@@ -6,15 +7,18 @@ using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Repository;
 using EvoSC.Common.Models;
+using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Common.Database.DbAccess.Maps;
+namespace EvoSC.Common.Database.Repository.Maps;
 
 public class MapRepository : IMapRepository
 {
+    private readonly ILogger<MapRepository> _logger;
     private readonly DbConnection _db;
 
-    public MapRepository(DbConnection db)
+    public MapRepository(ILogger<MapRepository> logger, DbConnection db)
     {
+        _logger = logger;
         _db = db;
     }
 
@@ -35,8 +39,8 @@ public class MapRepository : IMapRepository
             MapUid = uid
         });
     }
-
-    public async Task<DbMap> AddMap(Map map, IPlayer author, string filePath)
+    
+    public async Task<DbMap> AddMap(Map map, IPlayer author, IPlayer actor, string filePath)
     {
         var dbMap = new DbMap
         {
@@ -45,15 +49,27 @@ public class MapRepository : IMapRepository
             FilePath = filePath,
             Enabled = true,
             Name = map.Name,
-            ManiaExchangeId = map.MxId,
+            ManiaExchangeId = map.MxId == 0 ? null : map.MxId,
             ManiaExchangeVersion = map.MxVersion,
-            TrackmaniaIoId = map.TmIoId,
+            TrackmaniaIoId = map.TmIoId == 0 ? null : map.TmIoId,
             TrackmaniaIoVersion = map.TmIoVersion,
+            AddedBy = actor.Id,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
         
-        await _db.InsertAsync(dbMap);
+        await using var transaction = await _db.BeginTransactionAsync();
+        try
+        {
+            await _db.InsertAsync(dbMap, transaction: transaction);
+            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogDebug(e, "Failed to add map.");
+            await transaction.RollbackAsync();
+            throw;
+        }
         return dbMap;
     }
 
@@ -72,7 +88,19 @@ public class MapRepository : IMapRepository
             UpdatedAt = DateTime.Now
         };
 
-        await _db.UpdateAsync(updatedMap);
+        await using var transaction = await _db.BeginTransactionAsync();
+        try
+        {
+            await _db.UpdateAsync(updatedMap, transaction: transaction);
+            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogDebug(e, "Failed to update map.");
+            await transaction.RollbackAsync();
+            throw;
+        }
+
         return updatedMap;
     }
 

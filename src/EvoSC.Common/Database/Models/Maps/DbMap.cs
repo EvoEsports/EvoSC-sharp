@@ -26,6 +26,8 @@ public class DbMap
     public long? TrackmaniaIoId { get; set; }
 
     public DateTime? TrackmaniaIoVersion { get; set; }
+    
+    public long AddedBy { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
