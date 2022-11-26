@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;
 
-public class ServerClient : IServerClient
+public partial class ServerClient : IServerClient
 {
     private readonly GbxRemoteClient _gbxRemote;
     private readonly IEvoScBaseConfig _config;
