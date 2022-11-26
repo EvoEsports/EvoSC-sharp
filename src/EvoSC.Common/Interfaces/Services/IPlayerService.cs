@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Database.Models.Player;
+﻿using EvoSC.Common.Database.Models;
 
 namespace EvoSC.Common.Interfaces.Services;
 
