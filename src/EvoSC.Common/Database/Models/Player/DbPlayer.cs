@@ -28,7 +28,6 @@ public class DbPlayer : IPlayer
     public string NickName { get; set; }
     public string UbisoftName { get; set; }
     public string Zone { get; set; }
-    
     [Computed]
     public IEnumerable<IGroup> Groups { get; set; }
 }

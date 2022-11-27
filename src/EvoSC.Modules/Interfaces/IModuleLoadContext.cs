@@ -5,7 +5,7 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Attributes;
 using SimpleInjector;
 
-namespace EvoSC.Modules;
+namespace EvoSC.Modules.Interfaces;
 
 /// <summary>
 /// Information about a loaded module.

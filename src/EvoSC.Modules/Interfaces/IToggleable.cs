@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Modules;
+﻿namespace EvoSC.Modules.Interfaces;
 
 /// <summary>
 /// Defines a module as toggleable with custom enable/disable methods.

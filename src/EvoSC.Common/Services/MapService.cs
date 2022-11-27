@@ -127,7 +127,7 @@ public class MapService : IMapService
             throw;
         }
     }
-
+    
     private async Task<IPlayer> GetMapAuthor(string authorId)
     {
         var dbPlayer = await _playerService.GetPlayerAsync(authorId);

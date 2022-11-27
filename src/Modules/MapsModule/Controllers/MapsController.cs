@@ -1,4 +1,4 @@
-﻿using EvoSC.Commands;
+using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;

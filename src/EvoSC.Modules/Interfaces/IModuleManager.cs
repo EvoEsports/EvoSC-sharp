@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace EvoSC.Modules;
+namespace EvoSC.Modules.Interfaces;
 
 /// <summary>
 /// Main manager for modules, provides loading/unloading and enabling/disabling of modules.
