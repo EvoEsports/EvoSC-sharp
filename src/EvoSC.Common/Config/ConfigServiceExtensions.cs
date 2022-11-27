@@ -1,6 +1,7 @@
 ﻿using Config.Net;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
+using EvoSC.Common.Config.TypeParsers;
 using EvoSC.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
@@ -21,6 +22,7 @@ public static class ConfigServiceExtensions
     {
         var baseConfig = new ConfigurationBuilder<IEvoScBaseConfig>()
             .UseTomlFile(MainConfigFile)
+            .UseTypeParser(new TextColorTypeParser())
             .Build();
 
         services.RegisterInstance<IEvoScBaseConfig>(baseConfig);
