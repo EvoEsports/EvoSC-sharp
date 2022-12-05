@@ -51,17 +51,9 @@ public class RemoteChatRouter : IRemoteChatRouter
                 return;
             }
 
-            var eventArgs = new ChatMessageEventArgs {MessageText = e.Text, Player = player};
-            
-            var chain = _pipelineManager.BuildChain(PipelineType.ChatRouter, async (context) =>
+            var pipelineChain = _pipelineManager.BuildChain(PipelineType.ChatRouter, async (context) =>
             {
-                var chatContext = context as ChatRouterPipelineContext;
-
-
-                await _events.Raise(EvoSCEvent.ChatMessage,
-                    new ChatMessageEventArgs {MessageText = e.Text, Player = player});
-
-                if (chatContext is {ForwardMessage: true})
+                if (context is ChatRouterPipelineContext {ForwardMessage: true} chatContext)
                 {
                     await _server.SendChatMessage(new TextFormatter()
                         .AddText("[")
@@ -72,14 +64,14 @@ public class RemoteChatRouter : IRemoteChatRouter
                 }
             });
 
-            await chain(new ChatRouterPipelineContext
+            await pipelineChain(new ChatRouterPipelineContext
             {
                 ForwardMessage = true,
                 Player = player,
                 MessageText = e.Text
             });
             
-            _logger.LogInformation("[{Name}]: {Msg}", FormattingUtils.CleanTmFormatting(player.NickName), e.Text);
+            _logger.LogInformation("[{Name}]: {Msg}", player.StrippedNickName, e.Text);
         }
         catch (PlayerNotFoundException ex)
         {
