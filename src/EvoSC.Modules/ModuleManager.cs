@@ -74,7 +74,11 @@ public class ModuleManager : IModuleManager
             ModuleInfo = moduleInfo,
             Assembly = moduleClass.Assembly,
             Services = moduleServices,
-            ActionPipeline = new ActionPipeline(),
+            Pipelines = new Dictionary<PipelineType, IActionPipeline>
+            {
+                {PipelineType.ChatRouter, new ActionPipeline()},
+                {PipelineType.ControllerAction, new ActionPipeline()}
+            },
             Permissions = new List<IPermission>()
         };
         
@@ -180,7 +184,11 @@ public class ModuleManager : IModuleManager
 
     private Task EnableMiddlewares(IModuleLoadContext moduleContext)
     {
-        _pipelineManager.AddPipeline(PipelineType.Action, moduleContext.LoadId, moduleContext.ActionPipeline);
+        // _pipelineManager.AddPipeline(PipelineType.ControllerAction, moduleContext.LoadId, moduleContext.ActionPipeline);
+        _pipelineManager.AddPipeline(PipelineType.ChatRouter, moduleContext.LoadId,
+            moduleContext.Pipelines[PipelineType.ChatRouter]);
+        _pipelineManager.AddPipeline(PipelineType.ControllerAction, moduleContext.LoadId,
+            moduleContext.Pipelines[PipelineType.ControllerAction]);
 
         return Task.CompletedTask;
     }
@@ -189,7 +197,9 @@ public class ModuleManager : IModuleManager
     {
         foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
         {
-            moduleContext.ActionPipeline.AddComponent(middlewareType, moduleContext.Services);
+            var attr = middlewareType.GetCustomAttribute<MiddlewareAttribute>();
+            // moduleContext.ActionPipeline.AddComponent(middlewareType, moduleContext.Services);
+            moduleContext.Pipelines[attr.For].AddComponent(middlewareType, moduleContext.Services);
         }
 
         return Task.CompletedTask;

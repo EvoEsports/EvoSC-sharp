@@ -17,7 +17,7 @@ public class ActionPipelineManager : IActionPipelineManager
 
     public ActionPipelineManager()
     {
-        RegisterPipelineType(PipelineType.Action);
+        RegisterPipelineType(PipelineType.ControllerAction);
         RegisterPipelineType(PipelineType.ChatRouter);
     }
 

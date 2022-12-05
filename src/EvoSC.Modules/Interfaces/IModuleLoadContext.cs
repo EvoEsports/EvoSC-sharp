@@ -3,6 +3,7 @@ using System.Runtime.Loader;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Middleware;
 using EvoSC.Modules.Attributes;
 using SimpleInjector;
 
@@ -42,7 +43,6 @@ public interface IModuleLoadContext
     /// The module's assembly object.
     /// </summary>
     public Assembly Assembly { get; init; }
-    
-    public IActionPipeline ActionPipeline { get; init; }
+    public Dictionary<PipelineType, IActionPipeline> Pipelines { get; init; }
     public List<IPermission> Permissions { get; set; }
 }

@@ -90,7 +90,7 @@ public class CommandsMiddleware
         
         controller.SetContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.BuildChain(PipelineType.Action, context =>
+        var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, context =>
         {
             return (Task)cmd.HandlerMethod.Invoke(controller, args);
         });
