@@ -178,17 +178,21 @@ public class ModuleManager : IModuleManager
         await TryCallModuleEnable(moduleContext);
     }
 
-    private async Task EnableMiddlewares(IModuleLoadContext moduleContext)
+    private Task EnableMiddlewares(IModuleLoadContext moduleContext)
     {
-        _pipelineManager.AddPipeline(moduleContext.LoadId, moduleContext.ActionPipeline);
+        _pipelineManager.AddPipeline(PipelineType.Action, moduleContext.LoadId, moduleContext.ActionPipeline);
+
+        return Task.CompletedTask;
     }
 
-    private async Task AddMiddlewares(IModuleLoadContext moduleContext)
+    private Task AddMiddlewares(IModuleLoadContext moduleContext)
     {
         foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
         {
             moduleContext.ActionPipeline.AddComponent(middlewareType, moduleContext.Services);
         }
+
+        return Task.CompletedTask;
     }
 
     private Task TryCallModuleEnable(IModuleLoadContext moduleContext)

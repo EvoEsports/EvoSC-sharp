@@ -1,11 +1,12 @@
 ﻿using EvoSC.Common.Controllers;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Remote;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;
 
-public interface IControllerContext
+public interface IControllerContext : IPipelineContext
 {
     /// <summary>
     /// The service scope used to create this context.

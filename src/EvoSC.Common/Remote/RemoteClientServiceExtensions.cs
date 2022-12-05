@@ -16,6 +16,7 @@ public static class RemoteClientServiceExtensions
     {
         services.RegisterSingleton<IServerClient, ServerClient>();
         services.RegisterSingleton<IServerCallbackHandler, ServerCallbackHandler>();
+        services.RegisterSingleton<IRemoteChatRouter, RemoteChatRouter>();
         
         return services;
     }

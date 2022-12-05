@@ -1,6 +1,8 @@
 ﻿using EvoSC.Commands.Interfaces;
 using EvoSC.Commands.Middleware;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Middleware;
 using SimpleInjector;
 
 namespace EvoSC.Commands;
@@ -21,6 +23,6 @@ public static class ChatCommandServiceExtensions
 
     public static void UseEvoScCommands(this IActionPipelineManager pipelineManager, Container services)
     {
-        pipelineManager.UseMiddleware<PermissionMiddleware>(services);
+        pipelineManager.UseMiddleware<PermissionMiddleware>(PipelineType.Action, services);
     }
 }

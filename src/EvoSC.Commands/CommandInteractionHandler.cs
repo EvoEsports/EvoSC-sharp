@@ -9,6 +9,7 @@ using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Middleware;
 using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.TextParsing;
@@ -99,7 +100,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         var playerInteractionContext = new CommandInteractionContext(player, context) {CommandExecuted = cmd};
         controller.SetContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.BuildChain(context =>
+        var actionChain = _actionPipeline.BuildChain<CommandInteractionContext>(PipelineType.Action, context =>
         {
             return (Task)cmd.HandlerMethod.Invoke(controller, args);
         });

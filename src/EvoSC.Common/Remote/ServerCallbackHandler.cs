@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;

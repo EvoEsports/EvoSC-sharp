@@ -5,12 +5,23 @@ namespace EvoSC.Common.Interfaces.Middleware;
 
 public interface IActionPipelineManager
 {
-    /// <summary>
+    public void AddPipeline(PipelineType pipelineType, Guid guid, IActionPipeline pipeline);
+
+    public void RemovePipeline(PipelineType pipelineType, Guid guid);
+
+    public void UseMiddleware<TMiddleware>(PipelineType pipelineType, Container services);
+
+    public void UseMiddleware(PipelineType pipelineType, Type middlewareType, Container services);
+
+    public ActionDelegate BuildChain<TContext>(PipelineType pipelineType, ActionDelegate chain)
+        where TContext : IPipelineContext;
+
+    /* /// <summary>
     /// Add a pipeline to the manager assigned to a given GUID.
     /// </summary>
     /// <param name="guid">GUID to assign the pipeline to. Must be unique.</param>
     /// <param name="pipeline">The pipeline to add.</param>
-    public void AddPipeline(Guid guid, IActionPipeline pipeline);
+    public void AddPipeline<TContext>(PipelineType pType, Guid guid, IActionPipeline<TContext> pipeline) where TContext : IPipelineContext;
     
     /// <summary>
     /// Remove the pipeline for a given GUID.
@@ -22,7 +33,7 @@ public interface IActionPipelineManager
     /// Add a new middleware to the main/core pipeline, which is executed first.
     /// </summary>
     /// <param name="middleware">Middleware function to add.</param>
-    public void UseMiddleware(Func<ActionDelegate, ActionDelegate> middleware);
+    public void UseMiddleware<TContext>(Guid guid, Func<ActionDelegate<TContext>, ActionDelegate<TContext>> middleware) where TContext : IPipelineContext;
     
     /// <summary>
     /// Add a new middleware class to the main/core pipeline, which is executed first.
@@ -43,5 +54,5 @@ public interface IActionPipelineManager
     /// </summary>
     /// <param name="chain">Chain to add to the built chain. Will be executed last.</param>
     /// <returns>A callable function to execute the pipeline chain.</returns>
-    public ActionDelegate BuildChain(ActionDelegate chain);
+    public ActionDelegate<T> BuildChain<T>(ActionDelegate<T> chain) where T : IPipelineContext; */
 }
