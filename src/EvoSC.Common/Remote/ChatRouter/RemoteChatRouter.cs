@@ -1,14 +1,16 @@
 ﻿using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Middleware;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Common.Util.TextFormatting;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Common.Remote;
+namespace EvoSC.Common.Remote.ChatRouter;
 
 public class RemoteChatRouter : IRemoteChatRouter
 {
@@ -16,14 +18,17 @@ public class RemoteChatRouter : IRemoteChatRouter
     private readonly IServerClient _server;
     private readonly IEventManager _events;
     private readonly IPlayerManagerService _players;
-    
-    public RemoteChatRouter(ILogger<RemoteChatRouter> logger, IServerClient server, IEventManager events, IPlayerManagerService players)
+    private readonly IActionPipelineManager _pipelineManager;
+
+    public RemoteChatRouter(ILogger<RemoteChatRouter> logger, IServerClient server, IEventManager events,
+        IPlayerManagerService players, IActionPipelineManager pipelineManager)
     {
         _logger = logger;
         _server = server;
         _events = events;
         _players = players;
-        
+        _pipelineManager = pipelineManager;
+
         events.Subscribe(s => s
             .WithEvent(GbxRemoteEvent.PlayerChat)
             .WithInstance(this)
@@ -46,18 +51,27 @@ public class RemoteChatRouter : IRemoteChatRouter
                 return;
             }
 
-            await _server.SendChatMessage(new TextFormatter()
-                .AddText("[")
-                .AddText(text => text.AsIsolated().AddText(player.NickName))
-                .AddText("] ")
-                .AddText(text => text.AsIsolated().AddText(e.Text))
-            );
-
-            await _events.Raise(EvoSCEvent.ChatMessage, new ChatMessageEventArgs
+            var eventArgs = new ChatMessageEventArgs {MessageText = e.Text, Player = player};
+            
+            var chain = _pipelineManager.BuildChain(PipelineType.ChatRouter, async (context) =>
             {
-                MessageText = e.Text, 
-                Player = player
+                var chatContext = context as ChatRouterPipelineContext;
+                
+                
+                await _events.Raise(EvoSCEvent.ChatMessage, eventArgs);
+
+                if (chatContext is {ForwardMessage: true})
+                {
+                    await _server.SendChatMessage(new TextFormatter()
+                        .AddText("[")
+                        .AddText(text => text.AsIsolated().AddText(player.NickName))
+                        .AddText("] ")
+                        .AddText(text => text.AsIsolated().AddText(e.Text))
+                    );
+                }
             });
+
+            await chain(new ChatRouterPipelineContext {ForwardMessage = true, Args = eventArgs});
             
             _logger.LogInformation("[{Name}]: {Msg}", FormattingUtils.CleanTmFormatting(player.NickName), e.Text);
         }

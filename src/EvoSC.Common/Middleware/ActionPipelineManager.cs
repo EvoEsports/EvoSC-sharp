@@ -47,8 +47,7 @@ public class ActionPipelineManager : IActionPipelineManager
     public void UseMiddleware(PipelineType pipelineType, Type middlewareType, Container services) =>
         _mainPipelines[pipelineType].AddComponent(middlewareType, services);
 
-    public ActionDelegate BuildChain<TContext>(PipelineType pipelineType, ActionDelegate chain)
-        where TContext : IPipelineContext
+    public ActionDelegate BuildChain(PipelineType pipelineType, ActionDelegate chain)
     {
         if (_pipelines.Count == 0)
         {
@@ -56,13 +55,17 @@ public class ActionPipelineManager : IActionPipelineManager
         }
 
         var pipelines = _pipelines[pipelineType].Values.ToArray();
-        var last = pipelines.Last();
 
-        chain = last.Build(chain);
-        
-        for (int i = _pipelines.Count - 2; i >= 0; i--)
+        if (pipelines.Length > 0)
         {
-            chain = pipelines[i].Build(chain);
+            var last = pipelines.Last();
+
+            chain = last.Build(chain);
+        
+            for (int i = _pipelines.Count - 2; i >= 0; i--)
+            {
+                chain = pipelines[i].Build(chain);
+            }
         }
 
         return _mainPipelines[pipelineType].Build(chain);

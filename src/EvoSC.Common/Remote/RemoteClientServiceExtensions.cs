@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Remote.ChatRouter;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 

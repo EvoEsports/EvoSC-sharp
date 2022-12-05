@@ -13,8 +13,7 @@ public interface IActionPipelineManager
 
     public void UseMiddleware(PipelineType pipelineType, Type middlewareType, Container services);
 
-    public ActionDelegate BuildChain<TContext>(PipelineType pipelineType, ActionDelegate chain)
-        where TContext : IPipelineContext;
+    public ActionDelegate BuildChain(PipelineType pipelineType, ActionDelegate chain);
 
     /* /// <summary>
     /// Add a pipeline to the manager assigned to a given GUID.

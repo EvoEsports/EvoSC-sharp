@@ -100,7 +100,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         var playerInteractionContext = new CommandInteractionContext(player, context) {CommandExecuted = cmd};
         controller.SetContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.BuildChain<CommandInteractionContext>(PipelineType.Action, context =>
+        var actionChain = _actionPipeline.BuildChain(PipelineType.Action, context =>
         {
             return (Task)cmd.HandlerMethod.Invoke(controller, args);
         });

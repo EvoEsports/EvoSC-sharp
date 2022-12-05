@@ -51,7 +51,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.", MyPermissions.MyPerm1)]
+    [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
         await _server.InfoMessage("hello!");
