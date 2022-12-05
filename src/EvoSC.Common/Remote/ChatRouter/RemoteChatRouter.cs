@@ -67,7 +67,7 @@ public class RemoteChatRouter : IRemoteChatRouter
                         .AddText("[")
                         .AddText(text => text.AsIsolated().AddText(player.NickName))
                         .AddText("] ")
-                        .AddText(text => text.AsIsolated().AddText(e.Text))
+                        .AddText(text => text.AsIsolated().AddText(chatContext.MessageText))
                     );
                 }
             });
