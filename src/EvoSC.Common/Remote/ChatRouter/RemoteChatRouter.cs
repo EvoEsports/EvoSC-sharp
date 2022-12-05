@@ -56,9 +56,10 @@ public class RemoteChatRouter : IRemoteChatRouter
             var chain = _pipelineManager.BuildChain(PipelineType.ChatRouter, async (context) =>
             {
                 var chatContext = context as ChatRouterPipelineContext;
-                
-                
-                await _events.Raise(EvoSCEvent.ChatMessage, eventArgs);
+
+
+                await _events.Raise(EvoSCEvent.ChatMessage,
+                    new ChatMessageEventArgs {MessageText = e.Text, Player = player});
 
                 if (chatContext is {ForwardMessage: true})
                 {
@@ -71,7 +72,12 @@ public class RemoteChatRouter : IRemoteChatRouter
                 }
             });
 
-            await chain(new ChatRouterPipelineContext {ForwardMessage = true, Args = eventArgs});
+            await chain(new ChatRouterPipelineContext
+            {
+                ForwardMessage = true,
+                Player = player,
+                MessageText = e.Text
+            });
             
             _logger.LogInformation("[{Name}]: {Msg}", FormattingUtils.CleanTmFormatting(player.NickName), e.Text);
         }

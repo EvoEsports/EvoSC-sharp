@@ -33,8 +33,8 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     }
 
     [ChatCommand("ratemap", "Rate the current map.", "test")]
-    [CommandAlias("+++", 100)]
-    [CommandAlias("++", 80)]
+    [CommandAlias("+++",  100)]
+    [CommandAlias("++", true, 80)]
     [CommandAlias("+", 60)]
     [CommandAlias("-", 40)]
     [CommandAlias("--", 20)]

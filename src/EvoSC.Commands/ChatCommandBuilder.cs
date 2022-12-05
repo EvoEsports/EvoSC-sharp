@@ -62,7 +62,8 @@ public class ChatCommandBuilder
         return this;
     }
 
-    public ChatCommandBuilder AddAlias(string name, params object[] args) => AddAlias(new CommandAlias(name, args));
+    public ChatCommandBuilder AddAlias(string name, bool hide, params object[] args) => AddAlias(new CommandAlias(name, hide, args));
+    public ChatCommandBuilder AddAlias(string name, params object[] args) => AddAlias(new CommandAlias(name, false, args));
 
     public ChatCommandBuilder WithController(Type controllerType)
     {

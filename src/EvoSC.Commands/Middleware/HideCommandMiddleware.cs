@@ -15,7 +15,7 @@ public class HideCommandMiddleware
 
     public Task ExecuteAsync(ChatRouterPipelineContext context)
     {
-        if (context.Args.MessageText.StartsWith("/"))
+        if (context.MessageText.StartsWith("/"))
         {
             context.ForwardMessage = false;
         }

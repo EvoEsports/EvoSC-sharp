@@ -19,4 +19,6 @@ public interface IParserResult
     /// this will be set. But if Success is true, this may or may not be set.
     /// </summary>
     public Exception Exception { get; }
+    public bool IsIntended { get; }
+    public string AliasUsed { get; }
 }

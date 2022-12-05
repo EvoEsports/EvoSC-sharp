@@ -17,13 +17,12 @@ public static class ChatCommandServiceExtensions
     public static Container AddEvoScChatCommands(this Container container)
     {
         container.RegisterSingleton<IChatCommandManager, ChatCommandManager>();
-        container.RegisterSingleton<ICommandInteractionHandler, CommandInteractionHandler>();
         return container;
     }
 
     public static void UseEvoScCommands(this IActionPipelineManager pipelineManager, Container services)
     {
         pipelineManager.UseMiddleware<PermissionMiddleware>(PipelineType.Action, services);
-        pipelineManager.UseMiddleware<HideCommandMiddleware>(PipelineType.ChatRouter, services);
+        pipelineManager.UseMiddleware<CommandsMiddleware>(PipelineType.ChatRouter, services);
     }
 }

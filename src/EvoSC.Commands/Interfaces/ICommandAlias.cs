@@ -12,4 +12,8 @@ public interface ICommandAlias
     /// but 1 is provided here, the user still need to provide 1 argument for the 2nd parameter.
     /// </summary>
     public object[] DefaultArgs { get; }
+    /// <summary>
+    /// If true, the chat message will not be shown in the chat for this alias.
+    /// </summary>
+    public bool Hide { get; }
 }
