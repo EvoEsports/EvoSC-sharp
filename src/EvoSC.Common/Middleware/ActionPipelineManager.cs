@@ -34,9 +34,7 @@ public class ActionPipelineManager : IActionPipelineManager
 
     public void RemovePipeline(PipelineType pipelineType, Guid guid) => _pipelines[pipelineType].Remove(guid);
 
-    public void UseMiddleware<TContext>(PipelineType pipelineType,
-        Func<ActionDelegate, ActionDelegate> middleware)
-        where TContext : IPipelineContext
+    public void UseMiddleware(PipelineType pipelineType, Func<ActionDelegate, ActionDelegate> middleware)
     {
         _mainPipelines[pipelineType].AddComponent(middleware);
     }

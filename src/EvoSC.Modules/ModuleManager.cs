@@ -184,7 +184,6 @@ public class ModuleManager : IModuleManager
 
     private Task EnableMiddlewares(IModuleLoadContext moduleContext)
     {
-        // _pipelineManager.AddPipeline(PipelineType.ControllerAction, moduleContext.LoadId, moduleContext.ActionPipeline);
         _pipelineManager.AddPipeline(PipelineType.ChatRouter, moduleContext.LoadId,
             moduleContext.Pipelines[PipelineType.ChatRouter]);
         _pipelineManager.AddPipeline(PipelineType.ControllerAction, moduleContext.LoadId,
@@ -198,7 +197,6 @@ public class ModuleManager : IModuleManager
         foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
         {
             var attr = middlewareType.GetCustomAttribute<MiddlewareAttribute>();
-            // moduleContext.ActionPipeline.AddComponent(middlewareType, moduleContext.Services);
             moduleContext.Pipelines[attr.For].AddComponent(middlewareType, moduleContext.Services);
         }
 
