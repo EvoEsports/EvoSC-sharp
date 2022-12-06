@@ -90,6 +90,7 @@ public class ChatCommandBuilder
     /// <param name="args">Default arguments to pass to the command.</param>
     /// <returns></returns>
     public ChatCommandBuilder AddAlias(string name, bool hide, params object[] args) => AddAlias(new CommandAlias(name, hide, args));
+
     /// <summary>
     /// Add an alias that can trigger this command.
     /// </summary>
