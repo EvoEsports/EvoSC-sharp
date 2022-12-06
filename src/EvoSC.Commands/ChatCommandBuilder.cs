@@ -204,7 +204,7 @@ public class ChatCommandBuilder
     }
 
     /// <summary>
-    /// Whether this command uses the command prefix or not.
+    /// Whether this command requires a prefix or not.
     /// </summary>
     /// <param name="usePrefix">If true, the command will require to be prefixed by the user.</param>
     /// <returns></returns>
@@ -215,7 +215,7 @@ public class ChatCommandBuilder
     }
 
     /// <summary>
-    /// Don't use prefix for this command.
+    /// Don't require a prefix for this command.
     /// </summary>
     /// <returns></returns>
     public ChatCommandBuilder WithNoPrefix() => UsePrefix(false);
