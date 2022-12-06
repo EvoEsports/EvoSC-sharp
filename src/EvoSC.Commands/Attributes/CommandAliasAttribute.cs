@@ -7,7 +7,7 @@ namespace EvoSC.Commands.Attributes;
 public class CommandAliasAttribute : Attribute
 {
     /// <summary>
-    /// The name of the alias the player must type to call the command.
+    /// The name of the alias, which the player must type to call the command.
     /// </summary>
     public string Name { get; }
     /// <summary>
