@@ -129,7 +129,7 @@ public class ChatCommandBuilder
     }
 
     /// <summary>
-    /// Set the command's callback handler method.
+    /// Set the callback handler for the command.
     /// </summary>
     /// <param name="method">Action to use as callback.</param>
     /// <returns></returns>
