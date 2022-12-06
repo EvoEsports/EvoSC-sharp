@@ -189,7 +189,7 @@ public class ChatCommandBuilder
     /// <summary>
     /// Add a parameter to this command.
     /// </summary>
-    /// <param name="parInfo">Info a bout the parameter to add.</param>
+    /// <param name="parInfo">Information about the parameter.</param>
     /// <returns></returns>
     public ChatCommandBuilder AddParameter(ParameterInfo parInfo)
     {
