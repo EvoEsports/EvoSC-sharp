@@ -52,11 +52,11 @@ public class ActionPipeline : IActionPipeline
 
     public ActionDelegate Build()
     {
-        ActionDelegate chain = context =>
+        Task Chain(IPipelineContext context)
         {
             return Task.CompletedTask;
-        };
+        }
 
-        return Build(chain);
+        return Build(Chain);
     }
 }

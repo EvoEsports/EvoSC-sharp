@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Remote.ChatRouter;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 
@@ -16,6 +17,7 @@ public static class RemoteClientServiceExtensions
     {
         services.RegisterSingleton<IServerClient, ServerClient>();
         services.RegisterSingleton<IServerCallbackHandler, ServerCallbackHandler>();
+        services.RegisterSingleton<IRemoteChatRouter, RemoteChatRouter>();
         
         return services;
     }

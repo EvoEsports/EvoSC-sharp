@@ -1,12 +1,14 @@
 ﻿using EvoSC.Commands;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Middleware.Attributes;
+using EvoSC.Common.Remote.ChatRouter;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
-[Middleware]
+[Middleware(For = PipelineType.ChatRouter)]
 public class MyMiddleware
 {
     private readonly ActionDelegate _next;
@@ -18,9 +20,10 @@ public class MyMiddleware
         _logger = logger;
     }
 
-    public Task ExecuteAsync(IControllerContext context)
+    public Task ExecuteAsync(ChatRouterPipelineContext context)
     {
-        _logger.LogInformation("Hello from middleware!");
+        context.MessageText = context.MessageText.Replace("fuck", "f**k");
+        
         return _next(context);
     }
 }

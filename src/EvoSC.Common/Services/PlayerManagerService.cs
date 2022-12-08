@@ -32,7 +32,6 @@ public class PlayerManagerService : IPlayerManagerService
         _server = server;
     }
 
-
     public async Task<IPlayer?> GetPlayerAsync(string accountId)
     {
         var results = await _db.SelectByColumnAsync<DbPlayer>("Players", "AccountId", accountId);
@@ -75,6 +74,7 @@ public class PlayerManagerService : IPlayerManagerService
     public async Task<IOnlinePlayer> GetOnlinePlayerAsync(string accountId)
     {
         var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
+        // TODO: #74 Optimize Player State Fetching (https://github.com/EvoTM/EvoSC-sharp/issues/74)
         var onlinePlayerInfo = await _server.Remote.GetPlayerInfoAsync(playerLogin);
         var onlinePlayerDetails = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
 
