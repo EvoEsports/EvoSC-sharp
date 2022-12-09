@@ -33,7 +33,6 @@ namespace EvoSC.Modules;
 public class ModuleManager : IModuleManager
 {
     private readonly ILogger<ModuleManager> _logger;
-    private readonly Container _services;
     private readonly IControllerManager _controllers;
     private readonly IModuleServicesManager _servicesManager;
     private readonly DbConnection _db;
@@ -42,12 +41,11 @@ public class ModuleManager : IModuleManager
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
 
-    public ModuleManager(ILogger<ModuleManager> logger, Container services, IControllerManager controllers,
+    public ModuleManager(ILogger<ModuleManager> logger, IControllerManager controllers,
         IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db,
         IPermissionManager permissions)
     {
         _logger = logger;
-        _services = services;
         _controllers = controllers;
         _servicesManager = servicesManager;
         _db = db;
@@ -61,11 +59,60 @@ public class ModuleManager : IModuleManager
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
         _servicesManager.AddContainer(loadId, moduleServices);
 
-        await AddModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
+        await RegisterModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
         
-        var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
+        var loadContext = CreateLoadContext(moduleClass, moduleInfo, loadId, moduleServices);
+        
+        _loadedModules.Add(loadId, loadContext);
 
-        var loadContext = new ModuleLoadContext
+        await RegisterMiddlewares(loadContext);
+        await RegisterPermissions(loadContext);
+
+        _logger.LogDebug("Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
+        
+        return loadId;
+    }
+    
+    private async Task<Guid> LoadModule(Type moduleType, ModuleAttribute moduleAttr)
+    {
+        var loadId = Guid.Empty;
+
+        if (moduleAttr.IsInternal)
+        {
+            loadId = await LoadInternalModule(moduleType, moduleAttr);
+        }
+        
+        _logger.LogDebug("Module {Type}({Module}) was loaded", moduleType, loadId);
+        
+        return loadId;
+    }
+    
+    private async Task InstallModule(Guid loadId)
+    {
+        var moduleContext = GetModuleById(loadId);
+
+        await InstallPermissions(moduleContext);
+        await TryCallModuleInstall(moduleContext);
+        
+        _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.ModuleClass, loadId);
+    }
+    
+    public async Task EnableModule(Guid loadId)
+    {
+        var moduleContext = GetModuleById(loadId);
+
+        await EnableControllers(moduleContext);
+        await EnableMiddlewares(moduleContext);
+        await TryCallModuleEnable(moduleContext);
+        
+        _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.ModuleClass, loadId);
+    }
+
+    private static ModuleLoadContext CreateLoadContext(Type moduleClass, ModuleAttribute moduleInfo, Guid loadId, Container moduleServices)
+    {
+        var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
+        
+        return new ModuleLoadContext
         {
             Instance = instance,
             LoadContext = null,
@@ -81,15 +128,6 @@ public class ModuleManager : IModuleManager
             },
             Permissions = new List<IPermission>()
         };
-        
-        _loadedModules.Add(loadId, loadContext);
-
-        await AddMiddlewares(loadContext);
-        await AddPermissions(loadContext);
-
-        _logger.LogDebug("Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
-        
-        return loadId;
     }
 
     private IModuleLoadContext GetModuleById(Guid loadId)
@@ -103,7 +141,7 @@ public class ModuleManager : IModuleManager
         return moduleContext;
     }
     
-    private async Task AddPermissions(ModuleLoadContext loadContext)
+    private async Task RegisterPermissions(ModuleLoadContext loadContext)
     {
         foreach (var permGroup in loadContext.Assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
         {
@@ -131,13 +169,6 @@ public class ModuleManager : IModuleManager
                 });
             }
         }
-    }
-
-    private async Task InstallModule(Guid loadId)
-    {
-        var moduleContext = GetModuleById(loadId);
-
-        await InstallPermissions(moduleContext);
     }
 
     private async Task InstallPermissions(IModuleLoadContext moduleContext)
@@ -173,15 +204,6 @@ public class ModuleManager : IModuleManager
         moduleContext.Permissions = identifiedPermissions;
     }
 
-    public async Task EnableModule(Guid loadId)
-    {
-        var moduleContext = GetModuleById(loadId);
-
-        await EnableControllers(moduleContext);
-        await EnableMiddlewares(moduleContext);
-        await TryCallModuleEnable(moduleContext);
-    }
-
     private Task EnableMiddlewares(IModuleLoadContext moduleContext)
     {
         _pipelineManager.AddPipeline(PipelineType.ChatRouter, moduleContext.LoadId,
@@ -192,7 +214,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private Task AddMiddlewares(IModuleLoadContext moduleContext)
+    private Task RegisterMiddlewares(IModuleLoadContext moduleContext)
     {
         foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
         {
@@ -205,14 +227,24 @@ public class ModuleManager : IModuleManager
 
     private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
     {
-        if (moduleContext.ModuleClass.IsAssignableTo(typeof(IToggleable)))
+        if (moduleContext.Instance is IToggleable instance)
         {
-            return ((IToggleable)moduleContext.Instance).Enable();
+            return instance.Enable();
         }
 
         return Task.CompletedTask;
     }
-    
+
+    private Task TryCallModuleInstall(IModuleLoadContext moduleContext)
+    {
+        if (moduleContext.Instance is IInstallable instance)
+        {
+            return instance.Install();
+        }
+
+        return Task.CompletedTask;
+    }
+
     private Task EnableControllers(IModuleLoadContext moduleContext)
     {
         foreach (var module in moduleContext.Assembly.Modules)
@@ -275,7 +307,7 @@ public class ModuleManager : IModuleManager
         return container;
     }
 
-    private async Task AddModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
+    private async Task RegisterModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
     {
         foreach (var module in assembly.Modules)
         {
@@ -318,25 +350,14 @@ public class ModuleManager : IModuleManager
                 }
 
                 var moduleAttr = moduleType.GetEvoScModuleAttribute();
+                
                 var loadId = await LoadModule(moduleType, moduleAttr);
-
                 await InstallModule(loadId);
                 await EnableModule(loadId);
+
+                // only load one module per assembly to avoid conflicts
+                return;
             }
         }
-    }
-
-    private async Task<Guid> LoadModule(Type moduleType, ModuleAttribute moduleAttr)
-    {
-        var loadId = Guid.Empty;
-
-        if (moduleAttr.IsInternal)
-        {
-            loadId = await LoadInternalModule(moduleType, moduleAttr);
-        }
-        
-        _logger.LogDebug("Loaded module: {Type}", moduleType);
-        
-        return loadId;
     }
 }
