@@ -45,4 +45,12 @@ public static class InternalModules
             await modules.LoadModulesFromAssembly(module.Assembly);
         }
     }
+
+    public static async Task LoadExternalModules(this IModuleManager modules)
+    {
+        foreach (var module in Directory.GetFiles("modules/"))
+        {
+            
+        }
+    }
 }

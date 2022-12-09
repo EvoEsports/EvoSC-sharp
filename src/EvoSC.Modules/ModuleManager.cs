@@ -21,8 +21,8 @@ using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Exceptions.ModuleServices;
 using EvoSC.Modules.Extensions;
-using EvoSC.Modules.Info;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector.Lifestyles;
@@ -53,11 +53,21 @@ public class ModuleManager : IModuleManager
         _permissions = permissions;
     }
 
-    private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleInfo)
+    private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleAttr)
     {
         var loadId = Guid.NewGuid();
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
         _servicesManager.AddContainer(loadId, moduleServices);
+
+        var moduleInfo = new InternalModuleInfo
+        {
+            Name = moduleClass.Assembly.GetCustomAttribute<ModuleIdentifierAttribute>()?.Name ?? throw new InvalidOperationException("Missing module name/identifier."),
+            Title = moduleClass.Assembly.GetCustomAttribute<ModuleTitleAttribute>()?.Title ?? throw new InvalidOperationException("Missing module title."),
+            Summary = moduleClass.Assembly.GetCustomAttribute<ModuleSummaryAttribute>()?.Summary ?? throw new InvalidOperationException("Missing module description."),
+            Version = moduleClass.Assembly.GetCustomAttribute<ModuleVersionAttribute>()?.Version ?? throw new InvalidOperationException("Missing module version."),
+            Author = moduleClass.Assembly.GetCustomAttribute<ModuleAuthorAttribute>()?.Author ?? throw new InvalidOperationException("Missing module author."),
+            Dependencies = Array.Empty<IModuleInfo>()
+        };
 
         await RegisterModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
         
@@ -108,7 +118,7 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.ModuleClass, loadId);
     }
 
-    private static ModuleLoadContext CreateLoadContext(Type moduleClass, ModuleAttribute moduleInfo, Guid loadId, Container moduleServices)
+    private static ModuleLoadContext CreateLoadContext(Type moduleClass, IModuleInfo moduleInfo, Guid loadId, Container moduleServices)
     {
         var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
         
@@ -307,7 +317,7 @@ public class ModuleManager : IModuleManager
         return container;
     }
 
-    private async Task RegisterModuleConfig(Assembly assembly, Container container, ModuleAttribute moduleInfo)
+    private async Task RegisterModuleConfig(Assembly assembly, Container container, IModuleInfo moduleInfo)
     {
         foreach (var module in assembly.Modules)
         {

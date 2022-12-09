@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
-[Module(Name = "ExampleModule", Description = "An example module to get people started.", IsInternal = true)]
+[Module(IsInternal = true)]
 public class ExampleModule : EvoScModule, IToggleable
 {
     public Task Enable()

@@ -4,12 +4,13 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>EvoSC.Modules.Official.ExampleModule</RootNamespace>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <Authors>snixtho</Authors>
+        <Title>Simple Module</Title>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
+      <ProjectReference Include="..\..\src\EvoSC.Modules\EvoSC.Modules.csproj" />
     </ItemGroup>
 
 </Project>

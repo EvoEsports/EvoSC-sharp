@@ -143,6 +143,7 @@ public class Application : IEvoSCApplication
         var modules = _services.GetInstance<IModuleManager>();
 
         await modules.LoadInternalModules();
+        await modules.LoadExternalModules();
     }
 
     private async Task StartBackgroundServices()

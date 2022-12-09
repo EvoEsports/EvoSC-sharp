@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
 using EvoSC.Modules.Attributes;
+using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 
 namespace EvoSC.Modules;
@@ -38,7 +39,7 @@ public interface IModuleLoadContext
     /// <summary>
     /// Meta info about a module.
     /// </summary>
-    public ModuleAttribute ModuleInfo { get; init; }
+    public IModuleInfo ModuleInfo { get; init; }
     /// <summary>
     /// The module's assembly object.
     /// </summary>
