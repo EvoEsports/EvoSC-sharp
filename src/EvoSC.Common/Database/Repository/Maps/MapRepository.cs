@@ -23,7 +23,7 @@ public class MapRepository : IMapRepository
         _db = db;
     }
 
-    public async Task<DbMap?> GetMapById(long id)
+    public async Task<IMap?> GetMapById(long id)
     {
         var query = "select * from `Maps` where `Id`=@MapId limit 1";
         return await _db.QueryFirstOrDefaultAsync<DbMap>(query, new
@@ -32,7 +32,7 @@ public class MapRepository : IMapRepository
         });
     }
 
-    public async Task<DbMap?> GetMapByUid(string uid)
+    public async Task<IMap?> GetMapByUid(string uid)
     {
         var query = "select * from `Maps` where `Uid`=@MapUid limit 1";
         return await _db.QueryFirstOrDefaultAsync<DbMap>(query, new
@@ -41,20 +41,20 @@ public class MapRepository : IMapRepository
         });
     }
     
-    public async Task<DbMap> AddMap(Map map, IPlayer author, IPlayer actor, string filePath)
+    public async Task<IMap> AddMap(MapMetadata mapMetadata, IPlayer author, string filePath)
     {
         var dbMap = new DbMap
         {
-            Uid = map.Uid,
-            Author = author.Id,
+            Uid = mapMetadata.MapUid,
+            Author = author,
+            AuthorId = author.Id,
             FilePath = filePath,
             Enabled = true,
-            Name = map.Name,
-            ManiaExchangeId = map.MxId == 0 ? null : map.MxId,
-            ManiaExchangeVersion = map.MxVersion,
-            TrackmaniaIoId = map.TmIoId == 0 ? null : map.TmIoId,
-            TrackmaniaIoVersion = map.TmIoVersion,
-            AddedBy = actor.Id,
+            Name = mapMetadata.MapName,
+            ManiaExchangeId = mapMetadata.MxId,
+            ManiaExchangeVersion = mapMetadata.MxVersion,
+            TrackmaniaIoId = mapMetadata.TmIoId,
+            TrackmaniaIoVersion = mapMetadata.TmIoVersion,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
@@ -71,21 +71,22 @@ public class MapRepository : IMapRepository
             await transaction.RollbackAsync();
             throw;
         }
+        
         return dbMap;
     }
 
-    public async Task<DbMap> UpdateMap(long mapId, Map map)
+    public async Task<IMap> UpdateMap(long mapId, MapMetadata mapMetadata)
     {
         var updatedMap = new DbMap
         {
             Id = mapId,
-            Uid = map.Uid,
+            Uid = mapMetadata.MapUid,
             Enabled = true,
-            Name = map.Name,
-            ManiaExchangeId = map.MxId,
-            ManiaExchangeVersion = map.MxVersion,
-            TrackmaniaIoId = map.TmIoId,
-            TrackmaniaIoVersion = map.TmIoVersion,
+            Name = mapMetadata.MapName,
+            ManiaExchangeId = mapMetadata.MxId,
+            ManiaExchangeVersion = mapMetadata.MxVersion,
+            TrackmaniaIoId = mapMetadata.TmIoId,
+            TrackmaniaIoVersion = mapMetadata.TmIoVersion,
             UpdatedAt = DateTime.Now
         };
 
@@ -102,10 +103,10 @@ public class MapRepository : IMapRepository
             throw;
         }
 
-        return updatedMap;
+        return new Map(updatedMap) ;
     }
 
-    public Task RemoveMap(Map map)
+    public Task RemoveMap(long id)
     {
         throw new NotImplementedException();
     }

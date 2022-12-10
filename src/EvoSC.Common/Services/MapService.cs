@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using EvoSC.Common.Config.Models;
-using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
@@ -28,36 +27,38 @@ public class MapService : IMapService
         _serverClient = serverClient;
     }
 
-    public async Task<DbMap?> GetMapById(int id) => await _mapRepository.GetMapById(id);
+    public async Task<IMap?> GetMapById(int id) => await _mapRepository.GetMapById(id);
 
-    public async Task<DbMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUid(uid);
+    public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUid(uid);
 
-    public async Task<Map> AddMap(MapObject mapObject, IPlayer actor)
+    public async Task<IMap> AddMap(MapStream mapStream, IPlayer actor)
     {
-        var map = mapObject.Map;
-        var mapStream = mapObject.MapStream;
+        var mapMetadata = mapStream.MapMetadata;
+        var mapFile = mapStream.MapFile;
 
-        DbMap? existingMap = await GetMapByUid(map.Uid);
-        if (existingMap != null && MapVersionExistsInDb(existingMap, map))
+        IMap? existingMap = await GetMapByUid(mapMetadata.MapUid);
+        if (existingMap != null && MapVersionExistsInDb(existingMap, mapMetadata))
         {
             // TODO: Change this with a more precise exception
-            _logger.LogDebug($"Map with UID {map.Uid} already exists in database.");
-            throw new DuplicateNameException($"Map with UID {map.Uid} already exists in database");
+            _logger.LogDebug($"Map with UID {mapMetadata.MapUid} already exists in database.");
+            throw new DuplicateNameException($"Map with UID {mapMetadata.MapUid} already exists in database");
         }
 
-        var fileName = $"{map.Name}.Map.Gbx";
+        var fileName = $"{mapMetadata.MapName}.Map.Gbx";
         var filePath = _config.Path.Maps + $"/EvoSC";
 
-        await SaveMapFile(mapStream, filePath, fileName);
-        
-        var author = await GetMapAuthor(map.AuthorId);
-        
+        await SaveMapFile(mapFile, filePath, fileName);
+
+        var author = await GetMapAuthor(mapMetadata.AuthorId);
+
+        IMap map;
+
         if (existingMap != null)
         {
             try
             {
                 _logger.LogDebug($"Updating map with ID {existingMap.Id} to the database.");
-                await _mapRepository.UpdateMap(existingMap.Id, map);
+                map = await _mapRepository.UpdateMap(existingMap.Id, mapMetadata);
             }
             catch (Exception e)
             {
@@ -71,12 +72,12 @@ public class MapService : IMapService
             try
             {
                 _logger.LogDebug($"Adding map to the database.");
-                await _mapRepository.AddMap(map, author, actor, filePath);
+                map = await _mapRepository.AddMap(mapMetadata, author, filePath);
             }
             catch (Exception e)
             {
                 _logger.LogWarning(e, $"Something went wrong while trying to add a map" +
-                                   $" to the database.");
+                                      $" to the database.");
                 throw;
             }
         }
@@ -86,9 +87,9 @@ public class MapService : IMapService
         return map;
     }
 
-    public async Task<IEnumerable<Map>> AddMaps(List<MapObject> mapObjects, IPlayer actor)
+    public async Task<IEnumerable<IMap>> AddMaps(List<MapStream> mapObjects, IPlayer actor)
     {
-        var maps = new List<Map>();
+        var maps = new List<IMap>();
         foreach (var mapObject in mapObjects)
         {
             var map = await AddMap(mapObject, actor);
@@ -103,9 +104,10 @@ public class MapService : IMapService
         throw new NotImplementedException();
     }
 
-    private static bool MapVersionExistsInDb(DbMap dbMap, Map map)
+    private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
     {
-        return dbMap.ManiaExchangeVersion == map.MxVersion || dbMap.TrackmaniaIoVersion == map.TmIoVersion;
+        return map.ManiaExchangeVersion == mapMetadata.MxVersion ||
+               map.TrackmaniaIoVersion == mapMetadata.TmIoVersion;
     }
 
     private async Task SaveMapFile(Stream mapStream, string filePath, string fileName)
@@ -116,7 +118,7 @@ public class MapService : IMapService
             {
                 Directory.CreateDirectory(filePath);
             }
-            
+
             var fileStream = File.Create(filePath + $"/{fileName}");
             await mapStream.CopyToAsync(fileStream);
             fileStream.Close();
@@ -127,7 +129,7 @@ public class MapService : IMapService
             throw;
         }
     }
-    
+
     private async Task<IPlayer> GetMapAuthor(string authorId)
     {
         var dbPlayer = await _playerService.GetPlayerAsync(authorId);

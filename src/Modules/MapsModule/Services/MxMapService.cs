@@ -1,50 +1,57 @@
-﻿using EvoSC.Common.Clients;
-using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
-using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Maps.Interfaces;
+using ManiaExchange.ApiClient;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Maps.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class MxMapService: IMxMapService
+public class MxMapService : IMxMapService
 {
     private readonly ILogger<MxMapService> _logger;
-    private readonly MxClient _mxClient;
     private readonly IMapService _mapService;
-    
-    public MxMapService(ILogger<MxMapService> logger, MxClient mxClient, IMapService mapService)
+
+    public MxMapService(ILogger<MxMapService> logger, IMapService mapService)
     {
         _logger = logger;
-        _mxClient = mxClient;
         _mapService = mapService;
     }
-    
-    public async Task<Map?> FindAndDownloadMap(int mxId, string? shortName, IPlayer actor)
+
+    public async Task<IMap?> FindAndDownloadMap(int mxId, string? shortName, IPlayer actor)
     {
-        var mapStream = await _mxClient.GetMapAsync(mxId, shortName);
-        
-        if (mapStream == null)
+        var tmxApi = new MxTmApi("EvoSC#");
+        var mapFile = await tmxApi.DownloadMapAsync(mxId, shortName);
+
+        if (mapFile == null)
         {
             _logger.LogDebug($"Could not find any map stream for ID {mxId} from Trackmania Exchange.");
             return null;
         }
-        
-        var mapInfoDto = await _mxClient.GetMapInfoAsync(mxId, shortName);
 
-        var map = new Map
+        var mapInfoDto = await tmxApi.GetMapInfoAsync(mxId, shortName);
+
+        if (mapInfoDto == null)
         {
-            Uid = mapInfoDto.TrackUid,
-            Name = mapInfoDto.GbxMapName,
-            AuthorId = PlayerUtils.ConvertLoginToAccountId(mapInfoDto.AuthorLogin),
-            AuthorName = mapInfoDto.Username,
-            MxId = mxId
-        };
+            _logger.LogDebug($"Could not find any map info for ID {mxId} from Trackmania Exchange.");
+            return null;
+        }
 
-        return await _mapService.AddMap(new MapObject(map, mapStream), actor);
+        var mapMetadata = new MapMetadata(
+            mapInfoDto.TrackUID,
+            mapInfoDto.GbxMapName,
+            mapInfoDto.AuthorLogin,
+            mapInfoDto.Username,
+            mapInfoDto.MapID,
+            Convert.ToDateTime(mapInfoDto.UpdatedAt),
+            false,
+            true
+        );
+
+        var map = new MapStream(mapMetadata, mapFile);
+
+        return await _mapService.AddMap(map, actor);
     }
 }

@@ -32,8 +32,7 @@ public class PlayerManagerService : IPlayerManagerService
         _db = db;
         _server = server;
     }
-
-
+    
     public async Task<IPlayer?> GetPlayerAsync(string accountId)
     {
         var results = await _db.SelectByColumnAsync<DbPlayer>("Players", "AccountId", accountId);

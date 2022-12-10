@@ -5,6 +5,7 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
@@ -30,7 +31,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
     [ChatCommand("add", "Adds a map to the server")]
     public async Task AddMap(int mapId)
     {
-        Map? map;
+        IMap? map;
         try
         {
             map = await _mxMapService.FindAndDownloadMap(mapId, null, Context.Player);
@@ -48,6 +49,6 @@ public class MapsController : EvoScController<CommandInteractionContext>
             return;
         }
 
-        await _server.SendChatMessage($"Added {map.Name} by {map.AuthorName} to the server.");
+        await _server.SendChatMessage($"Added {map.Name} by {map.Author.NickName} to the server.");
     }
 }
