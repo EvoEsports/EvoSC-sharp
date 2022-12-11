@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Data.Common;
-using System.Diagnostics;
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Config.Stores;
-using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
@@ -25,7 +22,6 @@ using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SimpleInjector.Lifestyles;
 using Container = SimpleInjector.Container;
 
 namespace EvoSC.Modules;
@@ -100,24 +96,24 @@ public class ModuleManager : IModuleManager
         {
             return new InternalModuleInfo
             {
-                Name = name,
-                Title = title,
-                Summary = summary,
-                Version = version,
-                Author = author,
+                Name = name!,
+                Title = title!,
+                Summary = summary!,
+                Version = version!,
+                Author = author!,
                 Dependencies = dependencies
             };
         }
 
         return new ExternalModuleInfo
         {
-            Name = name,
-            Title = title,
-            Summary = summary,
-            Version = version,
-            Author = author,
+            Name = name!,
+            Title = title!,
+            Summary = summary!,
+            Version = version!,
+            Author = author!,
             Dependencies = dependencies,
-            Directory = null
+            Directory = new DirectoryInfo(Path.GetDirectoryName(assembly.Location) ?? string.Empty)
         };
     }
 
@@ -189,7 +185,7 @@ public class ModuleManager : IModuleManager
         return moduleContext;
     }
     
-    private async Task RegisterPermissions(ModuleLoadContext loadContext)
+    private Task RegisterPermissions(ModuleLoadContext loadContext)
     {
         foreach (var permGroup in loadContext.Assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
         {
@@ -217,6 +213,8 @@ public class ModuleManager : IModuleManager
                 });
             }
         }
+
+        return Task.CompletedTask;
     }
 
     private async Task InstallPermissions(IModuleLoadContext moduleContext)
@@ -267,7 +265,7 @@ public class ModuleManager : IModuleManager
         foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
         {
             var attr = middlewareType.GetCustomAttribute<MiddlewareAttribute>();
-            moduleContext.Pipelines[attr.For].AddComponent(middlewareType, moduleContext.Services);
+            moduleContext.Pipelines[attr!.For].AddComponent(middlewareType, moduleContext.Services);
         }
 
         return Task.CompletedTask;
@@ -373,17 +371,38 @@ public class ModuleManager : IModuleManager
                     throw new ModuleServicesException($"Settings type {type} must be an interface.");
                 }
 
-                var builder = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), type);
-                var dbStore = new DatabaseStore(moduleInfo.Name, type, _db);
+                var store = await CreateModuleConfigStore(moduleInfo.Name, type);
+                var config = CreateConfigInstance(type, store);
 
-                await dbStore.SetupDefaultSettingsAsync();
-
-                ReflectionUtils.CallMethod(builder, "UseConfigStore", dbStore);
-                var config = ReflectionUtils.CallMethod(builder, "Build");
+                if (config == null)
+                {
+                    throw new InvalidOperationException("Failed to create module config instance.");
+                }
                 
                 container.RegisterInstance(type, config);
             }
         }
+    }
+
+    private async Task<IConfigStore> CreateModuleConfigStore(string name, Type configInterface)
+    {
+        var dbStore = new DatabaseStore(name, configInterface, _db);
+        await dbStore.SetupDefaultSettingsAsync();
+
+        return dbStore;
+    }
+    
+    private object? CreateConfigInstance(Type configInterface, IConfigStore store)
+    {
+        var builder = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), configInterface);
+
+        if (builder == null)
+        {
+            throw new InvalidOperationException("Failed to create module config builder.");
+        }
+        
+        ReflectionUtils.CallMethod(builder, "UseConfigStore", store);
+        return ReflectionUtils.CallMethod(builder, "Build");
     }
 
     public async Task LoadModulesFromAssembly(Assembly assembly)
@@ -399,7 +418,7 @@ public class ModuleManager : IModuleManager
 
                 var moduleAttr = moduleType.GetEvoScModuleAttribute();
                 
-                var loadId = await LoadModule(moduleType, moduleAttr);
+                var loadId = await LoadModule(moduleType, moduleAttr!);
                 await InstallModule(loadId);
                 await EnableModule(loadId);
 
