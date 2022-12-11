@@ -10,6 +10,5 @@ public class ExternalModuleInfo : IExternalModuleInfo
     public required Version Version { get; init; }
     public required string Author { get; init; }
     public required IEnumerable<IModuleInfo> Dependencies { get; init; }
-    public required bool IsInternal { get; init; }
     public required DirectoryInfo Directory { get; init; }
 }

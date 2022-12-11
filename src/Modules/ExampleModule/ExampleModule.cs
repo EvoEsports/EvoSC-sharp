@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Middleware;
+﻿using System.Threading.Tasks;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Attributes;
 using Microsoft.Extensions.Logging;

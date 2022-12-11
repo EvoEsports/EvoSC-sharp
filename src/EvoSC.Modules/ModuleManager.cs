@@ -59,15 +59,7 @@ public class ModuleManager : IModuleManager
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
         _servicesManager.AddContainer(loadId, moduleServices);
 
-        var moduleInfo = new InternalModuleInfo
-        {
-            Name = moduleClass.Assembly.GetCustomAttribute<ModuleIdentifierAttribute>()?.Name ?? throw new InvalidOperationException("Missing module name/identifier."),
-            Title = moduleClass.Assembly.GetCustomAttribute<ModuleTitleAttribute>()?.Title ?? throw new InvalidOperationException("Missing module title."),
-            Summary = moduleClass.Assembly.GetCustomAttribute<ModuleSummaryAttribute>()?.Summary ?? throw new InvalidOperationException("Missing module description."),
-            Version = moduleClass.Assembly.GetCustomAttribute<ModuleVersionAttribute>()?.Version ?? throw new InvalidOperationException("Missing module version."),
-            Author = moduleClass.Assembly.GetCustomAttribute<ModuleAuthorAttribute>()?.Author ?? throw new InvalidOperationException("Missing module author."),
-            Dependencies = Array.Empty<IModuleInfo>()
-        };
+        var moduleInfo = CreateModuleInfo(moduleClass.Assembly, true);
 
         await RegisterModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
         
@@ -82,7 +74,53 @@ public class ModuleManager : IModuleManager
         
         return loadId;
     }
+
+    private void ThrowModuleInfoValueError(string name)
+    {
+        throw new InvalidOperationException(
+            $"The module is missing assembly information. The '{name}' cannot be retrieved.");
+    }
     
+    private IModuleInfo CreateModuleInfo(Assembly assembly, bool isInternal)
+    {
+        var name = assembly.GetCustomAttribute<ModuleIdentifierAttribute>()?.Name;
+        var title = assembly.GetCustomAttribute<ModuleTitleAttribute>()?.Title;
+        var summary = assembly.GetCustomAttribute<ModuleSummaryAttribute>()?.Summary;
+        var version = assembly.GetCustomAttribute<ModuleVersionAttribute>()?.Version;
+        var author = assembly.GetCustomAttribute<ModuleAuthorAttribute>()?.Author;
+        var dependencies = Array.Empty<IModuleInfo>();
+
+        if (name == null) ThrowModuleInfoValueError("name");
+        if (title == null) ThrowModuleInfoValueError("title");
+        if (summary == null) ThrowModuleInfoValueError("summary");
+        if (version == null) ThrowModuleInfoValueError("version");
+        if (author == null) ThrowModuleInfoValueError("author");
+
+        if (isInternal)
+        {
+            return new InternalModuleInfo
+            {
+                Name = name,
+                Title = title,
+                Summary = summary,
+                Version = version,
+                Author = author,
+                Dependencies = dependencies
+            };
+        }
+
+        return new ExternalModuleInfo
+        {
+            Name = name,
+            Title = title,
+            Summary = summary,
+            Version = version,
+            Author = author,
+            Dependencies = dependencies,
+            Directory = null
+        };
+    }
+
     private async Task<Guid> LoadModule(Type moduleType, ModuleAttribute moduleAttr)
     {
         var loadId = Guid.Empty;
