@@ -11,4 +11,5 @@ public class ExternalModuleInfo : IExternalModuleInfo
     public required string Author { get; init; }
     public required IEnumerable<IModuleInfo> Dependencies { get; init; }
     public required DirectoryInfo Directory { get; init; }
+    public required IEnumerable<IModuleFile> ModuleFiles { get; init; }
 }

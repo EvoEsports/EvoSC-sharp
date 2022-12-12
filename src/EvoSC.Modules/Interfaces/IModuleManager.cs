@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
 
-namespace EvoSC.Modules;
+namespace EvoSC.Modules.Interfaces;
 
 /// <summary>
 /// Main manager for modules, provides loading/unloading and enabling/disabling of modules.
 /// </summary>
 public interface IModuleManager
 {
-    /// <summary>
+    /* /// <summary>
     /// Load all modules from a provided assembly.
     /// </summary>
     /// <param name="assembly">The assembly which should be scanned for modules.</param>
@@ -18,5 +18,9 @@ public interface IModuleManager
     /// </summary>
     /// <param name="loadId">Load ID for the module to enable.</param>
     /// <returns></returns>
-    public Task EnableModule(Guid loadId);
+    public Task EnableModule(Guid loadId); */
+
+    public Task Load(string directory);
+    public Task Load(Assembly assembly);
+    public Task Unload(Guid loadId);
 }

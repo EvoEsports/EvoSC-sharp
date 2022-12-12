@@ -20,6 +20,7 @@ using EvoSC.Modules.Exceptions.ModuleServices;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
+using EvoSC.Modules.Util;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Container = SimpleInjector.Container;
@@ -55,7 +56,7 @@ public class ModuleManager : IModuleManager
         var moduleServices = CreateServiceContainer(moduleClass.Assembly);
         _servicesManager.AddContainer(loadId, moduleServices);
 
-        var moduleInfo = CreateModuleInfo(moduleClass.Assembly, true);
+        var moduleInfo = ModuleInfoUtils.CreateFromAssembly(moduleClass.Assembly);
 
         await RegisterModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
         
@@ -75,46 +76,6 @@ public class ModuleManager : IModuleManager
     {
         throw new InvalidOperationException(
             $"The module is missing assembly information. The '{name}' cannot be retrieved.");
-    }
-    
-    private IModuleInfo CreateModuleInfo(Assembly assembly, bool isInternal)
-    {
-        var name = assembly.GetCustomAttribute<ModuleIdentifierAttribute>()?.Name;
-        var title = assembly.GetCustomAttribute<ModuleTitleAttribute>()?.Title;
-        var summary = assembly.GetCustomAttribute<ModuleSummaryAttribute>()?.Summary;
-        var version = assembly.GetCustomAttribute<ModuleVersionAttribute>()?.Version;
-        var author = assembly.GetCustomAttribute<ModuleAuthorAttribute>()?.Author;
-        var dependencies = Array.Empty<IModuleInfo>();
-
-        if (name == null) ThrowModuleInfoValueError("name");
-        if (title == null) ThrowModuleInfoValueError("title");
-        if (summary == null) ThrowModuleInfoValueError("summary");
-        if (version == null) ThrowModuleInfoValueError("version");
-        if (author == null) ThrowModuleInfoValueError("author");
-
-        if (isInternal)
-        {
-            return new InternalModuleInfo
-            {
-                Name = name!,
-                Title = title!,
-                Summary = summary!,
-                Version = version!,
-                Author = author!,
-                Dependencies = dependencies
-            };
-        }
-
-        return new ExternalModuleInfo
-        {
-            Name = name!,
-            Title = title!,
-            Summary = summary!,
-            Version = version!,
-            Author = author!,
-            Dependencies = dependencies,
-            Directory = new DirectoryInfo(Path.GetDirectoryName(assembly.Location) ?? string.Empty)
-        };
     }
 
     private async Task<Guid> LoadModule(Type moduleType, ModuleAttribute moduleAttr)
@@ -426,5 +387,27 @@ public class ModuleManager : IModuleManager
                 return;
             }
         }
+    }
+
+    public Task Load(string directory)
+    {
+        if (!Directory.Exists(directory))
+        {
+            throw new DirectoryNotFoundException($"The module directory was not found at: {directory}");
+        }
+        
+        var moduleInfo = ModuleInfoUtils.CreateFromDirectory(new DirectoryInfo(directory));
+
+        return Task.CompletedTask;
+    }
+
+    public Task Load(Assembly assembly)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task Unload(Guid loadId)
+    {
+        throw new NotImplementedException();
     }
 }
