@@ -9,5 +9,5 @@ public class InternalModuleInfo : IInternalModuleInfo
     public required string Summary { get; init; }
     public required Version Version { get; init; }
     public required string Author { get; init; }
-    public IEnumerable<IModuleInfo> Dependencies { get; init; }
+    public IEnumerable<IModuleDependency> Dependencies { get; init; }
 }

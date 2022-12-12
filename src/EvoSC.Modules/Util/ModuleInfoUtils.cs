@@ -26,7 +26,7 @@ public static class ModuleInfoUtils
         var summary = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleSummaryAttribute>()?.Summary, "Summary");
         var version = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleVersionAttribute>()?.Version, "Version");
         var author = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleAuthorAttribute>()?.Author, "Author");
-        var dependencies = Array.Empty<IModuleInfo>();
+        var dependencies = Array.Empty<IModuleDependency>();
 
         return new InternalModuleInfo
         {
@@ -60,8 +60,12 @@ public static class ModuleInfoUtils
         {
             throw new InvalidOperationException($"Module version is in an invalid format. Cannot parse it in: {path}");
         }
-        
-        var dependencies = Array.Empty<IModuleInfo>();
+
+        var dependencyTable = ValidateModuleProperty(infoDocument.GetSubTable("dependencies").Entries, "Dependencies");
+        var dependencies = dependencyTable.Select(d => new ModuleDependency
+        {
+            Name = d.Key, Version = Version.Parse(d.Value.StringValue)
+        });
 
         var moduleFiles = dir
             .GetFiles("*", SearchOption.AllDirectories)

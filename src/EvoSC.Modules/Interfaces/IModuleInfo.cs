@@ -7,6 +7,6 @@ public interface IModuleInfo
     public string Summary { get; }
     public Version Version { get; }
     public string Author { get; }
-    public IEnumerable<IModuleInfo> Dependencies { get; }
+    public IEnumerable<IModuleDependency> Dependencies { get; }
     public bool IsInternal { get; }
 }
