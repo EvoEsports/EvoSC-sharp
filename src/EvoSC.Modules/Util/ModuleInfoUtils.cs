@@ -35,7 +35,8 @@ public static class ModuleInfoUtils
             Summary = summary!,
             Version = version!,
             Author = author!,
-            Dependencies = dependencies
+            Dependencies = dependencies,
+            Assembly = assembly
         };
     }
 

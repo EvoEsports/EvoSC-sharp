@@ -1,4 +1,6 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using System.Reflection;
+using EvoSC.Common.Interfaces;
+using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions.ModuleServices;
 using EvoSC.Modules.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -29,6 +31,52 @@ public class ModuleServicesManager : IModuleServicesManager
         }
         
         _moduleContainers.Add(moduleId, container);
+    }
+
+    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies)
+    {
+        var container = new Container();
+        container.Options.EnableAutoVerification = false;
+        container.Options.SuppressLifestyleMismatchVerification = true;
+        container.Options.UseStrictLifestyleMismatchBehavior = false;
+
+        foreach (var assembly in assemblies)
+        {
+            foreach (var module in assembly.Modules)
+            {
+                foreach (var type in module.GetTypes())
+                {
+                    var serviceAttr = type.GetCustomAttribute<ServiceAttribute>();
+
+                    if (serviceAttr == null)
+                    {
+                        continue;
+                    }
+
+                    var intf = type.GetInterfaces().FirstOrDefault();
+
+                    if (intf == null)
+                    {
+                        throw new ModuleServicesException($"Service {type} must implement a custom interface.");
+                    }
+
+                    switch (serviceAttr.LifeStyle)
+                    {
+                        case ServiceLifeStyle.Singleton:
+                            container.RegisterSingleton(intf, type);
+                            break;
+                        case ServiceLifeStyle.Transient:
+                            container.Register(intf, type);
+                            break;
+                        default:
+                            throw new ModuleServicesException($"Unsupported lifetime type for module service: {type}");
+                    }
+                }
+            }
+        }
+
+        AddContainer(moduleId, container);
+        return container;
     }
 
     public void RemoveContainer(Guid moduleId)

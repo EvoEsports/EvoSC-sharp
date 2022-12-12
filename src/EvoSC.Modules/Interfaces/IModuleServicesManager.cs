@@ -1,4 +1,5 @@
-﻿using SimpleInjector;
+﻿using System.Reflection;
+using SimpleInjector;
 
 namespace EvoSC.Modules.Interfaces;
 
@@ -13,6 +14,7 @@ public interface IModuleServicesManager
     /// <param name="moduleId">The ID of the loaded module.</param>
     /// <param name="container">The container to register for the module.</param>
     public void AddContainer(Guid moduleId, Container container);
+    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies);
     /// <summary>
     /// Remove a container from a module.
     /// </summary>

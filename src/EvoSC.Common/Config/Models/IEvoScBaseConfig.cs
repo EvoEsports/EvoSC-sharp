@@ -6,4 +6,5 @@ public interface IEvoScBaseConfig
     public ILoggingConfig Logging { get; set; }
     public IServerConfig Server { get; set; }
     public IThemeConfig Theme { get; set; }
+    public IModuleConfig Modules { get; set; }
 }

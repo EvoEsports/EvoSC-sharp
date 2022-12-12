@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Data.Common;
 using System.Reflection;
+using System.Runtime.Loader;
 using Config.Net;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
@@ -35,74 +37,45 @@ public class ModuleManager : IModuleManager
     private readonly DbConnection _db;
     private readonly IActionPipelineManager _pipelineManager;
     private readonly IPermissionManager _permissions;
+    private readonly IEvoScBaseConfig _config;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
+    private readonly Dictionary<string, Guid> _moduleNameMap = new();
 
-    public ModuleManager(ILogger<ModuleManager> logger, IControllerManager controllers,
+    public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
         IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db,
         IPermissionManager permissions)
     {
         _logger = logger;
+        _config = config;
         _controllers = controllers;
         _servicesManager = servicesManager;
         _db = db;
         _pipelineManager = pipelineManager;
         _permissions = permissions;
+        
+        WarnForDisabledVerification();
     }
 
-    private async Task<Guid> LoadInternalModule(Type moduleClass, ModuleAttribute moduleAttr)
+    private void WarnForDisabledVerification()
     {
-        var loadId = Guid.NewGuid();
-        var moduleServices = CreateServiceContainer(moduleClass.Assembly);
-        _servicesManager.AddContainer(loadId, moduleServices);
-
-        var moduleInfo = ModuleInfoUtils.CreateFromAssembly(moduleClass.Assembly);
-
-        await RegisterModuleConfig(moduleClass.Assembly, moduleServices, moduleInfo);
-        
-        var loadContext = CreateLoadContext(moduleClass, moduleInfo, loadId, moduleServices);
-        
-        _loadedModules.Add(loadId, loadContext);
-
-        await RegisterMiddlewares(loadContext);
-        await RegisterPermissions(loadContext);
-
-        _logger.LogDebug("Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
-        
-        return loadId;
-    }
-
-    private void ThrowModuleInfoValueError(string name)
-    {
-        throw new InvalidOperationException(
-            $"The module is missing assembly information. The '{name}' cannot be retrieved.");
-    }
-
-    private async Task<Guid> LoadModule(Type moduleType, ModuleAttribute moduleAttr)
-    {
-        var loadId = Guid.Empty;
-
-        if (moduleAttr.IsInternal)
+        if (!_config.Modules.RequireSignatureVerification)
         {
-            loadId = await LoadInternalModule(moduleType, moduleAttr);
+            _logger.LogWarning("Signature verification for modules is disabled");
         }
-        
-        _logger.LogDebug("Module {Type}({Module}) was loaded", moduleType, loadId);
-        
-        return loadId;
     }
     
-    private async Task InstallModule(Guid loadId)
+    private async Task InstallModuleAsync(Guid loadId)
     {
         var moduleContext = GetModuleById(loadId);
 
         await InstallPermissions(moduleContext);
         await TryCallModuleInstall(moduleContext);
         
-        _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.ModuleClass, loadId);
+        _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
     }
     
-    public async Task EnableModule(Guid loadId)
+    private async Task EnableModuleAsync(Guid loadId)
     {
         var moduleContext = GetModuleById(loadId);
 
@@ -110,29 +83,7 @@ public class ModuleManager : IModuleManager
         await EnableMiddlewares(moduleContext);
         await TryCallModuleEnable(moduleContext);
         
-        _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.ModuleClass, loadId);
-    }
-
-    private static ModuleLoadContext CreateLoadContext(Type moduleClass, IModuleInfo moduleInfo, Guid loadId, Container moduleServices)
-    {
-        var instance = (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, moduleClass);
-        
-        return new ModuleLoadContext
-        {
-            Instance = instance,
-            LoadContext = null,
-            LoadId = loadId,
-            ModuleClass = moduleClass,
-            ModuleInfo = moduleInfo,
-            Assembly = moduleClass.Assembly,
-            Services = moduleServices,
-            Pipelines = new Dictionary<PipelineType, IActionPipeline>
-            {
-                {PipelineType.ChatRouter, new ActionPipeline()},
-                {PipelineType.ControllerAction, new ActionPipeline()}
-            },
-            Permissions = new List<IPermission>()
-        };
+        _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
     }
 
     private IModuleLoadContext GetModuleById(Guid loadId)
@@ -146,32 +97,35 @@ public class ModuleManager : IModuleManager
         return moduleContext;
     }
     
-    private Task RegisterPermissions(ModuleLoadContext loadContext)
+    private Task RegisterPermissionsAsync(IModuleLoadContext loadContext)
     {
-        foreach (var permGroup in loadContext.Assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
+        foreach (var assembly in loadContext.Assemblies)
         {
-            var rootName = permGroup.Name;
-
-            var idAttr = permGroup.GetCustomAttribute<IdentifierAttribute>();
-            if (idAttr != null)
+            foreach (var permGroup in assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
             {
-                rootName = idAttr.Name;
-            }
+                var rootName = permGroup.Name;
 
-            foreach (var f in permGroup.GetFields())
-            {
-                if (f.FieldType != permGroup)
+                var idAttr = permGroup.GetCustomAttribute<IdentifierAttribute>();
+                if (idAttr != null)
                 {
-                    continue;
+                    rootName = idAttr.Name;
                 }
 
-                var actualName = f.GetCustomAttribute<IdentifierAttribute>()?.Name ?? f.Name;
-                
-                loadContext.Permissions.Add(new Permission
+                foreach (var f in permGroup.GetFields())
                 {
-                    Name = $"{rootName}.{actualName}",
-                    Description = f.GetCustomAttribute<DescriptionAttribute>()?.Description ?? ""
-                });
+                    if (f.FieldType != permGroup)
+                    {
+                        continue;
+                    }
+
+                    var actualName = f.GetCustomAttribute<IdentifierAttribute>()?.Name ?? f.Name;
+                
+                    loadContext.Permissions.Add(new Permission
+                    {
+                        Name = $"{rootName}.{actualName}",
+                        Description = f.GetCustomAttribute<DescriptionAttribute>()?.Description ?? ""
+                    });
+                }
             }
         }
 
@@ -221,12 +175,15 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private Task RegisterMiddlewares(IModuleLoadContext moduleContext)
+    private Task RegisterMiddlewaresAsync(IModuleLoadContext moduleContext)
     {
-        foreach (var middlewareType in moduleContext.Assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
+        foreach (var assembly in moduleContext.Assemblies)
         {
-            var attr = middlewareType.GetCustomAttribute<MiddlewareAttribute>();
-            moduleContext.Pipelines[attr!.For].AddComponent(middlewareType, moduleContext.Services);
+            foreach (var middlewareType in assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
+            {
+                var attr = middlewareType.GetCustomAttribute<MiddlewareAttribute>();
+                moduleContext.Pipelines[attr!.For].AddComponent(middlewareType, moduleContext.Services);
+            }
         }
 
         return Task.CompletedTask;
@@ -254,18 +211,21 @@ public class ModuleManager : IModuleManager
 
     private Task EnableControllers(IModuleLoadContext moduleContext)
     {
-        foreach (var module in moduleContext.Assembly.Modules)
+        foreach (var assembly in moduleContext.Assemblies)
         {
-            foreach (var type in module.GetTypes())
+            foreach (var module in assembly.Modules)
             {
-                var controllerAttr = type.GetCustomAttribute<ControllerAttribute>();
-
-                if (controllerAttr == null || !type.IsControllerClass())
+                foreach (var type in module.GetTypes())
                 {
-                    continue;
-                }
+                    var controllerAttr = type.GetCustomAttribute<ControllerAttribute>();
+
+                    if (controllerAttr == null || !type.IsControllerClass())
+                    {
+                        continue;
+                    }
                 
-                _controllers.AddController(type, moduleContext.LoadId, moduleContext.Services);
+                    _controllers.AddController(type, moduleContext.LoadId, moduleContext.Services);
+                }
             }
         }
 
@@ -314,33 +274,36 @@ public class ModuleManager : IModuleManager
         return container;
     }
 
-    private async Task RegisterModuleConfig(Assembly assembly, Container container, IModuleInfo moduleInfo)
+    private async Task RegisterModuleConfigAsync(IEnumerable<Assembly> assemblies, Container container, IModuleInfo moduleInfo)
     {
-        foreach (var module in assembly.Modules)
+        foreach (var assembly in assemblies)
         {
-            foreach (var type in module.GetTypes())
+            foreach (var module in assembly.Modules)
             {
-                var configAttr = type.GetCustomAttribute<SettingsAttribute>();
-
-                if (configAttr == null)
+                foreach (var type in module.GetTypes())
                 {
-                    continue;
-                }
+                    var configAttr = type.GetCustomAttribute<SettingsAttribute>();
 
-                if (!type.IsInterface)
-                {
-                    throw new ModuleServicesException($"Settings type {type} must be an interface.");
-                }
+                    if (configAttr == null)
+                    {
+                        continue;
+                    }
 
-                var store = await CreateModuleConfigStore(moduleInfo.Name, type);
-                var config = CreateConfigInstance(type, store);
+                    if (!type.IsInterface)
+                    {
+                        throw new ModuleServicesException($"Settings type {type} must be an interface.");
+                    }
 
-                if (config == null)
-                {
-                    throw new InvalidOperationException("Failed to create module config instance.");
-                }
+                    var store = await CreateModuleConfigStore(moduleInfo.Name, type);
+                    var config = CreateConfigInstance(type, store);
+
+                    if (config == null)
+                    {
+                        throw new InvalidOperationException("Failed to create module config instance.");
+                    }
                 
-                container.RegisterInstance(type, config);
+                    container.RegisterInstance(type, config);
+                }
             }
         }
     }
@@ -366,47 +329,123 @@ public class ModuleManager : IModuleManager
         return ReflectionUtils.CallMethod(builder, "Build");
     }
 
-    public async Task LoadModulesFromAssembly(Assembly assembly)
+    private bool VerifyExternalModule(IExternalModuleInfo moduleInfo) =>
+        !_config.Modules.RequireSignatureVerification || moduleInfo.ModuleFiles.All(file => file.VerifySignature());
+
+    private (Type?, AssemblyLoadContext) CreateAssemblyLoadContext(Guid loadId, IExternalModuleInfo moduleInfo)
     {
-        foreach (var asmModule in assembly.Modules)
+        var asmLoadContext = new AssemblyLoadContext(loadId.ToString(), true);
+        Type? mainClass = null;
+        
+        foreach (var asmFile in moduleInfo.AssemblyFiles)
         {
-            foreach (var moduleType in asmModule.GetTypes())
-            {
-                if (!moduleType.IsEvoScModuleType())
-                {
-                    continue;
-                }
-
-                var moduleAttr = moduleType.GetEvoScModuleAttribute();
-                
-                var loadId = await LoadModule(moduleType, moduleAttr!);
-                await InstallModule(loadId);
-                await EnableModule(loadId);
-
-                // only load one module per assembly to avoid conflicts
-                return;
-            }
+            var assembly = asmLoadContext.LoadFromAssemblyPath(asmFile.File.FullName);
+            mainClass ??= assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
         }
+
+        return (mainClass, asmLoadContext);
     }
 
-    public Task Load(string directory)
+    private IEvoScModule CreateModuleInstance(Type mainClass, Container moduleServices) =>
+        (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, mainClass);
+
+    private Dictionary<PipelineType, IActionPipeline> CreateDefaultPipelines() => 
+        new()
+        {
+            {PipelineType.ChatRouter, new ActionPipeline()}, 
+            {PipelineType.ControllerAction, new ActionPipeline()}
+        };
+
+    private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass,
+        AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
+    {
+        var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
+        var moduleServices = _servicesManager.NewContainer(loadId, assemblies);
+        await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
+        var moduleInstance = CreateModuleInstance(mainClass, moduleServices);
+
+        return new ModuleLoadContext
+        {
+            Instance = moduleInstance,
+            Services = moduleServices,
+            AsmLoadContext = asmLoadContext,
+            LoadId = loadId,
+            MainClass = mainClass,
+            ModuleInfo = moduleInfo,
+            Assemblies = assemblies,
+            Pipelines = CreateDefaultPipelines(),
+            Permissions = new List<IPermission>()
+        };
+    }
+
+    private async Task LoadInternalAsync(Guid loadId, IModuleInfo moduleInfo, Type mainClass, AssemblyLoadContext? asmLoadContext)
+    {
+        var loadContext = await CreateModuleLoadContextAsync(loadId, mainClass, asmLoadContext, moduleInfo);
+
+        await RegisterMiddlewaresAsync(loadContext);
+        await RegisterPermissionsAsync(loadContext);
+        
+        _loadedModules.Add(loadId, loadContext);
+        _logger.LogDebug("External Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
+
+        await InstallModuleAsync(loadId);
+        await EnableModuleAsync(loadId);
+    }
+    
+    public Task LoadAsync(string directory)
     {
         if (!Directory.Exists(directory))
         {
             throw new DirectoryNotFoundException($"The module directory was not found at: {directory}");
         }
-        
+
         var moduleInfo = ModuleInfoUtils.CreateFromDirectory(new DirectoryInfo(directory));
+        return LoadAsync(moduleInfo);
+    }
+
+    public Task LoadAsync(IExternalModuleInfo moduleInfo)
+    {
+        if (!VerifyExternalModule(moduleInfo))
+        {
+            _logger.LogError("File signature verification failed for module {Name}. The module will not load",
+                moduleInfo.Name);
+
+            return Task.CompletedTask;
+        }
+
+        var loadId = Guid.NewGuid();
+        var (mainClass, asmLoadContext) = CreateAssemblyLoadContext(loadId, moduleInfo);
+
+        if (mainClass != null)
+        {
+            return LoadInternalAsync(loadId, moduleInfo, mainClass, asmLoadContext);
+        }
+
+        _logger.LogError("Failed to find the module main class for module {Name}. The module will not load",
+            moduleInfo.Name);
 
         return Task.CompletedTask;
     }
 
-    public Task Load(Assembly assembly)
+    public Task LoadAsync(Assembly assembly)
     {
-        throw new NotImplementedException();
+        var moduleInfo = ModuleInfoUtils.CreateFromAssembly(assembly);
+
+        var loadId = Guid.NewGuid();
+        var mainClass = moduleInfo.Assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
+        
+        if (mainClass != null)
+        {
+            return LoadInternalAsync(loadId, moduleInfo, mainClass, null);
+        }
+        
+        _logger.LogError("Failed to find the module main class for module {Name}. The module will not load",
+            moduleInfo.Name);
+
+        return Task.CompletedTask;
     }
 
-    public Task Unload(Guid loadId)
+    public Task UnloadAsync(Guid loadId)
     {
         throw new NotImplementedException();
     }

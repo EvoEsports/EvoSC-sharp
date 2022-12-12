@@ -1,14 +1,11 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
-using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
-using EvoSC.Modules.Attributes;
-using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 
-namespace EvoSC.Modules;
+namespace EvoSC.Modules.Interfaces;
 
 /// <summary>
 /// Information about a loaded module.
@@ -26,7 +23,7 @@ public interface IModuleLoadContext
     /// <summary>
     /// Load context for the module's assembly.
     /// </summary>
-    public AssemblyLoadContext? LoadContext { get; init; }
+    public AssemblyLoadContext? AsmLoadContext { get; init; }
     /// <summary>
     /// Unique ID of the module, used for referencing it at runtime. This ID is generated when the
     /// module is loaded.
@@ -35,7 +32,7 @@ public interface IModuleLoadContext
     /// <summary>
     /// The type of the module's main class.
     /// </summary>
-    public Type? ModuleClass { get; init; }
+    public Type? MainClass { get; init; }
     /// <summary>
     /// Meta info about a module.
     /// </summary>
@@ -43,7 +40,7 @@ public interface IModuleLoadContext
     /// <summary>
     /// The module's assembly object.
     /// </summary>
-    public Assembly Assembly { get; init; }
+    public IEnumerable<Assembly> Assemblies { get; init; }
     public Dictionary<PipelineType, IActionPipeline> Pipelines { get; init; }
     public List<IPermission> Permissions { get; set; }
 }
