@@ -74,17 +74,6 @@ public class ModuleManager : IModuleManager
         
         _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
     }
-    
-    private async Task EnableModuleAsync(Guid loadId)
-    {
-        var moduleContext = GetModuleById(loadId);
-
-        await EnableControllers(moduleContext);
-        await EnableMiddlewares(moduleContext);
-        await TryCallModuleEnable(moduleContext);
-        
-        _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
-    }
 
     private IModuleLoadContext GetModuleById(Guid loadId)
     {
@@ -389,9 +378,25 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("External Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
 
         await InstallModuleAsync(loadId);
-        await EnableModuleAsync(loadId);
+        await EnableAsync(loadId);
     }
-    
+
+    public async Task EnableAsync(Guid loadId)
+    {
+        var moduleContext = GetModuleById(loadId);
+
+        await EnableControllers(moduleContext);
+        await EnableMiddlewares(moduleContext);
+        await TryCallModuleEnable(moduleContext);
+        
+        _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
+    }
+
+    public Task DisableAsync(Guid loadId)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task LoadAsync(string directory)
     {
         if (!Directory.Exists(directory))

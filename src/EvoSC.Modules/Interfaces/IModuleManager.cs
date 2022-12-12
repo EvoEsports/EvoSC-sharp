@@ -20,6 +20,8 @@ public interface IModuleManager
     /// <returns></returns>
     public Task EnableModule(Guid loadId); */
 
+    public Task EnableAsync(Guid loadId);
+    public Task DisableAsync(Guid loadId);
     public Task LoadAsync(string directory);
     public Task LoadAsync(IExternalModuleInfo moduleInfo);
     public Task LoadAsync(Assembly assembly);
