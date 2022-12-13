@@ -330,7 +330,10 @@ public class ModuleManager : IModuleManager
     private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
     {
         var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
+        
         var moduleServices = _servicesManager.NewContainer(loadId, assemblies);
+        moduleServices.RegisterInstance(moduleInfo);
+        
         await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
         var moduleInstance = CreateModuleInstance(mainClass, moduleServices);
 
