@@ -42,6 +42,8 @@ public class ModuleManager : IModuleManager
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
     private readonly Dictionary<string, Guid> _moduleNameMap = new();
 
+    public IReadOnlyList<IModuleLoadContext> LoadedModules => _loadedModules.Values.ToList();
+    
     public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
         IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db,
         IPermissionManager permissions)
@@ -307,6 +309,16 @@ public class ModuleManager : IModuleManager
     {
         var asmLoadContext = new AssemblyLoadContext(loadId.ToString(), true);
         Type? mainClass = null;
+
+        foreach (var dependency in moduleInfo.Dependencies)
+        {
+            var loadedDependency = GetLoadedDependency(dependency);
+
+            foreach (var assembly in loadedDependency.Assemblies)
+            {
+                asmLoadContext.LoadFromAssemblyName(assembly.GetName());
+            }
+        }
         
         foreach (var asmFile in moduleInfo.AssemblyFiles)
         {
@@ -315,6 +327,21 @@ public class ModuleManager : IModuleManager
         }
 
         return (mainClass, asmLoadContext);
+    }
+
+    private IModuleLoadContext? GetLoadedDependency(IModuleDependency dependency)
+    {
+        var loadedDependency = _loadedModules
+            .Values
+            .FirstOrDefault(m => m.ModuleInfo.Name.Equals(dependency.Name));
+
+        if (loadedDependency == null)
+        {
+            throw new InvalidOperationException(
+                $"Tried to get module {dependency.Name} a loaded dependency, but it is not loaded.");
+        }
+
+        return loadedDependency;
     }
 
     private IEvoScModule CreateModuleInstance(Type mainClass, Container moduleServices) =>
@@ -331,7 +358,8 @@ public class ModuleManager : IModuleManager
     {
         var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
         
-        var moduleServices = _servicesManager.NewContainer(loadId, assemblies);
+        var loadedDependencies = GetLoadedDependencies(moduleInfo);
+        var moduleServices = _servicesManager.NewContainer(loadId, assemblies, loadedDependencies);
         moduleServices.RegisterInstance(moduleInfo);
         
         await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
@@ -347,8 +375,22 @@ public class ModuleManager : IModuleManager
             ModuleInfo = moduleInfo,
             Assemblies = assemblies,
             Pipelines = CreateDefaultPipelines(),
-            Permissions = new List<IPermission>()
+            Permissions = new List<IPermission>(),
+            LoadedDependencies = loadedDependencies
         };
+    }
+
+    private List<Guid> GetLoadedDependencies(IModuleInfo moduleInfo)
+    {
+        var loadedDependencies = new List<Guid>();
+        foreach (var dependency in moduleInfo.Dependencies)
+        {
+            var loadedDependency = GetLoadedDependency(dependency);
+
+            loadedDependencies.Add(loadedDependency.LoadId);
+        }
+
+        return loadedDependencies;
     }
 
     private async Task LoadInternalAsync(Guid loadId, IModuleInfo moduleInfo, Type mainClass, AssemblyLoadContext? asmLoadContext)
@@ -359,6 +401,8 @@ public class ModuleManager : IModuleManager
                 moduleInfo.Name);
             return;
         }
+        
+        _logger.LogDebug("Loading module '{Name}' as load ID '{LoadId}'", moduleInfo.Name, loadId);
 
         var loadContext = await CreateModuleLoadContextAsync(loadId, mainClass, asmLoadContext, moduleInfo);
 

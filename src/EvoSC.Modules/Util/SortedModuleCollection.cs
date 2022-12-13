@@ -8,6 +8,7 @@ namespace EvoSC.Modules.Util;
 public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleInfo
 {
     private readonly Dictionary<string, T> _modules = new();
+    private readonly List<string> _ignoredDependencies = new();
 
     /// <summary>
     /// Get a list of modules sorted by their dependencies.
@@ -90,6 +91,11 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
 
             foreach (var dependency in module.Dependencies)
             {
+                if (_ignoredDependencies.Contains(dependency.Name))
+                {
+                    continue;
+                }
+                
                 adjList[module.Name].Add(dependency.Name);
             }
         }
@@ -103,7 +109,7 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
         {
             foreach (var dependency in dependencies)
             {
-                if (!_modules.ContainsKey(dependency))
+                if (!_modules.ContainsKey(dependency) && !_ignoredDependencies.Contains(dependency))
                 {
                     throw new DependencyNotFoundException(dependent, dependency);
                 }
@@ -117,5 +123,10 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
         {
             throw new DependencyCycleException(dependencies);
         }
+    }
+
+    public void SetIgnoredDependencies(IEnumerable<string> ignoredDependencies)
+    {
+        _ignoredDependencies.AddRange(ignoredDependencies);
     }
 }

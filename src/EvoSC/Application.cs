@@ -148,17 +148,19 @@ public class Application : IEvoSCApplication
         await modules.LoadInternalModules();
 
         var dirs = config.Modules.ModuleDirectories;
-        
+        var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
         foreach (var dir in dirs)
         {
             if (!Directory.Exists(dir))
             {
                 continue;
             }
-            
-            var externalModules = ModuleDirectoryUtils.FindModulesFromDirectory(dir);
-            await modules.LoadAsync(externalModules);
+
+            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
         }
+
+        externalModules.SetIgnoredDependencies(modules.LoadedModules.Select(m => m.ModuleInfo.Name));
+        await modules.LoadAsync(externalModules);
     }
 
     private async Task StartBackgroundServices()

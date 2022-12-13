@@ -57,4 +57,5 @@ public interface IModuleLoadContext
     /// Permissions registered from this module.
     /// </summary>
     public List<IPermission> Permissions { get; set; }
+    public List<Guid> LoadedDependencies { get; init; }
 }

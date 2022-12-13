@@ -7,6 +7,8 @@ namespace EvoSC.Modules.Interfaces;
 /// </summary>
 public interface IModuleManager
 {
+    public IReadOnlyList<IModuleLoadContext> LoadedModules { get; }
+
     /// <summary>
     /// Enable a module.
     /// </summary>

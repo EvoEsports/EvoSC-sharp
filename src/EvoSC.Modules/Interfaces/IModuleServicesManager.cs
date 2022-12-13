@@ -21,7 +21,7 @@ public interface IModuleServicesManager
     /// <param name="moduleId">A unique GUID to identify this container with. This is typically the load ID.</param>
     /// <param name="assemblies">Assemblies related to the module to scan for additional services.</param>
     /// <returns></returns>
-    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies);
+    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies);
     
     /// <summary>
     /// Remove a container from a module.

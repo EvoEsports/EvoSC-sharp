@@ -14,6 +14,7 @@ public class ModuleServicesManager : IModuleServicesManager
     private readonly ILogger<ModuleServicesManager> _logger;
 
     private readonly Dictionary<Guid, Container> _moduleContainers = new();
+    private readonly Dictionary<Guid, List<Guid>> _dependencyServices = new();
 
     public ModuleServicesManager(IEvoSCApplication app, ILogger<ModuleServicesManager> logger)
     {
@@ -23,7 +24,10 @@ public class ModuleServicesManager : IModuleServicesManager
 
     public void AddContainer(Guid moduleId, Container container)
     {
-        container.ResolveUnregisteredType += ResolveCoreService;
+        container.ResolveUnregisteredType += (_, args) =>
+        {
+            ResolveCoreService(args, moduleId);
+        };
         
         if (_moduleContainers.ContainsKey(moduleId))
         {
@@ -33,7 +37,27 @@ public class ModuleServicesManager : IModuleServicesManager
         _moduleContainers.Add(moduleId, container);
     }
 
-    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies)
+    public void AddDependency(Guid moduleId, Guid dependencyId)
+    {
+        if (!_moduleContainers.ContainsKey(moduleId))
+        {
+            throw new InvalidOperationException($"Module '{moduleId}' was not found to have a container.");
+        }
+
+        if (!_moduleContainers.ContainsKey(dependencyId))
+        {
+            throw new InvalidOperationException($"Dependency module '{moduleId}' was not found to have a container.");
+        }
+
+        if (!_dependencyServices.ContainsKey(moduleId))
+        {
+            _dependencyServices[moduleId] = new List<Guid>();
+        }
+        
+        _dependencyServices[moduleId].Add(dependencyId);
+    }
+
+    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies)
     {
         var container = new Container();
         container.Options.EnableAutoVerification = false;
@@ -76,6 +100,12 @@ public class ModuleServicesManager : IModuleServicesManager
         }
 
         AddContainer(moduleId, container);
+        
+        foreach (var dependency in loadedDependencies)
+        {
+            AddDependency(moduleId, dependency);
+        }
+        
         return container;
     }
 
@@ -94,12 +124,27 @@ public class ModuleServicesManager : IModuleServicesManager
         GC.Collect();
     }
 
-    private void ResolveCoreService(object? sender, UnregisteredTypeEventArgs e)
+    private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid moduleId)
     {
         try
         {
             e.Register(() =>
             {
+                if (_dependencyServices.ContainsKey(moduleId))
+                {
+                    foreach (var dependencyId in _dependencyServices[moduleId])
+                    {
+                        try
+                        {
+                            return _moduleContainers[dependencyId].GetInstance(e.UnregisteredServiceType);
+                        }
+                        catch (ActivationException ex)
+                        {
+                            // we want to ignore this and try to use the core services later on
+                        }
+                    }
+                }
+                
                 try
                 {
                     return _app.Services.GetInstance(e.UnregisteredServiceType);

@@ -20,4 +20,5 @@ public class ModuleLoadContext : IModuleLoadContext
     public required IEnumerable<Assembly> Assemblies { get; init; }
     public required Dictionary<PipelineType, IActionPipeline> Pipelines { get; init; }
     public required List<IPermission> Permissions { get; set; }
+    public required List<Guid> LoadedDependencies { get; init; }
 }

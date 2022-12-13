@@ -1,5 +1,7 @@
 ﻿using EvoSC.Modules;
 using EvoSC.Modules.Attributes;
+using EvoSC.Modules.Official.Player.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace SimpleModule;
 
