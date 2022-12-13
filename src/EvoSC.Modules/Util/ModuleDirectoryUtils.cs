@@ -4,6 +4,11 @@ namespace EvoSC.Modules.Util;
 
 public static class ModuleDirectoryUtils
 {
+    /// <summary>
+    /// Find all modules within a given directory.
+    /// </summary>
+    /// <param name="directory">A directory containing module directories.</param>
+    /// <returns></returns>
     public static SortedModuleCollection<IExternalModuleInfo> FindModulesFromDirectory(string directory)
     {
         var modules = new SortedModuleCollection<IExternalModuleInfo>();

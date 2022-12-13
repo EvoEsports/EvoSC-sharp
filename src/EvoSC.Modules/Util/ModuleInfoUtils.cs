@@ -19,6 +19,11 @@ public static class ModuleInfoUtils
         return value;
     }
     
+    /// <summary>
+    /// Create an internal module info object from an assembly.
+    /// </summary>
+    /// <param name="assembly">The assembly containing a module.</param>
+    /// <returns></returns>
     public static IInternalModuleInfo CreateFromAssembly(Assembly assembly)
     {
         var name = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleIdentifierAttribute>()?.Name, "Name");
@@ -40,6 +45,13 @@ public static class ModuleInfoUtils
         };
     }
 
+    /// <summary>
+    /// Create an external module info object from a module directory.
+    /// </summary>
+    /// <param name="dir">THe directory containing the module info file.</param>
+    /// <returns></returns>
+    /// <exception cref="FileNotFoundException">When the info file was not found.</exception>
+    /// <exception cref="InvalidOperationException">When the info file has an invalid format.</exception>
     public static IExternalModuleInfo CreateFromDirectory(DirectoryInfo dir)
     {
         var path = Path.Combine(dir.FullName, "info.toml");
@@ -60,11 +72,6 @@ public static class ModuleInfoUtils
         if (!Version.TryParse(versionString, out var version))
         {
             throw new InvalidOperationException($"Module version is in an invalid format. Cannot parse it in: {path}");
-        }
-
-        if (infoDocument.ContainsKey("dependencies"))
-        {
-            
         }
 
         var dependencies = Array.Empty<IModuleDependency>().AsEnumerable();

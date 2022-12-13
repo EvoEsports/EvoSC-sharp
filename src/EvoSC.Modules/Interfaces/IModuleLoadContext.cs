@@ -16,31 +16,45 @@ public interface IModuleLoadContext
     /// The instance of the module's main class.
     /// </summary>
     public IEvoScModule? Instance { get; init; }
+    
     /// <summary>
     /// The service container for this module.
     /// </summary>
     public Container Services { get; init; }
+    
     /// <summary>
     /// Load context for the module's assembly.
     /// </summary>
     public AssemblyLoadContext? AsmLoadContext { get; init; }
+    
     /// <summary>
     /// Unique ID of the module, used for referencing it at runtime. This ID is generated when the
     /// module is loaded.
     /// </summary>
     public Guid LoadId { get; init; }
+    
     /// <summary>
     /// The type of the module's main class.
     /// </summary>
     public Type? MainClass { get; init; }
+    
     /// <summary>
     /// Meta info about a module.
     /// </summary>
     public IModuleInfo ModuleInfo { get; init; }
+    
     /// <summary>
     /// The module's assembly object.
     /// </summary>
     public IEnumerable<Assembly> Assemblies { get; init; }
+    
+    /// <summary>
+    /// Middleware pipelines registered from this module.
+    /// </summary>
     public Dictionary<PipelineType, IActionPipeline> Pipelines { get; init; }
+    
+    /// <summary>
+    /// Permissions registered from this module.
+    /// </summary>
     public List<IPermission> Permissions { get; set; }
 }

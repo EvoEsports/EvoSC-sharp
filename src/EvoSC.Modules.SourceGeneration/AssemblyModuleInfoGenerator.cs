@@ -9,6 +9,11 @@ using Tomlet;
 
 namespace EvoSC.Modules.SourceGeneration
 {
+    /// <summary>
+    /// Generates an Info.g.cs file from an info.toml file. The file contains assembly information
+    /// for a module which is mostly used for loading internal modules. It gives a way to seamlessly
+    /// implement internal and external modules together to ease with development.
+    /// </summary>
     [Generator]
     public class AssemblyModuleInfoGenerator : ISourceGenerator
     {
