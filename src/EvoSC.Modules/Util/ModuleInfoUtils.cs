@@ -52,21 +52,31 @@ public static class ModuleInfoUtils
         var infoDocument = TomlParser.ParseFile(path);
 
         var name = ValidateModuleProperty(infoDocument.GetValue("info.name")?.StringValue, "Name");
-        var title = ValidateModuleProperty(infoDocument.GetValue("info.name")?.StringValue, "Title");
-        var summary = ValidateModuleProperty(infoDocument.GetValue("info.name")?.StringValue, "Summary");
-        var versionString = ValidateModuleProperty(infoDocument.GetValue("info.name")?.StringValue, "Version");
-        var author = ValidateModuleProperty(infoDocument.GetValue("info.name")?.StringValue, "Author");
+        var title = ValidateModuleProperty(infoDocument.GetValue("info.title")?.StringValue, "Title");
+        var summary = ValidateModuleProperty(infoDocument.GetValue("info.summary")?.StringValue, "Summary");
+        var versionString = ValidateModuleProperty(infoDocument.GetValue("info.version")?.StringValue, "Version");
+        var author = ValidateModuleProperty(infoDocument.GetValue("info.author")?.StringValue, "Author");
         
         if (!Version.TryParse(versionString, out var version))
         {
             throw new InvalidOperationException($"Module version is in an invalid format. Cannot parse it in: {path}");
         }
 
-        var dependencyTable = ValidateModuleProperty(infoDocument.GetSubTable("dependencies").Entries, "Dependencies");
-        var dependencies = dependencyTable.Select(d => new ModuleDependency
+        if (infoDocument.ContainsKey("dependencies"))
         {
-            Name = d.Key, Version = Version.Parse(d.Value.StringValue)
-        });
+            
+        }
+
+        var dependencies = Array.Empty<IModuleDependency>().AsEnumerable();
+
+        if (infoDocument.ContainsKey("dependencies"))
+        {
+            var dependencyTable = ValidateModuleProperty(infoDocument.GetSubTable("dependencies").Entries, "Dependencies");
+            dependencies = dependencyTable.Select(d => new ModuleDependency
+            {
+                Name = d.Key, Version = Version.Parse(d.Value.StringValue)
+            });
+        }
 
         var moduleFiles = dir
             .GetFiles("*", SearchOption.AllDirectories)

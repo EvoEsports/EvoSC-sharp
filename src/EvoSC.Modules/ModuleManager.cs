@@ -303,8 +303,7 @@ public class ModuleManager : IModuleManager
             {PipelineType.ControllerAction, new ActionPipeline()}
         };
 
-    private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass,
-        AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
+    private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
     {
         var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
         var moduleServices = _servicesManager.NewContainer(loadId, assemblies);
@@ -327,12 +326,21 @@ public class ModuleManager : IModuleManager
 
     private async Task LoadInternalAsync(Guid loadId, IModuleInfo moduleInfo, Type mainClass, AssemblyLoadContext? asmLoadContext)
     {
+        if (_moduleNameMap.ContainsKey(moduleInfo.Name))
+        {
+            _logger.LogError("A module with the identifier '{Name}' is already loaded. Will not load again",
+                moduleInfo.Name);
+            return;
+        }
+
         var loadContext = await CreateModuleLoadContextAsync(loadId, mainClass, asmLoadContext, moduleInfo);
 
         await RegisterMiddlewaresAsync(loadContext);
         await RegisterPermissionsAsync(loadContext);
-        
+
         _loadedModules.Add(loadId, loadContext);
+        _moduleNameMap[moduleInfo.Name] = loadId;
+
         _logger.LogDebug("External Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
 
         await InstallModuleAsync(loadId);
@@ -406,6 +414,14 @@ public class ModuleManager : IModuleManager
             moduleInfo.Name);
 
         return Task.CompletedTask;
+    }
+
+    public async Task LoadAsync(IModuleCollection<IExternalModuleInfo> collection)
+    {
+        foreach (var module in collection)
+        {
+            await LoadAsync(module);
+        }
     }
 
     public Task UnloadAsync(Guid loadId)

@@ -14,4 +14,10 @@
         <ProjectReference Include="..\..\src\EvoSC.Modules\EvoSC.Modules.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="info.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

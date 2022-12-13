@@ -25,5 +25,6 @@ public interface IModuleManager
     public Task LoadAsync(string directory);
     public Task LoadAsync(IExternalModuleInfo moduleInfo);
     public Task LoadAsync(Assembly assembly);
+    public Task LoadAsync(IModuleCollection<IExternalModuleInfo> collection);
     public Task UnloadAsync(Guid loadId);
 }
