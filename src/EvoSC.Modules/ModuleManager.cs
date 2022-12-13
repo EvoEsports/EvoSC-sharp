@@ -72,7 +72,7 @@ public class ModuleManager : IModuleManager
         await InstallPermissions(moduleContext);
         await TryCallModuleInstall(moduleContext);
         
-        _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
+        _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
     }
 
     private IModuleLoadContext GetModuleById(Guid loadId)
@@ -164,6 +164,14 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
+    private Task DisableMiddlewares(IModuleLoadContext moduleContext)
+    {
+        _pipelineManager.RemovePipeline(PipelineType.ChatRouter, moduleContext.LoadId);
+        _pipelineManager.RemovePipeline(PipelineType.ControllerAction, moduleContext.LoadId);
+
+        return Task.CompletedTask;
+    }
+
     private Task RegisterMiddlewaresAsync(IModuleLoadContext moduleContext)
     {
         foreach (var assembly in moduleContext.Assemblies)
@@ -183,6 +191,16 @@ public class ModuleManager : IModuleManager
         if (moduleContext.Instance is IToggleable instance)
         {
             return instance.Enable();
+        }
+
+        return Task.CompletedTask;
+    }
+    
+    private Task TryCallModuleDisable(IModuleLoadContext moduleContext)
+    {
+        if (moduleContext.Instance is IToggleable instance)
+        {
+            return instance.Disable();
         }
 
         return Task.CompletedTask;
@@ -218,6 +236,12 @@ public class ModuleManager : IModuleManager
             }
         }
 
+        return Task.CompletedTask;
+    }
+
+    private Task DisableControllers(IModuleLoadContext moduleContext)
+    {
+        _controllers.RemoveModuleControllers(moduleContext.LoadId);
         return Task.CompletedTask;
     }
 
@@ -355,12 +379,18 @@ public class ModuleManager : IModuleManager
         await EnableMiddlewares(moduleContext);
         await TryCallModuleEnable(moduleContext);
         
-        _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
+        _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
     }
 
-    public Task DisableAsync(Guid loadId)
+    public async Task DisableAsync(Guid loadId)
     {
-        throw new NotImplementedException();
+        var moduleContext = GetModuleById(loadId);
+
+        await DisableControllers(moduleContext);
+        await DisableMiddlewares(moduleContext);
+        await TryCallModuleDisable(moduleContext);
+        
+        _logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
     }
 
     public Task LoadAsync(string directory)

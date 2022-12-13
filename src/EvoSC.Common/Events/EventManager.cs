@@ -22,6 +22,7 @@ public class EventManager : IEventManager
     private readonly IControllerManager _controllers;
     
     private readonly Dictionary<string, List<EventSubscription>> _subscriptions = new();
+    private readonly Dictionary<Type, List<EventSubscription>> _controllerSubscriptions = new();
 
     public EventManager(ILogger<EventManager> logger, IEvoSCApplication app, IControllerManager controllers)
     {
@@ -220,6 +221,11 @@ public class EventManager : IEventManager
     {
         var methods = controllerType.GetMethods(ReflectionUtils.InstanceMethods);
 
+        if (!_controllerSubscriptions.ContainsKey(controllerType))
+        {
+            _controllerSubscriptions[controllerType] = new List<EventSubscription>();
+        }
+        
         foreach (var method in methods)
         {
             var attr = method.GetCustomAttribute<SubscribeAttribute>();
@@ -241,6 +247,22 @@ public class EventManager : IEventManager
             };
             
             Subscribe(subscription);
+            _controllerSubscriptions[controllerType].Add(subscription);
         }
+    }
+
+    public void UnregisterForController(Type controllerType)
+    {
+        if (!_controllerSubscriptions.ContainsKey(controllerType))
+        {
+            return;
+        }
+
+        foreach (var subscription in _controllerSubscriptions[controllerType])
+        {
+            Unsubscribe(subscription);
+        }
+
+        _controllerSubscriptions.Remove(controllerType);
     }
 }
