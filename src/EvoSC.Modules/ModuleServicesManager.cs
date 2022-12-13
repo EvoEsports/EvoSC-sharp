@@ -37,7 +37,7 @@ public class ModuleServicesManager : IModuleServicesManager
         _moduleContainers.Add(moduleId, container);
     }
 
-    public void AddDependency(Guid moduleId, Guid dependencyId)
+    public void RegisterDependency(Guid moduleId, Guid dependencyId)
     {
         if (!_moduleContainers.ContainsKey(moduleId))
         {
@@ -103,7 +103,7 @@ public class ModuleServicesManager : IModuleServicesManager
         
         foreach (var dependency in loadedDependencies)
         {
-            AddDependency(moduleId, dependency);
+            RegisterDependency(moduleId, dependency);
         }
         
         return container;

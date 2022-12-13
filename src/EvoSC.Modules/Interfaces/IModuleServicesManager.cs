@@ -28,4 +28,12 @@ public interface IModuleServicesManager
     /// </summary>
     /// <param name="moduleId">ID of the loaded module.</param>
     public void RemoveContainer(Guid moduleId);
+    
+    /// <summary>
+    /// Register a service dependency for a module. This allows a module to inject
+    /// services from the specified dependency.
+    /// </summary>
+    /// <param name="moduleId">The ID of the module that requires the dependency.</param>
+    /// <param name="dependencyId">The ID of the dependency.</param>
+    public void RegisterDependency(Guid moduleId, Guid dependencyId);
 }
