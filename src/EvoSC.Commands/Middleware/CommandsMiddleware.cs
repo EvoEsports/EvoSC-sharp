@@ -6,55 +6,50 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Parsing;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Remote;
+using EvoSC.Common.Middleware;
+using EvoSC.Common.Remote.ChatRouter;
 using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
-using StringReader = EvoSC.Common.TextParsing.ValueReaders.StringReader;
 
-namespace EvoSC.Commands;
+namespace EvoSC.Commands.Middleware;
 
-public class CommandInteractionHandler : ICommandInteractionHandler
+public class CommandsMiddleware
 {
-    private readonly ILogger<CommandInteractionHandler> _logger;
+    private readonly ActionDelegate _next;
+    private readonly ILogger<CommandsMiddleware> _logger;
     private readonly IControllerManager _controllers;
     private readonly IServerClient _serverClient;
     private readonly IActionPipelineManager _actionPipeline;
     private readonly IPlayerManagerService _playersManager;
     private readonly ChatCommandParser _parser;
 
-    public CommandInteractionHandler(ILogger<CommandInteractionHandler> logger, IChatCommandManager cmdManager,
-        IEventManager events, IControllerManager controllers, IServerClient serverClient,
+    public CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware> logger,
+        IChatCommandManager cmdManager, IControllerManager controllers, IServerClient serverClient,
         IActionPipelineManager actionPipeline, IPlayerManagerService playersManager)
     {
+        _next = next;
         _logger = logger;
         _controllers = controllers;
         _serverClient = serverClient;
         _actionPipeline = actionPipeline;
         _playersManager = playersManager;
-
-        events.Subscribe(builder => builder
-            .WithEvent(GbxRemoteEvent.PlayerChat)
-            .WithInstanceClass<ChatCommandManager>()
-            .WithInstance(this)
-            .WithHandlerMethod<PlayerChatEventArgs>(OnPlayerChatEvent)
-            .AsAsync()
-        );
-
         _parser = new ChatCommandParser(cmdManager, GetValueReader());
     }
-
+    
     private IValueReaderManager GetValueReader()
     {
         var valueReader = new ValueReaderManager();
 
         valueReader.AddReader(new FloatReader());
         valueReader.AddReader(new IntegerReader());
-        valueReader.AddReader(new StringReader());
+        valueReader.AddReader(new Common.TextParsing.ValueReaders.StringReader());
         valueReader.AddReader(new OnlinePlayerReader(_playersManager));
 
         return valueReader;
@@ -85,17 +80,18 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         }
     }
 
-    private async Task ExecuteCommand(IChatCommand cmd, object[] args, PlayerChatEventArgs eventArgs)
+    private async Task ExecuteCommand(IChatCommand cmd, object[] args, ChatRouterPipelineContext routerContext)
     {
         var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
-        
-        var accountId = PlayerUtils.ConvertLoginToAccountId(eventArgs.Login);
-        var player = await _playersManager.GetOnlinePlayerAsync(accountId);
 
-        var playerInteractionContext = new CommandInteractionContext(player, context) {CommandExecuted = cmd};
+        var playerInteractionContext = new CommandInteractionContext((IOnlinePlayer)routerContext.Player, context)
+        {
+            CommandExecuted = cmd
+        };
+        
         controller.SetContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.BuildChain(context =>
+        var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, context =>
         {
             return (Task)cmd.HandlerMethod.Invoke(controller, args);
         });
@@ -103,28 +99,43 @@ public class CommandInteractionHandler : ICommandInteractionHandler
         await actionChain(playerInteractionContext);
     }
 
-    public async Task OnPlayerChatEvent(object sender, PlayerChatEventArgs eventArgs)
+    private void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)
     {
-        // parse
-        // execute
-        // handle errors
+        if (parserResult.IsIntended)
+        {
+            return;
+        }
 
+        if (parserResult.Command.Aliases.TryGetValue(parserResult.AliasUsed, out var alias) && alias.Hide)
+        {
+            context.ForwardMessage = false;
+        }
+    }
+    
+    public async Task ExecuteAsync(ChatRouterPipelineContext context)
+    {
+        if (context.MessageText.Trim().StartsWith("/"))
+        {
+            context.ForwardMessage = false;
+        }
+        
         try
         {
-            var parserResult = await _parser.Parse(eventArgs.Text);
+            var parserResult = await _parser.Parse(context.MessageText);
 
             if (parserResult.Success)
             {
-                await ExecuteCommand(parserResult.Command, parserResult.Arguments.ToArray(), eventArgs);
+                await ExecuteCommand(parserResult.Command, parserResult.Arguments.ToArray(), context);
+                CheckAliasHiding(context, parserResult);
             }
             else if (parserResult.Exception != null)
             {
-                await HandleUserErrors(parserResult, eventArgs.Login);
+                await HandleUserErrors(parserResult, context.Player.GetLogin());
             }
             else
             {
                 _logger.LogError(
-                    "An unknown error occured while trying to parse command. No exception thrown, but parsing failed.");
+                    "An unknown error occured while trying to parse command. No exception thrown, but parsing failed");
             }
         }
         catch (Exception ex)
@@ -133,5 +144,7 @@ public class CommandInteractionHandler : ICommandInteractionHandler
                 ex.Message, ex.StackTrace);
             throw;
         }
+        
+        await _next(context);
     }
 }

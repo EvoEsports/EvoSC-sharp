@@ -8,4 +8,6 @@ public class ParserResult : IParserResult
     public required IEnumerable<object> Arguments { get; init; }
     public bool Success { get; init; }
     public Exception Exception { get; init; }
+    public required bool IsIntended { get; init; }
+    public string AliasUsed { get; init; }
 }

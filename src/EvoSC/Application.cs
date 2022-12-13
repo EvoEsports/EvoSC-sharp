@@ -152,9 +152,10 @@ public class Application : IEvoSCApplication
         // initialize event manager before anything else
         _services.GetInstance<IEventManager>();
 
-        // connect to the dedicated server and setup callbacks
+        // connect to the dedicated server and setup callbacks and chat router
         var serverClient = _services.GetInstance<IServerClient>();
         _services.GetInstance<IServerCallbackHandler>();
+        _services.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(_runningToken.Token);
 
         // setup command handler
