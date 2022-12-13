@@ -82,7 +82,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     {
         var value = _document.GetValue(key) as TomlArray;
 
-        // return string.Join(" ", value.Select(v => $"\"{v.StringValue.Replace("\"", "\"\"")}\""));
         return string.Join(" ", value.Select(v => v.StringValue));
     }
     
@@ -97,29 +96,12 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         }
         else if (key.EndsWith("]"))
         {
-            //return GetArrayValue(key[..key.IndexOf("[")]);
-            
             var indexStart = key.IndexOf("[", StringComparison.Ordinal);
             var index = int.Parse(key[(indexStart+1)..^1]);
             var value = _document.GetValue(key[..indexStart]) as TomlArray;
 
             return value?.Skip(index)?.FirstOrDefault()?.StringValue;
         }
-        
-        /* if (key.EndsWith("$l"))
-        {
-            var value = _document.GetValue(key[..^3]) as TomlArray;
-
-            return string.Join(",", value.Select(v => v.StringValue));
-        }
-        else if (key.EndsWith("]"))
-        {
-            var indexStart = key.IndexOf("[");
-            var index = int.Parse(key[(indexStart+1)..^1]);
-            var value = _document.GetValue(key[..indexStart]) as TomlArray;
-
-            return value.Skip(index).FirstOrDefault().StringValue;
-        } */
 
         return _document.GetValue(key).StringValue;
     }

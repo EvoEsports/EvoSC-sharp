@@ -9,7 +9,7 @@ namespace EvoSC.Modules.Util;
 
 public static class ModuleInfoUtils
 {
-    private static T ValidateModuleProperty<T>(T? value, string name)
+    private static T ValidateModuleProperty<T>(T? value, string name) where T : class
     {
         if (value == null)
         {
