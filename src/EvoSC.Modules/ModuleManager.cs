@@ -221,48 +221,6 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private Container CreateServiceContainer(Assembly assembly)
-    {
-        var container = new Container();
-        container.Options.EnableAutoVerification = false;
-        container.Options.SuppressLifestyleMismatchVerification = true;
-        container.Options.UseStrictLifestyleMismatchBehavior = false;
-
-        foreach (var module in assembly.Modules)
-        {
-            foreach (var type in module.GetTypes())
-            {
-                var serviceAttr = type.GetCustomAttribute<ServiceAttribute>();
-
-                if (serviceAttr == null)
-                {
-                    continue;
-                }
-
-                var intf = type.GetInterfaces().FirstOrDefault();
-
-                if (intf == null)
-                {
-                    throw new ModuleServicesException($"Service {type} must implement a custom interface.");
-                }
-
-                switch (serviceAttr.LifeStyle)
-                {
-                    case ServiceLifeStyle.Singleton:
-                        container.RegisterSingleton(intf, type);
-                        break;
-                    case ServiceLifeStyle.Transient:
-                        container.Register(intf, type);
-                        break;
-                    default:
-                        throw new ModuleServicesException($"Unsupported lifetime type for module service: {type}");
-                }
-            }
-        }
-
-        return container;
-    }
-
     private async Task RegisterModuleConfigAsync(IEnumerable<Assembly> assemblies, Container container, IModuleInfo moduleInfo)
     {
         foreach (var assembly in assemblies)
