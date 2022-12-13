@@ -1,5 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Models.Maps;
 
 namespace EvoSC.Common.Database.Models.Maps;
 
@@ -19,13 +20,11 @@ public class DbMap : IMap
 
     public string Name { get; set; }
 
-    public long ManiaExchangeId { get; set; }
+    public string ExternalId { get; set; }
 
-    public DateTime? ManiaExchangeVersion { get; set; }
+    public DateTime? ExternalVersion { get; set; }
     
-    public long TrackmaniaIoId { get; set; }
-
-    public DateTime? TrackmaniaIoVersion { get; set; }
+    public MapProviders? ExternalMapProvider { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

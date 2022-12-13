@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Maps;
 
 namespace EvoSC.Common.Interfaces.Repository;
 

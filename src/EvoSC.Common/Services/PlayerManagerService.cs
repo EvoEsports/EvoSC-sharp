@@ -11,6 +11,7 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
 using EvoSC.Common.Util.Database;
@@ -54,8 +55,18 @@ public class PlayerManagerService : IPlayerManagerService
     public async Task<IPlayer> CreatePlayerAsync(string accountId)
     {
         var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
-        var playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
-        
+
+        TmPlayerDetailedInfo? playerInfo = null;
+        // TODO: If map author, this throws an exception because the author is not on the server, needs to be checked.
+        try
+        {
+            playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
+        }
+        catch (Exception)
+        {
+            _logger.LogDebug("Player not on server.");
+        }
+
         var dbPlayer = new DbPlayer
         {
             AccountId = accountId.ToLower(CultureInfo.InvariantCulture),

@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Models.Maps;
+
+namespace EvoSC.Common.Interfaces.Models;
 
 /// <summary>
 /// Represents a map.
@@ -26,22 +28,22 @@ public interface IMap
     public IPlayer Author { get; set; }
     
     /// <summary>
-    /// The maps TrackmaniaExchange ID.
+    /// Whether the map is enabled or disabled.
     /// </summary>
-    public long ManiaExchangeId { get; set; }
+    public bool Enabled { get; set; }
     
     /// <summary>
-    /// The maps version in TrackmaniaExchange.
+    /// The maps external ID. E.g. the TrackmaniaIo ID.
     /// </summary>
-    public DateTime? ManiaExchangeVersion { get; set; }
+    public string ExternalId { get; set; }
     
     /// <summary>
-    /// The maps TrackmaniaIO ID.
+    /// The maps external version. E.g. the "last updated" value of the TrackmaniaIo map.
     /// </summary>
-    public long TrackmaniaIoId { get; set; }
+    public DateTime? ExternalVersion { get; set; }
     
     /// <summary>
-    /// The maps version in TrackmaniaIO.
+    /// The maps external provider. E.g. trackmania.io.
     /// </summary>
-    public DateTime? TrackmaniaIoVersion { get; set; }
+    public MapProviders? ExternalMapProvider { get; set; }
 }

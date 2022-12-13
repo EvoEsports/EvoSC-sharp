@@ -10,19 +10,18 @@ public class AddMapsTable : Migration
         Create.Table("Maps")
             .WithColumn("Id").AsInt32().PrimaryKey().Identity()
             .WithColumn("Uid").AsString().Unique()
-            .WithColumn("Author").AsInt32()
+            .WithColumn("AuthorId").AsInt32()
             .WithColumn("FilePath").AsString()
             .WithColumn("Enabled").AsBoolean()
             .WithColumn("Name").AsString()
-            .WithColumn("ManiaExchangeId").AsInt32().Unique().Nullable()
-            .WithColumn("ManiaExchangeVersion").AsDateTime().Nullable()
-            .WithColumn("TrackmaniaIoId").AsString().Unique().Nullable()
-            .WithColumn("TrackmaniaIoVersion").AsDateTime().Nullable()
+            .WithColumn("ExternalId").AsString().Unique().Nullable()
+            .WithColumn("ExternalVersion").AsDateTime().Nullable()
+            .WithColumn("ExternalMapProvider").AsString().Nullable()
             .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)
             .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentDateTime);
 
         Create.ForeignKey("FK_Maps_Players")
-            .FromTable("Maps").ForeignColumn("Author")
+            .FromTable("Maps").ForeignColumn("AuthorId")
             .ToTable("Players").PrimaryColumn("Id");
     }
 

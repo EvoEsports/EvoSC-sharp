@@ -2,12 +2,13 @@
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Maps;
 
 namespace EvoSC.Common.Interfaces.Services;
 
 public interface IMapService
 {
-    public Task<IMap?> GetMapById(int id);
+    public Task<IMap?> GetMapById(long id);
     public Task<IMap?> GetMapByUid(string uid);
     
     /// <summary>
@@ -19,5 +20,5 @@ public interface IMapService
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public Task<IMap> AddMap(MapStream mapStream, IPlayer actor);
     public Task<IEnumerable<IMap>> AddMaps(List<MapStream> mapObjects, IPlayer actor);
-    public Task RemoveMap(string mapUid);
+    public Task RemoveMap(long mapId);
 }

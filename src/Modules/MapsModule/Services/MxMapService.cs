@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Maps;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Maps.Interfaces;
 using ManiaExchange.ApiClient;
@@ -44,10 +45,9 @@ public class MxMapService : IMxMapService
             mapInfoDto.GbxMapName,
             mapInfoDto.AuthorLogin,
             mapInfoDto.Username,
-            mapInfoDto.MapID,
+            mapInfoDto.MapID.ToString(),
             Convert.ToDateTime(mapInfoDto.UpdatedAt),
-            false,
-            true
+            MapProviders.ManiaExchange
         );
 
         var map = new MapStream(mapMetadata, mapFile);

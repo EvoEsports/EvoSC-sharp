@@ -1,7 +1,7 @@
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Common.Models;
+namespace EvoSC.Common.Models.Players;
 
 public class Player : IPlayer
 {

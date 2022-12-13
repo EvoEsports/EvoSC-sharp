@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Common.Models;
+﻿using EvoSC.Common.Interfaces.Models;
+
+namespace EvoSC.Common.Models.Maps;
 
 public class MapStream
 {

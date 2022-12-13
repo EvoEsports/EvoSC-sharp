@@ -8,6 +8,7 @@ using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Repository;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Maps;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database.Repository.Maps;
@@ -51,10 +52,9 @@ public class MapRepository : IMapRepository
             FilePath = filePath,
             Enabled = true,
             Name = mapMetadata.MapName,
-            ManiaExchangeId = mapMetadata.MxId,
-            ManiaExchangeVersion = mapMetadata.MxVersion,
-            TrackmaniaIoId = mapMetadata.TmIoId,
-            TrackmaniaIoVersion = mapMetadata.TmIoVersion,
+            ExternalId = mapMetadata.ExternalId,
+            ExternalVersion = mapMetadata.ExternalVersion,
+            ExternalMapProvider = mapMetadata.ExternalMapProvider,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
@@ -83,10 +83,7 @@ public class MapRepository : IMapRepository
             Uid = mapMetadata.MapUid,
             Enabled = true,
             Name = mapMetadata.MapName,
-            ManiaExchangeId = mapMetadata.MxId,
-            ManiaExchangeVersion = mapMetadata.MxVersion,
-            TrackmaniaIoId = mapMetadata.TmIoId,
-            TrackmaniaIoVersion = mapMetadata.TmIoVersion,
+            ExternalVersion = mapMetadata.ExternalVersion,
             UpdatedAt = DateTime.Now
         };
 
@@ -106,8 +103,20 @@ public class MapRepository : IMapRepository
         return new Map(updatedMap) ;
     }
 
-    public Task RemoveMap(long id)
+    public async Task RemoveMap(long id)
     {
-        throw new NotImplementedException();
+        var query = "delete from `Maps` where `Id`=@MapId";
+        
+        await using var transaction = await _db.BeginTransactionAsync();
+        try
+        {
+            await _db.QueryFirstOrDefaultAsync<DbMap>(query, new { MapId = id }, transaction);
+            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Failed removing map with ID {id}.");
+            await transaction.RollbackAsync();
+        }
     }
 }

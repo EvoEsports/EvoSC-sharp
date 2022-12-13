@@ -5,6 +5,8 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Maps;
+using EvoSC.Common.Util;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
@@ -27,7 +29,7 @@ public class MapService : IMapService
         _serverClient = serverClient;
     }
 
-    public async Task<IMap?> GetMapById(int id) => await _mapRepository.GetMapById(id);
+    public async Task<IMap?> GetMapById(long id) => await _mapRepository.GetMapById(id);
 
     public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUid(uid);
 
@@ -49,7 +51,9 @@ public class MapService : IMapService
 
         await SaveMapFile(mapFile, filePath, fileName);
 
-        var author = await GetMapAuthor(mapMetadata.AuthorId);
+        var author = await GetMapAuthor(PlayerUtils.IsAccountId(mapMetadata.AuthorId)
+            ? mapMetadata.AuthorId
+            : PlayerUtils.ConvertLoginToAccountId(mapMetadata.AuthorId));
 
         IMap map;
 
@@ -99,15 +103,14 @@ public class MapService : IMapService
         return maps;
     }
 
-    public async Task RemoveMap(string mapUid)
+    public async Task RemoveMap(long mapId)
     {
-        throw new NotImplementedException();
+        await _mapRepository.RemoveMap(mapId);
     }
 
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
     {
-        return map.ManiaExchangeVersion == mapMetadata.MxVersion ||
-               map.TrackmaniaIoVersion == mapMetadata.TmIoVersion;
+        return map.ExternalVersion == mapMetadata.ExternalVersion;
     }
 
     private async Task SaveMapFile(Stream mapStream, string filePath, string fileName)
