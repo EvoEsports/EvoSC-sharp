@@ -33,7 +33,7 @@ public class MapService : IMapService
 
     public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUid(uid);
 
-    public async Task<IMap> AddMap(MapStream mapStream, IPlayer actor)
+    public async Task<IMap> AddMap(MapStream mapStream)
     {
         var mapMetadata = mapStream.MapMetadata;
         var mapFile = mapStream.MapFile;
@@ -91,12 +91,12 @@ public class MapService : IMapService
         return map;
     }
 
-    public async Task<IEnumerable<IMap>> AddMaps(List<MapStream> mapObjects, IPlayer actor)
+    public async Task<IEnumerable<IMap>> AddMaps(List<MapStream> mapObjects)
     {
         var maps = new List<IMap>();
         foreach (var mapObject in mapObjects)
         {
-            var map = await AddMap(mapObject, actor);
+            var map = await AddMap(mapObject);
             maps.Add(map);
         }
 
