@@ -23,7 +23,8 @@ public class MapsController : EvoScController<CommandInteractionContext>
     private readonly IMapService _mapService;
     private readonly IServerClient _server;
 
-    public MapsController(ILogger<MapsController> logger, IMxMapService mxMapService, IMapService mapService, IServerClient server)
+    public MapsController(ILogger<MapsController> logger, IMxMapService mxMapService, IMapService mapService,
+        IServerClient server)
     {
         _logger = logger;
         _mxMapService = mxMapService;
@@ -41,7 +42,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
         }
         catch (Exception e)
         {
-            _logger.LogInformation(e, $"Failed adding map with ID {mapId}.");
+            _logger.LogInformation(e, "Failed adding map with ID {MapId}.", mapId);
             await _server.SendChatMessage($"Error: Something went wrong while trying to add map with ID {mapId}.");
             return;
         }
@@ -65,9 +66,9 @@ public class MapsController : EvoScController<CommandInteractionContext>
             await _server.SendChatMessage($"Map with ID {mapId} could not be found.");
             return;
         }
-        
+
         await _mapService.RemoveMap(mapId);
         await _server.SendChatMessage($"Removed map with ID {mapId} from the maplist.");
-        _logger.LogInformation($"Player {Context.Player.Id} removed map {map.Name}.");
+        _logger.LogInformation("Player {PlayerId} removed map {MapName}.", Context.Player.Id, map.Name);
     }
 }

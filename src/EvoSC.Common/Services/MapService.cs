@@ -42,12 +42,12 @@ public class MapService : IMapService
         if (existingMap != null && MapVersionExistsInDb(existingMap, mapMetadata))
         {
             // TODO: Change this with a more precise exception
-            _logger.LogDebug($"Map with UID {mapMetadata.MapUid} already exists in database.");
+            _logger.LogDebug("Map with UID {MapUid} already exists in database.", mapMetadata.MapUid);
             throw new DuplicateNameException($"Map with UID {mapMetadata.MapUid} already exists in database");
         }
 
         var fileName = $"{mapMetadata.MapName}.Map.Gbx";
-        var filePath = _config.Path.Maps + $"/EvoSC";
+        var filePath = Path.Combine(_config.Path.Maps, "/EvoSC");
 
         await SaveMapFile(mapFile, filePath, fileName);
 
@@ -61,13 +61,13 @@ public class MapService : IMapService
         {
             try
             {
-                _logger.LogDebug($"Updating map with ID {existingMap.Id} to the database.");
+                _logger.LogDebug("Updating map with ID {MapId} to the database.", existingMap.Id);
                 map = await _mapRepository.UpdateMap(existingMap.Id, mapMetadata);
             }
             catch (Exception e)
             {
-                _logger.LogWarning(e, $"Something went wrong while trying to update " +
-                                      $"map with ID {existingMap.Id} to the database.");
+                _logger.LogWarning(e, "Something went wrong while trying to update " +
+                                      "map with ID {MapId} to the database.", existingMap.Id);
                 throw;
             }
         }
@@ -122,7 +122,7 @@ public class MapService : IMapService
                 Directory.CreateDirectory(filePath);
             }
 
-            var fileStream = File.Create(filePath + $"/{fileName}");
+            var fileStream = File.Create(Path.Combine(filePath, $"/{fileName}"));
             await mapStream.CopyToAsync(fileStream);
             fileStream.Close();
         }
