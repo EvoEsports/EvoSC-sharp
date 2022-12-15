@@ -18,7 +18,7 @@ public interface IModuleServicesManager
     /// <summary>
     /// Create a new module service container.
     /// </summary>
-    /// <param name="moduleId">A unique GUID to identify this container with. This is typically the load ID.</param>
+    /// <param name="moduleId">The unique container GUID. This is typically the load ID.</param>
     /// <param name="assemblies">Assemblies related to the module to scan for additional services.</param>
     /// <returns></returns>
     public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies);
