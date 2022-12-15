@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Modules;
+using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.Player;
 using FluentMigrator.Runner.Exceptions;
@@ -42,7 +43,7 @@ public static class InternalModules
     {
         foreach (var module in Modules)
         {
-            await modules.LoadModulesFromAssembly(module.Assembly);
+            await modules.LoadAsync(module.Assembly);
         }
     }
 }
