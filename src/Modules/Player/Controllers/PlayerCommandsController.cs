@@ -3,9 +3,7 @@ using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.Player.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Player.Controllers;
 

@@ -4,12 +4,14 @@ using Castle.Components.DictionaryAdapter;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
 using EvoSC.Common.Util.Database;
@@ -31,7 +33,7 @@ public class PlayerManagerService : IPlayerManagerService
         _db = db;
         _server = server;
     }
-
+    
     public async Task<IPlayer?> GetPlayerAsync(string accountId)
     {
         var results = await _db.SelectByColumnAsync<DbPlayer>("Players", "AccountId", accountId);
@@ -53,8 +55,18 @@ public class PlayerManagerService : IPlayerManagerService
     public async Task<IPlayer> CreatePlayerAsync(string accountId)
     {
         var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
-        var playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
-        
+
+        TmPlayerDetailedInfo? playerInfo = null;
+        // TODO: Create player with default properties when limited information is available #81 https://github.com/EvoTM/EvoSC-sharp/issues/81
+        try
+        {
+            playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
+        }
+        catch (Exception)
+        {
+            _logger.LogDebug("Player not on server.");
+        }
+
         var dbPlayer = new DbPlayer
         {
             AccountId = accountId.ToLower(CultureInfo.InvariantCulture),

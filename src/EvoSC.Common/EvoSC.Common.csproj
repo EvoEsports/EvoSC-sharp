@@ -12,7 +12,7 @@
       <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
       <PackageReference Include="FluentMigrator" Version="3.3.2" />
       <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
-      <PackageReference Include="GbxRemote.Net" Version="3.0.1" />
+      <PackageReference Include="GbxRemote.Net" Version="3.0.2" />
       <PackageReference Include="Humanizer.Core" Version="2.14.1" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
@@ -20,5 +20,8 @@
       <PackageReference Include="Samboy063.Tomlet" Version="5.0.1" />
       <PackageReference Include="SimpleInjector" Version="5.4.1" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+      <Folder Include="Services\Attributes" />
+    </ItemGroup>
 </Project>

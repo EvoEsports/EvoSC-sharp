@@ -1,7 +1,9 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Models;
+using EvoSC.Common.Models.Players;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Primitives;
 
@@ -9,6 +11,9 @@ namespace EvoSC.Common.Util;
 
 public static class PlayerUtils
 {
+    private const string AccountIdRegex =
+        "^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$";
+    
     /// <summary>
     /// Convert a Trackmania player's account ID to the old "login" format.
     /// </summary>
@@ -54,6 +59,16 @@ public static class PlayerUtils
                         + Convert.ToHexString(bytes[10..16]);
 
         return accountId.ToLower();
+    }
+
+    /// <summary>
+    /// Checks the given login against a regex to determine if it's an accountId.
+    /// </summary>
+    /// <param name="login">The player's login.</param>
+    /// <returns></returns>
+    public static bool IsAccountId(string login)
+    {
+        return Regex.IsMatch(login, AccountIdRegex);
     }
 
     /// <summary>

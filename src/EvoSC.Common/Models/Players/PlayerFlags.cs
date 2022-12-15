@@ -1,7 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using GbxRemoteNet.Structs;
 
-namespace EvoSC.Common.Models;
+namespace EvoSC.Common.Models.Players;
 
 public class PlayerFlags : IPlayerFlags
 {

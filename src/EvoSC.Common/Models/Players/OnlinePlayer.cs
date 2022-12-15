@@ -1,7 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
 
-namespace EvoSC.Common.Models;
+namespace EvoSC.Common.Models.Players;
 
 public class OnlinePlayer : IOnlinePlayer
 {
