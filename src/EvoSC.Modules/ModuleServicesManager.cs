@@ -35,6 +35,8 @@ public class ModuleServicesManager : IModuleServicesManager
         }
         
         _moduleContainers.Add(moduleId, container);
+        
+        _logger.LogDebug("Added service container with ID: {ModuleId}", moduleId);
     }
 
     public void RegisterDependency(Guid moduleId, Guid dependencyId)
@@ -55,6 +57,7 @@ public class ModuleServicesManager : IModuleServicesManager
         }
         
         _dependencyServices[moduleId].Add(dependencyId);
+        _logger.LogDebug("Registered dependency '{DepId}' for '{ModuleId}'", dependencyId, moduleId);
     }
 
     public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies)
@@ -122,6 +125,8 @@ public class ModuleServicesManager : IModuleServicesManager
         
         GC.WaitForPendingFinalizers();
         GC.Collect();
+        
+        _logger.LogDebug("Removed service container for module: {ModuleId}", moduleId);
     }
 
     private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid moduleId)
@@ -130,6 +135,10 @@ public class ModuleServicesManager : IModuleServicesManager
         {
             e.Register(() =>
             {
+                _logger.LogTrace("Will attempt to resolve service '{Service}' for {Module}", 
+                    e.UnregisteredServiceType,
+                    moduleId);
+                
                 if (_dependencyServices.ContainsKey(moduleId))
                 {
                     foreach (var dependencyId in _dependencyServices[moduleId])
@@ -140,13 +149,22 @@ public class ModuleServicesManager : IModuleServicesManager
                         }
                         catch (ActivationException ex)
                         {
-                            // we want to ignore this and try to use the core services later on
+                            _logger.LogTrace(
+                                "Did not find service {Service} for module {Module} in dependency {Dependency}",
+                                e.UnregisteredServiceType,
+                                moduleId,
+                                dependencyId);
                         }
                     }
                 }
                 
                 try
                 {
+                    _logger.LogTrace(
+                        "Dependencies does not have service '{Service}' for {Module}. Will try core services",
+                        e.UnregisteredServiceType,
+                        moduleId);
+                    
                     return _app.Services.GetInstance(e.UnregisteredServiceType);
                 }
                 catch (ActivationException ex)

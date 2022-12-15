@@ -52,6 +52,12 @@ public class EventManager : IEventManager
         });
         _subscriptions[subscription.Name].Sort((a, b) =>
             a.RunAsync ? -1 : (b.RunAsync ? 1 : 0));
+
+        _logger.LogDebug("Subscribed to event '{Name}' with handler '{Handler}' in class '{Class}'. In Controller: {IsController}",
+            subscription.Name,
+            subscription.HandlerMethod,
+            subscription.InstanceClass,
+            subscription.IsController);
     }
 
     public void Subscribe(Action<EventSubscriptionBuilder> builderAction)
@@ -84,6 +90,10 @@ public class EventManager : IEventManager
 
         _subscriptions[subscription.Name].Remove(subscription);
 
+        _logger.LogDebug("handler '{Handler}' unsubscribed to event {Name}.",
+            subscription.HandlerMethod,
+            subscription.Name);
+
         if (_subscriptions[subscription.Name].Count == 0)
         {
             _subscriptions.Remove(subscription.Name);
@@ -106,6 +116,8 @@ public class EventManager : IEventManager
             return;
         }
 
+        _logger.LogTrace("Attempting to fire event '{Event}'", name);
+        
         var tasks = InvokeEventTasks(name, args, sender ?? this);
         await WaitEventTasks(tasks);
     }

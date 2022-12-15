@@ -138,7 +138,7 @@ public class ChatCommandManager : IChatCommandManager
         
         if (!_cmds.ContainsKey(cmdName))
         {
-            throw new InvalidOperationException($"Command with name '{cmd.Name}' not found.");
+            throw new CommandNotFoundException(cmdName, false);
         }
 
         _cmds.Remove(cmdName);
