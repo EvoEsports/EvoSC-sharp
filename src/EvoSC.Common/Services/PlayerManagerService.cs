@@ -57,7 +57,7 @@ public class PlayerManagerService : IPlayerManagerService
         var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
 
         TmPlayerDetailedInfo? playerInfo = null;
-        // TODO: If map author, this throws an exception because the author is not on the server, needs to be checked.
+        // TODO: Create player with default properties when limited information is available #81 https://github.com/EvoTM/EvoSC-sharp/issues/81
         try
         {
             playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
