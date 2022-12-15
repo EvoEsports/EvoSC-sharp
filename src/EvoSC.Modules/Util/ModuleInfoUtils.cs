@@ -51,7 +51,7 @@ public static class ModuleInfoUtils
     /// <param name="dir">The directory containing the module info file.</param>
     /// <returns></returns>
     /// <exception cref="FileNotFoundException">Thrown when the info file was not found.</exception>
-    /// <exception cref="InvalidOperationException">When the info file has an invalid format.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the info file has an invalid format.</exception>
     public static IExternalModuleInfo CreateFromDirectory(DirectoryInfo dir)
     {
         var path = Path.Combine(dir.FullName, "info.toml");
