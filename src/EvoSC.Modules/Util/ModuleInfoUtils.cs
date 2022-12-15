@@ -48,7 +48,7 @@ public static class ModuleInfoUtils
     /// <summary>
     /// Create an external module info object from a module directory.
     /// </summary>
-    /// <param name="dir">THe directory containing the module info file.</param>
+    /// <param name="dir">The directory containing the module info file.</param>
     /// <returns></returns>
     /// <exception cref="FileNotFoundException">When the info file was not found.</exception>
     /// <exception cref="InvalidOperationException">When the info file has an invalid format.</exception>
