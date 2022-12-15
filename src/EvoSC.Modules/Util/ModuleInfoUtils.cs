@@ -50,7 +50,7 @@ public static class ModuleInfoUtils
     /// </summary>
     /// <param name="dir">The directory containing the module info file.</param>
     /// <returns></returns>
-    /// <exception cref="FileNotFoundException">When the info file was not found.</exception>
+    /// <exception cref="FileNotFoundException">Thrown when the info file was not found.</exception>
     /// <exception cref="InvalidOperationException">When the info file has an invalid format.</exception>
     public static IExternalModuleInfo CreateFromDirectory(DirectoryInfo dir)
     {
