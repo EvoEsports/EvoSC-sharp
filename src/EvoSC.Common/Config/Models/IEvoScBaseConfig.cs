@@ -7,4 +7,5 @@ public interface IEvoScBaseConfig
     public IServerConfig Server { get; set; }
     public IPathConfig Path { get; set; }
     public IThemeConfig Theme { get; set; }
+    public IModuleConfig Modules { get; set; }
 }

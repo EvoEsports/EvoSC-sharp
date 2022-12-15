@@ -29,6 +29,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Commands.Tests", "tests\EvoSC.Commands.Tests\EvoSC.Commands.Tests.csproj", "{812778D8-BAEA-4045-8D5D-77AF0CE8401B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapsModule", "src\Modules\MapsModule\MapsModule.csproj", "{2CC15B84-5D59-4300-9146-282181D72C53}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{0CD963D2-392E-4A42-A853-532F7497C305}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleModule", "examples\SimpleModule\SimpleModule.csproj", "{EEE1BE1A-4447-4BD5-B6CA-2228C64E9BC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Modules.SourceGeneration", "src\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj", "{5C281145-BAC2-4999-B88B-41CE288758E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,6 +89,14 @@ Global
 		{2CC15B84-5D59-4300-9146-282181D72C53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CC15B84-5D59-4300-9146-282181D72C53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CC15B84-5D59-4300-9146-282181D72C53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEE1BE1A-4447-4BD5-B6CA-2228C64E9BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEE1BE1A-4447-4BD5-B6CA-2228C64E9BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEE1BE1A-4447-4BD5-B6CA-2228C64E9BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEE1BE1A-4447-4BD5-B6CA-2228C64E9BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C281145-BAC2-4999-B88B-41CE288758E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C281145-BAC2-4999-B88B-41CE288758E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C281145-BAC2-4999-B88B-41CE288758E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C281145-BAC2-4999-B88B-41CE288758E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,5 +112,6 @@ Global
 		{EB9804D1-3521-4FAB-BBEE-E41361B05A93} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{812778D8-BAEA-4045-8D5D-77AF0CE8401B} = {46D790A2-EA9B-44A0-ABD2-A2A2CDC670D4}
 		{2CC15B84-5D59-4300-9146-282181D72C53} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{EEE1BE1A-4447-4BD5-B6CA-2228C64E9BC8} = {0CD963D2-392E-4A42-A853-532F7497C305}
 	EndGlobalSection
 EndGlobal

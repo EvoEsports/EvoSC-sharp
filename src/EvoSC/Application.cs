@@ -1,7 +1,4 @@
-﻿using System.CommandLine;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 using EvoSC.Commands;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Config;
@@ -17,14 +14,10 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
-using EvoSC.Modules;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
-using FluentMigrator.Runner;
-using FluentMigrator.Runner.Initialization;
-using Microsoft.Extensions.DependencyInjection;
+using EvoSC.Modules.Util;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
@@ -141,8 +134,24 @@ public class Application : IEvoSCApplication
     private async Task SetupModules()
     {
         var modules = _services.GetInstance<IModuleManager>();
+        var config = _services.GetInstance<IEvoScBaseConfig>();
 
         await modules.LoadInternalModules();
+
+        var dirs = config.Modules.ModuleDirectories;
+        var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
+        foreach (var dir in dirs)
+        {
+            if (!Directory.Exists(dir))
+            {
+                continue;
+            }
+
+            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
+        }
+
+        externalModules.SetIgnoredDependencies(modules.LoadedModules.Select(m => m.ModuleInfo.Name));
+        await modules.LoadAsync(externalModules);
     }
 
     private async Task StartBackgroundServices()

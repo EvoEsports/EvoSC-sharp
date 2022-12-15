@@ -52,4 +52,9 @@ public class EventSubscription : IEquatable<EventSubscription>
     {
         return HandlerMethod.GetHashCode();
     }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as EventSubscription);
+    }
 }

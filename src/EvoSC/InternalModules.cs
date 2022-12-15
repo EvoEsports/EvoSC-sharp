@@ -45,7 +45,7 @@ public static class InternalModules
     {
         foreach (var module in Modules)
         {
-            await modules.LoadModulesFromAssembly(module.Assembly);
+            await modules.LoadAsync(module.Assembly);
         }
     }
 }

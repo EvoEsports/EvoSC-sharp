@@ -73,6 +73,11 @@ public class ControllerManager : IControllerManager
             throw new ControllerException("Controller not found.");
         }
 
+        foreach (var registry in _registries)
+        {
+            registry.UnregisterForController(controllerType);
+        }
+
         _controllers.Remove(controllerType);
 
         if (_instances.ContainsKey(controllerType))

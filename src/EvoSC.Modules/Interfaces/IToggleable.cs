@@ -10,6 +10,7 @@ public interface IToggleable
     /// </summary>
     /// <returns></returns>
     public Task Enable();
+    
     /// <summary>
     /// Disable the module.
     /// </summary>
