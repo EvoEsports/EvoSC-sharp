@@ -30,7 +30,7 @@ namespace EvoSC.Modules.SourceGeneration
             
             errorMessage.AppendLine($"#error Source Generator Error (Module: {context.Compilation.Assembly.Name}): ");
             errorMessage.AppendLine("#error Failed to generate the module's assembly info.");
-            errorMessage.AppendLine("#error You must provide a info.toml file in the module's root namespace.");
+            errorMessage.AppendLine("#error You must provide a \"info.toml\" file in the module's root namespace.");
             errorMessage.AppendLine("#error For more information, refer to the module documentation.");
             errorMessage.AppendLine();
             errorMessage.AppendLine($"#error Module directory: {dir ?? "<does not exist>"}");
