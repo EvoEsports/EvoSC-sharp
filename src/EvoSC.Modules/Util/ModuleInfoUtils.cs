@@ -71,7 +71,7 @@ public static class ModuleInfoUtils
         
         if (!Version.TryParse(versionString, out var version))
         {
-            throw new InvalidOperationException($"Module version is in an invalid format. Cannot parse it in: {path}");
+            throw new InvalidOperationException($"Module version format is invalid. Cannot parse it in: {path}");
         }
 
         var dependencies = Array.Empty<IModuleDependency>().AsEnumerable();
