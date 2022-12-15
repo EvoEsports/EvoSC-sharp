@@ -2,6 +2,7 @@
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Attributes;
+using EvoSC.Modules.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;

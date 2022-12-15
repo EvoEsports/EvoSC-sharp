@@ -133,7 +133,7 @@ public class EventManager : IEventManager
             {
                 Task.Run(() =>
                 {
-                    _logger.LogInformation("run async");
+                    _logger.LogTrace("run async");
                     InvokeTaskMethod(args, sender, subscription, tasks).GetAwaiter().GetResult();
                 });
             }

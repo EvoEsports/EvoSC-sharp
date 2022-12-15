@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-
-namespace EvoSC.Modules;
+﻿namespace EvoSC.Modules.Interfaces;
 
 /// <summary>
 /// Base interface for all modules.

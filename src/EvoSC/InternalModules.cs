@@ -2,6 +2,7 @@
 using EvoSC.Modules;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ExampleModule;
+using EvoSC.Modules.Official.Maps;
 using EvoSC.Modules.Official.Player;
 using FluentMigrator.Runner.Exceptions;
 
@@ -12,7 +13,8 @@ public static class InternalModules
     public static readonly List<Type> Modules = new()
     {
         typeof(PlayerModule),
-        typeof(ExampleModule)
+        typeof(ExampleModule),
+        typeof(MapsModule)
     };
 
     /// <summary>
