@@ -28,7 +28,7 @@ public class MxMapService : IMxMapService
 
         if (mapFile == null)
         {
-            _logger.LogDebug($"Could not find any map stream for ID {mxId} from Trackmania Exchange.");
+            _logger.LogDebug("Could not find any map stream for ID {MxId} from Trackmania Exchange.", mxId);
             return null;
         }
 
@@ -36,19 +36,20 @@ public class MxMapService : IMxMapService
 
         if (mapInfoDto == null)
         {
-            _logger.LogDebug($"Could not find any map info for ID {mxId} from Trackmania Exchange.");
+            _logger.LogDebug("Could not find any map info for ID {MxId} from Trackmania Exchange.", mxId);
             return null;
         }
 
-        var mapMetadata = new MapMetadata(
-            mapInfoDto.TrackUID,
-            mapInfoDto.GbxMapName,
-            mapInfoDto.AuthorLogin,
-            mapInfoDto.Username,
-            mapInfoDto.MapID.ToString(),
-            Convert.ToDateTime(mapInfoDto.UpdatedAt),
-            MapProviders.ManiaExchange
-        );
+        var mapMetadata = new MapMetadata
+        {
+            MapUid = mapInfoDto.TrackUID,
+            MapName = mapInfoDto.GbxMapName,
+            AuthorId = mapInfoDto.AuthorLogin,
+            AuthorName = mapInfoDto.Username,
+            ExternalId = mapInfoDto.MapID.ToString(),
+            ExternalVersion = Convert.ToDateTime(mapInfoDto.UpdatedAt),
+            ExternalMapProvider = MapProviders.ManiaExchange
+        };
 
         var map = new MapStream(mapMetadata, mapFile);
 

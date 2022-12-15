@@ -61,6 +61,11 @@ public static class PlayerUtils
         return accountId.ToLower();
     }
 
+    /// <summary>
+    /// Checks the given login against a regex to determine if it's an accountId.
+    /// </summary>
+    /// <param name="login">The player's login.</param>
+    /// <returns></returns>
     public static bool IsAccountId(string login)
     {
         return Regex.IsMatch(login, AccountIdRegex);
