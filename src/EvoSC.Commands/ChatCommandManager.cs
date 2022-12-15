@@ -22,8 +22,9 @@ public class ChatCommandManager : IChatCommandManager
 {
     public static readonly string CommandPrefix = "/";
     
-    private readonly Dictionary<string, IChatCommand> _cmds;
-    private readonly Dictionary<string, string> _aliasMap;
+    private readonly Dictionary<string, IChatCommand> _cmds = new();
+    private readonly Dictionary<string, string> _aliasMap = new();
+    private readonly Dictionary<Type, List<IChatCommand>> _controllerCommands = new();
 
     private readonly ILogger<ChatCommandManager> _logger;
 
@@ -31,12 +32,15 @@ public class ChatCommandManager : IChatCommandManager
     public ChatCommandManager(ILogger<ChatCommandManager> logger)
     {
         _logger = logger;
-        _cmds = new Dictionary<string, IChatCommand>();
-        _aliasMap = new Dictionary<string, string>();
     }
     
     public void RegisterForController(Type controllerType)
     {
+        if (!_controllerCommands.ContainsKey(controllerType))
+        {
+            _controllerCommands[controllerType] = new List<IChatCommand>();
+        }
+        
         var methods = controllerType.GetMethods(ReflectionUtils.InstanceMethods);
 
         foreach (var method in methods)
@@ -50,7 +54,7 @@ public class ChatCommandManager : IChatCommandManager
 
             var aliasAttrs = method.GetCustomAttributes<CommandAliasAttribute>();
 
-            AddCommand(builder =>
+            var cmd = AddCommand(builder =>
             {
                 builder
                     .WithName(cmdAttr.Name)
@@ -65,6 +69,21 @@ public class ChatCommandManager : IChatCommandManager
                     builder.AddAlias(new CommandAlias(alias));
                 }
             });
+            
+            _controllerCommands[controllerType].Add(cmd);
+        }
+    }
+
+    public void UnregisterForController(Type controllerType)
+    {
+        if (!_controllerCommands.ContainsKey(controllerType))
+        {
+            return;
+        }
+        
+        foreach (var cmd in _controllerCommands[controllerType])
+        {
+            RemoveCommand(cmd);
         }
     }
 
@@ -102,11 +121,34 @@ public class ChatCommandManager : IChatCommandManager
         }
     }
 
-    public void AddCommand(Action<ChatCommandBuilder> builderAction)
+    public IChatCommand AddCommand(Action<ChatCommandBuilder> builderAction)
     {
         var builder = new ChatCommandBuilder();
         builderAction(builder);
-        AddCommand(builder.Build());
+        var cmd = builder.Build();
+        
+        AddCommand(cmd);
+        
+        return cmd;
+    }
+
+    public void RemoveCommand(IChatCommand cmd)
+    {
+        var cmdName = (cmd.UsePrefix ? CommandPrefix : "") + cmd.Name; 
+        
+        if (!_cmds.ContainsKey(cmdName))
+        {
+            throw new CommandNotFoundException(cmdName, false);
+        }
+
+        _cmds.Remove(cmdName);
+
+        foreach (var alias in cmd.Aliases.Keys)
+        {
+            _aliasMap.Remove(alias);
+        }
+
+        _logger.LogDebug("Removed command: {Name}", cmdName);
     }
 
     public IChatCommand FindCommand(string alias) => FindCommand(alias, true);

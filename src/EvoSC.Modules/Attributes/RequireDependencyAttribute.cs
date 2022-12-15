@@ -10,6 +10,7 @@ public class RequireDependencyAttribute : Attribute
     /// Name of the module that is dependent upon.
     /// </summary>
     public required string Name { get; set; }
+    
     /// <summary>
     /// A specific version of the dependency that is required.
     /// </summary>

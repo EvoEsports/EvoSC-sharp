@@ -13,7 +13,9 @@ public interface IChatCommandManager : IControllerActionRegistry
     /// Register a new chat command with a builder action.
     /// </summary>
     /// <param name="builder">An action or lambda that provides the command builder.</param>
-    public void AddCommand(Action<ChatCommandBuilder> builder);
+    public IChatCommand AddCommand(Action<ChatCommandBuilder> builder);
+
+    public void RemoveCommand(IChatCommand cmd);
     /// <summary>
     /// Find a command by it's name.
     /// </summary>

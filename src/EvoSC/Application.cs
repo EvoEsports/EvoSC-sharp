@@ -20,6 +20,8 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
 using EvoSC.Modules;
 using EvoSC.Modules.Extensions;
+using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Util;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;
@@ -141,8 +143,24 @@ public class Application : IEvoSCApplication
     private async Task SetupModules()
     {
         var modules = _services.GetInstance<IModuleManager>();
+        var config = _services.GetInstance<IEvoScBaseConfig>();
 
         await modules.LoadInternalModules();
+
+        var dirs = config.Modules.ModuleDirectories;
+        var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
+        foreach (var dir in dirs)
+        {
+            if (!Directory.Exists(dir))
+            {
+                continue;
+            }
+
+            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
+        }
+
+        externalModules.SetIgnoredDependencies(modules.LoadedModules.Select(m => m.ModuleInfo.Name));
+        await modules.LoadAsync(externalModules);
     }
 
     private async Task StartBackgroundServices()
