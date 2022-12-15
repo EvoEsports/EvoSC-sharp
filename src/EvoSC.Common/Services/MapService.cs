@@ -41,7 +41,7 @@ public class MapService : IMapService
         IMap? existingMap = await GetMapByUid(mapMetadata.MapUid);
         if (existingMap != null && MapVersionExistsInDb(existingMap, mapMetadata))
         {
-            // TODO: Change this with a more precise exception
+            // TODO: #79 Expand Map module with more accurate exceptions https://github.com/EvoTM/EvoSC-sharp/issues/79
             _logger.LogDebug("Map with UID {MapUid} already exists in database.", mapMetadata.MapUid);
             throw new DuplicateNameException($"Map with UID {mapMetadata.MapUid} already exists in database");
         }
