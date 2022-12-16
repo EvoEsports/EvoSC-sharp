@@ -57,5 +57,20 @@ public interface IModuleLoadContext
     /// Permissions registered from this module.
     /// </summary>
     public List<IPermission> Permissions { get; set; }
+    
+    /// <summary>
+    /// References to loaded modules that this module depends on.
+    /// </summary>
     public List<Guid> LoadedDependencies { get; init; }
+    
+    /// <summary>
+    /// Whether this module is currently enabled.
+    /// </summary>
+    public bool IsEnabled { get; }
+
+    /// <summary>
+    /// Set the enabled status of this module.
+    /// </summary>
+    /// <param name="enabled">True if enabled, false otherwise.</param>
+    internal void SetEnabled(bool enabled);
 }
