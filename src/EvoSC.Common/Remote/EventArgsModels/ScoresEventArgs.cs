@@ -4,10 +4,10 @@ namespace EvoSC.Common.Remote.EventArgsModels;
 
 public class ScoresEventArgs : EventArgs
 {
-    public string? Section { get; init; }
-    public bool UseTeams { get; init; }
-    public int WinnerTeam { get; init; }
-    public string? WinnerPlayer { get; init; }
-    public IEnumerable<TeamScore?> Teams { get; init; }
-    public IEnumerable<PlayerScore?> Players { get; init; }
+    public required string? Section { get; init; }
+    public required bool UseTeams { get; init; }
+    public required int WinnerTeam { get; init; }
+    public required string? WinnerPlayer { get; init; }
+    public required IEnumerable<TeamScore?> Teams { get; init; }
+    public required IEnumerable<PlayerScore?> Players { get; init; }
 }
