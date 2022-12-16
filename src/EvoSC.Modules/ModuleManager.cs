@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Data.Common;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using Config.Net;
 using EvoSC.Common.Config.Models;
@@ -67,9 +68,10 @@ public class ModuleManager : IModuleManager
         }
     }
     
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public async Task InstallAsync(Guid loadId)
     {
-        var moduleContext = GetModuleById(loadId);
+        var moduleContext = GetModule(loadId);
 
         await InstallPermissions(moduleContext);
         await TryCallModuleInstall(moduleContext);
@@ -77,9 +79,10 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public async Task UninstallAsync(Guid loadId)
     {
-        var moduleContext = GetModuleById(loadId);
+        var moduleContext = GetModule(loadId);
 
         await UninstallPermissions(moduleContext);
         await TryCallModuleUninstall(moduleContext);
@@ -87,7 +90,7 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("Module {Type}({Module}) was uninstalled", moduleContext.MainClass, loadId);
     }
 
-    private IModuleLoadContext GetModuleById(Guid loadId)
+    public IModuleLoadContext GetModule(Guid loadId)
     {
         if (loadId == Guid.Empty || !_loadedModules.ContainsKey(loadId))
         {
@@ -206,6 +209,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IToggleable instance)
@@ -216,6 +220,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
     
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private Task TryCallModuleDisable(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IToggleable instance)
@@ -226,6 +231,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private Task TryCallModuleInstall(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IInstallable instance)
@@ -236,6 +242,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
     
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private Task TryCallModuleUninstall(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IInstallable instance)
@@ -333,6 +340,7 @@ public class ModuleManager : IModuleManager
     private bool VerifyExternalModule(IExternalModuleInfo moduleInfo) =>
         !_config.Modules.RequireSignatureVerification || moduleInfo.ModuleFiles.All(file => file.VerifySignature());
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private (Type?, AssemblyLoadContext) CreateAssemblyLoadContext(Guid loadId, IExternalModuleInfo moduleInfo)
     {
         var asmLoadContext = new AssemblyLoadContext(loadId.ToString(), true);
@@ -372,6 +380,7 @@ public class ModuleManager : IModuleManager
         return loadedDependency;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private IEvoScModule CreateModuleInstance(Type mainClass, Container moduleServices) =>
         (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, mainClass);
 
@@ -382,6 +391,7 @@ public class ModuleManager : IModuleManager
             {PipelineType.ControllerAction, new ActionPipeline()}
         };
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
     {
         var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
@@ -421,6 +431,7 @@ public class ModuleManager : IModuleManager
         return loadedDependencies;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task LoadInternalAsync(Guid loadId, IModuleInfo moduleInfo, Type mainClass, AssemblyLoadContext? asmLoadContext)
     {
         if (_moduleNameMap.ContainsKey(moduleInfo.Name))
@@ -446,28 +457,35 @@ public class ModuleManager : IModuleManager
         await EnableAsync(loadId);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public async Task EnableAsync(Guid loadId)
     {
-        var moduleContext = GetModuleById(loadId);
+        var moduleContext = GetModule(loadId);
 
         await EnableControllers(moduleContext);
         await EnableMiddlewares(moduleContext);
         await TryCallModuleEnable(moduleContext);
+
+        moduleContext.SetEnabled(true);
         
         _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public async Task DisableAsync(Guid loadId)
     {
-        var moduleContext = GetModuleById(loadId);
+        var moduleContext = GetModule(loadId);
 
         await DisableControllers(moduleContext);
         await DisableMiddlewares(moduleContext);
         await TryCallModuleDisable(moduleContext);
         
+        moduleContext.SetEnabled(false);
+        
         _logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public Task LoadAsync(string directory)
     {
         if (!Directory.Exists(directory))
@@ -479,6 +497,7 @@ public class ModuleManager : IModuleManager
         return LoadAsync(moduleInfo);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public Task LoadAsync(IExternalModuleInfo moduleInfo)
     {
         if (!VerifyExternalModule(moduleInfo))
@@ -503,6 +522,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public Task LoadAsync(Assembly assembly)
     {
         var moduleInfo = ModuleInfoUtils.CreateFromAssembly(assembly);
@@ -521,6 +541,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public async Task LoadAsync(IModuleCollection<IExternalModuleInfo> collection)
     {
         foreach (var module in collection)
@@ -529,8 +550,53 @@ public class ModuleManager : IModuleManager
         }
     }
 
-    public Task UnloadAsync(Guid loadId)
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private async Task<WeakReference> UnloadInternalAsync(Guid loadId)
     {
-        throw new NotImplementedException();
+        var moduleContext = GetModule(loadId);
+
+        if (moduleContext.ModuleInfo.IsInternal)
+        {
+            throw new EvoScModuleException($"Attempted to unload internal module '{loadId}' but this is not allowed");
+        }
+
+        foreach (var module in LoadedModules)
+        {
+            if (module.LoadedDependencies.Any(d => d == loadId))
+            {
+                await UnloadAsync(module.LoadId);
+            }
+        }
+
+        if (moduleContext.IsEnabled)
+        {
+            await DisableAsync(loadId);
+        }
+        
+        _loadedModules.Remove(loadId);
+
+        var instanceWeakRef = new WeakReference(moduleContext.Instance);
+        moduleContext.AsmLoadContext?.Unload();
+
+        return instanceWeakRef;
+    }
+    
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public async Task UnloadAsync(Guid loadId)
+    {
+        var instanceWeakRef = await UnloadInternalAsync(loadId);
+        
+        for (var i = 0; instanceWeakRef.IsAlive && i < 10; i++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        if (instanceWeakRef.IsAlive)
+        {
+            _logger.LogWarning("Some references for module '{LoadId}' are still alive", loadId);
+        }
+        
+        _logger.LogDebug("Module '{LoadId}' was unloaded", loadId);
     }
 }

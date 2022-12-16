@@ -9,6 +9,8 @@ public interface IModuleManager
 {
     public IReadOnlyList<IModuleLoadContext> LoadedModules { get; }
 
+    public IModuleLoadContext GetModule(Guid loadId);
+    
     /// <summary>
     /// Enable a module.
     /// </summary>

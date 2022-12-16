@@ -62,4 +62,9 @@ public interface IModuleLoadContext
     /// References to loaded modules that this module depends on.
     /// </summary>
     public List<Guid> LoadedDependencies { get; init; }
+    
+    public bool IsEnabled { get; }
+
+    internal void SetEnabled(bool enabled);
+    internal void RemoveReferences();
 }
