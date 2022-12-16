@@ -21,13 +21,13 @@ public class ExampleController2 : EvoScController<CommandInteractionContext>
     {
         var loadId = Guid.Parse(loadIdStr);
 
-        if (action == "enable")
+        if (action == "load")
         {
             await _modules.EnableAsync(loadId);
         }
-        else if (action == "disable")
+        else if (action == "unload")
         {
-            await _modules.DisableAsync(loadId);
+            await _modules.UnloadAsync(loadId);
         }
     }
 }
