@@ -9,6 +9,11 @@ public interface IModuleManager
 {
     public IReadOnlyList<IModuleLoadContext> LoadedModules { get; }
 
+    /// <summary>
+    /// Get the load context of a module by it's load ID.
+    /// </summary>
+    /// <param name="loadId">The load ID of the module.</param>
+    /// <returns></returns>
     public IModuleLoadContext GetModule(Guid loadId);
     
     /// <summary>
@@ -25,7 +30,18 @@ public interface IModuleManager
     /// <returns></returns>
     public Task DisableAsync(Guid loadId);
 
+    /// <summary>
+    /// Run the installation of a module.
+    /// </summary>
+    /// <param name="loadId">The load ID of the module.</param>
+    /// <returns></returns>
     public Task InstallAsync(Guid loadId);
+    
+    /// <summary>
+    /// Run the uninstallation of a module.
+    /// </summary>
+    /// <param name="loadId">The load ID of the module.</param>
+    /// <returns></returns>
     public Task UninstallAsync(Guid loadId);
     
     /// <summary>

@@ -28,9 +28,4 @@ public class ModuleLoadContext : IModuleLoadContext
     {
         IsEnabled = enabled;
     }
-
-    public void RemoveReferences()
-    {
-        
-    }
 }
