@@ -22,6 +22,9 @@ public interface IModuleManager
     /// <param name="loadId">The load ID of the module to disable.</param>
     /// <returns></returns>
     public Task DisableAsync(Guid loadId);
+
+    public Task InstallAsync(Guid loadId);
+    public Task UninstallAsync(Guid loadId);
     
     /// <summary>
     /// Load an external module from a directory.

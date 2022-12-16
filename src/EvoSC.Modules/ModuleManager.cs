@@ -67,7 +67,7 @@ public class ModuleManager : IModuleManager
         }
     }
     
-    private async Task InstallModuleAsync(Guid loadId)
+    public async Task InstallAsync(Guid loadId)
     {
         var moduleContext = GetModuleById(loadId);
 
@@ -75,6 +75,16 @@ public class ModuleManager : IModuleManager
         await TryCallModuleInstall(moduleContext);
         
         _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
+    }
+
+    public async Task UninstallAsync(Guid loadId)
+    {
+        var moduleContext = GetModuleById(loadId);
+
+        await UninstallPermissions(moduleContext);
+        await TryCallModuleUninstall(moduleContext);
+        
+        _logger.LogDebug("Module {Type}({Module}) was uninstalled", moduleContext.MainClass, loadId);
     }
 
     private IModuleLoadContext GetModuleById(Guid loadId)
@@ -156,6 +166,14 @@ public class ModuleManager : IModuleManager
         moduleContext.Permissions = identifiedPermissions;
     }
 
+    private async Task UninstallPermissions(IModuleLoadContext moduleContext)
+    {
+        foreach (var permission in moduleContext.Permissions)
+        {
+            await _permissions.RemovePermission(permission);
+        }
+    }
+
     private Task EnableMiddlewares(IModuleLoadContext moduleContext)
     {
         _pipelineManager.AddPipeline(PipelineType.ChatRouter, moduleContext.LoadId,
@@ -213,6 +231,16 @@ public class ModuleManager : IModuleManager
         if (moduleContext.Instance is IInstallable instance)
         {
             return instance.Install();
+        }
+
+        return Task.CompletedTask;
+    }
+    
+    private Task TryCallModuleUninstall(IModuleLoadContext moduleContext)
+    {
+        if (moduleContext.Instance is IInstallable instance)
+        {
+            return instance.Uninstall();
         }
 
         return Task.CompletedTask;
@@ -414,7 +442,7 @@ public class ModuleManager : IModuleManager
 
         _logger.LogDebug("External Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
 
-        await InstallModuleAsync(loadId);
+        await InstallAsync(loadId);
         await EnableAsync(loadId);
     }
 
