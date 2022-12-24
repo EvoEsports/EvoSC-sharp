@@ -23,6 +23,8 @@ public class MigrationManager : IMigrationManager
             .AddFluentMigratorCore()
             .ConfigureRunner(c => c
                 .AddMySql5()
+                .AddSQLite()
+                .AddPostgres()
                 .WithGlobalConnectionString(_config.Database.GetConnectionString())
                 .ScanIn(asm).For.Migrations())
             .AddEvoScLogging(_config.Logging)
