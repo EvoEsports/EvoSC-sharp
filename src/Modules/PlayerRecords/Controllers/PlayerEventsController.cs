@@ -11,6 +11,7 @@ using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util;
+using EvoSC.Modules.Official.PlayerRecords.Events;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using GBX.NET;
 using GBX.NET.Engines.Game;
