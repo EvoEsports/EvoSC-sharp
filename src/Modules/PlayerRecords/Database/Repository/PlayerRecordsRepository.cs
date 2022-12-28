@@ -1,7 +1,11 @@
 ﻿using System.Data.Common;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Models.Maps;
+using EvoSC.Common.Models.Players;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.PlayerRecords.Database.Models;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
@@ -17,14 +21,21 @@ public class PlayerRecordsRepository : IPlayerRecordsRepository
 
     public async Task<DbPlayerRecord?> GetRecordAsync(IPlayer player, IMap map)
     {
-        var sql = "select * from `PlayerRecords` where `PlayerId`=@PlayerId AND `MapId`=@MapId limit 1";
+        var sql = """
+                select * from `PlayerRecords`
+                inner join `Maps` on `PlayerRecords`.MapId=`Maps`.Id
+                inner join `Players` on `PlayerRecords`.PlayerId=`Players`.Id
+                where `PlayerId`=@PlayerId AND `MapId`=@MapId 
+                limit 1
+                """;
+        
         var values = new {PlayerId = player.Id, MapId = map.Id};
-        var record = await _db.QueryAsync<DbPlayerRecord, IPlayer, IMap, DbPlayerRecord>(sql,
-            (record, player, map) =>
+        var record = await _db.QueryAsync<DbPlayerRecord, DbPlayer, DbMap, DbPlayerRecord>(sql,
+            (playerRecord, dbPlayer, dbMap) =>
             {
-                record.Player = player;
-                record.Map = map;
-                return record;
+                playerRecord.Player = new Player(dbPlayer);
+                playerRecord.Map = new Map(dbMap);
+                return playerRecord;
             }, values);
 
         return record?.FirstOrDefault();

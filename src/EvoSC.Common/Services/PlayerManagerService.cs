@@ -36,12 +36,22 @@ public class PlayerManagerService : IPlayerManagerService
     
     public async Task<IPlayer?> GetPlayerAsync(string accountId)
     {
+        if (accountId.Equals(PlayerUtils.NadeoPlayer.AccountId, StringComparison.Ordinal))
+        {
+            return PlayerUtils.NadeoPlayer;
+        }
+        
         var results = await _db.SelectByColumnAsync<DbPlayer>("Players", "AccountId", accountId);
         return results?.FirstOrDefault();
     }
 
     public async Task<IPlayer> GetOrCreatePlayerAsync(string accountId)
     {
+        if (accountId.Equals(PlayerUtils.NadeoPlayer.AccountId, StringComparison.Ordinal))
+        {
+            return PlayerUtils.NadeoPlayer;
+        }
+        
         var player = await GetPlayerAsync(accountId);
 
         if (player != null)
@@ -109,10 +119,23 @@ public class PlayerManagerService : IPlayerManagerService
         };
     }
 
-    public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player) => GetOnlinePlayerAsync(player.AccountId);
-    
+    public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player)
+    {
+        if (player.IsNadeoPlaceholder())
+        {
+            throw new InvalidOperationException("Cannot get Nadeo Placeholder Player as an online player.");
+        }
+        
+        return GetOnlinePlayerAsync(player.AccountId);
+    }
+
     public Task UpdateLastVisitAsync(IPlayer player)
     {
+        if (player.IsNadeoPlaceholder())
+        {
+            throw new InvalidOperationException("Cannot update a Nadeo placeholder player object.");
+        }
+        
         var sql = "update `Players` set LastVisit=@Lastvisit where `Id`=@Id";
         var values = new {LastVisit = DateTime.UtcNow, Id = player.Id};
 
