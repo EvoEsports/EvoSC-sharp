@@ -21,19 +21,14 @@ namespace EvoSC.Modules.Official.PlayerRecords.Controllers;
 public class PlayerEventsController : EvoScController<EventControllerContext>
 {
     private readonly IPlayerRecordsService _playerRecords;
-    private readonly IServerClient _server;
-    private readonly IMapService _maps;
-    private readonly MapRepository _mapsRepo;
     private readonly IPlayerManagerService _players;
+    private readonly IEventManager _events;
 
-    public PlayerEventsController(IPlayerRecordsService playerRecords, IServerClient server, IMapService maps,
-        MapRepository mapsRepo, IPlayerManagerService players)
+    public PlayerEventsController(IPlayerRecordsService playerRecords, IPlayerManagerService players, IEventManager events)
     {
         _playerRecords = playerRecords;
-        _server = server;
-        _maps = maps;
-        _mapsRepo = mapsRepo;
         _players = players;
+        _events = events;
     }
 
     [Subscribe(ModeScriptEvent.WayPoint)]
@@ -43,42 +38,18 @@ public class PlayerEventsController : EvoScController<EventControllerContext>
         {
             return;
         }
-        
-        var currentMap = await _server.Remote.GetCurrentMapInfoAsync();
-        var map = await _maps.GetMapByUid(currentMap.UId);
+
+        var map = await _playerRecords.GetOrAddCurrentMapAsync();
         var player = await _players.GetOnlinePlayerAsync(wayPoint.AccountId);
+        var (record, status) =
+            await _playerRecords.SetPbRecordAsync(player, map, wayPoint.RaceTime, wayPoint.CurrentRaceCheckpoints);
 
-        if (map == null)
+        await _events.Raise(PlayerRecordsEvent.PbRecord, new PbRecordUpdateEventArgs
         {
-            var mapAuthor = await _players.GetOrCreatePlayerAsync(PlayerUtils.ConvertLoginToAccountId(currentMap.Author));
-            var dbMap = new DbMap
-            {
-                Uid = currentMap.Author,
-                FilePath = currentMap.FileName,
-                AuthorId = mapAuthor.Id,
-                Enabled = true,
-                Name = currentMap.Name,
-                ExternalId = null,
-                ExternalVersion = null,
-                ExternalMapProvider = null,
-                CreatedAt = default,
-                UpdatedAt = default,
-                Author = mapAuthor
-            };
-
-            var mapMeta = new MapMetadata
-            {
-                MapUid = currentMap.Author,
-                MapName = currentMap.Name,
-                AuthorId = mapAuthor.AccountId,
-                AuthorName = mapAuthor.NickName,
-                ExternalId = "",
-                ExternalVersion = null,
-                ExternalMapProvider = null
-            };
-
-            map = await _mapsRepo.AddMap(mapMeta, player, currentMap.FileName);
-            await _playerRecords.AddRecordAsync(player, map, wayPoint.RaceTime, wayPoint.CurrentRaceCheckpoints);
-        }
+            Player = player,
+            Record = record,
+            Map = map,
+            Status = status
+        });
     }
 }
