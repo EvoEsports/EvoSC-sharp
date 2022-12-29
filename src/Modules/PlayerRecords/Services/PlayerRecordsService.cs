@@ -7,6 +7,7 @@ using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.PlayerRecords.Database.Models;
+using EvoSC.Modules.Official.PlayerRecords.Events;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 

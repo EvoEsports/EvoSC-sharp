@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Modules.Official.PlayerRecords;
+﻿namespace EvoSC.Modules.Official.PlayerRecords.Events;
 
 public enum RecordUpdateStatus
 {
