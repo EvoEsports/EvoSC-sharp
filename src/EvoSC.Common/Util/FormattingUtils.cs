@@ -17,4 +17,13 @@ public static class FormattingUtils
     /// <returns></returns>
     public static string CleanTmFormatting(string text) =>
         TmTextFormatPattern.Replace(text, "");
+
+    public static string FormatTime(int milliseconds)
+    {
+        var ms = milliseconds % 1000;
+        var s = milliseconds / 1000 % 60;
+        var m = milliseconds / 1000 / 60;
+        
+        return $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
+    }
 }
