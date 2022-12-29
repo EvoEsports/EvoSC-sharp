@@ -1,20 +1,13 @@
 ﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
-using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Repository;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
-using EvoSC.Common.Util;
 using EvoSC.Modules.Official.PlayerRecords.Events;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
-using GBX.NET;
-using GBX.NET.Engines.Game;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Controllers;
 
@@ -44,7 +37,7 @@ public class PlayerEventsController : EvoScController<EventControllerContext>
         var map = await _playerRecords.GetOrAddCurrentMapAsync();
         var player = await _players.GetOnlinePlayerAsync(wayPoint.AccountId);
         var (record, status) =
-            await _playerRecords.SetPbRecordAsync(player, map, wayPoint.RaceTime, wayPoint.CurrentRaceCheckpoints);
+            await _playerRecords.SetPbRecordAsync(player, map, wayPoint.RaceTime, wayPoint.CurrentLapCheckpoints);
 
         await _events.Raise(PlayerRecordsEvent.PbRecord, new PbRecordUpdateEventArgs
         {

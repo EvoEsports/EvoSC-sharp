@@ -1,4 +1,6 @@
-﻿using FluentMigrator;
+﻿using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Util;
+using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -16,6 +18,15 @@ public class AddPlayersTable : Migration
             .WithColumn("LastVisit").AsDateTime().Nullable()
             .WithColumn("CreatedAt").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)
             .WithColumn("UpdatedAt").AsDateTime().WithDefault(SystemMethods.CurrentDateTime);
+
+        Insert.IntoTable("Players").Row(new
+        {
+            Id = PlayerUtils.NadeoPlayer.Id,
+            AccountId = PlayerUtils.NadeoPlayer.AccountId,
+            NickName = PlayerUtils.NadeoPlayer.NickName,
+            UbisoftName = PlayerUtils.NadeoPlayer.UbisoftName,
+            Zone = PlayerUtils.NadeoPlayer.Zone
+        });
     }
 
     public override void Down()
