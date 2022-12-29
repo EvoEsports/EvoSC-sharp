@@ -57,6 +57,11 @@ public class PlayerRecordsService : IPlayerRecordsService
         return map;
     }
 
+    public async Task<IPlayerRecord?> GetPlayerRecordAsync(IPlayer player, IMap map)
+    {
+        return await _recordsRepo.GetRecordAsync(player, map);
+    }
+
     public async Task<(IPlayerRecord, RecordUpdateStatus)> SetPbRecordAsync(IPlayer player, IMap map, int score,
         IEnumerable<int> checkpoints)
     {

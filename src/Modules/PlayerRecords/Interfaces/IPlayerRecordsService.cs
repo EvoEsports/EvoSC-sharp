@@ -7,4 +7,5 @@ public interface IPlayerRecordsService
 {
     public Task<(IPlayerRecord, RecordUpdateStatus)> SetPbRecordAsync(IPlayer player, IMap map, int score, IEnumerable<int> checkpoints);
     public Task<IMap> GetOrAddCurrentMapAsync();
+    public Task<IPlayerRecord?> GetPlayerRecordAsync(IPlayer player, IMap map);
 }
