@@ -16,17 +16,15 @@ namespace EvoSC.Modules.Official.PlayerRecords.Services;
 public class PlayerRecordsService : IPlayerRecordsService
 {
     private readonly IPlayerRecordsRepository _recordsRepo;
-    private readonly MapRepository _mapRepo;
     private readonly IServerClient _server;
     private readonly IMapService _maps;
     private readonly IPlayerManagerService _players;
     private readonly MapRepository _mapsRepo;
 
-    public PlayerRecordsService(IPlayerRecordsRepository recordsRepo, MapRepository mapRepo, IServerClient server,
-        IMapService maps, IPlayerManagerService players, MapRepository mapsRepo)
+    public PlayerRecordsService(IPlayerRecordsRepository recordsRepo, IServerClient server, IMapService maps,
+        IPlayerManagerService players, MapRepository mapsRepo)
     {
         _recordsRepo = recordsRepo;
-        _mapRepo = mapRepo;
         _server = server;
         _maps = maps;
         _players = players;
