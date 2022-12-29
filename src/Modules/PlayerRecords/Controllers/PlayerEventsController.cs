@@ -25,7 +25,8 @@ public class PlayerEventsController : EvoScController<EventControllerContext>
     private readonly IPlayerManagerService _players;
     private readonly IEventManager _events;
 
-    public PlayerEventsController(IPlayerRecordsService playerRecords, IPlayerManagerService players, IEventManager events)
+    public PlayerEventsController(IPlayerRecordsService playerRecords, IPlayerManagerService players,
+        IEventManager events)
     {
         _playerRecords = playerRecords;
         _players = players;
