@@ -3,7 +3,7 @@ using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Database.Models;
 
-[Table("Groups")]
+[Table("\"Groups\"")]
 public class DbGroup : IGroup
 {
     [Key]

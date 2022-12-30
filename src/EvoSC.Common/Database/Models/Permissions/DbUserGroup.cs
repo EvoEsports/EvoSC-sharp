@@ -2,7 +2,7 @@
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Table("UserGroups")]
+[Table("\"UserGroups\"")]
 public class DbUserGroup
 {
     public long UserId { get; set; }

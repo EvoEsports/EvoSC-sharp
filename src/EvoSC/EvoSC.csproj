@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Dapper.FluentMap" Version="2.0.0" />
+      <PackageReference Include="DapperExtensions" Version="1.7.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
       <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />

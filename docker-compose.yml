@@ -7,29 +7,35 @@ services:
       - 2351:2350/tcp
       - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-      MASTER_LOGIN: "SERVERLOGIN"
-      MASTER_PASSWORD: "SERVERPASS"
+      MASTER_LOGIN: "halloiluken"
+      MASTER_PASSWORD: "F/vUcP)}Q9aLi*ls"
       XMLRPC_ALLOWREMOTE: "True"
     volumes:
       - UserData:/server/UserData
-  db:
-    image: mariadb
+  postgres:
+    image: postgres:12.3-alpine
     restart: always
-    ports:
-      - "127.0.0.1:3306:3306"
-    volumes:
-      - MariaDBData:/var/lib/mysql
     environment:
-      MARIADB_ROOT_PASSWORD: CHANGEME
-      MARIADB_USER: evosc
-      MARIADB_PASSWORD: evosc123!
-      MARIADB_DATABASE: evosc
-      MARIADB_AUTO_UPGRADE: always
-  adminer:
-    image: adminer
-    restart: always
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
     ports:
-      - "127.0.0.1:8081:8080"
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    
+  pgadmin:
+    image: dpage/pgadmin4:6.18
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - 15432:80
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    depends_on:
+      - postgres
 volumes:
   UserData: null
-  MariaDBData: null
+  postgres: null
+  pgadmin: null

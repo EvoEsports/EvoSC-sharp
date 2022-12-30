@@ -4,7 +4,7 @@ using EvoSC.Common.Models.Maps;
 
 namespace EvoSC.Common.Database.Models.Maps;
 
-[Table("Maps")]
+[Table("\"Maps\"")]
 public class DbMap : IMap
 {
     [Key]

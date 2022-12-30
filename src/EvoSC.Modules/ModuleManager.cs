@@ -20,7 +20,6 @@ using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Exceptions.ModuleServices;
-using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;

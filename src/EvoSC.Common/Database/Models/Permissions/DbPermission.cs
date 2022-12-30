@@ -3,7 +3,7 @@ using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Table("Permissions")]
+[Table("\"Permissions\"")]
 public class DbPermission : IPermission
 {
     [Key]
