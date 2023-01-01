@@ -1,9 +1,10 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.ComponentModel.DataAnnotations;
 using EvoSC.Common.Interfaces.Models;
+using RepoDb.Attributes;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Table("\"Groups\"")]
+[Map("Groups")]
 public class DbGroup : IGroup
 {
     [Key]
@@ -14,7 +15,6 @@ public class DbGroup : IGroup
     public string? Color { get; set; }
     public bool Unrestricted { get; set; }
     
-    [Computed]
     public List<IPermission> Permissions { get; set; }
 
     public DbGroup()

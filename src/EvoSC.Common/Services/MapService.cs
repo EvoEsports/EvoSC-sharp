@@ -29,9 +29,9 @@ public class MapService : IMapService
         _serverClient = serverClient;
     }
 
-    public async Task<IMap?> GetMapById(long id) => await _mapRepository.GetMapById(id);
+    public async Task<IMap?> GetMapById(long id) => await _mapRepository.GetMapByIdAsync(id);
 
-    public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUid(uid);
+    public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUidAsync(uid);
 
     public async Task<IMap> AddMap(MapStream mapStream)
     {
@@ -62,7 +62,7 @@ public class MapService : IMapService
             try
             {
                 _logger.LogDebug("Updating map with ID {MapId} to the database.", existingMap.Id);
-                map = await _mapRepository.UpdateMap(existingMap.Id, mapMetadata);
+                map = await _mapRepository.UpdateMapAsync(existingMap.Id, mapMetadata);
             }
             catch (Exception e)
             {
@@ -76,7 +76,7 @@ public class MapService : IMapService
             try
             {
                 _logger.LogDebug($"Adding map to the database.");
-                map = await _mapRepository.AddMap(mapMetadata, author, filePath);
+                map = await _mapRepository.AddMapAsync(mapMetadata, author, filePath);
             }
             catch (Exception e)
             {
@@ -105,7 +105,7 @@ public class MapService : IMapService
 
     public async Task RemoveMap(long mapId)
     {
-        await _mapRepository.RemoveMap(mapId);
+        await _mapRepository.RemoveMapAsync(mapId);
     }
 
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)

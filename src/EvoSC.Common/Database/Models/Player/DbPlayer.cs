@@ -1,9 +1,10 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.ComponentModel.DataAnnotations;
 using EvoSC.Common.Interfaces.Models;
+using RepoDb.Attributes;
 
 namespace EvoSC.Common.Database.Models.Player;
 
-[Table("\"Players\"")]
+[Map("Players")]
 public class DbPlayer : IPlayer
 {
     /// <summary>
@@ -28,6 +29,6 @@ public class DbPlayer : IPlayer
     public string NickName { get; set; }
     public string UbisoftName { get; set; }
     public string Zone { get; set; }
-    [Computed]
+    
     public IEnumerable<IGroup> Groups { get; set; }
 }

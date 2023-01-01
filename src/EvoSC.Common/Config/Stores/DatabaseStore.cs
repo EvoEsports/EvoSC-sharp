@@ -4,6 +4,7 @@ using Config.Net;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoSC.Common.Database.Models;
+using EvoSC.Common.Database.Models.Config;
 using EvoSC.Common.Util;
 
 namespace EvoSC.Common.Config.Stores;

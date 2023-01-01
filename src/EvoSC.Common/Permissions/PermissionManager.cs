@@ -1,45 +1,35 @@
-﻿using System.Data.Common;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using DapperExtensions;
-using EvoSC.Common.Database.Models.Permissions;
+﻿using EvoSC.Common.Database.Models.Permissions;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Repository;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Permissions.Models;
 using Microsoft.Extensions.Logging;
+using RepoDb.Extensions;
 
 namespace EvoSC.Common.Permissions;
 
 public class PermissionManager : IPermissionManager
 {
     private readonly ILogger<PermissionManager> _logger;
-    private readonly DbConnection _db;
-    
-    public PermissionManager(ILogger<PermissionManager> logger, DbConnection db)
+    private readonly IPermissionRepository _permissionRepository;
+
+    public PermissionManager(ILogger<PermissionManager> logger, IPermissionRepository permissionRepository)
     {
         _logger = logger;
-        _db = db;
+        _permissionRepository = permissionRepository;
     }
     
     public async Task<bool> HasPermissionAsync(IPlayer player, string permission)
     {
-        var sql = """
-            SELECT prms.Name FROM Players ps
-            INNER JOIN UserGroups ug ON ug.UserId=ps.Id
-            INNER JOIN GroupPermissions gp ON gp.GroupId=ug.GroupID
-            INNER JOIN Permissions prms ON prms.Id=gp.PermissionId
-            WHERE ps.Id=@UserId
-            """;
-        var values = new {UserId = player.Id};
-        var result = await _db.QueryAsync(sql, values);
+        var result = await _permissionRepository.GetPlayerPermissionsAsync(player.Id);
 
-        if (result == null)
+        var permissions = result.ToList();
+        if (permissions.IsNullOrEmpty())
         {
             return false;
         }
         
-        var permNames = result.Select(p => p.Name);
+        var permNames = permissions.Select(p => p.Name);
 
         foreach (var permName in permNames)
         {
@@ -49,13 +39,7 @@ public class PermissionManager : IPermissionManager
             }
         }
 
-        var groupsSql = """ 
-            SELECT gs.* FROM "Groups" gs
-            INNER JOIN "UserGroups" ug ON ug.GroupID=gs.Id
-            WHERE ug.UserId=@UserId
-            """;
-        var groupsValues = new {UserId = player.Id};
-        var groups = await _db.QueryAsync<DbGroup>(groupsSql, groupsValues);
+        var groups = await _permissionRepository.GetGroupsAsync(player.Id);
 
         foreach (var group in groups)
         {
@@ -68,18 +52,11 @@ public class PermissionManager : IPermissionManager
         return false;
     }
 
-    public async Task<IPermission?> GetPermission(string name)
-    {
-        var query = @"SELECT * FROM ""Permissions"" WHERE ""Name""=@Name LIMIT 1";
-        var values = new {Name = name};
-        var result = await _db.QueryAsync<DbPermission>(query, values);
+    public async Task<IPermission?> GetPermission(string name) => await _permissionRepository.GetPermissionAsync(name);
 
-        return result.FirstOrDefault();
-    }
+    public Task AddPermission(IPermission permission) => _permissionRepository.AddPermissionAsync(permission);
 
-    public Task AddPermission(IPermission permission) => DapperAsyncExtensions.InsertAsync<DbPermission>(_db, new DbPermission(permission));
-
-    public Task UpdatePermission(IPermission permission) => DapperAsyncExtensions.UpdateAsync(_db, new DbPermission(permission));
+    public Task UpdatePermission(IPermission permission) => _permissionRepository.UpdatePermissionAsync(permission);
 
     public async Task RemovePermission(string name)
     {
@@ -90,15 +67,12 @@ public class PermissionManager : IPermissionManager
             throw new InvalidOperationException($"Permission with name '{name}' does not exist.");
         }
 
-        var queryDeleteGroupPermissions = "DELETE FROM \"GroupPermissions\" WHERE \"PermissionId\"=@PermissionId";
-        var valuesDeleteGroupPermissions = new {PermissionId = permission.Id};
-        await _db.QueryAsync(queryDeleteGroupPermissions, valuesDeleteGroupPermissions);
-        await SqlMapperExtensions.DeleteAsync(_db, permission);
+        await _permissionRepository.RemovePermissionAsync(permission);
     }
 
     public Task RemovePermission(IPermission permission) => RemovePermission(permission.Name);
 
-    public async Task AddGroup(IGroup group) => SqlMapperExtensions.InsertAsync(_db, new DbGroup(group));
+    public Task AddGroup(IGroup group) => SqlMapperExtensions.InsertAsync(_db, new DbGroup(group));
 
     public async Task RemoveGroup(int id)
     {

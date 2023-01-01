@@ -14,14 +14,14 @@ public interface IMapRepository
     /// </summary>
     /// <param name="id">The maps database ID.</param>
     /// <returns>a map if it exists in the database.</returns>
-    public Task<IMap?> GetMapById(long id);
+    public Task<IMap?> GetMapByIdAsync(long id);
     
     /// <summary>
     /// Gets a map from the database based on the provided UID.
     /// </summary>
     /// <param name="uid">The maps unique ID.</param>
     /// <returns></returns>
-    public Task<IMap?> GetMapByUid(string uid);
+    public Task<IMap?> GetMapByUidAsync(string uid);
     
     /// <summary>
     /// Adds a map to the database.
@@ -30,7 +30,7 @@ public interface IMapRepository
     /// <param name="author">The map authors UID.</param>
     /// <param name="filePath">The filepath where the map is stored.</param>
     /// <returns></returns>
-    public Task<IMap> AddMap(MapMetadata map, IPlayer author, string filePath);
+    public Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath);
     
     /// <summary>
     /// Updates an already existing map.
@@ -38,12 +38,12 @@ public interface IMapRepository
     /// <param name="mapId"></param>
     /// <param name="map"></param>
     /// <returns></returns>
-    public Task<IMap> UpdateMap(long mapId, MapMetadata map);
+    public Task<IMap> UpdateMapAsync(long mapId, MapMetadata map);
     
     /// <summary>
     /// Removes a map from the database.
     /// </summary>
     /// <param name="id">The maps database ID.</param>
     /// <returns></returns>
-    public Task RemoveMap(long id);
+    public Task RemoveMapAsync(long id);
 }

@@ -1,14 +1,7 @@
 ﻿using System.Data.Common;
-using System.Reflection;
-using Dapper;
-using Dapper.FluentMap;
 using EvoSC.Common.Config.Models;
-using EvoSC.Common.Database.Util;
 using EvoSC.Common.Interfaces;
-using FluentMigrator.Runner;
-using FluentMigrator.Runner.Generators;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using Npgsql;
 using SimpleInjector;
@@ -31,10 +24,6 @@ public static class DatabaseServiceExtensions
                 connection = new SqliteConnection(config.GetConnectionString());
                 break;
             default:
-                FluentMapper.Initialize(conf =>
-                {
-                    conf.AddConvention<PropertyTransformConvention>();
-                });
                 connection = new NpgsqlConnection(config.GetConnectionString());
                 
                 break;
