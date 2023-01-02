@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Config.Models.ThemeOptions;
+using EvoSC.Common.Config.Models.ThemeOptions;
 
 namespace EvoSC.Common.Config.Models;
 

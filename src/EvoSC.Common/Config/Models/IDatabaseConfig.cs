@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Config.Net;
 
 namespace EvoSC.Common.Config.Models;
