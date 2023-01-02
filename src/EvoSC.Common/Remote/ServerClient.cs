@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;
 
-public class ServerClient : IServerClient
+public partial class ServerClient : IServerClient
 {
     private readonly GbxRemoteClient _gbxRemote;
     private readonly IEvoScBaseConfig _config;
@@ -56,6 +56,7 @@ public class ServerClient : IServerClient
 
         await _gbxRemote.SetApiVersionAsync(GbxRemoteClient.DefaultApiVersion);
         await _gbxRemote.EnableCallbackTypeAsync();
+        await _gbxRemote.ChatEnableManualRoutingAsync();
 
         return true;
     }
@@ -101,6 +102,7 @@ public class ServerClient : IServerClient
 
     public async Task StopAsync(CancellationToken token)
     {
+        await _gbxRemote.ChatEnableManualRoutingAsync(false, false);
         await _gbxRemote.DisconnectAsync();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Util;
+
+namespace EvoSC.Common.Interfaces.Models;
 
 /// <summary>
 /// Represents an online or offline player.
@@ -19,6 +21,11 @@ public interface IPlayer
     /// The player's nickname
     /// </summary>
     public string NickName { get; }
+
+    /// <summary>
+    /// The nickname but stripped for all formatting. NOTE: not constant time.
+    /// </summary>
+    public string StrippedNickName => FormattingUtils.CleanTmFormatting(NickName);
     
     /// <summary>
     /// The known ubisoft name of the player, may change.

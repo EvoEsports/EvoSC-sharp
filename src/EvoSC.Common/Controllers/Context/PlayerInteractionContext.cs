@@ -12,9 +12,9 @@ public class PlayerInteractionContext : GenericControllerContext
     /// <summary>
     /// The player that executed the action.
     /// </summary>
-    public IPlayer Player { get; }
+    public IOnlinePlayer Player { get; }
 
-    public PlayerInteractionContext(IPlayer player, IControllerContext context) : base(context)
+    public PlayerInteractionContext(IOnlinePlayer player, IControllerContext context) : base(context)
     {
         Player = player;
     }

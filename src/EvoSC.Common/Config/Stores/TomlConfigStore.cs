@@ -87,8 +87,31 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         // do nothing because the document lives for the entire application and is disposed on shutdown
     }
 
+    private string GetArrayValue(string key)
+    {
+        var value = _document.GetValue(key) as TomlArray;
+
+        return string.Join(" ", value.Select(v => v.StringValue));
+    }
+    
     public string? Read(string key)
     {
+        var lastDotIndex = key.LastIndexOf(".", StringComparison.Ordinal);
+
+        if (lastDotIndex > 0 && key.Length > lastDotIndex + 1 && !char.IsAsciiLetterOrDigit(key[lastDotIndex + 1]))
+        {
+            var value = _document.GetValue(key[..lastDotIndex]) as TomlArray;
+            return value.Count.ToString();
+        }
+        else if (key.EndsWith("]"))
+        {
+            var indexStart = key.IndexOf("[", StringComparison.Ordinal);
+            var index = int.Parse(key[(indexStart+1)..^1]);
+            var value = _document.GetValue(key[..indexStart]) as TomlArray;
+
+            return value?.Skip(index)?.FirstOrDefault()?.StringValue;
+        }
+
         return _document.GetValue(key).StringValue;
     }
 

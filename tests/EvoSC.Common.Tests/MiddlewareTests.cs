@@ -17,7 +17,7 @@ public class MiddlewareTests
         {
             return context =>
             {
-                context.CustomData["first"] = true;
+                ((GenericControllerContext)context).CustomData["first"] = true;
                 return next(context);
             };
         });
@@ -26,7 +26,7 @@ public class MiddlewareTests
         {
             return context =>
             {
-                context.CustomData["second"] = true;
+                ((GenericControllerContext)context).CustomData["second"] = true;
                 return next(context);
             };
         });
@@ -35,7 +35,7 @@ public class MiddlewareTests
         {
             return context =>
             {
-                context.CustomData["third"] = true;
+                ((GenericControllerContext)context).CustomData["third"] = true;
                 return next(context);
             };
         });
@@ -57,7 +57,7 @@ public class MiddlewareTests
             {
                 return context =>
                 {
-                    context.CustomData["first"] = true;
+                    ((GenericControllerContext)context).CustomData["first"] = true;
                     return next(context);
                 };
             }))
@@ -65,7 +65,7 @@ public class MiddlewareTests
             {
                 return context =>
                 {
-                    context.CustomData["second"] = true;
+                    ((GenericControllerContext)context).CustomData["second"] = true;
                     return next(context);
                 };
             }))
@@ -73,7 +73,7 @@ public class MiddlewareTests
             {
                 return context =>
                 {
-                    context.CustomData["third"] = true;
+                    ((GenericControllerContext)context).CustomData["third"] = true;
                     return next(context);
                 };
             }));

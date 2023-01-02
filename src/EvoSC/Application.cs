@@ -1,8 +1,4 @@
-﻿
-using System.CommandLine;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 using EvoSC.Commands;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Config;
@@ -18,13 +14,10 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
-using EvoSC.Modules;
 using EvoSC.Modules.Extensions;
-using FluentMigrator.Runner;
-using FluentMigrator.Runner.Initialization;
-using Microsoft.Extensions.DependencyInjection;
+using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Util;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
@@ -38,7 +31,7 @@ public class Application : IEvoSCApplication
     private ILogger<Application> _logger;
 
     private readonly CancellationTokenSource _runningToken = new();
-    
+
     public CancellationToken MainCancellationToken => _runningToken.Token;
     public Container Services => _services;
 
@@ -46,7 +39,7 @@ public class Application : IEvoSCApplication
     {
         _args = args;
         _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
-        
+
         ConfigureServiceContainer();
     }
 
@@ -63,7 +56,7 @@ public class Application : IEvoSCApplication
     public async Task RunAsync()
     {
         await SetupApplication();
-        
+
         // wait indefinitely
         WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
     }
@@ -112,7 +105,7 @@ public class Application : IEvoSCApplication
         _services.AddEvoScPermissions();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
-
+        
         _logger = _services.GetInstance<ILogger<Application>>();
     }
 
@@ -137,26 +130,43 @@ public class Application : IEvoSCApplication
         var pipelineManager = _services.GetInstance<IActionPipelineManager>();
         pipelineManager.UseEvoScCommands(_services);
     }
-    
+
     private async Task SetupModules()
     {
         var modules = _services.GetInstance<IModuleManager>();
+        var config = _services.GetInstance<IEvoScBaseConfig>();
 
         await modules.LoadInternalModules();
+
+        var dirs = config.Modules.ModuleDirectories;
+        var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
+        foreach (var dir in dirs)
+        {
+            if (!Directory.Exists(dir))
+            {
+                continue;
+            }
+
+            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
+        }
+
+        externalModules.SetIgnoredDependencies(modules.LoadedModules.Select(m => m.ModuleInfo.Name));
+        await modules.LoadAsync(externalModules);
     }
 
     private async Task StartBackgroundServices()
     {
         _logger.LogDebug("Starting background services");
-        
+
         // initialize event manager before anything else
         _services.GetInstance<IEventManager>();
 
-        // connect to the dedicated server and setup callbacks
+        // connect to the dedicated server and setup callbacks and chat router
         var serverClient = _services.GetInstance<IServerClient>();
         _services.GetInstance<IServerCallbackHandler>();
+        _services.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(_runningToken.Token);
-        
+
         // setup command handler
         _services.GetInstance<ICommandInteractionHandler>();
     }

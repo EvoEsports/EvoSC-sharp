@@ -12,7 +12,8 @@ public static class CommonServiceExtensions
     /// <returns></returns>
     public static Container AddEvoScCommonServices(this Container services)
     {
-        services.Register<IPlayerService, PlayerService>(Lifestyle.Transient);
+        services.Register<IPlayerManagerService, PlayerManagerService>(Lifestyle.Transient);
+        services.Register<IMapService, MapService>(Lifestyle.Transient);
         
         return services;
     }

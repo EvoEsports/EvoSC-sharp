@@ -7,4 +7,10 @@ public interface IControllerActionRegistry
     /// </summary>
     /// <param name="controllerType">The type of the controller's class.</param>
     public void RegisterForController(Type controllerType);
+
+    /// <summary>
+    /// Unregisters actions of a controller for the current registry.
+    /// </summary>
+    /// <param name="controllerType">The type of the controller's class.</param>
+    public void UnregisterForController(Type controllerType);
 }

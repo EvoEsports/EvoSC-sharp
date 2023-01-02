@@ -1,22 +1,12 @@
-﻿using System.ComponentModel;
-using EvoSC.Commands;
+﻿using System.Threading.Tasks;
 using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
-using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
-using EvoSC.Common.Events;
-using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Permissions.Models;
-using EvoSC.Common.Remote;
-using EvoSC.Common.Util;
-using GbxRemoteNet.Events;
-using Microsoft.Extensions.Logging;
-using Container = SimpleInjector.Container;
+using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
@@ -28,7 +18,8 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IChatCommandManager _chatCommands;
     private readonly IPermissionManager _permissions;
 
-    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server, IChatCommandManager chatCommands, IPermissionManager permissions)
+    public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
+        IChatCommandManager chatCommands, IPermissionManager permissions)
     {
         _settings = settings;
         _server = server;
@@ -44,7 +35,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
 
     [ChatCommand("ratemap", "Rate the current map.", "test")]
     [CommandAlias("+++", 100)]
-    [CommandAlias("++", 80)]
+    [CommandAlias("++", true, 80)]
     [CommandAlias("+", 60)]
     [CommandAlias("-", 40)]
     [CommandAlias("--", 20)]
@@ -61,9 +52,9 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.", MyPermissions.MyPerm1)]
+    [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        await _server.SendChatMessage("command called!");
+        await _server.InfoMessage("hello!");
     }
 }
