@@ -1,11 +1,9 @@
 ﻿using System.Data.Common;
 using System.Reflection;
 using Config.Net;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using EvoSC.Common.Database.Models;
 using EvoSC.Common.Database.Models.Config;
 using EvoSC.Common.Util;
+using RepoDb;
 
 namespace EvoSC.Common.Config.Stores;
 
@@ -53,14 +51,14 @@ public class DatabaseStore : IConfigStore
             else
             {
                 var option = (await _db
-                        .QueryAsync<DbConfigOption>("select * from `ConfigOptions` where `Key`=@Key",
+                        .ExecuteQueryAsync<DbConfigOption>(@"select * from ""ConfigOptions"" where ""Key""=@Key",
                             new {Key = keyName}))
                     .FirstOrDefault();
 
                 if (option == null)
                 {
                     // option not set, so add it's defaults to the db
-                    await _db.QueryAsync("insert into `ConfigOptions`(`Key`, `Value`) VALUES(@Key, @Value)", new
+                    await _db.ExecuteQueryAsync(@"insert into ""ConfigOptions""(""Key"", ""Value"") VALUES(@Key, @Value)", new
                     {
                         Key = keyName,
                         Value = optionAttr?.DefaultValue ?? ReflectionUtils.GetDefaultTypeValue(property.PropertyType)
@@ -78,7 +76,7 @@ public class DatabaseStore : IConfigStore
     public string? Read(string key)
     {
         var dbKey = $"{_prefix}.{key}";
-        var option = _db.QueryAsync<DbConfigOption>($"select * from `ConfigOptions` where `Key`=@Key", new {Key = dbKey})
+        var option = _db.ExecuteQueryAsync<DbConfigOption>(@"select * from ""ConfigOptions"" where ""Key""=@Key", new {Key = dbKey})
             .GetAwaiter().GetResult().FirstOrDefault();
 
         if (option == null)
@@ -92,14 +90,14 @@ public class DatabaseStore : IConfigStore
     public void Write(string key, string? value)
     {
         var dbKey = $"{_prefix}.{key}";
-        var option = _db.QueryAsync<DbConfigOption>($"select * from `ConfigOptions` where `Key`=@Key", new {Key = dbKey})
+        var option = _db.ExecuteQueryAsync<DbConfigOption>(@"select * from ""ConfigOptions"" where ""Key""=@Key", new {Key = dbKey})
             .GetAwaiter().GetResult().FirstOrDefault();
 
         if (option == null)
         {
             option = new DbConfigOption {Key = $"{_prefix}.{key}", Value = value};
             
-            _db.QueryAsync("insert into `ConfigOptions`(`Key`, `Value`) VALUES(@Key, @Value)", new
+            _db.ExecuteQueryAsync(@"insert into ""ConfigOptions""(""Key"", ""Value"") VALUES(@Key, @Value)", new
             {
                 Key = option.Key,
                 Value = option.Value

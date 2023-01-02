@@ -4,6 +4,7 @@ using EvoSC.Common.Interfaces;
 using Microsoft.Data.Sqlite;
 using MySqlConnector;
 using Npgsql;
+using RepoDb;
 using SimpleInjector;
 
 namespace EvoSC.Common.Database;
@@ -19,13 +20,15 @@ public static class DatabaseServiceExtensions
         {
             case IDatabaseConfig.DatabaseType.MySql:
                 connection = new MySqlConnection(config.GetConnectionString());
+                GlobalConfiguration.Setup().UseMySql().UseMySqlConnector();
                 break;
             case IDatabaseConfig.DatabaseType.SQLite:
                 connection = new SqliteConnection(config.GetConnectionString());
+                GlobalConfiguration.Setup().UseSqlite();
                 break;
             default:
                 connection = new NpgsqlConnection(config.GetConnectionString());
-                
+                GlobalConfiguration.Setup().UsePostgreSql();
                 break;
         }
         

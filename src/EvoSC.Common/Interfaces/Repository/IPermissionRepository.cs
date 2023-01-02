@@ -11,8 +11,26 @@ public interface IPermissionRepository
     public Task<IPermission?> GetPermissionAsync(string name);
     
     public Task<IEnumerable<IPermission>> GetPlayerPermissionsAsync(long playerId);
+    
+    public Task RemovePermissionAsync(IPermission permission);
 
     public Task<IEnumerable<IGroup>> GetGroupsAsync(long playerId);
 
-    public Task RemovePermissionAsync(IPermission permission);
+    public Task AddGroupAsync(IGroup group);
+
+    public Task UpdateGroupAsync(IGroup group);
+
+    public Task RemoveGroupAsync(IGroup group);
+
+    public Task<IGroup?> GetGroup(int id);
+
+    public Task AddPlayerToGroupAsync(long playerId, int groupId);
+
+    public Task RemovePlayerFromGroupAsync(long playerId);
+
+    public Task AddPermissionToGroupAsync(int groupId, int permissionId);
+
+    public Task RemovePermissionFromGroupAsync(int groupId, int permissionId);
+
+    public Task ClearGroupPermissionsAsync(int groupId);
 }

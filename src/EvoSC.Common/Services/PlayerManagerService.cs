@@ -1,23 +1,17 @@
 ﻿using System.Data.Common;
 using System.Globalization;
-using Castle.Components.DictionaryAdapter;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using EvoSC.Common.Database.Models;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
 using EvoSC.Common.Util.Database;
-using GbxRemoteNet;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
+using RepoDb;
 
 namespace EvoSC.Common.Services;
 
@@ -78,9 +72,7 @@ public class PlayerManagerService : IPlayerManagerService
             UpdatedAt = DateTime.UtcNow
         };
 
-        var id = await _db.InsertAsync(dbPlayer);
-
-        return new Player(dbPlayer) {Id = id};
+        return (DbPlayer) await _db.InsertAsync(dbPlayer);
     }
 
     public async Task<IOnlinePlayer> GetOnlinePlayerAsync(string accountId)

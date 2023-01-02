@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using Dapper;
+using RepoDb;
 
 namespace EvoSC.Common.Util.Database;
 
@@ -15,7 +15,7 @@ public static class QueryHelperExtensions
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public static Task<IEnumerable<T>> SelectByColumnAsync<T>(this IDbConnection db, string table, string column,
-        object value)
+        object value) where T : class
     {
         return db.QueryAsync<T>($"select * from {table} where {column}=@Value",
             new {Table = table, Column = column, Value = value});

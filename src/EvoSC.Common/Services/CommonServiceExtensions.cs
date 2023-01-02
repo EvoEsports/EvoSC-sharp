@@ -1,4 +1,6 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Database.Repository.Permissions;
+using EvoSC.Common.Interfaces.Repository;
+using EvoSC.Common.Interfaces.Services;
 using SimpleInjector;
 
 namespace EvoSC.Common.Services;
@@ -14,6 +16,7 @@ public static class CommonServiceExtensions
     {
         services.Register<IPlayerManagerService, PlayerManagerService>(Lifestyle.Transient);
         services.Register<IMapService, MapService>(Lifestyle.Transient);
+        services.Register<IPermissionRepository, PermissionRepository>(Lifestyle.Transient);
         
         return services;
     }
