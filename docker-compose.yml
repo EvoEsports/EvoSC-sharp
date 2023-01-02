@@ -3,12 +3,12 @@ services:
   trackmania:
     image: evotm/trackmania
     ports:
-      - 2351:2350/udp
-      - 2351:2350/tcp
+      - 2350:2350/udp
+      - 2350:2350/tcp
       - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-      MASTER_LOGIN: "SERVERLOGIN"
-      MASTER_PASSWORD: "SERVERPASS"
+      MASTER_LOGIN: "evoserv"
+      MASTER_PASSWORD: "FY@qh+G!}g9{*f&w"
       XMLRPC_ALLOWREMOTE: "True"
     volumes:
       - UserData:/server/UserData
@@ -20,7 +20,7 @@ services:
     volumes:
       - MariaDBData:/var/lib/mysql
     environment:
-      MARIADB_ROOT_PASSWORD: CHANGEME
+      MARIADB_ROOT_PASSWORD: evotm123
       MARIADB_USER: evosc
       MARIADB_PASSWORD: evosc123!
       MARIADB_DATABASE: evosc

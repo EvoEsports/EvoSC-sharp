@@ -27,15 +27,15 @@ public interface IDatabaseConfig
     public int Port { get; }
 
     [Description("The name of the database")]
-    [Option(Alias = "name", DefaultValue = "evosc")]
+    [Option(Alias = "name", DefaultValue = "evosc_sharp_dev")]
     public string Name { get; }
 
     [Description("Name of the user to access the database")]
-    [Option(Alias = "username", DefaultValue = "evosc")]
+    [Option(Alias = "username", DefaultValue = "evosc_sharp_dev")]
     public string Username { get; }
 
     [Description("Password of the user to access the database")]
-    [Option(Alias = "password", DefaultValue = "evosc")]
+    [Option(Alias = "password", DefaultValue = "evosc_sharp_dev")]
     public string Password { get; }
 
     [Description("A string prefix to add to all table names")]

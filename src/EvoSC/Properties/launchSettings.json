@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EvoSC": {
+      "commandName": "Project",
+      "commandLineArgs": "run"
+    }
+  }
+}

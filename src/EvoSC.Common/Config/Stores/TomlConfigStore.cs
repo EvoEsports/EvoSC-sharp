@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Util;
@@ -16,8 +17,16 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     {
         if (!File.Exists(path))
         {
+            string directory = Path.GetDirectoryName(path);
+
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            
             _document = CreateDefaultConfig();
             File.WriteAllText(path, _document.SerializedValue);
+
         }
         else
         {
@@ -31,7 +40,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     {
         var rootType = typeof(TConfig);
         var document = BuildSubDocument(TomlDocument.CreateEmpty(), rootType, "");
-        
+
         // avoid inline writing which is more human readable
         document.ForceNoInline = false;
         
