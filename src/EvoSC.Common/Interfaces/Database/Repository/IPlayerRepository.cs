@@ -1,7 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet.Structs;
 
-namespace EvoSC.Common.Interfaces.Repository;
+namespace EvoSC.Common.Interfaces.Database.Repository;
 
 public interface IPlayerRepository
 {

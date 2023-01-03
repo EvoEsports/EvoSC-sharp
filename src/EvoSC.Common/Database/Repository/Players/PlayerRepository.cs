@@ -1,8 +1,8 @@
 ﻿using System.Data.Common;
 using System.Globalization;
 using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Repository;
 using GbxRemoteNet.Structs;
 using Npgsql;
 using RepoDb;

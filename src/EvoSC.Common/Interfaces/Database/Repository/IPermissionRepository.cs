@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Common.Interfaces.Repository;
+namespace EvoSC.Common.Interfaces.Database.Repository;
 
 public interface IPermissionRepository
 {

@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using EvoSC.Common.Database.Models.Permissions;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Repository;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using RepoDb;

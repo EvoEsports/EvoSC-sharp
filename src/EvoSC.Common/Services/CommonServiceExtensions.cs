@@ -1,5 +1,5 @@
 ﻿using EvoSC.Common.Database.Repository.Permissions;
-using EvoSC.Common.Interfaces.Repository;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Services;
 using SimpleInjector;
 
