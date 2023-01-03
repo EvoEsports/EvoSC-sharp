@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Database;
 using Microsoft.Data.Sqlite;
 using MySqlConnector;
 using Npgsql;
@@ -15,7 +16,7 @@ public static class DatabaseServiceExtensions
     
     public static Container AddEvoScDatabase(this Container services, IDatabaseConfig config)
     {
-        DbConnection connection;
+        /* DbConnection connection;
         switch (config.Type)
         {
             case IDatabaseConfig.DatabaseType.MySql:
@@ -34,7 +35,9 @@ public static class DatabaseServiceExtensions
         
         connection.Open();
 
-        services.RegisterInstance(connection);
+        services.RegisterInstance(connection); */
+
+        services.RegisterSingleton<IDbConnectionFactory, DbConnectionFactory>();
 
         return services;
     }

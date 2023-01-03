@@ -1,8 +1,9 @@
 ﻿using System.Data;
 using System.Data.Common;
 using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Interfaces.Database;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Repository;
 using EvoSC.Common.Models.Maps;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
@@ -11,20 +12,12 @@ using RepoDb.Interfaces;
 
 namespace EvoSC.Common.Database.Repository.Maps;
 
-public class MapRepository : DbRepository<SqlConnection>, IMapRepository
+public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
 {
     private readonly ILogger<MapRepository> _logger;
-    private readonly DbConnection _db;
-
-    private IDbSetting _dbSetting;
-    private IEnumerable<Field> _fields;
-
-    public MapRepository(ILogger<MapRepository> logger, DbConnection db) : base(db.ConnectionString)
+    public MapRepository(ILogger<MapRepository> logger, IDbConnectionFactory connectionFactory) : base(connectionFactory)
     {
         _logger = logger;
-        _db = db;
-        _dbSetting = DbSettingMapper.Get(_db);
-        _fields = FieldCache.Get<DbMap>();
     }
 
     public async Task<IMap?> GetMapByIdAsync(long id)
@@ -33,14 +26,14 @@ public class MapRepository : DbRepository<SqlConnection>, IMapRepository
         var statement = new QueryBuilder()
             .Clear()
             .Select()
-            .FieldsFrom(_fields, _dbSetting)
+            .FieldsFrom(Fields, DatabaseSetting)
             .From()
-            .TableNameFrom("Maps", _dbSetting)
-            .WhereFrom(where, _dbSetting)
+            .TableNameFrom("Maps", DatabaseSetting)
+            .WhereFrom(where, DatabaseSetting)
             .End()
             .GetString();
-        
-        return await _db.ExecuteQueryAsync(statement).Result.FirstOrDefault();
+    
+        return await Database.ExecuteQueryAsync(statement).Result.FirstOrDefault();
     }
 
     public async Task<IMap?> GetMapByUidAsync(string uid)
@@ -49,14 +42,14 @@ public class MapRepository : DbRepository<SqlConnection>, IMapRepository
         var statement = new QueryBuilder()
             .Clear()
             .Select()
-            .FieldsFrom(_fields, _dbSetting)
+            .FieldsFrom(Fields, DatabaseSetting)
             .From()
-            .TableNameFrom("Maps", _dbSetting)
-            .WhereFrom(where, _dbSetting)
+            .TableNameFrom("Maps", DatabaseSetting)
+            .WhereFrom(where, DatabaseSetting)
             .End()
             .GetString();
         
-        return await _db.ExecuteQueryAsync(statement).Result.FirstOrDefault();
+        return await Database.ExecuteQueryAsync(statement).Result.FirstOrDefault();
     }
     
     public async Task<IMap> AddMapAsync(MapMetadata mapMetadata, IPlayer author, string filePath)
@@ -76,10 +69,10 @@ public class MapRepository : DbRepository<SqlConnection>, IMapRepository
             UpdatedAt = DateTime.Now
         };
         
-        await using var transaction = await _db.BeginTransactionAsync();
+        await using var transaction = await Database.BeginTransactionAsync();
         try
         {
-            await _db.InsertAsync(dbMap, transaction: transaction);
+            await Database.InsertAsync(dbMap, transaction: transaction);
             await transaction.CommitAsync();
         }
         catch (Exception e)
@@ -104,10 +97,10 @@ public class MapRepository : DbRepository<SqlConnection>, IMapRepository
             UpdatedAt = DateTime.Now
         };
 
-        await using var transaction = await _db.BeginTransactionAsync();
+        await using var transaction = await Database.BeginTransactionAsync();
         try
         {
-            await _db.UpdateAsync(updatedMap, transaction: transaction);
+            await Database.UpdateAsync(updatedMap, transaction: transaction);
             await transaction.CommitAsync();
         }
         catch (Exception e)
@@ -121,5 +114,5 @@ public class MapRepository : DbRepository<SqlConnection>, IMapRepository
     }
 
     public async Task RemoveMapAsync(long id) =>
-        await _db.DeleteAsync("Maps", id);
+        await Database.DeleteAsync("Maps", id);
 }

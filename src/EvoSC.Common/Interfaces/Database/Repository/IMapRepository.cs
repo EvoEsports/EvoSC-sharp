@@ -1,8 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Maps;
 
-namespace EvoSC.Common.Interfaces.Repository;
+namespace EvoSC.Common.Interfaces.Database.Repository;
 
 /// <summary>
 /// Methods for map actions against the database.
