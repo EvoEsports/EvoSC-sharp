@@ -5,7 +5,7 @@ using FluentMigrator;
 namespace EvoSC.Modules.Official.PlayerRecords.Database.Migrations;
 
 [Migration(1672217440)]
-public class AddPlayerrRecordsTable : Migration
+public class AddPlayerRecordsTable : Migration
 {
     public override void Up()
     {
