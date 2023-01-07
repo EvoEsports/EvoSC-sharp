@@ -26,14 +26,15 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
         var statement = new QueryBuilder()
             .Clear()
             .Select()
-            .FieldsFrom(Fields, DatabaseSetting)
+            .FieldsFrom(FieldCache.Get<DbMap>(), DatabaseSetting)
             .From()
             .TableNameFrom("Maps", DatabaseSetting)
             .WhereFrom(where, DatabaseSetting)
             .End()
             .GetString();
     
-        return await Database.ExecuteQueryAsync(statement).Result.FirstOrDefault();
+        var maps = await Database.QueryAsync<DbMap>(e => e.Id == id);
+        return maps.FirstOrDefault();
     }
 
     public async Task<IMap?> GetMapByUidAsync(string uid)
@@ -49,7 +50,8 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
             .End()
             .GetString();
         
-        return await Database.ExecuteQueryAsync(statement).Result.FirstOrDefault();
+        var maps = await Database.QueryAsync<DbMap>(e => e.Uid == uid);
+        return maps.FirstOrDefault();
     }
     
     public async Task<IMap> AddMapAsync(MapMetadata mapMetadata, IPlayer author, string filePath)
