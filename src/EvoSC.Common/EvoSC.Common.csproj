@@ -27,6 +27,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <Folder Include="Database\PropertyHandlers" />
       <Folder Include="Services\Attributes" />
     </ItemGroup>
 </Project>
