@@ -1,7 +1,13 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Repository.Maps;
+using EvoSC.Common.Database.Repository.Permissions;
+using EvoSC.Common.Database.Repository.Players;
+using EvoSC.Common.Database.Repository.Stores;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database;
+using EvoSC.Common.Interfaces.Database.Repository;
 using Microsoft.Data.Sqlite;
 using MySqlConnector;
 using Npgsql;
@@ -16,28 +22,11 @@ public static class DatabaseServiceExtensions
     
     public static Container AddEvoScDatabase(this Container services, IDatabaseConfig config)
     {
-        /* DbConnection connection;
-        switch (config.Type)
-        {
-            case IDatabaseConfig.DatabaseType.MySql:
-                connection = new MySqlConnection(config.GetConnectionString());
-                GlobalConfiguration.Setup().UseMySql().UseMySqlConnector();
-                break;
-            case IDatabaseConfig.DatabaseType.SQLite:
-                connection = new SqliteConnection(config.GetConnectionString());
-                GlobalConfiguration.Setup().UseSqlite();
-                break;
-            default:
-                connection = new NpgsqlConnection(config.GetConnectionString());
-                GlobalConfiguration.Setup().UsePostgreSql();
-                break;
-        }
-        
-        connection.Open();
-
-        services.RegisterInstance(connection); */
-
         services.RegisterSingleton<IDbConnectionFactory, DbConnectionFactory>();
+        services.Register<IConfigStoreRepository, ConfigStoreRepository>(Lifestyle.Transient);
+        services.Register<IMapRepository, MapRepository>(Lifestyle.Transient);
+        services.Register<IPermissionRepository, PermissionRepository>(Lifestyle.Transient);
+        services.Register<IPlayerRepository, PlayerRepository>();
 
         return services;
     }

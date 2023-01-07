@@ -2,6 +2,7 @@
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Database.Models.Config;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Util;
 using RepoDb;
 
@@ -9,14 +10,14 @@ namespace EvoSC.Common.Config.Stores;
 
 public class DatabaseStore : IConfigStore
 {
-    private readonly DbConnection _db;
+    private readonly IConfigStoreRepository _configStoreRepository;
     private readonly Type _type;
     private readonly string _prefix;
     
-    public DatabaseStore(string prefix, Type type, DbConnection db)
+    public DatabaseStore(string prefix, Type type, IConfigStoreRepository configStoreRepository)
     {
         _prefix = $"{prefix}.{GetSettingsName(type)}";
-        _db = db;
+        _configStoreRepository = configStoreRepository;
         _type = type;
     }
     
@@ -50,18 +51,15 @@ public class DatabaseStore : IConfigStore
             }
             else
             {
-                var option = (await _db
-                        .ExecuteQueryAsync<DbConfigOption>(@"select * from ""ConfigOptions"" where ""Key""=@Key",
-                            new {Key = keyName}))
-                    .FirstOrDefault();
+                var option = await _configStoreRepository.GetConfigOptionsByKeyAsync(keyName);
 
                 if (option == null)
                 {
                     // option not set, so add it's defaults to the db
-                    await _db.ExecuteQueryAsync(@"insert into ""ConfigOptions""(""Key"", ""Value"") VALUES(@Key, @Value)", new
+                    await _configStoreRepository.AddConfigOptionAsync(new DbConfigOption
                     {
                         Key = keyName,
-                        Value = optionAttr?.DefaultValue ?? ReflectionUtils.GetDefaultTypeValue(property.PropertyType)
+                        Value = optionAttr?.DefaultValue.ToString() ?? ReflectionUtils.GetDefaultTypeValue(property.PropertyType).ToString()
                     });
                 }
             }
@@ -76,8 +74,7 @@ public class DatabaseStore : IConfigStore
     public string? Read(string key)
     {
         var dbKey = $"{_prefix}.{key}";
-        var option = _db.ExecuteQueryAsync<DbConfigOption>(@"select * from ""ConfigOptions"" where ""Key""=@Key", new {Key = dbKey})
-            .GetAwaiter().GetResult().FirstOrDefault();
+        var option = _configStoreRepository.GetConfigOptionsByKeyAsync(dbKey).GetAwaiter().GetResult();
 
         if (option == null)
         {
@@ -90,14 +87,13 @@ public class DatabaseStore : IConfigStore
     public void Write(string key, string? value)
     {
         var dbKey = $"{_prefix}.{key}";
-        var option = _db.ExecuteQueryAsync<DbConfigOption>(@"select * from ""ConfigOptions"" where ""Key""=@Key", new {Key = dbKey})
-            .GetAwaiter().GetResult().FirstOrDefault();
+        var option = _configStoreRepository.GetConfigOptionsByKeyAsync(dbKey).Result;
 
         if (option == null)
         {
             option = new DbConfigOption {Key = $"{_prefix}.{key}", Value = value};
             
-            _db.ExecuteQueryAsync(@"insert into ""ConfigOptions""(""Key"", ""Value"") VALUES(@Key, @Value)", new
+            _configStoreRepository.AddConfigOptionAsync(new DbConfigOption
             {
                 Key = option.Key,
                 Value = option.Value
@@ -106,7 +102,7 @@ public class DatabaseStore : IConfigStore
         else
         {
             option.Value = value;
-            _db.UpdateAsync(option).GetAwaiter().GetResult();
+            _configStoreRepository.UpdateConfigOptionAsync(option).GetAwaiter().GetResult();
         }
     }
 

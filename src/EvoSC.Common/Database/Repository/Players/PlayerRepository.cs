@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using System.Globalization;
 using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet.Structs;
@@ -9,18 +10,16 @@ using RepoDb;
 
 namespace EvoSC.Common.Database.Repository.Players;
 
-public class PlayerRepository : DbRepository<NpgsqlConnection>, IPlayerRepository
+public class PlayerRepository : EvoScDbRepository<DbPlayer>, IPlayerRepository
 {
-    private readonly DbConnection _db;
     
-    public PlayerRepository(DbConnection db) : base(db.ConnectionString)
+    public PlayerRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
     {
-        _db = db;
     }
     
     public async Task<IPlayer?> GetPlayerByAccountIdAsync(string accountId)
     {
-        var player = await _db.QueryAsync<DbPlayer>("[public].[Players]", e => e.AccountId == accountId);
+        var player = await Database.QueryAsync<DbPlayer>(e => e.AccountId == accountId);
         return player.FirstOrDefault();
     }
 
@@ -36,7 +35,7 @@ public class PlayerRepository : DbRepository<NpgsqlConnection>, IPlayerRepositor
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        var newPlayer = await _db.InsertAsync<DbPlayer>(dbPlayer);
+        var newPlayer = await Database.InsertAsync<DbPlayer>(dbPlayer);
         return (IPlayer)newPlayer;
     }
 
@@ -46,6 +45,6 @@ public class PlayerRepository : DbRepository<NpgsqlConnection>, IPlayerRepositor
         dbPlayer.LastVisit = DateTime.Now;
         var fields = Field.Parse<DbPlayer>(e => new { e.LastVisit });
 
-        await _db.UpdateAsync(player, fields: fields);
+        await Database.UpdateAsync(player, fields: fields);
     }
 }

@@ -8,6 +8,7 @@ using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -34,10 +35,10 @@ public class ModuleManager : IModuleManager
     private readonly ILogger<ModuleManager> _logger;
     private readonly IControllerManager _controllers;
     private readonly IModuleServicesManager _servicesManager;
-    private readonly DbConnection _db;
     private readonly IActionPipelineManager _pipelineManager;
     private readonly IPermissionManager _permissions;
     private readonly IEvoScBaseConfig _config;
+    private readonly IConfigStoreRepository _configStoreRepository;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
     private readonly Dictionary<string, Guid> _moduleNameMap = new();
@@ -45,16 +46,16 @@ public class ModuleManager : IModuleManager
     public IReadOnlyList<IModuleLoadContext> LoadedModules => _loadedModules.Values.ToList();
     
     public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
-        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db,
-        IPermissionManager permissions)
+        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions,
+        IConfigStoreRepository configStoreRepository)
     {
         _logger = logger;
         _config = config;
         _controllers = controllers;
         _servicesManager = servicesManager;
-        _db = db;
         _pipelineManager = pipelineManager;
         _permissions = permissions;
+        _configStoreRepository = configStoreRepository;
         
         WarnForDisabledVerification();
     }
@@ -317,7 +318,7 @@ public class ModuleManager : IModuleManager
 
     private async Task<IConfigStore> CreateModuleConfigStore(string name, Type configInterface)
     {
-        var dbStore = new DatabaseStore(name, configInterface, _db);
+        var dbStore = new DatabaseStore(name, configInterface, _configStoreRepository);
         await dbStore.SetupDefaultSettingsAsync();
 
         return dbStore;
