@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Logging;
 using FluentMigrator.Runner;

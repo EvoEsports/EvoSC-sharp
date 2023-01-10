@@ -5,6 +5,7 @@ using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Database;
+using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;

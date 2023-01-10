@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Database.Models.Permissions;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -6,6 +7,7 @@ using EvoSC.Common.Interfaces.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using RepoDb;
+using RepoDb.Extensions;
 
 namespace EvoSC.Common.Database.Repository.Permissions;
 
@@ -66,52 +68,39 @@ public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermission
 
     public async Task RemoveGroupAsync(IGroup group)
     {
-        // group-permission relation
-        var queryDeleteGroupPermissions = "DELETE FROM GroupPermissions WHERE GroupId=@GroupId";
-        var valuesDeleteGroupPermissions = new { GroupId = group.Id };
-        await Database.ExecuteQueryAsync(queryDeleteGroupPermissions, valuesDeleteGroupPermissions);
-
-        // user-group relation
-        var queryDeleteUserGroups = "DELETE FROM UserGroups WHERE GroupId=@GroupId";
-        var valuesDeleteUserGroups = new { GroupId = group.Id };
-        await Database.ExecuteQueryAsync(queryDeleteUserGroups, valuesDeleteUserGroups);
-
-        // group info itself
-        await Database.DeleteAsync(group);
+        await Database.DeleteAsync<DbGroupPermission>(gp => gp.GroupId == group.Id);
+        await Database.DeleteAsync<DbUserGroup>(ug => ug.GroupId == group.Id);
+        await Database.DeleteAsync<DbGroup>(g => g.Id == group.Id);
     }
 
     public async Task<IGroup?> GetGroup(int id)
     {
-        /*var query = """
-        SELECT Groups.*, Permissions.* FROM Groups
-        LEFT JOIN GroupPermissions ON GroupPermissions.GroupId=Groups.Id
-        LEFT JOIN Permissions ON Permissions.Id=GroupPermissions.PermissionId
-        WHERE Groups.Id=@GroupId
-        """;
-        var values = new {GroupId = id};
-        var groups = await Database.QueryAsync<DbGroup, DbPermission, DbGroup>(query, (group, permission) =>
+        var query = new QueryBuilder()
+            // select the group
+            .SelectAllFrom<DbGroup>(DatabaseSetting)
+            .Where<DbGroup>(g => g.Id == id, DatabaseSetting)
+            .End()
+            // select all permissions assigned to this group
+            .SelectAllFrom<DbPermission>(DatabaseSetting)
+            .WhereIn<DbPermission>(p => p.Id, DatabaseSetting)
+            .OpenParen()
+            .SelectFieldFrom<DbGroupPermission>(gp => gp.GroupId, DatabaseSetting)
+            .Where<DbGroupPermission>(gp => gp.GroupId == id, DatabaseSetting)
+            .CloseParen()
+            .End();
+
+        var extractor = await Database.ExecuteQueryMultipleAsync(query.ToString(), new {Id = id, GroupId = id});
+        var group = extractor.Extract<DbGroup>().FirstOrDefault();
+
+        if (group == null)
         {
-            if (permission != null)
-            {
-                group.Permissions.Add(permission);
-            }
-            
-            return group;
-        }, values);
-        
-        var result = groups.GroupBy(g => g.Id).Select(g =>
-        {
-            var grouped = g.First();
-            grouped.Permissions = g
-                .Where(p => p.Permissions != null && p.Permissions.Count > 0)
-                .Select(p => p.Permissions.Single())
-                .ToList();
-            
-            return grouped;
-        });
-        
-        return result.FirstOrDefault();*/
-        return null;
+            return null;
+        }
+
+        var permissions = extractor.Extract<DbPermission>() as IEnumerable<IPermission>;
+        group.Permissions = permissions.AsList();
+
+        return group;
     }
 
     public async Task AddPlayerToGroupAsync(long playerId, int groupId) =>

@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Interfaces.Database;
 using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
