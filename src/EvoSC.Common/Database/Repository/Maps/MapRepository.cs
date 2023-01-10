@@ -49,7 +49,7 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
             .WhereFrom(where, DatabaseSetting)
             .End()
             .GetString();
-        
+
         var maps = await Database.QueryAsync<DbMap>(e => e.Uid == uid);
         return maps.FirstOrDefault();
     }

@@ -6,6 +6,7 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Modules.Official.ExampleModule;
@@ -55,6 +56,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
+        await _permissions.RemoveGroup(3);
         await _server.InfoMessage("hello!");
     }
 }
