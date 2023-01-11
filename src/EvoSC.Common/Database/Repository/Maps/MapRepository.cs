@@ -1,6 +1,8 @@
 ﻿using System.Data;
 using System.Data.Common;
+using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
@@ -20,12 +22,66 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
         _logger = logger;
     }
 
-    public async Task<IMap?> GetMapByIdAsync(long id) =>
-        (await Database.QueryAsync<DbMap>(e => e.Id == id))?.FirstOrDefault();
+    public async Task<IMap?> GetMapByIdAsync(long id)
+    {
+        var query = NewQuery()
+            // select map
+            .SelectAllFrom<DbMap>(DatabaseSetting)
+            .Where<DbMap>(m => m.Id == id, DatabaseSetting)
+            .End()
+            // select author
+            .SelectAllFrom<DbPlayer>(DatabaseSetting)
+            .WhereIn<DbPlayer>(p => p.Id, DatabaseSetting)
+            .OpenParen()
+            .SelectFieldFrom<DbMap>(m => m.AuthorId, DatabaseSetting)
+            .Where<DbMap>(m => m.Id == id, DatabaseSetting)
+            .CloseParen()
+            .End();
 
-    public async Task<IMap?> GetMapByUidAsync(string uid) =>
-        (await Database.QueryAsync<DbMap>(e => e.Uid == uid)).FirstOrDefault();
-    
+        var extractor = await Database.ExecuteQueryMultipleAsync(query.ToString(), new {Id = id});
+        var map = (await extractor.ExtractAsync<DbMap>())?.FirstOrDefault();
+
+        if (map == null)
+        {
+            return null;
+        }
+
+        var author = await extractor.ExtractAsync<DbPlayer>();
+        map.Author = author?.FirstOrDefault();
+
+        return map;
+    }
+
+    public async Task<IMap?> GetMapByUidAsync(string uid)
+    {
+        var query = NewQuery()
+            // select map
+            .SelectAllFrom<DbMap>(DatabaseSetting)
+            .Where<DbMap>(m => m.Uid == uid, DatabaseSetting)
+            .End()
+            // select author
+            .SelectAllFrom<DbPlayer>(DatabaseSetting)
+            .WhereIn<DbPlayer>(p => p.Id, DatabaseSetting)
+            .OpenParen()
+            .SelectFieldFrom<DbMap>(m => m.AuthorId, DatabaseSetting)
+            .Where<DbMap>(m => m.Uid == uid, DatabaseSetting)
+            .CloseParen()
+            .End();
+
+        var extractor = await Database.ExecuteQueryMultipleAsync(query.ToString(), new {Uid = uid});
+        var map = (await extractor.ExtractAsync<DbMap>())?.FirstOrDefault();
+
+        if (map == null)
+        {
+            return null;
+        }
+
+        var author = await extractor.ExtractAsync<DbPlayer>();
+        map.Author = author?.FirstOrDefault();
+
+        return map;
+    }
+
     public async Task<IMap> AddMapAsync(MapMetadata mapMetadata, IPlayer author, string filePath)
     {
         var dbMap = new DbMap
