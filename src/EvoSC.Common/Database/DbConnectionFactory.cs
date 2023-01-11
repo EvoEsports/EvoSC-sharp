@@ -7,6 +7,7 @@ using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
 using Npgsql;
 using RepoDb;
+using SqlKata.Compilers;
 
 namespace EvoSC.Common.Database;
 
@@ -36,6 +37,14 @@ public class DbConnectionFactory : IDbConnectionFactory
         }
     }
 
+    public Compiler GetSqlCompiler() => _config.Database.Type switch
+    {
+        IDatabaseConfig.DatabaseType.MySql => new MySqlCompiler(),
+        IDatabaseConfig.DatabaseType.SQLite => new SqliteCompiler(),
+        IDatabaseConfig.DatabaseType.PostgreSql => new PostgresCompiler(),
+        _ => throw new InvalidOperationException("Invalid database type requested.")
+    };
+
     private DbConnection OpenConnection()
     {
         DbConnection connection;
@@ -49,10 +58,12 @@ public class DbConnectionFactory : IDbConnectionFactory
                 connection = new SqliteConnection(_config.Database.GetConnectionString());
                 GlobalConfiguration.Setup().UseSqlite();
                 break;
-            default:
+            case IDatabaseConfig.DatabaseType.PostgreSql:
                 connection = new NpgsqlConnection(_config.Database.GetConnectionString());
                 GlobalConfiguration.Setup().UsePostgreSql();
                 break;
+            default:
+                throw new InvalidOperationException("Invalid database type requested.");
         }
         
         connection.Open();

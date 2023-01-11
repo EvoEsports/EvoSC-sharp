@@ -11,6 +11,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using RepoDb;
 using RepoDb.Interfaces;
+using SqlKata;
 
 namespace EvoSC.Common.Database.Repository.Maps;
 
@@ -24,21 +25,17 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
 
     public async Task<IMap?> GetMapByIdAsync(long id)
     {
-        var query = NewQuery()
-            // select map
-            .SelectAllFrom<DbMap>(DatabaseSetting)
-            .Where<DbMap>(m => m.Id == id, DatabaseSetting)
-            .End()
-            // select author
-            .SelectAllFrom<DbPlayer>(DatabaseSetting)
-            .WhereIn<DbPlayer>(p => p.Id, DatabaseSetting)
-            .OpenParen()
-            .SelectFieldFrom<DbMap>(m => m.AuthorId, DatabaseSetting)
-            .Where<DbMap>(m => m.Id == id, DatabaseSetting)
-            .CloseParen()
-            .End();
-
-        var extractor = await Database.ExecuteQueryMultipleAsync(query.ToString(), new {Id = id});
+        var (sql, values) = MultiQuery()
+            .Add(new Query("Maps")
+                .Where("Id", id)
+            )
+            .Add(new Query("Maps")
+                .Select("AuthorId")
+                .Where("Id", id)
+            )
+            .Compile();
+        
+        var extractor = await Database.ExecuteQueryMultipleAsync(sql, values);
         var map = (await extractor.ExtractAsync<DbMap>())?.FirstOrDefault();
 
         if (map == null)
@@ -54,21 +51,17 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
 
     public async Task<IMap?> GetMapByUidAsync(string uid)
     {
-        var query = NewQuery()
-            // select map
-            .SelectAllFrom<DbMap>(DatabaseSetting)
-            .Where<DbMap>(m => m.Uid == uid, DatabaseSetting)
-            .End()
-            // select author
-            .SelectAllFrom<DbPlayer>(DatabaseSetting)
-            .WhereIn<DbPlayer>(p => p.Id, DatabaseSetting)
-            .OpenParen()
-            .SelectFieldFrom<DbMap>(m => m.AuthorId, DatabaseSetting)
-            .Where<DbMap>(m => m.Uid == uid, DatabaseSetting)
-            .CloseParen()
-            .End();
-
-        var extractor = await Database.ExecuteQueryMultipleAsync(query.ToString(), new {Uid = uid});
+        var (sql, values) = MultiQuery()
+            .Add(new Query("Maps")
+                .Where("Uid", uid)
+            )
+            .Add(new Query("Maps")
+                .Select("AuthorId")
+                .Where("Uid", uid)
+            )
+            .Compile();
+        
+        var extractor = await Database.ExecuteQueryMultipleAsync(sql, values);
         var map = (await extractor.ExtractAsync<DbMap>())?.FirstOrDefault();
 
         if (map == null)

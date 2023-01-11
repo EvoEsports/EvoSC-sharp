@@ -24,6 +24,7 @@
       <PackageReference Include="RepoDb.Sqlite.Microsoft" Version="1.13.0" />
       <PackageReference Include="Samboy063.Tomlet" Version="5.0.1" />
       <PackageReference Include="SimpleInjector" Version="5.4.1" />
+      <PackageReference Include="SqlKata" Version="2.4.0" />
     </ItemGroup>
     
     <ItemGroup>
