@@ -64,6 +64,16 @@ public static class QueryBuilderExtensions
             .From()
             .TableNameFrom<TEntity>(dbSetting);
     }
+    
+    public static QueryBuilder FieldFrom<TEntity>(this QueryBuilder builder,
+        Expression<Func<TEntity, object>> propertyExpr,
+        IDbSetting dbSetting) where TEntity : class
+    {
+        var property = (MemberExpression)((UnaryExpression)propertyExpr.Body).Operand;
+        var field = new Field(GetMemberName(property.Member), property.Member.DeclaringType);
+
+        return builder.FieldFrom(field, dbSetting);
+    }
 
     /// <summary>
     /// Add a single where clause to the query.
@@ -144,7 +154,10 @@ public static class QueryBuilderExtensions
     /// <param name="builder"></param>
     /// <returns></returns>
     public static QueryBuilder OuterJoin(this QueryBuilder builder) => builder.WriteText("OUTER").Join();
-    
+
+    public static string QuoteIdentifier(string name, IDbSetting dbSetting) =>
+        $"{dbSetting.OpeningQuote}{name}{dbSetting.ClosingQuote}";
+
     private static string GetMemberName(this MemberInfo member) =>
         member.GetCustomAttribute<MapAttribute>()?.Name
         ?? member.GetCustomAttribute<NameAttribute>()?.Name
