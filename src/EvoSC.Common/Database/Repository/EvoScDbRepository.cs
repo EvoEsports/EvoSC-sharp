@@ -20,4 +20,18 @@ public abstract class EvoScDbRepository<T> where T : class
         DatabaseSetting = DbSettingMapper.Get(Database);
         Fields = FieldCache.Get<T>();
     }
+
+    /// <summary>
+    /// Quote an identifier based on the current database setting.
+    /// </summary>
+    /// <param name="identifier">The identifier to quote.</param>
+    /// <returns></returns>
+    protected string Quote(string identifier) =>
+        $"{DatabaseSetting.OpeningQuote}{identifier}{DatabaseSetting.ClosingQuote}";
+
+    /// <summary>
+    /// Begin a new query using the QueryBuilder.
+    /// </summary>
+    /// <returns></returns>
+    protected QueryBuilder NewQuery() => new QueryBuilder().Clear();
 }

@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Database.Models.Permissions;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
@@ -20,13 +21,23 @@ public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermission
 
     public async Task<IEnumerable<IGroup>> GetGroupsAsync(long playerId)
     {
-        var groupsSql = """ 
-            SELECT gs.* FROM ""Groups"" gs
-            INNER JOIN ""UserGroups"" ug ON ug.GroupID=gs.Id
-            WHERE ug.UserId=@UserId
-            """;
-        var groupsValues = new { UserId = playerId };
-        return await Database.ExecuteQueryAsync<DbGroup>(groupsSql, groupsValues);
+        var query = NewQuery()
+            .Select()
+            .WriteText("gs.*")
+            .From()
+            .TableNameFrom<DbGroup>(DatabaseSetting).WriteText("gs")
+            .InnerJoin()
+            .TableNameFrom<DbUserGroup>(DatabaseSetting).WriteText("ug")
+            .On()
+            .WriteText($"ug.{Quote("GroupID")}")
+            .WriteText("=")
+            .WriteText($"gs.{Quote("Id")}")
+            .Where()
+            .WriteText($"ug.{Quote("UserId")}")
+            .WriteText("=")
+            .WriteText("@UserId");
+
+        return await Database.ExecuteQueryAsync<DbGroup>(query.ToString(), new {UserId = playerId});
     }
 
     public async Task AddPermissionAsync(IPermission permission) => await Database.InsertAsync(new DbPermission(permission));
@@ -43,23 +54,34 @@ public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermission
 
     public async Task<IEnumerable<IPermission>> GetPlayerPermissionsAsync(long playerId)
     {
-        var sql = """
-            SELECT prms.Name FROM Players ps
-            INNER JOIN ""UserGroups"" ug ON ug.UserId=ps.Id
-            INNER JOIN ""GroupPermissions"" gp ON gp.GroupId=ug.GroupID
-            INNER JOIN ""Permissions"" prms ON prms.Id=gp.PermissionId
-            WHERE ps.Id=@UserId
-            """;
-        var values = new { UserId = playerId };
-        return await Database.ExecuteQueryAsync<DbPermission>(sql, values);
+        var query = NewQuery()
+            .Select()
+            .WriteText($"prms.*")
+            .From()
+            .TableNameFrom<DbPlayer>(DatabaseSetting).WriteText("ps")
+
+            .InnerJoin()
+            .TableNameFrom<DbUserGroup>(DatabaseSetting).WriteText("ug")
+            .On().WriteText($"ug.{Quote("UserId")}").WriteText("=").WriteText($"ps.{Quote("Id")}")
+
+            .InnerJoin()
+            .TableNameFrom<DbGroupPermission>(DatabaseSetting).WriteText("gp")
+            .On().WriteText($"gp.{Quote("GroupId")}").WriteText("=").WriteText($"ug.{Quote("GroupId")}")
+
+            .InnerJoin()
+            .TableNameFrom<DbPermission>(DatabaseSetting).WriteText("prms")
+            .On().WriteText($"prms.{Quote("Id")}").WriteText("=").WriteText($"gp.{Quote("PermissionId")}")
+            
+            .Where()
+            .WriteText($"ps.{Quote("Id")}").WriteText("=").WriteText("@UserId");
+
+        return await Database.ExecuteQueryAsync<DbPermission>(query.ToString(), new {UserId = playerId});
     }
 
     public async Task RemovePermissionAsync(IPermission permission)
     {
-        var queryDeleteGroupPermissions = "DELETE FROM GroupPermissions WHERE PermissionId=@PermissionId";
-        var valuesDeleteGroupPermissions = new { PermissionId = permission.Id };
-        await Database.QueryAsync(queryDeleteGroupPermissions, valuesDeleteGroupPermissions);
-        await Database.DeleteAsync(permission);
+        await Database.DeleteAsync<DbGroupPermission>(gp => gp.PermissionId == permission.Id);
+        await Database.DeleteAsync<DbPermission>(p => p.Id == permission.Id);
     }
 
     public async Task AddGroupAsync(IGroup group) => await Database.InsertAsync(new DbGroup(group));
@@ -75,7 +97,7 @@ public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermission
 
     public async Task<IGroup?> GetGroup(int id)
     {
-        var query = new QueryBuilder()
+        var query = NewQuery()
             // select the group
             .SelectAllFrom<DbGroup>(DatabaseSetting)
             .Where<DbGroup>(g => g.Id == id, DatabaseSetting)
@@ -106,31 +128,15 @@ public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermission
     public async Task AddPlayerToGroupAsync(long playerId, int groupId) =>
         await Database.InsertAsync(new DbUserGroup { GroupId = groupId, UserId = playerId });
 
-    public async Task RemovePlayerFromGroupAsync(long playerId)
-    {
-        var sql = "DELETE FROM UserGroups WHERE UserId=@UserId";
-        var values = new { UserId = playerId };
-        await Database.ExecuteQueryAsync(sql, values);
-    }
+    public Task RemovePlayerFromGroupAsync(long playerId) =>
+        Database.DeleteAsync<DbUserGroup>(ug => ug.UserId == playerId);
 
-    public async Task AddPermissionToGroupAsync(int groupId, int permissionId)
-    {
-        var sql = "INSERT INTO GroupPermissions(PermissionId, GroupId) VALUES(@PermissionId, @GroupId)";
-        var values = new { PermissionId = permissionId, GroupId = groupId };
-        await Database.ExecuteQueryAsync(sql, values);
-    }
+    public Task AddPermissionToGroupAsync(int groupId, int permissionId) =>
+        Database.InsertAsync(new DbGroupPermission {GroupId = groupId, PermissionId = permissionId});
 
-    public Task RemovePermissionFromGroupAsync(int groupId, int permissionId)
-    {
-        var sql = "DELETE FROM GroupPermissions WHERE PermissionId=@PermissionId AND GroupId=@GroupId";
-        var values = new { PermissionId = permissionId, GroupId = groupId };
-        return Database.ExecuteQueryAsync(sql, values);
-    }
+    public Task RemovePermissionFromGroupAsync(int groupId, int permissionId) =>
+        Database.DeleteAsync<DbGroupPermission>(gp => gp.PermissionId == permissionId && gp.GroupId == groupId);
 
-    public Task ClearGroupPermissionsAsync(int groupId)
-    {
-        var sql = "DELETE FROM GroupPermissions WHERE GroupId=@GroupId";
-        var values = new { GroupId = groupId };
-        return Database.ExecuteQueryAsync(sql, values);
-    }
+    public Task ClearGroupPermissionsAsync(int groupId) =>
+        Database.DeleteAsync<DbGroupPermission>(gp => gp.GroupId == groupId);
 }
