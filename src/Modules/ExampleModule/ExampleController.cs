@@ -61,7 +61,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var map = await _mapRepo.GetMapByUidAsync("RXEhmRhMZN8LGlKPfMaecAM871f");
+        var permissions = await _permRepo.GetGroup(1);
         await _server.InfoMessage("hello!");
     }
 }

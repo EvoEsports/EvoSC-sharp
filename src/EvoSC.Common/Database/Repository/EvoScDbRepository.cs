@@ -3,6 +3,7 @@ using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces.Database;
 using RepoDb;
 using RepoDb.Interfaces;
+using SqlKata;
 
 namespace EvoSC.Common.Database.Repository;
 
@@ -29,9 +30,7 @@ public abstract class EvoScDbRepository<T> where T : class
     protected string Quote(string identifier) =>
         $"{DatabaseSetting.OpeningQuote}{identifier}{DatabaseSetting.ClosingQuote}";
 
-    /// <summary>
-    /// Begin a new query using the QueryBuilder.
-    /// </summary>
-    /// <returns></returns>
-    protected QueryBuilder NewQuery() => new QueryBuilder().Clear();
+    protected CompilableQuery Query() => new(_connectionFactory.GetSqlCompiler());
+    protected CompilableQuery Query(string table) => new(_connectionFactory.GetSqlCompiler());
+    protected CompilableMultiQuery MultiQuery() => new CompilableMultiQuery(_connectionFactory.GetSqlCompiler());
 }
