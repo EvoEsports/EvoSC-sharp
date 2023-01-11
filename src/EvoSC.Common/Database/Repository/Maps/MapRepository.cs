@@ -20,39 +20,11 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
         _logger = logger;
     }
 
-    public async Task<IMap?> GetMapByIdAsync(long id)
-    {
-        var where = new QueryGroup(new QueryField("Id", id));
-        var statement = new QueryBuilder()
-            .Clear()
-            .Select()
-            .FieldsFrom(FieldCache.Get<DbMap>(), DatabaseSetting)
-            .From()
-            .TableNameFrom("Maps", DatabaseSetting)
-            .WhereFrom(where, DatabaseSetting)
-            .End()
-            .GetString();
-    
-        var maps = await Database.QueryAsync<DbMap>(e => e.Id == id);
-        return maps.FirstOrDefault();
-    }
+    public async Task<IMap?> GetMapByIdAsync(long id) =>
+        (await Database.QueryAsync<DbMap>(e => e.Id == id))?.FirstOrDefault();
 
-    public async Task<IMap?> GetMapByUidAsync(string uid)
-    {
-        var where = new QueryGroup(new QueryField("Uid", uid));
-        var statement = new QueryBuilder()
-            .Clear()
-            .Select()
-            .FieldsFrom(Fields, DatabaseSetting)
-            .From()
-            .TableNameFrom("Maps", DatabaseSetting)
-            .WhereFrom(where, DatabaseSetting)
-            .End()
-            .GetString();
-
-        var maps = await Database.QueryAsync<DbMap>(e => e.Uid == uid);
-        return maps.FirstOrDefault();
-    }
+    public async Task<IMap?> GetMapByUidAsync(string uid) =>
+        (await Database.QueryAsync<DbMap>(e => e.Uid == uid)).FirstOrDefault();
     
     public async Task<IMap> AddMapAsync(MapMetadata mapMetadata, IPlayer author, string filePath)
     {
@@ -67,8 +39,8 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
             ExternalId = mapMetadata.ExternalId,
             ExternalVersion = mapMetadata.ExternalVersion,
             ExternalMapProvider = mapMetadata.ExternalMapProvider,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
         
         await using var transaction = await Database.BeginTransactionAsync();
@@ -79,7 +51,7 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogDebug(e, "Failed to add map.");
+            _logger.LogDebug(e, "Failed to add map");
             await transaction.RollbackAsync();
             throw;
         }
@@ -107,7 +79,7 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogDebug(e, "Failed to update map.");
+            _logger.LogDebug(e, "Failed to update map");
             await transaction.RollbackAsync();
             throw;
         }
@@ -115,6 +87,5 @@ public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
         return new Map(updatedMap) ;
     }
 
-    public async Task RemoveMapAsync(long id) =>
-        await Database.DeleteAsync("Maps", id);
+    public Task RemoveMapAsync(long id) => Database.DeleteAsync("Maps", id);
 }

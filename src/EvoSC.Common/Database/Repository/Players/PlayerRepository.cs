@@ -42,7 +42,7 @@ public class PlayerRepository : EvoScDbRepository<DbPlayer>, IPlayerRepository
     public async Task UpdateLastVisitAsync(IPlayer player)
     {
         var dbPlayer = (DbPlayer) player;
-        dbPlayer.LastVisit = DateTime.Now;
+        dbPlayer.LastVisit = DateTime.UtcNow;
         var fields = Field.Parse<DbPlayer>(e => new { e.LastVisit });
 
         await Database.UpdateAsync(player, fields: fields);
