@@ -31,5 +31,5 @@ public class DbMap : IMap
 
     public DateTime UpdatedAt { get; set; }
     
-    public IPlayer Author { get; set; }
+    public IPlayer? Author { get; set; }
 }

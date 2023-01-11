@@ -20,15 +20,17 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IChatCommandManager _chatCommands;
     private readonly IPermissionManager _permissions;
     private readonly IPermissionRepository _permRepo;
+    private readonly IMapRepository _mapRepo;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
-        IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo)
+        IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo, IMapRepository mapRepo)
     {
         _settings = settings;
         _server = server;
         _chatCommands = chatCommands;
         _permissions = permissions;
         _permRepo = permRepo;
+        _mapRepo = mapRepo;
     }
 
     [ChatCommand("hey", "Say hey!")]
@@ -59,7 +61,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var groups = await _permRepo.GetGroupsAsync(1);
+        var map = await _mapRepo.GetMapByUidAsync("RXEhmRhMZN8LGlKPfMaecAM871f");
         await _server.InfoMessage("hello!");
     }
 }
