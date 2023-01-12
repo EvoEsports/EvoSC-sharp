@@ -1,16 +1,11 @@
-﻿using System.Data;
-using System.Data.Common;
-using EvoSC.Common.Database.Extensions;
-using EvoSC.Common.Database.Models.Maps;
+﻿using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using RepoDb;
-using RepoDb.Interfaces;
 using SqlKata;
 
 namespace EvoSC.Common.Database.Repository.Maps;

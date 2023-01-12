@@ -2,7 +2,7 @@
 using SqlKata;
 using SqlKata.Compilers;
 
-namespace EvoSC.Common.Database.Repository;
+namespace EvoSC.Common.Database.QueryHelpers;
 
 public class CompilableMultiQuery : ICompilableQuery
 {

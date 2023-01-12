@@ -16,5 +16,5 @@ public interface IDbConnectionFactory
     /// database connection.
     /// </summary>
     /// <returns></returns>
-    public Compiler GetSqlCompiler();
+    public Compiler GetQueryCompiler();
 }

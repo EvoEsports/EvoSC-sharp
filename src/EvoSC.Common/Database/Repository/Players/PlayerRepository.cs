@@ -1,11 +1,10 @@
-﻿using System.Data.Common;
-using System.Globalization;
+﻿using System.Globalization;
+using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet.Structs;
-using Npgsql;
 using RepoDb;
 
 namespace EvoSC.Common.Database.Repository.Players;
@@ -35,16 +34,17 @@ public class PlayerRepository : EvoScDbRepository<DbPlayer>, IPlayerRepository
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        var newPlayer = await Database.InsertAsync<DbPlayer>(dbPlayer);
+        var newPlayer = await Database.InsertAsync(dbPlayer);
         return (IPlayer)newPlayer;
     }
 
     public async Task UpdateLastVisitAsync(IPlayer player)
     {
-        var dbPlayer = (DbPlayer) player;
-        dbPlayer.LastVisit = DateTime.UtcNow;
-        var fields = Field.Parse<DbPlayer>(e => new { e.LastVisit });
+        var (sql, values) = Query("Players")
+            .Where("Id", player.Id)
+            .AsUpdate(new {LastVisit = DateTime.UtcNow})
+            .Compile();
 
-        await Database.UpdateAsync(player, fields: fields);
+        await Database.ExecuteQueryAsync(sql, values);
     }
 }
