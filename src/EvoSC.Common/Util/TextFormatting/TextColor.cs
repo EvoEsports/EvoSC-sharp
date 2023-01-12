@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 
 namespace EvoSC.Common.Util.TextFormatting;
 
@@ -24,9 +25,9 @@ public class TextColor
 
     public TextColor(string hex)
     {
-        _r = byte.Parse(hex[0].ToString(), System.Globalization.NumberStyles.HexNumber);
-        _g = byte.Parse(hex[1].ToString(), System.Globalization.NumberStyles.HexNumber);
-        _b = byte.Parse(hex[2].ToString(), System.Globalization.NumberStyles.HexNumber);
+        this._r = byte.Parse(hex[0].ToString(), System.Globalization.NumberStyles.HexNumber);
+        this._g = byte.Parse(hex[1].ToString(), System.Globalization.NumberStyles.HexNumber);
+        this._b = byte.Parse(hex[2].ToString(), System.Globalization.NumberStyles.HexNumber);
     }
 
     /// <summary>
