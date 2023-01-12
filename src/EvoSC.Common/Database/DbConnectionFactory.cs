@@ -37,7 +37,7 @@ public class DbConnectionFactory : IDbConnectionFactory
         }
     }
 
-    public Compiler GetSqlCompiler() => _config.Database.Type switch
+    public Compiler GetQueryCompiler() => _config.Database.Type switch
     {
         IDatabaseConfig.DatabaseType.MySql => new MySqlCompiler(),
         IDatabaseConfig.DatabaseType.SQLite => new SqliteCompiler(),

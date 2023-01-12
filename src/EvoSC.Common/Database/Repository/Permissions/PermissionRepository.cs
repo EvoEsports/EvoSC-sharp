@@ -1,12 +1,8 @@
-﻿using System.Data.Common;
-using EvoSC.Common.Database.Extensions;
+﻿using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Database.Models.Permissions;
-using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
 using RepoDb;
 using RepoDb.Extensions;
 using SqlKata;
@@ -44,27 +40,6 @@ public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermission
 
     public async Task<IEnumerable<IPermission>> GetPlayerPermissionsAsync(long playerId)
     {
-        /* var query = NewQuery()
-            .Select()
-            .WriteText($"prms.*")
-            .From()
-            .TableNameFrom<DbPlayer>(DatabaseSetting).WriteText("ps")
-
-            .InnerJoin()
-            .TableNameFrom<DbUserGroup>(DatabaseSetting).WriteText("ug")
-            .On().WriteText($"ug.{Quote("UserId")}").WriteText("=").WriteText($"ps.{Quote("Id")}")
-
-            .InnerJoin()
-            .TableNameFrom<DbGroupPermission>(DatabaseSetting).WriteText("gp")
-            .On().WriteText($"gp.{Quote("GroupId")}").WriteText("=").WriteText($"ug.{Quote("GroupId")}")
-
-            .InnerJoin()
-            .TableNameFrom<DbPermission>(DatabaseSetting).WriteText("prms")
-            .On().WriteText($"prms.{Quote("Id")}").WriteText("=").WriteText($"gp.{Quote("PermissionId")}")
-            
-            .Where()
-            .WriteText($"ps.{Quote("Id")}").WriteText("=").WriteText("@UserId"); */
-
         var (sql, values) = Query()
             .Select("Permissions.*")
             .From("Players")
@@ -96,20 +71,6 @@ public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermission
 
     public async Task<IGroup?> GetGroup(int id)
     {
-        /* var query = NewQuery()
-             // select the group
-             .SelectAllFrom<DbGroup>(DatabaseSetting)
-             .Where<DbGroup>(g => g.Id == id, DatabaseSetting)
-             .End()
-             // select all permissions assigned to this group
-             .SelectAllFrom<DbPermission>(DatabaseSetting)
-             .WhereIn<DbPermission>(p => p.Id, DatabaseSetting)
-             .OpenParen()
-             .SelectFieldFrom<DbGroupPermission>(gp => gp.GroupId, DatabaseSetting)
-             .Where<DbGroupPermission>(gp => gp.GroupId == id, DatabaseSetting)
-             .CloseParen()
-             .End(); */
-
         var (sql, values) = MultiQuery()
             .Add(new Query("Groups")
                 .Where("Id", id)

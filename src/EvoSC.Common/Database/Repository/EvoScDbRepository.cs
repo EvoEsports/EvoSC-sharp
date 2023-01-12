@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.QueryHelpers;
 using EvoSC.Common.Interfaces.Database;
 using RepoDb;
 using RepoDb.Interfaces;
@@ -12,14 +13,12 @@ public abstract class EvoScDbRepository<T> where T : class
     private readonly IDbConnectionFactory _connectionFactory;
 
     protected DbConnection Database => _connectionFactory.GetConnection();
-    protected IDbSetting DatabaseSetting { get; private set; }
-    protected IEnumerable<Field> Fields { get; private set; }
+    protected IDbSetting DatabaseSetting { get; }
 
-    public EvoScDbRepository(IDbConnectionFactory connectionFactory)
+    protected EvoScDbRepository(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
         DatabaseSetting = DbSettingMapper.Get(Database);
-        Fields = FieldCache.Get<T>();
     }
 
     /// <summary>
@@ -30,7 +29,23 @@ public abstract class EvoScDbRepository<T> where T : class
     protected string Quote(string identifier) =>
         $"{DatabaseSetting.OpeningQuote}{identifier}{DatabaseSetting.ClosingQuote}";
 
-    protected CompilableQuery Query() => new(_connectionFactory.GetSqlCompiler());
-    protected CompilableQuery Query(string table) => new(_connectionFactory.GetSqlCompiler());
-    protected CompilableMultiQuery MultiQuery() => new CompilableMultiQuery(_connectionFactory.GetSqlCompiler());
+    /// <summary>
+    /// Start building a new query.
+    /// </summary>
+    /// <returns></returns>
+    protected CompilableQuery Query() => new(_connectionFactory.GetQueryCompiler());
+
+    /// <summary>
+    /// Start building an new query on a specific table.
+    /// </summary>
+    /// <param name="table">The table to run the query on.</param>
+    /// <returns></returns>
+    protected CompilableQuery Query(string table) => new(table, _connectionFactory.GetQueryCompiler());
+
+    /// <summary>
+    /// Start a new multi query. Allows you to compile multiple
+    /// queries in one.
+    /// </summary>
+    /// <returns></returns>
+    protected CompilableMultiQuery MultiQuery() => new(_connectionFactory.GetQueryCompiler());
 }

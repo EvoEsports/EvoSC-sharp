@@ -11,9 +11,9 @@ public class ConfigStoreRepository : EvoScDbRepository<DbConfigOption>, IConfigS
     {
     }
     
-    public async Task<DbConfigOption?> GetConfigOptionsByKeyAsync(string keyname)
+    public async Task<DbConfigOption?> GetConfigOptionsByKeyAsync(string keyName)
     {
-        var option = await Database.QueryAsync<DbConfigOption>(e => e.Key == keyname);
+        var option = await Database.QueryAsync<DbConfigOption>(e => e.Key == keyName);
         return option.FirstOrDefault();
     }
     
