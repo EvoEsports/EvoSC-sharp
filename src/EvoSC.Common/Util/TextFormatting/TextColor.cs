@@ -11,7 +11,7 @@ public class TextColor
     private readonly byte _r;
     private readonly byte _g;
     private readonly byte _b;
-    
+
     /// <summary>
     /// Create a text color using a System.Color object.
     /// </summary>
@@ -21,6 +21,13 @@ public class TextColor
         _r = (byte)Math.Round((float)color.R / 0xff * 0xf);
         _g = (byte)Math.Round((float)color.G / 0xff * 0xf);
         _b = (byte)Math.Round((float)color.B / 0xff * 0xf);
+    }
+
+    public TextColor(string hex)
+    {
+        this._r = byte.Parse(hex[0].ToString(), System.Globalization.NumberStyles.HexNumber);
+        this._g = byte.Parse(hex[1].ToString(), System.Globalization.NumberStyles.HexNumber);
+        this._b = byte.Parse(hex[2].ToString(), System.Globalization.NumberStyles.HexNumber);
     }
 
     /// <summary>
@@ -38,7 +45,7 @@ public class TextColor
         {
             throw new ArgumentOutOfRangeException("Invalid RGB colors, must be between 0 and 15.");
         }
-        
+
         _r = r;
         _g = g;
         _b = b;
@@ -60,7 +67,7 @@ public class TextColor
         15 => "f",
         _ => ""
     };
-    
+
     /// <summary>
     /// Convert this color to the formatted text representation.
     /// </summary>
@@ -69,4 +76,5 @@ public class TextColor
     {
         return $"${ToHex(_r)}{ToHex(_g)}{ToHex(_b)}";
     }
+
 }
