@@ -8,7 +8,7 @@ using SqlKata;
 
 namespace EvoSC.Common.Database.Repository;
 
-public abstract class EvoScDbRepository<T> where T : class
+public abstract class EvoScDbRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
 

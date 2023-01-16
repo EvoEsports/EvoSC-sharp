@@ -9,7 +9,7 @@ using SqlKata;
 
 namespace EvoSC.Common.Database.Repository.Permissions;
 
-public class PermissionRepository : EvoScDbRepository<DbPermission>, IPermissionRepository
+public class PermissionRepository : EvoScDbRepository, IPermissionRepository
 {
     public PermissionRepository(IDbConnectionFactory connectionFactory) : base(
         connectionFactory)

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Database;
+﻿using EvoSC.Common.Exceptions.DatabaseExceptions;
+using EvoSC.Common.Interfaces.Database;
 using SqlKata;
 using SqlKata.Compilers;
 
@@ -31,7 +32,7 @@ public class CompilableQuery : Query, ICompilableQuery
 
         if (compiled == null)
         {
-            throw new Exception("Failed to compile query.");
+            throw new QueryCompilationFailedException();
         }
 
         return (compiled.Sql, compiled.NamedBindings);

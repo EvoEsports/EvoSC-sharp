@@ -59,7 +59,7 @@ public class DatabaseStore : IConfigStore
                     await _configStoreRepository.AddConfigOptionAsync(new DbConfigOption
                     {
                         Key = keyName,
-                        Value = optionAttr?.DefaultValue.ToString() ?? ReflectionUtils.GetDefaultTypeValue(property.PropertyType).ToString()
+                        Value = optionAttr?.DefaultValue?.ToString() ?? ReflectionUtils.GetDefaultTypeValue(property.PropertyType).ToString()
                     });
                 }
             }
@@ -96,7 +96,7 @@ public class DatabaseStore : IConfigStore
             _configStoreRepository.AddConfigOptionAsync(new DbConfigOption
             {
                 Key = option.Key,
-                Value = option.Value
+                Value = option.Value ?? ""
             }).GetAwaiter().GetResult();
         }
         else

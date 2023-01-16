@@ -56,7 +56,12 @@ public class PlayerManagerService : IPlayerManagerService
         }
         catch (Exception)
         {
-            _logger.LogDebug("Player not on server.");
+            _logger.LogDebug("Player not on server");
+        }
+
+        if (playerInfo == null)
+        {
+            throw new InvalidOperationException("Player info is null, cannot create player.");
         }
 
         return await _playerRepository.AddPlayerAsync(accountId, playerInfo);

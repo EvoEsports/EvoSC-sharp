@@ -9,7 +9,7 @@ using RepoDb;
 
 namespace EvoSC.Common.Database.Repository.Players;
 
-public class PlayerRepository : EvoScDbRepository<DbPlayer>, IPlayerRepository
+public class PlayerRepository : EvoScDbRepository, IPlayerRepository
 {
     
     public PlayerRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)

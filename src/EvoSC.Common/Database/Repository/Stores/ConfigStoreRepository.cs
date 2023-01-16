@@ -5,7 +5,7 @@ using RepoDb;
 
 namespace EvoSC.Common.Database.Repository.Stores;
 
-public class ConfigStoreRepository : EvoScDbRepository<DbConfigOption>, IConfigStoreRepository
+public class ConfigStoreRepository : EvoScDbRepository, IConfigStoreRepository
 {
     public ConfigStoreRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
     {

@@ -15,7 +15,7 @@ public static class DatabaseConfigExtensions
             case IDatabaseConfig.DatabaseType.SQLite:
                 return GetSQLiteString(config);
             default:
-                throw new NullReferenceException("A database type has not been set.");
+                throw new InvalidOperationException("A database type has not been set.");
         }
     }
 

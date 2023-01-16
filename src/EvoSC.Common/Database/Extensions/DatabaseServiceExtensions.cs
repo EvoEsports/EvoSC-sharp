@@ -12,8 +12,6 @@ namespace EvoSC.Common.Database.Extensions;
 
 public static class DatabaseServiceExtensions
 {
-    private const int CommandTimeout = 3;
-    
     public static Container AddEvoScDatabase(this Container services, IDatabaseConfig config)
     {
         services.Register<IDbConnectionFactory, DbConnectionFactory>();

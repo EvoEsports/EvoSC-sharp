@@ -41,16 +41,10 @@ public class MigrationManager : IMigrationManager
         provider.Dispose();
     }
 
-    private string GetDatabaseTypeIdentifier(IDatabaseConfig.DatabaseType databaseType)
+    private static string GetDatabaseTypeIdentifier(IDatabaseConfig.DatabaseType databaseType) => databaseType switch
     {
-        switch (databaseType)
-        {
-            case IDatabaseConfig.DatabaseType.MySql:
-                return "MySql5";
-            case IDatabaseConfig.DatabaseType.SQLite:
-                return "Sqlite";
-            default:
-                return "Postgres";
-        }
-    }
+        IDatabaseConfig.DatabaseType.MySql => "MySql5",
+        IDatabaseConfig.DatabaseType.SQLite => "Sqlite",
+        _ => "Postgres"
+    };
 }

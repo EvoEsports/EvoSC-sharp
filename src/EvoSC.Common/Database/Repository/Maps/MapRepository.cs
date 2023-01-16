@@ -10,7 +10,7 @@ using SqlKata;
 
 namespace EvoSC.Common.Database.Repository.Maps;
 
-public class MapRepository : EvoScDbRepository<DbMap>, IMapRepository
+public class MapRepository : EvoScDbRepository, IMapRepository
 {
     private readonly ILogger<MapRepository> _logger;
     public MapRepository(ILogger<MapRepository> logger, IDbConnectionFactory connectionFactory) : base(connectionFactory)
