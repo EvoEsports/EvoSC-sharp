@@ -38,7 +38,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
         IMap? map;
         try
         {
-            map = await _mxMapService.FindAndDownloadMap(Convert.ToInt32(mapId), null, Context.Player);
+            map = await _mxMapService.FindAndDownloadMapAsync(Convert.ToInt32(mapId), null, Context.Player);
         }
         catch (Exception e)
         {

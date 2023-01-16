@@ -21,7 +21,7 @@ public class MxMapService : IMxMapService
         _mapService = mapService;
     }
 
-    public async Task<IMap?> FindAndDownloadMap(int mxId, string? shortName, IPlayer actor)
+    public async Task<IMap?> FindAndDownloadMapAsync(int mxId, string? shortName, IPlayer actor)
     {
         var tmxApi = new MxTmApi("EvoSC#");
         var mapFile = await tmxApi.DownloadMapAsync(mxId, shortName);
