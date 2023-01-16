@@ -48,7 +48,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [CommandAlias("---", 0)]
     public async Task RateMap(int rating)
     {
-        if (rating < 0 || rating > 100)
+        if (rating is < 0 or > 100)
         {
             await _server.SendChatMessage("Rating must be between 0 and 100 inclusively.", Context.Player);
         }
