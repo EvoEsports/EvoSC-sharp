@@ -176,6 +176,5 @@ public sealed class Application : IEvoSCApplication, IDisposable
     {
         _services.Dispose();
         _runningToken.Dispose();
-        GC.SuppressFinalize(this);
     }
 }
