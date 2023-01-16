@@ -45,7 +45,7 @@ public class PlayerRecordsRepository : EvoScDbRepository, IPlayerRecordsReposito
 
     public Task UpdateRecordAsync(DbPlayerRecord record) => _db.UpdateAsync(record);
     public Task InsertRecordAsync(DbPlayerRecord record) => _db.InsertAsync(record); */
-    protected PlayerRecordsRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
+    public PlayerRecordsRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
     {
     }
 

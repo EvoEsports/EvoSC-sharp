@@ -24,9 +24,11 @@ public class MapRepository : EvoScDbRepository, IMapRepository
             .Add(new Query("Maps")
                 .Where("Id", id)
             )
-            .Add(new Query("Maps")
-                .Select("AuthorId")
-                .Where("Id", id)
+            .Add(new Query("Players")
+                .WhereIn("Id", Query("Maps")
+                    .Select("AuthorId")
+                    .Where("Id", id)
+                )
             )
             .Compile();
         
@@ -50,9 +52,11 @@ public class MapRepository : EvoScDbRepository, IMapRepository
             .Add(new Query("Maps")
                 .Where("Uid", uid)
             )
-            .Add(new Query("Maps")
-                .Select("AuthorId")
-                .Where("Uid", uid)
+            .Add(new Query("Players")
+                .WhereIn("Id", Query("Maps")
+                    .Select("AuthorId")
+                    .Where("Uid", uid)
+                )
             )
             .Compile();
         
