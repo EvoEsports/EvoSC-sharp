@@ -1,10 +1,8 @@
-﻿using System.Data.Common;
-using System.Reflection;
+﻿using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Database.Models.Config;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Util;
-using RepoDb;
 
 namespace EvoSC.Common.Config.Stores;
 
