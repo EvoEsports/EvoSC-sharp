@@ -2,7 +2,10 @@
     <img src="./images/evosc_full.png" width="60%">
     <br>
     <img alt="GitHub" src="https://img.shields.io/github/license/EvoTM/EvoSC-sharp">
-    <a href="https://www.codacy.com/gh/EvoTM/EvoSC-sharp/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EvoTM/EvoSC-sharp&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/ffe07469f0f14d14aa3cb7218310a3c9"/></a>
+    <img alt="Code smells" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=code_smells">
+    <img alt="Bugs" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=bugs">
+    <img alt="Code coverage" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=alert_status">
+    <img alt="Security rating" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=security_rating">
     <a href="https://discord.gg/EvoTM"><img alt="Discord" src="https://img.shields.io/discord/384138149686935562?label=Discord&logo=discord&logoColor=fff"></a>
 </div>
 
@@ -71,4 +74,4 @@ volumes:
   MariaDBData: null
 ```
 
-We also have a documentation of the current code base available at TODO:ADDLINK.
+We also have a documentation of the current code base available at https://evotm.github.io/EvoSC-sharp-documentation/.
