@@ -27,7 +27,7 @@ public class CommandController : EvoScController<CommandInteractionContext>
 
         if (pb == null)
         {
-            await _server.InfoMessage("You don't have a time on this map yet.");
+            await _server.InfoMessage("You have not set a time on this map yet.");
             return;
         }
 
