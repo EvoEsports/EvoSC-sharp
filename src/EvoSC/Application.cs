@@ -24,7 +24,7 @@ using SimpleInjector.Lifestyles;
 
 namespace EvoSC;
 
-public class Application : IEvoSCApplication
+public class Application : IEvoSCApplication, IDisposable
 {
     private readonly string[] _args;
     private Container _services;
@@ -170,5 +170,11 @@ public class Application : IEvoSCApplication
 
         // setup command handler
         _services.GetInstance<ICommandInteractionHandler>();
+    }
+
+    public void Dispose()
+    {
+        _services.Dispose();
+        _runningToken.Dispose();
     }
 }

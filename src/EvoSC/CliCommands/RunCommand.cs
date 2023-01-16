@@ -12,6 +12,8 @@ public class RunCommand : ICliCommand
 {
     public async Task ExecuteAsync(CancellationToken cancelToken, CliCommandContext context)
     {
-        await new Application(context.Args).RunAsync();
+        var app = new Application(context.Args);
+        await app.RunAsync();
+        app.Dispose();
     }
 }
