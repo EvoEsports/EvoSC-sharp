@@ -59,7 +59,9 @@ public class DatabaseStore : IConfigStore
                     await _configStoreRepository.AddConfigOptionAsync(new DbConfigOption
                     {
                         Key = keyName,
-                        Value = optionAttr?.DefaultValue?.ToString() ?? ReflectionUtils.GetDefaultTypeValue(property.PropertyType).ToString()
+                        Value = optionAttr?.DefaultValue?.ToString() ??
+                                ReflectionUtils.GetDefaultTypeValue(property.PropertyType)?.ToString() ??
+                                throw new InvalidOperationException("Failed to set config option as it became null.")
                     });
                 }
             }
