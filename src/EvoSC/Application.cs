@@ -24,7 +24,7 @@ using SimpleInjector.Lifestyles;
 
 namespace EvoSC;
 
-public class Application : IEvoSCApplication, IDisposable
+public sealed class Application : IEvoSCApplication, IDisposable
 {
     private readonly string[] _args;
     private Container _services;
@@ -176,5 +176,6 @@ public class Application : IEvoSCApplication, IDisposable
     {
         _services.Dispose();
         _runningToken.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.CommandLine.Invocation;
-using System.CommandLine.Rendering;
-using EvoSC.CLI;
+﻿using EvoSC.CLI;
 using EvoSC.CLI.Attributes;
 using EvoSC.CLI.Interfaces;
 
