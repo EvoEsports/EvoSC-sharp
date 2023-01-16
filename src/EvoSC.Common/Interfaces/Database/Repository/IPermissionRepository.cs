@@ -22,7 +22,7 @@ public interface IPermissionRepository
 
     public Task RemoveGroupAsync(IGroup group);
 
-    public Task<IGroup?> GetGroup(int id);
+    public Task<IGroup?> GetGroupAsync(int id);
 
     public Task AddPlayerToGroupAsync(long playerId, int groupId);
 

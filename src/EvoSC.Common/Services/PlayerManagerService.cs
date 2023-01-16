@@ -1,7 +1,4 @@
-﻿using System.Data.Common;
-using System.Globalization;
-using EvoSC.Common.Database.Models.Player;
-using EvoSC.Common.Exceptions.PlayerExceptions;
+﻿using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
@@ -9,10 +6,8 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
-using EvoSC.Common.Util.Database;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
-using RepoDb;
 
 namespace EvoSC.Common.Services;
 
@@ -126,6 +121,8 @@ public class PlayerManagerService : IPlayerManagerService
         return players;
     }
 
+    private const int MinMatchingCharacters = 2;
+    
     public async Task<IEnumerable<IOnlinePlayer>> FindOnlinePlayerAsync(string nickname)
     {
         var players = (await GetOnlinePlayersAsync()).ToArray();
@@ -137,7 +134,7 @@ public class PlayerManagerService : IPlayerManagerService
             var editDistance = StringEditDistance.GetDistance(nickname, cleanedName);
 
             // need at least 3 matching characters and ignore completely wrong names
-            if (editDistance >= cleanedName.Length - 2)
+            if (editDistance >= cleanedName.Length - MinMatchingCharacters)
             {
                 continue;
             }

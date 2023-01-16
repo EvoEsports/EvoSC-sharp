@@ -19,7 +19,7 @@ public class DatabaseStore : IConfigStore
         _type = type;
     }
     
-    private string GetSettingsName(Type type)
+    private static string GetSettingsName(Type type)
     {
         return type.Name[0] == 'I' ? type.Name.Substring(1) : type.Name;
     }
@@ -68,7 +68,7 @@ public class DatabaseStore : IConfigStore
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public string? Read(string key)

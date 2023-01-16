@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using EvoSC.Common.Config.Models;
 
 namespace EvoSC.Common.Interfaces;
 

@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using RepoDb.Attributes;
-using RepoDb.Attributes.Parameter;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 

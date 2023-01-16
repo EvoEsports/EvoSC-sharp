@@ -5,9 +5,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Logging;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Generators;
-using FluentMigrator.Runner.Processors;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database;
 

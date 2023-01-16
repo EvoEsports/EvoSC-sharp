@@ -1,8 +1,4 @@
-﻿using EvoSC.Common.Database.Repository.Permissions;
-using EvoSC.Common.Database.Repository.Players;
-using EvoSC.Common.Database.Repository.Stores;
-using EvoSC.Common.Interfaces.Database.Repository;
-using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces.Services;
 using SimpleInjector;
 
 namespace EvoSC.Common.Services;

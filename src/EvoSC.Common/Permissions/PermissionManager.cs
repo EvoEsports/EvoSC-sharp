@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Database.Models.Permissions;
-using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -34,7 +33,7 @@ public class PermissionManager : IPermissionManager
 
         foreach (var permName in permNames)
         {
-            if (permName.Equals(permission))
+            if (permName.Equals(permission, StringComparison.Ordinal))
             {
                 return true;
             }
@@ -61,7 +60,7 @@ public class PermissionManager : IPermissionManager
 
     public async Task RemovePermission(string name)
     {
-        var permission = await GetPermission(name) as DbPermission;
+        var permission = await _permissionRepository.GetPermissionAsync(name);
 
         if (permission == null)
         {
@@ -77,7 +76,7 @@ public class PermissionManager : IPermissionManager
 
     public async Task RemoveGroup(int id)
     {
-        var group = await GetGroup(id) as DbGroup;
+        var group = await _permissionRepository.GetGroupAsync(id);
 
         if (group == null)
         {
@@ -91,7 +90,7 @@ public class PermissionManager : IPermissionManager
 
     public Task UpdateGroup(IGroup group) => _permissionRepository.UpdateGroupAsync(group);
 
-    public async Task<IGroup?> GetGroup(int id) => await _permissionRepository.GetGroup(id);
+    public async Task<IGroup?> GetGroup(int id) => await _permissionRepository.GetGroupAsync(id);
 
     public async Task AddPlayerToGroup(IPlayer player, IGroup group) =>
         await _permissionRepository.AddPlayerToGroupAsync(player.Id, group.Id);

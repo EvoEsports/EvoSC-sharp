@@ -1,14 +1,12 @@
 ﻿using System.Data.Common;
-using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.QueryHelpers;
 using EvoSC.Common.Interfaces.Database;
 using RepoDb;
 using RepoDb.Interfaces;
-using SqlKata;
 
 namespace EvoSC.Common.Database.Repository;
 
-public abstract class EvoScDbRepository
+public class EvoScDbRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
 

@@ -69,7 +69,7 @@ public class PermissionRepository : EvoScDbRepository, IPermissionRepository
         await Database.DeleteAsync<DbGroup>(g => g.Id == group.Id);
     }
 
-    public async Task<IGroup?> GetGroup(int id)
+    public async Task<IGroup?> GetGroupAsync(int id)
     {
         var (sql, values) = MultiQuery()
             .Add(new Query("Groups")
