@@ -1,6 +1,7 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
+using SqlKata;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Database.Models;
 
@@ -17,8 +18,8 @@ public class DbPlayerRecord : IPlayerRecord
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     
-    [Computed]
+    [Ignore]
     public IPlayer Player { get; set; }
-    [Computed]
+    [Ignore]
     public IMap? Map { get; set; }
 }

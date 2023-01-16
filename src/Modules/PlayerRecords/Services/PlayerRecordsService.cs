@@ -1,7 +1,6 @@
 ﻿using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Repository;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
@@ -52,7 +51,7 @@ public class PlayerRecordsService : IPlayerRecordsService
                 ExternalMapProvider = null
             };
 
-            map = await _mapsRepo.AddMap(mapMeta, mapAuthor, currentMap.FileName);
+            map = await _mapsRepo.AddMapAsync(mapMeta, mapAuthor, currentMap.FileName);
         }
 
         return map;
