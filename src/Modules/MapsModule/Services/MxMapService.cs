@@ -1,6 +1,6 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using System.Globalization;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Maps.Interfaces;
@@ -28,7 +28,7 @@ public class MxMapService : IMxMapService
 
         if (mapFile == null)
         {
-            _logger.LogDebug("Could not find any map stream for ID {MxId} from Trackmania Exchange.", mxId);
+            _logger.LogDebug("Could not find any map stream for ID {MxId} from Trackmania Exchange", mxId);
             return null;
         }
 
@@ -36,7 +36,7 @@ public class MxMapService : IMxMapService
 
         if (mapInfoDto == null)
         {
-            _logger.LogDebug("Could not find any map info for ID {MxId} from Trackmania Exchange.", mxId);
+            _logger.LogDebug("Could not find any map info for ID {MxId} from Trackmania Exchange", mxId);
             return null;
         }
 
@@ -47,7 +47,7 @@ public class MxMapService : IMxMapService
             AuthorId = mapInfoDto.AuthorLogin,
             AuthorName = mapInfoDto.Username,
             ExternalId = mapInfoDto.MapID.ToString(),
-            ExternalVersion = Convert.ToDateTime(mapInfoDto.UpdatedAt).ToUniversalTime(),
+            ExternalVersion = Convert.ToDateTime(mapInfoDto.UpdatedAt, NumberFormatInfo.InvariantInfo).ToUniversalTime(),
             ExternalMapProvider = MapProviders.ManiaExchange
         };
 

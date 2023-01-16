@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Models.Permissions;
-using EvoSC.Common.Interfaces.Database.Repository;
+﻿using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using Microsoft.Extensions.Logging;

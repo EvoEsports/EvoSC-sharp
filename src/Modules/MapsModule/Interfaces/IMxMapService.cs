@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.Maps.Interfaces;
 

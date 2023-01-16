@@ -68,7 +68,7 @@ public class DatabaseStore : IConfigStore
 
     public void Dispose()
     {
-        throw new NotSupportedException();
+        // nothing to dispose
     }
 
     public string? Read(string key)
