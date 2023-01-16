@@ -1,9 +1,10 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.ComponentModel.DataAnnotations;
 using EvoSC.Common.Interfaces.Models;
+using RepoDb.Attributes;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Table("Permissions")]
+[Map("Permissions")]
 public class DbPermission : IPermission
 {
     [Key]

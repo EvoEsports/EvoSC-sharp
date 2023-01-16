@@ -4,7 +4,6 @@ using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using Microsoft.Extensions.Logging;
@@ -29,9 +28,9 @@ public class MapService : IMapService
         _serverClient = serverClient;
     }
 
-    public async Task<IMap?> GetMapById(long id) => await _mapRepository.GetMapById(id);
+    public async Task<IMap?> GetMapById(long id) => await _mapRepository.GetMapByIdAsync(id);
 
-    public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUid(uid);
+    public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUidAsync(uid);
 
     public async Task<IMap> AddMap(MapStream mapStream)
     {
@@ -49,9 +48,9 @@ public class MapService : IMapService
         var fileName = $"{mapMetadata.MapName}.Map.Gbx";
         var filePath = Path.Combine(_config.Path.Maps, "/EvoSC");
 
-        await SaveMapFile(mapFile, filePath, fileName);
+        await SaveMapFileAsync(mapFile, filePath, fileName);
 
-        var author = await GetMapAuthor(PlayerUtils.IsAccountId(mapMetadata.AuthorId)
+        var author = await GetMapAuthorAsync(PlayerUtils.IsAccountId(mapMetadata.AuthorId)
             ? mapMetadata.AuthorId
             : PlayerUtils.ConvertLoginToAccountId(mapMetadata.AuthorId));
 
@@ -62,7 +61,7 @@ public class MapService : IMapService
             try
             {
                 _logger.LogDebug("Updating map with ID {MapId} to the database.", existingMap.Id);
-                map = await _mapRepository.UpdateMap(existingMap.Id, mapMetadata);
+                map = await _mapRepository.UpdateMapAsync(existingMap.Id, mapMetadata);
             }
             catch (Exception e)
             {
@@ -76,7 +75,7 @@ public class MapService : IMapService
             try
             {
                 _logger.LogDebug($"Adding map to the database.");
-                map = await _mapRepository.AddMap(mapMetadata, author, filePath);
+                map = await _mapRepository.AddMapAsync(mapMetadata, author, filePath);
             }
             catch (Exception e)
             {
@@ -105,7 +104,7 @@ public class MapService : IMapService
 
     public async Task RemoveMap(long mapId)
     {
-        await _mapRepository.RemoveMap(mapId);
+        await _mapRepository.RemoveMapAsync(mapId);
     }
 
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
@@ -113,7 +112,7 @@ public class MapService : IMapService
         return map.ExternalVersion == mapMetadata.ExternalVersion;
     }
 
-    private async Task SaveMapFile(Stream mapStream, string filePath, string fileName)
+    private async Task SaveMapFileAsync(Stream mapStream, string filePath, string fileName)
     {
         try
         {
@@ -128,12 +127,12 @@ public class MapService : IMapService
         }
         catch (Exception e)
         {
-            _logger.LogWarning(e, "Failed saving the map file to storage.");
+            _logger.LogWarning(e, "Failed saving the map file to storage");
             throw;
         }
     }
 
-    private async Task<IPlayer> GetMapAuthor(string authorId)
+    private async Task<IPlayer> GetMapAuthorAsync(string authorId)
     {
         var dbPlayer = await _playerService.GetPlayerAsync(authorId);
 

@@ -2,10 +2,10 @@
     <img src="./images/evosc_full.png" width="60%">
     <br>
     <img alt="GitHub" src="https://img.shields.io/github/license/EvoTM/EvoSC-sharp">
-    <img alt="Code smells" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=code_smells">
-    <img alt="Bugs" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=bugs">
-    <img alt="Code coverage" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=alert_status">
-    <img alt="Security rating" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=security_rating">
+    <a href="https://sonarcloud.io/project/issues?resolved=false&types=CODE_SMELL&id=EvoTM_EvoSC-sharp"><img alt="Code smells" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=code_smells"></a>
+    <a href="https://sonarcloud.io/project/issues?resolved=false&types=BUG&id=EvoTM_EvoSC-sharp"><img alt="Bugs" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=bugs"></a>
+    <a href="https://sonarcloud.io/component_measures?metric=Coverage&id=EvoTM_EvoSC-sharp"><img alt="Code coverage" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=alert_status"></a>
+    <a href="https://sonarcloud.io/component_measures?metric=Security&view=list&id=EvoTM_EvoSC-sharp"><img alt="Security rating" src="https://sonarcloud.io/api/project_badges/measure?project=EvoTM_EvoSC-sharp&metric=security_rating"></a>
     <a href="https://discord.gg/EvoTM"><img alt="Discord" src="https://img.shields.io/discord/384138149686935562?label=Discord&logo=discord&logoColor=fff"></a>
 </div>
 

@@ -5,6 +5,7 @@ using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Database;
+using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
@@ -23,7 +24,7 @@ using SimpleInjector.Lifestyles;
 
 namespace EvoSC;
 
-public class Application : IEvoSCApplication
+public sealed class Application : IEvoSCApplication, IDisposable
 {
     private readonly string[] _args;
     private Container _services;
@@ -55,7 +56,7 @@ public class Application : IEvoSCApplication
 
     public async Task RunAsync()
     {
-        await SetupApplication();
+        await SetupApplicationAsync();
 
         // wait indefinitely
         WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
@@ -70,7 +71,7 @@ public class Application : IEvoSCApplication
         _runningToken.Cancel();
     }
 
-    public async Task SetupApplication()
+    private async Task SetupApplicationAsync()
     {
         var sw = new Stopwatch();
         sw.Start();
@@ -78,8 +79,8 @@ public class Application : IEvoSCApplication
         SetupServices();
         MigrateDatabase();
         SetupControllerManager();
-        await SetupModules();
-        await StartBackgroundServices();
+        await SetupModulesAsync();
+        await StartBackgroundServicesAsync();
         
         sw.Stop();
         
@@ -131,7 +132,7 @@ public class Application : IEvoSCApplication
         pipelineManager.UseEvoScCommands(_services);
     }
 
-    private async Task SetupModules()
+    private async Task SetupModulesAsync()
     {
         var modules = _services.GetInstance<IModuleManager>();
         var config = _services.GetInstance<IEvoScBaseConfig>();
@@ -154,7 +155,7 @@ public class Application : IEvoSCApplication
         await modules.LoadAsync(externalModules);
     }
 
-    private async Task StartBackgroundServices()
+    private async Task StartBackgroundServicesAsync()
     {
         _logger.LogDebug("Starting background services");
 
@@ -169,5 +170,11 @@ public class Application : IEvoSCApplication
 
         // setup command handler
         _services.GetInstance<ICommandInteractionHandler>();
+    }
+
+    public void Dispose()
+    {
+        _services.Dispose();
+        _runningToken.Dispose();
     }
 }

@@ -1,8 +1,8 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using RepoDb.Attributes;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Table("UserGroups")]
+[Map("UserGroups")]
 public class DbUserGroup
 {
     public long UserId { get; set; }

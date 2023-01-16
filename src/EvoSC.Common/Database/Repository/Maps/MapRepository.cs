@@ -1,48 +1,76 @@
-﻿using System.Data.Common;
-using Castle.Core.Logging;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using EvoSC.Common.Database.Models.Maps;
+﻿using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Models.Player;
-
+using EvoSC.Common.Interfaces.Database;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Repository;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Maps;
 using Microsoft.Extensions.Logging;
+using RepoDb;
+using SqlKata;
 
 namespace EvoSC.Common.Database.Repository.Maps;
 
-public class MapRepository : IMapRepository
+public class MapRepository : EvoScDbRepository, IMapRepository
 {
     private readonly ILogger<MapRepository> _logger;
-    private readonly DbConnection _db;
-
-    public MapRepository(ILogger<MapRepository> logger, DbConnection db)
+    public MapRepository(ILogger<MapRepository> logger, IDbConnectionFactory connectionFactory) : base(connectionFactory)
     {
         _logger = logger;
-        _db = db;
     }
 
-    public async Task<IMap?> GetMapById(long id)
+    public async Task<IMap?> GetMapByIdAsync(long id)
     {
-        var query = "select * from `Maps` where `Id`=@MapId limit 1";
-        return await _db.QueryFirstOrDefaultAsync<DbMap>(query, new
+        var (sql, values) = MultiQuery()
+            .Add(new Query("Maps")
+                .Where("Id", id)
+            )
+            .Add(new Query("Maps")
+                .Select("AuthorId")
+                .Where("Id", id)
+            )
+            .Compile();
+        
+        var extractor = await Database.ExecuteQueryMultipleAsync(sql, values);
+        var map = (await extractor.ExtractAsync<DbMap>())?.FirstOrDefault();
+
+        if (map == null)
         {
-            MapId = id
-        });
+            return null;
+        }
+
+        var author = await extractor.ExtractAsync<DbPlayer>();
+        map.Author = author?.FirstOrDefault();
+
+        return map;
     }
 
-    public async Task<IMap?> GetMapByUid(string uid)
+    public async Task<IMap?> GetMapByUidAsync(string uid)
     {
-        var query = "select * from `Maps` where `Uid`=@MapUid limit 1";
-        return await _db.QueryFirstOrDefaultAsync<DbMap>(query, new
+        var (sql, values) = MultiQuery()
+            .Add(new Query("Maps")
+                .Where("Uid", uid)
+            )
+            .Add(new Query("Maps")
+                .Select("AuthorId")
+                .Where("Uid", uid)
+            )
+            .Compile();
+        
+        var extractor = await Database.ExecuteQueryMultipleAsync(sql, values);
+        var map = (await extractor.ExtractAsync<DbMap>())?.FirstOrDefault();
+
+        if (map == null)
         {
-            MapUid = uid
-        });
+            return null;
+        }
+
+        var author = await extractor.ExtractAsync<DbPlayer>();
+        map.Author = author?.FirstOrDefault();
+
+        return map;
     }
-    
-    public async Task<IMap> AddMap(MapMetadata mapMetadata, IPlayer author, string filePath)
+
+    public async Task<IMap> AddMapAsync(MapMetadata mapMetadata, IPlayer author, string filePath)
     {
         var dbMap = new DbMap
         {
@@ -55,19 +83,19 @@ public class MapRepository : IMapRepository
             ExternalId = mapMetadata.ExternalId,
             ExternalVersion = mapMetadata.ExternalVersion,
             ExternalMapProvider = mapMetadata.ExternalMapProvider,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
         
-        await using var transaction = await _db.BeginTransactionAsync();
+        await using var transaction = await Database.BeginTransactionAsync();
         try
         {
-            await _db.InsertAsync(dbMap, transaction: transaction);
+            await Database.InsertAsync(dbMap, transaction: transaction);
             await transaction.CommitAsync();
         }
         catch (Exception e)
         {
-            _logger.LogDebug(e, "Failed to add map.");
+            _logger.LogDebug(e, "Failed to add map");
             await transaction.RollbackAsync();
             throw;
         }
@@ -75,7 +103,7 @@ public class MapRepository : IMapRepository
         return dbMap;
     }
 
-    public async Task<IMap> UpdateMap(long mapId, MapMetadata mapMetadata)
+    public async Task<IMap> UpdateMapAsync(long mapId, MapMetadata mapMetadata)
     {
         var updatedMap = new DbMap
         {
@@ -87,15 +115,15 @@ public class MapRepository : IMapRepository
             UpdatedAt = DateTime.Now
         };
 
-        await using var transaction = await _db.BeginTransactionAsync();
+        await using var transaction = await Database.BeginTransactionAsync();
         try
         {
-            await _db.UpdateAsync(updatedMap, transaction: transaction);
+            await Database.UpdateAsync(updatedMap, transaction: transaction);
             await transaction.CommitAsync();
         }
         catch (Exception e)
         {
-            _logger.LogDebug(e, "Failed to update map.");
+            _logger.LogDebug(e, "Failed to update map");
             await transaction.RollbackAsync();
             throw;
         }
@@ -103,20 +131,5 @@ public class MapRepository : IMapRepository
         return new Map(updatedMap) ;
     }
 
-    public async Task RemoveMap(long id)
-    {
-        var query = "delete from `Maps` where `Id`=@MapId";
-        
-        await using var transaction = await _db.BeginTransactionAsync();
-        try
-        {
-            await _db.QueryFirstOrDefaultAsync<DbMap>(query, new { MapId = id }, transaction);
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Failed removing map with ID {id}.");
-            await transaction.RollbackAsync();
-        }
-    }
+    public Task RemoveMapAsync(long id) => Database.DeleteAsync("Maps", id);
 }

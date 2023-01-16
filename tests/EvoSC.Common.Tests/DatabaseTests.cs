@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database;
+using EvoSC.Common.Database.Extensions;
 using Xunit;
 
 namespace EvoSC.Common.Tests;

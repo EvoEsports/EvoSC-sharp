@@ -1,10 +1,11 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.ComponentModel.DataAnnotations;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
+using RepoDb.Attributes;
 
 namespace EvoSC.Common.Database.Models.Maps;
 
-[Table("Maps")]
+[Map("Maps")]
 public class DbMap : IMap
 {
     [Key]
@@ -29,7 +30,6 @@ public class DbMap : IMap
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
-
-    [Computed]
-    public IPlayer Author { get; set; }
+    
+    public IPlayer? Author { get; set; }
 }

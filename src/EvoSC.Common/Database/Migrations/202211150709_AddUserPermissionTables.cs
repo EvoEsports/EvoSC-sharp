@@ -26,7 +26,7 @@ public class AddUserPermissionTables : Migration
 
         Create.Table("UserGroups")
             .WithColumn("UserId").AsInt64().Indexed()
-            .WithColumn("GroupID").AsInt32().Indexed()
+            .WithColumn("GroupId").AsInt32().Indexed()
             .WithColumn("Display").AsBoolean();
     }
 

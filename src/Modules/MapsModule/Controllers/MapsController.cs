@@ -2,14 +2,9 @@ using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Controllers.Context;
-using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models;
-using EvoSC.Common.Util;
-using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Modules.Official.Maps.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -38,11 +33,11 @@ public class MapsController : EvoScController<CommandInteractionContext>
         IMap? map;
         try
         {
-            map = await _mxMapService.FindAndDownloadMap(Convert.ToInt32(mapId), null, Context.Player);
+            map = await _mxMapService.FindAndDownloadMapAsync(Convert.ToInt32(mapId), null, Context.Player);
         }
         catch (Exception e)
         {
-            _logger.LogInformation(e, "Failed adding map with ID {MapId}.", mapId);
+            _logger.LogInformation(e, "Failed adding map with ID {MapId}", mapId);
             await _server.ErrorMessage($"Something went wrong while trying to add map with ID {mapId}.");
             return;
         }
@@ -69,6 +64,6 @@ public class MapsController : EvoScController<CommandInteractionContext>
 
         await _mapService.RemoveMap(mapId);
         await _server.SuccessMessage($"Removed map with ID {mapId} from the maplist.");
-        _logger.LogInformation("Player {PlayerId} removed map {MapName}.", Context.Player.Id, map.Name);
+        _logger.LogInformation("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }

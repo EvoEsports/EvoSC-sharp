@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Models;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Interfaces.Services;
 
