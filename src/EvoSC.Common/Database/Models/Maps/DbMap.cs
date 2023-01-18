@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
 using RepoDb.Attributes;
+using SqlKata;
 
 namespace EvoSC.Common.Database.Models.Maps;
 
@@ -31,5 +31,6 @@ public class DbMap : IMap
 
     public DateTime UpdatedAt { get; set; }
     
+    [Ignore]
     public IPlayer? Author { get; set; }
 }

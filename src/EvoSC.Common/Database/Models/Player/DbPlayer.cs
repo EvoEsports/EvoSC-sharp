@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using RepoDb.Attributes;
+using SqlKata;
 
 namespace EvoSC.Common.Database.Models.Player;
 
@@ -30,5 +30,6 @@ public class DbPlayer : IPlayer
     public string UbisoftName { get; set; }
     public string Zone { get; set; }
     
+    [Ignore]
     public IEnumerable<IGroup> Groups { get; set; }
 }

@@ -10,6 +10,7 @@
       <PackageReference Include="Config.Net" Version="5.1.4" />
       <PackageReference Include="FluentMigrator" Version="3.3.2" />
       <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
+      <PackageReference Include="GBX.NET" Version="1.1.0" />
       <PackageReference Include="GbxRemote.Net" Version="3.0.2" />
       <PackageReference Include="Humanizer.Core" Version="2.14.1" />
       <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />

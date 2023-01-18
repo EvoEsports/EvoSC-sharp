@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using RepoDb.Attributes;
+using SqlKata;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
@@ -15,6 +15,7 @@ public class DbGroup : IGroup
     public string? Color { get; set; }
     public bool Unrestricted { get; set; }
     
+    [Ignore]
     public List<IPermission> Permissions { get; set; }
 
     public DbGroup()
