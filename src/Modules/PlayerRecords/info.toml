@@ -1,6 +1,6 @@
 ﻿[info]
 name = "RecordsModule"
 title = "Player Records"
-summary = "Tracking of player records."
+summary = "Tracking and reporting of player records."
 version = "1.0.0"
 author = "Evo"
