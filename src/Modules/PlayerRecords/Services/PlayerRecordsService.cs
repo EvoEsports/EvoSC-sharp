@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
-using EvoSC.Modules.Official.PlayerRecords.Database.Models;
 using EvoSC.Modules.Official.PlayerRecords.Events;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
@@ -69,20 +68,7 @@ public class PlayerRecordsService : IPlayerRecordsService
 
         if (record == null)
         {
-            record = new DbPlayerRecord
-            {
-                Player = player,
-                PlayerId = player.Id,
-                Map = map,
-                MapId = map.Id,
-                Score = score,
-                RecordType = PlayerRecordType.Time,
-                Checkpoints = string.Join(',', checkpoints),
-                CreatedAt = default,
-                UpdatedAt = default
-            };
-
-            await _recordsRepo.InsertRecordAsync(record);
+            await _recordsRepo.InsertRecordAsync(player, map, score, checkpoints);
             return (record, RecordUpdateStatus.New);
         }
 

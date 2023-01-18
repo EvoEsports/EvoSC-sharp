@@ -25,5 +25,5 @@ public interface IPlayerRecordsRepository
     /// </summary>
     /// <param name="record">The record to add.</param>
     /// <returns></returns>
-    public Task InsertRecordAsync(DbPlayerRecord record);
+    public Task<DbPlayerRecord> InsertRecordAsync(IPlayer player, IMap map, int score, IEnumerable<int> checkpoints);
 }
