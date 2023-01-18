@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Models.Player;
-using EvoSC.Common.Util;
+﻿using EvoSC.Common.Util;
 using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
