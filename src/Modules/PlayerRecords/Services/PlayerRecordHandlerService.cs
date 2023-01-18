@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util;
@@ -12,7 +13,7 @@ using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 namespace EvoSC.Modules.Official.PlayerRecords.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class RecordEventService : IRecordEventService
+public class PlayerRecordHandlerService : IPlayerRecordHandlerService
 {
     private readonly IPlayerRecordsService _playerRecords;
     private readonly IPlayerManagerService _players;
@@ -20,7 +21,7 @@ public class RecordEventService : IRecordEventService
     private readonly IPlayerRecordSettings _recordOptions;
     private readonly IServerClient _server;
     
-    public RecordEventService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
+    public PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
         IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server)
     {
         _playerRecords = playerRecords;
@@ -59,4 +60,23 @@ public class RecordEventService : IRecordEventService
             $"You got a new pb with time {FormattingUtils.FormatTime(record.Score)}", record.Player),
         _ => Task.CompletedTask
     };
+
+    public async Task ShowCurrentPlayerPbAsync(IPlayer player)
+    {
+        var map = await _playerRecords.GetOrAddCurrentMapAsync();
+        var pb = await _playerRecords.GetPlayerRecordAsync(player, map);
+
+        if (pb == null)
+        {
+            await _server.InfoMessage("You have not set a time on this map yet.");
+            return;
+        }
+
+        var ms = pb.Score % 1000;
+        var s = pb.Score / 1000 % 60;
+        var m = pb.Score / 1000 / 60;
+        var formattedTime = $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
+
+        await _server.InfoMessage($"Your current pb is $<$fff{formattedTime}$>");
+    }
 }
