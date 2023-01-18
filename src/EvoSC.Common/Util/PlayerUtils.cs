@@ -14,7 +14,7 @@ public static class PlayerUtils
     private const string AccountIdRegex =
         "^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$";
 
-    public static IPlayer NadeoPlayer = new Player
+    public static readonly IPlayer NadeoPlayer = new Player
     {
         Id = 1,
         AccountId = "Nadeo",

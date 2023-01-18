@@ -2,7 +2,6 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Controllers;

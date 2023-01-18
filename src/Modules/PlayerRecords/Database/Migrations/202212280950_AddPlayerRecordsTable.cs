@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Util.EnumIdentifier;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
-using FluentMigrator;
+﻿using FluentMigrator;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Database.Migrations;
 
