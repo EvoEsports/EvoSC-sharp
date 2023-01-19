@@ -1,35 +1,48 @@
-﻿using EvoSC.Common.Interfaces.Models;
-using RepoDb.Attributes;
-using SqlKata;
+﻿using EvoSC.Common.Database.Models.Permissions;
+using EvoSC.Common.Interfaces.Models;
+using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Player;
 
-[Map("Players")]
+[Table("Players")]
 public class DbPlayer : IPlayer
 {
     /// <summary>
     /// Database ID of the player.
     /// </summary>
-    [Key]
+    [PrimaryKey, Identity]
     public long Id { get; set; }
+    
     /// <summary>
     /// Time at which the player was last seen on the server.
     /// </summary>
+    [Column]
     public DateTime LastVisit { get; set; }
+    
     /// <summary>
     /// Essentially the time at which the player first appeared on the server.
     /// </summary>
+    [Column]
     public DateTime CreatedAt { get; set; }
+    
     /// <summary>
     /// Time at which the player was updated the last time in the database.
     /// </summary>
+    [Column]
     public DateTime UpdatedAt { get; set; }
 
+    [Column]
     public string AccountId { get; set; }
+    
+    [Column]
     public string NickName { get; set; }
+    
+    [Column]
     public string UbisoftName { get; set; }
+    
+    [Column]
     public string Zone { get; set; }
     
-    [Ignore]
+    [Association(ThisKey = nameof(DbUserGroup.UserId), OtherKey = nameof(DbUserGroup.GroupId))]
     public IEnumerable<IGroup> Groups { get; set; }
 }

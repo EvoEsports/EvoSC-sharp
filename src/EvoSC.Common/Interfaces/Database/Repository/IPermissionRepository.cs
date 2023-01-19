@@ -26,7 +26,7 @@ public interface IPermissionRepository
 
     public Task AddPlayerToGroupAsync(long playerId, int groupId);
 
-    public Task RemovePlayerFromGroupAsync(long playerId);
+    public Task RemovePlayerFromGroupAsync(long playerId, int groupId);
 
     public Task AddPermissionToGroupAsync(int groupId, int permissionId);
 

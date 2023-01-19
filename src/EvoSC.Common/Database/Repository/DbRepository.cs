@@ -1,12 +1,30 @@
-﻿using System.Data.Common;
-using EvoSC.Common.Database.QueryHelpers;
+﻿
 using EvoSC.Common.Interfaces.Database;
-using RepoDb;
-using RepoDb.Interfaces;
+using LinqToDB;
+using LinqToDB.Data;
 
 namespace EvoSC.Common.Database.Repository;
 
-public class EvoScDbRepository
+public class DbRepository
+{
+    private readonly DataConnection _db;
+
+    protected DataConnection Database => _db;
+    
+    protected DbRepository(IDbConnectionFactory dbConnFactory)
+    {
+        _db = dbConnFactory.GetConnection();
+    }
+    
+    /// <summary>
+    /// Get a table for querying.
+    /// </summary>
+    /// <typeparam name="T">The table to begin an operation on.</typeparam>
+    /// <returns></returns>
+    protected ITable<T> Table<T>() where T : class => Database.GetTable<T>();
+}
+
+/* public class EvoScDbRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
 
@@ -46,4 +64,4 @@ public class EvoScDbRepository
     /// </summary>
     /// <returns></returns>
     protected CompilableMultiQuery MultiQuery() => new(_connectionFactory.GetQueryCompiler());
-}
+} */

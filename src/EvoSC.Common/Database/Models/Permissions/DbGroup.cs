@@ -1,21 +1,30 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using RepoDb.Attributes;
-using SqlKata;
+using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Map("Groups")]
+[Table("Groups")]
 public class DbGroup : IGroup
 {
-    [Key]
+    [PrimaryKey, Identity]
     public int Id { get; set; }
+    
+    [Column]
     public string Title { get; set; }
+    
+    [Column]
     public string Description { get; set; }
+    
+    [Column]
     public string? Icon { get; set; }
+    
+    [Column]
     public string? Color { get; set; }
+    
+    [Column]
     public bool Unrestricted { get; set; }
     
-    [Ignore]
+    [Association(ThisKey = nameof(DbGroupPermission.GroupId), OtherKey = nameof(DbGroupPermission.PermissionId))]
     public List<IPermission> Permissions { get; set; }
 
     public DbGroup()

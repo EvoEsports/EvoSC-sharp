@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using RepoDb.Attributes;
+﻿using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Config;
 
-[Map("ConfigOptions")]
+[Table("ConfigOptions")]
 public class DbConfigOption
 {
-    [Key]
+    [PrimaryKey]
     public string Key { get; set; }
+    
+    [Column]
     public string Value { get; set; }
 }
