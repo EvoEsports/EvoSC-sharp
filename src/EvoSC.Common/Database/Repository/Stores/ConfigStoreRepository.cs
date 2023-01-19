@@ -18,18 +18,4 @@ public class ConfigStoreRepository : DbRepository, IConfigStoreRepository
     public Task AddConfigOptionAsync(DbConfigOption option) => Database.InsertAsync(option);
 
     public Task UpdateConfigOptionAsync(DbConfigOption option) => Database.UpdateAsync(option);
-
-    /* public ConfigStoreRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
-    {
-    }
-    
-    public async Task<DbConfigOption?> GetConfigOptionsByKeyAsync(string keyName)
-    {
-        var option = await Database.QueryAsync<DbConfigOption>(e => e.Key == keyName);
-        return option.FirstOrDefault();
-    }
-    
-    public async Task AddConfigOptionAsync(DbConfigOption option) => await Database.InsertAsync(option);
-
-    public async Task UpdateConfigOptionAsync(DbConfigOption option) => await Database.UpdateAsync(option); */
 }

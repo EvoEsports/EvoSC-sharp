@@ -39,40 +39,4 @@ public class PlayerRepository : DbRepository, IPlayerRepository
         .Where(t => t.Id == player.Id)
         .Set(t => t.LastVisit, DateTime.UtcNow)
         .UpdateAsync();
-
-    /* public PlayerRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
-    {
-    }
-    
-    public async Task<IPlayer?> GetPlayerByAccountIdAsync(string accountId)
-    {
-        var player = await Database.QueryAsync<DbPlayer>(e => e.AccountId == accountId);
-        return player.FirstOrDefault();
-    }
-
-    public async Task<IPlayer> AddPlayerAsync(string accountId, TmPlayerDetailedInfo playerInfo)
-    {
-        var dbPlayer = new DbPlayer
-        {
-            AccountId = accountId.ToLower(CultureInfo.InvariantCulture),
-            NickName = playerInfo?.NickName ?? accountId,
-            UbisoftName = playerInfo?.NickName ?? accountId,
-            Zone = playerInfo?.Path ?? "World",
-            LastVisit = DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-        var newPlayer = await Database.InsertAsync(dbPlayer);
-        return (IPlayer)newPlayer;
-    }
-
-    public async Task UpdateLastVisitAsync(IPlayer player)
-    {
-        var (sql, values) = Query("Players")
-            .Where("Id", player.Id)
-            .AsUpdate(new {LastVisit = DateTime.UtcNow})
-            .Compile();
-
-        await Database.ExecuteQueryAsync(sql, values);
-    } */
 }
