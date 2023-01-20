@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Database.Models.Permissions;
-using EvoSC.Common.Interfaces.Models;
-using LinqToDB;
+﻿using EvoSC.Common.Interfaces.Models;
 using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Player;

@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet.Structs;
 using LinqToDB;
-using LinqToDB.Data;
 
 namespace EvoSC.Common.Database.Repository.Players;
 

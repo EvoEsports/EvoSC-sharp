@@ -2,7 +2,6 @@
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using LinqToDB;
-using LinqToDB.Data;
 
 namespace EvoSC.Common.Database.Repository.Stores;
 

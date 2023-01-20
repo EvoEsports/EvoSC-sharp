@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Interfaces.Database;
@@ -57,7 +58,7 @@ public class DbConnectionFactory : IDbConnectionFactory
     /// <returns></returns>
     private LinqToDBConnectionOptionsBuilder CreateConfigBuilder() =>
         new LinqToDBConnectionOptionsBuilder()
-            .WithTraceLevel(_config.Logging.LogLevel.ToUpper() switch
+            .WithTraceLevel(_config.Logging.LogLevel.ToUpper(CultureInfo.InvariantCulture) switch
             {
                 "INFORMATION" => TraceLevel.Info,
                 "ERROR" => TraceLevel.Error,
