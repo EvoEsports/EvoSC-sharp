@@ -1,4 +1,6 @@
 ﻿using EvoSC.Common.Database;
+using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Attributes;
@@ -23,8 +25,8 @@ public class PlayerRecordsRepository : DbRepository, IPlayerRecordsRepository
 
     public Task<DbPlayerRecord?> GetRecordAsync(IPlayer player, IMap map) =>
         Table<DbPlayerRecord>()
-            .LoadWith(r => r.Player)
-            .LoadWith(r => r.Map)
+            .LoadWith(r => r.DbPlayer)
+            .LoadWith(r => r.DbMap)
             .SingleOrDefaultAsync(r => r.PlayerId == player.Id && r.MapId == map.Id);
 
     public Task UpdateRecordAsync(DbPlayerRecord record) => Database.UpdateAsync(record);
@@ -40,8 +42,8 @@ public class PlayerRecordsRepository : DbRepository, IPlayerRecordsRepository
             Checkpoints = string.Join(',', checkpoints),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            Player = player,
-            Map = map
+            DbPlayer = new DbPlayer(player),
+            DbMap = new DbMap(map)
         };
 
         try

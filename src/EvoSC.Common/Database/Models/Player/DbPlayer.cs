@@ -41,8 +41,24 @@ public class DbPlayer : IPlayer
     public string UbisoftName { get; set; }
     
     [Column]
-    public string Zone { get; set; }
+    public string? Zone { get; set; }
     
-    [Association(ThisKey = nameof(DbUserGroup.UserId), OtherKey = nameof(DbUserGroup.GroupId))]
-    public IEnumerable<IGroup> Groups { get; set; }
+    public DbPlayer() {}
+
+    public DbPlayer(IPlayer? player)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        Id = player.Id;
+        LastVisit = default;
+        CreatedAt = default;
+        UpdatedAt = default;
+        AccountId = player.AccountId;
+        NickName = player.NickName;
+        UbisoftName = player.UbisoftName;
+        Zone = player.Zone;
+    }
 }

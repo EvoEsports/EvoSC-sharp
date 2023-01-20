@@ -33,10 +33,14 @@ public class DbPlayerRecord : IPlayerRecord
     
     [Column]
     public DateTime UpdatedAt { get; set; }
-    
-    [Association(ThisKey = nameof(PlayerId), OtherKey = nameof(DbPlayer.Id))]
-    public IPlayer Player { get; set; }
-    
-    [Association(ThisKey = nameof(MapId), OtherKey = nameof(DbMap.Id))]
-    public IMap? Map { get; set; }
+
+    [Association(ThisKey = nameof(PlayerId), OtherKey = nameof(Common.Database.Models.Player.DbPlayer.Id))]
+    public DbPlayer DbPlayer;
+
+    public IPlayer Player => DbPlayer;
+
+    [Association(ThisKey = nameof(MapId), OtherKey = nameof(Common.Database.Models.Maps.DbMap.Id))]
+    public DbMap DbMap;
+
+    public IMap? Map => DbMap;
 }

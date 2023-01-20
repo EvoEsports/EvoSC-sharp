@@ -37,8 +37,4 @@ public interface IPlayer
     /// </summary>
     public string? Zone { get; }
     
-    /// <summary>
-    /// Groups the player is assigned to.
-    /// </summary>
-    public IEnumerable<IGroup> Groups { get; }
 }

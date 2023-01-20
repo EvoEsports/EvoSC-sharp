@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
@@ -18,11 +19,11 @@ public class MapRepository : DbRepository, IMapRepository
     }
 
     public async Task<IMap?> GetMapByIdAsync(long id) => await Table<DbMap>()
-        .LoadWith(t => t.Author)
+        .LoadWith(t => t.DbAuthor)
         .SingleAsync(m => m.Id == id);
 
     public async Task<IMap?> GetMapByUidAsync(string uid) => await Table<DbMap>()
-        .LoadWith(t => t.Author)
+        .LoadWith(t => t.DbAuthor)
         .SingleAsync(m => m.Uid == uid);
 
     public async Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath)
@@ -30,7 +31,7 @@ public class MapRepository : DbRepository, IMapRepository
         var dbMap = new DbMap
         {
             Uid = map.MapUid,
-            Author = author,
+            DbAuthor = new DbPlayer(author),
             AuthorId = author.Id,
             FilePath = filePath,
             Enabled = true,

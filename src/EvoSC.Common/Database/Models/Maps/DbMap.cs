@@ -42,5 +42,31 @@ public class DbMap : IMap
     public DateTime UpdatedAt { get; set; }
     
     [Association(ThisKey = nameof(AuthorId), OtherKey = nameof(DbPlayer.Id))]
-    public IPlayer? Author { get; set; }
+    public DbPlayer DbAuthor { get; set; }
+
+    public IPlayer? Author => DbAuthor;
+    
+    public DbMap(){}
+
+    public DbMap(IMap? map)
+    {
+        if (map == null)
+        {
+            return;
+        }
+        
+        Id = map.Id;
+        Uid = map.Uid;
+        FilePath = "";
+        AuthorId = map.Author?.Id ?? 0;
+        Enabled = map.Enabled;
+        Name = map.Name;
+        ExternalId = map.ExternalId;
+        ExternalVersion = map.ExternalVersion;
+        ExternalMapProvider = map.ExternalMapProvider;
+        CreatedAt = default;
+        UpdatedAt = default;
+        DbAuthor = new DbPlayer(map.Author);
+    }
+
 }
