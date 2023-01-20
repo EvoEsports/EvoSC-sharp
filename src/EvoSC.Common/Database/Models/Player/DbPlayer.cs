@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Database.Models.Permissions;
 using EvoSC.Common.Interfaces.Models;
+using LinqToDB;
 using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Player;
@@ -10,7 +11,7 @@ public class DbPlayer : IPlayer
     /// <summary>
     /// Database ID of the player.
     /// </summary>
-    [PrimaryKey, Identity]
+    [PrimaryKey]
     public long Id { get; set; }
     
     /// <summary>
