@@ -1,23 +1,20 @@
 ﻿using EvoSC.Common.Database.Models.Config;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
-using RepoDb;
+using LinqToDB;
 
 namespace EvoSC.Common.Database.Repository.Stores;
 
-public class ConfigStoreRepository : EvoScDbRepository, IConfigStoreRepository
+public class ConfigStoreRepository : DbRepository, IConfigStoreRepository
 {
-    public ConfigStoreRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
+    public ConfigStoreRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
     {
     }
-    
-    public async Task<DbConfigOption?> GetConfigOptionsByKeyAsync(string keyName)
-    {
-        var option = await Database.QueryAsync<DbConfigOption>(e => e.Key == keyName);
-        return option.FirstOrDefault();
-    }
-    
-    public async Task AddConfigOptionAsync(DbConfigOption option) => await Database.InsertAsync(option);
 
-    public async Task UpdateConfigOptionAsync(DbConfigOption option) => await Database.UpdateAsync(option);
+    public async Task<DbConfigOption?> GetConfigOptionsByKeyAsync(string keyName) => await Table<DbConfigOption>()
+        .SingleOrDefaultAsync(t => t.Key == keyName);
+
+    public Task AddConfigOptionAsync(DbConfigOption option) => Database.InsertAsync(option);
+
+    public Task UpdateConfigOptionAsync(DbConfigOption option) => Database.UpdateAsync(option);
 }

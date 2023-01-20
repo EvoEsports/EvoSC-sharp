@@ -2,7 +2,6 @@
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using Microsoft.Extensions.Logging;
-using RepoDb.Extensions;
 
 namespace EvoSC.Common.Permissions;
 
@@ -22,9 +21,9 @@ public class PermissionManager : IPermissionManager
         var result = await _permissionRepository.GetPlayerPermissionsAsync(player.Id);
 
         var permissions = result.ToList();
-        if (permissions.IsNullOrEmpty())
+        if (permissions.Count == 0)
         {
-            _logger.LogDebug("Player {Id} does not have permission {PermName}.", player.Id, permission);
+            _logger.LogDebug("Player {Id} does not have permission {PermName}", player.Id, permission);
             return false;
         }
 
@@ -95,7 +94,7 @@ public class PermissionManager : IPermissionManager
         await _permissionRepository.AddPlayerToGroupAsync(player.Id, group.Id);
 
     public async Task RemovePlayerFromGroup(IPlayer player, IGroup group) =>
-        await _permissionRepository.RemovePlayerFromGroupAsync(player.Id);
+        await _permissionRepository.RemovePlayerFromGroupAsync(player.Id, group.Id);
 
     public async Task AddPermissionToGroup(IGroup group, IPermission permission) =>
         await _permissionRepository.AddPermissionToGroupAsync(group.Id, permission.Id);

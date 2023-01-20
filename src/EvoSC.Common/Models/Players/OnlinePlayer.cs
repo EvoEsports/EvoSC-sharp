@@ -10,7 +10,6 @@ public class OnlinePlayer : IOnlinePlayer
     public string NickName { get; set; }
     public string UbisoftName { get; set; }
     public string Zone { get; set; }
-    public IEnumerable<IGroup> Groups { get; }
     public required PlayerState State { get; set; }
     public IPlayerFlags Flags { get; set; }
 
@@ -23,6 +22,5 @@ public class OnlinePlayer : IOnlinePlayer
         NickName = player.NickName;
         UbisoftName = player.UbisoftName;
         Zone = player.Zone;
-        Groups = player.Groups;
     }
 }
