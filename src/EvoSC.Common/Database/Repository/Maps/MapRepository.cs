@@ -20,11 +20,11 @@ public class MapRepository : DbRepository, IMapRepository
 
     public async Task<IMap?> GetMapByIdAsync(long id) => await Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
-        .SingleAsync(m => m.Id == id);
+        .SingleOrDefaultAsync(m => m.Id == id);
 
     public async Task<IMap?> GetMapByUidAsync(string uid) => await Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
-        .SingleAsync(m => m.Uid == uid);
+        .SingleOrDefaultAsync(m => m.Uid == uid);
 
     public async Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath)
     {

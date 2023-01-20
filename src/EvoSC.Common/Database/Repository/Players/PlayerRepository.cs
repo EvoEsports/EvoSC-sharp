@@ -16,7 +16,7 @@ public class PlayerRepository : DbRepository, IPlayerRepository
     }
 
     public async Task<IPlayer?> GetPlayerByAccountIdAsync(string accountId) => await Table<DbPlayer>()
-        .SingleAsync(t => t.AccountId == accountId);
+        .SingleOrDefaultAsync(t => t.AccountId == accountId);
 
     public async Task<IPlayer> AddPlayerAsync(string accountId, TmPlayerDetailedInfo playerInfo)
     {

@@ -23,7 +23,7 @@ public class PermissionRepository : DbRepository, IPermissionRepository
     public Task UpdatePermissionAsync(IPermission permission) => Database.UpdateAsync(new DbPermission(permission));
 
     public async Task<IPermission?> GetPermissionAsync(string name) => await Table<DbPermission>()
-        .SingleAsync(p => p.Name == name);
+        .SingleOrDefaultAsync(p => p.Name == name);
 
     public async Task<IEnumerable<IPermission>> GetPlayerPermissionsAsync(long playerId) => await
         (
@@ -68,7 +68,7 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         }
     }
 
-    public async Task<IGroup?> GetGroupAsync(int id) => await Table<DbGroup>().SingleAsync(t => t.Id == id);
+    public async Task<IGroup?> GetGroupAsync(int id) => await Table<DbGroup>().SingleOrDefaultAsync(t => t.Id == id);
 
     public Task AddPlayerToGroupAsync(long playerId, int groupId) => Database.InsertAsync(new DbUserGroup
     {

@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Data.Common;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Interfaces.Database;

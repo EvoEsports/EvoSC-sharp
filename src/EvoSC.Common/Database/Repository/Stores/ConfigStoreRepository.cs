@@ -13,7 +13,7 @@ public class ConfigStoreRepository : DbRepository, IConfigStoreRepository
     }
 
     public async Task<DbConfigOption?> GetConfigOptionsByKeyAsync(string keyName) => await Table<DbConfigOption>()
-        .SingleAsync(t => t.Key == keyName);
+        .SingleOrDefaultAsync(t => t.Key == keyName);
 
     public Task AddConfigOptionAsync(DbConfigOption option) => Database.InsertAsync(option);
 
