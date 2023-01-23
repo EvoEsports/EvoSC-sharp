@@ -8,13 +8,11 @@ namespace EvoSC.Common.Remote;
 
 public class ServerCallbackHandler : IServerCallbackHandler
 {
-    private readonly ILogger<ServerCallbackHandler> _logger;
     private readonly IServerClient _server;
     private readonly IEventManager _events;
 
-    public ServerCallbackHandler(ILogger<ServerCallbackHandler> logger, IServerClient server, IEventManager events)
+    public ServerCallbackHandler(IServerClient server, IEventManager events)
     {
-        _logger = logger;
         _server = server;
         _events = events;
         

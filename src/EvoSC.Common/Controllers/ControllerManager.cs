@@ -41,7 +41,7 @@ public class ControllerManager : IControllerManager
         });
     }
 
-    private void ValidateController(Type controllerType)
+    private static void ValidateController(Type controllerType)
     {
         if (!controllerType.IsControllerClass())
         {

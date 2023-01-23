@@ -97,7 +97,7 @@ public class CommandsMiddleware
         await actionChain(playerInteractionContext);
     }
 
-    private void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)
+    private static void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)
     {
         if (parserResult.IsIntended)
         {

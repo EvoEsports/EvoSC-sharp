@@ -10,7 +10,6 @@ namespace EvoSC.Common.Config.Stores;
 public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 {
     private readonly TomlDocument _document;
-    private readonly string _path;
     
     public TomlConfigStore(string path)
     {
@@ -23,8 +22,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         {
             _document = TomlParser.ParseFile(path);
         }
-        
-        _path = Path.GetFullPath(path);
     }
 
     private TomlDocument CreateDefaultConfig()

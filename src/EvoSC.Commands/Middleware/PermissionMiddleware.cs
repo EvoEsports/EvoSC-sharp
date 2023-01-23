@@ -3,22 +3,18 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Util.ServerUtils;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Commands.Middleware;
 
 public class PermissionMiddleware
 {
     private readonly ActionDelegate _next;
-    private readonly ILogger<PermissionMiddleware> _logger;
     private readonly IPermissionManager _permissions;
     private readonly IServerClient _server;
 
-    public PermissionMiddleware(ActionDelegate next, ILogger<PermissionMiddleware> logger,
-        IPermissionManager permissions, IServerClient server)
+    public PermissionMiddleware(ActionDelegate next, IPermissionManager permissions, IServerClient server)
     {
         _next = next;
-        _logger = logger;
         _permissions = permissions;
         _server = server;
     }

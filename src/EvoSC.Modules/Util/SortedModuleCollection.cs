@@ -117,7 +117,7 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
         }
     }
 
-    private void DetectCycle(DependencyGraph dependencies)
+    private static void DetectCycle(DependencyGraph dependencies)
     {
         if (dependencies.Count > 0)
         {

@@ -15,7 +15,6 @@ public class RemoteChatRouter : IRemoteChatRouter
 {
     private readonly ILogger<RemoteChatRouter> _logger;
     private readonly IServerClient _server;
-    private readonly IEventManager _events;
     private readonly IPlayerManagerService _players;
     private readonly IActionPipelineManager _pipelineManager;
 
@@ -24,7 +23,6 @@ public class RemoteChatRouter : IRemoteChatRouter
     {
         _logger = logger;
         _server = server;
-        _events = events;
         _players = players;
         _pipelineManager = pipelineManager;
 
