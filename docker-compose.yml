@@ -7,24 +7,22 @@ services:
       - 2351:2350/tcp
       - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-      MASTER_LOGIN: "SERVERLOGIN"
+       MASTER_LOGIN: "SERVERLOGIN"
       MASTER_PASSWORD: "SERVERPASS"
       XMLRPC_ALLOWREMOTE: "True"
     volumes:
       - UserData:/server/UserData
   db:
-    image: mariadb
+    image: postgres
     restart: always
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:5438:5432"
     volumes:
-      - MariaDBData:/var/lib/mysql
+      - POSTGRESData:/var/lib/postgresql/data 
     environment:
-      MARIADB_ROOT_PASSWORD: CHANGEME
-      MARIADB_USER: evosc
-      MARIADB_PASSWORD: evosc123!
-      MARIADB_DATABASE: evosc
-      MARIADB_AUTO_UPGRADE: always
+      - POSTGRES_USER=evosc
+      - POSTGRES_PASSWORD=evosc123!
+      - POSTGRES_DB=evosc
   adminer:
     image: adminer
     restart: always
@@ -32,4 +30,4 @@ services:
       - "127.0.0.1:8081:8080"
 volumes:
   UserData: null
-  MariaDBData: null
+  POSTGRESData: null
