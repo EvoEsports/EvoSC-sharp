@@ -26,5 +26,5 @@ public interface IValueReaderManager
     /// <param name="input">Input to convert from.</param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public Task<object> ConvertValue(Type type, string input);
+    public Task<object> ConvertValueAsync(Type type, string input);
 }

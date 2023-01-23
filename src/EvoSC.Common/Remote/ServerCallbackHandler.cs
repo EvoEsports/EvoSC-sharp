@@ -23,27 +23,27 @@ public class ServerCallbackHandler : IServerCallbackHandler
 
     private void SetupCallbacks()
     {
-        _server.Remote.OnPlayerChat += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerChat, e, sender);
-        _server.Remote.OnPlayerConnect += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerConnect, e, sender);
-        _server.Remote.OnPlayerDisconnect += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerDisconnect, e, sender);
-        _server.Remote.OnPlayerInfoChanged += (sender, e) => _events.Raise(GbxRemoteEvent.PlayerInfoChanged, e, sender);
-        _server.Remote.OnEndMap += (sender, e) => _events.Raise(GbxRemoteEvent.EndMap, e, sender);
-        _server.Remote.OnEndMatch += (sender, e) => _events.Raise(GbxRemoteEvent.EndMatch, e, sender);
-        _server.Remote.OnBeginMap += (sender, e) => _events.Raise(GbxRemoteEvent.BeginMap, e, sender);
-        _server.Remote.OnBeginMatch += (sender, e) => _events.Raise(GbxRemoteEvent.BeginMatch, e, sender);
-        _server.Remote.OnEcho += (sender, e) => _events.Raise(GbxRemoteEvent.Echo, e, sender);
-        _server.Remote.OnPlayerManialinkPageAnswer += (sender, e) => _events.Raise(GbxRemoteEvent.ManialinkPageAnswer, e, sender);
-        _server.Remote.OnMapListModified += (sender, e) => _events.Raise(GbxRemoteEvent.MapListModified, e, sender);
+        _server.Remote.OnPlayerChat += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.PlayerChat, e, sender);
+        _server.Remote.OnPlayerConnect += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.PlayerConnect, e, sender);
+        _server.Remote.OnPlayerDisconnect += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.PlayerDisconnect, e, sender);
+        _server.Remote.OnPlayerInfoChanged += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.PlayerInfoChanged, e, sender);
+        _server.Remote.OnEndMap += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.EndMap, e, sender);
+        _server.Remote.OnEndMatch += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.EndMatch, e, sender);
+        _server.Remote.OnBeginMap += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.BeginMap, e, sender);
+        _server.Remote.OnBeginMatch += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.BeginMatch, e, sender);
+        _server.Remote.OnEcho += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.Echo, e, sender);
+        _server.Remote.OnPlayerManialinkPageAnswer += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.ManialinkPageAnswer, e, sender);
+        _server.Remote.OnMapListModified += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.MapListModified, e, sender);
         
-        _server.Remote.OnModeScriptCallback += OnModeScriptCallback;
+        _server.Remote.OnModeScriptCallback += OnModeScriptCallbackAsync;
     }
 
-    private async Task OnModeScriptCallback(string method, JObject data)
+    private async Task OnModeScriptCallbackAsync(string method, JObject data)
     {
         switch (method)
         {
             case "Trackmania.Scores":
-                await _events.Raise(ModeScriptEvent.Scores,
+                await _events.RaiseAsync(ModeScriptEvent.Scores,
                     new ScoresEventArgs
                     {
                         Section = data.GetValue("section").ToObject<string>(),
@@ -55,7 +55,7 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Trackmania.Event.GiveUp":
-                await _events.Raise(ModeScriptEvent.GiveUp,
+                await _events.RaiseAsync(ModeScriptEvent.GiveUp,
                     new PlayerUpdateEventArgs
                     {
                         Time = data.GetValue("time").ToObject<int>(),
@@ -64,7 +64,7 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Trackmania.Event.WayPoint":
-                await _events.Raise(ModeScriptEvent.WayPoint,
+                await _events.RaiseAsync(ModeScriptEvent.WayPoint,
                     new WayPointEventArgs
                     {
                         Time = data.GetValue("time").ToObject<int>(),
@@ -83,7 +83,7 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Trackmania.Event.Respawn":
-                await _events.Raise(ModeScriptEvent.Respawn,
+                await _events.RaiseAsync(ModeScriptEvent.Respawn,
                     new RespawnEventArgs
                     {
                         Time = data.GetValue("time").ToObject<int>(),
@@ -98,7 +98,7 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Trackmania.Event.StartLine":
-                await _events.Raise(ModeScriptEvent.StartLine,
+                await _events.RaiseAsync(ModeScriptEvent.StartLine,
                     new PlayerUpdateEventArgs
                     {
                         Time = data.GetValue("time").ToObject<int>(),
@@ -107,13 +107,13 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Trackmania.WarmUp.End":
-                await _events.Raise(ModeScriptEvent.WarmUpEnd, EventArgs.Empty);
+                await _events.RaiseAsync(ModeScriptEvent.WarmUpEnd, EventArgs.Empty);
                 break;
             case "Trackmania.WarmUp.Start":
-                await _events.Raise(ModeScriptEvent.WarmUpStart, EventArgs.Empty);
+                await _events.RaiseAsync(ModeScriptEvent.WarmUpStart, EventArgs.Empty);
                 break;
             case "Trackmania.Event.Eliminated":
-                await _events.Raise(ModeScriptEvent.Eliminated,
+                await _events.RaiseAsync(ModeScriptEvent.Eliminated,
                     new PlayerUpdateEventArgs
                     {
                         Time = data.GetValue("time").ToObject<int>(),
@@ -123,6 +123,6 @@ public class ServerCallbackHandler : IServerCallbackHandler
                 break;
         }
         
-        await _events.Raise(ModeScriptEvent.Any, new ModeScriptEventArgs {Method = method, Args = data});
+        await _events.RaiseAsync(ModeScriptEvent.Any, new ModeScriptEventArgs {Method = method, Args = data});
     }
 }

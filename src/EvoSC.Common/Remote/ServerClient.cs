@@ -25,20 +25,20 @@ public partial class ServerClient : IServerClient
         _connected = false;
         _gbxRemote = new GbxRemoteClient(config.Server.Host, config.Server.Port, logger);
         
-        _gbxRemote.OnDisconnected += OnDisconnected;
+        _gbxRemote.OnDisconnected += OnDisconnectedAsync;
     }
 
-    private async Task OnDisconnected()
+    private async Task OnDisconnectedAsync()
     {
         _connected = false;
-        await ConnectOrShutdown(_app.MainCancellationToken, true);
+        await ConnectOrShutdownAsync(_app.MainCancellationToken, true);
     }
 
     /// <summary>
     /// Try to set up the connection, authenticate and enable callbacks.
     /// </summary>
     /// <returns></returns>
-    private async Task<bool> SetupConnection()
+    private async Task<bool> SetupConnectionAsync()
     {
         if (!await _gbxRemote.ConnectAsync())
         {
@@ -65,7 +65,7 @@ public partial class ServerClient : IServerClient
     /// <param name="cancelToken"></param>
     /// <param name="disconnected"></param>
     /// <exception cref="Exception"></exception>
-    private async Task ConnectOrShutdown(CancellationToken cancelToken, bool disconnected=false)
+    private async Task ConnectOrShutdownAsync(CancellationToken cancelToken, bool disconnected=false)
     {
         try
         {
@@ -73,7 +73,7 @@ public partial class ServerClient : IServerClient
             {
                 if (!disconnected || (disconnected && _config.Server.RetryConnection))
                 {
-                    if (await SetupConnection())
+                    if (await SetupConnectionAsync())
                     {
                         _connected = true;
                         return;
@@ -94,7 +94,7 @@ public partial class ServerClient : IServerClient
     
     public async Task StartAsync(CancellationToken token)
     {
-        await ConnectOrShutdown(token);
+        await ConnectOrShutdownAsync(token);
     }
 
     public async Task StopAsync(CancellationToken token)

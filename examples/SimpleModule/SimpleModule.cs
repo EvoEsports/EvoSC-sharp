@@ -7,13 +7,13 @@ namespace SimpleModule;
 [Module]
 public class SimpleModule : EvoScModule, IToggleable
 {
-    public Task Enable()
+    public Task EnableAsync()
     {
         Console.WriteLine("Hello World!");
         return Task.CompletedTask;
     }
 
-    public Task Disable()
+    public Task DisableAsync()
     {
         return Task.CompletedTask;
     }

@@ -9,7 +9,7 @@ public class StringReader : IValueReader
         typeof(string)
     };
     
-    public Task<object> Read(Type type, string input)
+    public Task<object> ReadAsync(Type type, string input)
     {
         return Task.FromResult((object)input);
     }

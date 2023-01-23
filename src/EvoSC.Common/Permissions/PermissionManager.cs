@@ -50,13 +50,13 @@ public class PermissionManager : IPermissionManager
         return false;
     }
 
-    public async Task<IPermission?> GetPermission(string name) => await _permissionRepository.GetPermissionAsync(name);
+    public async Task<IPermission?> GetPermissionAsync(string name) => await _permissionRepository.GetPermissionAsync(name);
 
-    public Task AddPermission(IPermission permission) => _permissionRepository.AddPermissionAsync(permission);
+    public Task AddPermissionAsync(IPermission permission) => _permissionRepository.AddPermissionAsync(permission);
 
-    public Task UpdatePermission(IPermission permission) => _permissionRepository.UpdatePermissionAsync(permission);
+    public Task UpdatePermissionAsync(IPermission permission) => _permissionRepository.UpdatePermissionAsync(permission);
 
-    public async Task RemovePermission(string name)
+    public async Task RemovePermissionAsync(string name)
     {
         var permission = await _permissionRepository.GetPermissionAsync(name);
 
@@ -68,11 +68,11 @@ public class PermissionManager : IPermissionManager
         await _permissionRepository.RemovePermissionAsync(permission);
     }
 
-    public Task RemovePermission(IPermission permission) => RemovePermission(permission.Name);
+    public Task RemovePermissionAsync(IPermission permission) => RemovePermissionAsync(permission.Name);
 
-    public Task AddGroup(IGroup group) => _permissionRepository.AddGroupAsync(group);
+    public Task AddGroupAsync(IGroup group) => _permissionRepository.AddGroupAsync(group);
 
-    public async Task RemoveGroup(int id)
+    public async Task RemoveGroupAsync(int id)
     {
         var group = await _permissionRepository.GetGroupAsync(id);
 
@@ -84,24 +84,24 @@ public class PermissionManager : IPermissionManager
         await _permissionRepository.RemoveGroupAsync(group);
     }
 
-    public Task RemoveGroup(IGroup group) => RemoveGroup(group.Id);
+    public Task RemoveGroupAsync(IGroup group) => RemoveGroupAsync(group.Id);
 
-    public Task UpdateGroup(IGroup group) => _permissionRepository.UpdateGroupAsync(group);
+    public Task UpdateGroupAsync(IGroup group) => _permissionRepository.UpdateGroupAsync(group);
 
-    public async Task<IGroup?> GetGroup(int id) => await _permissionRepository.GetGroupAsync(id);
+    public async Task<IGroup?> GetGroupAsync(int id) => await _permissionRepository.GetGroupAsync(id);
 
-    public async Task AddPlayerToGroup(IPlayer player, IGroup group) =>
+    public async Task AddPlayerToGroupAsync(IPlayer player, IGroup group) =>
         await _permissionRepository.AddPlayerToGroupAsync(player.Id, group.Id);
 
-    public async Task RemovePlayerFromGroup(IPlayer player, IGroup group) =>
+    public async Task RemovePlayerFromGroupAsync(IPlayer player, IGroup group) =>
         await _permissionRepository.RemovePlayerFromGroupAsync(player.Id, group.Id);
 
-    public async Task AddPermissionToGroup(IGroup group, IPermission permission) =>
+    public async Task AddPermissionToGroupAsync(IGroup group, IPermission permission) =>
         await _permissionRepository.AddPermissionToGroupAsync(group.Id, permission.Id);
 
-    public async Task RemovePermissionFromGroup(IGroup group, IPermission permission) =>
+    public async Task RemovePermissionFromGroupAsync(IGroup group, IPermission permission) =>
         await _permissionRepository.RemovePermissionFromGroupAsync(group.Id, permission.Id);
 
-    public async Task ClearGroupPermissions(IGroup group) =>
+    public async Task ClearGroupPermissionsAsync(IGroup group) =>
         await _permissionRepository.ClearGroupPermissionsAsync(group.Id);
 }

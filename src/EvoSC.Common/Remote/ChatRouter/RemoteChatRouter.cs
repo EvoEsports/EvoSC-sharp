@@ -32,12 +32,12 @@ public class RemoteChatRouter : IRemoteChatRouter
             .WithEvent(GbxRemoteEvent.PlayerChat)
             .WithInstance(this)
             .WithInstanceClass<ServerCallbackHandler>()
-            .WithHandlerMethod<PlayerChatEventArgs>(HandlePlayerChatRouting)
+            .WithHandlerMethod<PlayerChatEventArgs>(HandlePlayerChatRoutingAsync)
             .AsAsync()
         );
     }
 
-    private async Task HandlePlayerChatRouting(object sender, PlayerChatEventArgs e)
+    private async Task HandlePlayerChatRoutingAsync(object sender, PlayerChatEventArgs e)
     {
         try
         {
@@ -54,7 +54,7 @@ public class RemoteChatRouter : IRemoteChatRouter
             {
                 if (context is ChatRouterPipelineContext {ForwardMessage: true} chatContext)
                 {
-                    await _server.SendChatMessage(new TextFormatter()
+                    await _server.SendChatMessageAsync(new TextFormatter()
                         .AddText("[")
                         .AddText(text => text.AsIsolated().AddText(player.NickName))
                         .AddText("] ")

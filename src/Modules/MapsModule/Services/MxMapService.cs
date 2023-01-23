@@ -53,6 +53,6 @@ public class MxMapService : IMxMapService
 
         var map = new MapStream(mapMetadata, mapFile);
 
-        return await _mapService.AddMap(map);
+        return await _mapService.AddMapAsync(map);
     }
 }

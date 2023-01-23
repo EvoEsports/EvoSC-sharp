@@ -15,7 +15,7 @@ public class ChatCommandParser
         _valueReader = valueReader;
     }
 
-    public async Task<IParserResult> Parse(string userInput)
+    public async Task<IParserResult> ParseAsync(string userInput)
     {
         try
         {
@@ -36,7 +36,7 @@ public class ChatCommandParser
             }
 
             parts = parts[1..];
-            var args = await ConvertArguments(cmd, parts, intendedCommand ? null : cmdAlias);
+            var args = await ConvertArgumentsAsync(cmd, parts, intendedCommand ? null : cmdAlias);
 
             return new ParserResult {Command = cmd, Arguments = args, Success = true, IsIntended = intendedCommand, AliasUsed = cmdAlias};
         }
@@ -46,7 +46,7 @@ public class ChatCommandParser
         }
     }
 
-    private async Task<List<object>> ConvertArguments(IChatCommand cmd, string[] parts, string aliasName=null)
+    private async Task<List<object>> ConvertArgumentsAsync(IChatCommand cmd, string[] parts, string aliasName=null)
     {
         var requiredCount = cmd.Parameters.Count(p => !p.Optional);
         var aliasArgCount = 0;
@@ -78,7 +78,7 @@ public class ChatCommandParser
             var parameter = cmd.Parameters[i];
             try
             {
-                var value = await _valueReader.ConvertValue(parameter.Type, parts[i - aliasArgCount]);
+                var value = await _valueReader.ConvertValueAsync(parameter.Type, parts[i - aliasArgCount]);
                 convertedArgs.Add(value);
             }
             catch (FormatException e)

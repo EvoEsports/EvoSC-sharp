@@ -11,14 +11,14 @@ public interface IMapService
     /// </summary>
     /// <param name="id">The database ID.</param>
     /// <returns></returns>
-    public Task<IMap?> GetMapById(long id);
+    public Task<IMap?> GetMapByIdAsync(long id);
     
     /// <summary>
     /// Gets a map.
     /// </summary>
     /// <param name="uid">The maps unique identifier.</param>
     /// <returns></returns>
-    public Task<IMap?> GetMapByUid(string uid);
+    public Task<IMap?> GetMapByUidAsync(string uid);
     
     /// <summary>
     /// Adds a map to the server. If the map already exists and the passed map is newer than the
@@ -27,19 +27,19 @@ public interface IMapService
     /// <param name="mapStream">An object containing the map file and the map metadata.</param>
     /// <exception cref="DuplicateNameException">Thrown if the map already exists within the database.</exception>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public Task<IMap> AddMap(MapStream mapStream);
+    public Task<IMap> AddMapAsync(MapStream mapStream);
     
     /// <summary>
     /// Add several maps to the server. Useful for adding mappacks.
     /// </summary>
     /// <param name="mapStreams">A list of objects containing the mapfile and the map metadata.</param>
     /// <returns></returns>
-    public Task<IEnumerable<IMap>> AddMaps(List<MapStream> mapStreams);
+    public Task<IEnumerable<IMap>> AddMapsAsync(List<MapStream> mapStreams);
     
     /// <summary>
     /// Removes a map from the server.
     /// </summary>
     /// <param name="mapId">The maps ID in the database.</param>
     /// <returns></returns>
-    public Task RemoveMap(long mapId);
+    public Task RemoveMapAsync(long mapId);
 }

@@ -72,8 +72,8 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await InstallPermissions(moduleContext);
-        await TryCallModuleInstall(moduleContext);
+        await InstallPermissionsAsync(moduleContext);
+        await TryCallModuleInstallAsync(moduleContext);
         
         _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
     }
@@ -83,8 +83,8 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await UninstallPermissions(moduleContext);
-        await TryCallModuleUninstall(moduleContext);
+        await UninstallPermissionsAsync(moduleContext);
+        await TryCallModuleUninstallAsync(moduleContext);
         
         _logger.LogDebug("Module {Type}({Module}) was uninstalled", moduleContext.MainClass, loadId);
     }
@@ -135,13 +135,13 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private async Task InstallPermissions(IModuleLoadContext moduleContext)
+    private async Task InstallPermissionsAsync(IModuleLoadContext moduleContext)
     {
         var identifiedPermissions = new List<IPermission>();
         
         foreach (var permission in moduleContext.Permissions)
         {
-            var existingPermission = await _permissions.GetPermission(permission.Name);
+            var existingPermission = await _permissions.GetPermissionAsync(permission.Name);
 
             if (existingPermission != null)
             {
@@ -151,8 +151,8 @@ public class ModuleManager : IModuleManager
             }
 
             _logger.LogDebug("Installing permission: {Name}", permission.Name);
-            await _permissions.AddPermission(permission);
-            var identifiedPermission = await _permissions.GetPermission(permission.Name);
+            await _permissions.AddPermissionAsync(permission);
+            var identifiedPermission = await _permissions.GetPermissionAsync(permission.Name);
 
             if (identifiedPermission == null)
             {
@@ -168,15 +168,15 @@ public class ModuleManager : IModuleManager
         moduleContext.Permissions = identifiedPermissions;
     }
 
-    private async Task UninstallPermissions(IModuleLoadContext moduleContext)
+    private async Task UninstallPermissionsAsync(IModuleLoadContext moduleContext)
     {
         foreach (var permission in moduleContext.Permissions)
         {
-            await _permissions.RemovePermission(permission);
+            await _permissions.RemovePermissionAsync(permission);
         }
     }
 
-    private Task EnableMiddlewares(IModuleLoadContext moduleContext)
+    private Task EnableMiddlewaresAsync(IModuleLoadContext moduleContext)
     {
         _pipelineManager.AddPipeline(PipelineType.ChatRouter, moduleContext.LoadId,
             moduleContext.Pipelines[PipelineType.ChatRouter]);
@@ -186,7 +186,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private Task DisableMiddlewares(IModuleLoadContext moduleContext)
+    private Task DisableMiddlewaresAsync(IModuleLoadContext moduleContext)
     {
         _pipelineManager.RemovePipeline(PipelineType.ChatRouter, moduleContext.LoadId);
         _pipelineManager.RemovePipeline(PipelineType.ControllerAction, moduleContext.LoadId);
@@ -209,50 +209,50 @@ public class ModuleManager : IModuleManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
+    private Task TryCallModuleEnableAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IToggleable instance)
         {
-            return instance.Enable();
+            return instance.EnableAsync();
         }
 
         return Task.CompletedTask;
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleDisable(IModuleLoadContext moduleContext)
+    private Task TryCallModuleDisableAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IToggleable instance)
         {
-            return instance.Disable();
+            return instance.DisableAsync();
         }
 
         return Task.CompletedTask;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleInstall(IModuleLoadContext moduleContext)
+    private Task TryCallModuleInstallAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IInstallable instance)
         {
-            return instance.Install();
+            return instance.InstallAsync();
         }
 
         return Task.CompletedTask;
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleUninstall(IModuleLoadContext moduleContext)
+    private Task TryCallModuleUninstallAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IInstallable instance)
         {
-            return instance.Uninstall();
+            return instance.UninstallAsync();
         }
 
         return Task.CompletedTask;
     }
 
-    private Task EnableControllers(IModuleLoadContext moduleContext)
+    private Task EnableControllersAsync(IModuleLoadContext moduleContext)
     {
         foreach (var assembly in moduleContext.Assemblies)
         {
@@ -275,7 +275,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private Task DisableControllers(IModuleLoadContext moduleContext)
+    private Task DisableControllersAsync(IModuleLoadContext moduleContext)
     {
         _controllers.RemoveModuleControllers(moduleContext.LoadId);
         return Task.CompletedTask;
@@ -301,7 +301,7 @@ public class ModuleManager : IModuleManager
                         throw new ModuleServicesException($"Settings type {type} must be an interface.");
                     }
 
-                    var store = await CreateModuleConfigStore(moduleInfo.Name, type);
+                    var store = await CreateModuleConfigStoreAsync(moduleInfo.Name, type);
                     var config = CreateConfigInstance(type, store);
 
                     if (config == null)
@@ -315,7 +315,7 @@ public class ModuleManager : IModuleManager
         }
     }
 
-    private async Task<IConfigStore> CreateModuleConfigStore(string name, Type configInterface)
+    private async Task<IConfigStore> CreateModuleConfigStoreAsync(string name, Type configInterface)
     {
         var dbStore = new DatabaseStore(name, configInterface, _configStoreRepository);
         await dbStore.SetupDefaultSettingsAsync();
@@ -461,9 +461,9 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await EnableControllers(moduleContext);
-        await EnableMiddlewares(moduleContext);
-        await TryCallModuleEnable(moduleContext);
+        await EnableControllersAsync(moduleContext);
+        await EnableMiddlewaresAsync(moduleContext);
+        await TryCallModuleEnableAsync(moduleContext);
 
         moduleContext.SetEnabled(true);
         
@@ -475,9 +475,9 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await DisableControllers(moduleContext);
-        await DisableMiddlewares(moduleContext);
-        await TryCallModuleDisable(moduleContext);
+        await DisableControllersAsync(moduleContext);
+        await DisableMiddlewaresAsync(moduleContext);
+        await TryCallModuleDisableAsync(moduleContext);
         
         moduleContext.SetEnabled(false);
         

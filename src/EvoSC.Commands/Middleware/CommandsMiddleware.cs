@@ -53,7 +53,7 @@ public class CommandsMiddleware
         return valueReader;
     }
 
-    async Task HandleUserErrors(IParserResult result, string playerLogin)
+    async Task HandleUserErrorsAsync(IParserResult result, string playerLogin)
     {
         if (result.Exception as CommandParserException is not null)
         {
@@ -63,12 +63,12 @@ public class CommandsMiddleware
             }
 
             var message = $"Error: {result.Exception.Message}";
-            await _serverClient.SendChatMessage($"Error: {message}", playerLogin);
+            await _serverClient.SendChatMessageAsync($"Error: {message}", playerLogin);
         }
 
         if (result.Exception is PlayerNotFoundException playerNotFoundException)
         {
-            await _serverClient.SendChatMessage($"Error: {playerNotFoundException.Message}", playerLogin);
+            await _serverClient.SendChatMessageAsync($"Error: {playerNotFoundException.Message}", playerLogin);
         }
         else
         {
@@ -78,7 +78,7 @@ public class CommandsMiddleware
         }
     }
 
-    private async Task ExecuteCommand(IChatCommand cmd, object[] args, ChatRouterPipelineContext routerContext)
+    private async Task ExecuteCommandAsync(IChatCommand cmd, object[] args, ChatRouterPipelineContext routerContext)
     {
         var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
 
@@ -119,16 +119,16 @@ public class CommandsMiddleware
         
         try
         {
-            var parserResult = await _parser.Parse(context.MessageText);
+            var parserResult = await _parser.ParseAsync(context.MessageText);
 
             if (parserResult.Success)
             {
-                await ExecuteCommand(parserResult.Command, parserResult.Arguments.ToArray(), context);
+                await ExecuteCommandAsync(parserResult.Command, parserResult.Arguments.ToArray(), context);
                 CheckAliasHiding(context, parserResult);
             }
             else if (parserResult.Exception != null)
             {
-                await HandleUserErrors(parserResult, context.Player.GetLogin());
+                await HandleUserErrorsAsync(parserResult, context.Player.GetLogin());
             }
             else
             {

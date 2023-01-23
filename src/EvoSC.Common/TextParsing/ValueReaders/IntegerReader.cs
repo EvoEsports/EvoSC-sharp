@@ -13,7 +13,7 @@ public class IntegerReader : IValueReader
         typeof(ulong)
     };
     
-    public Task<object> Read(Type type, string input)
+    public Task<object> ReadAsync(Type type, string input)
     {
         try
         {

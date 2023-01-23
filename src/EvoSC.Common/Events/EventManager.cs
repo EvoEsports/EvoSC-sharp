@@ -106,7 +106,7 @@ public class EventManager : IEventManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public async Task Raise(string name, EventArgs args, object? sender)
+    public async Task RaiseAsync(string name, EventArgs args, object? sender)
     {
         if (!_subscriptions.ContainsKey(name))
         {
@@ -116,7 +116,7 @@ public class EventManager : IEventManager
         _logger.LogTrace("Attempting to fire event '{Event}'", name);
         
         var tasks = InvokeEventTasks(name, args, sender ?? this);
-        await WaitEventTasks(tasks);
+        await WaitEventTasksAsync(tasks);
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -131,19 +131,19 @@ public class EventManager : IEventManager
                 Task.Run(() =>
                 {
                     _logger.LogTrace("run async");
-                    InvokeTaskMethod(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                    InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
                 });
             }
             else
             {
-                InvokeTaskMethod(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
             }
         }
 
         return tasks;
     }
 
-    private Task InvokeTaskMethod(EventArgs args, object? sender, EventSubscription subscription,
+    private Task InvokeTaskMethodAsync(EventArgs args, object? sender, EventSubscription subscription,
         ConcurrentQueue<(Task, EventSubscription)> tasks)
     {
         try
@@ -174,7 +174,7 @@ public class EventManager : IEventManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private async Task WaitEventTasks(ConcurrentQueue<(Task, EventSubscription)> tasks)
+    private async Task WaitEventTasksAsync(ConcurrentQueue<(Task, EventSubscription)> tasks)
     {
         while (tasks.TryDequeue(out var result))
         {

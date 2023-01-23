@@ -51,7 +51,7 @@ public class CommandParserTests
         var valueReader = GetFullValueReader();
         var parser = new ChatCommandParser(_cmdManager, valueReader);
 
-        var result = await parser.Parse("/myCmd");
+        var result = await parser.ParseAsync("/myCmd");
         
         Assert.True(result.Success);
         Assert.Equal("myCmd", result.Command.Name);
@@ -63,7 +63,7 @@ public class CommandParserTests
         var valueReader = GetFullValueReader();
         var parser = new ChatCommandParser(_cmdManager, valueReader);
         
-        var result = await parser.Parse("/unknownCommand");
+        var result = await parser.ParseAsync("/unknownCommand");
         
         Assert.False(result.Success);
 
@@ -77,7 +77,7 @@ public class CommandParserTests
         var valueReader = GetFullValueReader();
         var parser = new ChatCommandParser(_cmdManager, valueReader);
         
-        var result = await parser.Parse("unknownAlias");
+        var result = await parser.ParseAsync("unknownAlias");
         
         Assert.False(result.Success);
 

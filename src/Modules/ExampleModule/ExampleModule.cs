@@ -6,12 +6,12 @@ namespace EvoSC.Modules.Official.ExampleModule;
 [Module(IsInternal = true)]
 public class ExampleModule : EvoScModule, IToggleable
 {
-    public Task Enable()
+    public Task EnableAsync()
     {
         return Task.CompletedTask;
     }
 
-    public Task Disable()
+    public Task DisableAsync()
     {
         return Task.CompletedTask;
     }
