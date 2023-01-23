@@ -95,7 +95,7 @@ public static class PlayerUtils
     /// <returns></returns>
     public static bool IsAccountId(string login)
     {
-        return Regex.IsMatch(login, AccountIdRegex);
+        return Regex.IsMatch(login, AccountIdRegex, RegexOptions.None, TimeSpan.FromMilliseconds(100));
     }
 
     /// <summary>

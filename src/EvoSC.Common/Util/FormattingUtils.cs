@@ -8,7 +8,7 @@ public static class FormattingUtils
     /// Pattern to match TrackMania's formatting syntax.
     /// </summary>
     private static readonly Regex TmTextFormatPattern = new Regex(@"\$((L|H)\[.+\]|[\da-f]{3}|[\w\$\<\>]{1})",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
     /// <summary>
     /// Removes all TrackMania formatting from a string.
