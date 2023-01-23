@@ -47,8 +47,7 @@ public class EventManager : IEventManager
                 return 1;
             return 0;
         });
-        _subscriptions[subscription.Name].Sort((a, b) =>
-            a.RunAsync ? -1 : (b.RunAsync ? 1 : 0));
+        _subscriptions[subscription.Name].Sort(CompareSubscription);
 
         _logger.LogDebug("Subscribed to event '{Name}' with handler '{Handler}' in class '{Class}'. In Controller: {IsController}",
             subscription.Name,
@@ -56,6 +55,17 @@ public class EventManager : IEventManager
             subscription.InstanceClass,
             subscription.IsController);
     }
+
+    private static int CompareSubscription(EventSubscription a, EventSubscription b)
+    {
+        if (a.RunAsync)
+        {
+            return -1;
+        }
+        
+        return b.RunAsync ? 1 : 0;
+    }
+
 
     public void Subscribe(Action<EventSubscriptionBuilder> builderAction)
     {
