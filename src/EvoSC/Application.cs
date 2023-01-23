@@ -167,9 +167,6 @@ public sealed class Application : IEvoSCApplication, IDisposable
         _services.GetInstance<IServerCallbackHandler>();
         _services.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(_runningToken.Token);
-
-        // setup command handler
-        _services.GetInstance<ICommandInteractionHandler>();
     }
 
     public void Dispose()
