@@ -7,7 +7,7 @@ services:
       - 2351:2350/tcp
       - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-       MASTER_LOGIN: "SERVERLOGIN"
+      MASTER_LOGIN: "SERVERLOGIN"
       MASTER_PASSWORD: "SERVERPASS"
       XMLRPC_ALLOWREMOTE: "True"
     volumes:
