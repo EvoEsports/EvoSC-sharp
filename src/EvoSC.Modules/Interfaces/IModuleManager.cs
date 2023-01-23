@@ -7,6 +7,9 @@ namespace EvoSC.Modules.Interfaces;
 /// </summary>
 public interface IModuleManager
 {
+    /// <summary>
+    /// Warning: creates a copy of loaded modules. O(n)
+    /// </summary>
     public IReadOnlyList<IModuleLoadContext> LoadedModules { get; }
 
     /// <summary>
