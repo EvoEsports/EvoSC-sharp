@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Config.Net;
-using Tomlet.Attributes;
 
 namespace EvoSC.Common.Config.Models;
 

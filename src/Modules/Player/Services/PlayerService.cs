@@ -2,7 +2,6 @@
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util;
-using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Player.Interfaces;
 

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using EvoSC.Commands.Attributes;
+﻿using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
@@ -7,7 +6,6 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Modules.Official.ExampleModule;

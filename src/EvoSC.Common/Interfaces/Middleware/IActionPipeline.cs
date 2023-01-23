@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Middleware;
+﻿using EvoSC.Common.Middleware;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Middleware;

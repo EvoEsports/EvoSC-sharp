@@ -4,7 +4,6 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SimpleInjector;
 using Xunit;
 
 namespace EvoSC.Common.Tests;

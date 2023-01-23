@@ -1,9 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Events;
-using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using GbxRemoteNet;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;

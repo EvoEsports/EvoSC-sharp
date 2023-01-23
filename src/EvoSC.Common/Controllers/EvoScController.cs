@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Database.Models;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Common.Controllers;
 

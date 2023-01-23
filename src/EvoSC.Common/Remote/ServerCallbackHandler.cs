@@ -1,7 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 

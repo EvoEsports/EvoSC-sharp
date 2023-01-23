@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 
 namespace EvoSC.Common.Events;

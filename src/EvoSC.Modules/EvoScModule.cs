@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Modules.Interfaces;
+﻿using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules;
 

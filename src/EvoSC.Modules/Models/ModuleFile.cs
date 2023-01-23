@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using EvoSC.Modules.Interfaces;
+﻿using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules.Models;
 

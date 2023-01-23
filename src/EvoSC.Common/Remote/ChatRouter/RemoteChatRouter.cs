@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Events.CoreEvents;
-using EvoSC.Common.Exceptions.PlayerExceptions;
+﻿using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;

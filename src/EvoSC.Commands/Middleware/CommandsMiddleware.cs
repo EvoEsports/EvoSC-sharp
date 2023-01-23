@@ -5,7 +5,6 @@ using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
-using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Services;
@@ -15,7 +14,6 @@ using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Commands.Middleware;

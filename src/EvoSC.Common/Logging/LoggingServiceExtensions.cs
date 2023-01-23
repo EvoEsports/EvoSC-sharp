@@ -1,11 +1,7 @@
-﻿using System.Text;
-using System.Text.Json;
-using EvoSC.Common.Config.Models;
+﻿using EvoSC.Common.Config.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Options;
 using SimpleInjector;
 
 namespace EvoSC.Common.Logging;

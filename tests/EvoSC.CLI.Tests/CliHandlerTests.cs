@@ -34,7 +34,7 @@ public class CliHandlerTests
     {
         var handler = new CliHandler(Array.Empty<string>());
 
-        Assert.Throws<CliCommandAttributeNotFound>(() =>
+        Assert.Throws<CliCommandAttributeNotFoundException>(() =>
         {
             handler.RegisterCommand(new InvalidCmdClass());
         });
@@ -48,7 +48,7 @@ public class CliHandlerTests
 
         Assert.ThrowsAsync<MyCommandRanException>(async () =>
         {
-            await handler.Handle();
+            await handler.HandleAsync();
         });
     }
 }

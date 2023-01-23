@@ -1,7 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using EvoSC.Commands.Util;
-using EvoSC.Common.Util;
-using EvoSC.Common.Util.EnumIdentifier;
+﻿using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Commands.Attributes;
 

@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Common.Util.TextFormatting;
 

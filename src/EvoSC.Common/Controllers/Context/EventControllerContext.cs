@@ -1,8 +1,4 @@
-﻿using EvoSC.Common.Events;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Remote;
-using Microsoft.Extensions.DependencyInjection;
+﻿using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Common.Controllers.Context;
 

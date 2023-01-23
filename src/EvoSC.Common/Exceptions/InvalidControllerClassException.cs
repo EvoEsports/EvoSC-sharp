@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Exceptions;
-
-namespace EvoSC.Common.Exceptions;
+﻿namespace EvoSC.Common.Exceptions;
 
 /// <summary>
 /// Thrown when the controller's class is invalid. Eg. not extending or implementing the right interfaces/classes.

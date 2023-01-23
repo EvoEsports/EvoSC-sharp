@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using EvoSC.Commands.Exceptions;
+﻿using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Interfaces.Parsing;
 

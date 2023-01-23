@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Util;
-using EvoSC.Common.Util.EnumIdentifier;
+﻿using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Common.Events.Attributes;
 

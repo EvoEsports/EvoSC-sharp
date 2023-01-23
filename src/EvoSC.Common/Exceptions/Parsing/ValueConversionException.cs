@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EvoSC.Common.Exceptions.Parsing;
+﻿namespace EvoSC.Common.Exceptions.Parsing;
 
 public class ValueConversionException : Exception
 {

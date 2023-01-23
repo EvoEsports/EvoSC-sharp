@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading.Tasks;
-using EvoSC.Common.Exceptions.Parsing;
+﻿using EvoSC.Common.Exceptions.Parsing;
 using EvoSC.Common.Interfaces.Parsing;
 
 namespace EvoSC.Common.TextParsing.ValueReaders;

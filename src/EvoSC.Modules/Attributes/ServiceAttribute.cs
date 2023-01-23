@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SimpleInjector;
-using SimpleInjector.Lifestyles;
-
-namespace EvoSC.Modules.Attributes;
+﻿namespace EvoSC.Modules.Attributes;
 
 /// <summary>
 /// Classes annotated with this attribute will be automatically added to the

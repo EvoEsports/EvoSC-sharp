@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Middleware;
+﻿using EvoSC.Common.Interfaces.Middleware;
 
 namespace EvoSC.Common.Middleware;
 
