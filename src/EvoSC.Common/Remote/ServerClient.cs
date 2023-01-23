@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using GbxRemoteNet;
 using Microsoft.Extensions.Logging;
@@ -81,12 +82,12 @@ public partial class ServerClient : IServerClient
                 }
 
                 await Task.Delay(1000, cancelToken);
-                
+
             } while (!cancelToken.IsCancellationRequested && _config.Server.RetryConnection);
 
-            throw new Exception();
+            throw new ServerDisconnectedException();
         }
-        catch (Exception e)
+        catch (ServerDisconnectedException e)
         {
             await _app.ShutdownAsync();
         }
