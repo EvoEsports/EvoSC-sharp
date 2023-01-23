@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using System.Globalization;
+using EvoSC.Common.Config.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
@@ -82,26 +83,16 @@ public static class LoggingServiceExtensions
         });
     }
 
-    private static LogLevel GetLogLevel(this ILoggingConfig config)
-    {
-        switch (config.LogLevel.ToLower())
+    private static LogLevel GetLogLevel(this ILoggingConfig config) =>
+        config.LogLevel.ToLower(CultureInfo.InvariantCulture) switch
         {
-            case "information":
-                return LogLevel.Information;
-            case "critical":
-                return LogLevel.Critical;
-            case "debug":
-                return LogLevel.Debug;
-            case "error":
-                return LogLevel.Error;
-            case "none":
-                return LogLevel.None;
-            case "trace":
-                return LogLevel.Trace;
-            case "warning":
-                return LogLevel.Warning;
-            default:
-                return LogLevel.Information;
-        }
-    }
+            "information" => LogLevel.Information,
+            "critical" => LogLevel.Critical,
+            "debug" => LogLevel.Debug,
+            "error" => LogLevel.Error,
+            "none" => LogLevel.None,
+            "trace" => LogLevel.Trace,
+            "warning" => LogLevel.Warning,
+            _ => LogLevel.Information
+        };
 }
