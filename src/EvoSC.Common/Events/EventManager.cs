@@ -36,18 +36,8 @@ public class EventManager : IEventManager
         }
         
         _subscriptions[subscription.Name].Add(subscription);
-        _subscriptions[subscription.Name].Sort((a, b) =>
-        {
-            int ap = (int)a.Priority;
-            int bp = (int)b.Priority;
-
-            if (ap > bp)
-                return -1;
-            else if (ap < bp)
-                return 1;
-            return 0;
-        });
-        _subscriptions[subscription.Name].Sort(CompareSubscription);
+        _subscriptions[subscription.Name].Sort(CompareSubscriptionPriority);
+        _subscriptions[subscription.Name].Sort(CompareSubscriptionSynchronization);
 
         _logger.LogDebug("Subscribed to event '{Name}' with handler '{Handler}' in class '{Class}'. In Controller: {IsController}",
             subscription.Name,
@@ -56,7 +46,20 @@ public class EventManager : IEventManager
             subscription.IsController);
     }
 
-    private static int CompareSubscription(EventSubscription a, EventSubscription b)
+    private static int CompareSubscriptionPriority(EventSubscription a, EventSubscription b)
+    {
+        int ap = (int)a.Priority;
+        int bp = (int)b.Priority;
+
+        if (ap > bp)
+        {
+            return -1;
+        }
+
+        return ap < bp ? 1 : 0;
+    }
+    
+    private static int CompareSubscriptionSynchronization(EventSubscription a, EventSubscription b)
     {
         if (a.RunAsync)
         {
