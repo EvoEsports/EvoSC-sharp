@@ -80,7 +80,7 @@ public partial class ServerClient : IServerClient
                     }
                 }
 
-                await Task.Delay(1000);
+                await Task.Delay(1000, cancelToken);
                 
             } while (!cancelToken.IsCancellationRequested && _config.Server.RetryConnection);
 
