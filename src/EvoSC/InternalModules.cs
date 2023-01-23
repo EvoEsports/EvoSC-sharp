@@ -10,7 +10,7 @@ namespace EvoSC;
 
 public static class InternalModules
 {
-    public static readonly List<Type> Modules = new()
+    public static readonly Type[] Modules =
     {
         typeof(PlayerModule),
         typeof(ExampleModule),

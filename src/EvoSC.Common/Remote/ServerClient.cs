@@ -100,7 +100,7 @@ public partial class ServerClient : IServerClient
 
     public async Task StopAsync(CancellationToken token)
     {
-        await _gbxRemote.ChatEnableManualRoutingAsync(false, false);
+        await _gbxRemote.ChatEnableManualRoutingAsync(false);
         await _gbxRemote.DisconnectAsync();
     }
 }

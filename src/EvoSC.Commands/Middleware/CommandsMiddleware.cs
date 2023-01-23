@@ -55,14 +55,14 @@ public class CommandsMiddleware
 
     async Task HandleUserErrorsAsync(IParserResult result, string playerLogin)
     {
-        if (result.Exception as CommandParserException is not null)
+        if (result.Exception is CommandParserException cmdParserException)
         {
-            if (!((CommandParserException)result.Exception).IntendedCommand)
+            if (!cmdParserException.IntendedCommand)
             {
                 return;
             }
 
-            var message = $"Error: {result.Exception.Message}";
+            var message = $"Error: {cmdParserException.Message}";
             await _serverClient.SendChatMessageAsync($"Error: {message}", playerLogin);
         }
 

@@ -206,11 +206,11 @@ public class ChatCommandBuilder
     /// <summary>
     /// Whether this command requires a prefix or not.
     /// </summary>
-    /// <param name="usePrefix">If true, the command will require to be prefixed by the user.</param>
+    /// <param name="useIt">If true, the command will require to be prefixed by the user.</param>
     /// <returns></returns>
-    public ChatCommandBuilder UsePrefix(bool usePrefix)
+    public ChatCommandBuilder UsePrefix(bool useIt)
     {
-        _usePrefix = usePrefix;
+        _usePrefix = useIt;
         return this;
     }
 

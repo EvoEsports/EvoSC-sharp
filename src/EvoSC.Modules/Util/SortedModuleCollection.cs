@@ -53,7 +53,6 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
                 RemoveDependent(dependencyGraph, dependent);
 
                 selected = dependent.Key;
-                break;
             }
 
             if (selected != null)

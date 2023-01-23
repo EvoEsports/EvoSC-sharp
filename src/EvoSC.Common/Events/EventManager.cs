@@ -95,7 +95,7 @@ public class EventManager : IEventManager
     {
         if (!_subscriptions.ContainsKey(subscription.Name))
         {
-            throw new EventSubscriptionNotFound();
+            throw new EventSubscriptionNotFoundException();
         }
 
         _subscriptions[subscription.Name].Remove(subscription);

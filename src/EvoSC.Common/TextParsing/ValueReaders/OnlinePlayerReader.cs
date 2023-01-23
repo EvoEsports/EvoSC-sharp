@@ -24,7 +24,7 @@ public class OnlinePlayerReader : IValueReader
     {
         var players = await _playerManager.FindOnlinePlayerAsync(input);
 
-        if (players.Count() == 0)
+        if (!players.Any())
         {
             throw new PlayerNotFoundException(input, $"Failed to find player with name '{input}'.");
         }

@@ -1,6 +1,6 @@
 ﻿namespace EvoSC.Common.Exceptions;
 
-public class EventSubscriptionNotFound : EvoSCException
+public class EventSubscriptionNotFoundException : EvoSCException
 {
     
 }

@@ -98,7 +98,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
     public void Write(string key, string? value)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public bool CanRead => true;

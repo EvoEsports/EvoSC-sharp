@@ -1,6 +1,6 @@
 ﻿namespace EvoSC.Commands.Interfaces;
 
-public class ICommandInteractionHandler
+public interface ICommandInteractionHandler
 {
     
 }
