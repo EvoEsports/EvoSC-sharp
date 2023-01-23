@@ -1,14 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Commands.Parser;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Events;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
 using Microsoft.Extensions.Logging;
@@ -55,7 +51,7 @@ public class CommandParserTests
         var valueReader = GetFullValueReader();
         var parser = new ChatCommandParser(_cmdManager, valueReader);
 
-        var result = await parser.Parse("/myCmd");
+        var result = await parser.ParseAsync("/myCmd");
         
         Assert.True(result.Success);
         Assert.Equal("myCmd", result.Command.Name);
@@ -67,7 +63,7 @@ public class CommandParserTests
         var valueReader = GetFullValueReader();
         var parser = new ChatCommandParser(_cmdManager, valueReader);
         
-        var result = await parser.Parse("/unknownCommand");
+        var result = await parser.ParseAsync("/unknownCommand");
         
         Assert.False(result.Success);
 
@@ -81,7 +77,7 @@ public class CommandParserTests
         var valueReader = GetFullValueReader();
         var parser = new ChatCommandParser(_cmdManager, valueReader);
         
-        var result = await parser.Parse("unknownAlias");
+        var result = await parser.ParseAsync("unknownAlias");
         
         Assert.False(result.Success);
 

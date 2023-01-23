@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using Config.Net;
-using EvoSC.Common.Config.Models.ThemeOptions;
-using EvoSC.Common.Util.TextFormatting;
+﻿using EvoSC.Common.Config.Models.ThemeOptions;
 
 namespace EvoSC.Common.Config.Models;
 

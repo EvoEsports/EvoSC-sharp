@@ -10,7 +10,6 @@ namespace EvoSC.Common.Config.Stores;
 public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 {
     private readonly TomlDocument _document;
-    private readonly string _path;
     
     public TomlConfigStore(string path)
     {
@@ -23,8 +22,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         {
             _document = TomlParser.ParseFile(path);
         }
-        
-        _path = Path.GetFullPath(path);
     }
 
     private TomlDocument CreateDefaultConfig()
@@ -78,13 +75,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         // do nothing because the document lives for the entire application and is disposed on shutdown
     }
 
-    private string GetArrayValue(string key)
-    {
-        var value = _document.GetValue(key) as TomlArray;
-
-        return string.Join(" ", value.Select(v => v.StringValue));
-    }
-    
     public string? Read(string key)
     {
         var lastDotIndex = key.LastIndexOf(".", StringComparison.Ordinal);
@@ -94,7 +84,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
             var value = _document.GetValue(key[..lastDotIndex]) as TomlArray;
             return value.Count.ToString();
         }
-        else if (key.EndsWith("]"))
+        else if (key.EndsWith("]", StringComparison.Ordinal))
         {
             var indexStart = key.IndexOf("[", StringComparison.Ordinal);
             var index = int.Parse(key[(indexStart+1)..^1]);
@@ -108,7 +98,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
     public void Write(string key, string? value)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public bool CanRead => true;

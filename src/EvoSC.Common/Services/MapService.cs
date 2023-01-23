@@ -28,16 +28,16 @@ public class MapService : IMapService
         _serverClient = serverClient;
     }
 
-    public async Task<IMap?> GetMapById(long id) => await _mapRepository.GetMapByIdAsync(id);
+    public async Task<IMap?> GetMapByIdAsync(long id) => await _mapRepository.GetMapByIdAsync(id);
 
-    public async Task<IMap?> GetMapByUid(string uid) => await _mapRepository.GetMapByUidAsync(uid);
+    public async Task<IMap?> GetMapByUidAsync(string uid) => await _mapRepository.GetMapByUidAsync(uid);
 
-    public async Task<IMap> AddMap(MapStream mapStream)
+    public async Task<IMap> AddMapAsync(MapStream mapStream)
     {
         var mapMetadata = mapStream.MapMetadata;
         var mapFile = mapStream.MapFile;
 
-        IMap? existingMap = await GetMapByUid(mapMetadata.MapUid);
+        IMap? existingMap = await GetMapByUidAsync(mapMetadata.MapUid);
         if (existingMap != null && MapVersionExistsInDb(existingMap, mapMetadata))
         {
             // TODO: #79 Expand Map module with more accurate exceptions https://github.com/EvoTM/EvoSC-sharp/issues/79
@@ -90,19 +90,19 @@ public class MapService : IMapService
         return map;
     }
 
-    public async Task<IEnumerable<IMap>> AddMaps(List<MapStream> mapObjects)
+    public async Task<IEnumerable<IMap>> AddMapsAsync(List<MapStream> mapObjects)
     {
         var maps = new List<IMap>();
         foreach (var mapObject in mapObjects)
         {
-            var map = await AddMap(mapObject);
+            var map = await AddMapAsync(mapObject);
             maps.Add(map);
         }
 
         return maps;
     }
 
-    public async Task RemoveMap(long mapId)
+    public async Task RemoveMapAsync(long mapId)
     {
         await _mapRepository.RemoveMapAsync(mapId);
     }

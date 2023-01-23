@@ -5,7 +5,6 @@ using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
-using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Services;
@@ -15,7 +14,6 @@ using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Commands.Middleware;
@@ -55,22 +53,22 @@ public class CommandsMiddleware
         return valueReader;
     }
 
-    async Task HandleUserErrors(IParserResult result, string playerLogin)
+    async Task HandleUserErrorsAsync(IParserResult result, string playerLogin)
     {
-        if (result.Exception as CommandParserException is not null)
+        if (result.Exception is CommandParserException cmdParserException)
         {
-            if (!((CommandParserException)result.Exception).IntendedCommand)
+            if (!cmdParserException.IntendedCommand)
             {
                 return;
             }
 
-            var message = $"Error: {result.Exception.Message}";
-            await _serverClient.SendChatMessage($"Error: {message}", playerLogin);
+            var message = $"Error: {cmdParserException.Message}";
+            await _serverClient.SendChatMessageAsync($"Error: {message}", playerLogin);
         }
 
         if (result.Exception is PlayerNotFoundException playerNotFoundException)
         {
-            await _serverClient.SendChatMessage($"Error: {playerNotFoundException.Message}", playerLogin);
+            await _serverClient.SendChatMessageAsync($"Error: {playerNotFoundException.Message}", playerLogin);
         }
         else
         {
@@ -80,7 +78,7 @@ public class CommandsMiddleware
         }
     }
 
-    private async Task ExecuteCommand(IChatCommand cmd, object[] args, ChatRouterPipelineContext routerContext)
+    private async Task ExecuteCommandAsync(IChatCommand cmd, object[] args, ChatRouterPipelineContext routerContext)
     {
         var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
 
@@ -99,7 +97,7 @@ public class CommandsMiddleware
         await actionChain(playerInteractionContext);
     }
 
-    private void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)
+    private static void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)
     {
         if (parserResult.IsIntended)
         {
@@ -114,23 +112,23 @@ public class CommandsMiddleware
     
     public async Task ExecuteAsync(ChatRouterPipelineContext context)
     {
-        if (context.MessageText.Trim().StartsWith("/"))
+        if (context.MessageText.Trim().StartsWith("/", StringComparison.Ordinal))
         {
             context.ForwardMessage = false;
         }
         
         try
         {
-            var parserResult = await _parser.Parse(context.MessageText);
+            var parserResult = await _parser.ParseAsync(context.MessageText);
 
             if (parserResult.Success)
             {
-                await ExecuteCommand(parserResult.Command, parserResult.Arguments.ToArray(), context);
+                await ExecuteCommandAsync(parserResult.Command, parserResult.Arguments.ToArray(), context);
                 CheckAliasHiding(context, parserResult);
             }
             else if (parserResult.Exception != null)
             {
-                await HandleUserErrors(parserResult, context.Player.GetLogin());
+                await HandleUserErrorsAsync(parserResult, context.Player.GetLogin());
             }
             else
             {

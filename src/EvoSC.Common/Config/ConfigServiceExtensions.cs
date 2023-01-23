@@ -2,8 +2,6 @@
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Config.TypeParsers;
-using EvoSC.Common.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 
 namespace EvoSC.Common.Config;

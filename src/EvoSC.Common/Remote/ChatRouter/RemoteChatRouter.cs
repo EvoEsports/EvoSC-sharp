@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Events.CoreEvents;
-using EvoSC.Common.Exceptions.PlayerExceptions;
+﻿using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;
@@ -16,7 +15,6 @@ public class RemoteChatRouter : IRemoteChatRouter
 {
     private readonly ILogger<RemoteChatRouter> _logger;
     private readonly IServerClient _server;
-    private readonly IEventManager _events;
     private readonly IPlayerManagerService _players;
     private readonly IActionPipelineManager _pipelineManager;
 
@@ -25,7 +23,6 @@ public class RemoteChatRouter : IRemoteChatRouter
     {
         _logger = logger;
         _server = server;
-        _events = events;
         _players = players;
         _pipelineManager = pipelineManager;
 
@@ -33,12 +30,12 @@ public class RemoteChatRouter : IRemoteChatRouter
             .WithEvent(GbxRemoteEvent.PlayerChat)
             .WithInstance(this)
             .WithInstanceClass<ServerCallbackHandler>()
-            .WithHandlerMethod<PlayerChatEventArgs>(HandlePlayerChatRouting)
+            .WithHandlerMethod<PlayerChatEventArgs>(HandlePlayerChatRoutingAsync)
             .AsAsync()
         );
     }
 
-    private async Task HandlePlayerChatRouting(object sender, PlayerChatEventArgs e)
+    private async Task HandlePlayerChatRoutingAsync(object sender, PlayerChatEventArgs e)
     {
         try
         {
@@ -55,7 +52,7 @@ public class RemoteChatRouter : IRemoteChatRouter
             {
                 if (context is ChatRouterPipelineContext {ForwardMessage: true} chatContext)
                 {
-                    await _server.SendChatMessage(new TextFormatter()
+                    await _server.SendChatMessageAsync(new TextFormatter()
                         .AddText("[")
                         .AddText(text => text.AsIsolated().AddText(player.NickName))
                         .AddText("] ")

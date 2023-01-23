@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Models;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Interfaces.Services;
 
@@ -18,70 +17,70 @@ public interface IPermissionManager
     /// </summary>
     /// <param name="name">The name of the permission.</param>
     /// <returns>Permission information.</returns>
-    public Task<IPermission?> GetPermission(string name);
+    public Task<IPermission?> GetPermissionAsync(string name);
     
     /// <summary>
     /// Add a new permission to the database.
     /// </summary>
     /// <param name="permission">The permission to add, with name and description.</param>
     /// <returns></returns>
-    public Task AddPermission(IPermission permission);
+    public Task AddPermissionAsync(IPermission permission);
     
     /// <summary>
     /// Update a permission in the database.
     /// </summary>
     /// <param name="permission">New information about the permission.</param>
     /// <returns></returns>
-    public Task UpdatePermission(IPermission permission);
+    public Task UpdatePermissionAsync(IPermission permission);
     
     /// <summary>
     /// Remove a permission from the database. This method cleans all relations to the permission in the database.
     /// </summary>
     /// <param name="name">The name of the permission to remove.</param>
     /// <returns></returns>
-    public Task RemovePermission(string name);
+    public Task RemovePermissionAsync(string name);
     
     /// <summary>
     /// Remove a permission from the database. This method cleans all relations to the permission in the database.
     /// </summary>
     /// <param name="permission">The permission to remove.</param>
     /// <returns></returns>
-    public Task RemovePermission(IPermission permission);
+    public Task RemovePermissionAsync(IPermission permission);
     
     /// <summary>
     /// Add a new user group to the database.
     /// </summary>
     /// <param name="group">Object containing information about the new group.</param>
     /// <returns></returns>
-    public Task AddGroup(IGroup group);
+    public Task AddGroupAsync(IGroup group);
     
     /// <summary>
     /// Remove a group from the database. This method cleans up any relations to the group.
     /// </summary>
     /// <param name="id">The ID of the group to remove.</param>
     /// <returns></returns>
-    public Task RemoveGroup(int id);
+    public Task RemoveGroupAsync(int id);
     
     /// <summary>
     /// Remove a group from the database. This method cleans up any relations to the group.
     /// </summary>
     /// <param name="group">The group to remove.</param>
     /// <returns></returns>
-    public Task RemoveGroup(IGroup group);
+    public Task RemoveGroupAsync(IGroup group);
     
     /// <summary>
     /// Remove a group from the database. This method cleans up any relations to the group.
     /// </summary>
     /// <param name="group">The group to remove.</param>
     /// <returns></returns>
-    public Task UpdateGroup(IGroup group);
+    public Task UpdateGroupAsync(IGroup group);
     
     /// <summary>
     /// Get information about a group.
     /// </summary>
     /// <param name="id">ID of the group to get.</param>
     /// <returns></returns>
-    public Task<IGroup?> GetGroup(int id);
+    public Task<IGroup?> GetGroupAsync(int id);
     
     /// <summary>
     /// Add a player to a group, giving them all permissions that are assigned to the group.
@@ -89,7 +88,7 @@ public interface IPermissionManager
     /// <param name="player">The player that should be added to the group.</param>
     /// <param name="group">The group to add to the player.</param>
     /// <returns></returns>
-    public Task AddPlayerToGroup(IPlayer player, IGroup group);
+    public Task AddPlayerToGroupAsync(IPlayer player, IGroup group);
     
     /// <summary>
     /// Remove a player from a group. This removes all permissions assigned to the player from the group.
@@ -97,7 +96,7 @@ public interface IPermissionManager
     /// <param name="player">The player that should be removed from the group.</param>
     /// <param name="group">The group which the player should be removed from.</param>
     /// <returns></returns>
-    public Task RemovePlayerFromGroup(IPlayer player, IGroup group);
+    public Task RemovePlayerFromGroupAsync(IPlayer player, IGroup group);
     
     /// <summary>
     /// Add a permission to a group.
@@ -105,7 +104,7 @@ public interface IPermissionManager
     /// <param name="group">The group to add the permission to.</param>
     /// <param name="permission">The permission to add.</param>
     /// <returns></returns>
-    public Task AddPermissionToGroup(IGroup group, IPermission permission);
+    public Task AddPermissionToGroupAsync(IGroup group, IPermission permission);
     
     /// <summary>
     /// Remove a permission from a group.
@@ -113,12 +112,12 @@ public interface IPermissionManager
     /// <param name="group">The group to remove the permission from.</param>
     /// <param name="permission">The permission to remove.</param>
     /// <returns></returns>
-    public Task RemovePermissionFromGroup(IGroup group, IPermission permission);
+    public Task RemovePermissionFromGroupAsync(IGroup group, IPermission permission);
     
     /// <summary>
     /// Remove all permissions from a group.
     /// </summary>
     /// <param name="group">The group to clear permissions from.</param>
     /// <returns></returns>
-    public Task ClearGroupPermissions(IGroup group);
+    public Task ClearGroupPermissionsAsync(IGroup group);
 }

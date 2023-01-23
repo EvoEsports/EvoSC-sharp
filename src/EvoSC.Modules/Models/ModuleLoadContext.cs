@@ -3,7 +3,6 @@ using System.Runtime.Loader;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
-using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 

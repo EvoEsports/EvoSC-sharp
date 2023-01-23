@@ -2,10 +2,8 @@
 using System.Text.RegularExpressions;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Players;
 using GbxRemoteNet.Structs;
-using Microsoft.Extensions.Primitives;
 
 namespace EvoSC.Common.Util;
 
@@ -48,9 +46,9 @@ public static class PlayerUtils
         var bytes = Convert.FromHexString(accountId.Replace("-", ""));
 
         return Convert.ToBase64String(bytes)
-            .Replace("=", "")
-            .Replace("+", "-")
-            .Replace("/", "_");
+            .Replace("=", "", StringComparison.Ordinal)
+            .Replace("+", "-", StringComparison.Ordinal)
+            .Replace("/", "_", StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -66,8 +64,8 @@ public static class PlayerUtils
         }
         
         var base64 = login
-            .Replace("-", "+")
-            .Replace("_", "/");
+            .Replace("-", "+", StringComparison.Ordinal)
+            .Replace("_", "/", StringComparison.Ordinal);
 
         var sb = new StringBuilder(base64);
         for (int i = 0; i < login.Length % 4; i++)
@@ -97,7 +95,7 @@ public static class PlayerUtils
     /// <returns></returns>
     public static bool IsAccountId(string login)
     {
-        return Regex.IsMatch(login, AccountIdRegex);
+        return Regex.IsMatch(login, AccountIdRegex, RegexOptions.None, TimeSpan.FromMilliseconds(100));
     }
 
     /// <summary>

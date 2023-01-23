@@ -137,7 +137,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         var modules = _services.GetInstance<IModuleManager>();
         var config = _services.GetInstance<IEvoScBaseConfig>();
 
-        await modules.LoadInternalModules();
+        await modules.LoadInternalModulesAsync();
 
         var dirs = config.Modules.ModuleDirectories;
         var externalModules = new SortedModuleCollection<IExternalModuleInfo>();

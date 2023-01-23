@@ -44,9 +44,9 @@ public class MiddlewareTests
         var context = new GenericControllerContext();
         await chain(context);
         
-        Assert.Equal(true, context.CustomData["first"]);
-        Assert.Equal(true, context.CustomData["second"]);
-        Assert.Equal(true, context.CustomData["third"]);
+        Assert.True((bool)context.CustomData["first"]);
+        Assert.True((bool)context.CustomData["second"]);
+        Assert.True((bool)context.CustomData["third"]);
     }
 
     [Fact]
@@ -82,9 +82,9 @@ public class MiddlewareTests
         var context = new GenericControllerContext();
         await chain(context);
         
-        Assert.Equal(true, context.CustomData["first"]);
-        Assert.Equal(true, context.CustomData["second"]);
-        Assert.Equal(true, context.CustomData["third"]);
+        Assert.True((bool)context.CustomData["first"]);
+        Assert.True((bool)context.CustomData["second"]);
+        Assert.True((bool)context.CustomData["third"]);
     }
 
     [Fact]

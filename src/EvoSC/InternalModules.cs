@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Modules;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.Maps;
@@ -11,7 +10,7 @@ namespace EvoSC;
 
 public static class InternalModules
 {
-    public static readonly List<Type> Modules = new()
+    public static readonly Type[] Modules =
     {
         typeof(PlayerModule),
         typeof(ExampleModule),
@@ -43,7 +42,7 @@ public static class InternalModules
     /// Load all internal modules.
     /// </summary>
     /// <param name="modules"></param>
-    public static async Task LoadInternalModules(this IModuleManager modules)
+    public static async Task LoadInternalModulesAsync(this IModuleManager modules)
     {
         foreach (var module in Modules)
         {

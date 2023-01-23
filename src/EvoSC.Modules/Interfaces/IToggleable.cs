@@ -9,11 +9,11 @@ public interface IToggleable
     /// Enable the module.
     /// </summary>
     /// <returns></returns>
-    public Task Enable();
+    public Task EnableAsync();
     
     /// <summary>
     /// Disable the module.
     /// </summary>
     /// <returns></returns>
-    public Task Disable();
+    public Task DisableAsync();
 }

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using EvoSC.Modules.Exceptions;
 
 namespace EvoSC.Modules.Exceptions.ModuleServices;
 

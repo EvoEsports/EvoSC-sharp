@@ -1,6 +1,4 @@
-﻿using System.CommandLine.Invocation;
-
-namespace EvoSC.CLI.Interfaces;
+﻿namespace EvoSC.CLI.Interfaces;
 
 public interface ICliCommand
 {

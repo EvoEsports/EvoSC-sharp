@@ -1,5 +1,4 @@
 ﻿using Config.Net;
-using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
 using Xunit;

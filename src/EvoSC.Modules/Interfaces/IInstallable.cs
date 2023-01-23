@@ -9,11 +9,11 @@ public interface IInstallable
     /// Install the module.
     /// </summary>
     /// <returns></returns>
-    public Task Install();
+    public Task InstallAsync();
     
     /// <summary>
     /// Uninstall the modules
     /// </summary>
     /// <returns></returns>
-    public Task Uninstall();
+    public Task UninstallAsync();
 }

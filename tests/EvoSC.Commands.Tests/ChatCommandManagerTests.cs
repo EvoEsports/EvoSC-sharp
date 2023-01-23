@@ -1,12 +1,7 @@
-using System;
-using System.Net.Mime;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Events;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using Microsoft.Extensions.Logging;
-using SimpleInjector;
 using Xunit;
 
 namespace EvoSC.Commands.Tests;

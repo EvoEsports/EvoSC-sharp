@@ -6,7 +6,6 @@
 public class CommandNotFoundException : CommandParserException
 {
     private readonly string _cmdName;
-    private readonly bool _intendedCommand;
     
     public CommandNotFoundException(string cmdName, bool intendedCommand) : base(intendedCommand)
     {

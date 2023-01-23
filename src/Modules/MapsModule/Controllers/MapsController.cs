@@ -38,32 +38,32 @@ public class MapsController : EvoScController<CommandInteractionContext>
         catch (Exception e)
         {
             _logger.LogInformation(e, "Failed adding map with ID {MapId}", mapId);
-            await _server.ErrorMessage($"Something went wrong while trying to add map with ID {mapId}.");
+            await _server.ErrorMessageAsync($"Something went wrong while trying to add map with ID {mapId}.");
             return;
         }
 
         if (map == null)
         {
-            await _server.WarningMessage($"Map with ID {mapId} could not be found.");
+            await _server.WarningMessageAsync($"Map with ID {mapId} could not be found.");
             return;
         }
 
-        await _server.SuccessMessage($"Added {map.Name} by {map.Author.NickName} to the server.");
+        await _server.SuccessMessageAsync($"Added {map.Name} by {map.Author.NickName} to the server.");
     }
 
     [ChatCommand("remove", "Removes a map from the server")]
     public async Task RemoveMap(long mapId)
     {
-        var map = await _mapService.GetMapById(mapId);
+        var map = await _mapService.GetMapByIdAsync(mapId);
 
         if (map == null)
         {
-            await _server.WarningMessage($"Map with ID {mapId} could not be found.");
+            await _server.WarningMessageAsync($"Map with ID {mapId} could not be found.");
             return;
         }
 
-        await _mapService.RemoveMap(mapId);
-        await _server.SuccessMessage($"Removed map with ID {mapId} from the maplist.");
+        await _mapService.RemoveMapAsync(mapId);
+        await _server.SuccessMessageAsync($"Removed map with ID {mapId} from the maplist.");
         _logger.LogInformation("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }

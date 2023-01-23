@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Common.Util.TextFormatting;
 
@@ -31,27 +30,27 @@ public partial class ServerClient
             .AddText(" ")
             .AddText(text);
 
-    public Task InfoMessage(string text) =>
-        this.SendChatMessage(MakeInfoMessage(text));
+    public Task InfoMessageAsync(string text) =>
+        this.SendChatMessageAsync(MakeInfoMessage(text));
 
-    public Task InfoMessage(string text, IPlayer player) =>
-        this.SendChatMessage(MakeInfoMessage(text), player);
+    public Task InfoMessageAsync(string text, IPlayer player) =>
+        this.SendChatMessageAsync(MakeInfoMessage(text), player);
     
-    public Task SuccessMessage(string text) =>
-        this.SendChatMessage(MakeSuccessMessage(text));
+    public Task SuccessMessageAsync(string text) =>
+        this.SendChatMessageAsync(MakeSuccessMessage(text));
 
-    public Task SuccessMessage(string text, IPlayer player) =>
-        this.SendChatMessage(MakeSuccessMessage(text), player);
+    public Task SuccessMessageAsync(string text, IPlayer player) =>
+        this.SendChatMessageAsync(MakeSuccessMessage(text), player);
     
-    public Task WarningMessage(string text) =>
-        this.SendChatMessage(MakeWarningMessage(text));
+    public Task WarningMessageAsync(string text) =>
+        this.SendChatMessageAsync(MakeWarningMessage(text));
 
-    public Task WarningMessage(string text, IPlayer player) =>
-        this.SendChatMessage(MakeWarningMessage(text), player);
+    public Task WarningMessageAsync(string text, IPlayer player) =>
+        this.SendChatMessageAsync(MakeWarningMessage(text), player);
     
-    public Task ErrorMessage(string text) =>
-        this.SendChatMessage(MakeErrorMessage(text));
+    public Task ErrorMessageAsync(string text) =>
+        this.SendChatMessageAsync(MakeErrorMessage(text));
 
-    public Task ErrorMessage(string text, IPlayer player) =>
-        this.SendChatMessage(MakeErrorMessage(text), player);
+    public Task ErrorMessageAsync(string text, IPlayer player) =>
+        this.SendChatMessageAsync(MakeErrorMessage(text), player);
 }

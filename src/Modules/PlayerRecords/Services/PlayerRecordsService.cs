@@ -33,7 +33,7 @@ public class PlayerRecordsService : IPlayerRecordsService
     public async Task<IMap> GetOrAddCurrentMapAsync()
     {
         var currentMap = await _server.Remote.GetCurrentMapInfoAsync();
-        var map = await _maps.GetMapByUid(currentMap.UId);
+        var map = await _maps.GetMapByUidAsync(currentMap.UId);
         
         if (map == null)
         {

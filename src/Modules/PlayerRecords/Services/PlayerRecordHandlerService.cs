@@ -43,7 +43,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
         var (record, status) =
             await _playerRecords.SetPbRecordAsync(player, map, waypoint.RaceTime, waypoint.CurrentLapCheckpoints);
 
-        await _events.Raise(PlayerRecordsEvent.PbRecord, new PbRecordUpdateEventArgs
+        await _events.RaiseAsync(PlayerRecordsEvent.PbRecord, new PbRecordUpdateEventArgs
         {
             Player = player,
             Record = record,
@@ -54,9 +54,9 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
 
     public Task SendRecordUpdateToChatAsync(IPlayerRecord record) => _recordOptions.EchoPb switch
     {
-        EchoOptions.All => _server.InfoMessage(
+        EchoOptions.All => _server.InfoMessageAsync(
             $"$<{record.Player.NickName}$> got a new pb with time {FormattingUtils.FormatTime(record.Score)}"),
-        EchoOptions.Player => _server.InfoMessage(
+        EchoOptions.Player => _server.InfoMessageAsync(
             $"You got a new pb with time {FormattingUtils.FormatTime(record.Score)}", record.Player),
         _ => Task.CompletedTask
     };
@@ -68,7 +68,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
 
         if (pb == null)
         {
-            await _server.InfoMessage("You have not set a time on this map yet.");
+            await _server.InfoMessageAsync("You have not set a time on this map yet.");
             return;
         }
 
@@ -77,6 +77,6 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
         var m = pb.Score / 1000 / 60;
         var formattedTime = $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
 
-        await _server.InfoMessage($"Your current pb is $<$fff{formattedTime}$>");
+        await _server.InfoMessageAsync($"Your current pb is $<$fff{formattedTime}$>");
     }
 }

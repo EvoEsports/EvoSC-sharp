@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using EvoSC.Commands.Attributes;
+﻿using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
@@ -7,7 +6,6 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Modules.Official.ExampleModule;
@@ -36,7 +34,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("hey", "Say hey!")]
     public async Task TmxAddMap(string name)
     {
-        await _server.SendChatMessage($"hello, {name}!", Context.Player);
+        await _server.SendChatMessageAsync($"hello, {name}!", Context.Player);
     }
 
     [ChatCommand("ratemap", "Rate the current map.", "test")]
@@ -50,11 +48,11 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     {
         if (rating is < 0 or > 100)
         {
-            await _server.SendChatMessage("Rating must be between 0 and 100 inclusively.", Context.Player);
+            await _server.SendChatMessageAsync("Rating must be between 0 and 100 inclusively.", Context.Player);
         }
         else
         {
-            await _server.SendChatMessage($"Your rating: {rating}");
+            await _server.SendChatMessageAsync($"Your rating: {rating}");
         }
     }
 
@@ -62,6 +60,6 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     public async Task TestCommand()
     {
         var permissions = await _permRepo.GetGroupAsync(1);
-        await _server.InfoMessage("hello!");
+        await _server.InfoMessageAsync("hello!");
     }
 }
