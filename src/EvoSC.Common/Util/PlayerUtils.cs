@@ -46,9 +46,9 @@ public static class PlayerUtils
         var bytes = Convert.FromHexString(accountId.Replace("-", ""));
 
         return Convert.ToBase64String(bytes)
-            .Replace("=", "")
-            .Replace("+", "-")
-            .Replace("/", "_");
+            .Replace("=", "", StringComparison.Ordinal)
+            .Replace("+", "-", StringComparison.Ordinal)
+            .Replace("/", "_", StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -64,8 +64,8 @@ public static class PlayerUtils
         }
         
         var base64 = login
-            .Replace("-", "+")
-            .Replace("_", "/");
+            .Replace("-", "+", StringComparison.Ordinal)
+            .Replace("_", "/", StringComparison.Ordinal);
 
         var sb = new StringBuilder(base64);
         for (int i = 0; i < login.Length % 4; i++)

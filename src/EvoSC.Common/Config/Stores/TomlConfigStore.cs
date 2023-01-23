@@ -91,7 +91,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
             var value = _document.GetValue(key[..lastDotIndex]) as TomlArray;
             return value.Count.ToString();
         }
-        else if (key.EndsWith("]"))
+        else if (key.EndsWith("]", StringComparison.Ordinal))
         {
             var indexStart = key.IndexOf("[", StringComparison.Ordinal);
             var index = int.Parse(key[(indexStart+1)..^1]);

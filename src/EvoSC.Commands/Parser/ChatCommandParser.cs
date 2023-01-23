@@ -27,7 +27,7 @@ public class ChatCommandParser
             }
 
             var cmdAlias = parts[0];
-            bool intendedCommand = cmdAlias.StartsWith("/");
+            bool intendedCommand = cmdAlias.StartsWith("/", StringComparison.Ordinal);
             var cmd = _cmdManager.FindCommand(cmdAlias, false);
 
             if (cmd == null)

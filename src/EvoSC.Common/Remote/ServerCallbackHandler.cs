@@ -44,64 +44,64 @@ public class ServerCallbackHandler : IServerCallbackHandler
                 await _events.RaiseAsync(ModeScriptEvent.Scores,
                     new ScoresEventArgs
                     {
-                        Section = data.GetValue("section").ToObject<string>(),
-                        UseTeams = data.GetValue("useteams").ToObject<bool>(),
-                        WinnerTeam = data.GetValue("winnerteam").ToObject<int>(),
-                        WinnerPlayer = data.GetValue("winnerplayer").ToObject<string>(),
-                        Teams = data.GetValue("teams").ToObject<TeamScore[]>(),
-                        Players = data.GetValue("players").ToObject<PlayerScore[]>()
+                        Section = data.GetValue("section", StringComparison.Ordinal).ToObject<string>(),
+                        UseTeams = data.GetValue("useteams", StringComparison.Ordinal).ToObject<bool>(),
+                        WinnerTeam = data.GetValue("winnerteam", StringComparison.Ordinal).ToObject<int>(),
+                        WinnerPlayer = data.GetValue("winnerplayer", StringComparison.Ordinal).ToObject<string>(),
+                        Teams = data.GetValue("teams", StringComparison.Ordinal).ToObject<TeamScore[]>(),
+                        Players = data.GetValue("players", StringComparison.Ordinal).ToObject<PlayerScore[]>()
                     });
                 break;
             case "Trackmania.Event.GiveUp":
                 await _events.RaiseAsync(ModeScriptEvent.GiveUp,
                     new PlayerUpdateEventArgs
                     {
-                        Time = data.GetValue("time").ToObject<int>(),
-                        Login = data.GetValue("login").ToObject<string>(),
-                        AccountId = data.GetValue("accountid").ToObject<string>()
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
+                        Login = data.GetValue("login", StringComparison.Ordinal).ToObject<string>(),
+                        AccountId = data.GetValue("accountid", StringComparison.Ordinal).ToObject<string>()
                     });
                 break;
             case "Trackmania.Event.WayPoint":
                 await _events.RaiseAsync(ModeScriptEvent.WayPoint,
                     new WayPointEventArgs
                     {
-                        Time = data.GetValue("time").ToObject<int>(),
-                        Login = data.GetValue("login").ToObject<string>(),
-                        AccountId = data.GetValue("accountid").ToObject<string>(),
-                        RaceTime = data.GetValue("racetime").ToObject<int>(),
-                        LapTime = data.GetValue("laptime").ToObject<int>(),
-                        CheckpointInRace = data.GetValue("checkpointinrace").ToObject<int>(),
-                        CheckpointInLap = data.GetValue("checkpointinlap").ToObject<int>(),
-                        IsEndRace = data.GetValue("isendrace").ToObject<bool>(),
-                        IsEndLap = data.GetValue("isendlap").ToObject<bool>(),
-                        CurrentRaceCheckpoints = data.GetValue("curracecheckpoints").ToObject<int[]>(),
-                        CurrentLapCheckpoints = data.GetValue("curlapcheckpoints").ToObject<int[]>(),
-                        BlockId = data.GetValue("blockid").ToObject<string>(),
-                        Speed = data.GetValue("speed").ToObject<int>()
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
+                        Login = data.GetValue("login", StringComparison.Ordinal).ToObject<string>(),
+                        AccountId = data.GetValue("accountid", StringComparison.Ordinal).ToObject<string>(),
+                        RaceTime = data.GetValue("racetime", StringComparison.Ordinal).ToObject<int>(),
+                        LapTime = data.GetValue("laptime", StringComparison.Ordinal).ToObject<int>(),
+                        CheckpointInRace = data.GetValue("checkpointinrace", StringComparison.Ordinal).ToObject<int>(),
+                        CheckpointInLap = data.GetValue("checkpointinlap", StringComparison.Ordinal).ToObject<int>(),
+                        IsEndRace = data.GetValue("isendrace", StringComparison.Ordinal).ToObject<bool>(),
+                        IsEndLap = data.GetValue("isendlap", StringComparison.Ordinal).ToObject<bool>(),
+                        CurrentRaceCheckpoints = data.GetValue("curracecheckpoints", StringComparison.Ordinal).ToObject<int[]>(),
+                        CurrentLapCheckpoints = data.GetValue("curlapcheckpoints", StringComparison.Ordinal).ToObject<int[]>(),
+                        BlockId = data.GetValue("blockid", StringComparison.Ordinal).ToObject<string>(),
+                        Speed = data.GetValue("speed", StringComparison.Ordinal).ToObject<int>()
                     });
                 break;
             case "Trackmania.Event.Respawn":
                 await _events.RaiseAsync(ModeScriptEvent.Respawn,
                     new RespawnEventArgs
                     {
-                        Time = data.GetValue("time").ToObject<int>(),
-                        Login = data.GetValue("login").ToObject<string>(),
-                        AccountId = data.GetValue("accountid").ToObject<string>(),
-                        NbRespawns = data.GetValue("nbrespawns").ToObject<int>(),
-                        RaceTime = data.GetValue("racetime").ToObject<int>(),
-                        LapTime = data.GetValue("laptime").ToObject<int>(),
-                        CheckpointInRace = data.GetValue("checkpointinrace").ToObject<int>(),
-                        CheckpointInLap = data.GetValue("checkpointinlap").ToObject<int>(),
-                        Speed = data.GetValue("speed").ToObject<int>()
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
+                        Login = data.GetValue("login", StringComparison.Ordinal).ToObject<string>(),
+                        AccountId = data.GetValue("accountid", StringComparison.Ordinal).ToObject<string>(),
+                        NbRespawns = data.GetValue("nbrespawns", StringComparison.Ordinal).ToObject<int>(),
+                        RaceTime = data.GetValue("racetime", StringComparison.Ordinal).ToObject<int>(),
+                        LapTime = data.GetValue("laptime", StringComparison.Ordinal).ToObject<int>(),
+                        CheckpointInRace = data.GetValue("checkpointinrace", StringComparison.Ordinal).ToObject<int>(),
+                        CheckpointInLap = data.GetValue("checkpointinlap", StringComparison.Ordinal).ToObject<int>(),
+                        Speed = data.GetValue("speed", StringComparison.Ordinal).ToObject<int>()
                     });
                 break;
             case "Trackmania.Event.StartLine":
                 await _events.RaiseAsync(ModeScriptEvent.StartLine,
                     new PlayerUpdateEventArgs
                     {
-                        Time = data.GetValue("time").ToObject<int>(),
-                        Login = data.GetValue("login").ToObject<string>(),
-                        AccountId = data.GetValue("accountid").ToObject<string>()
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
+                        Login = data.GetValue("login", StringComparison.Ordinal).ToObject<string>(),
+                        AccountId = data.GetValue("accountid", StringComparison.Ordinal).ToObject<string>()
                     });
                 break;
             case "Trackmania.WarmUp.End":
@@ -114,9 +114,9 @@ public class ServerCallbackHandler : IServerCallbackHandler
                 await _events.RaiseAsync(ModeScriptEvent.Eliminated,
                     new PlayerUpdateEventArgs
                     {
-                        Time = data.GetValue("time").ToObject<int>(),
-                        Login = data.GetValue("login").ToObject<string>(),
-                        AccountId = data.GetValue("accountid").ToObject<string>()
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
+                        Login = data.GetValue("login", StringComparison.Ordinal).ToObject<string>(),
+                        AccountId = data.GetValue("accountid", StringComparison.Ordinal).ToObject<string>()
                     });
                 break;
         }
