@@ -60,7 +60,7 @@ public class ActionPipelineManager : IActionPipelineManager
 
             chain = last.Build(chain);
         
-            for (int i = _pipelines.Count - 2; i >= 0; i--)
+            for (int i = pipelines.Length - 2; i >= 0; i--)
             {
                 chain = pipelines[i].Build(chain);
             }

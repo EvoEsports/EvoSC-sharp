@@ -72,11 +72,11 @@ public class RemoteChatRouter : IRemoteChatRouter
         }
         catch (PlayerNotFoundException ex)
         {
-            _logger.LogError("Failed to get online player: {PlayerId}", ex.AccountId);
+            _logger.LogError(ex, "Failed to get online player: {PlayerId}", ex.AccountId);
         }
         catch (Exception ex)
         {
-            _logger.LogCritical("Failed to route chat message: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
+            _logger.LogCritical(ex, "Failed to route chat message");
             throw;
         }
     }

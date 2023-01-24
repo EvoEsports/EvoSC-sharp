@@ -59,7 +59,6 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var permissions = await _permRepo.GetGroupAsync(1);
-        await _server.InfoMessageAsync("hello!");
+        //throw new Exception("something happened!");
     }
 }
