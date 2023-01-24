@@ -254,22 +254,27 @@ public class ModuleManager : IModuleManager
 
     private Task EnableControllersAsync(IModuleLoadContext moduleContext)
     {
-        foreach (var assembly in moduleContext.Assemblies)
+        try
         {
-            foreach (var module in assembly.Modules)
+            foreach (var assembly in moduleContext.Assemblies)
             {
-                foreach (var type in module.GetTypes())
+                foreach (var type in assembly.AssemblyTypesWithAttribute<ControllerAttribute>())
                 {
                     var controllerAttr = type.GetCustomAttribute<ControllerAttribute>();
 
-                    if (controllerAttr == null || !type.IsControllerClass())
+                    if (controllerAttr == null)
                     {
                         continue;
                     }
-                
+
                     _controllers.AddController(type, moduleContext.LoadId, moduleContext.Services);
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to add controller");
+            throw;
         }
 
         return Task.CompletedTask;

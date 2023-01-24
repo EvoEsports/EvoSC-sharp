@@ -34,22 +34,21 @@ public class ControllerManager : IControllerManager
             registry.RegisterForController(controllerType);
         }
 
-        _controllers.Add(controllerType, new ControllerInfo
-        {
-            ControllerType = controllerType, ModuleId = moduleId, Services = services
-            
-        });
+        _controllers.Add(controllerType,
+            new ControllerInfo {ControllerType = controllerType, ModuleId = moduleId, Services = services});
     }
 
-    private static void ValidateController(Type controllerType)
+    private void ValidateController(Type controllerType)
     {
         if (!controllerType.IsControllerClass())
         {
+            _logger.LogError("{Type} does not implement IController. Make sure to inherit the EvoScController base class", controllerType);
             throw new InvalidControllerClassException("The controller must implement IController.");
         }
 
         if (controllerType.GetCustomAttribute<ControllerAttribute>() == null)
         {
+            _logger.LogError("{Type} does not annotate the [Controller] attribute", controllerType);
             throw new InvalidControllerClassException("The controller must annotate the Controller attribute.");
         }
     }
