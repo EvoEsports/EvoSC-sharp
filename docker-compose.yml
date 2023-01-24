@@ -23,11 +23,14 @@ services:
       - POSTGRES_USER=evosc
       - POSTGRES_PASSWORD=evosc123!
       - POSTGRES_DB=evosc
-  adminer:
-    image: adminer
+  pgadmin:
+    image: dpage/pgadmin4
     restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: evosc123!
     ports:
-      - "127.0.0.1:8081:8080"
+      - "8081:80"
 volumes:
   UserData: null
   POSTGRESData: null
