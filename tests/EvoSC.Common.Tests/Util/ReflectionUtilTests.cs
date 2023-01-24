@@ -6,7 +6,7 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Util;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Util;
 
 public class ReflectionUtilTests
 {

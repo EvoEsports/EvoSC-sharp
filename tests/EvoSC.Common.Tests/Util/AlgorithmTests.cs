@@ -1,7 +1,7 @@
 ﻿using EvoSC.Common.Util.Algorithms;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Util;
 
 public class AlgorithmTests
 {

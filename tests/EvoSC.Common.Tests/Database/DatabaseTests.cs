@@ -2,9 +2,9 @@
 using EvoSC.Common.Database.Extensions;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Database;
 
-public class DatabaseTests
+public class DatabaseConfigTests
 {
     class DbConfig : IDatabaseConfig
     {

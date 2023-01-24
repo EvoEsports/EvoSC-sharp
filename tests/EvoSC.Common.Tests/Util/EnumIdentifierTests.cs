@@ -2,7 +2,7 @@
 using EvoSC.Common.Util.EnumIdentifier;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Util;
 
 public class EnumIdentifierTests
 {
