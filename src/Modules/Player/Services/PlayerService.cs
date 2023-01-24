@@ -4,6 +4,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Player.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Player.Services;
 
@@ -12,11 +13,13 @@ public class PlayerService : IPlayerService
 {
     private readonly IPlayerManagerService _playerManager;
     private readonly IServerClient _server;
+    private readonly ILogger<PlayerService> _logger;
     
-    public PlayerService(IPlayerManagerService playerManager, IServerClient server)
+    public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger)
     {
         _playerManager = playerManager;
         _server = server;
+        _logger = logger;
     }
 
     public async Task UpdateAndGreetPlayerAsync(string login)
@@ -83,6 +86,7 @@ public class PlayerService : IPlayerService
         catch (Exception ex)
         {
             // ignore this as we don't need to handle it, we'll blacklist the player anyways
+            _logger.LogTrace(ex, "Failed to ban player {AccountId}", player.AccountId);
         }
         
         await _server.Remote.BlackListAsync(player.GetLogin());
@@ -100,6 +104,7 @@ public class PlayerService : IPlayerService
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to unban player {Login}", login);
             await _server.ErrorMessageAsync($"$f13The login '{login}' was not found in the banlist.");
         }
 
@@ -112,6 +117,7 @@ public class PlayerService : IPlayerService
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to un-blacklist player {Login}", login);
             await _server.ErrorMessageAsync($"$f13Player with login '{login}' was not found in the blacklist.");
         }
     }

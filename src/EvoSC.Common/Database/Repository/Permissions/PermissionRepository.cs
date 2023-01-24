@@ -61,7 +61,7 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Failed to remove group");
+            _logger.LogError(ex, "Failed to remove group");
             await transaction.RollbackAsync();
             throw;
         }

@@ -51,7 +51,7 @@ public class MapRepository : DbRepository, IMapRepository
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Failed to add map");
+            _logger.LogError(ex, "Failed to add map");
             await transaction.RollbackAsync();
             throw;
         }
@@ -79,7 +79,7 @@ public class MapRepository : DbRepository, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogDebug(e, "Failed to update map");
+            _logger.LogError(e, "Failed to update map");
             await transaction.RollbackAsync();
             throw;
         }

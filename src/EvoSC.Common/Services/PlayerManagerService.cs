@@ -49,9 +49,9 @@ public class PlayerManagerService : IPlayerManagerService
         {
             playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _logger.LogDebug("Player not on server");
+            _logger.LogDebug(ex, "Player not on server");
         }
 
         if (playerInfo == null)

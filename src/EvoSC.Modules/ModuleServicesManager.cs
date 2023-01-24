@@ -149,7 +149,7 @@ public class ModuleServicesManager : IModuleServicesManager
                         }
                         catch (ActivationException ex)
                         {
-                            _logger.LogTrace(
+                            _logger.LogTrace(ex,
                                 "Did not find service {Service} for module {Module} in dependency {Dependency}",
                                 e.UnregisteredServiceType,
                                 moduleId,
