@@ -60,13 +60,13 @@ public class MapService : IMapService
         {
             try
             {
-                _logger.LogDebug("Updating map with ID {MapId} to the database.", existingMap.Id);
+                _logger.LogDebug("Updating map with ID {MapId} to the database", existingMap.Id);
                 map = await _mapRepository.UpdateMapAsync(existingMap.Id, mapMetadata);
             }
             catch (Exception e)
             {
-                _logger.LogWarning(e, "Something went wrong while trying to update " +
-                                      "map with ID {MapId} to the database.", existingMap.Id);
+                _logger.LogWarning(e, "Something went wrong while trying to update map with ID {MapId} to the database",
+                    existingMap.Id);
                 throw;
             }
         }
@@ -74,13 +74,12 @@ public class MapService : IMapService
         {
             try
             {
-                _logger.LogDebug($"Adding map to the database.");
+                _logger.LogDebug("Adding map to the database");
                 map = await _mapRepository.AddMapAsync(mapMetadata, author, filePath);
             }
             catch (Exception e)
             {
-                _logger.LogWarning(e, $"Something went wrong while trying to add a map" +
-                                      $" to the database.");
+                _logger.LogWarning(e, $"Something went wrong while trying to add a map to the database");
                 throw;
             }
         }

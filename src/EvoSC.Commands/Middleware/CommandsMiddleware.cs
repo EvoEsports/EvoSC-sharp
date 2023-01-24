@@ -72,9 +72,7 @@ public class CommandsMiddleware
         }
         else
         {
-            _logger.LogError("Failed to parse command: {Msg} | Stacktrace: {St}",
-                result.Exception.Message,
-                result.Exception.StackTrace);
+            _logger.LogError(result.Exception, "Failed to parse command");
         }
     }
 
@@ -138,8 +136,7 @@ public class CommandsMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogCritical("A fatal error occured while trying to handle chat command: {Msg} | Stacktrace: {St}",
-                ex.Message, ex.StackTrace);
+            _logger.LogCritical(ex, "A fatal error occured while trying to handle chat command");
             throw;
         }
         

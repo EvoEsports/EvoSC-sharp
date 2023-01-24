@@ -87,8 +87,17 @@ public partial class ServerClient : IServerClient
 
             throw new ServerDisconnectedException();
         }
-        catch (ServerDisconnectedException e)
+        catch (Exception ex)
         {
+            if (ex is ServerDisconnectedException serverDisconnectEx)
+            {
+                _logger.LogError(serverDisconnectEx, "Either too many connection attempts were made or the client got disconnected from the server");
+            }
+            else
+            {
+                _logger.LogError(ex, "An error occured while trying to connect to the server");
+            }
+            
             await _app.ShutdownAsync();
         }
     }

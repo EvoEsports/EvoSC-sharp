@@ -254,22 +254,27 @@ public class ModuleManager : IModuleManager
 
     private Task EnableControllersAsync(IModuleLoadContext moduleContext)
     {
-        foreach (var assembly in moduleContext.Assemblies)
+        try
         {
-            foreach (var module in assembly.Modules)
+            foreach (var assembly in moduleContext.Assemblies)
             {
-                foreach (var type in module.GetTypes())
+                foreach (var type in assembly.AssemblyTypesWithAttribute<ControllerAttribute>())
                 {
                     var controllerAttr = type.GetCustomAttribute<ControllerAttribute>();
 
-                    if (controllerAttr == null || !type.IsControllerClass())
+                    if (controllerAttr == null)
                     {
                         continue;
                     }
-                
+
                     _controllers.AddController(type, moduleContext.LoadId, moduleContext.Services);
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to add controller");
+            throw;
         }
 
         return Task.CompletedTask;
@@ -283,11 +288,11 @@ public class ModuleManager : IModuleManager
 
     private async Task RegisterModuleConfigAsync(IEnumerable<Assembly> assemblies, Container container, IModuleInfo moduleInfo)
     {
-        foreach (var assembly in assemblies)
+        try
         {
-            foreach (var module in assembly.Modules)
+            foreach (var assembly in assemblies)
             {
-                foreach (var type in module.GetTypes())
+                foreach (var type in assembly.AssemblyTypesWithAttribute<SettingsAttribute>())
                 {
                     var configAttr = type.GetCustomAttribute<SettingsAttribute>();
 
@@ -298,6 +303,7 @@ public class ModuleManager : IModuleManager
 
                     if (!type.IsInterface)
                     {
+                        _logger.LogError("Settings type {Type} must be an interface", type);
                         throw new ModuleServicesException($"Settings type {type} must be an interface.");
                     }
 
@@ -306,12 +312,17 @@ public class ModuleManager : IModuleManager
 
                     if (config == null)
                     {
+                        _logger.LogError("An instance of the module config {Type} could not be created", type);
                         throw new InvalidOperationException("Failed to create module config instance.");
                     }
-                
+
                     container.RegisterInstance(type, config);
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to add module config");
         }
     }
 

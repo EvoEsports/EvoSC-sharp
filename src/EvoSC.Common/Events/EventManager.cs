@@ -179,8 +179,7 @@ public class EventManager : IEventManager
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to execute subscription: {Msg} | Stacktrace: {St}", ex.Message,
-                ex.StackTrace);
+            _logger.LogError(ex, "Failed to execute subscription");
         }
 
         return Task.CompletedTask;
@@ -208,8 +207,7 @@ public class EventManager : IEventManager
 
                 if (task.IsFaulted)
                 {
-                    _logger.LogError("Event handler faulted, exception: {Msg} | Stacktrace: {St}",
-                        task.Exception?.InnerException?.Message, task.Exception?.InnerException?.StackTrace);
+                    _logger.LogError(task.Exception?.InnerException, "Event handler faulted");
                 }
             }
         }
