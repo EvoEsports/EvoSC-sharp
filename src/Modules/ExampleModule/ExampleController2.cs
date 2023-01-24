@@ -7,6 +7,27 @@ using EvoSC.Modules.Interfaces;
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [Controller]
-public class ExampleController2
+public class ExampleController2 : EvoScController<CommandInteractionContext>
 {
+    private readonly IModuleManager _modules;
+    
+    public ExampleController2(IModuleManager modules)
+    {
+        _modules = modules;
+    }
+
+    [ChatCommand("module", "Manage a module")]
+    public async Task ManageModule(string action, string loadIdStr)
+    {
+        var loadId = Guid.Parse(loadIdStr);
+
+        if (action == "load")
+        {
+            await _modules.EnableAsync(loadId);
+        }
+        else if (action == "unload")
+        {
+            await _modules.UnloadAsync(loadId);
+        }
+    }
 }
