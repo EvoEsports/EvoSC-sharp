@@ -169,16 +169,14 @@ public class ModuleServicesManager : IModuleServicesManager
                 }
                 catch (ActivationException ex)
                 {
-                    _logger.LogError("Failed to get EvoSC core service: {Msg} | Stacktrace: {St}", ex.Message, ex.StackTrace);
+                    _logger.LogError(ex, "Failed to get EvoSC core service");
                     throw;
                 }
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(
-                "An unknown error occured while trying to resolve a core service: {Msg} | Stacktrace: {St}", ex.Message,
-                ex.StackTrace);
+            _logger.LogError(ex, "An unknown error occured while trying to resolve a core service");
         }
     }
 }
