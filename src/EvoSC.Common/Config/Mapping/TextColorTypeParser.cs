@@ -1,7 +1,7 @@
 ﻿using Config.Net;
 using EvoSC.Common.Util.TextFormatting;
 
-namespace EvoSC.Common.Config.TypeParsers;
+namespace EvoSC.Common.Config.Mapping;
 
 public class TextColorTypeParser : ITypeParser
 {
