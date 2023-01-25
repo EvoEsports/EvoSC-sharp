@@ -6,7 +6,7 @@ namespace EvoSC.Common.Config.Models;
 public interface IServerConfig
 {
     [Description("Address to the Trackmania server")]
-    [Option(Alias = "host", DefaultValue = "172.23.97.27")]
+    [Option(Alias = "host", DefaultValue = "127.0.0.1")]
     public string Host { get; }
     
     [Description("Port that the XMLRPC is listening to")]
