@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Controllers;
-using GbxRemoteNet;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;

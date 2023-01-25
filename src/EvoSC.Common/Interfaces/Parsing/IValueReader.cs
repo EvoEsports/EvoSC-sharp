@@ -13,5 +13,5 @@ public interface IValueReader
     /// <param name="type">The type to convert the string value to.</param>
     /// <param name="input">The value to convert</param>
     /// <returns></returns>
-    public Task<object> Read(Type type, string input);
+    public Task<object> ReadAsync(Type type, string input);
 }

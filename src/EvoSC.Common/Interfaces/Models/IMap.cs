@@ -25,7 +25,7 @@ public interface IMap
     /// <summary>
     /// The map author.
     /// </summary>
-    public IPlayer Author { get; set; }
+    public IPlayer? Author { get; }
     
     /// <summary>
     /// Whether the map is enabled or disabled.

@@ -8,5 +8,6 @@ public interface IMigrationManager
     /// Migrate the database from migrations found in an assembly.
     /// </summary>
     /// <param name="asm">Assembly that contains migrations to search for.</param>
+    /// <param name="dbType">The chosen database type.</param>
     public void MigrateFromAssembly(Assembly asm);
 }

@@ -1,11 +1,13 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using LinqToDB.Mapping;
 
-namespace EvoSC.Common.Database.Models;
+namespace EvoSC.Common.Database.Models.Config;
 
 [Table("ConfigOptions")]
 public class DbConfigOption
 {
-    [Key]
+    [PrimaryKey]
     public string Key { get; set; }
+    
+    [Column]
     public string Value { get; set; }
 }

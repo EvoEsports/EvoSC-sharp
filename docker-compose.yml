@@ -13,23 +13,24 @@ services:
     volumes:
       - UserData:/server/UserData
   db:
-    image: mariadb
+    image: postgres
     restart: always
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:5438:5432"
     volumes:
-      - MariaDBData:/var/lib/mysql
+      - POSTGRESData:/var/lib/postgresql/data 
     environment:
-      MARIADB_ROOT_PASSWORD: evotm123
-      MARIADB_USER: evosc
-      MARIADB_PASSWORD: evosc123!
-      MARIADB_DATABASE: evosc
-      MARIADB_AUTO_UPGRADE: always
-  adminer:
-    image: adminer
+      - POSTGRES_USER=evosc
+      - POSTGRES_PASSWORD=evosc123!
+      - POSTGRES_DB=evosc
+  pgadmin:
+    image: dpage/pgadmin4
     restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: PLEASE@CHANGE.ME
+      PGADMIN_DEFAULT_PASSWORD: CHANGEME
     ports:
-      - "127.0.0.1:8081:8080"
+      - "8081:80"
 volumes:
   UserData: null
-  MariaDBData: null
+  POSTGRESData: null

@@ -1,6 +1,4 @@
-﻿using EvoSC.Modules.Models;
-
-namespace EvoSC.Modules.Interfaces;
+﻿namespace EvoSC.Modules.Interfaces;
 
 public interface IExternalModuleInfo : IModuleInfo
 {

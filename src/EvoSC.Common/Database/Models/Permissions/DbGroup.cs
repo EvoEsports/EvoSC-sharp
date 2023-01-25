@@ -1,20 +1,30 @@
-﻿using Dapper.Contrib.Extensions;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
+using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
 [Table("Groups")]
 public class DbGroup : IGroup
 {
-    [Key]
+    [PrimaryKey, Identity]
     public int Id { get; set; }
+    
+    [Column]
     public string Title { get; set; }
+    
+    [Column]
     public string Description { get; set; }
+    
+    [Column]
     public string? Icon { get; set; }
+    
+    [Column]
     public string? Color { get; set; }
+    
+    [Column]
     public bool Unrestricted { get; set; }
     
-    [Computed]
+    [Association(ThisKey = nameof(DbGroupPermission.GroupId), OtherKey = nameof(DbGroupPermission.PermissionId))]
     public List<IPermission> Permissions { get; set; }
 
     public DbGroup()

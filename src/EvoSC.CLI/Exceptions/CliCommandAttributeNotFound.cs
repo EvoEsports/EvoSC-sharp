@@ -3,7 +3,7 @@
 /// <summary>
 /// Thrown when a command is not annotated with [CliCommand].
 /// </summary>
-public class CliCommandAttributeNotFound : EvoSCCliException
+public class CliCommandAttributeNotFoundException : EvoSCCliException
 {
     
 }

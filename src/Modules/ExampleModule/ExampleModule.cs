@@ -1,21 +1,17 @@
-﻿using System.Threading.Tasks;
-using EvoSC.Common.Interfaces.Middleware;
-using EvoSC.Common.Interfaces.Services;
-using EvoSC.Modules.Attributes;
+﻿using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [Module(IsInternal = true)]
 public class ExampleModule : EvoScModule, IToggleable
 {
-    public Task Enable()
+    public Task EnableAsync()
     {
         return Task.CompletedTask;
     }
 
-    public Task Disable()
+    public Task DisableAsync()
     {
         return Task.CompletedTask;
     }

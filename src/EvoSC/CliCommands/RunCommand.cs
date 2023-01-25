@@ -1,6 +1,4 @@
-﻿using System.CommandLine.Invocation;
-using System.CommandLine.Rendering;
-using EvoSC.CLI;
+﻿using EvoSC.CLI;
 using EvoSC.CLI.Attributes;
 using EvoSC.CLI.Interfaces;
 
@@ -12,6 +10,8 @@ public class RunCommand : ICliCommand
 {
     public async Task ExecuteAsync(CancellationToken cancelToken, CliCommandContext context)
     {
-        await new Application(context.Args).RunAsync();
+        var app = new Application(context.Args);
+        await app.RunAsync();
+        app.Dispose();
     }
 }

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using Tomlet;
 
 namespace EvoSC.Modules.SourceGeneration
@@ -22,7 +19,7 @@ namespace EvoSC.Modules.SourceGeneration
             // not needed for this
         }
 
-        private void FileNotFoundError(GeneratorExecutionContext context)
+        private static void FileNotFoundError(GeneratorExecutionContext context)
         {
             var errorMessage = new StringBuilder();
 
@@ -38,7 +35,7 @@ namespace EvoSC.Modules.SourceGeneration
             context.AddSource("Info.g.cs", errorMessage.ToString());
         }
 
-        private void ParserError(GeneratorExecutionContext context, string message)
+        private static void ParserError(GeneratorExecutionContext context, string message)
         {
             var errorMessage = new StringBuilder();
                 

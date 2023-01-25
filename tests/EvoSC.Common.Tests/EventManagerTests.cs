@@ -4,7 +4,6 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SimpleInjector;
 using Xunit;
 
 namespace EvoSC.Common.Tests;
@@ -35,7 +34,7 @@ public class EventManagerTests
             Console.WriteLine();
             return Task.CompletedTask;
         });
-        var ex = await Record.ExceptionAsync(() => manager.Raise("test", EventArgs.Empty));
+        var ex = await Record.ExceptionAsync(() => manager.RaiseAsync("test", EventArgs.Empty));
         
         Assert.Null(ex);
     }
@@ -49,7 +48,7 @@ public class EventManagerTests
 
         Assert.ThrowsAsync<HandlerRanException>(async () =>
         {
-            await manager.Raise("test", EventArgs.Empty);
+            await manager.RaiseAsync("test", EventArgs.Empty);
         });
     }
 
@@ -63,7 +62,7 @@ public class EventManagerTests
         manager.Subscribe("test", handler);
         manager.Unsubscribe("test", handler);
 
-        var ex = await Record.ExceptionAsync(() => manager.Raise("test", EventArgs.Empty));
+        var ex = await Record.ExceptionAsync(() => manager.RaiseAsync("test", EventArgs.Empty));
         
         Assert.Null(ex);
     }
@@ -82,7 +81,7 @@ public class EventManagerTests
 
         Assert.ThrowsAsync<HandlerRanException2>(async () =>
         {
-            await manager.Raise("test", EventArgs.Empty);
+            await manager.RaiseAsync("test", EventArgs.Empty);
         });
     }
 }

@@ -1,7 +1,4 @@
-﻿using EvoSC.Common.Controllers;
-using EvoSC.Common.Interfaces.Middleware;
-using EvoSC.Common.Remote;
-using Microsoft.Extensions.DependencyInjection;
+﻿using EvoSC.Common.Interfaces.Middleware;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;

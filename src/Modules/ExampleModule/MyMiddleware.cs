@@ -1,7 +1,4 @@
-﻿using EvoSC.Commands;
-using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Middleware;
-using EvoSC.Common.Middleware;
+﻿using EvoSC.Common.Middleware;
 using EvoSC.Common.Middleware.Attributes;
 using EvoSC.Common.Remote.ChatRouter;
 using Microsoft.Extensions.Logging;

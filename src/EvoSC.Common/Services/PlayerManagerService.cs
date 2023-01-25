@@ -1,21 +1,11 @@
-﻿using System.Data.Common;
-using System.Globalization;
-using Castle.Components.DictionaryAdapter;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using EvoSC.Common.Database.Models;
-using EvoSC.Common.Database.Models.Player;
-using EvoSC.Common.Exceptions.PlayerExceptions;
+﻿using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
-using EvoSC.Common.Util.Database;
-using GbxRemoteNet;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
 
@@ -24,21 +14,18 @@ namespace EvoSC.Common.Services;
 public class PlayerManagerService : IPlayerManagerService
 {
     private readonly ILogger<PlayerManagerService> _logger;
-    private readonly DbConnection _db;
+    private readonly IPlayerRepository _playerRepository;
     private readonly IServerClient _server;
 
-    public PlayerManagerService(ILogger<PlayerManagerService> logger, DbConnection db, IServerClient server)
+    public PlayerManagerService(ILogger<PlayerManagerService> logger, IPlayerRepository playerRepository, IServerClient server)
     {
         _logger = logger;
-        _db = db;
+        _playerRepository = playerRepository;
         _server = server;
     }
-    
-    public async Task<IPlayer?> GetPlayerAsync(string accountId)
-    {
-        var results = await _db.SelectByColumnAsync<DbPlayer>("Players", "AccountId", accountId);
-        return results?.FirstOrDefault();
-    }
+
+    public async Task<IPlayer?> GetPlayerAsync(string accountId) =>
+        await _playerRepository.GetPlayerByAccountIdAsync(accountId);
 
     public async Task<IPlayer> GetOrCreatePlayerAsync(string accountId)
     {
@@ -62,25 +49,17 @@ public class PlayerManagerService : IPlayerManagerService
         {
             playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _logger.LogDebug("Player not on server.");
+            _logger.LogDebug(ex, "Player not on server");
         }
 
-        var dbPlayer = new DbPlayer
+        if (playerInfo == null)
         {
-            AccountId = accountId.ToLower(CultureInfo.InvariantCulture),
-            NickName = playerInfo?.NickName ?? accountId,
-            UbisoftName = playerInfo?.NickName ?? accountId,
-            Zone = playerInfo?.Path ?? "World",
-            LastVisit = DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+            throw new InvalidOperationException("Player info is null, cannot create player.");
+        }
 
-        var id = await _db.InsertAsync(dbPlayer);
-
-        return new Player(dbPlayer) {Id = id};
+        return await _playerRepository.AddPlayerAsync(accountId, playerInfo);
     }
 
     public async Task<IOnlinePlayer> GetOnlinePlayerAsync(string accountId)
@@ -110,14 +89,8 @@ public class PlayerManagerService : IPlayerManagerService
     }
 
     public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player) => GetOnlinePlayerAsync(player.AccountId);
-    
-    public Task UpdateLastVisitAsync(IPlayer player)
-    {
-        var sql = "update `Players` set LastVisit=@Lastvisit where `Id`=@Id";
-        var values = new {LastVisit = DateTime.UtcNow, Id = player.Id};
 
-        return _db.QueryAsync(sql, values);
-    }
+    public Task UpdateLastVisitAsync(IPlayer player) => _playerRepository.UpdateLastVisitAsync(player);
 
     public async Task<IEnumerable<IOnlinePlayer>> GetOnlinePlayersAsync()
     {
@@ -148,6 +121,8 @@ public class PlayerManagerService : IPlayerManagerService
         return players;
     }
 
+    private const int MinMatchingCharacters = 2;
+    
     public async Task<IEnumerable<IOnlinePlayer>> FindOnlinePlayerAsync(string nickname)
     {
         var players = (await GetOnlinePlayersAsync()).ToArray();
@@ -159,7 +134,7 @@ public class PlayerManagerService : IPlayerManagerService
             var editDistance = StringEditDistance.GetDistance(nickname, cleanedName);
 
             // need at least 3 matching characters and ignore completely wrong names
-            if (editDistance >= cleanedName.Length - 2)
+            if (editDistance >= cleanedName.Length - MinMatchingCharacters)
             {
                 continue;
             }

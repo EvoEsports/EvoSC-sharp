@@ -1,13 +1,9 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
-using EvoSC.Common.Events;
-using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Exceptions;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Util;
-using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
@@ -38,22 +34,21 @@ public class ControllerManager : IControllerManager
             registry.RegisterForController(controllerType);
         }
 
-        _controllers.Add(controllerType, new ControllerInfo
-        {
-            ControllerType = controllerType, ModuleId = moduleId, Services = services
-            
-        });
+        _controllers.Add(controllerType,
+            new ControllerInfo {ControllerType = controllerType, ModuleId = moduleId, Services = services});
     }
 
     private void ValidateController(Type controllerType)
     {
         if (!controllerType.IsControllerClass())
         {
+            _logger.LogError("{Type} does not implement IController. Make sure to inherit the EvoScController base class", controllerType);
             throw new InvalidControllerClassException("The controller must implement IController.");
         }
 
         if (controllerType.GetCustomAttribute<ControllerAttribute>() == null)
         {
+            _logger.LogError("{Type} does not annotate the [Controller] attribute", controllerType);
             throw new InvalidControllerClassException("The controller must annotate the Controller attribute.");
         }
     }

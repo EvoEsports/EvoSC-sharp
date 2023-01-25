@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Services;
-using EvoSC.Modules.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 
 namespace EvoSC.Modules.Extensions;

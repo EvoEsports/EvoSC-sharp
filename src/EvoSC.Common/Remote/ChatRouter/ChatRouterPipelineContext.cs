@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Events.CoreEvents;
-using EvoSC.Common.Interfaces.Middleware;
+﻿using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Remote.ChatRouter;

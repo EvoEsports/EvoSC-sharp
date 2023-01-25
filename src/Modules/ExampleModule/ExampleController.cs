@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using EvoSC.Commands.Attributes;
+﻿using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util.ServerUtils;
 
@@ -17,20 +17,24 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IServerClient _server;
     private readonly IChatCommandManager _chatCommands;
     private readonly IPermissionManager _permissions;
+    private readonly IPermissionRepository _permRepo;
+    private readonly IMapRepository _mapRepo;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
-        IChatCommandManager chatCommands, IPermissionManager permissions)
+        IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo, IMapRepository mapRepo)
     {
         _settings = settings;
         _server = server;
         _chatCommands = chatCommands;
         _permissions = permissions;
+        _permRepo = permRepo;
+        _mapRepo = mapRepo;
     }
 
     [ChatCommand("hey", "Say hey!")]
     public async Task TmxAddMap(string name)
     {
-        await _server.SendChatMessage($"hello, {name}!", Context.Player);
+        await _server.SendChatMessageAsync($"hello, {name}!", Context.Player);
     }
 
     [ChatCommand("ratemap", "Rate the current map.", "test")]
@@ -42,19 +46,19 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [CommandAlias("---", 0)]
     public async Task RateMap(int rating)
     {
-        if (rating < 0 || rating > 100)
+        if (rating is < 0 or > 100)
         {
-            await _server.SendChatMessage("Rating must be between 0 and 100 inclusively.", Context.Player);
+            await _server.SendChatMessageAsync("Rating must be between 0 and 100 inclusively.", Context.Player);
         }
         else
         {
-            await _server.SendChatMessage($"Your rating: {rating}");
+            await _server.SendChatMessageAsync($"Your rating: {rating}");
         }
     }
 
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        await _server.InfoMessage("hello!");
+        //throw new Exception("something happened!");
     }
 }

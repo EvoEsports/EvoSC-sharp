@@ -1,8 +1,6 @@
 ﻿using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
-using GbxRemoteNet;
 
 namespace EvoSC.Common.Interfaces;
 
@@ -71,7 +69,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="args">Event arguments.</param>
     /// <param name="sender">The entity that triggered the event.</param>
     /// <returns></returns>
-    public Task Raise(string name, EventArgs args, object? sender);
+    public Task RaiseAsync(string name, EventArgs args, object? sender);
     
     /// <summary>
     /// Dispatch an event with event args.
@@ -79,7 +77,7 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="name">Name of the event to dispatch.</param>
     /// <param name="args">Event arguments.</param>
     /// <returns></returns>
-    public Task Raise(string name, EventArgs args) => Raise(name, args, null);
+    public Task RaiseAsync(string name, EventArgs args) => RaiseAsync(name, args, null);
     
     /// <summary>
     /// Dispatch an event with event args.
@@ -88,8 +86,8 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="args">Event arguments.</param>
     /// <param name="sender">The entity that triggered the event.</param>
     /// <returns></returns>
-    public Task Raise(Enum name, EventArgs args, object? sender) =>
-        Raise(name.GetIdentifier(), args, sender);
+    public Task RaiseAsync(Enum name, EventArgs args, object? sender) =>
+        RaiseAsync(name.GetIdentifier(), args, sender);
     
     /// <summary>
     /// Dispatch an event with event args.
@@ -97,6 +95,6 @@ public interface IEventManager : IControllerActionRegistry
     /// <param name="name">Name of the event to dispatch.</param>
     /// <param name="args">Event arguments.</param>
     /// <returns></returns>
-    public Task Raise(Enum name, EventArgs args) =>
-        Raise(name, args, null);
+    public Task RaiseAsync(Enum name, EventArgs args) =>
+        RaiseAsync(name, args, null);
 }

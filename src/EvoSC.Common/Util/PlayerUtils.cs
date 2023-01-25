@@ -2,10 +2,8 @@
 using System.Text.RegularExpressions;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
-using EvoSC.Common.Models;
 using EvoSC.Common.Models.Players;
 using GbxRemoteNet.Structs;
-using Microsoft.Extensions.Primitives;
 
 namespace EvoSC.Common.Util;
 
@@ -13,7 +11,26 @@ public static class PlayerUtils
 {
     private const string AccountIdRegex =
         "^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$";
-    
+
+    public static readonly IPlayer NadeoPlayer = new Player
+    {
+        Id = 1,
+        AccountId = "Nadeo",
+        NickName = "Nadeo",
+        UbisoftName = "Nadeo",
+        Zone = null
+    };
+
+    /// <summary>
+    /// Check whether this player is a Nadeo placeholder player.
+    /// This means that the the login, account id and name is all
+    /// set to "Nadeo".
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    public static bool IsNadeoPlaceholder(this IPlayer player) =>
+        player.AccountId.Equals(NadeoPlayer.AccountId, StringComparison.Ordinal);
+
     /// <summary>
     /// Convert a Trackmania player's account ID to the old "login" format.
     /// </summary>
@@ -21,12 +38,17 @@ public static class PlayerUtils
     /// <returns></returns>
     public static string ConvertAccountIdToLogin(string accountId)
     {
+        if (accountId.Equals(NadeoPlayer.AccountId, StringComparison.Ordinal))
+        {
+            return NadeoPlayer.AccountId;
+        }
+        
         var bytes = Convert.FromHexString(accountId.Replace("-", ""));
 
         return Convert.ToBase64String(bytes)
-            .Replace("=", "")
-            .Replace("+", "-")
-            .Replace("/", "_");
+            .Replace("=", "", StringComparison.Ordinal)
+            .Replace("+", "-", StringComparison.Ordinal)
+            .Replace("/", "_", StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -36,9 +58,14 @@ public static class PlayerUtils
     /// <returns></returns>
     public static string ConvertLoginToAccountId(string login)
     {
+        if (login.Equals(NadeoPlayer.AccountId, StringComparison.Ordinal))
+        {
+            return NadeoPlayer.AccountId;
+        }
+        
         var base64 = login
-            .Replace("-", "+")
-            .Replace("_", "/");
+            .Replace("-", "+", StringComparison.Ordinal)
+            .Replace("_", "/", StringComparison.Ordinal);
 
         var sb = new StringBuilder(base64);
         for (int i = 0; i < login.Length % 4; i++)
@@ -68,7 +95,7 @@ public static class PlayerUtils
     /// <returns></returns>
     public static bool IsAccountId(string login)
     {
-        return Regex.IsMatch(login, AccountIdRegex);
+        return Regex.IsMatch(login, AccountIdRegex, RegexOptions.None, TimeSpan.FromMilliseconds(100));
     }
 
     /// <summary>

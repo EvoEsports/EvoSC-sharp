@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Text;
-using Microsoft.Extensions.Primitives;
 
 namespace EvoSC.Common.Util.TextFormatting;
 

@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using EvoSC.Commands.Util;
-
-namespace EvoSC.Commands.Attributes;
+﻿namespace EvoSC.Commands.Attributes;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class CommandAliasAttribute : Attribute

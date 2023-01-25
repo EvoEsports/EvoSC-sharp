@@ -8,7 +8,7 @@ public static class FormattingUtils
     /// Pattern to match TrackMania's formatting syntax.
     /// </summary>
     private static readonly Regex TmTextFormatPattern = new Regex(@"\$((L|H)\[.+\]|[\da-f]{3}|[\w\$\<\>]{1})",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
     /// <summary>
     /// Removes all TrackMania formatting from a string.
@@ -17,4 +17,13 @@ public static class FormattingUtils
     /// <returns></returns>
     public static string CleanTmFormatting(string text) =>
         TmTextFormatPattern.Replace(text, "");
+
+    public static string FormatTime(int milliseconds)
+    {
+        var ms = milliseconds % 1000;
+        var s = milliseconds / 1000 % 60;
+        var m = milliseconds / 1000 / 60;
+        
+        return $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
+    }
 }

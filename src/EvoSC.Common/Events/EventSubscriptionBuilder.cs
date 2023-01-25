@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Common.Events;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using EvoSC.Common.Controllers.Context;
@@ -8,10 +7,8 @@ using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Util;
-using GbxRemoteNet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SimpleInjector;
 
 namespace EvoSC.Common.Events;
 
@@ -39,19 +36,8 @@ public class EventManager : IEventManager
         }
         
         _subscriptions[subscription.Name].Add(subscription);
-        _subscriptions[subscription.Name].Sort((a, b) =>
-        {
-            int ap = (int)a.Priority;
-            int bp = (int)b.Priority;
-
-            if (ap > bp)
-                return -1;
-            else if (ap < bp)
-                return 1;
-            return 0;
-        });
-        _subscriptions[subscription.Name].Sort((a, b) =>
-            a.RunAsync ? -1 : (b.RunAsync ? 1 : 0));
+        _subscriptions[subscription.Name].Sort(CompareSubscriptionPriority);
+        _subscriptions[subscription.Name].Sort(CompareSubscriptionSynchronization);
 
         _logger.LogDebug("Subscribed to event '{Name}' with handler '{Handler}' in class '{Class}'. In Controller: {IsController}",
             subscription.Name,
@@ -59,6 +45,30 @@ public class EventManager : IEventManager
             subscription.InstanceClass,
             subscription.IsController);
     }
+
+    private static int CompareSubscriptionPriority(EventSubscription a, EventSubscription b)
+    {
+        int ap = (int)a.Priority;
+        int bp = (int)b.Priority;
+
+        if (ap > bp)
+        {
+            return -1;
+        }
+
+        return ap < bp ? 1 : 0;
+    }
+    
+    private static int CompareSubscriptionSynchronization(EventSubscription a, EventSubscription b)
+    {
+        if (a.RunAsync)
+        {
+            return -1;
+        }
+        
+        return b.RunAsync ? 1 : 0;
+    }
+
 
     public void Subscribe(Action<EventSubscriptionBuilder> builderAction)
     {
@@ -85,7 +95,7 @@ public class EventManager : IEventManager
     {
         if (!_subscriptions.ContainsKey(subscription.Name))
         {
-            throw new EventSubscriptionNotFound();
+            throw new EventSubscriptionNotFoundException();
         }
 
         _subscriptions[subscription.Name].Remove(subscription);
@@ -109,7 +119,7 @@ public class EventManager : IEventManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public async Task Raise(string name, EventArgs args, object? sender)
+    public async Task RaiseAsync(string name, EventArgs args, object? sender)
     {
         if (!_subscriptions.ContainsKey(name))
         {
@@ -119,7 +129,7 @@ public class EventManager : IEventManager
         _logger.LogTrace("Attempting to fire event '{Event}'", name);
         
         var tasks = InvokeEventTasks(name, args, sender ?? this);
-        await WaitEventTasks(tasks);
+        await WaitEventTasksAsync(tasks);
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -134,19 +144,19 @@ public class EventManager : IEventManager
                 Task.Run(() =>
                 {
                     _logger.LogTrace("run async");
-                    InvokeTaskMethod(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                    InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
                 });
             }
             else
             {
-                InvokeTaskMethod(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
             }
         }
 
         return tasks;
     }
 
-    private Task InvokeTaskMethod(EventArgs args, object? sender, EventSubscription subscription,
+    private Task InvokeTaskMethodAsync(EventArgs args, object? sender, EventSubscription subscription,
         ConcurrentQueue<(Task, EventSubscription)> tasks)
     {
         try
@@ -169,15 +179,14 @@ public class EventManager : IEventManager
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to execute subscription: {Msg} | Stacktrace: {St}", ex.Message,
-                ex.StackTrace);
+            _logger.LogError(ex, "Failed to execute subscription");
         }
 
         return Task.CompletedTask;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private async Task WaitEventTasks(ConcurrentQueue<(Task, EventSubscription)> tasks)
+    private async Task WaitEventTasksAsync(ConcurrentQueue<(Task, EventSubscription)> tasks)
     {
         while (tasks.TryDequeue(out var result))
         {
@@ -198,8 +207,7 @@ public class EventManager : IEventManager
 
                 if (task.IsFaulted)
                 {
-                    _logger.LogError("Event handler faulted, exception: {Msg} | Stacktrace: {St}",
-                        task.Exception?.InnerException?.Message, task.Exception?.InnerException?.StackTrace);
+                    _logger.LogError(task.Exception?.InnerException, "Event handler faulted");
                 }
             }
         }

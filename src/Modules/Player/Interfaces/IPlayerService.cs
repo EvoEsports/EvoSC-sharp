@@ -10,7 +10,7 @@ public interface IPlayerService
     /// </summary>
     /// <param name="login">Login of the player that just joined.</param>
     /// <returns></returns>
-    public Task UpdateAndGreetPlayer(string login);
+    public Task UpdateAndGreetPlayerAsync(string login);
     
     /// <summary>
     /// Kick a player from the server.

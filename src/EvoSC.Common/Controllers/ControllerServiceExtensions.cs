@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using EvoSC.Common.Interfaces.Controllers;
 using SimpleInjector;
 
 namespace EvoSC.Common.Controllers;

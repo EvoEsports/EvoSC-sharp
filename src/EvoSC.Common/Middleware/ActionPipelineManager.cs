@@ -1,10 +1,12 @@
 ﻿using EvoSC.Common.Interfaces.Middleware;
+using Microsoft.Extensions.Logging;
 using SimpleInjector;
 
 namespace EvoSC.Common.Middleware;
 
 public class ActionPipelineManager : IActionPipelineManager
 {
+    private readonly ILogger<ActionPipelineManager> _logger;
     private readonly Dictionary<PipelineType, IActionPipeline> _mainPipelines = new();
 
     private readonly Dictionary<
@@ -15,8 +17,10 @@ public class ActionPipelineManager : IActionPipelineManager
         >
     > _pipelines = new();
 
-    public ActionPipelineManager()
+    public ActionPipelineManager(ILogger<ActionPipelineManager> logger)
     {
+        _logger = logger;
+        
         RegisterPipelineType(PipelineType.ControllerAction);
         RegisterPipelineType(PipelineType.ChatRouter);
     }
@@ -54,18 +58,26 @@ public class ActionPipelineManager : IActionPipelineManager
 
         var pipelines = _pipelines[pipelineType].Values.ToArray();
 
-        if (pipelines.Length > 0)
+        try
         {
-            var last = pipelines.Last();
-
-            chain = last.Build(chain);
-        
-            for (int i = _pipelines.Count - 2; i >= 0; i--)
+            if (pipelines.Length > 0)
             {
-                chain = pipelines[i].Build(chain);
-            }
-        }
+                var last = pipelines.Last();
 
-        return _mainPipelines[pipelineType].Build(chain);
+                chain = last.Build(chain);
+
+                for (int i = pipelines.Length - 2; i >= 0; i--)
+                {
+                    chain = pipelines[i].Build(chain);
+                }
+            }
+
+            return _mainPipelines[pipelineType].Build(chain);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to build action pipeline for type {Type}", pipelineType);
+            throw;
+        }
     }
 }

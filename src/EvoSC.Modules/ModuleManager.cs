@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Data.Common;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
@@ -8,6 +7,7 @@ using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -20,7 +20,6 @@ using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Exceptions.ModuleServices;
-using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
@@ -35,10 +34,10 @@ public class ModuleManager : IModuleManager
     private readonly ILogger<ModuleManager> _logger;
     private readonly IControllerManager _controllers;
     private readonly IModuleServicesManager _servicesManager;
-    private readonly DbConnection _db;
     private readonly IActionPipelineManager _pipelineManager;
     private readonly IPermissionManager _permissions;
     private readonly IEvoScBaseConfig _config;
+    private readonly IConfigStoreRepository _configStoreRepository;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
     private readonly Dictionary<string, Guid> _moduleNameMap = new();
@@ -46,16 +45,16 @@ public class ModuleManager : IModuleManager
     public IReadOnlyList<IModuleLoadContext> LoadedModules => _loadedModules.Values.ToList();
     
     public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
-        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, DbConnection db,
-        IPermissionManager permissions)
+        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions,
+        IConfigStoreRepository configStoreRepository)
     {
         _logger = logger;
         _config = config;
         _controllers = controllers;
         _servicesManager = servicesManager;
-        _db = db;
         _pipelineManager = pipelineManager;
         _permissions = permissions;
+        _configStoreRepository = configStoreRepository;
         
         WarnForDisabledVerification();
     }
@@ -73,8 +72,8 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await InstallPermissions(moduleContext);
-        await TryCallModuleInstall(moduleContext);
+        await InstallPermissionsAsync(moduleContext);
+        await TryCallModuleInstallAsync(moduleContext);
         
         _logger.LogDebug("Module {Type}({Module}) was installed", moduleContext.MainClass, loadId);
     }
@@ -84,8 +83,8 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await UninstallPermissions(moduleContext);
-        await TryCallModuleUninstall(moduleContext);
+        await UninstallPermissionsAsync(moduleContext);
+        await TryCallModuleUninstallAsync(moduleContext);
         
         _logger.LogDebug("Module {Type}({Module}) was uninstalled", moduleContext.MainClass, loadId);
     }
@@ -136,13 +135,13 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private async Task InstallPermissions(IModuleLoadContext moduleContext)
+    private async Task InstallPermissionsAsync(IModuleLoadContext moduleContext)
     {
         var identifiedPermissions = new List<IPermission>();
         
         foreach (var permission in moduleContext.Permissions)
         {
-            var existingPermission = await _permissions.GetPermission(permission.Name);
+            var existingPermission = await _permissions.GetPermissionAsync(permission.Name);
 
             if (existingPermission != null)
             {
@@ -152,8 +151,8 @@ public class ModuleManager : IModuleManager
             }
 
             _logger.LogDebug("Installing permission: {Name}", permission.Name);
-            await _permissions.AddPermission(permission);
-            var identifiedPermission = await _permissions.GetPermission(permission.Name);
+            await _permissions.AddPermissionAsync(permission);
+            var identifiedPermission = await _permissions.GetPermissionAsync(permission.Name);
 
             if (identifiedPermission == null)
             {
@@ -169,15 +168,15 @@ public class ModuleManager : IModuleManager
         moduleContext.Permissions = identifiedPermissions;
     }
 
-    private async Task UninstallPermissions(IModuleLoadContext moduleContext)
+    private async Task UninstallPermissionsAsync(IModuleLoadContext moduleContext)
     {
         foreach (var permission in moduleContext.Permissions)
         {
-            await _permissions.RemovePermission(permission);
+            await _permissions.RemovePermissionAsync(permission);
         }
     }
 
-    private Task EnableMiddlewares(IModuleLoadContext moduleContext)
+    private Task EnableMiddlewaresAsync(IModuleLoadContext moduleContext)
     {
         _pipelineManager.AddPipeline(PipelineType.ChatRouter, moduleContext.LoadId,
             moduleContext.Pipelines[PipelineType.ChatRouter]);
@@ -187,7 +186,7 @@ public class ModuleManager : IModuleManager
         return Task.CompletedTask;
     }
 
-    private Task DisableMiddlewares(IModuleLoadContext moduleContext)
+    private Task DisableMiddlewaresAsync(IModuleLoadContext moduleContext)
     {
         _pipelineManager.RemovePipeline(PipelineType.ChatRouter, moduleContext.LoadId);
         _pipelineManager.RemovePipeline(PipelineType.ControllerAction, moduleContext.LoadId);
@@ -210,73 +209,78 @@ public class ModuleManager : IModuleManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleEnable(IModuleLoadContext moduleContext)
+    private Task TryCallModuleEnableAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IToggleable instance)
         {
-            return instance.Enable();
+            return instance.EnableAsync();
         }
 
         return Task.CompletedTask;
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleDisable(IModuleLoadContext moduleContext)
+    private Task TryCallModuleDisableAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IToggleable instance)
         {
-            return instance.Disable();
+            return instance.DisableAsync();
         }
 
         return Task.CompletedTask;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleInstall(IModuleLoadContext moduleContext)
+    private Task TryCallModuleInstallAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IInstallable instance)
         {
-            return instance.Install();
+            return instance.InstallAsync();
         }
 
         return Task.CompletedTask;
     }
     
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task TryCallModuleUninstall(IModuleLoadContext moduleContext)
+    private Task TryCallModuleUninstallAsync(IModuleLoadContext moduleContext)
     {
         if (moduleContext.Instance is IInstallable instance)
         {
-            return instance.Uninstall();
+            return instance.UninstallAsync();
         }
 
         return Task.CompletedTask;
     }
 
-    private Task EnableControllers(IModuleLoadContext moduleContext)
+    private Task EnableControllersAsync(IModuleLoadContext moduleContext)
     {
-        foreach (var assembly in moduleContext.Assemblies)
+        try
         {
-            foreach (var module in assembly.Modules)
+            foreach (var assembly in moduleContext.Assemblies)
             {
-                foreach (var type in module.GetTypes())
+                foreach (var type in assembly.AssemblyTypesWithAttribute<ControllerAttribute>())
                 {
                     var controllerAttr = type.GetCustomAttribute<ControllerAttribute>();
 
-                    if (controllerAttr == null || !type.IsControllerClass())
+                    if (controllerAttr == null)
                     {
                         continue;
                     }
-                
+
                     _controllers.AddController(type, moduleContext.LoadId, moduleContext.Services);
                 }
             }
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to add controller");
+            throw;
+        }
 
         return Task.CompletedTask;
     }
 
-    private Task DisableControllers(IModuleLoadContext moduleContext)
+    private Task DisableControllersAsync(IModuleLoadContext moduleContext)
     {
         _controllers.RemoveModuleControllers(moduleContext.LoadId);
         return Task.CompletedTask;
@@ -284,11 +288,11 @@ public class ModuleManager : IModuleManager
 
     private async Task RegisterModuleConfigAsync(IEnumerable<Assembly> assemblies, Container container, IModuleInfo moduleInfo)
     {
-        foreach (var assembly in assemblies)
+        try
         {
-            foreach (var module in assembly.Modules)
+            foreach (var assembly in assemblies)
             {
-                foreach (var type in module.GetTypes())
+                foreach (var type in assembly.AssemblyTypesWithAttribute<SettingsAttribute>())
                 {
                     var configAttr = type.GetCustomAttribute<SettingsAttribute>();
 
@@ -299,26 +303,32 @@ public class ModuleManager : IModuleManager
 
                     if (!type.IsInterface)
                     {
+                        _logger.LogError("Settings type {Type} must be an interface", type);
                         throw new ModuleServicesException($"Settings type {type} must be an interface.");
                     }
 
-                    var store = await CreateModuleConfigStore(moduleInfo.Name, type);
+                    var store = await CreateModuleConfigStoreAsync(moduleInfo.Name, type);
                     var config = CreateConfigInstance(type, store);
 
                     if (config == null)
                     {
+                        _logger.LogError("An instance of the module config {Type} could not be created", type);
                         throw new InvalidOperationException("Failed to create module config instance.");
                     }
-                
+
                     container.RegisterInstance(type, config);
                 }
             }
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to add module config");
+        }
     }
 
-    private async Task<IConfigStore> CreateModuleConfigStore(string name, Type configInterface)
+    private async Task<IConfigStore> CreateModuleConfigStoreAsync(string name, Type configInterface)
     {
-        var dbStore = new DatabaseStore(name, configInterface, _db);
+        var dbStore = new DatabaseStore(name, configInterface, _configStoreRepository);
         await dbStore.SetupDefaultSettingsAsync();
 
         return dbStore;
@@ -462,9 +472,9 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await EnableControllers(moduleContext);
-        await EnableMiddlewares(moduleContext);
-        await TryCallModuleEnable(moduleContext);
+        await EnableControllersAsync(moduleContext);
+        await EnableMiddlewaresAsync(moduleContext);
+        await TryCallModuleEnableAsync(moduleContext);
 
         moduleContext.SetEnabled(true);
         
@@ -476,9 +486,9 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await DisableControllers(moduleContext);
-        await DisableMiddlewares(moduleContext);
-        await TryCallModuleDisable(moduleContext);
+        await DisableControllersAsync(moduleContext);
+        await DisableMiddlewaresAsync(moduleContext);
+        await TryCallModuleDisableAsync(moduleContext);
         
         moduleContext.SetEnabled(false);
         

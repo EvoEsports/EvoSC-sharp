@@ -53,7 +53,6 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
                 RemoveDependent(dependencyGraph, dependent);
 
                 selected = dependent.Key;
-                break;
             }
 
             if (selected != null)
@@ -117,7 +116,7 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
         }
     }
 
-    private void DetectCycle(DependencyGraph dependencies)
+    private static void DetectCycle(DependencyGraph dependencies)
     {
         if (dependencies.Count > 0)
         {

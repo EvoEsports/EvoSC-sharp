@@ -33,7 +33,7 @@ public class EventSubscription : IEquatable<EventSubscription>
     /// </summary>
     public bool IsController { get; init; }
 
-    public bool Equals(EventSubscription? other)
+    public virtual bool Equals(EventSubscription? other)
     {
         if (ReferenceEquals(null, other))
         {

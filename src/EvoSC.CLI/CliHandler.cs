@@ -47,7 +47,7 @@ public class CliHandler
     /// Check user input and run the appropriate commands if possible.
     /// </summary>
     /// <returns></returns>
-    public Task<int> Handle()
+    public Task<int> HandleAsync()
     {
         return _rootCommand.InvokeAsync(_args);
     }
@@ -72,7 +72,7 @@ public class CliHandler
 
         if (cmdAttr == null)
         {
-            throw new CliCommandAttributeNotFound();
+            throw new CliCommandAttributeNotFoundException();
         }
 
         return cmdAttr;

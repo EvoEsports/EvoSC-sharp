@@ -1,9 +1,7 @@
 ﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Events;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using GbxRemoteNet;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;
@@ -28,20 +26,20 @@ public partial class ServerClient : IServerClient
         _connected = false;
         _gbxRemote = new GbxRemoteClient(config.Server.Host, config.Server.Port, logger);
         
-        _gbxRemote.OnDisconnected += OnDisconnected;
+        _gbxRemote.OnDisconnected += OnDisconnectedAsync;
     }
 
-    private async Task OnDisconnected()
+    private async Task OnDisconnectedAsync()
     {
         _connected = false;
-        await ConnectOrShutdown(_app.MainCancellationToken, true);
+        await ConnectOrShutdownAsync(_app.MainCancellationToken, true);
     }
 
     /// <summary>
     /// Try to set up the connection, authenticate and enable callbacks.
     /// </summary>
     /// <returns></returns>
-    private async Task<bool> SetupConnection()
+    private async Task<bool> SetupConnectionAsync()
     {
         if (!await _gbxRemote.ConnectAsync())
         {
@@ -68,7 +66,7 @@ public partial class ServerClient : IServerClient
     /// <param name="cancelToken"></param>
     /// <param name="disconnected"></param>
     /// <exception cref="Exception"></exception>
-    private async Task ConnectOrShutdown(CancellationToken cancelToken, bool disconnected=false)
+    private async Task ConnectOrShutdownAsync(CancellationToken cancelToken, bool disconnected=false)
     {
         try
         {
@@ -76,33 +74,42 @@ public partial class ServerClient : IServerClient
             {
                 if (!disconnected || (disconnected && _config.Server.RetryConnection))
                 {
-                    if (await SetupConnection())
+                    if (await SetupConnectionAsync())
                     {
                         _connected = true;
                         return;
                     }
                 }
 
-                await Task.Delay(1000);
-                
+                await Task.Delay(1000, cancelToken);
+
             } while (!cancelToken.IsCancellationRequested && _config.Server.RetryConnection);
 
-            throw new Exception();
+            throw new ServerDisconnectedException();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
+            if (ex is ServerDisconnectedException serverDisconnectEx)
+            {
+                _logger.LogError(serverDisconnectEx, "Either too many connection attempts were made or the client got disconnected from the server");
+            }
+            else
+            {
+                _logger.LogError(ex, "An error occured while trying to connect to the server");
+            }
+            
             await _app.ShutdownAsync();
         }
     }
     
     public async Task StartAsync(CancellationToken token)
     {
-        await ConnectOrShutdown(token);
+        await ConnectOrShutdownAsync(token);
     }
 
     public async Task StopAsync(CancellationToken token)
     {
-        await _gbxRemote.ChatEnableManualRoutingAsync(false, false);
+        await _gbxRemote.ChatEnableManualRoutingAsync(false);
         await _gbxRemote.DisconnectAsync();
     }
 }

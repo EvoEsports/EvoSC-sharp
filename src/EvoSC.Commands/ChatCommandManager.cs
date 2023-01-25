@@ -2,19 +2,8 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
-using EvoSC.Commands.Parser;
-using EvoSC.Common.Events;
-using EvoSC.Common.Events.Attributes;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Parsing;
-using EvoSC.Common.Remote;
-using EvoSC.Common.TextParsing;
-using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
-using StringReader = EvoSC.Common.TextParsing.ValueReaders.StringReader;
 
 namespace EvoSC.Commands;
 

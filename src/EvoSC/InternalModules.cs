@@ -1,20 +1,21 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Modules;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.Maps;
 using EvoSC.Modules.Official.Player;
+using EvoSC.Modules.Official.PlayerRecords;
 using FluentMigrator.Runner.Exceptions;
 
 namespace EvoSC;
 
 public static class InternalModules
 {
-    public static readonly List<Type> Modules = new()
+    public static readonly Type[] Modules =
     {
         typeof(PlayerModule),
         typeof(ExampleModule),
-        typeof(MapsModule)
+        typeof(MapsModule),
+        typeof(PlayerRecordsModule)
     };
 
     /// <summary>
@@ -41,7 +42,7 @@ public static class InternalModules
     /// Load all internal modules.
     /// </summary>
     /// <param name="modules"></param>
-    public static async Task LoadInternalModules(this IModuleManager modules)
+    public static async Task LoadInternalModulesAsync(this IModuleManager modules)
     {
         foreach (var module in Modules)
         {

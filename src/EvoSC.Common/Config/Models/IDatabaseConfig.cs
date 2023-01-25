@@ -1,6 +1,5 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Config.Net;
-using Tomlet.Attributes;
 
 namespace EvoSC.Common.Config.Models;
 
@@ -11,31 +10,33 @@ public interface IDatabaseConfig
     /// </summary>
     public enum DatabaseType
     {
-        MySql
+        PostgreSql,
+        MySql,
+        SQLite
     }
 
-    [Description("The type of database to use. Available types: MySql")]
-    [Option(Alias = "type", DefaultValue = DatabaseType.MySql)]
+    [Description("The type of database to use. Available types: PostgreSql, MySql, SQLite")]
+    [Option(Alias = "type", DefaultValue = DatabaseType.PostgreSql)]
     public DatabaseType Type { get; }
     
-    [Description("Address to the MySQL database")]
+    [Description("Address to the database")]
     [Option(Alias = "host", DefaultValue = "127.0.0.1")]
     public string Host { get; }
 
-    [Description("Port of the MySQL database")]
-    [Option(Alias = "port", DefaultValue = 3306)]
+    [Description("Port of the database")]
+    [Option(Alias = "port", DefaultValue = 5432)]
     public int Port { get; }
 
     [Description("The name of the database")]
-    [Option(Alias = "name", DefaultValue = "evosc_sharp_dev")]
+    [Option(Alias = "name", DefaultValue = "evosc")]
     public string Name { get; }
 
     [Description("Name of the user to access the database")]
-    [Option(Alias = "username", DefaultValue = "evosc_sharp_dev")]
+    [Option(Alias = "username", DefaultValue = "evosc")]
     public string Username { get; }
 
     [Description("Password of the user to access the database")]
-    [Option(Alias = "password", DefaultValue = "evosc_sharp_dev")]
+    [Option(Alias = "password", DefaultValue = "evosc")]
     public string Password { get; }
 
     [Description("A string prefix to add to all table names")]

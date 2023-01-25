@@ -1,6 +1,5 @@
 ﻿using EvoSC.Commands.Interfaces;
 using EvoSC.Commands.Middleware;
-using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Middleware;
 using SimpleInjector;

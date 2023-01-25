@@ -30,7 +30,7 @@ public class ValueReaderManager : IValueReaderManager
         throw new ArgumentException($"Readers of type {type.Name} doesn't exist");
     }
 
-    public async Task<object> ConvertValue(Type type, string input)
+    public async Task<object> ConvertValueAsync(Type type, string input)
     {
         var readers = GetReaders(type);
 
@@ -38,7 +38,7 @@ public class ValueReaderManager : IValueReaderManager
         {
             try
             {
-                return await reader.Read(type, input);
+                return await reader.ReadAsync(type, input);
             }
             catch (ValueConversionException)
             {
