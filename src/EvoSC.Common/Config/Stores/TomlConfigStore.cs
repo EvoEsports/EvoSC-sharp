@@ -53,8 +53,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
     private TomlDocument BuildSubDocument(TomlDocument document, Type type, string name)
     {
-        var properties = type.GetProperties();
-        foreach (var property in properties)
+        foreach (var property in type.GetProperties())
         {
             if (property.PropertyType.IsInterface)
             {
@@ -68,8 +67,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
                 // get property name
                 var propName = optionAttr?.Alias ?? property.Name;
                 propName = name == "" ? propName : $"{name}.{propName}";
-                
-                Console.WriteLine(propName);
 
                 var tomlValue = optionAttr?.DefaultValue ?? property.PropertyType.GetDefaultTypeValue();
                 if (property.PropertyType == typeof(TextColor))
