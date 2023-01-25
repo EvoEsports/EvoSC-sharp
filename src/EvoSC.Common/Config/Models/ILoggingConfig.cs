@@ -6,7 +6,7 @@ namespace EvoSC.Common.Config.Models;
 public interface ILoggingConfig
 {
     [Description("Possible values lowest to highest verbosity: none, critical, error, warning, information, debug, trace")]
-    [Option(Alias = "logLevel", DefaultValue = "information")]
+    [Option(Alias = "logLevel", DefaultValue = "debug")]
     public string LogLevel { get; }
     
     [Description("Whether to output logs to the console in JSON.")]
