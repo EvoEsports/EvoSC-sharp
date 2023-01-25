@@ -18,21 +18,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     
     public TomlConfigStore(string path)
     {
-        //custom mapper
-        TomletMain.RegisterMapper<TextColor>(
-            //Serializer
-            textColor => new TomlString(textColor.ToString().Substring(1)),
-
-            //Deserializer
-            tomlValue =>
-            {
-                if (!(tomlValue is TomlString tomlString))
-                    //Expected type, actual type, context (type being deserialized)
-                    throw new TomlTypeMismatchException(typeof(TomlString), tomlValue.GetType(), typeof(TextColor));
-
-                return new TextColor(tomlString.Value);
-            });
-
         if (!File.Exists(path))
         {
             string directory = Path.GetDirectoryName(path);
@@ -66,7 +51,8 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
     private TomlDocument BuildSubDocument(TomlDocument document, Type type, string name)
     {
-        foreach (var property in type.GetProperties())
+        var properties = type.GetProperties();
+        foreach (var property in properties)
         {
             if (property.PropertyType.IsInterface)
             {
@@ -80,6 +66,8 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
                 // get property name
                 var propName = optionAttr?.Alias ?? property.Name;
                 propName = name == "" ? propName : $"{name}.{propName}";
+                
+                Console.WriteLine(propName);
 
                 var tomlValue = optionAttr?.DefaultValue ?? property.PropertyType.GetDefaultTypeValue();
                 if (property.PropertyType == typeof(TextColor))
