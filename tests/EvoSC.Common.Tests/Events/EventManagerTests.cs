@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Events;
 
 public class EventManagerTests
 {

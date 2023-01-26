@@ -3,7 +3,7 @@ using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Util;
 
 public class TextFormattingTests
 {

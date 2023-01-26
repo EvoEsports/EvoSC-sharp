@@ -2,7 +2,7 @@
 using GbxRemoteNet.Structs;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Util;
 
 public class UtilTests
 {

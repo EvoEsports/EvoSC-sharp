@@ -4,7 +4,7 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Middleware;
 using Xunit;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Common.Tests.Middleware;
 
 public class MiddlewareTests
 {
