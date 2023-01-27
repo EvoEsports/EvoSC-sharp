@@ -9,7 +9,7 @@ public class DbPlayer : IPlayer
     /// <summary>
     /// Database ID of the player.
     /// </summary>
-    [PrimaryKey]
+    [PrimaryKey, Identity]
     public long Id { get; set; }
     
     /// <summary>

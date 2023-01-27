@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Database;
+﻿using System.IO;
+using EvoSC.Common.Interfaces.Database;
 using LinqToDB.Configuration;
 using LinqToDB.Data;
 
@@ -6,9 +7,21 @@ namespace EvoSC.Common.Tests.Database;
 
 public class TestDbConnectionFactory : IDbConnectionFactory
 {
-    private const string ConnectionString = "Data Source=:memory:;Version=3;New=True;";
-
     private DataConnection? _dbConnection;
+    private readonly string _connectionString;
+
+    public string ConnectionString => _connectionString;
+
+    public TestDbConnectionFactory(string identifier)
+    {
+        var filePath = Path.GetFullPath(identifier);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+        
+        _connectionString = $"Data Source={identifier};";
+    }
     
     public DataConnection GetConnection()
     {
