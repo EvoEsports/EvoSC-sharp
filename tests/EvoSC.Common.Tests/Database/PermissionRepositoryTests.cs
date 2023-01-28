@@ -21,19 +21,6 @@ public class PermissionRepositoryTests
         return (new PermissionRepository(factory, LoggerSetup.CreateLogger<PermissionRepository>()), factory);
     }
 
-    private static async Task<IPlayer> AddTestPlayer(IDbConnectionFactory factory, string accountId)
-    {
-        var playerRepo = new PlayerRepository(factory);
-        
-        return await playerRepo.AddPlayerAsync(accountId, new TmPlayerDetailedInfo
-        {
-            NickName = "TestAccount",
-            Path = "World"
-        });
-    }
-
-    private static Task<IPlayer> AddTestPlayer(IDbConnectionFactory factory) => AddTestPlayer(factory, "TestAccountId");
-    
     [Fact]
     public async Task Permission_Added()
     {
@@ -83,7 +70,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = await AddTestPlayer(dbFactory);
+        var player = await TestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group {Title = "My Group", Description = "My group description."});
 
         var permsToAdd = new IPermission[]
@@ -145,7 +132,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
         
-        var player = await AddTestPlayer(dbFactory);
+        var player = await TestHelper.AddTestPlayer(dbFactory);
         var group1 = await repo.AddGroupAsync(new Group {Title = "MyGroup 1", Description = "MyGroup 1 description."});
         var group2 = await repo.AddGroupAsync(new Group {Title = "MyGroup 2", Description = "MyGroup 2 description."});
         var group3 = await repo.AddGroupAsync(new Group {Title = "MyGroup 3", Description = "MyGroup 3 description."});
@@ -234,7 +221,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = AddTestPlayer(dbFactory);
+        var player = TestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group
         {
             Title = "MyGroup",
@@ -299,7 +286,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = await AddTestPlayer(dbFactory);
+        var player = await TestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
 
         await repo.AddPlayerToGroupAsync(player.Id, group.Id);
@@ -315,7 +302,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = await AddTestPlayer(dbFactory);
+        var player = await TestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
 
         await repo.AddPlayerToGroupAsync(player.Id, group.Id);
