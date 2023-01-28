@@ -16,7 +16,7 @@ public class PlayerRepositoryTests
     [Fact]
     public async Task Player_Added_To_Database()
     {
-        var factory = TestDbSetup.CreateFullDb("PlayerRepositoryTests_PlayerAdded");
+        var factory = TestDbSetup.CreateFullDb();
         var db = factory.GetConnection();
         var playerRepo = new PlayerRepository(factory);
 
@@ -37,7 +37,7 @@ public class PlayerRepositoryTests
     [Fact]
     public void Player_With_Same_Account_ID_Fails()
     {
-        var factory = TestDbSetup.CreateFullDb("PlayerRepositoryTests_DoublePlayerAdded");
+        var factory = TestDbSetup.CreateFullDb();
         var playerRepo = new PlayerRepository(factory);
 
         Assert.Throws<System.Data.SQLite.SQLiteException>(() =>
@@ -59,7 +59,7 @@ public class PlayerRepositoryTests
     [Fact]
     public async Task Get_Player_By_Account_ID_Returns_Correct()
     {
-        var factory = TestDbSetup.CreateFullDb("PlayerRepositoryTests_GetPlayerByAccount");
+        var factory = TestDbSetup.CreateFullDb();
         var playerRepo = new PlayerRepository(factory);
 
         await playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
@@ -76,7 +76,7 @@ public class PlayerRepositoryTests
     [Fact]
     public async Task Player_Last_Visit_Updated()
     {
-        var factory = TestDbSetup.CreateFullDb("PlayerRepositoryTests_GetPlayerByAccount");
+        var factory = TestDbSetup.CreateFullDb();
         var db = factory.GetConnection();
         var playerRepo = new PlayerRepository(factory);
 

@@ -40,7 +40,13 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         )
         .ToArrayAsync();
 
-    public Task RemovePermissionAsync(IPermission permission) => Database.DeleteAsync(new DbPermission(permission));
+    public async Task RemovePermissionAsync(IPermission permission)
+    {
+        await Database.DeleteAsync(new DbPermission(permission));
+        await Table<DbGroupPermission>()
+            .Where(gp => gp.PermissionId == permission.Id)
+            .DeleteAsync();
+    }
 
     public async Task<IEnumerable<IGroup>> GetGroupsAsync(long playerId) => await
         (
