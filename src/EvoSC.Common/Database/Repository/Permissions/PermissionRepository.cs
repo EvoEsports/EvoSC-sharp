@@ -42,10 +42,21 @@ public class PermissionRepository : DbRepository, IPermissionRepository
 
     public async Task RemovePermissionAsync(IPermission permission)
     {
-        await Database.DeleteAsync(new DbPermission(permission));
-        await Table<DbGroupPermission>()
-            .Where(gp => gp.PermissionId == permission.Id)
-            .DeleteAsync();
+        await using var transaction = await Database.BeginTransactionAsync();
+        try
+        {
+            await Database.DeleteAsync(new DbPermission(permission));
+            await Table<DbGroupPermission>()
+                .Where(gp => gp.PermissionId == permission.Id)
+                .DeleteAsync();
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to remove permission");
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<IEnumerable<IGroup>> GetGroupsAsync(long playerId) => await
@@ -74,7 +85,8 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         {
             await Table<DbGroupPermission>().DeleteAsync(t => t.GroupId == group.Id);
             await Table<DbUserGroup>().DeleteAsync(t => t.GroupId == group.Id);
-            await Table<DbGroupPermission>().DeleteAsync(t => t.GroupId == group.Id);
+            await Table<DbGroup>().DeleteAsync(t => t.Id == group.Id); 
+            await transaction.CommitAsync();
         }
         catch (Exception ex)
         {

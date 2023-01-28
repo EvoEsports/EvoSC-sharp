@@ -120,7 +120,7 @@ public class PermissionRepositoryTests
     }
 
     [Fact]
-    public async Task Permission_Properly_Removed()
+    public async Task Permission_Removed_And_Cleaned_From_Database()
     {
         var (repo, dbFactory) = CreateNewRepository();
         
@@ -138,5 +138,250 @@ public class PermissionRepositoryTests
         
         Assert.Null(existingPerm);
         Assert.Null(existingRef);
+    }
+
+    [Fact]
+    public async Task Get_All_Player_Groups()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+        
+        var player = await AddTestPlayer(dbFactory);
+        var group1 = await repo.AddGroupAsync(new Group {Title = "MyGroup 1", Description = "MyGroup 1 description."});
+        var group2 = await repo.AddGroupAsync(new Group {Title = "MyGroup 2", Description = "MyGroup 2 description."});
+        var group3 = await repo.AddGroupAsync(new Group {Title = "MyGroup 3", Description = "MyGroup 3 description."});
+
+        await repo.AddPlayerToGroupAsync(player.Id, group1.Id);
+        await repo.AddPlayerToGroupAsync(player.Id, group2.Id);
+        await repo.AddPlayerToGroupAsync(player.Id, group3.Id);
+
+        var playerGroups = await repo.GetGroupsAsync(player.Id);
+
+        var playerGroup1 = playerGroups.FirstOrDefault(g => g.Id == group1.Id);
+        Assert.NotNull(playerGroup1);
+        Assert.Equal("MyGroup 1", playerGroup1.Title);
+        Assert.Equal("MyGroup 1 description.", playerGroup1.Description);
+        
+        var playerGroup2 = playerGroups.FirstOrDefault(g => g.Id == group2.Id);
+        Assert.NotNull(playerGroup2);
+        Assert.Equal("MyGroup 2", playerGroup2.Title);
+        Assert.Equal("MyGroup 2 description.", playerGroup2.Description);
+        
+        var playerGroup3 = playerGroups.FirstOrDefault(g => g.Id == group3.Id);
+        Assert.NotNull(playerGroup3);
+        Assert.Equal("MyGroup 3", playerGroup3.Title);
+        Assert.Equal("MyGroup 3 description.", playerGroup3.Description);
+    }
+
+    [Fact]
+    public async Task Group_Added()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+
+        await repo.AddGroupAsync(new Group
+        {
+            Title = "MyGroup",
+            Description = "MyGroup description.",
+            Icon = "A",
+            Color = "aaa",
+            Unrestricted = true
+        });
+
+        var group = await dbFactory.GetConnection().GetTable<DbGroup>().FirstOrDefaultAsync();
+        
+        Assert.NotNull(group);
+        Assert.Equal("MyGroup", group.Title);
+        Assert.Equal("MyGroup description.", group.Description);
+        Assert.Equal("A", group.Icon);
+        Assert.Equal("aaa", group.Color);
+        Assert.True(group.Unrestricted);
+        Assert.NotEqual(0, group.Id);
+    }
+
+    [Fact]
+    public async Task Group_Details_Updated()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+
+        var group = await repo.AddGroupAsync(new Group
+        {
+            Title = "MyGroup",
+            Description = "MyGroup description.",
+            Icon = "A",
+            Color = "aaa",
+            Unrestricted = false
+        });
+
+        group.Title = "MyUpdatedGroup";
+        group.Description = "MyUpdatedGroup description.";
+        group.Icon = "b";
+        group.Color = "bbb";
+        group.Unrestricted = true;
+
+        await repo.UpdateGroupAsync(group);
+        
+        var updatedGroup = await dbFactory.GetConnection().GetTable<DbGroup>().FirstOrDefaultAsync();
+        
+        Assert.NotNull(updatedGroup);
+        Assert.Equal("MyUpdatedGroup", updatedGroup.Title);
+        Assert.Equal("MyUpdatedGroup description.", updatedGroup.Description);
+        Assert.Equal("b", updatedGroup.Icon);
+        Assert.Equal("bbb", updatedGroup.Color);
+        Assert.True(updatedGroup.Unrestricted);
+    }
+
+    [Fact]
+    public async Task Group_Removed_And_Cleaned_From_Database()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+
+        var player = AddTestPlayer(dbFactory);
+        var group = await repo.AddGroupAsync(new Group
+        {
+            Title = "MyGroup",
+            Description = "MyGroup description.",
+            Icon = "A",
+            Color = "aaa",
+            Unrestricted = false
+        });
+
+        var permission = await repo.AddPermissionAsync(new Permission
+        {
+            Name = "MyPermission", Description = "MyPermission description."
+        });
+
+        await repo.AddPermissionToGroupAsync(group.Id, permission.Id);
+        await repo.AddPlayerToGroupAsync(player.Id, group.Id);
+
+        await repo.RemoveGroupAsync(group);
+
+        var removedGroup = await dbFactory.GetConnection().GetTable<DbGroup>()
+            .FirstOrDefaultAsync(g => g.Id == group.Id);
+        
+        Assert.Null(removedGroup);
+
+        var removedGroupPermission = await dbFactory.GetConnection().GetTable<DbGroupPermission>()
+            .FirstOrDefaultAsync(gp => gp.PermissionId == permission.Id);
+
+        Assert.Null(removedGroupPermission);
+        
+        var removedUserGroup = await dbFactory.GetConnection().GetTable<DbUserGroup>()
+            .FirstOrDefaultAsync(ug => ug.GroupId == group.Id); 
+        
+        Assert.Null(removedUserGroup);
+    }
+
+    [Fact]
+    public async Task GetGroupAsync_Returns_Correct_Info()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+
+        var addedGroup = await repo.AddGroupAsync(new Group
+        {
+            Title = "MyGroup",
+            Description = "MyGroup description.",
+            Icon = "A",
+            Color = "aaa",
+            Unrestricted = true
+        });
+
+        var group = await repo.GetGroupAsync(addedGroup.Id);
+        
+        Assert.NotNull(group);
+        Assert.Equal("MyGroup", group.Title);
+        Assert.Equal("MyGroup description.", group.Description);
+        Assert.Equal("A", group.Icon);
+        Assert.Equal("aaa", group.Color);
+        Assert.True(group.Unrestricted);
+    }
+
+    [Fact]
+    public async Task Player_Added_To_Group()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+
+        var player = await AddTestPlayer(dbFactory);
+        var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
+
+        await repo.AddPlayerToGroupAsync(player.Id, group.Id);
+
+        var userGroup = await dbFactory.GetConnection().GetTable<DbUserGroup>()
+            .FirstOrDefaultAsync(r => r.UserId == player.Id && r.GroupId == group.Id);
+        
+        Assert.NotNull(userGroup);
+    }
+
+    [Fact]
+    public async Task Player_Removed_From_Group()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+
+        var player = await AddTestPlayer(dbFactory);
+        var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
+
+        await repo.AddPlayerToGroupAsync(player.Id, group.Id);
+        await repo.RemovePlayerFromGroupAsync(player.Id, group.Id);
+
+        var userGroup = await dbFactory.GetConnection().GetTable<DbUserGroup>()
+            .FirstOrDefaultAsync(r => r.UserId == player.Id && r.GroupId == group.Id);
+        
+        Assert.Null(userGroup);
+    }
+
+    [Fact]
+    public async Task Permission_Added_To_Group()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+        
+        var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
+        var permission = await repo.AddPermissionAsync(new Permission
+        {
+            Name = "MyPermission", Description = "MyPermission description."
+        });
+
+        await repo.AddPermissionToGroupAsync(group.Id, permission.Id);
+
+        var groupPermission = await dbFactory.GetConnection().GetTable<DbGroupPermission>()
+            .FirstOrDefaultAsync(r => r.GroupId == group.Id && r.PermissionId == permission.Id);
+        
+        Assert.NotNull(groupPermission);
+    }
+
+    [Fact]
+    public async Task Permission_Removed_From_Group()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+        
+        var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
+        var permission = await repo.AddPermissionAsync(new Permission
+        {
+            Name = "MyPermission", Description = "MyPermission description."
+        });
+
+        await repo.AddPermissionToGroupAsync(group.Id, permission.Id);
+        await repo.RemovePermissionFromGroupAsync(group.Id, permission.Id);
+
+        var groupPermission = await dbFactory.GetConnection().GetTable<DbGroupPermission>()
+            .FirstOrDefaultAsync(r => r.GroupId == group.Id && r.PermissionId == permission.Id);
+        
+        Assert.Null(groupPermission);
+    }
+
+    [Fact]
+    public async Task All_Group_Permissions_Cleared()
+    {
+        var (repo, dbFactory) = CreateNewRepository();
+        
+        var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
+
+        await repo.AddPermissionAsync(new Permission {Name = "P1", Description = "P1 Description."});
+        await repo.AddPermissionAsync(new Permission {Name = "P2", Description = "P2 Description."});
+        await repo.AddPermissionAsync(new Permission {Name = "P3", Description = "P3 Description."});
+
+        await repo.ClearGroupPermissionsAsync(group.Id);
+
+        var permissions = await dbFactory.GetConnection().GetTable<DbGroupPermission>()
+            .Where(r => r.GroupId == group.Id).ToListAsync();
+        
+        Assert.Empty(permissions);
     }
 }
