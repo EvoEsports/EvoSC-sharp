@@ -77,7 +77,6 @@ public class MapRepository : DbRepository, IMapRepository
         await using var transaction = await Database.BeginTransactionAsync();
         try
         {
-            // await Database.UpdateAsync(updatedMap);
             await Table<DbMap>()
                 .Where(m => m.Id == updatedMap.Id)
                 .Set(m => m.Uid, updatedMap.Uid)
