@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Database.Migrations;
+﻿using System;
+using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Interfaces.Database;
 
 namespace EvoSC.Common.Tests.Database.Setup;
@@ -18,4 +19,6 @@ public static class TestDbSetup
 
         return factory;
     }
+
+    public static IDbConnectionFactory CreateFullDb() => CreateFullDb(Guid.NewGuid().ToString());
 }

@@ -17,7 +17,12 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         _logger = logger;
     }
 
-    public Task AddPermissionAsync(IPermission permission) => Database.InsertAsync(new DbPermission(permission));
+    public async Task<IPermission> AddPermissionAsync(IPermission permission)
+    {
+        var id = await Database.InsertWithIdentityAsync(new DbPermission(permission));
+        var dbPerm = new DbPermission(permission) {Id = Convert.ToInt32(id)};
+        return dbPerm;
+    }
 
     public Task UpdatePermissionAsync(IPermission permission) => Database.UpdateAsync(new DbPermission(permission));
 
@@ -46,7 +51,13 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         )
         .ToArrayAsync();
 
-    public Task AddGroupAsync(IGroup group) => Database.InsertAsync(new DbGroup(group));
+    public async Task<IGroup> AddGroupAsync(IGroup group)
+    {
+        var id = await Database.InsertWithIdentityAsync(new DbGroup(group));
+        var dbGroup = new DbGroup(group) {Id = Convert.ToInt32(id)};
+
+        return dbGroup;
+    }
 
     public Task UpdateGroupAsync(IGroup group) => Database.UpdateAsync(new DbGroup(group));
 

@@ -60,7 +60,6 @@ public class PlayerRepositoryTests
     public async Task Get_Player_By_Account_ID_Returns_Correct()
     {
         var factory = TestDbSetup.CreateFullDb("PlayerRepositoryTests_GetPlayerByAccount");
-        var db = factory.GetConnection();
         var playerRepo = new PlayerRepository(factory);
 
         await playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
