@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
-using FluentMigrator;
 using FluentMigrator.Runner;
-using FluentMigrator.Runner.BatchParser;
-using FluentMigrator.Runner.Generators.SQLite;
-using FluentMigrator.Runner.Processors.SQLite;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Common.Tests.Database;
 
 public static class TestDbMigrations
 {
+    /// <summary>
+    /// Run all migrations from an assembly.
+    /// </summary>
+    /// <param name="connectionString"></param>
+    /// <param name="asm"></param>
     public static void MigrateFromAssembly(string connectionString, Assembly asm)
     {
         var services = new ServiceCollection();
