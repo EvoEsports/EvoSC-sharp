@@ -4,7 +4,7 @@ namespace EvoSC.Common.Interfaces.Database.Repository;
 
 public interface IPermissionRepository
 {
-    public Task AddPermissionAsync(IPermission permission);
+    public Task<IPermission> AddPermissionAsync(IPermission permission);
 
     public Task UpdatePermissionAsync(IPermission permission);
 
@@ -16,7 +16,7 @@ public interface IPermissionRepository
 
     public Task<IEnumerable<IGroup>> GetGroupsAsync(long playerId);
 
-    public Task AddGroupAsync(IGroup group);
+    public Task<IGroup> AddGroupAsync(IGroup group);
 
     public Task UpdateGroupAsync(IGroup group);
 

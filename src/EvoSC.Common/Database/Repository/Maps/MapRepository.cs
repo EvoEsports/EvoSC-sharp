@@ -46,8 +46,9 @@ public class MapRepository : DbRepository, IMapRepository
         await using var transaction = await Database.BeginTransactionAsync();
         try
         {
-            await Database.InsertAsync(dbMap);
+            var id = await Database.InsertWithIdentityAsync(dbMap);
             await transaction.CommitAsync();
+            dbMap.Id = (long)id;
         }
         catch (Exception ex)
         {
@@ -67,14 +68,25 @@ public class MapRepository : DbRepository, IMapRepository
             Uid = map.MapUid,
             Enabled = true,
             Name = map.MapName,
+            ExternalId = map.ExternalId,
             ExternalVersion = map.ExternalVersion,
+            ExternalMapProvider = map.ExternalMapProvider,
             UpdatedAt = DateTime.Now
         };
 
         await using var transaction = await Database.BeginTransactionAsync();
         try
         {
-            await Database.UpdateAsync(updatedMap);
+            await Table<DbMap>()
+                .Where(m => m.Id == updatedMap.Id)
+                .Set(m => m.Uid, updatedMap.Uid)
+                .Set(m => m.Enabled, updatedMap.Enabled)
+                .Set(m => m.Name, updatedMap.Name)
+                .Set(m => m.ExternalId, updatedMap.ExternalId)
+                .Set(m => m.ExternalVersion, updatedMap.ExternalVersion)
+                .Set(m => m.ExternalMapProvider, updatedMap.ExternalMapProvider)
+                .Set(m => m.UpdatedAt, updatedMap.UpdatedAt)
+                .UpdateAsync();
             await transaction.CommitAsync();
         }
         catch (Exception e)
@@ -84,7 +96,7 @@ public class MapRepository : DbRepository, IMapRepository
             throw;
         }
 
-        return new Map(updatedMap) ;
+        return new Map(updatedMap);
     }
 
     public Task RemoveMapAsync(long id) => 

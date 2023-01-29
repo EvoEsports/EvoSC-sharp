@@ -30,7 +30,9 @@ public class PlayerRepository : DbRepository, IPlayerRepository
             Zone = playerInfo?.Path ?? "World"
         };
 
-        await Database.InsertAsync(player);
+        var id = await Database.InsertWithIdentityAsync(player);
+        player.Id = (long)id;
+
         return player;
     }
 

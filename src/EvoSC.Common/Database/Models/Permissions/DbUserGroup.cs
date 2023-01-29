@@ -6,7 +6,7 @@ namespace EvoSC.Common.Database.Models.Permissions;
 [Table("UserGroups")]
 public class DbUserGroup
 {
-    [PrimaryKey, Identity]
+    [Column]
     public long UserId { get; set; }
     
     [Column]
