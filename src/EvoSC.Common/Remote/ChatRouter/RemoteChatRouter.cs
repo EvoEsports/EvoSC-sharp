@@ -40,8 +40,6 @@ public class RemoteChatRouter : IRemoteChatRouter
     {
         try
         {
-            var sw = new Stopwatch();
-            sw.Start();
             var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
             var player = await _players.GetOnlinePlayerAsync(accountId);
 
@@ -74,9 +72,6 @@ public class RemoteChatRouter : IRemoteChatRouter
                 MessageText = e.Text
             });
             
-            sw.Stop();
-            _logger.LogDebug("Chat router took: {Time} ms", sw.ElapsedMilliseconds);
-
             _logger.LogInformation("[{Name}]: {Msg}", player.StrippedNickName, e.Text);
         }
         catch (PlayerNotFoundException ex)
