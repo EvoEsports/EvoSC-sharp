@@ -16,7 +16,7 @@ public class MatchSettingsService : IMatchSettingsService
         _server = server;
     }
     
-    public async Task SetModeScriptSettingsAsync(Action<DynamicObject> settingsAction)
+    public async Task SetScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
     {
         var settings = await _server.Remote.GetModeScriptSettingsAsync();
 
@@ -28,4 +28,7 @@ public class MatchSettingsService : IMatchSettingsService
         settingsAction(settings);
         await _server.Remote.SetModeScriptSettingsAsync(settings);
     }
+
+    public async Task<Dictionary<string, object>?> GetScriptSettingsAsync() =>
+        await _server.Remote.GetModeScriptSettingsAsync();
 }
