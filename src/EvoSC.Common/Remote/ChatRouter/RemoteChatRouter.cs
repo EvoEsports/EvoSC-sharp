@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Exceptions.PlayerExceptions;
+﻿using System.Diagnostics;
+using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;
@@ -39,6 +40,8 @@ public class RemoteChatRouter : IRemoteChatRouter
     {
         try
         {
+            var sw = new Stopwatch();
+            sw.Start();
             var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
             var player = await _players.GetOnlinePlayerAsync(accountId);
 
@@ -52,15 +55,18 @@ public class RemoteChatRouter : IRemoteChatRouter
             {
                 if (context is ChatRouterPipelineContext {ForwardMessage: true} chatContext)
                 {
-                    await _server.SendChatMessageAsync(new TextFormatter()
-                        .AddText("[")
-                        .AddText(text => text.AsIsolated().AddText(player.NickName))
-                        .AddText("] ")
-                        .AddText(text => text.AsIsolated().AddText(chatContext.MessageText))
-                    );
+                    Task.Run(async () =>
+                    {
+                        await _server.SendChatMessageAsync(new TextFormatter()
+                            .AddText("[")
+                            .AddText(text => text.AsIsolated().AddText(player.NickName))
+                            .AddText("] ")
+                            .AddText(text => text.AsIsolated().AddText(chatContext.MessageText))
+                        );
+                    });
                 }
             });
-
+            
             await pipelineChain(new ChatRouterPipelineContext
             {
                 ForwardMessage = true,
@@ -68,6 +74,9 @@ public class RemoteChatRouter : IRemoteChatRouter
                 MessageText = e.Text
             });
             
+            sw.Stop();
+            _logger.LogDebug("Chat router took: {Time} ms", sw.ElapsedMilliseconds);
+
             _logger.LogInformation("[{Name}]: {Msg}", player.StrippedNickName, e.Text);
         }
         catch (PlayerNotFoundException ex)

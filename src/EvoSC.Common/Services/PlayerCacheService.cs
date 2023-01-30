@@ -1,0 +1,246 @@
+﻿using System.Collections.Concurrent;
+using EvoSC.Common.Events;
+using EvoSC.Common.Exceptions.PlayerExceptions;
+using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Database.Repository;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Models.Players;
+using EvoSC.Common.Remote;
+using EvoSC.Common.Util;
+using GbxRemoteNet;
+using GbxRemoteNet.Events;
+using GbxRemoteNet.Structs;
+using GbxRemoteNet.XmlRpc;
+using Microsoft.Extensions.Logging;
+
+namespace EvoSC.Common.Services;
+
+public class PlayerCacheService : IPlayerCacheService
+{
+    private readonly IServerClient _server;
+    private readonly ILogger<PlayerCacheService> _logger;
+    private readonly IPlayerRepository _playerRepository;
+    
+    
+    private readonly Dictionary<string, IOnlinePlayer> _onlinePlayers = new();
+    private readonly object _onlinePlayersMutex = new();
+
+    public IEnumerable<IOnlinePlayer> OnlinePlayers
+    {
+        get
+        {
+            lock (_onlinePlayersMutex)
+            {
+                return _onlinePlayers.Values;
+            }
+        }
+    }
+
+    public PlayerCacheService(IEventManager events, IServerClient server, ILogger<PlayerCacheService> logger, IPlayerRepository playerRepository)
+    {
+        _server = server;
+        _logger = logger;
+        _playerRepository = playerRepository;
+        
+        SetupEvents(events);
+    }
+
+    private void SetupEvents(IEventManager events)
+    {
+        events.Subscribe(s => s
+            .WithEvent(GbxRemoteEvent.PlayerConnect)
+            .WithInstance(this)
+            .WithInstanceClass<PlayerCacheService>()
+            .WithHandlerMethod<PlayerConnectEventArgs>(OnPlayerConnect)
+            .WithPriority(EventPriority.High)
+            .AsAsync()
+        );
+        
+        events.Subscribe(s => s
+            .WithEvent(GbxRemoteEvent.PlayerDisconnect)
+            .WithInstance(this)
+            .WithInstanceClass<PlayerCacheService>()
+            .WithHandlerMethod<PlayerDisconnectEventArgs>(OnPlayerDisconnect)
+            .WithPriority(EventPriority.High)
+            .AsAsync()
+        );
+        
+        events.Subscribe(s => s
+            .WithEvent(GbxRemoteEvent.PlayerInfoChanged)
+            .WithInstance(this)
+            .WithInstanceClass<PlayerCacheService>()
+            .WithHandlerMethod<PlayerInfoChangedEventArgs>(OnPlayerInfoChanged)
+            .WithPriority(EventPriority.High)
+            .AsAsync()
+        );
+
+        _server.Remote.OnConnected += OnServerConnected;
+    }
+
+    private async Task OnServerConnected()
+    {
+        try
+        {
+            await UpdatePlayerListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to update player list cache");
+            throw;
+        }
+    }
+
+    private async Task OnPlayerInfoChanged(object sender, PlayerInfoChangedEventArgs e)
+    {
+        var accountId = PlayerUtils.ConvertLoginToAccountId(e.PlayerInfo.Login);
+        await ForceUpdatePlayerAsync(accountId);
+    }
+
+    private Task OnPlayerDisconnect(object sender, PlayerDisconnectEventArgs e)
+    {
+        var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
+
+        lock (_onlinePlayersMutex)
+        {
+            if (_onlinePlayers.ContainsKey(accountId))
+            {
+                _onlinePlayers.Remove(accountId);
+            }
+        }
+        
+        return Task.CompletedTask;
+    }
+
+    private async Task OnPlayerConnect(object sender, PlayerConnectEventArgs e)
+    {
+        try
+        {
+            var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
+            await ForceUpdatePlayerAsync(accountId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to cache player");
+        }
+    }
+
+    private async Task ForceUpdatePlayerAsync(string accountId)
+    {
+        var player = await GetOnlinePlayerCachedAsync(accountId, true);
+
+        if (player == null)
+        {
+            throw new InvalidOperationException("Tried to get online player, but the player object is null");
+        }
+
+        lock (_onlinePlayersMutex)
+        {
+            _onlinePlayers[accountId] = player;
+        }
+    }
+
+    public Task<IOnlinePlayer?> GetOnlinePlayerCachedAsync(string accountId) => GetOnlinePlayerCachedAsync(accountId, false);
+
+    public async Task<IOnlinePlayer?> GetOnlinePlayerCachedAsync(string accountId, bool forceUpdate)
+    {
+        lock (_onlinePlayersMutex)
+        {
+            if (!forceUpdate && _onlinePlayers.ContainsKey(accountId))
+            {
+                return _onlinePlayers[accountId];
+            }
+        }
+        
+        var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
+
+        // get all info about the online player
+        var result = await _server.Remote.MultiCallAsync(new MultiCall()
+            .Add(nameof(GbxRemoteClient.GetPlayerInfoAsync), playerLogin)
+            .Add(nameof(GbxRemoteClient.GetDetailedPlayerInfoAsync), playerLogin)
+        );
+
+        var onlinePlayerInfo = GbxRemoteUtils.DynamicToType<TmPlayerInfo>(result[0]);
+        var onlinePlayerDetails = GbxRemoteUtils.DynamicToType<TmPlayerDetailedInfo>(result[1]);
+        
+        if (onlinePlayerDetails == null || onlinePlayerInfo == null)
+        {
+            throw new PlayerNotFoundException(accountId, $"Cannot find online player: {accountId}");
+        }
+
+        // get the player from the database or create if they don't exist
+        var player = await GetOrCreatePlayerAsync(accountId, onlinePlayerDetails);
+
+        if (player == null)
+        {
+            throw new PlayerNotFoundException(accountId, "Failed to fetch or create player in the database.");
+        }
+
+        return new OnlinePlayer(player)
+        {
+            State = onlinePlayerDetails.GetState(),
+            Flags = onlinePlayerInfo.GetFlags()
+        };
+    }
+
+    private async Task<IPlayer> GetOrCreatePlayerAsync(string accountId, TmPlayerDetailedInfo onlinePlayerDetails)
+    {
+        var player = await _playerRepository.GetPlayerByAccountIdAsync(accountId) ??
+                     await _playerRepository.AddPlayerAsync(accountId, onlinePlayerDetails);
+        return player;
+    }
+
+    public async Task UpdatePlayerListAsync()
+    {
+        var onlinePlayers = await _server.Remote.GetPlayerListAsync();
+
+        var multiCall = new MultiCall();
+
+        foreach (var player in onlinePlayers)
+        {
+            if (player.IsServer())
+            {
+                continue;
+            }
+            
+            multiCall.Add(nameof(GbxRemoteClient.GetPlayerInfoAsync), player.Login)
+                .Add(nameof(GbxRemoteClient.GetDetailedPlayerInfoAsync), player.Login);
+        }
+
+        var callResult = await _server.Remote.MultiCallAsync(multiCall);
+
+        if (callResult.Length < (onlinePlayers.Length-1) * 2)
+        {
+            throw new InvalidOperationException(
+                $"Missing player information. {callResult.Length / 2} results returned but need {onlinePlayers.Length - 1}.");
+        }
+
+        for (var i = 0; i < callResult.Length; i += 2)
+        {
+            var onlinePlayerInfo = GbxRemoteUtils.DynamicToType<TmPlayerInfo>(callResult[i]);
+            var onlinePlayerDetails = GbxRemoteUtils.DynamicToType<TmPlayerDetailedInfo>(callResult[i + 1]);
+
+            var accountId = PlayerUtils.ConvertLoginToAccountId(onlinePlayerInfo.Login);
+            
+            var player = await GetOrCreatePlayerAsync(accountId, onlinePlayerDetails);
+            
+            if (player == null)
+            {
+                throw new PlayerNotFoundException(accountId, "Failed to fetch or create player in the database.");
+            }
+            
+            var onlinePlayer = new OnlinePlayer(player)
+            {
+                State = onlinePlayerDetails.GetState(),
+                Flags = onlinePlayerInfo.GetFlags()
+            };
+
+            lock (_onlinePlayersMutex)
+            {
+                _onlinePlayers[accountId] = onlinePlayer;
+            }
+            
+            _logger.LogDebug("Cached online player '{AccountId}'", accountId);
+        }
+    }
+}
