@@ -19,9 +19,11 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IPermissionManager _permissions;
     private readonly IPermissionRepository _permRepo;
     private readonly IMapRepository _mapRepo;
+    private readonly IMatchSettingsService _matchSettings;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
-        IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo, IMapRepository mapRepo)
+        IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo,
+        IMapRepository mapRepo, IMatchSettingsService matchSettings)
     {
         _settings = settings;
         _server = server;
@@ -29,6 +31,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         _permissions = permissions;
         _permRepo = permRepo;
         _mapRepo = mapRepo;
+        _matchSettings = matchSettings;
     }
 
     [ChatCommand("hey", "Say hey!")]
@@ -59,6 +62,9 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        //throw new Exception("something happened!");
+        await _matchSettings.SetModeScriptSettingsAsync(settings =>
+        {
+            settings["S_TimeLimit"] = 1000;
+        });
     }
 }
