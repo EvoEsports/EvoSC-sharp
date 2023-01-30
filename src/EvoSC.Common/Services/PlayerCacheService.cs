@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using EvoSC.Common.Events;
+﻿using EvoSC.Common.Events;
 using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -11,7 +10,6 @@ using EvoSC.Common.Util;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
 using GbxRemoteNet.Structs;
-using GbxRemoteNet.XmlRpc;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
@@ -52,7 +50,7 @@ public class PlayerCacheService : IPlayerCacheService
             .WithEvent(GbxRemoteEvent.PlayerConnect)
             .WithInstance(this)
             .WithInstanceClass<PlayerCacheService>()
-            .WithHandlerMethod<PlayerConnectEventArgs>(OnPlayerConnect)
+            .WithHandlerMethod<PlayerConnectEventArgs>(OnPlayerConnectAsync)
             .WithPriority(EventPriority.High)
             .AsAsync()
         );
@@ -61,7 +59,7 @@ public class PlayerCacheService : IPlayerCacheService
             .WithEvent(GbxRemoteEvent.PlayerDisconnect)
             .WithInstance(this)
             .WithInstanceClass<PlayerCacheService>()
-            .WithHandlerMethod<PlayerDisconnectEventArgs>(OnPlayerDisconnect)
+            .WithHandlerMethod<PlayerDisconnectEventArgs>(OnPlayerDisconnectAsync)
             .WithPriority(EventPriority.High)
             .AsAsync()
         );
@@ -70,15 +68,15 @@ public class PlayerCacheService : IPlayerCacheService
             .WithEvent(GbxRemoteEvent.PlayerInfoChanged)
             .WithInstance(this)
             .WithInstanceClass<PlayerCacheService>()
-            .WithHandlerMethod<PlayerInfoChangedEventArgs>(OnPlayerInfoChanged)
+            .WithHandlerMethod<PlayerInfoChangedEventArgs>(OnPlayerInfoChangedAsync)
             .WithPriority(EventPriority.High)
             .AsAsync()
         );
 
-        _server.Remote.OnConnected += OnServerConnected;
+        _server.Remote.OnConnected += OnServerConnectedAsync;
     }
 
-    private async Task OnServerConnected()
+    private async Task OnServerConnectedAsync()
     {
         try
         {
@@ -91,13 +89,13 @@ public class PlayerCacheService : IPlayerCacheService
         }
     }
 
-    private async Task OnPlayerInfoChanged(object sender, PlayerInfoChangedEventArgs e)
+    private async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedEventArgs e)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(e.PlayerInfo.Login);
         await ForceUpdatePlayerAsync(accountId);
     }
 
-    private Task OnPlayerDisconnect(object sender, PlayerDisconnectEventArgs e)
+    private Task OnPlayerDisconnectAsync(object sender, PlayerDisconnectEventArgs e)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
 
@@ -112,7 +110,7 @@ public class PlayerCacheService : IPlayerCacheService
         return Task.CompletedTask;
     }
 
-    private async Task OnPlayerConnect(object sender, PlayerConnectEventArgs e)
+    private async Task OnPlayerConnectAsync(object sender, PlayerConnectEventArgs e)
     {
         try
         {
