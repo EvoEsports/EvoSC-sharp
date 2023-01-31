@@ -21,6 +21,7 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
     }
 
     [ChatCommand("restartmatch", "Restart the current match.", FlowControlPermissions.RestartMatch)]
+    [CommandAlias("/resmatch")]
     public async Task RestartMatchAsync()
     {
         await _flowControl.RestartMatchAsync();

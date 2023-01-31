@@ -20,14 +20,7 @@ public class PermissionManager : IPermissionManager
     {
         var result = await _permissionRepository.GetPlayerPermissionsAsync(player.Id);
 
-        var permissions = result.ToList();
-        if (permissions.Count == 0)
-        {
-            _logger.LogDebug("Player {Id} does not have permission {PermName}", player.Id, permission);
-            return false;
-        }
-
-        var permNames = permissions.Select(p => p.Name);
+        var permNames = result.ToList().Select(p => p.Name);
 
         foreach (var permName in permNames)
         {

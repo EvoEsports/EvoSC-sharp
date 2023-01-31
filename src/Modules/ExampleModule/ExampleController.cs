@@ -62,16 +62,6 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand(string mode)
     {
-        try
-        {
-            var file = Path.GetFileName($"{mode}.txt");
-            Console.WriteLine(file);
-            await _matchSettings.LoadMatchSettingsAsync($"MatchSettings/{file}");
-            await _server.Remote.RestartMapAsync();
-        }
-        catch (Exception ex)
-        {
-            await _server.ErrorMessageAsync(ex.Message, Context.Player);
-        }
+        
     }
 }
