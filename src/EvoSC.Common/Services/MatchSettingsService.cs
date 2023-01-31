@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
+using GbxRemoteNet.Exceptions;
 using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;
 
@@ -31,4 +32,30 @@ public class MatchSettingsService : IMatchSettingsService
 
     public async Task<Dictionary<string, object>?> GetScriptSettingsAsync() =>
         await _server.Remote.GetModeScriptSettingsAsync();
+
+    public async Task LoadMatchSettingsAsync(string name)
+    {
+        try
+        {
+            var file = Path.GetFileName($"{name}.txt");
+            await _server.Remote.LoadMatchSettingsAsync($"MatchSettings/{file}");
+            await _server.Remote.RestartMapAsync();
+        }
+        catch (XmlRpcFaultException ex)
+        {
+            _logger.LogError(ex, "Failed to load match settings");
+
+            if (ex.Fault.FaultCode == -1000)
+            {
+                throw new FileNotFoundException(name);
+            }
+
+            throw;
+        }
+    }
+
+    public IEnumerable<string> GetMatchSettingsAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

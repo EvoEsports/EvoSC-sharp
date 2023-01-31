@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Modules.SourceGenerat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerRecords", "src\Modules\PlayerRecords\PlayerRecords.csproj", "{65F8436A-614F-41B2-9D6E-2960C2A78865}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchManagerModule", "src\Modules\MatchManagerModule\MatchManagerModule.csproj", "{F33FBDCE-7140-4D9B-9383-76E4C2E6EC83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{65F8436A-614F-41B2-9D6E-2960C2A78865}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65F8436A-614F-41B2-9D6E-2960C2A78865}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65F8436A-614F-41B2-9D6E-2960C2A78865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F33FBDCE-7140-4D9B-9383-76E4C2E6EC83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F33FBDCE-7140-4D9B-9383-76E4C2E6EC83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F33FBDCE-7140-4D9B-9383-76E4C2E6EC83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F33FBDCE-7140-4D9B-9383-76E4C2E6EC83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,5 +127,6 @@ Global
 		{2CC15B84-5D59-4300-9146-282181D72C53} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{EEE1BE1A-4447-4BD5-B6CA-2228C64E9BC8} = {0CD963D2-392E-4A42-A853-532F7497C305}
 		{65F8436A-614F-41B2-9D6E-2960C2A78865} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{F33FBDCE-7140-4D9B-9383-76E4C2E6EC83} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 	EndGlobalSection
 EndGlobal
