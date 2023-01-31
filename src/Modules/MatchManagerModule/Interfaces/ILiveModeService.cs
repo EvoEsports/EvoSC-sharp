@@ -16,5 +16,5 @@ public interface ILiveModeService
     /// </summary>
     /// <param name="mode">The alias name of the mode to load.</param>
     /// <returns></returns>
-    public Task LoadModeAsync(string mode);
+    public Task<string> LoadModeAsync(string mode);
 }

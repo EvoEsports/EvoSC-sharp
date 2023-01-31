@@ -53,9 +53,4 @@ public class MatchSettingsService : IMatchSettingsService
             throw;
         }
     }
-
-    public IEnumerable<string> GetMatchSettingsAsync()
-    {
-        throw new NotImplementedException();
-    }
 }

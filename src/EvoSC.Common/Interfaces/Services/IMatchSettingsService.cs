@@ -17,6 +17,10 @@ public interface IMatchSettingsService
     /// <returns></returns>
     public Task<Dictionary<string, object>?> GetScriptSettingsAsync();
 
+    /// <summary>
+    /// Load a MatchSettings file.
+    /// </summary>
+    /// <param name="name">The name of the MatchSettings to load.</param>
+    /// <returns></returns>
     public Task LoadMatchSettingsAsync(string name);
-    public IEnumerable<string> GetMatchSettingsAsync();
 }

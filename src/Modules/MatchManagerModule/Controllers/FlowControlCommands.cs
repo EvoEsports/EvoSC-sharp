@@ -21,7 +21,7 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
     }
 
     [ChatCommand("restartmatch", "Restart the current match.", FlowControlPermissions.RestartMatch)]
-    [CommandAlias("/resmatch")]
+    [CommandAlias("/resmatch", hide: true)]
     public async Task RestartMatchAsync()
     {
         await _flowControl.RestartMatchAsync();
@@ -35,10 +35,11 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
         await _server.InfoMessageAsync($"{Context.Player.NickName} forced the round to end.");
     }
 
-    [ChatCommand("skip", "Skip to the next map.", FlowControlPermissions.SkipMap)]
+    [ChatCommand("skipmap", "Skip to the next map.", FlowControlPermissions.SkipMap)]
+    [CommandAlias("/skip", hide: true)]
     public async Task SkipMapAsync()
     {
-        await _flowControl.EndRoundAsync();
+        await _flowControl.SkipMapAsync();
         await _server.InfoMessageAsync($"{Context.Player.NickName} skipped to the next map.");
     }
 }
