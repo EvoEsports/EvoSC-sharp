@@ -1,9 +1,7 @@
-﻿using EvoSC.Common.Exceptions.PlayerExceptions;
-using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
 using GbxRemoteNet.Structs;
@@ -15,12 +13,14 @@ public class PlayerManagerService : IPlayerManagerService
 {
     private readonly ILogger<PlayerManagerService> _logger;
     private readonly IPlayerRepository _playerRepository;
+    private readonly IPlayerCacheService _playerCache;
     private readonly IServerClient _server;
 
-    public PlayerManagerService(ILogger<PlayerManagerService> logger, IPlayerRepository playerRepository, IServerClient server)
+    public PlayerManagerService(ILogger<PlayerManagerService> logger, IPlayerRepository playerRepository, IPlayerCacheService playerCache, IServerClient server)
     {
         _logger = logger;
         _playerRepository = playerRepository;
+        _playerCache = playerCache;
         _server = server;
     }
 
@@ -64,62 +64,22 @@ public class PlayerManagerService : IPlayerManagerService
 
     public async Task<IOnlinePlayer> GetOnlinePlayerAsync(string accountId)
     {
-        var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
-        // TODO: #74 Optimize Player State Fetching (https://github.com/EvoTM/EvoSC-sharp/issues/74)
-        var onlinePlayerInfo = await _server.Remote.GetPlayerInfoAsync(playerLogin);
-        var onlinePlayerDetails = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
-
-        if (onlinePlayerDetails == null || onlinePlayerInfo == null)
-        {
-            throw new PlayerNotFoundException(accountId, $"Cannot find online player: {accountId}");
-        }
-
-        var player = await GetOrCreatePlayerAsync(accountId);
+        var player = await _playerCache.GetOnlinePlayerCachedAsync(accountId);
 
         if (player == null)
         {
-            throw new PlayerNotFoundException(accountId);
+            throw new InvalidOperationException(
+                $"Failed to get online player with account ID '{accountId}' from cache. Player object is null.");
         }
 
-        return new OnlinePlayer(player)
-        {
-            State = onlinePlayerDetails.GetState(),
-            Flags = onlinePlayerInfo.GetFlags()
-        };
+        return player;
     }
 
     public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player) => GetOnlinePlayerAsync(player.AccountId);
 
     public Task UpdateLastVisitAsync(IPlayer player) => _playerRepository.UpdateLastVisitAsync(player);
 
-    public async Task<IEnumerable<IOnlinePlayer>> GetOnlinePlayersAsync()
-    {
-        var players = new List<IOnlinePlayer>();
-        var onlinePlayers = await _server.Remote.GetPlayerListAsync();
-
-        foreach (var onlinePlayer in onlinePlayers)
-        {
-            var flags = onlinePlayer.GetFlags();
-            
-            if (flags.IsServer)
-            { 
-                // ignore server player as it's not a real player
-                continue;
-            }
-            
-            var accountId = PlayerUtils.ConvertLoginToAccountId(onlinePlayer.Login);
-            var playerDetails = await _server.Remote.GetDetailedPlayerInfoAsync(onlinePlayer.Login);
-            var player = await GetOrCreatePlayerAsync(accountId);
-            
-            players.Add(new OnlinePlayer(player)
-            {
-                State = playerDetails.GetState(),
-                Flags = flags
-            });
-        }
-
-        return players;
-    }
+    public Task<IEnumerable<IOnlinePlayer>> GetOnlinePlayersAsync() => Task.FromResult(_playerCache.OnlinePlayers);
 
     private const int MinMatchingCharacters = 2;
     
