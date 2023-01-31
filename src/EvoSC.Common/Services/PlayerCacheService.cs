@@ -112,14 +112,15 @@ public class PlayerCacheService : IPlayerCacheService
 
     private async Task OnPlayerConnectAsync(object sender, PlayerConnectEventArgs e)
     {
+        var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
+        
         try
         {
-            var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
             await ForceUpdatePlayerAsync(accountId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to cache player");
+            _logger.LogError(ex, "Failed to cache player with account ID {AccountId}", accountId);
         }
     }
 
@@ -129,7 +130,8 @@ public class PlayerCacheService : IPlayerCacheService
 
         if (player == null)
         {
-            throw new InvalidOperationException("Tried to get online player, but the player object is null");
+            throw new InvalidOperationException(
+                $"Tried to get online player with account ID '{accountId}', but the player object is null");
         }
 
         lock (_onlinePlayersMutex)

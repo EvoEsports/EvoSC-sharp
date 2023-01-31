@@ -68,7 +68,8 @@ public class PlayerManagerService : IPlayerManagerService
 
         if (player == null)
         {
-            throw new InvalidOperationException("Failed to get online player from cache.");
+            throw new InvalidOperationException(
+                $"Failed to get online player with account ID '{accountId}' from cache. Player object is null.");
         }
 
         return player;
