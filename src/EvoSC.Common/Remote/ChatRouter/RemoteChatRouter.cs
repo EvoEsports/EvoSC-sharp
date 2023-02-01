@@ -52,15 +52,18 @@ public class RemoteChatRouter : IRemoteChatRouter
             {
                 if (context is ChatRouterPipelineContext {ForwardMessage: true} chatContext)
                 {
-                    await _server.SendChatMessageAsync(new TextFormatter()
-                        .AddText("[")
-                        .AddText(text => text.AsIsolated().AddText(player.NickName))
-                        .AddText("] ")
-                        .AddText(text => text.AsIsolated().AddText(chatContext.MessageText))
-                    );
+                    Task.Run(async () =>
+                    {
+                        await _server.SendChatMessageAsync(new TextFormatter()
+                            .AddText("[")
+                            .AddText(text => text.AsIsolated().AddText(player.NickName))
+                            .AddText("] ")
+                            .AddText(text => text.AsIsolated().AddText(chatContext.MessageText))
+                        );
+                    });
                 }
             });
-
+            
             await pipelineChain(new ChatRouterPipelineContext
             {
                 ForwardMessage = true,

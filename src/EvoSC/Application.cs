@@ -10,6 +10,7 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Permissions;
@@ -161,6 +162,9 @@ public sealed class Application : IEvoSCApplication, IDisposable
 
         // initialize event manager before anything else
         _services.GetInstance<IEventManager>();
+
+        // initialize player cache
+        _services.GetInstance<IPlayerCacheService>();
 
         // connect to the dedicated server and setup callbacks and chat router
         var serverClient = _services.GetInstance<IServerClient>();
