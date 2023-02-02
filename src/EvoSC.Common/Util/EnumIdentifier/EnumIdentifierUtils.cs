@@ -35,12 +35,17 @@ public static class EnumIdentifierUtils
         }
         
         var enumType = enumValue.GetType();
-        var prefix = GetIdentifierPrefix(enumType) + ".";
         var fieldDefName = enumValue.ToString();
         var enumMember = enumType.GetMember(fieldDefName).FirstOrDefault();
-        var actualName = enumMember?.GetCustomAttribute<IdentifierAttribute>()?.Name ?? fieldDefName;
+        var ident = enumMember?.GetCustomAttribute<IdentifierAttribute>();
+        var actualName = ident?.Name ?? fieldDefName;
 
-        return prefix + actualName;
+        if (ident == null || !ident.NoPrefix)
+        {
+            return GetIdentifierPrefix(enumType) + "." + actualName;
+        }
+
+        return actualName;
     }
 
     /// <summary>
@@ -59,5 +64,21 @@ public static class EnumIdentifierUtils
         }
 
         return enumValue;
+    }
+
+    /// <summary>
+    /// Get a list of aliases for this enum value.
+    /// </summary>
+    /// <param name="enumValue">The enum value to get aliases of.</param>
+    /// <returns></returns>
+    public static IEnumerable<string> GetAliases(this Enum enumValue)
+    {
+        var enumType = enumValue.GetType();
+        var fieldDefName = enumValue.ToString();
+        var enumMember = enumType.GetMember(fieldDefName).FirstOrDefault();
+
+        var aliases = enumMember?.GetCustomAttributes<AliasAttribute>().Select(a => a.Name);
+
+        return aliases ?? Array.Empty<string>();
     }
 }

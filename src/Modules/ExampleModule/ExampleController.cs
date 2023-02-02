@@ -6,6 +6,10 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Util;
+using EvoSC.Common.Util.MatchSettings;
+using EvoSC.Common.Util.MatchSettings.Builders;
+using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Modules.Official.ExampleModule;
@@ -60,8 +64,23 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     }
 
     [ChatCommand("test", "Some testing.")]
-    public async Task TestCommand(string mode)
+    public async Task TestCommand()
     {
-        
+        await _matchSettings.SetScriptSettingsAsync(settings =>
+        {
+            settings["S_TimeLimit"] = 1337;
+        });
+
+        /* var builder = new MatchSettingsBuilder()
+            .WithMode(DefaultModeScriptName.TimeAttack)
+            .WithModeSettings<TimeAttackModeScriptSettings>(s =>
+            {
+                s.ChatTime = 32;
+            });
+
+        var matchSettings = builder.Build();
+        var xml = matchSettings.ToXmlDocument();
+
+        Console.WriteLine(xml.GetFullXmlString()); */
     }
 }
