@@ -59,7 +59,7 @@ public class MatchSettingsService : IMatchSettingsService
         }
         catch (XmlRpcFaultException ex)
         {
-            _logger.LogError(ex, "Failed to load match settings");
+            _logger.LogError(ex, "Failed to load match settings: {Msg}", ex.Fault.FaultString);
 
             if (ex.Fault.FaultCode == -1000)
             {
@@ -75,16 +75,35 @@ public class MatchSettingsService : IMatchSettingsService
         var builder = new MatchSettingsBuilder();
         matchSettings(builder);
 
-        var builtMatchSettings = builder.Build();
-        var xmlDocument = builtMatchSettings.ToXmlDocument();
-        var contents = new Base64(xmlDocument.GetFullXmlString());
+        var contents = new Base64(builder
+            .Build()
+            .ToXmlDocument()
+            .GetFullXmlString()
+        );
+        
         var fileName = Path.Combine("MatchSettings", name + ".txt");
 
-        if (!await _server.Remote.WriteFileAsync(fileName, contents))
+        try
         {
-            throw new InvalidOperationException($"Failed to write match settings to file {fileName}.");
+            if (await _server.Remote.WriteFileAsync(fileName, contents))
+            {
+                throw new InvalidOperationException("Failed to create match settings due to an unknown error.");
+            }
+            
+            return builtMatchSettings;
         }
+        catch (Exception ex)
+        {
+            if (ex is XmlRpcFaultException faultEx)
+            {
+                _logger.LogError(faultEx, "Failed to create match settings due to XMLRPC fault");
+            }
+            else
+            {
+                _logger.LogError(ex, "An error occured while creating match settings");
+            }
 
-        return builtMatchSettings;
+            throw;
+        }
     }
 }
