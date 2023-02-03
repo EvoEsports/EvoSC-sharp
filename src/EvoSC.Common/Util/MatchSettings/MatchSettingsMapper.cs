@@ -9,9 +9,12 @@ public static class MatchSettingsMapper
     private static Dictionary<Type, string> _typeToStringMap = new()
     {
         {typeof(int), "integer"},
+        {typeof(int?), "integer"},
         {typeof(uint), "integer"},
+        {typeof(uint?), "integer"},
         {typeof(string), "text"},
         {typeof(bool), "boolean"},
+        {typeof(bool?), "boolean"},
     };
 
     /// <summary>

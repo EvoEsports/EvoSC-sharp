@@ -27,40 +27,44 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, false)]
     protected bool CumulatePoints { get; set; }
     
+    [ScriptSetting(Name = "S_LoadingScreenImageUrl")]
+    [Description("The image displayed when a player is loading the next map.")]
+    protected string LoadingScreenImageUrl { get; set; }
+    
     [ScriptSetting(Name = "S_DecoImageUrl_Checkpoint")]
     [Description("""
                 Url of the image displayed on the checkpoints ground.
                 Override the image set in the Club.
                 """)]
-    protected bool DecoImageUrlCheckpoint { get; set; }
+    protected string DecoImageUrlCheckpoint { get; set; }
     
     [ScriptSetting(Name = "S_DecoImageUrl_DecalSponsor4x1")]
     [Description("""
                 Url of the image displayed on the block border.
                 Override the image set in the Club.
                 """)]
-    protected bool DecoImageUrlDecalSponsor4X1 { get; set; }
+    protected string DecoImageUrlDecalSponsor4X1 { get; set; }
     
     [ScriptSetting(Name = "S_DecoImageUrl_Screen16x1")]
     [Description("""
                 Url of the image displayed below the podium and big screen.
                 Override the image set in the Club.
                 """)]
-    protected bool DecoImageUrlScreen16X1 { get; set; }
+    protected string DecoImageUrlScreen16X1 { get; set; }
     
     [ScriptSetting(Name = "S_DecoImageUrl_Screen16x9")]
     [Description("""
                 Url of the image displayed on the two big screens.
                 Override the image set in the Club.
                 """)]
-    protected bool DecoImageUrlScreen16X9 { get; set; }
+    protected string DecoImageUrlScreen16X9 { get; set; }
     
     [ScriptSetting(Name = "S_DecoImageUrl_Screen8x1")]
     [Description("""
                 Url of the image displayed on the bleachers.
                 Override the image set in the Club.
                 """)]
-    protected bool DecoImageUrlScreen8X1 { get; set; }
+    protected string DecoImageUrlScreen8X1 { get; set; }
     
     [ScriptSetting(Name = "S_DecoImageUrl_WhoAmIUrl")]
     [Description("""
@@ -68,12 +72,12 @@ public class ModeScriptSettings
                 You can replace ":ServerLogin" with a login from a server in another club to use its images.
                 """)]
     [DefaultScriptSettingValue("/api/club/room/:ServerLogin/whoami")]
-    protected bool DecoImageUrlWhoAmIUrl { get; set; }
+    protected string DecoImageUrlWhoAmIUrl { get; set; }
     
     [ScriptSetting(Name = "S_DelayBeforeNextMap")]
     [Description("Minimal time before the server go to the next map in milliseconds.")]
     [DefaultScriptSettingValue(2000)]
-    protected bool DelayBeforeNextMap { get; set; }
+    protected int DelayBeforeNextMap { get; set; }
     
     [ScriptSetting(Name = "S_DisableGiveUp")]
     [Description("Disable GiveUp, override S_RespawnBehaviour.")]
@@ -96,17 +100,17 @@ public class ModeScriptSettings
     You can use coma to add more values. For exemple, COTD use this setting: 8,16,16
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, "4,16,16")]
-    protected bool EliminatedPlayerNbRanks { get; set; }
+    protected string EliminatedPlayerNbRanks { get; set; }
     
     [ScriptSetting(Name = "S_EndRoundPostScoreUpdateDuration")]
     [Description("Time in seconds after score computed on scoreboard")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 5)]
-    protected bool EndRoundPostScoreUpdateDuration { get; set; }
+    protected int EndRoundPostScoreUpdateDuration { get; set; }
     
     [ScriptSetting(Name = "S_EndRoundPreScoreUpdateDuration")]
     [Description("Time in seconds before score computed on scoreboard")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 5)]
-    protected bool EndRoundPreScoreUpdateDuration { get; set; }
+    protected int EndRoundPreScoreUpdateDuration { get; set; }
     
     [ScriptSetting(Name = "S_FinishTimeout")]
     [Description("""
@@ -119,7 +123,7 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, -1)]
-    protected bool FinishTimeout { get; set; }
+    protected int FinishTimeout { get; set; }
     
     [ScriptSetting(Name = "S_ForceLapsNb")]
     [Description("""
@@ -135,7 +139,7 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.TimeAttack, 0)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, -1)]
-    protected bool ForceLapsNb { get; set; }
+    protected int ForceLapsNb { get; set; }
     
     [ScriptSetting(Name = "S_ForceWinnersNb")]
     [Description("""
@@ -143,7 +147,7 @@ public class ModeScriptSettings
     Set 0 to use S_WinnersRatio
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 0)]
-    protected bool ForceWinnersNb { get; set; }
+    protected int ForceWinnersNb { get; set; }
     
     [ScriptSetting(Name = "S_InfiniteLaps")]
     [Description("Never end a race in laps, equivalent of S_ForceLapsNb = 0")]
@@ -167,7 +171,7 @@ public class ModeScriptSettings
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, -1)]
-    protected bool MapsPerMatch { get; set; }
+    protected int MapsPerMatch { get; set; }
     
     [ScriptSetting(Name = "S_MatchPosition")]
     [Description("""
@@ -176,7 +180,7 @@ public class ModeScriptSettings
     N : Position of the player + N * 64
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, -1)]
-    protected bool MatchPosition { get; set; }
+    protected int MatchPosition { get; set; }
     
     [ScriptSetting(Name = "S_MaxPointsPerRound")]
     [Description("""
@@ -184,17 +188,17 @@ public class ModeScriptSettings
     Only available when S_UseCustomPointsRepartition is set to false.
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, 6)]
-    protected bool MaxPointsPerRound { get; set; }
+    protected int MaxPointsPerRound { get; set; }
     
     [ScriptSetting(Name = "S_NbOfWinners")]
     [Description("Number of winners")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, 6)]
-    protected bool NbOfWinners { get; set; }
+    protected int NbOfWinners { get; set; }
     
     [ScriptSetting(Name = "S_NeutralEmblemUrl")]
     [Description("Url of the neutral emblem url to use by default")]
     [DefaultScriptSettingValue("")]
-    protected bool NeutralEmblemUrl { get; set; }
+    protected string NeutralEmblemUrl { get; set; }
     
     [ScriptSetting(Name = "S_PauseBeforeRoundNb")]
     [Description("""
@@ -202,7 +206,7 @@ public class ModeScriptSettings
     Set 0 to disable the feature. Linked to S_PauseDuration
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 0)]
-    protected bool PauseBeforeRoundNb { get; set; }
+    protected int PauseBeforeRoundNb { get; set; }
     
     [ScriptSetting(Name = "S_PauseDuration")]
     [Description("""
@@ -210,12 +214,12 @@ public class ModeScriptSettings
     Set 0 to disable the feature. Linked to S_PauseBeforeRoundNb
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 360)]
-    protected bool PauseDuration { get; set; }
+    protected int PauseDuration { get; set; }
     
     [ScriptSetting(Name = "S_PointsGap")]
     [Description("The number of points lead a team must have to win the map.")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, 6)]
-    protected bool PointsGap { get; set; }
+    protected int PointsGap { get; set; }
     
     [ScriptSetting(Name = "S_PointsLimit")]
     [Description("""
@@ -226,21 +230,21 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, 100)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, 5)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, 50)]
-    protected bool PointsLimit { get; set; }
+    protected int PointsLimit { get; set; }
     
     [ScriptSetting(Name = "S_PointsRepartition")]
     [Description("""
     Point repartition from first to last
     In Teams game mode, this depend of the setting S_UseCustomPointsRepartition
     In Knockout game mode, this setting is useless
-    empty = 10, 6, 4, 3, 2, 1
+    empty = 10,6,4,3,2,1
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, "20,14,12,10,8,7,6,5,5,4,4,3,3,2,2,1")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, "")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, "")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, "")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, "")]
-    protected bool PointsRepartition { get; set; }
+    protected string PointsRepartition { get; set; }
     
     [ScriptSetting(Name = "S_RespawnBehaviour")]
     [Description("""
@@ -252,12 +256,12 @@ public class ModeScriptSettings
     5: never give up
     """)]
     [DefaultScriptSettingValue(0)]
-    protected bool RespawnBehaviour { get; set; }
+    protected int RespawnBehaviour { get; set; }
     
     [ScriptSetting(Name = "S_RoundsLimit")]
     [Description("Number of rounds to play before finding a winner")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 6)]
-    protected bool RoundsLimit { get; set; }
+    protected int RoundsLimit { get; set; }
     
     [ScriptSetting(Name = "S_RoundsPerMap")]
     [Description("""
@@ -269,7 +273,7 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, -1)]
-    protected bool RoundsPerMap { get; set; }
+    protected int RoundsPerMap { get; set; }
     
     [ScriptSetting(Name = "S_RoundsWithAPhaseChange")]
     [Description("""
@@ -277,17 +281,17 @@ public class ModeScriptSettings
     It's possible to skip a phase with multiple occurences of a round number, exemple "3,3"
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, "3,5")]
-    protected bool RoundsWithAPhaseChange { get; set; }
+    protected string RoundsWithAPhaseChange { get; set; }
     
     [ScriptSetting(Name = "S_RoundsWithoutElimination")]
     [Description("Rounds without elimination (like a Warmup, but just for the first map)")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, 1)]
-    protected bool RoundsWithoutElimination { get; set; }
+    protected int RoundsWithoutElimination { get; set; }
     
     [ScriptSetting(Name = "S_ScriptEnvironment")]
     [Description("Use “development” to make script more verbose")]
     [DefaultScriptSettingValue("production")]
-    protected bool ScriptEnvironment { get; set; }
+    protected string ScriptEnvironment { get; set; }
     
     [ScriptSetting(Name = "S_SeasonIds")]
     [Description("""
@@ -295,7 +299,7 @@ public class ModeScriptSettings
     ["MapUid" => "SeasonId"]
     """)]
     [DefaultScriptSettingValue("")]
-    protected bool SeasonIds { get; set; }
+    protected string SeasonIds { get; set; }
     
     [ScriptSetting(Name = "S_SynchronizePlayersAtMapStart")]
     [Description("""
@@ -321,12 +325,12 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, 0)]
     [DefaultScriptSettingValue(DefaultModeScriptName.TimeAttack, 300)]
-    protected bool TimeLimit { get; set; }
+    protected int TimeLimit { get; set; }
     
     [ScriptSetting(Name = "S_TimeOutPlayersNumber")]
     [Description("Players crossing finish line before starting finish timeout. Linked to S_FinishTimeout")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 0)]
-    protected bool TimeOutPlayersNumber { get; set; }
+    protected int TimeOutPlayersNumber { get; set; }
     
     [ScriptSetting(Name = "S_TrustClientSimu")]
     [Description("""
@@ -382,12 +386,12 @@ public class ModeScriptSettings
     -1 = Only one try like a round
     """)]
     [DefaultScriptSettingValue(0)]
-    protected bool WarmUpDuration { get; set; }
+    protected int WarmUpDuration { get; set; }
     
     [ScriptSetting(Name = "S_WarmUpNb")]
     [Description("Number of Warm Up")]
     [DefaultScriptSettingValue(0)]
-    protected bool WarmUpNb { get; set; }
+    protected int WarmUpNb { get; set; }
     
     [ScriptSetting(Name = "S_WarmUpTimeout")]
     [Description("""
@@ -396,7 +400,7 @@ public class ModeScriptSettings
     -1 : Time based on the Author medal ( 5 seconds + Author time / 6 )
     """)]
     [DefaultScriptSettingValue(-1)]
-    protected bool WarmUpTimeout { get; set; }
+    protected int WarmUpTimeout { get; set; }
     
     [ScriptSetting(Name = "S_DisableGoToMap")]
     [Description("Disable the goto map vote option.")]
