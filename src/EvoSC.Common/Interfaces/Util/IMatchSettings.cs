@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Util.MatchSettings;
+﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Common.Util.MatchSettings.Models;
 
 namespace EvoSC.Common.Interfaces.Util;
@@ -18,7 +19,12 @@ public interface IMatchSettings
     /// <summary>
     /// Mode script options.
     /// </summary>
-    public ModeScriptSettings ModeScriptSettings { get; set; }
+    public Dictionary<string, ModeScriptSetting> ModeScriptSettings { get; set; }
+    
+    /// <summary>
+    /// The map list of this match settings.
+    /// </summary>
+    public List<IMap> Maps { get; set; }
 
     /// <summary>
     /// The index to start in the map list.

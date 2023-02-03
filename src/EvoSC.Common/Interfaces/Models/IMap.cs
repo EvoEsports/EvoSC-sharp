@@ -28,6 +28,11 @@ public interface IMap
     public IPlayer? Author { get; }
     
     /// <summary>
+    /// Path to the map relative to the Maps directory.
+    /// </summary>
+    public string FilePath { get; set; }
+    
+    /// <summary>
     /// Whether the map is enabled or disabled.
     /// </summary>
     public bool Enabled { get; set; }

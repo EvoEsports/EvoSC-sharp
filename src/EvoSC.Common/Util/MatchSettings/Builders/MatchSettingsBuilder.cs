@@ -1,7 +1,11 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using System.Xml;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Util.EnumIdentifier;
+using EvoSC.Common.Util.MatchSettings.Attributes;
+using EvoSC.Common.Util.MatchSettings.Models;
 
 namespace EvoSC.Common.Util.MatchSettings.Builders;
 
@@ -9,7 +13,7 @@ public class MatchSettingsBuilder
 {
     private GameInfosConfigBuilder _gameInfosbuilder = new();
     private FilterConfigBuilder _filterBuilder = new();
-    private ModeScriptSettings _scriptSettings;
+    private Dictionary<string, ModeScriptSetting> _scriptSettings;
     private int _startIndex;
 
     public MatchSettingsBuilder()
@@ -82,18 +86,104 @@ public class MatchSettingsBuilder
 
         var settings = new T();
         settingsAction(settings);
-        _scriptSettings = settings;
+        _scriptSettings = GetScriptSettings(settings);
+        
         return this;
     }
 
-    public Models.MatchSettingsInfo Build()
+    public MatchSettingsBuilder WithModeSettings(Action<Dictionary<string, object?>> settingsAction)
     {
-        return new Models.MatchSettingsInfo
+        if (_scriptSettings == null)
+        {
+            _scriptSettings = new Dictionary<string, ModeScriptSetting>();
+        }
+
+        var settingsToSet = new Dictionary<string, object?>();
+        settingsAction(settingsToSet);
+
+        foreach (var (name, value) in settingsToSet)
+        {
+            _scriptSettings[name] = new ModeScriptSetting {Value = value, Description = "", Type = value.GetType()};
+        }
+
+        return this;
+    }
+
+    public MatchSettingsInfo Build()
+    {
+        return new MatchSettingsInfo
         {
             GameInfos = _gameInfosbuilder.Build(),
             Filter = _filterBuilder.Build(),
             ModeScriptSettings = _scriptSettings,
+            Maps = new List<IMap>(),
             StartIndex = _startIndex
         };
+    }
+
+    private Dictionary<string, ModeScriptSetting> GetScriptSettings(ModeScriptSettings settingsObject)
+    {
+        var settings = new Dictionary<string, ModeScriptSetting>();
+
+        var classType = settingsObject.GetType();
+
+        var properties = classType.GetProperties(
+            BindingFlags.Instance
+            | BindingFlags.Public
+            | BindingFlags.DeclaredOnly
+        );
+
+        foreach (var property in properties)
+        {
+            var effectiveProperty = property;
+
+            if (classType.BaseType != null)
+            {
+                var propertyDefinition = MatchSettingsMapper.FindBasePropertyDefinition(classType.BaseType, property.Name);
+
+                if (propertyDefinition != null)
+                {
+                    effectiveProperty = propertyDefinition;
+                }
+            }
+
+            var settingAttr = effectiveProperty.GetCustomAttribute<ScriptSettingAttribute>() ??
+                              throw new InvalidOperationException(
+                                  $"The property '{property.Name}' must annotate ScriptSetting.");
+
+            var descAttr = effectiveProperty.GetCustomAttribute<DescriptionAttribute>();
+            var defaultValueAttrs = effectiveProperty.GetCustomAttributes<DefaultScriptSettingValue>();
+
+            var propertyValue = property.GetValue(settingsObject);
+
+            var setting = new ModeScriptSetting
+            {
+                Value = propertyValue ?? GetDefaultValue(defaultValueAttrs),
+                Description = descAttr?.Description ?? "",
+                Type = property.PropertyType
+            };
+            
+            settings.Add(settingAttr.Name, setting);
+        }
+
+        return settings;
+    }
+
+    private object? GetDefaultValue(IEnumerable<DefaultScriptSettingValue> defaultValues)
+    {
+        foreach (var defaultValue in defaultValues)
+        {
+            if (defaultValue.OnMode == null)
+            {
+                return defaultValue.Value;
+            }
+            
+            if (defaultValue.OnMode.Equals(_gameInfosbuilder.ScriptName, StringComparison.Ordinal))
+            {
+                return defaultValue.Value;
+            }
+        }
+
+        return null;
     }
 }

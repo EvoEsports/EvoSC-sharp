@@ -1,15 +1,50 @@
-﻿namespace EvoSC.Common.Util.MatchSettings.Attributes;
+﻿using EvoSC.Common.Util.EnumIdentifier;
+
+namespace EvoSC.Common.Util.MatchSettings.Attributes;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public class DefaultScriptSettingValue : Attribute
 {
     /// <summary>
-    /// The mode which this value applies to.
+    /// The mode which this value applies to. If null,
+    /// applies to all modes.
     /// </summary>
-    public DefaultModeScriptName OnMode { get; set; } = DefaultModeScriptName.Unknown;
+    public string? OnMode { get; set; }
     
     /// <summary>
     /// The default value.
     /// </summary>
     public object? Value { get; set; }
+
+    /// <summary>
+    /// Set the default value on one of the default modes.
+    /// </summary>
+    /// <param name="onMode">The mode to set the value to.</param>
+    /// <param name="value">The default value.</param>
+    public DefaultScriptSettingValue(DefaultModeScriptName onMode, object? value)
+    {
+        OnMode = onMode.GetIdentifier();
+        Value = value;
+    }
+    
+    /// <summary>
+    /// Set the default value for a custom mode.
+    /// </summary>
+    /// <param name="onMode">The name of the mode to set the value to.</param>
+    /// <param name="value">The default value.</param>
+    public DefaultScriptSettingValue(string onMode, object? value)
+    {
+        OnMode = onMode;
+        Value = value;
+    }
+
+    /// <summary>
+    /// Set the default value for all modes.
+    /// </summary>
+    /// <param name="value">The default value.</param>
+    public DefaultScriptSettingValue(object? value)
+    {
+        OnMode = null;
+        Value = value;
+    }
 }

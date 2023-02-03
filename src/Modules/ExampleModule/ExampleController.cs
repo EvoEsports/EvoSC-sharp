@@ -66,11 +66,10 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        await _matchSettings.SetScriptSettingsAsync(settings =>
-        {
-            settings["S_TimeLimit"] = 1337;
-        });
+        var settings = await _matchSettings.GetScriptSettingsAsync();
 
+        Console.WriteLine();
+        
         /* var builder = new MatchSettingsBuilder()
             .WithMode(DefaultModeScriptName.TimeAttack)
             .WithModeSettings<TimeAttackModeScriptSettings>(s =>

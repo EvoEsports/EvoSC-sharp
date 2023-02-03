@@ -17,7 +17,7 @@ public class LiveModeService : ILiveModeService
         {"cup", "Trackmania/TM_Cup_Online.Script.txt"},
         {"laps", "Trackmania/TM_Laps_Online.Script.txt"},
         {"champion", "Trackmania/TM_Champion_Online.Script.txt"},
-        {"knockout", "Trackmania/TM_Knockout_Online.Script.txt"}
+        {"ko", "Trackmania/TM_Knockout_Online.Script.txt"}
     };
 
     private readonly IServerClient _server;

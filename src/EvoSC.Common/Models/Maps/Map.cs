@@ -9,6 +9,7 @@ public class Map: IMap
     public string Uid { get; set; }
     public string Name { get; set; }
     public IPlayer Author { get; set; }
+    public string FilePath { get; set; }
     public bool Enabled { get; set; }
     public string ExternalId { get; set; }
     public DateTime? ExternalVersion { get; set; }
@@ -24,6 +25,7 @@ public class Map: IMap
         Uid = dbMap.Uid;
         Name = dbMap.Name;
         Author = dbMap.Author;
+        FilePath = dbMap.FilePath;
         Enabled = dbMap.Enabled;
         ExternalId = dbMap.ExternalId;
         ExternalVersion = dbMap.ExternalVersion;
