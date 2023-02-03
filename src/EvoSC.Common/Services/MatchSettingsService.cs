@@ -1,8 +1,13 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using System.Text;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Util;
+using EvoSC.Common.Util;
+using EvoSC.Common.Util.MatchSettings.Builders;
 using GbxRemoteNet.Exceptions;
 using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Asn1;
 
 namespace EvoSC.Common.Services;
 
@@ -30,7 +35,18 @@ public class MatchSettingsService : IMatchSettingsService
         await _server.Remote.SetModeScriptSettingsAsync(settings);
     }
 
-    public async Task<Dictionary<string, object>?> GetScriptSettingsAsync() =>
+    public Task SetScriptSettingsAsync(IMatchSettings matchSettings) => SetScriptSettingsAsync(settings =>
+    {
+        foreach (var (key, value) in matchSettings.ModeScriptSettings)
+        {
+            if (value.Value != null)
+            {
+                settings[key] = value.Value;
+            }
+        }
+    });
+
+    public async Task<Dictionary<string, object>?> GetCurrentScriptSettingsAsync() =>
         await _server.Remote.GetModeScriptSettingsAsync();
 
     public async Task LoadMatchSettingsAsync(string name)
@@ -52,5 +68,23 @@ public class MatchSettingsService : IMatchSettingsService
 
             throw;
         }
+    }
+
+    public async Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
+    {
+        var builder = new MatchSettingsBuilder();
+        matchSettings(builder);
+
+        var builtMatchSettings = builder.Build();
+        var xmlDocument = builtMatchSettings.ToXmlDocument();
+        var contents = new Base64(xmlDocument.GetFullXmlString());
+        var fileName = Path.Combine("MatchSettings", name + ".txt");
+
+        if (!await _server.Remote.WriteFileAsync(fileName, contents))
+        {
+            throw new InvalidOperationException($"Failed to write match settings to file {fileName}.");
+        }
+
+        return builtMatchSettings;
     }
 }

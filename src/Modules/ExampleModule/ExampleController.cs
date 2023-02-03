@@ -65,17 +65,12 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
 
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
-    { 
-        var builder = new MatchSettingsBuilder()
+    {
+        var settings = await _matchSettings.CreateMatchSettingsAsync("my_ta_settings", settings => settings
             .WithMode(DefaultModeScriptName.TimeAttack)
             .WithModeSettings<TimeAttackModeScriptSettings>(s =>
             {
                 s.ChatTime = 32;
-            });
-
-        var matchSettings = builder.Build();
-        var xml = matchSettings.ToXmlDocument();
-
-        Console.WriteLine(xml.GetFullXmlString());
+            }));
     }
 }
