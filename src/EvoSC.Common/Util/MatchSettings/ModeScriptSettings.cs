@@ -404,6 +404,6 @@ public class ModeScriptSettings
     
     [ScriptSetting(Name = "S_DisableGoToMap")]
     [Description("Disable the goto map vote option.")]
-    [DefaultScriptSettingValue(-1)]
+    [DefaultScriptSettingValue(false)]
     protected bool DisableGoToMap { get; set; }
 }

@@ -11,7 +11,7 @@ public enum DefaultModeScriptName
     [Identifier(Name = "Trackmania/TM_Rounds_Online.Script.txt", NoPrefix = true)]
     Rounds,
     
-    [Identifier(Name = "'Trackmania/TM_Cup_Online.Script.txt", NoPrefix = true)]
+    [Identifier(Name = "Trackmania/TM_Cup_Online.Script.txt", NoPrefix = true)]
     Cup,
     
     [Identifier(Name = "Trackmania/TM_Teams_Online.Script.txt", NoPrefix = true)]

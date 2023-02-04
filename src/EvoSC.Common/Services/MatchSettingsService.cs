@@ -28,7 +28,7 @@ public class MatchSettingsService : IMatchSettingsService
         _config = config;
     }
     
-    public async Task SetScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
+    public async Task SetCurrentScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
     {
         var settings = await _server.Remote.GetModeScriptSettingsAsync();
 
@@ -41,7 +41,7 @@ public class MatchSettingsService : IMatchSettingsService
         await _server.Remote.SetModeScriptSettingsAsync(settings);
     }
 
-    public Task SetScriptSettingsAsync(IMatchSettings matchSettings) => SetScriptSettingsAsync(settings =>
+    public Task SetCurrentScriptSettingsAsync(IMatchSettings matchSettings) => SetCurrentScriptSettingsAsync(settings =>
     {
         foreach (var (key, value) in matchSettings.ModeScriptSettings)
         {
@@ -76,11 +76,8 @@ public class MatchSettingsService : IMatchSettingsService
         }
     }
 
-    public async Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
+    private async Task<IMatchSettings> SaveMatchSettingsAsync(string name, MatchSettingsBuilder builder)
     {
-        var builder = new MatchSettingsBuilder();
-        matchSettings(builder);
-
         var builtMatchSettings = builder.Build();
         var contents = new Base64(builtMatchSettings
             .ToXmlDocument()
@@ -113,7 +110,15 @@ public class MatchSettingsService : IMatchSettingsService
         }
     }
 
-    public async Task<IMatchSettings> GetMatchSettingsAsync(string name)
+    public Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
+    {
+        var builder = new MatchSettingsBuilder();
+        matchSettings(builder);
+
+        return SaveMatchSettingsAsync(name, builder);
+    }
+
+    private async Task<string> GetFilePathAsync(string name)
     {
         var mapsDir = _config.Path.Maps;
 
@@ -137,7 +142,28 @@ public class MatchSettingsService : IMatchSettingsService
             throw new FileNotFoundException("Failed to find the match settings with the provided name.", filePath);
         }
 
+        return filePath;
+    }
+
+    public async Task<IMatchSettings> GetMatchSettingsAsync(string name)
+    {
+        var filePath = await GetFilePathAsync(name);
+        
         var contents = await File.ReadAllTextAsync(filePath);
         return await MatchSettingsXmlParser.ParseAsync(contents);
+    }
+
+    public async Task EditMatchSettingsAsync(string name, Action<MatchSettingsBuilder> builderAction)
+    {
+        var currentMatchSettings = await GetMatchSettingsAsync(name);
+        var builder = new MatchSettingsBuilder(currentMatchSettings);
+        builderAction(builder);
+        await SaveMatchSettingsAsync(name, builder);
+    }
+
+    public async Task DeleteMatchSettingsAsync(string name)
+    {
+        var filePath = await GetFilePathAsync(name);
+        File.Delete(filePath);
     }
 }

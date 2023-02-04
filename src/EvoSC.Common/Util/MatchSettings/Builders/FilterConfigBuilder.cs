@@ -13,6 +13,19 @@ public class FilterConfigBuilder
     private int _sortIndex = 1000;
     private bool _randomMapOrder = false;
 
+
+    public FilterConfigBuilder(){}
+    
+    public FilterConfigBuilder(MatchSettingsFilter filter)
+    {
+        _isLan = filter.IsLan;
+        _isInternet = filter.IsInternet;
+        _isSolo = filter.IsSolo;
+        _isHotseat = filter.IsHotseat;
+        _sortIndex = filter.SortIndex;
+        _randomMapOrder = filter.RandomMapOrder;
+    }
+
     public FilterConfigBuilder AsLan(bool isLan)
     {
         _isLan = isLan;

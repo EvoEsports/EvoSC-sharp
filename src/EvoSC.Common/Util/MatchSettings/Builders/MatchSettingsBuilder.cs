@@ -21,6 +21,15 @@ public class MatchSettingsBuilder
     public MatchSettingsBuilder()
     {
     }
+    
+    public MatchSettingsBuilder(IMatchSettings matchSettings)
+    {
+        _gameInfosbuilder = new GameInfosConfigBuilder(matchSettings.GameInfos);
+        _filterBuilder = new FilterConfigBuilder(matchSettings.Filter);
+        _scriptSettings = matchSettings.ModeScriptSettings ?? new Dictionary<string, ModeScriptSetting>();
+        _maps = matchSettings.Maps ?? new List<IMap>();
+        _startIndex = matchSettings.StartIndex;
+    }
 
     public MatchSettingsBuilder WithMode(DefaultModeScriptName mode)
     {

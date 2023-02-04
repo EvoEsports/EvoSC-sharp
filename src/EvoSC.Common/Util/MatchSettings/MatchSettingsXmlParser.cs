@@ -56,7 +56,7 @@ public static class MatchSettingsXmlParser
             GameMode = await _valueReader.ConvertValueAsync<int>(ValueOrDefault(gameModeElement, "0")),
             ChatTime = await _valueReader.ConvertValueAsync<int>(ValueOrDefault(chatTimeElement, "10000")),
             FinishTimeout = await _valueReader.ConvertValueAsync<int>(ValueOrDefault(finishTimeoutElement, "1")),
-            AllowWarmupDuration =
+            AllWarmupDuration =
                 await _valueReader.ConvertValueAsync<bool>(ValueOrDefault(allWarmupDurationElement, "0")),
             DisableRespawn = await _valueReader.ConvertValueAsync<bool>(ValueOrDefault(disableRespawnElement, "0")),
             ForceShowAllOpponents =

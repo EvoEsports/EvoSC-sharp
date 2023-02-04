@@ -11,14 +11,14 @@ public interface IMatchSettingsService
     /// </summary>
     /// <param name="settingsAction">Fluent action for modifying script settings.</param>
     /// <returns></returns>
-    public Task SetScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction);
+    public Task SetCurrentScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction);
 
     /// <summary>
     /// Set the current ModeScript settings from a match settings info object.
     /// </summary>
     /// <param name="matchSettings">The match settings containing the mode settings to set.</param>
     /// <returns></returns>
-    public Task SetScriptSettingsAsync(IMatchSettings matchSettings);
+    public Task SetCurrentScriptSettingsAsync(IMatchSettings matchSettings);
     
     /// <summary>
     /// Get the current ModeScript settings.
@@ -36,10 +36,20 @@ public interface IMatchSettingsService
     /// <summary>
     /// Create a new match settings file and return the info object for it.
     /// </summary>
-    /// <param name="name">The name of the file. Do not include extension. Directory paths allowed.</param>
+    /// <param name="name">The name of the file. Do not include extension. Directory paths allowed. Relative to MatchSettings directory.</param>
     /// <param name="matchSettings">Match settings builder for creation.</param>
     /// <returns></returns>
     public Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings);
 
+    /// <summary>
+    /// Parse a match settings file and get an object containing
+    /// info about it.
+    /// </summary>
+    /// <param name="name">The name of the file. Do not include extension. Directory paths allowed. Relative to MatchSettings directory.</param>
+    /// <returns></returns>
     public Task<IMatchSettings> GetMatchSettingsAsync(string name);
+    
+    public Task EditMatchSettingsAsync(string name, Action<MatchSettingsBuilder> builderAction);
+    
+    public Task DeleteMatchSettingsAsync(string name);
 }

@@ -10,10 +10,23 @@ public class GameInfosConfigBuilder
     private int _gameMode = 0;
     private int _chatTime = 10000;
     private int _finishTimeout = 1;
-    private bool _allowWarmupDuration = false;
+    private bool _allWarmupDuration = false;
     private bool _disableRespawn = false;
     private bool _forceShowAllOpponents = false;
     private string _scriptName = "";
+
+    public GameInfosConfigBuilder(){}
+    
+    public GameInfosConfigBuilder(MatchSettingsGameInfos gameInfos)
+    {
+        _gameMode = gameInfos.GameMode;
+        _chatTime = gameInfos.ChatTime;
+        _finishTimeout = gameInfos.ChatTime;
+        _allWarmupDuration = gameInfos.AllWarmupDuration;
+        _disableRespawn = gameInfos.DisableRespawn;
+        _forceShowAllOpponents = gameInfos.ForceShowAllOpponents;
+        _scriptName = gameInfos.ScriptName;
+    }
 
     public string ScriptName => _scriptName;
 
@@ -37,7 +50,7 @@ public class GameInfosConfigBuilder
 
     public GameInfosConfigBuilder AllowWarmupDuration(bool allow)
     {
-        _allowWarmupDuration = allow;
+        _allWarmupDuration = allow;
         return this;
     }
 
@@ -77,7 +90,7 @@ public class GameInfosConfigBuilder
             GameMode = _gameMode,
             ChatTime = _chatTime,
             FinishTimeout = _finishTimeout,
-            AllowWarmupDuration = _allowWarmupDuration,
+            AllWarmupDuration = _allWarmupDuration,
             DisableRespawn = _disableRespawn,
             ForceShowAllOpponents = _forceShowAllOpponents,
             ScriptName = _scriptName

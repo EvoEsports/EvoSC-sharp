@@ -35,6 +35,6 @@ public class CupModeScriptSettings : ModeScriptSettings
     public new bool? UseCrudeExtrapolation { get; set; }
     public new int? WarmUpDuration { get; set; }
     public new int? WarmUpNb { get; set; }
-    public new bool? WarmUpTimeout { get; set; }
+    public new int? WarmUpTimeout { get; set; }
     public new bool? DisableGoToMap { get; set; }
 }
