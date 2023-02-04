@@ -60,7 +60,7 @@ public class MatchSettingsXmlSerializer : IMatchSettings
         gameInfosElement.Add(new XElement("game_mode", GameInfos.GameMode));
         gameInfosElement.Add(new XElement("chat_time", GameInfos.ChatTime));
         gameInfosElement.Add(new XElement("finishtimeout", GameInfos.FinishTimeout));
-        gameInfosElement.Add(new XElement("allowwarmupduration", GameInfos.AllowWarmupDuration));
+        gameInfosElement.Add(new XElement("allwarmupduration", GameInfos.AllowWarmupDuration));
         gameInfosElement.Add(new XElement("disablerespawn", GameInfos.DisableRespawn));
         gameInfosElement.Add(new XElement("forceshowallopponents", GameInfos.ForceShowAllOpponents));
         gameInfosElement.Add(new XElement("script_name", GameInfos.ScriptName));

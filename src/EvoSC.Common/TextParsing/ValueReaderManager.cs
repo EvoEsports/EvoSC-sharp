@@ -7,6 +7,16 @@ public class ValueReaderManager : IValueReaderManager
 {
     private readonly Dictionary<Type, List<IValueReader>> _readers = new();
 
+    public ValueReaderManager(){}
+
+    public ValueReaderManager(params IValueReader[] readers)
+    {
+        foreach (var reader in readers)
+        {
+            AddReader(reader);
+        }
+    }
+    
     public void AddReader(IValueReader reader)
     {
         foreach (var type in reader.AllowedTypes)
@@ -46,6 +56,8 @@ public class ValueReaderManager : IValueReaderManager
             }
         }
 
-        throw new FormatException();
+        throw new FormatException($"The input '{input}' cannot be converted to type {type}");
     }
+
+    public async Task<T> ConvertValueAsync<T>(string input) => (T)await ConvertValueAsync(typeof(T), input);
 }

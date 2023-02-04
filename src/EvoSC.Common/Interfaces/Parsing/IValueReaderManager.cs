@@ -27,4 +27,12 @@ public interface IValueReaderManager
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     public Task<object> ConvertValueAsync(Type type, string input);
+
+    /// <summary>
+    /// Convert a single value to a specific type.
+    /// </summary>
+    /// <param name="input">Input to convert from.</param>
+    /// <typeparam name="T">The type of the object to convert to.</typeparam>
+    /// <returns></returns>
+    public Task<T> ConvertValueAsync<T>(string input);
 }

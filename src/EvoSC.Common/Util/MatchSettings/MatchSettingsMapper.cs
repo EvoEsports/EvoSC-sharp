@@ -17,15 +17,31 @@ public static class MatchSettingsMapper
         {typeof(bool?), "boolean"},
     };
 
+    private static Dictionary<string, Type> _stringToTypeMap = new()
+    {
+        {"integer", typeof(int)},
+        {"text", typeof(string)},
+        {"boolean", typeof(bool)},
+        {"real", typeof(float)}
+    };
+
     /// <summary>
     /// Add a custom type to the mapper. Make sure the
     /// custom type can be serialized to a string.
     /// </summary>
     /// <param name="mapFrom">The type to map.</param>
     /// <param name="mapTo">The type to map to.</param>
-    public static void AddType(Type mapFrom, MatchSettingsSettingType mapTo) =>
-        _typeToStringMap[mapFrom] = mapTo.GetIdentifier();
-    
+    public static void AddType(Type mapFrom, MatchSettingsSettingType mapTo)
+    {
+        var typeString = mapTo.GetIdentifier();
+        _typeToStringMap[mapFrom] = typeString;
+
+        if (!_stringToTypeMap.ContainsKey(typeString))
+        {
+            _stringToTypeMap[typeString] = mapFrom;
+        }
+    }
+
     /// <summary>
     /// Convert a type to a string representation for the
     /// type, which can be used to identify the type in a
@@ -38,10 +54,20 @@ public static class MatchSettingsMapper
     {
         if (!_typeToStringMap.ContainsKey(t))
         {
-            throw new InvalidKeyException($"The type {t.Name} cannot be mapped to a string.");
+            throw new InvalidKeyException($"The type '{t.Name}' cannot be mapped to a string.");
         }
         
         return _typeToStringMap[t];
+    }
+
+    public static Type ToType(string typeString)
+    {
+        if (!_stringToTypeMap.ContainsKey(typeString))
+        {
+            throw new InvalidKeyException($"The type string '{typeString}' cannot be mapped to a type.");
+        }
+
+        return _stringToTypeMap[typeString];
     }
 
     /// <summary>
