@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Common.Util.MatchSettings.Attributes;
 
 namespace EvoSC.Common.Util.MatchSettings;

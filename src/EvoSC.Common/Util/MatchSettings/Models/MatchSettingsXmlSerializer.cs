@@ -1,5 +1,4 @@
 ﻿using System.Xml.Linq;
-using System.Xml.Schema;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
 

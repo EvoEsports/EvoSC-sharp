@@ -136,7 +136,7 @@ public static class MatchSettingsXmlParser
             
             if (valueString.Equals(string.Empty, StringComparison.Ordinal))
             {
-                // ignore settings are empty, which means default value anyways
+                // ignore when settings are empty, which means default value anyways
                 continue;
             }
             
@@ -171,8 +171,7 @@ public static class MatchSettingsXmlParser
 
             var map = new Map
             {
-                FilePath =
-                    fileElement?.Value ?? throw new InvalidOperationException("Map does not contain a file."),
+                FilePath = fileElement?.Value ?? throw new InvalidOperationException("Map does not contain a file."),
                 Uid = ValueOrDefault(identElement, "")
             };
 

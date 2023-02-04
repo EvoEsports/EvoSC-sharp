@@ -1,6 +1,6 @@
-﻿using EvoSC.Common.Util.MatchSettings;
+﻿using EvoSC.Common.Util.EnumIdentifier;
 
-namespace EvoSC.Common.Util.EnumIdentifier;
+namespace EvoSC.Common.Util.MatchSettings.Attributes;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class ScriptSettingsForAttribute : Attribute

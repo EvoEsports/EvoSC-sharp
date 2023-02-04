@@ -1,15 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Text;
 using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Services;
-using EvoSC.Modules.Official.MatchManagerModule.Exceptions;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Permissions;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 

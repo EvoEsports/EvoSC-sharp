@@ -1,6 +1,4 @@
-﻿using System.Xml;
-using EvoSC.Common.Interfaces.Util;
-using EvoSC.Common.Util.EnumIdentifier;
+﻿using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Common.Util.MatchSettings.Models;
 
 namespace EvoSC.Common.Util.MatchSettings.Builders;

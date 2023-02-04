@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace EvoSC.Modules.Official.MatchManagerModule.Interfaces;
+﻿namespace EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 
 public interface ILiveModeService
 {

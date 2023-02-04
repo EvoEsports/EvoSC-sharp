@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
-using System.Xml;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Models.Maps;

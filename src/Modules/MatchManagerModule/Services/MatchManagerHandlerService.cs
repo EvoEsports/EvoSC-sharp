@@ -2,7 +2,6 @@
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Attributes;
-using EvoSC.Modules.Official.MatchManagerModule.Controllers;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Events.EventArgObjects;
 using EvoSC.Modules.Official.MatchManagerModule.Exceptions;
