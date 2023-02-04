@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
+/// <summary>
+/// Available settings for the Knockout mode.
+/// </summary>
 [ScriptSettingsFor(DefaultModeScriptName.Knockout)]
 public class KnockoutModeScriptSettings : ModeScriptSettings
 {

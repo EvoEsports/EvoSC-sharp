@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings;
 
+/// <summary>
+/// List of default modes in Trackmania.
+/// </summary>
 public enum DefaultModeScriptName
 {
     [Identifier(Name = "Trackmania/TM_TimeAttack_Online.Script.txt", NoPrefix = true)]
@@ -26,5 +29,8 @@ public enum DefaultModeScriptName
     [Identifier(Name = "Trackmania/TM_Champion_Online.Script.txt", NoPrefix = true)]
     Champion,
     
+    /// <summary>
+    /// Typically indicates a custom game mode.
+    /// </summary>
     Unknown
 }

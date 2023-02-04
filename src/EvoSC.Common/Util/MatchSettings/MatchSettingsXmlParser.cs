@@ -10,6 +10,9 @@ using StringReader = EvoSC.Common.TextParsing.ValueReaders.StringReader;
 
 namespace EvoSC.Common.Util.MatchSettings;
 
+/// <summary>
+/// Provides XML parsing and validation for match settings files.
+/// </summary>
 public static class MatchSettingsXmlParser
 {
     private static ValueReaderManager _valueReader = new(
@@ -19,8 +22,18 @@ public static class MatchSettingsXmlParser
         new StringReader()
     );
 
+    /// <summary>
+    /// Parse a string containing a XML document.
+    /// </summary>
+    /// <param name="xml">The XML document to parse.</param>
+    /// <returns></returns>
     public static Task<IMatchSettings> ParseAsync(string xml) => ParseAsync(XDocument.Parse(xml));
 
+    /// <summary>
+    /// Parse a XML document.
+    /// </summary>
+    /// <param name="document">The XML document to parse.</param>
+    /// <returns></returns>
     public static async Task<IMatchSettings> ParseAsync(XDocument document)
     {
         var playlistElement = document.Elements("playlist").First();
@@ -41,6 +54,11 @@ public static class MatchSettingsXmlParser
         };
     }
 
+    /// <summary>
+    /// Parse and obtain data from the gameinfos node.
+    /// </summary>
+    /// <param name="playlistElement"></param>
+    /// <returns></returns>
     private static async Task<MatchSettingsGameInfos> ParseGameInfos(XElement playlistElement)
     {
         var gameModeElement = playlistElement.XPathSelectElement("gameinfos/game_mode");
@@ -65,6 +83,11 @@ public static class MatchSettingsXmlParser
         };
     }
 
+    /// <summary>
+    /// Parse and obtain data from the filter node.
+    /// </summary>
+    /// <param name="playlistElement"></param>
+    /// <returns></returns>
     private static async Task<MatchSettingsFilter> ParseFilter(XElement playlistElement)
     {
         var isLanElement = playlistElement.XPathSelectElement("filter/is_lan");
@@ -85,17 +108,27 @@ public static class MatchSettingsXmlParser
         };
     }
 
+    /// <summary>
+    /// Parse the start_index value.
+    /// </summary>
+    /// <param name="playlistElement"></param>
+    /// <returns></returns>
     private static async Task<int> ParseStartIndex(XElement playlistElement)
     {
         var startIndexElement = playlistElement.XPathSelectElement("startindex");
         return await _valueReader.ConvertValueAsync<int>(ValueOrDefault(startIndexElement, "0"));
     }
 
-    private static async Task<Dictionary<string, ModeScriptSetting>> ParseScriptSettings(XElement playlistElement)
+    /// <summary>
+    /// Parse all mode script settings.
+    /// </summary>
+    /// <param name="playlistElement"></param>
+    /// <returns></returns>
+    private static async Task<Dictionary<string, ModeScriptSettingInfo>> ParseScriptSettings(XElement playlistElement)
     {
         var settingElements = playlistElement.XPathSelectElements("script_settings/setting");
 
-        var settings = new Dictionary<string, ModeScriptSetting>();
+        var settings = new Dictionary<string, ModeScriptSettingInfo>();
 
         foreach (var settingElement in settingElements)
         {
@@ -113,12 +146,18 @@ public static class MatchSettingsXmlParser
 
             var value = await _valueReader.ConvertValueAsync(type, valueString);
 
-            settings[name] = new ModeScriptSetting {Value = value, Description = "", Type = type};
+            settings[name] = new ModeScriptSettingInfo {Value = value, Description = "", Type = type};
         }
 
         return settings;
     }
 
+    /// <summary>
+    /// Parse and retrieve all maps.
+    /// </summary>
+    /// <param name="playlistElement"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static Task<List<IMap>> ParseMaps(XElement playlistElement)
     {
         var mapElements = playlistElement.XPathSelectElements("map");
@@ -143,9 +182,21 @@ public static class MatchSettingsXmlParser
         return Task.FromResult(maps);
     }
 
+    /// <summary>
+    /// Throw an exception when an attribute is missing.
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static string ThrowAttributeError(string attribute) =>
         throw new InvalidOperationException($"Missing attribute '{attribute}' in script setting.");
 
+    /// <summary>
+    /// Obtains the value of an element, or default if it is null or an empty string.
+    /// </summary>
+    /// <param name="element"></param>
+    /// <param name="defaultValue"></param>
+    /// <returns></returns>
     private static string ValueOrDefault(XElement? element, string defaultValue)
     {
         if (element?.Value == null)

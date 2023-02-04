@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
+/// <summary>
+/// Available settings for the Champion mode.
+/// </summary>
 [ScriptSettingsFor(DefaultModeScriptName.Champion)]
 public class ChampionModeScriptSettings : ModeScriptSettings
 {

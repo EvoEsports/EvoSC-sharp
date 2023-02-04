@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Attributes;
 
+/// <summary>
+/// Set a default value for a script setting.
+/// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public class DefaultScriptSettingValue : Attribute
 {

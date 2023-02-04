@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
+/// <summary>
+/// Available settings for the Teams mode.
+/// </summary>
 [ScriptSettingsFor(DefaultModeScriptName.Teams)]
 public class TeamsModeScriptSettings : ModeScriptSettings
 {

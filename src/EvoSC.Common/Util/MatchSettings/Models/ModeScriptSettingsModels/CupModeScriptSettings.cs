@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
+/// <summary>
+/// Available settings for the Cup mode.
+/// </summary>
 [ScriptSettingsFor(DefaultModeScriptName.Cup)]
 public class CupModeScriptSettings : ModeScriptSettings
 {

@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
+/// <summary>
+/// Available settings for the Time Attack mode.
+/// </summary>
 [ScriptSettingsFor(DefaultModeScriptName.TimeAttack)]
 public class TimeAttackModeScriptSettings : ModeScriptSettings
 {

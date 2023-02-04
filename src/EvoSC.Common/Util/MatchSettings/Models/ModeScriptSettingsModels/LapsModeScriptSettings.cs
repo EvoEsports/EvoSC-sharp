@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
+/// <summary>
+/// Available settings for the Laps mode.
+/// </summary>
 [ScriptSettingsFor(DefaultModeScriptName.Laps)]
 public class LapsModeScriptSettings : ModeScriptSettings
 {

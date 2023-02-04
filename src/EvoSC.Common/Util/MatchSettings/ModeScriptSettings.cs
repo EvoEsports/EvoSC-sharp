@@ -4,6 +4,9 @@ using EvoSC.Common.Util.MatchSettings.Attributes;
 
 namespace EvoSC.Common.Util.MatchSettings;
 
+/// <summary>
+/// List of available match settings in Trackmania.
+/// </summary>
 public class ModeScriptSettings
 {
     [ScriptSetting(Name = "S_BestLapBonusPoints")]

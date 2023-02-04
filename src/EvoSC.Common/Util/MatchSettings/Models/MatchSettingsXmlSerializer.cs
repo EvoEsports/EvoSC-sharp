@@ -5,14 +5,21 @@ using EvoSC.Common.Interfaces.Util;
 
 namespace EvoSC.Common.Util.MatchSettings.Models;
 
+/// <summary>
+/// Provides XML serialization of match settings.
+/// </summary>
 public class MatchSettingsXmlSerializer : IMatchSettings
 {
     public MatchSettingsGameInfos? GameInfos { get; set; }
     public MatchSettingsFilter? Filter { get; set; }
-    public Dictionary<string, ModeScriptSetting>? ModeScriptSettings { get; set; }
+    public Dictionary<string, ModeScriptSettingInfo>? ModeScriptSettings { get; set; }
     public List<IMap>? Maps { get; set; }
     public int StartIndex { get; set; }
 
+    /// <summary>
+    /// Convert the match settings to an XML document.
+    /// </summary>
+    /// <returns></returns>
     public XDocument ToXmlDocument()
     {
         var xmlDocument = new XDocument(new XDeclaration("1.0", "UTF-8", null));
@@ -44,6 +51,11 @@ public class MatchSettingsXmlSerializer : IMatchSettings
         return xmlDocument;
     }
 
+    /// <summary>
+    /// Create the root node.
+    /// </summary>
+    /// <param name="doc"></param>
+    /// <returns></returns>
     private XElement XmlPlaylist(XDocument doc)
     {
         var playlist = new XElement("playlist");
@@ -52,6 +64,10 @@ public class MatchSettingsXmlSerializer : IMatchSettings
         return playlist;
     }
 
+    /// <summary>
+    /// Create the game infos node.
+    /// </summary>
+    /// <param name="playlistElement"></param>
     private void XmlGameInfosNode(XElement playlistElement)
     {
         var gameInfosElement = new XElement("gameinfos");
@@ -66,6 +82,10 @@ public class MatchSettingsXmlSerializer : IMatchSettings
         gameInfosElement.Add(new XElement("script_name", GameInfos.ScriptName));
     }
     
+    /// <summary>
+    /// Create the filter node.
+    /// </summary>
+    /// <param name="playlistElement"></param>
     private void XmlFilterNode(XElement playlistElement)
     {
         var filterElement = new XElement("filter");
@@ -79,6 +99,10 @@ public class MatchSettingsXmlSerializer : IMatchSettings
         filterElement.Add(new XElement("random_map_order", Filter.RandomMapOrder));
     }
     
+    /// <summary>
+    /// Loop through mode script settings and create the setting node.
+    /// </summary>
+    /// <param name="playlistElement"></param>
     private void XmlScriptSettingsNode(XElement playlistElement)
     {
         var scriptSettingsElement = new XElement("script_settings");
@@ -95,11 +119,19 @@ public class MatchSettingsXmlSerializer : IMatchSettings
         }
     }
 
+    /// <summary>
+    /// Create the start_index node.
+    /// </summary>
+    /// <param name="playlistElement"></param>
     private void XmlStartIndexNode(XElement playlistElement)
     {
         playlistElement.Add(new XElement("start_index", StartIndex.ToString()));
     }
     
+    /// <summary>
+    /// Create all map nodes for this match settings.
+    /// </summary>
+    /// <param name="playlistElement"></param>
     private void XmlMapListNodes(XElement playlistElement)
     {
         foreach (var map in Maps)

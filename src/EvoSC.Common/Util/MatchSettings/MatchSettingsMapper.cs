@@ -4,6 +4,9 @@ using Org.BouncyCastle.Security;
 
 namespace EvoSC.Common.Util.MatchSettings;
 
+/// <summary>
+/// Provides type mapping methods tailored towards match settings data.
+/// </summary>
 public static class MatchSettingsMapper
 {
     private static Dictionary<Type, string> _typeToStringMap = new()
@@ -60,6 +63,12 @@ public static class MatchSettingsMapper
         return _typeToStringMap[t];
     }
 
+    /// <summary>
+    /// Convert a type's representation in string to the actual type.
+    /// </summary>
+    /// <param name="typeString">The name of the type.</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidKeyException"></exception>
     public static Type ToType(string typeString)
     {
         if (!_stringToTypeMap.ContainsKey(typeString))

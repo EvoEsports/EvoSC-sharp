@@ -10,11 +10,14 @@ using EvoSC.Common.Util.MatchSettings.Models;
 
 namespace EvoSC.Common.Util.MatchSettings.Builders;
 
+/// <summary>
+/// Fluent builder for creating or editing MatchSettings.
+/// </summary>
 public class MatchSettingsBuilder
 {
     private GameInfosConfigBuilder _gameInfosbuilder = new();
     private FilterConfigBuilder _filterBuilder = new();
-    private Dictionary<string, ModeScriptSetting> _scriptSettings;
+    private Dictionary<string, ModeScriptSettingInfo> _scriptSettings;
     private List<IMap> _maps = new();
     private int _startIndex;
 
@@ -22,63 +25,113 @@ public class MatchSettingsBuilder
     {
     }
     
+    /// <summary>
+    /// Create a builder from an existing MatchSettings, and provide editing
+    /// functionality.
+    /// </summary>
+    /// <param name="matchSettings">The match settings to edit.</param>
     public MatchSettingsBuilder(IMatchSettings matchSettings)
     {
         _gameInfosbuilder = new GameInfosConfigBuilder(matchSettings.GameInfos);
         _filterBuilder = new FilterConfigBuilder(matchSettings.Filter);
-        _scriptSettings = matchSettings.ModeScriptSettings ?? new Dictionary<string, ModeScriptSetting>();
+        _scriptSettings = matchSettings.ModeScriptSettings ?? new Dictionary<string, ModeScriptSettingInfo>();
         _maps = matchSettings.Maps ?? new List<IMap>();
         _startIndex = matchSettings.StartIndex;
     }
 
+    /// <summary>
+    /// Set the game mode for this MatchSettings using a default mode.
+    /// </summary>
+    /// <param name="mode">The game mode.</param>
+    /// <returns></returns>
     public MatchSettingsBuilder WithMode(DefaultModeScriptName mode)
     {
         _gameInfosbuilder.WithScriptName(mode);
         return this;
     }
     
+    /// <summary>
+    /// Set the game mode for this MatchSettings using a custom mode.
+    /// </summary>
+    /// <param name="scriptName"></param>
+    /// <returns></returns>
     public MatchSettingsBuilder WithMode(string scriptName)
     {
         _gameInfosbuilder.WithScriptName(scriptName);
         return this;
     }
     
+    /// <summary>
+    /// Edit the gameinfos for this MatchSettings.
+    /// </summary>
+    /// <param name="builderAction">Fluent builder for setting gameinfos.</param>
+    /// <returns></returns>
     public MatchSettingsBuilder WithGameInfos(Action<GameInfosConfigBuilder> builderAction)
     {
         builderAction(_gameInfosbuilder);
         return this;
     }
 
+    /// <summary>
+    /// Set the gameinfos for this MatchSettings.
+    /// </summary>
+    /// <param name="newGameInfosBuilder">A builder for this gameinfos.</param>
+    /// <returns></returns>
     public MatchSettingsBuilder WithGameInfos(GameInfosConfigBuilder newGameInfosBuilder)
     {
         _gameInfosbuilder = newGameInfosBuilder;
         return this;
     }
 
+    /// <summary>
+    /// Edit the filter options for this MatchSettings.
+    /// </summary>
+    /// <param name="builderAction">Fluent builder for this filter.</param>
+    /// <returns></returns>
     public MatchSettingsBuilder WithFilter(Action<FilterConfigBuilder> builderAction)
     {
         builderAction(_filterBuilder);
         return this;
     }
 
-    public MatchSettingsBuilder WithGameInfos(FilterConfigBuilder newFilterBuilder)
+    /// <summary>
+    /// Set the filter options for this MatchSettings.
+    /// </summary>
+    /// <param name="newFilterBuilder">A builder for this filter.</param>
+    /// <returns></returns>
+    public MatchSettingsBuilder WithFilter(FilterConfigBuilder newFilterBuilder)
     {
         _filterBuilder = newFilterBuilder;
         return this;
     }
 
+    /// <summary>
+    /// Set the map start index for this MatchSettings.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public MatchSettingsBuilder WithStartIndex(int index)
     {
         _startIndex = index;
         return this;
     }
 
+    /// <summary>
+    /// Add a map to this MatchSettings.
+    /// </summary>
+    /// <param name="map">The map to add.</param>
+    /// <returns></returns>
     public MatchSettingsBuilder AddMap(IMap map)
     {
         _maps.Add(map);
         return this;
     }
 
+    /// <summary>
+    /// Add a map by it's filename to the MatchSettings.
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
     public MatchSettingsBuilder AddMap(string fileName)
     {
         _maps.Add(new Map {FilePath = fileName});
@@ -120,11 +173,17 @@ public class MatchSettingsBuilder
         return this;
     }
 
+    /// <summary>
+    /// Set the settings for this MatchSettings. Make sure to call
+    /// WithMode first!.
+    /// </summary>
+    /// <param name="settingsAction">Fluent action for setting the settings dictionary.</param>
+    /// <returns></returns>
     public MatchSettingsBuilder WithModeSettings(Action<Dictionary<string, object?>> settingsAction)
     {
         if (_scriptSettings == null)
         {
-            _scriptSettings = new Dictionary<string, ModeScriptSetting>();
+            _scriptSettings = new Dictionary<string, ModeScriptSettingInfo>();
         }
 
         var settingsToSet = new Dictionary<string, object?>();
@@ -132,12 +191,16 @@ public class MatchSettingsBuilder
 
         foreach (var (name, value) in settingsToSet)
         {
-            _scriptSettings[name] = new ModeScriptSetting {Value = value, Description = "", Type = value.GetType()};
+            _scriptSettings[name] = new ModeScriptSettingInfo {Value = value, Description = "", Type = value.GetType()};
         }
 
         return this;
     }
 
+    /// <summary>
+    /// Create the match settings object from the current values.
+    /// </summary>
+    /// <returns></returns>
     public MatchSettingsInfo Build()
     {
         return new MatchSettingsInfo
@@ -150,9 +213,15 @@ public class MatchSettingsBuilder
         };
     }
 
-    private Dictionary<string, ModeScriptSetting> GetScriptSettings(ModeScriptSettings settingsObject)
+    /// <summary>
+    /// Obtain script settings from a script settings representation object.
+    /// </summary>
+    /// <param name="settingsObject">The object with available script settings for the mode.</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private Dictionary<string, ModeScriptSettingInfo> GetScriptSettings(ModeScriptSettings settingsObject)
     {
-        var settings = new Dictionary<string, ModeScriptSetting>();
+        var settings = new Dictionary<string, ModeScriptSettingInfo>();
 
         var classType = settingsObject.GetType();
 
@@ -185,7 +254,7 @@ public class MatchSettingsBuilder
 
             var propertyValue = property.GetValue(settingsObject);
 
-            var setting = new ModeScriptSetting
+            var setting = new ModeScriptSettingInfo
             {
                 Value = propertyValue ?? GetDefaultValue(defaultValueAttrs),
                 Description = descAttr?.Description ?? "",
@@ -198,6 +267,11 @@ public class MatchSettingsBuilder
         return settings;
     }
 
+    /// <summary>
+    /// Get the default value of a setting.
+    /// </summary>
+    /// <param name="defaultValues"></param>
+    /// <returns></returns>
     private object? GetDefaultValue(IEnumerable<DefaultScriptSettingValue> defaultValues)
     {
         foreach (var defaultValue in defaultValues)

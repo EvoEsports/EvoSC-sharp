@@ -49,7 +49,18 @@ public interface IMatchSettingsService
     /// <returns></returns>
     public Task<IMatchSettings> GetMatchSettingsAsync(string name);
     
+    /// <summary>
+    /// Edit an existing match settings file.
+    /// </summary>
+    /// <param name="name">The name of the match settings file.</param>
+    /// <param name="builderAction">Fluent builder for editing the contents.</param>
+    /// <returns></returns>
     public Task EditMatchSettingsAsync(string name, Action<MatchSettingsBuilder> builderAction);
     
+    /// <summary>
+    /// Remove a match settings file.
+    /// </summary>
+    /// <param name="name">The name of the match settings file.</param>
+    /// <returns></returns>
     public Task DeleteMatchSettingsAsync(string name);
 }

@@ -19,7 +19,7 @@ public interface IMatchSettings
     /// <summary>
     /// Mode script options.
     /// </summary>
-    public Dictionary<string, ModeScriptSetting>? ModeScriptSettings { get; set; }
+    public Dictionary<string, ModeScriptSettingInfo>? ModeScriptSettings { get; set; }
     
     /// <summary>
     /// The map list of this match settings.

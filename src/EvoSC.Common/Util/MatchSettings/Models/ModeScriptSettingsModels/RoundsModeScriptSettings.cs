@@ -2,6 +2,9 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
+/// <summary>
+/// Available settings for the Rounds mode.
+/// </summary>
 [ScriptSettingsFor(DefaultModeScriptName.Rounds)]
 public class RoundsModeScriptSettings : ModeScriptSettings
 {
