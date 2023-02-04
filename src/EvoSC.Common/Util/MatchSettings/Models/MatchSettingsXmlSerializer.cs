@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using System.Xml.Schema;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
 
@@ -6,23 +7,39 @@ namespace EvoSC.Common.Util.MatchSettings.Models;
 
 public class MatchSettingsXmlSerializer : IMatchSettings
 {
-    public MatchSettingsGameInfos GameInfos { get; set; }
-    public MatchSettingsFilter Filter { get; set; }
-    public Dictionary<string, ModeScriptSetting> ModeScriptSettings { get; set; }
-    public List<IMap> Maps { get; set; }
+    public MatchSettingsGameInfos? GameInfos { get; set; }
+    public MatchSettingsFilter? Filter { get; set; }
+    public Dictionary<string, ModeScriptSetting>? ModeScriptSettings { get; set; }
+    public List<IMap>? Maps { get; set; }
     public int StartIndex { get; set; }
-    
+
     public XDocument ToXmlDocument()
     {
         var xmlDocument = new XDocument(new XDeclaration("1.0", "UTF-8", null));
 
         var playlistElement = XmlPlaylist(xmlDocument);
+
+        if (GameInfos != null)
+        {
+            XmlGameInfosNode(playlistElement);
+        }
+
+        if (GameInfos != null)
+        {
+            XmlFilterNode(playlistElement);
+        }
+
+        if (ModeScriptSettings != null)
+        {
+            XmlScriptSettingsNode(playlistElement);
+        }
         
-        XmlGameInfosNode(playlistElement);
-        XmlFilterNode(playlistElement);
-        XmlScriptSettingsNode(playlistElement);
         XmlStartIndexNode(playlistElement);
-        XmlMapListNodes(playlistElement);
+
+        if (Maps != null)
+        {
+            XmlMapListNodes(playlistElement);
+        }
         
         return xmlDocument;
     }
@@ -87,10 +104,15 @@ public class MatchSettingsXmlSerializer : IMatchSettings
     {
         foreach (var map in Maps)
         {
-            playlistElement.Add(new XElement("map",
-                new XElement("file", map.FilePath),
-                new XElement("ident", map.Uid)
-            ));
+            var mapElement = new XElement("map");
+            mapElement.Add(new XElement("file", map.FilePath));
+
+            if (map.Uid == string.Empty)
+            {
+                mapElement.Add(new XElement("ident", map.Uid));
+            }
+            
+            playlistElement.Add(mapElement);
         }
     }
 }

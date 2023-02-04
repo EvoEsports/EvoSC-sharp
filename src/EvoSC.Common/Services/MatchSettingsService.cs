@@ -1,9 +1,12 @@
 ﻿using System.Text;
+using System.Xml.Linq;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.MatchSettings.Builders;
+using EvoSC.Common.Util.MatchSettings.Models;
 using GbxRemoteNet.Exceptions;
 using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;
@@ -15,11 +18,13 @@ public class MatchSettingsService : IMatchSettingsService
 {
     private readonly ILogger<MatchSettingsService> _logger;
     private readonly IServerClient _server;
+    private readonly IEvoScBaseConfig _config;
     
-    public MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server)
+    public MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IEvoScBaseConfig config)
     {
         _logger = logger;
         _server = server;
+        _config = config;
     }
     
     public async Task SetScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
@@ -75,8 +80,8 @@ public class MatchSettingsService : IMatchSettingsService
         var builder = new MatchSettingsBuilder();
         matchSettings(builder);
 
-        var contents = new Base64(builder
-            .Build()
+        var builtMatchSettings = builder.Build();
+        var contents = new Base64(builtMatchSettings
             .ToXmlDocument()
             .GetFullXmlString()
         );
@@ -85,7 +90,7 @@ public class MatchSettingsService : IMatchSettingsService
 
         try
         {
-            if (await _server.Remote.WriteFileAsync(fileName, contents))
+            if (!await _server.Remote.WriteFileAsync(fileName, contents))
             {
                 throw new InvalidOperationException("Failed to create match settings due to an unknown error.");
             }
@@ -105,5 +110,34 @@ public class MatchSettingsService : IMatchSettingsService
 
             throw;
         }
+    }
+
+    public async Task<IMatchSettings> GetMatchSettingsAsync(string name)
+    {
+        var mapsDir = _config.Path.Maps;
+
+        if (mapsDir == string.Empty)
+        {
+            mapsDir = await _server.Remote.GetMapsDirectoryAsync();
+        }
+
+        // if it's still empty and doesn't exist, we should throw an error
+        if (mapsDir == string.Empty && !Directory.Exists(mapsDir))
+        {
+            // we do this check to increase error tracking, even though file
+            // existence is checked later anyways
+            throw new DirectoryNotFoundException("Failed to find an existing maps directory.");
+        }
+
+        var filePath = Path.Combine(mapsDir, "MatchSettings", name + ".txt");
+
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("Failed to find the match settings with the provided name.", filePath);
+        }
+
+        var contents = await File.ReadAllTextAsync(filePath);
+        // return new MatchSettingsInfo(XDocument.Parse(contents));
+        return null;
     }
 }

@@ -40,4 +40,6 @@ public interface IMatchSettingsService
     /// <param name="matchSettings">Match settings builder for creation.</param>
     /// <returns></returns>
     public Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings);
+
+    public Task<IMatchSettings> GetMatchSettingsAsync(string name);
 }

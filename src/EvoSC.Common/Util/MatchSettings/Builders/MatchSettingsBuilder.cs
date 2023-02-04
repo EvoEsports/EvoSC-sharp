@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Xml;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
+using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Common.Util.MatchSettings.Attributes;
 using EvoSC.Common.Util.MatchSettings.Models;
@@ -14,6 +15,7 @@ public class MatchSettingsBuilder
     private GameInfosConfigBuilder _gameInfosbuilder = new();
     private FilterConfigBuilder _filterBuilder = new();
     private Dictionary<string, ModeScriptSetting> _scriptSettings;
+    private List<IMap> _maps = new();
     private int _startIndex;
 
     public MatchSettingsBuilder()
@@ -59,6 +61,24 @@ public class MatchSettingsBuilder
     public MatchSettingsBuilder WithStartIndex(int index)
     {
         _startIndex = index;
+        return this;
+    }
+
+    public MatchSettingsBuilder AddMap(IMap map)
+    {
+        _maps.Add(map);
+        return this;
+    }
+
+    public MatchSettingsBuilder AddMap(string fileName)
+    {
+        _maps.Add(new Map {FilePath = fileName});
+        return this;
+    }
+    
+    public MatchSettingsBuilder AddMap(string fileName, string uid)
+    {
+        _maps.Add(new Map {FilePath = fileName, Uid = uid});
         return this;
     }
 
@@ -116,7 +136,7 @@ public class MatchSettingsBuilder
             GameInfos = _gameInfosbuilder.Build(),
             Filter = _filterBuilder.Build(),
             ModeScriptSettings = _scriptSettings,
-            Maps = new List<IMap>(),
+            Maps = _maps,
             StartIndex = _startIndex
         };
     }
