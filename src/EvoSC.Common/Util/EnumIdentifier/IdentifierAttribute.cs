@@ -14,5 +14,5 @@ public class IdentifierAttribute : Attribute
     /// <summary>
     /// Whether to not include a prefix for this identifier.
     /// </summary>
-    public bool NoPrefix { get; set; } = false;
+    public bool NoPrefix { get; set; }
 }

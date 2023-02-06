@@ -5,7 +5,7 @@ namespace EvoSC.Common.Util;
 
 public static class XmlUtils
 {
-    private class Utf8StringWriter : StringWriter
+    private sealed class Utf8StringWriter : StringWriter
     {
         public override Encoding Encoding => Encoding.UTF8;
     }

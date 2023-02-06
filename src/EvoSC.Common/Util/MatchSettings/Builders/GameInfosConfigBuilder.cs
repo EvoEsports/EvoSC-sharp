@@ -8,12 +8,12 @@ namespace EvoSC.Common.Util.MatchSettings.Builders;
 /// </summary>
 public class GameInfosConfigBuilder
 {
-    private int _gameMode = 0;
+    private int _gameMode;
     private int _chatTime = 10000;
     private int _finishTimeout = 1;
-    private bool _allWarmupDuration = false;
-    private bool _disableRespawn = false;
-    private bool _forceShowAllOpponents = false;
+    private bool _allWarmupDuration;
+    private bool _disableRespawn;
+    private bool _forceShowAllOpponents;
     private string _scriptName = "";
 
     public GameInfosConfigBuilder(){}

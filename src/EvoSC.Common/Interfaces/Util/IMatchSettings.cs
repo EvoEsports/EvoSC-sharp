@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Common.Util.MatchSettings.Models;
 
 namespace EvoSC.Common.Interfaces.Util;

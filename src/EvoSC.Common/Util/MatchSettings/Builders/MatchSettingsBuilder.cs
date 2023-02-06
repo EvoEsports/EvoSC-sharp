@@ -3,7 +3,6 @@ using System.Reflection;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Models.Maps;
-using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Common.Util.MatchSettings.Attributes;
 using EvoSC.Common.Util.MatchSettings.Models;
 
@@ -137,9 +136,38 @@ public class MatchSettingsBuilder
         return this;
     }
     
+    /// <summary>
+    /// Add a map to the map list.
+    /// </summary>
+    /// <param name="fileName">The filename of the map.</param>
+    /// <param name="uid">The unique ID of the map.</param>
+    /// <returns></returns>
     public MatchSettingsBuilder AddMap(string fileName, string uid)
     {
         _maps.Add(new Map {FilePath = fileName, Uid = uid});
+        return this;
+    }
+
+    /// <summary>
+    /// Add a list of maps to the map list.
+    /// </summary>
+    /// <param name="maps">The maps to add.</param>
+    /// <returns></returns>
+    public MatchSettingsBuilder AddMaps(IEnumerable<IMap> maps)
+    {
+        _maps.AddRange(maps);
+        return this;
+    }
+
+    /// <summary>
+    /// Set the maps for this match settings. This overwrites
+    /// any previous maps set.
+    /// </summary>
+    /// <param name="maps">The maps to set.</param>
+    /// <returns></returns>
+    public MatchSettingsBuilder WithMaps(List<IMap> maps)
+    {
+        _maps = maps;
         return this;
     }
 
@@ -249,7 +277,7 @@ public class MatchSettingsBuilder
                                   $"The property '{property.Name}' must annotate ScriptSetting.");
 
             var descAttr = effectiveProperty.GetCustomAttribute<DescriptionAttribute>();
-            var defaultValueAttrs = effectiveProperty.GetCustomAttributes<DefaultScriptSettingValue>();
+            var defaultValueAttrs = effectiveProperty.GetCustomAttributes<DefaultScriptSettingValueAttribute>();
 
             var propertyValue = property.GetValue(settingsObject);
 
@@ -271,7 +299,7 @@ public class MatchSettingsBuilder
     /// </summary>
     /// <param name="defaultValues"></param>
     /// <returns></returns>
-    private object? GetDefaultValue(IEnumerable<DefaultScriptSettingValue> defaultValues)
+    private object? GetDefaultValue(IEnumerable<DefaultScriptSettingValueAttribute> defaultValues)
     {
         foreach (var defaultValue in defaultValues)
         {

@@ -12,12 +12,10 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 public class MatchSettingsCommandsController : EvoScController<CommandInteractionContext>
 {
     private readonly IMatchManagerHandlerService _matchHandler;
-    private readonly ILiveModeService _liveModes;
 
-    public MatchSettingsCommandsController(IMatchManagerHandlerService matchHandler, ILiveModeService liveModes)
+    public MatchSettingsCommandsController(IMatchManagerHandlerService matchHandler)
     {
         _matchHandler = matchHandler;
-        _liveModes = liveModes;
     }
 
     [ChatCommand("setmode", "Change current game mode.", MatchManagerPermissions.SetLiveMode)]

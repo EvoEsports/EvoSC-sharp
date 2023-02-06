@@ -38,11 +38,11 @@ public static class MatchSettingsXmlParser
     {
         var playlistElement = document.Elements("playlist").First();
 
-        var gameInfos = await ParseGameInfos(playlistElement);
-        var filter = await ParseFilter(playlistElement);
-        var scriptSettings = await ParseScriptSettings(playlistElement);
-        var startIndex = await ParseStartIndex(playlistElement);
-        var maps = await ParseMaps(playlistElement);
+        var gameInfos = await ParseGameInfosAsync(playlistElement);
+        var filter = await ParseFilterAsync(playlistElement);
+        var scriptSettings = await ParseScriptSettingsAsync(playlistElement);
+        var startIndex = await ParseStartIndexAsync(playlistElement);
+        var maps = await ParseMapsAsync(playlistElement);
 
         return new MatchSettingsInfo
         {
@@ -59,7 +59,7 @@ public static class MatchSettingsXmlParser
     /// </summary>
     /// <param name="playlistElement"></param>
     /// <returns></returns>
-    private static async Task<MatchSettingsGameInfos> ParseGameInfos(XElement playlistElement)
+    private static async Task<MatchSettingsGameInfos> ParseGameInfosAsync(XElement playlistElement)
     {
         var gameModeElement = playlistElement.XPathSelectElement("gameinfos/game_mode");
         var chatTimeElement = playlistElement.XPathSelectElement("gameinfos/chat_time");
@@ -88,7 +88,7 @@ public static class MatchSettingsXmlParser
     /// </summary>
     /// <param name="playlistElement"></param>
     /// <returns></returns>
-    private static async Task<MatchSettingsFilter> ParseFilter(XElement playlistElement)
+    private static async Task<MatchSettingsFilter> ParseFilterAsync(XElement playlistElement)
     {
         var isLanElement = playlistElement.XPathSelectElement("filter/is_lan");
         var isInternetElement = playlistElement.XPathSelectElement("filter/is_internet");
@@ -113,7 +113,7 @@ public static class MatchSettingsXmlParser
     /// </summary>
     /// <param name="playlistElement"></param>
     /// <returns></returns>
-    private static async Task<int> ParseStartIndex(XElement playlistElement)
+    private static async Task<int> ParseStartIndexAsync(XElement playlistElement)
     {
         var startIndexElement = playlistElement.XPathSelectElement("startindex");
         return await _valueReader.ConvertValueAsync<int>(ValueOrDefault(startIndexElement, "0"));
@@ -124,7 +124,7 @@ public static class MatchSettingsXmlParser
     /// </summary>
     /// <param name="playlistElement"></param>
     /// <returns></returns>
-    private static async Task<Dictionary<string, ModeScriptSettingInfo>> ParseScriptSettings(XElement playlistElement)
+    private static async Task<Dictionary<string, ModeScriptSettingInfo>> ParseScriptSettingsAsync(XElement playlistElement)
     {
         var settingElements = playlistElement.XPathSelectElements("script_settings/setting");
 
@@ -134,7 +134,7 @@ public static class MatchSettingsXmlParser
         {
             var valueString = settingElement.Attribute("value")?.Value ?? ThrowAttributeError("value");
             
-            if (valueString.Equals(string.Empty, StringComparison.Ordinal))
+            if (string.IsNullOrEmpty(valueString))
             {
                 // ignore when settings are empty, which means default value anyways
                 continue;
@@ -158,7 +158,7 @@ public static class MatchSettingsXmlParser
     /// <param name="playlistElement"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static Task<List<IMap>> ParseMaps(XElement playlistElement)
+    private static Task<List<IMap>> ParseMapsAsync(XElement playlistElement)
     {
         var mapElements = playlistElement.XPathSelectElements("map");
 
@@ -198,12 +198,7 @@ public static class MatchSettingsXmlParser
     /// <returns></returns>
     private static string ValueOrDefault(XElement? element, string defaultValue)
     {
-        if (element?.Value == null)
-        {
-            return defaultValue;
-        }
-
-        if (element.Value.Equals(string.Empty, StringComparison.Ordinal))
+        if (string.IsNullOrEmpty(element?.Value))
         {
             return defaultValue;
         }

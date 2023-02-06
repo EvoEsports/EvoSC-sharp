@@ -8,7 +8,7 @@ public class BooleanReader : IValueReader
 {
     public IEnumerable<Type> AllowedTypes => new[] {typeof(bool)};
 
-    private Dictionary<string, bool> _lookupTable = new()
+    private readonly Dictionary<string, bool> _lookupTable = new()
     {
         {"1", true},
         {"0", false},

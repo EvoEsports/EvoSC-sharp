@@ -9,10 +9,10 @@ public class FilterConfigBuilder
 {
     private bool _isLan = true;
     private bool _isInternet = true;
-    private bool _isSolo = false;
-    private bool _isHotseat = false;
+    private bool _isSolo;
+    private bool _isHotseat;
     private int _sortIndex = 1000;
-    private bool _randomMapOrder = false;
+    private bool _randomMapOrder;
 
     public FilterConfigBuilder(){}
     

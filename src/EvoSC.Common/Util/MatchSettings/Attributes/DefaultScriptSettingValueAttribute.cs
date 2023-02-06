@@ -6,7 +6,7 @@ namespace EvoSC.Common.Util.MatchSettings.Attributes;
 /// Set a default value for a script setting.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-public class DefaultScriptSettingValue : Attribute
+public class DefaultScriptSettingValueAttribute : Attribute
 {
     /// <summary>
     /// The mode which this value applies to. If null,
@@ -24,7 +24,7 @@ public class DefaultScriptSettingValue : Attribute
     /// </summary>
     /// <param name="onMode">The mode to set the value to.</param>
     /// <param name="value">The default value.</param>
-    public DefaultScriptSettingValue(DefaultModeScriptName onMode, object? value)
+    public DefaultScriptSettingValueAttribute(DefaultModeScriptName onMode, object? value)
     {
         OnMode = onMode.GetIdentifier();
         Value = value;
@@ -35,7 +35,7 @@ public class DefaultScriptSettingValue : Attribute
     /// </summary>
     /// <param name="onMode">The name of the mode to set the value to.</param>
     /// <param name="value">The default value.</param>
-    public DefaultScriptSettingValue(string onMode, object? value)
+    public DefaultScriptSettingValueAttribute(string onMode, object? value)
     {
         OnMode = onMode;
         Value = value;
@@ -45,7 +45,7 @@ public class DefaultScriptSettingValue : Attribute
     /// Set the default value for all modes.
     /// </summary>
     /// <param name="value">The default value.</param>
-    public DefaultScriptSettingValue(object? value)
+    public DefaultScriptSettingValueAttribute(object? value)
     {
         OnMode = null;
         Value = value;

@@ -30,7 +30,7 @@ public class MatchSettingsXmlSerializer : IMatchSettings
             XmlGameInfosNode(playlistElement);
         }
 
-        if (GameInfos != null)
+        if (Filter != null)
         {
             XmlFilterNode(playlistElement);
         }
