@@ -70,8 +70,19 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
             .AddMap("MX/1_Alive.Map.Gbx")
         );*/
 
-        // var settings = await _matchSettings.GetCurrentScriptSettingsAsync();
+        var settings = await _matchSettings.GetCurrentScriptSettingsAsync();
         var script = await _server.Remote.GetScriptNameAsync();
+
+        await _matchSettings.CreateMatchSettingsAsync("tmwtteams", matchSettings => matchSettings
+            .WithMode(script.CurrentValue)
+            .WithModeSettings(modeSettings =>
+            {
+                foreach (var setting in settings)
+                {
+                    modeSettings[setting.Key] = setting.Value;
+                }
+            })
+        );
 
         /* var matchSettings = new MatchSettingsBuilder()
             .WithMode(DefaultModeScriptName.TimeAttack)

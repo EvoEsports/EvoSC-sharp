@@ -22,6 +22,7 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, 10)]
     [DefaultScriptSettingValue(DefaultModeScriptName.TimeAttack, 10)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, 10)]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, 600)]
     protected int ChatTime { get; set; }
     
     [ScriptSetting(Name = "S_CumulatePoints")]
@@ -94,6 +95,7 @@ public class ModeScriptSettings
     """)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Champion, true)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, true)]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, true)]
     protected bool EarlyEndMatchCallback { get; set; }
     
     [ScriptSetting(Name = "S_EliminatedPlayersNbRanks")]
@@ -125,6 +127,7 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, -1)]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, -1)]
     protected int FinishTimeout { get; set; }
     
     [ScriptSetting(Name = "S_ForceLapsNb")]
@@ -141,6 +144,7 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.TimeAttack, 0)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, -1)]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, -1)]
     protected int ForceLapsNb { get; set; }
     
     [ScriptSetting(Name = "S_ForceWinnersNb")]
@@ -245,7 +249,7 @@ public class ModeScriptSettings
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, "")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, "")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, "")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, "")]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, "")]
     protected string PointsRepartition { get; set; }
     
     [ScriptSetting(Name = "S_RespawnBehaviour")]
@@ -408,4 +412,39 @@ public class ModeScriptSettings
     [Description("Disable the goto map vote option.")]
     [DefaultScriptSettingValue(false)]
     protected bool DisableGoToMap { get; set; }
+    
+    [ScriptSetting(Name = "S_MapPointsLimit")]
+    [Description("Map points limit.")]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, 10)]
+    protected int MapPointsLimit { get; set; }
+    
+    [ScriptSetting(Name = "S_MatchPointsLimit")]
+    [Description("Match points limit, can be set from 1 to 4.")]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, 4)]
+    protected int MatchPointsLimit { get; set; }
+    
+    [ScriptSetting(Name = "S_MatchInfo")]
+    [Description("Match info displayed in the UI. Shows a message in the waiting screen before the match.")]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, "")]
+    protected string MatchInfo { get; set; }
+    
+    [ScriptSetting(Name = "S_TeamsUrl")]
+    [Description("A url to a HTTP page which returns JSON formatted info about the teams.")]
+    [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, "")]
+    protected string TeamsUrl { get; set; }
+    
+    [ScriptSetting(Name = "S_ForceRoadSpectatorsNb")]
+    [Description("")]
+    [DefaultScriptSettingValue("")]
+    protected string ForceRoadSpectatorsNb { get; set; }
+    
+    [ScriptSetting(Name = "S_EnablePreMatch")]
+    [Description("")]
+    [DefaultScriptSettingValue(false)]
+    protected bool EnablePreMatch { get; set; }
+    
+    [ScriptSetting(Name = "S_EnableDossardColor")]
+    [Description("")]
+    [DefaultScriptSettingValue(false)]
+    protected bool EnableDossardColor { get; set; }
 }
