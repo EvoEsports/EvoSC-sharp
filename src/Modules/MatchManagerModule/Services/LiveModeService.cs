@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 
