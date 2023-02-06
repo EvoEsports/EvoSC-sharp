@@ -25,11 +25,7 @@ public enum DefaultModeScriptName
     
     [Identifier(Name = "Trackmania/TM_Knockout_Online.Script.txt", NoPrefix = true)]
     Knockout,
-    
-    [Obsolete]
-    [Identifier(Name = "Trackmania/TM_Champion_Online.Script.txt", NoPrefix = true)]
-    Champion,
-    
+
     [Identifier(Name = "Trackmania/TM_TMWTTeams_Online.Script.txt", NoPrefix = true)]
     TMWTTeams,
     

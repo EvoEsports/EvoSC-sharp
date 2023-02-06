@@ -10,12 +10,10 @@ public class ModeScriptSettings
 {
     [ScriptSetting(Name = "S_BestLapBonusPoints")]
     [Description("Points bonus attributed to the player with the best lap")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 2)]
     protected int BestLapBonusPoints { get; set; }
 
     [ScriptSetting(Name = "S_ChatTime")]
     [Description("Chat time at the end of a map or match")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 30)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, 10)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, 6)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, 10)]
@@ -84,7 +82,6 @@ public class ModeScriptSettings
     
     [ScriptSetting(Name = "S_DisableGiveUp")]
     [Description("Disable GiveUp, override S_RespawnBehaviour.")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, false)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, false)]
     protected bool DisableGiveUp { get; set; }
     
@@ -93,7 +90,6 @@ public class ModeScriptSettings
     Send End Match Callback early, used to speed up the API update in TMGL/OGL and the COTD.
     Very specific usage.
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, true)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, true)]
     [DefaultScriptSettingValue(DefaultModeScriptName.TMWTTeams, true)]
     protected bool EarlyEndMatchCallback { get; set; }
@@ -108,12 +104,12 @@ public class ModeScriptSettings
     
     [ScriptSetting(Name = "S_EndRoundPostScoreUpdateDuration")]
     [Description("Time in seconds after score computed on scoreboard")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 5)]
+    [DefaultScriptSettingValue(5)]
     protected int EndRoundPostScoreUpdateDuration { get; set; }
     
     [ScriptSetting(Name = "S_EndRoundPreScoreUpdateDuration")]
     [Description("Time in seconds before score computed on scoreboard")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 5)]
+    [DefaultScriptSettingValue(5)]
     protected int EndRoundPreScoreUpdateDuration { get; set; }
     
     [ScriptSetting(Name = "S_FinishTimeout")]
@@ -121,7 +117,6 @@ public class ModeScriptSettings
     Time to finish the race in seconds after the winners.
     Use -1 to based on the Author time ( 5 seconds + Author time / 6 )
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 5)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, 5)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, -1)]
@@ -137,7 +132,6 @@ public class ModeScriptSettings
     0     : independent laps (only useful in TimeAttack)
     > 0  : Nomber of laps
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 3)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, -1)]
@@ -152,7 +146,7 @@ public class ModeScriptSettings
     Force the number of players who can win points at the end of the round
     Set 0 to use S_WinnersRatio
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 0)]
+    [DefaultScriptSettingValue(0)]
     protected int ForceWinnersNb { get; set; }
     
     [ScriptSetting(Name = "S_InfiniteLaps")]
@@ -211,7 +205,7 @@ public class ModeScriptSettings
     Round with a pause before its start, used in TMGL with the value 4.
     Set 0 to disable the feature. Linked to S_PauseDuration
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 0)]
+    [DefaultScriptSettingValue(0)]
     protected int PauseBeforeRoundNb { get; set; }
     
     [ScriptSetting(Name = "S_PauseDuration")]
@@ -219,7 +213,7 @@ public class ModeScriptSettings
     Pause time in seconds.
     Set 0 to disable the feature. Linked to S_PauseBeforeRoundNb
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 360)]
+    [DefaultScriptSettingValue(360)]
     protected int PauseDuration { get; set; }
     
     [ScriptSetting(Name = "S_PointsGap")]
@@ -232,7 +226,6 @@ public class ModeScriptSettings
     Limit number of points. 
     0 = unlimited for Champion & Rounds
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, 100)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, 5)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, 50)]
@@ -245,7 +238,6 @@ public class ModeScriptSettings
     In Knockout game mode, this setting is useless
     empty = 10,6,4,3,2,1
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, "20,14,12,10,8,7,6,5,5,4,4,3,3,2,2,1")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, "")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, "")]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, "")]
@@ -266,7 +258,7 @@ public class ModeScriptSettings
     
     [ScriptSetting(Name = "S_RoundsLimit")]
     [Description("Number of rounds to play before finding a winner")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 6)]
+    [DefaultScriptSettingValue(6)]
     protected int RoundsLimit { get; set; }
     
     [ScriptSetting(Name = "S_RoundsPerMap")]
@@ -274,7 +266,6 @@ public class ModeScriptSettings
     Number of round to play on one map before going to the next one 
     -1 or 0 = unlimited
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Cup, 5)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Knockout, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, -1)]
@@ -286,7 +277,7 @@ public class ModeScriptSettings
     Rounds with a Phase change (Openning, Semi-Final, Final)
     It's possible to skip a phase with multiple occurences of a round number, exemple "3,3"
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, "3,5")]
+    [DefaultScriptSettingValue("3,5")]
     protected string RoundsWithAPhaseChange { get; set; }
     
     [ScriptSetting(Name = "S_RoundsWithoutElimination")]
@@ -328,14 +319,13 @@ public class ModeScriptSettings
     Time limit before going to the next map
     0 or -1 for unlimited time
     """)]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, -1)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Laps, 0)]
     [DefaultScriptSettingValue(DefaultModeScriptName.TimeAttack, 300)]
     protected int TimeLimit { get; set; }
     
     [ScriptSetting(Name = "S_TimeOutPlayersNumber")]
     [Description("Players crossing finish line before starting finish timeout. Linked to S_FinishTimeout")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, 0)]
+    [DefaultScriptSettingValue( 0)]
     protected int TimeOutPlayersNumber { get; set; }
     
     [ScriptSetting(Name = "S_TrustClientSimu")]
@@ -380,7 +370,6 @@ public class ModeScriptSettings
     
     [ScriptSetting(Name = "S_UseTieBreak")]
     [Description("Continue to play the map until the tie is broken.")]
-    [DefaultScriptSettingValue(DefaultModeScriptName.Champion, false)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Teams, true)]
     [DefaultScriptSettingValue(DefaultModeScriptName.Rounds, true)]
     protected bool UseTieBreak { get; set; }
