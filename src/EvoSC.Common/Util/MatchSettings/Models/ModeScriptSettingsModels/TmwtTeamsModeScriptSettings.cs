@@ -2,8 +2,8 @@
 
 namespace EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
-[ScriptSettingsFor(DefaultModeScriptName.TMWTTeams)]
-public class TMWTTeamsModeScriptSettings : ModeScriptSettings
+[ScriptSettingsFor(DefaultModeScriptName.TmwtTeams)]
+public class TmwtTeamsModeScriptSettings : ModeScriptSettings
 {
     public new  int? ChatTime { get; set; }
     public new  bool? UseClublinks { get; set; }

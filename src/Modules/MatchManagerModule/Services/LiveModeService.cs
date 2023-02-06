@@ -1,16 +1,14 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Attributes;
-using EvoSC.Modules.Official.MatchManagerModule.Exceptions;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
-using GbxRemoteNet.Exceptions;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class LiveModeService : ILiveModeService
 {
-    private Dictionary<string, string> _availableModes = new()
+    private readonly Dictionary<string, string> _availableModes = new()
     {
         {"ta", "Trackmania/TM_TimeAttack_Online.Script.txt"}, 
         {"rounds", "Trackmania/TM_Rounds_Online.Script.txt"},
@@ -22,12 +20,10 @@ public class LiveModeService : ILiveModeService
     };
 
     private readonly IServerClient _server;
-    private readonly IMatchSettingsService _matchSettings;
 
-    public LiveModeService(IServerClient server, IMatchSettingsService matchSettings)
+    public LiveModeService(IServerClient server)
     {
         _server = server;
-        _matchSettings = matchSettings;
     }
     
     public IEnumerable<string> GetAvailableModes() => _availableModes.Keys;

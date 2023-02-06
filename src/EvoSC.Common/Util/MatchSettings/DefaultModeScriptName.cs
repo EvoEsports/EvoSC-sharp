@@ -27,7 +27,7 @@ public enum DefaultModeScriptName
     Knockout,
 
     [Identifier(Name = "Trackmania/TM_TMWTTeams_Online.Script.txt", NoPrefix = true)]
-    TMWTTeams,
+    TmwtTeams,
     
     /// <summary>
     /// Typically indicates a custom game mode.
