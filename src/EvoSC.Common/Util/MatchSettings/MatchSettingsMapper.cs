@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
+using EvoSC.Common.TextParsing;
+using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util.EnumIdentifier;
 using Org.BouncyCastle.Security;
+using StringReader = EvoSC.Common.TextParsing.ValueReaders.StringReader;
 
 namespace EvoSC.Common.Util.MatchSettings;
 
@@ -23,10 +26,18 @@ public static class MatchSettingsMapper
     private static Dictionary<string, Type> _stringToTypeMap = new()
     {
         {"integer", typeof(int)},
+        {"int", typeof(int)},
         {"text", typeof(string)},
         {"boolean", typeof(bool)},
         {"real", typeof(float)}
     };
+    
+    private static ValueReaderManager _valueReader = new(
+        new IntegerReader(),
+        new BooleanReader(),
+        new FloatReader(),
+        new StringReader()
+    );
 
     /// <summary>
     /// Add a custom type to the mapper. Make sure the
@@ -112,4 +123,7 @@ public static class MatchSettingsMapper
 
         return null;
     }
+
+    public static Task<object> ToValueTypeAsync(Type type, string stringValue) =>
+        _valueReader.ConvertValueAsync(type, stringValue);
 }

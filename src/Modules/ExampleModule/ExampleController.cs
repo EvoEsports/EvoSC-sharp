@@ -66,9 +66,12 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        await _matchSettings.EditMatchSettingsAsync("cup", matchSettings => matchSettings
+        /*await _matchSettings.EditMatchSettingsAsync("cup", matchSettings => matchSettings
             .AddMap("MX/1_Alive.Map.Gbx")
-        );
+        );*/
+
+        // var settings = await _matchSettings.GetCurrentScriptSettingsAsync();
+        var script = await _server.Remote.GetScriptNameAsync();
 
         /* var matchSettings = new MatchSettingsBuilder()
             .WithMode(DefaultModeScriptName.TimeAttack)

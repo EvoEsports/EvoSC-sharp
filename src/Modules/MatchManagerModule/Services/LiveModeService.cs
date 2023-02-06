@@ -3,6 +3,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.MatchManagerModule.Exceptions;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
+using GbxRemoteNet.Exceptions;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Services;
 
@@ -33,12 +34,12 @@ public class LiveModeService : ILiveModeService
 
     public async Task<string> LoadModeAsync(string mode)
     {
-        if (!_availableModes.ContainsKey(mode))
+        var modeName = mode;
+        
+        if (_availableModes.ContainsKey(mode))
         {
-            throw new LiveModeNotFoundException(mode);
+            modeName = _availableModes[mode];
         }
-
-        var modeName = _availableModes[mode];
         
         await _server.Remote.SetScriptNameAsync(modeName);
         await _server.Remote.RestartMapAsync();

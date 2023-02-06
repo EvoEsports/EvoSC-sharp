@@ -31,4 +31,8 @@ public class MatchSettingsCommandsController : EvoScController<CommandInteractio
         [Description("The name of the matchsettings file, without extension.")]
         string name
     ) => _matchHandler.LoadMatchSettingsAsync(name, Context.Player);
+
+    [ChatCommand("scriptsetting", "Set the value of a script setting.", MatchManagerPermissions.SetLiveMode)]
+    [CommandAlias("/ssetting", hide: true)]
+    public Task SetScriptSettingAsync(string name, string value) => _matchHandler.SetScriptSettingAsync(name, value, Context.Player);
 }
