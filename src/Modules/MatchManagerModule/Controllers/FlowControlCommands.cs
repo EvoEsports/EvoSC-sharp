@@ -28,7 +28,7 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
         await _server.InfoMessageAsync($"{Context.Player.NickName} restarted the match.");
     }
 
-    [ChatCommand("endround", "Force fnd the current round.", FlowControlPermissions.EndRound)]
+    [ChatCommand("endround", "Force end the current round.", FlowControlPermissions.EndRound)]
     public async Task EndRoundAsync()
     {
         await _flowControl.EndRoundAsync();
