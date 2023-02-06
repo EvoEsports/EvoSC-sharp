@@ -138,7 +138,7 @@ public class MatchSettingsXmlSerializer : IMatchSettings
             var mapElement = new XElement("map");
             mapElement.Add(new XElement("file", map.FilePath));
 
-            if (map.Uid == string.Empty)
+            if (!string.IsNullOrEmpty(map.Uid))
             {
                 mapElement.Add(new XElement("ident", map.Uid));
             }

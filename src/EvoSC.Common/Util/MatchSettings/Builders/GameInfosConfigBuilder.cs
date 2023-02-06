@@ -137,7 +137,7 @@ public class GameInfosConfigBuilder
     /// <exception cref="InvalidOperationException">Thrown if the script name is not set.</exception>
     public MatchSettingsGameInfos Build()
     {
-        if (_scriptName == null)
+        if (string.IsNullOrEmpty(_scriptName))
         {
             throw new InvalidOperationException("GameInfos cannot be built without a script name.");
         }

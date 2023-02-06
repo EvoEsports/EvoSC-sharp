@@ -110,7 +110,7 @@ public class MatchSettingsBuilder
     /// <returns></returns>
     public MatchSettingsBuilder WithStartIndex(int index)
     {
-        _startIndex = index;
+        _startIndex = index < 0 ? 0 : index;
         return this;
     }
 
@@ -165,9 +165,9 @@ public class MatchSettingsBuilder
     /// </summary>
     /// <param name="maps">The maps to set.</param>
     /// <returns></returns>
-    public MatchSettingsBuilder WithMaps(List<IMap> maps)
+    public MatchSettingsBuilder WithMaps(IEnumerable<IMap> maps)
     {
-        _maps = maps;
+        _maps = maps.ToList();
         return this;
     }
 

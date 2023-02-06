@@ -115,7 +115,7 @@ public static class MatchSettingsXmlParser
     /// <returns></returns>
     private static async Task<int> ParseStartIndexAsync(XElement playlistElement)
     {
-        var startIndexElement = playlistElement.XPathSelectElement("startindex");
+        var startIndexElement = playlistElement.XPathSelectElement("start_index");
         return await _valueReader.ConvertValueAsync<int>(ValueOrDefault(startIndexElement, "0"));
     }
 
