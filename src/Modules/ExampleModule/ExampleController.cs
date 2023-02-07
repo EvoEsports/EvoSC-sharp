@@ -6,6 +6,10 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Util;
+using EvoSC.Common.Util.MatchSettings;
+using EvoSC.Common.Util.MatchSettings.Builders;
+using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Modules.Official.ExampleModule;
@@ -19,9 +23,11 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IPermissionManager _permissions;
     private readonly IPermissionRepository _permRepo;
     private readonly IMapRepository _mapRepo;
+    private readonly IMatchSettingsService _matchSettings;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
-        IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo, IMapRepository mapRepo)
+        IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo,
+        IMapRepository mapRepo, IMatchSettingsService matchSettings)
     {
         _settings = settings;
         _server = server;
@@ -29,6 +35,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         _permissions = permissions;
         _permRepo = permRepo;
         _mapRepo = mapRepo;
+        _matchSettings = matchSettings;
     }
 
     [ChatCommand("hey", "Say hey!")]
@@ -59,6 +66,30 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        //throw new Exception("something happened!");
+        /*await _matchSettings.EditMatchSettingsAsync("cup", matchSettings => matchSettings
+            .AddMap("MX/1_Alive.Map.Gbx")
+        );*/
+
+        var settings = await _matchSettings.GetCurrentScriptSettingsAsync();
+        var script = await _server.Remote.GetScriptNameAsync();
+
+        await _matchSettings.CreateMatchSettingsAsync("tmwtteams", matchSettings => matchSettings
+            .WithMode(script.CurrentValue)
+            .WithModeSettings(modeSettings =>
+            {
+                foreach (var setting in settings)
+                {
+                    modeSettings[setting.Key] = setting.Value;
+                }
+            })
+        );
+
+        /* var matchSettings = new MatchSettingsBuilder()
+            .WithMode(DefaultModeScriptName.TimeAttack)
+            .AddMap("MX/1_Alive.Map.Gbx")
+            .AddMap("MX/123_Flames_Temple_001.Map.Gbx")
+            .Build();
+        
+        Console.WriteLine(matchSettings.ToXmlDocument().GetFullXmlString()); */
     }
 }

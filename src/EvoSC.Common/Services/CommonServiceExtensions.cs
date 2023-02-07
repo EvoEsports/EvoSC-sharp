@@ -15,6 +15,7 @@ public static class CommonServiceExtensions
         services.Register<IPlayerManagerService, PlayerManagerService>(Lifestyle.Transient);
         services.Register<IMapService, MapService>(Lifestyle.Transient);
         services.RegisterSingleton<IPlayerCacheService, PlayerCacheService>();
+        services.Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient);
         
         return services;
     }

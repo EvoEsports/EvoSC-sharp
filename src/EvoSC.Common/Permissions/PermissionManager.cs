@@ -1,18 +1,15 @@
 ﻿using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Permissions;
 
 public class PermissionManager : IPermissionManager
 {
-    private readonly ILogger<PermissionManager> _logger;
     private readonly IPermissionRepository _permissionRepository;
 
-    public PermissionManager(ILogger<PermissionManager> logger, IPermissionRepository permissionRepository)
+    public PermissionManager(IPermissionRepository permissionRepository)
     {
-        _logger = logger;
         _permissionRepository = permissionRepository;
     }
 
@@ -20,14 +17,7 @@ public class PermissionManager : IPermissionManager
     {
         var result = await _permissionRepository.GetPlayerPermissionsAsync(player.Id);
 
-        var permissions = result.ToList();
-        if (permissions.Count == 0)
-        {
-            _logger.LogDebug("Player {Id} does not have permission {PermName}", player.Id, permission);
-            return false;
-        }
-
-        var permNames = permissions.Select(p => p.Name);
+        var permNames = result.Select(p => p.Name);
 
         foreach (var permName in permNames)
         {

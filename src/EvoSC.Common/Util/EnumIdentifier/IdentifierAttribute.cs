@@ -10,4 +10,9 @@ public class IdentifierAttribute : Attribute
     /// The custom ID name for this field.
     /// </summary>
     public string Name { get; set; }
+
+    /// <summary>
+    /// Whether to not include a prefix for this identifier.
+    /// </summary>
+    public bool NoPrefix { get; set; }
 }

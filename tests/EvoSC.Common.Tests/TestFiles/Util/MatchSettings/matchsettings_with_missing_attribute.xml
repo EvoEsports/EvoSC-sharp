@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<playlist>
+  <gameinfos>
+    <game_mode>123</game_mode>
+    <chat_time>73465</chat_time>
+    <finishtimeout>46571</finishtimeout>
+    <allwarmupduration>true</allwarmupduration>
+    <disablerespawn>true</disablerespawn>
+    <forceshowallopponents>true</forceshowallopponents>
+    <script_name>MyMode</script_name>
+  </gameinfos>
+  <filter>
+    <is_lan>false</is_lan>
+    <is_internet>false</is_internet>
+    <is_solo>true</is_solo>
+    <is_hotseat>true</is_hotseat>
+    <sort_index>3425</sort_index>
+    <random_map_order>true</random_map_order>
+  </filter>
+  <script_settings>
+    <setting value="1337" type="integer"/>
+  </script_settings>
+  <start_index>24627</start_index>
+</playlist>
