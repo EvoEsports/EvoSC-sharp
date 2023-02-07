@@ -10,6 +10,11 @@ public static class XmlUtils
         public override Encoding Encoding => Encoding.UTF8;
     }
     
+    /// <summary>
+    /// Generate a full and formatted XML string of the provided document.
+    /// </summary>
+    /// <param name="doc">The document to generate an XML string from.</param>
+    /// <returns></returns>
     public static string GetFullXmlString(this XDocument doc)
     {
         var sw = new Utf8StringWriter();

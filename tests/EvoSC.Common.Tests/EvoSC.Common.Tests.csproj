@@ -34,6 +34,24 @@
       <None Update="TestFiles\Config\BasicConfig\main.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="TestFiles\Util\MatchSettings\matchsettings_with_all_sections.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="TestFiles\Util\MatchSettings\matchsettings_with_missing_attribute.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="TestFiles\Util\MatchSettings\matchsettings_for_default_values.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="TestFiles\Util\MatchSettings\expected_default_matchsettings_with_mode.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="TestFiles\Util\MatchSettings\expected_matchsettings_with_script_settings.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="TestFiles\Util\MatchSettings\expected_matchsettings_with_maps.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

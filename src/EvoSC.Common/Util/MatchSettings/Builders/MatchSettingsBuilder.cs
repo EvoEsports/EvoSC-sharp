@@ -172,8 +172,8 @@ public class MatchSettingsBuilder
     }
 
     /// <summary>
-    /// Set the settings for this match settings. Make sure to
-    /// call WithMode() first!
+    /// Set the settings for this match settings. Requires WithMode() without
+    /// an empty script name to be called first.
     /// </summary>
     /// <param name="settingsAction"></param>
     /// <typeparam name="T"></typeparam>
@@ -201,8 +201,8 @@ public class MatchSettingsBuilder
     }
 
     /// <summary>
-    /// Set the settings for this MatchSettings. Make sure to call
-    /// WithMode first!.
+    /// Set the settings for this MatchSettings. Requires WithMode() without
+    /// an empty script name to be called first.
     /// </summary>
     /// <param name="settingsAction">Fluent action for setting the settings dictionary.</param>
     /// <returns></returns>
