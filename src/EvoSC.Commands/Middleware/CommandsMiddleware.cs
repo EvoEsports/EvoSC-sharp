@@ -91,8 +91,9 @@ public class CommandsMiddleware
         {
             return (Task)cmd.HandlerMethod.Invoke(controller, args);
         });
-
+        
         await actionChain(playerInteractionContext);
+        await context.AuditEvent.Log();
     }
 
     private static void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)

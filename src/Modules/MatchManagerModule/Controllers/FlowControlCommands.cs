@@ -1,8 +1,17 @@
-﻿using EvoSC.Commands;
+﻿using System.Dynamic;
+using System.Runtime.Serialization;
+using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Models.Audit;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Models.Audit;
+using EvoSC.Common.Models.Maps;
+using EvoSC.Common.Util.Auditing;
+using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 
@@ -13,11 +22,28 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
 {
     private readonly IFlowControlService _flowControl;
     private readonly IServerClient _server;
-    
-    public FlowControlCommands(IFlowControlService flowControl, IServerClient server)
+    private readonly IAuditService _audit;
+
+    public FlowControlCommands(IFlowControlService flowControl, IServerClient server, IAuditService audit)
     {
         _flowControl = flowControl;
         _server = server;
+        _audit = audit;
+    }
+    
+    public class RestartMatchAuditAction : IAuditAction
+    {
+        public string Id => "RestartMatch";
+        public dynamic? Data { get; }
+
+        public RestartMatchAuditAction(IMap map)
+        {
+            Data = new ExpandoObject();
+            Data.Name = map.Name;
+            Data.Uid = map.Uid;
+        }
+
+        public override string ToString() => $"Restarted match on {Data.Name} ({Data.Uid})";
     }
 
     [ChatCommand("restartmatch", "Restart the current match.", FlowControlPermissions.RestartMatch)]

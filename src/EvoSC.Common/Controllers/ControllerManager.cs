@@ -7,6 +7,7 @@ using EvoSC.Common.Util;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace EvoSC.Common.Controllers;
 
@@ -125,8 +126,8 @@ public class ControllerManager : IControllerManager
     public (IController, IControllerContext) CreateInstance(Type controllerType)
     {
         var controllerInfo = GetInfo(controllerType);
-        var scope = new Scope(controllerInfo.Services);
-        var instance = ActivatorUtilities.CreateInstance(scope.Container, controllerType) as IController;
+        var scope = AsyncScopedLifestyle.BeginScope(controllerInfo.Services);
+        var instance = ActivatorUtilities.CreateInstance(scope, controllerType) as IController;
 
         if (instance == null)
         {
@@ -135,7 +136,10 @@ public class ControllerManager : IControllerManager
 
         TrackControllerInstance(controllerType, instance);
 
-        var context = CreateContext(scope, instance);
+        var context = scope
+            .GetRequiredService<IContextService>()
+            .CreateContext(scope, instance);
+
         return (instance, context);
     }
 
@@ -157,17 +161,5 @@ public class ControllerManager : IControllerManager
         // cancel
 
         return Task.CompletedTask;
-    }
-
-    private IControllerContext CreateContext(Scope scope, IController controller)
-    {
-        IControllerContext context = new GenericControllerContext(scope)
-        {
-            Controller = controller
-        };
-        
-        context.SetScope(scope);
-
-        return context;
     }
 }

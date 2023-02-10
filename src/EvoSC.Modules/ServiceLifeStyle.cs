@@ -10,5 +10,11 @@ public enum ServiceLifeStyle
     /// The service is instantiated every time the constructor is called on an object. Transient services are mostly
     /// thread safe, unless they depend upon a singleton that isn't.
     /// </summary>
-    Transient
+    Transient,
+    /// <summary>
+    /// The service is instantiated once inside a scope. For example calling of a command, if the service is requested
+    /// multiple times, the first instance created will be returned. This allows keeping of states within the entire
+    /// scope/lifetime of a request.
+    /// </summary>
+    Scoped
 }

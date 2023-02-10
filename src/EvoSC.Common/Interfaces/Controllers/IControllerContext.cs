@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Util.Auditing;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;
@@ -14,6 +15,8 @@ public interface IControllerContext : IPipelineContext
     /// Pointer to the controller instance for this context.
     /// </summary>
     public IController Controller { get; }
+
+    public AuditEventBuilder AuditEvent { get; }
     
     /// <summary>
     /// This is any data that can be set to be included with the context.

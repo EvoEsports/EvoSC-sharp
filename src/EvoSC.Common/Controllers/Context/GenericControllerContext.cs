@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Util.Auditing;
 using SimpleInjector;
 
 namespace EvoSC.Common.Controllers.Context;
@@ -11,7 +12,8 @@ public class GenericControllerContext : IControllerContext
 {
     public Scope ServiceScope { get; private set; }
     public IController Controller { get; init; }
-    
+    public AuditEventBuilder AuditEvent { get; init; }
+
     private readonly Dictionary<string, object> _customData = new();
     public Dictionary<string, object> CustomData => _customData;
 
@@ -34,5 +36,6 @@ public class GenericControllerContext : IControllerContext
     {
         ServiceScope = context.ServiceScope;
         Controller = context.Controller;
+        AuditEvent = context.AuditEvent;
     }
 }

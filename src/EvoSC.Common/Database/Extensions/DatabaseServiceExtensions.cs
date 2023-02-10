@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Repository.Audit;
 using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Database.Repository.Permissions;
 using EvoSC.Common.Database.Repository.Players;
@@ -20,6 +21,7 @@ public static class DatabaseServiceExtensions
         services.Register<IMapRepository, MapRepository>(Lifestyle.Transient);
         services.Register<IPermissionRepository, PermissionRepository>(Lifestyle.Transient);
         services.Register<IPlayerRepository, PlayerRepository>();
+        services.Register<IAuditRepository, AuditRepository>();
 
         return services;
     }
