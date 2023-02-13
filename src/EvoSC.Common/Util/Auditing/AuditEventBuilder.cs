@@ -17,7 +17,7 @@ public class AuditEventBuilder
     /// <summary>
     /// Whether this event has been canceled.
     /// </summary>
-    public bool Canceled { get; private set; }
+    public bool IsCanceled { get; private set; }
     
     /// <summary>
     /// The user that caused the event.
@@ -39,6 +39,10 @@ public class AuditEventBuilder
     /// </summary>
     public string EventComment { get; private set; }
     
+    /// <summary>
+    /// Whether this audit is activated; if event name is set.
+    /// Overrides IsCanceled.
+    /// </summary>
     public bool Activated { get; private set; }
     
     /// <summary>
@@ -62,6 +66,7 @@ public class AuditEventBuilder
         _auditService = auditService;
         EventName = eventName;
         Status = AuditEventStatus.Info;
+        Activated = true;
     }
 
     /// <summary>
@@ -142,7 +147,7 @@ public class AuditEventBuilder
     /// <returns></returns>
     public AuditEventBuilder Cancel(bool isCancelled)
     {
-        Canceled = isCancelled;
+        IsCanceled = isCancelled;
         return this;
     }
     
@@ -176,7 +181,7 @@ public class AuditEventBuilder
     /// <exception cref="InvalidOperationException"></exception>
     public async Task LogAsync(string comment)
     {
-        if (Canceled)
+        if (IsCanceled)
         {
             return;
         }

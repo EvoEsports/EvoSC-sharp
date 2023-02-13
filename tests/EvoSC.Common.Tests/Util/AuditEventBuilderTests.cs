@@ -18,7 +18,8 @@ public class AuditEventBuilderTests
         var builder = new AuditEventBuilder(null);
         
         Assert.Equal(AuditEventStatus.Info, builder.Status);
-        Assert.True(builder.Canceled);
+        Assert.True(builder.IsCanceled);
+        Assert.False(builder.Activated);
     }
     
     [Fact]
@@ -28,7 +29,8 @@ public class AuditEventBuilderTests
         
         Assert.Equal(AuditEventStatus.Info, builder.Status);
         Assert.Equal("MyEvent", builder.EventName);
-        Assert.False(builder.Canceled);
+        Assert.False(builder.IsCanceled);
+        Assert.True(builder.Activated);
     }
 
     [Fact]
@@ -130,7 +132,7 @@ public class AuditEventBuilderTests
 
         builder.Cancel();
         
-        Assert.True(builder.Canceled);
+        Assert.True(builder.IsCanceled);
     }
     
     [Fact]
@@ -141,7 +143,7 @@ public class AuditEventBuilderTests
         builder.Cancel();
         builder.UnCancel();
         
-        Assert.False(builder.Canceled);
+        Assert.False(builder.IsCanceled);
     }
 
     [Fact]
