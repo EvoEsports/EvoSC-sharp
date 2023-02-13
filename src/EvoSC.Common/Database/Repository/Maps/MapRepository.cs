@@ -48,7 +48,7 @@ public class MapRepository : DbRepository, IMapRepository
         {
             var id = await Database.InsertWithIdentityAsync(dbMap);
             await transaction.CommitAsync();
-            dbMap.Id = (int)id;
+            dbMap.Id = Convert.ToInt64(id);
         }
         catch (Exception ex)
         {
