@@ -25,6 +25,12 @@ public interface IModuleManager
     /// <param name="loadId">The load ID of the module to enable.</param>
     /// <returns></returns>
     public Task EnableAsync(Guid loadId);
+
+    /// <summary>
+    /// Enable all modules that allow for it.
+    /// </summary>
+    /// <returns></returns>
+    public Task EnableModulesAsync();
     
     /// <summary>
     /// Disable a module.

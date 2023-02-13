@@ -464,7 +464,7 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("External Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
 
         await InstallAsync(loadId);
-        await EnableAsync(loadId);
+        //await EnableAsync(loadId);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -479,6 +479,14 @@ public class ModuleManager : IModuleManager
         moduleContext.SetEnabled(true);
         
         _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
+    }
+
+    public async Task EnableModulesAsync()
+    {
+        foreach (var module in LoadedModules)
+        {
+            await EnableAsync(module.LoadId);
+        }
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]

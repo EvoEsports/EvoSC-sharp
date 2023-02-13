@@ -106,6 +106,11 @@ public class MapService : IMapService
         await _mapRepository.RemoveMapAsync(mapId);
     }
 
+    public async Task AddCurrentMapListAsync()
+    {
+        var serverMapList = await _serverClient.Remote.GetMapListAsync(-1, 0);
+    }
+
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
     {
         return map.ExternalVersion == mapMetadata.ExternalVersion;
