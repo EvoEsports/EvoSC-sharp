@@ -109,6 +109,42 @@ public class MapService : IMapService
     public async Task AddCurrentMapListAsync()
     {
         var serverMapList = await _serverClient.Remote.GetMapListAsync(-1, 0);
+
+        foreach (var serverMap in serverMapList)
+        {
+            try
+            {
+                IMap? existingMap = await GetMapByUidAsync(serverMap.UId);
+
+                if (existingMap != null)
+                {
+                    continue;
+                }
+
+                var authorAccountId = PlayerUtils.ConvertLoginToAccountId(serverMap.Author);
+                var author = await _playerService.GetOrCreatePlayerAsync(authorAccountId);
+
+                var mapMeta = new MapMetadata
+                {
+                    MapUid = serverMap.UId,
+                    MapName = serverMap.Name,
+                    AuthorId = serverMap.Author,
+                    AuthorName = serverMap.AuthorNickname,
+                    ExternalId = null,
+                    ExternalVersion = null,
+                    ExternalMapProvider = null
+                };
+
+                _logger.LogDebug("Adding map {Name} ({Uid}) to the database", serverMap.Name, serverMap.UId);
+                await _mapRepository.AddMapAsync(mapMeta, author, serverMap.FileName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to add current map to the database: {Name} ({Uid})", 
+                    serverMap.Name,
+                    serverMap.UId);
+            }
+        }
     }
 
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
