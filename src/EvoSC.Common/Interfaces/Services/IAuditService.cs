@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Models.Audit;
 using EvoSC.Common.Models.Audit;
 using EvoSC.Common.Util.Auditing;
 using EvoSC.Common.Util.EnumIdentifier;

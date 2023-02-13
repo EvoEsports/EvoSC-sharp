@@ -5,13 +5,7 @@ using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Models.Audit;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models.Audit;
-using EvoSC.Common.Models.Maps;
-using EvoSC.Common.Util.Auditing;
-using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 
