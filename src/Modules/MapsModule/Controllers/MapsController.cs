@@ -5,6 +5,7 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Modules.Official.Maps.Events;
 using EvoSC.Modules.Official.Maps.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -48,6 +49,11 @@ public class MapsController : EvoScController<CommandInteractionContext>
             return;
         }
 
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.MapAdded)
+            .HavingProperties(new {Map = map})
+            .Comment("Map was added.");
+        
         await _server.SuccessMessageAsync($"Added {map.Name} by {map.Author.NickName} to the server.");
     }
 
@@ -63,6 +69,12 @@ public class MapsController : EvoScController<CommandInteractionContext>
         }
 
         await _mapService.RemoveMapAsync(mapId);
+
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.MapRemoved)
+            .HavingProperties(new {Map = map})
+            .Comment("Map was removed.");
+        
         await _server.SuccessMessageAsync($"Removed map with ID {mapId} from the maplist.");
         _logger.LogInformation("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }

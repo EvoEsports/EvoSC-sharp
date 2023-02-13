@@ -30,21 +30,6 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
         _server = server;
         _audit = audit;
     }
-    
-    public class RestartMatchAuditAction : IAuditAction
-    {
-        public string Id => "RestartMatch";
-        public dynamic? Data { get; }
-
-        public RestartMatchAuditAction(IMap map)
-        {
-            Data = new ExpandoObject();
-            Data.Name = map.Name;
-            Data.Uid = map.Uid;
-        }
-
-        public override string ToString() => $"Restarted match on {Data.Name} ({Data.Uid})";
-    }
 
     [ChatCommand("restartmatch", "Restart the current match.", FlowControlPermissions.RestartMatch)]
     [CommandAlias("/resmatch", hide: true)]

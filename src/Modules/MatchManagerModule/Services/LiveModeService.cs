@@ -1,10 +1,12 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Modules.Attributes;
+using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Transient)]
+[Service(LifeStyle = ServiceLifeStyle.Scoped)]
 public class LiveModeService : ILiveModeService
 {
     private readonly Dictionary<string, string> _availableModes = new()
@@ -19,10 +21,12 @@ public class LiveModeService : ILiveModeService
     };
 
     private readonly IServerClient _server;
+    private readonly IContextService _context;
 
-    public LiveModeService(IServerClient server)
+    public LiveModeService(IServerClient server, IContextService context)
     {
         _server = server;
+        _context = context;
     }
     
     public IEnumerable<string> GetAvailableModes() => _availableModes.Keys;
@@ -38,6 +42,11 @@ public class LiveModeService : ILiveModeService
         
         await _server.Remote.SetScriptNameAsync(modeName);
         await _server.Remote.RestartMapAsync();
+
+        _context.Audit().Success()
+            .WithEventName(AuditEvents.LoadMode)
+            .HavingProperties(new {ModeName = modeName})
+            .Comment("Loaded mode live");
         
         return modeName;
     }

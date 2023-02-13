@@ -39,4 +39,6 @@ public class ContextService : IContextService
 
         return _context;
     }
+
+    public AuditEventBuilder Audit() => GetContext().AuditEvent;
 }

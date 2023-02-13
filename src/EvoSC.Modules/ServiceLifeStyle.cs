@@ -12,8 +12,9 @@ public enum ServiceLifeStyle
     /// </summary>
     Transient,
     /// <summary>
-    /// The service is instantiated once inside a scope. For example calling of a command, if the service is requested
-    /// multiple times, the first instance created will be returned. This allows keeping of states within the entire
+    /// The service is instantiated once within a scope. A scope lives for the entirety of an event.
+    /// For example when calling a command, if the service is requested multiple times,
+    /// the first instance created will be returned. This allows keeping of states within the entire
     /// scope/lifetime of a request.
     /// </summary>
     Scoped

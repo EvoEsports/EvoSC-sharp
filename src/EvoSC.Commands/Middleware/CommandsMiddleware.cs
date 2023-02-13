@@ -87,13 +87,24 @@ public class CommandsMiddleware
         
         controller.SetContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, context =>
+        var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
+            (Task?)cmd.HandlerMethod.Invoke(controller, args) ?? Task.CompletedTask
+        );
+
+        try
         {
-            return (Task)cmd.HandlerMethod.Invoke(controller, args);
-        });
-        
-        await actionChain(playerInteractionContext);
-        await context.AuditEvent.Log();
+            await actionChain(playerInteractionContext);
+        }
+        finally
+        {
+            // allow actor to be manually set, so avoid overwrite
+            if (context.AuditEvent.Actor == null)
+            {
+                context.AuditEvent.CausedBy(playerInteractionContext.Player);
+            }
+
+            await context.AuditEvent.Log();
+        }
     }
 
     private static void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)

@@ -14,7 +14,7 @@ public class AuditEventBuilder
     public IPlayer? Actor { get; private set; }
     public AuditEventStatus Status { get; private set; }
     public dynamic? Properties { get; private set; }
-    public string Comment { get; private set; }
+    public string EventComment { get; private set; }
     
     internal AuditEventBuilder(IAuditService auditService)
     {
@@ -39,7 +39,7 @@ public class AuditEventBuilder
 
     public AuditEventBuilder WithEventName(Enum eventName) => WithEventName(eventName.GetIdentifier(true));
 
-    public AuditEventBuilder WithProperties(dynamic properties)
+    public AuditEventBuilder HavingProperties(dynamic properties)
     {
         Properties = properties;
         return this;
@@ -51,9 +51,9 @@ public class AuditEventBuilder
         return this;
     }
 
-    public AuditEventBuilder AsSuccess() => WithStatus(AuditEventStatus.Success);
-    public AuditEventBuilder AsInfo() => WithStatus(AuditEventStatus.Info);
-    public AuditEventBuilder AsError() => WithStatus(AuditEventStatus.Error);
+    public AuditEventBuilder Success() => WithStatus(AuditEventStatus.Success);
+    public AuditEventBuilder Info() => WithStatus(AuditEventStatus.Info);
+    public AuditEventBuilder Error() => WithStatus(AuditEventStatus.Error);
 
     public AuditEventBuilder CausedBy(IPlayer actor)
     {
@@ -71,9 +71,9 @@ public class AuditEventBuilder
     public AuditEventBuilder UnCancel() => Cancel(false);
 
 
-    public AuditEventBuilder WithComment(string comment)
+    public AuditEventBuilder Comment(string comment)
     {
-        Comment = comment;
+        EventComment = comment;
         return this;
     }
 
@@ -95,5 +95,5 @@ public class AuditEventBuilder
         Cancel();
     }
 
-    public Task Log() => Log(string.IsNullOrEmpty(Comment) ? "" : Comment);
+    public Task Log() => Log(string.IsNullOrEmpty(EventComment) ? "" : EventComment);
 }
