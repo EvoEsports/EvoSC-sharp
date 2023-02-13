@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
 using GbxRemoteNet.Structs;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
