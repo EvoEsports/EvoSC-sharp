@@ -7,7 +7,6 @@ using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 namespace EvoSC.Modules.Official.Player.Services;
 

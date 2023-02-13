@@ -103,7 +103,7 @@ public class CommandsMiddleware
                 context.AuditEvent.CausedBy(playerInteractionContext.Player);
             }
 
-            await context.AuditEvent.Log();
+            await context.AuditEvent.LogAsync();
         }
     }
 

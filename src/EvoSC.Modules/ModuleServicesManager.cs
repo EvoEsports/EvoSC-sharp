@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
-using EvoSC.Common.Controllers;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Services;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions.ModuleServices;

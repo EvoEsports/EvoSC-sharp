@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Util;

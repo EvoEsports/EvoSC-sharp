@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Controllers;
-using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using SimpleInjector;
 

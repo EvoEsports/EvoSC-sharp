@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-using System.Runtime.Serialization;
-using EvoSC.Commands;
+﻿using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
@@ -16,13 +14,11 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
 {
     private readonly IFlowControlService _flowControl;
     private readonly IServerClient _server;
-    private readonly IAuditService _audit;
 
     public FlowControlCommands(IFlowControlService flowControl, IServerClient server, IAuditService audit)
     {
         _flowControl = flowControl;
         _server = server;
-        _audit = audit;
     }
 
     [ChatCommand("restartmatch", "Restart the current match.", FlowControlPermissions.RestartMatch)]

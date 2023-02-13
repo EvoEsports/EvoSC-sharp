@@ -160,9 +160,9 @@ public class AuditEventBuilder
     /// </summary>
     /// <param name="comment"></param>
     /// <returns></returns>
-    public AuditEventBuilder Comment(string comment)
+    public AuditEventBuilder Comment(string commentString)
     {
-        EventComment = comment;
+        EventComment = commentString;
         return this;
     }
 
@@ -171,7 +171,7 @@ public class AuditEventBuilder
     /// </summary>
     /// <param name="comment">The comment/description of this event.</param>
     /// <exception cref="InvalidOperationException"></exception>
-    public async Task Log(string comment)
+    public async Task LogAsync(string comment)
     {
         if (Canceled)
         {
@@ -193,5 +193,5 @@ public class AuditEventBuilder
     /// Log the audit now.
     /// </summary>
     /// <returns></returns>
-    public Task Log() => Log(string.IsNullOrEmpty(EventComment) ? "" : EventComment);
+    public Task LogAsync() => LogAsync(string.IsNullOrEmpty(EventComment) ? "" : EventComment);
 }
