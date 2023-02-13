@@ -20,15 +20,17 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
     private readonly IEventManager _events;
     private readonly IPlayerRecordSettings _recordOptions;
     private readonly IServerClient _server;
+    private readonly IMapService _maps;
     
     public PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
-        IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server)
+        IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server, IMapService maps)
     {
         _playerRecords = playerRecords;
         _players = players;
         _events = events;
         _recordOptions = recordOptions;
         _server = server;
+        _maps = maps;
     }
     
     public async Task CheckWaypointAsync(WayPointEventArgs waypoint)
@@ -38,7 +40,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
             return;
         }
 
-        var map = await _playerRecords.GetOrAddCurrentMapAsync();
+        var map = await _maps.GetOrAddCurrentMapAsync();
         var player = await _players.GetOnlinePlayerAsync(waypoint.AccountId);
         var (record, status) =
             await _playerRecords.SetPbRecordAsync(player, map, waypoint.RaceTime, waypoint.CurrentLapCheckpoints);
@@ -63,7 +65,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
 
     public async Task ShowCurrentPlayerPbAsync(IPlayer player)
     {
-        var map = await _playerRecords.GetOrAddCurrentMapAsync();
+        var map = await _maps.GetOrAddCurrentMapAsync();
         var pb = await _playerRecords.GetPlayerRecordAsync(player, map);
 
         if (pb == null)

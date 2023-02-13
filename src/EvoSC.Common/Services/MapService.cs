@@ -142,4 +142,30 @@ public class MapService : IMapService
 
         return dbPlayer;
     }
+    
+    public async Task<IMap> GetOrAddCurrentMapAsync()
+    {
+        var currentMap = await _serverClient.Remote.GetCurrentMapInfoAsync();
+        var map = await GetMapByUidAsync(currentMap.UId);
+        
+        if (map == null)
+        {
+            var mapAuthor = await _playerService.GetOrCreatePlayerAsync(PlayerUtils.ConvertLoginToAccountId(currentMap.Author));
+
+            var mapMeta = new MapMetadata
+            {
+                MapUid = currentMap.UId,
+                MapName = currentMap.Name,
+                AuthorId = mapAuthor.AccountId,
+                AuthorName = mapAuthor.NickName,
+                ExternalId = currentMap.UId,
+                ExternalVersion = null,
+                ExternalMapProvider = null
+            };
+
+            map = await _mapRepository.AddMapAsync(mapMeta, mapAuthor, currentMap.FileName);
+        }
+
+        return map;
+    }
 }
