@@ -25,6 +25,14 @@ public interface IPlayerManagerService
     /// <param name="accountId">Account ID of the player.</param>
     /// <returns></returns>
     public Task<IPlayer> CreatePlayerAsync(string accountId);
+
+    /// <summary>
+    /// Create a player with a name.
+    /// </summary>
+    /// <param name="accountId">The account ID of the player.</param>
+    /// <param name="name">The name of the player.</param>
+    /// <returns></returns>
+    public Task<IPlayer> CreatePlayerAsync(string accountId, string? name);
     
     /// <summary>
     /// Get a player that is currently playing on the server.

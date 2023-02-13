@@ -39,25 +39,23 @@ public class PlayerManagerService : IPlayerManagerService
         return await CreatePlayerAsync(accountId);
     }
 
-    public async Task<IPlayer> CreatePlayerAsync(string accountId)
+    public Task<IPlayer> CreatePlayerAsync(string accountId) => CreatePlayerAsync(accountId, null);
+
+    public async Task<IPlayer> CreatePlayerAsync(string accountId, string? name)
     {
         var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
 
         TmPlayerDetailedInfo? playerInfo = null;
-        // TODO: Create player with default properties when limited information is available #81 https://github.com/EvoTM/EvoSC-sharp/issues/81
         try
         {
             playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Player not on server");
+            // ignore the error because we will then set the name instead
         }
 
-        if (playerInfo == null)
-        {
-            throw new InvalidOperationException("Player info is null, cannot create player.");
-        }
+        playerInfo ??= new TmPlayerDetailedInfo {Login = playerLogin, NickName = name ?? accountId};
 
         return await _playerRepository.AddPlayerAsync(accountId, playerInfo);
     }

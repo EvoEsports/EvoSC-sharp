@@ -50,9 +50,11 @@ public class MapService : IMapService
 
         await SaveMapFileAsync(mapFile, filePath, fileName);
 
-        var author = await GetMapAuthorAsync(PlayerUtils.IsAccountId(mapMetadata.AuthorId)
+        var playerId = PlayerUtils.IsAccountId(mapMetadata.AuthorId)
             ? mapMetadata.AuthorId
-            : PlayerUtils.ConvertLoginToAccountId(mapMetadata.AuthorId));
+            : PlayerUtils.ConvertLoginToAccountId(mapMetadata.AuthorId);
+
+        var author = await GetMapAuthorAsync(playerId, mapMetadata.AuthorName);
 
         IMap map;
 
@@ -131,13 +133,13 @@ public class MapService : IMapService
         }
     }
 
-    private async Task<IPlayer> GetMapAuthorAsync(string authorId)
+    private async Task<IPlayer> GetMapAuthorAsync(string authorId, string? name)
     {
         var dbPlayer = await _playerService.GetPlayerAsync(authorId);
 
         if (dbPlayer == null)
         {
-            return await _playerService.CreatePlayerAsync(authorId);
+            return await _playerService.CreatePlayerAsync(authorId, name);
         }
 
         return dbPlayer;

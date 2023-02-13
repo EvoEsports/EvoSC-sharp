@@ -31,7 +31,7 @@ public class PlayerRepository : DbRepository, IPlayerRepository
         };
 
         var id = await Database.InsertWithIdentityAsync(player);
-        player.Id = (long)id;
+        player.Id =  Convert.ToInt64(id);
 
         return player;
     }
