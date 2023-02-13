@@ -83,7 +83,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         SetupControllerManager();
         await SetupModulesAsync();
         await StartBackgroundServicesAsync();
-        await EnableModules();
+        await EnableModulesAsync();
         
         sw.Stop();
         
@@ -175,7 +175,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         await serverClient.StartAsync(_runningToken.Token);
     }
     
-    private async Task EnableModules()
+    private async Task EnableModulesAsync()
     {
         await _services.GetRequiredService<IModuleManager>().EnableModulesAsync();
     }

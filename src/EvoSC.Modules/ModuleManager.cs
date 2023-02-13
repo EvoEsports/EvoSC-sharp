@@ -464,7 +464,6 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("External Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
 
         await InstallAsync(loadId);
-        //await EnableAsync(loadId);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
