@@ -11,14 +11,12 @@ namespace EvoSC.Common.Services;
 
 public class PlayerManagerService : IPlayerManagerService
 {
-    private readonly ILogger<PlayerManagerService> _logger;
     private readonly IPlayerRepository _playerRepository;
     private readonly IPlayerCacheService _playerCache;
     private readonly IServerClient _server;
 
-    public PlayerManagerService(ILogger<PlayerManagerService> logger, IPlayerRepository playerRepository, IPlayerCacheService playerCache, IServerClient server)
+    public PlayerManagerService(IPlayerRepository playerRepository, IPlayerCacheService playerCache, IServerClient server)
     {
-        _logger = logger;
         _playerRepository = playerRepository;
         _playerCache = playerCache;
         _server = server;
