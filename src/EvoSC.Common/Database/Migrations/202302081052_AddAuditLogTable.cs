@@ -5,7 +5,7 @@ namespace EvoSC.Common.Database.Migrations;
 [Migration(1675849925)]
 public class AddAuditLogTable : Migration
 {
-    public static string AuditLog = "AuditLog";
+    public const string AuditLog = "AuditLog";
     
     public override void Up()
     {
