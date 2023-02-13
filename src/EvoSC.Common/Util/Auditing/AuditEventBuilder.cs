@@ -39,6 +39,8 @@ public class AuditEventBuilder
     /// </summary>
     public string EventComment { get; private set; }
     
+    public bool Activated { get; private set; }
+    
     /// <summary>
     /// Create a new audit builder from the audit service.
     /// </summary>
@@ -71,6 +73,7 @@ public class AuditEventBuilder
     {
         EventName = eventName;
         UnCancel();
+        Activated = true;
         return this;
     }
 

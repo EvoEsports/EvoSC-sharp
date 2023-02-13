@@ -63,7 +63,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.")]
+    [ChatCommand("test", "Some testing.", "myperm")]
     public async Task TestCommand()
     {
         /*await _matchSettings.EditMatchSettingsAsync("cup", matchSettings => matchSettings

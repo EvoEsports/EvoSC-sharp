@@ -97,13 +97,20 @@ public class CommandsMiddleware
         }
         finally
         {
-            // allow actor to be manually set, so avoid overwrite
-            if (context.AuditEvent.Actor == null)
+            if (context.AuditEvent.Activated)
             {
-                context.AuditEvent.CausedBy(playerInteractionContext.Player);
-            }
+                // allow actor to be manually set, so avoid overwrite
+                if (context.AuditEvent.Actor == null)
+                {
+                    context.AuditEvent.CausedBy(playerInteractionContext.Player);
+                }
 
-            await context.AuditEvent.LogAsync();
+                await context.AuditEvent.LogAsync();
+            }
+            else if (cmd.Permission != null)
+            {
+                _logger.LogWarning("Command '{Name}' has permissions set but does not activate an audit", cmd.Name);
+            }
         }
     }
 
