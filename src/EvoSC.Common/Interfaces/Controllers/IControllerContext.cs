@@ -16,6 +16,9 @@ public interface IControllerContext : IPipelineContext
     /// </summary>
     public IController Controller { get; }
 
+    /// <summary>
+    /// The audit associated with the event of this context.
+    /// </summary>
     public AuditEventBuilder AuditEvent { get; }
     
     /// <summary>
