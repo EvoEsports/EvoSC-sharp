@@ -3,6 +3,7 @@ using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 
@@ -13,8 +14,8 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
 {
     private readonly IFlowControlService _flowControl;
     private readonly IServerClient _server;
-    
-    public FlowControlCommands(IFlowControlService flowControl, IServerClient server)
+
+    public FlowControlCommands(IFlowControlService flowControl, IServerClient server, IAuditService audit)
     {
         _flowControl = flowControl;
         _server = server;

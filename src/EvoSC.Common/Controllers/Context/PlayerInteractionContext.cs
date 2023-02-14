@@ -17,5 +17,6 @@ public class PlayerInteractionContext : GenericControllerContext
     public PlayerInteractionContext(IOnlinePlayer player, IControllerContext context) : base(context)
     {
         Player = player;
+        AuditEvent.CausedBy(player);
     }
 }

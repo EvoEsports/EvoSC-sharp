@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Services;
 using SimpleInjector;
 
 namespace EvoSC.Common.Services;
@@ -16,6 +17,14 @@ public static class CommonServiceExtensions
         services.Register<IMapService, MapService>(Lifestyle.Transient);
         services.RegisterSingleton<IPlayerCacheService, PlayerCacheService>();
         services.Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient);
+        services.Register<IAuditService, AuditService>(Lifestyle.Transient);
+        
+        return services;
+    }
+
+    public static Container AddEvoScCommonScopedServices(this Container services)
+    {
+        services.Register<IContextService, ContextService>(Lifestyle.Scoped);
         
         return services;
     }
