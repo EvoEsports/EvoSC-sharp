@@ -14,7 +14,4 @@
         <PackageReference Include="ManiaExchange.ApiClient" Version="1.0.2" />
     </ItemGroup>
 
-    <ItemGroup>
-    </ItemGroup>
-
 </Project>

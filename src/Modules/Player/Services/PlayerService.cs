@@ -1,25 +1,29 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
+using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Player.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Transient)]
+[Service(LifeStyle = ServiceLifeStyle.Scoped)]
 public class PlayerService : IPlayerService
 {
     private readonly IPlayerManagerService _playerManager;
     private readonly IServerClient _server;
     private readonly ILogger<PlayerService> _logger;
+    private readonly IContextService _context;
     
-    public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger)
+    public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger, IContextService context)
     {
         _playerManager = playerManager;
         _server = server;
         _logger = logger;
+        _context = context;
     }
 
     public async Task UpdateAndGreetPlayerAsync(string login)
@@ -41,8 +45,13 @@ public class PlayerService : IPlayerService
 
     public async Task KickAsync(IPlayer player, IPlayer actor)
     {
-        if (await _server.Remote.KickAsync(player.GetLogin()))
+        if (await _server.Remote.KickAsync(player.GetLogin(), ""))
         {
+            _context.Audit().Success()
+                .WithEventName(AuditEvents.PlayerKicked)
+                .HavingProperties(new {Player = player})
+                .Comment("Player kicked from the server.");
+            
             await _server.SuccessMessageAsync($"$284{player.NickName} was kicked.", actor);
         }
         else
@@ -55,6 +64,11 @@ public class PlayerService : IPlayerService
     {
         if (await _server.Remote.IgnoreAsync(player.GetLogin()))
         {
+            _context.Audit().Success()
+                .WithEventName(AuditEvents.PlayerMuted)
+                .HavingProperties(new {Player = player})
+                .Comment("Player muted from the chat.");
+            
             await _server.WarningMessageAsync("$f13You were muted by an admin.", player);
             await _server.SuccessMessageAsync($"$284{player.NickName} was muted.", actor);
         }
@@ -68,6 +82,11 @@ public class PlayerService : IPlayerService
     {
         if (await _server.Remote.UnIgnoreAsync(player.GetLogin()))
         {
+            _context.Audit().Success()
+                .WithEventName(AuditEvents.PlayerUnmuted)
+                .HavingProperties(new {Player = player})
+                .Comment("Player un-muted from the chat.");
+            
             await _server.InfoMessageAsync("$284You got un-muted by an admin.", player);
             await _server.SuccessMessageAsync($"$284{player.NickName} was muted.", actor);
         }
@@ -90,6 +109,12 @@ public class PlayerService : IPlayerService
         }
         
         await _server.Remote.BlackListAsync(player.GetLogin());
+
+        _context.Audit().Success()
+            .WithEventName(AuditEvents.PlayerBanned)
+            .HavingProperties(new {Player = player})
+            .Comment("Player banned and added to the blacklist.");
+        
         await _server.SuccessMessageAsync($"$284{player.NickName} was banned.", actor);
     }
 
@@ -99,6 +124,11 @@ public class PlayerService : IPlayerService
         {
             if (await _server.Remote.UnBanAsync(login))
             {
+                _context.Audit().Success()
+                    .WithEventName(AuditEvents.PlayerUnbanned)
+                    .HavingProperties(new {PlayerLogin = login})
+                    .Comment("Player was unbanned.");
+                
                 await _server.SuccessMessageAsync($"$284Player with login '{login}' was unbanned.");
             }
         }
@@ -112,6 +142,11 @@ public class PlayerService : IPlayerService
         {
             if (await _server.Remote.UnBlackListAsync(login))
             {
+                _context.Audit().Success()
+                    .WithEventName(AuditEvents.PlayerUnblacklisted)
+                    .HavingProperties(new {PlayerLogin = login})
+                    .Comment("Player removed from the blacklist.");
+                
                 await _server.SuccessMessageAsync($"$284Player with login '{login}' removed from the blacklist.");
             }
         }

@@ -21,7 +21,6 @@ public class ExampleEventController : EvoScController<EventControllerContext>
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task OnWaypoint(object sender, WayPointEventArgs args)
     {
-        throw new Exception("error on event");
         _logger.LogInformation("Player waypoint, {Player}: {Time}", args.AccountId, args.RaceTime);
         return Task.CompletedTask;
     }

@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util.MatchSettings;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Transient)]
+[Service(LifeStyle = ServiceLifeStyle.Scoped)]
 public class MatchManagerHandlerService : IMatchManagerHandlerService
 {
     private readonly ILiveModeService _liveModeService;
@@ -20,15 +21,17 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
     private readonly IMatchSettingsService _matchSettings;
     private readonly ILogger<MatchManagerHandlerService> _logger;
     private readonly IEventManager _events;
+    private readonly IContextService _context;
 
     public MatchManagerHandlerService(ILiveModeService liveModeService, IServerClient server,
-        IMatchSettingsService matchSettings, ILogger<MatchManagerHandlerService> logger, IEventManager events)
+        IMatchSettingsService matchSettings, ILogger<MatchManagerHandlerService> logger, IEventManager events, IContextService context)
     {
         _liveModeService = liveModeService;
         _server = server;
         _matchSettings = matchSettings;
         _logger = logger;
         _events = events;
+        _context = context;
     }
 
     public async Task SetModeAsync(string mode, IPlayer actor)
@@ -60,6 +63,11 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
         try
         {
             await _matchSettings.LoadMatchSettingsAsync(name);
+
+            _context.Audit().Success()
+                .WithEventName(AuditEvents.MatchSettingsLoaded)
+                .HavingProperties(new {Name = name});
+            
             await _server.InfoMessageAsync($"{actor.NickName} loaded match settings: {name}");
 
             await _events.RaiseAsync(MatchSettingsEvent.MatchSettingsLoaded,
@@ -98,6 +106,12 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
             var convertedValue = await MatchSettingsMapper.ToValueTypeAsync(type, value);
 
             await _matchSettings.SetCurrentScriptSettingsAsync(s => s[name] = convertedValue);
+
+            _context.Audit().Success()
+                .WithEventName(AuditEvents.ScriptSettingsModified)
+                .HavingProperties(new {Name = name, Value = value})
+                .Comment("GameMode Script Setting was modified.");
+            
             await _server.SuccessMessageAsync($"Script setting '{name}' was set to: {value}");
         }
         catch (FormatException ex)

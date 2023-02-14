@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using EvoSC.Common.Util.EnumIdentifier;
+using MySql.Data.MySqlClient;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Util;
@@ -9,9 +11,13 @@ public class EnumIdentifierTests
     public enum MyEnum
     {
         [Identifier(Name = "MyCustomIdentifierName")]
+        [Alias(Name = "MyAlias")]
         MyIdentifier,
         
-        MyIdentifier2
+        MyIdentifier2,
+        
+        [Identifier(NoPrefix = true)]
+        MyIdentifier3
     }
     
     [Identifier(Name = "myCustomEnumName")]
@@ -58,5 +64,35 @@ public class EnumIdentifierTests
         var idString = MyEnum2.SomeEnumValue.GetIdentifier();
 
         Assert.Equal("myCustomEnumName.SomeEnumValue", idString);
+    }
+
+    [Fact]
+    public void Get_Enum_Alias()
+    {
+        var aliases = MyEnum.MyIdentifier.GetAliases();
+
+        var alias = aliases.FirstOrDefault();
+        
+        Assert.NotNull(alias);
+        Assert.Equal("MyAlias", alias);
+    }
+
+    [Fact]
+    public void Throw_If_Enum_Is_Null()
+    {
+        Enum myEnum = null;
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            myEnum.GetIdentifier();
+        });
+    }
+
+    [Fact]
+    public void Get_Name_Without_Prefix()
+    {
+        var idString = MyEnum.MyIdentifier3.GetIdentifier();
+        
+        Assert.Equal("MyIdentifier3", idString);
     }
 }

@@ -87,12 +87,31 @@ public class CommandsMiddleware
         
         controller.SetContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, context =>
-        {
-            return (Task)cmd.HandlerMethod.Invoke(controller, args);
-        });
+        var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
+            (Task?)cmd.HandlerMethod.Invoke(controller, args) ?? Task.CompletedTask
+        );
 
-        await actionChain(playerInteractionContext);
+        try
+        {
+            await actionChain(playerInteractionContext);
+        }
+        finally
+        {
+            if (context.AuditEvent.Activated)
+            {
+                // allow actor to be manually set, so avoid overwrite
+                if (context.AuditEvent.Actor == null)
+                {
+                    context.AuditEvent.CausedBy(playerInteractionContext.Player);
+                }
+
+                await context.AuditEvent.LogAsync();
+            }
+            else if (cmd.Permission != null)
+            {
+                _logger.LogWarning("Command '{Name}' has permissions set but does not activate an audit", cmd.Name);
+            }
+        }
     }
 
     private static void CheckAliasHiding(ChatRouterPipelineContext context, IParserResult parserResult)
@@ -110,7 +129,7 @@ public class CommandsMiddleware
     
     public async Task ExecuteAsync(ChatRouterPipelineContext context)
     {
-        if (context.MessageText.Trim().StartsWith("/", StringComparison.Ordinal))
+        if (context.MessageText.Trim().StartsWith(ChatCommandParser.CommandPrefix, StringComparison.Ordinal))
         {
             context.ForwardMessage = false;
         }

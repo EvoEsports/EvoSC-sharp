@@ -26,8 +26,9 @@ public static class EnumIdentifierUtils
     /// The value can also annotate IdentifierAttribute for alternative custom names.
     /// </summary>
     /// <param name="enumValue">Enum value to get ID name from.</param>
+    /// <param name="noPrefix">If true, force no prefix, otherwise use the attribute's value.</param>
     /// <returns></returns>
-    public static string GetIdentifier(this Enum enumValue)
+    public static string GetIdentifier(this Enum enumValue, bool noPrefix)
     {
         if (enumValue == null)
         {
@@ -40,13 +41,21 @@ public static class EnumIdentifierUtils
         var ident = enumMember?.GetCustomAttribute<IdentifierAttribute>();
         var actualName = ident?.Name ?? fieldDefName;
 
-        if (ident == null || !ident.NoPrefix)
+        if (!noPrefix && (ident == null || !ident.NoPrefix))
         {
             return GetIdentifierPrefix(enumType) + "." + actualName;
         }
 
         return actualName;
     }
+
+    /// <summary>
+    /// Get the ID name from an enum value as a string representation.
+    /// The value can also annotate IdentifierAttribute for alternative custom names.
+    /// </summary>
+    /// <param name="enumValue">Enum value to get ID name from.</param>
+    /// <returns></returns>
+    public static string GetIdentifier(this Enum enumValue) => GetIdentifier(enumValue, false);
 
     /// <summary>
     /// Convert an object to an enumeration value. This method also verifies that

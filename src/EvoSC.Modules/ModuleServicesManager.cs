@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Services;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions.ModuleServices;
 using EvoSC.Modules.Interfaces;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace EvoSC.Modules;
 
@@ -66,6 +68,9 @@ public class ModuleServicesManager : IModuleServicesManager
         container.Options.EnableAutoVerification = false;
         container.Options.SuppressLifestyleMismatchVerification = true;
         container.Options.UseStrictLifestyleMismatchBehavior = false;
+        container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+
+        container.AddEvoScCommonScopedServices();
 
         foreach (var assembly in assemblies)
         {
@@ -94,6 +99,9 @@ public class ModuleServicesManager : IModuleServicesManager
                             break;
                         case ServiceLifeStyle.Transient:
                             container.Register(intf, type);
+                            break;
+                        case ServiceLifeStyle.Scoped:
+                            container.Register(intf, type, Lifestyle.Scoped);
                             break;
                         default:
                             throw new ModuleServicesException($"Unsupported lifetime type for module service: {type}");
