@@ -129,7 +129,7 @@ public class CommandsMiddleware
     
     public async Task ExecuteAsync(ChatRouterPipelineContext context)
     {
-        if (context.MessageText.Trim().StartsWith("/", StringComparison.Ordinal))
+        if (context.MessageText.Trim().StartsWith(ChatCommandParser.CommandPrefix, StringComparison.Ordinal))
         {
             context.ForwardMessage = false;
         }

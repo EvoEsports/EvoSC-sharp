@@ -9,6 +9,8 @@ public class ChatCommandParser
     private readonly IChatCommandManager _cmdManager;
     private readonly IValueReaderManager _valueReader;
 
+    public static string CommandPrefix = "/";
+
     public ChatCommandParser(IChatCommandManager cmdManager, IValueReaderManager valueReader)
     {
         _cmdManager = cmdManager;
@@ -27,7 +29,7 @@ public class ChatCommandParser
             }
 
             var cmdAlias = parts[0];
-            bool intendedCommand = cmdAlias.StartsWith("/", StringComparison.Ordinal);
+            bool intendedCommand = cmdAlias.StartsWith(CommandPrefix, StringComparison.Ordinal);
             var cmd = _cmdManager.FindCommand(cmdAlias, false);
 
             if (cmd == null)
