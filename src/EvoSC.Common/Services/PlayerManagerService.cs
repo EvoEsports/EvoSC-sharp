@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.Algorithms;
 using GbxRemoteNet.Structs;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
@@ -13,12 +14,15 @@ public class PlayerManagerService : IPlayerManagerService
     private readonly IPlayerRepository _playerRepository;
     private readonly IPlayerCacheService _playerCache;
     private readonly IServerClient _server;
+    private readonly ILogger<PlayerManagerService> _logger;
 
-    public PlayerManagerService(IPlayerRepository playerRepository, IPlayerCacheService playerCache, IServerClient server)
+    public PlayerManagerService(IPlayerRepository playerRepository, IPlayerCacheService playerCache,
+        IServerClient server, ILogger<PlayerManagerService> logger)
     {
         _playerRepository = playerRepository;
         _playerCache = playerCache;
         _server = server;
+        _logger = logger;
     }
 
     public async Task<IPlayer?> GetPlayerAsync(string accountId) =>
@@ -49,7 +53,7 @@ public class PlayerManagerService : IPlayerManagerService
         }
         catch (Exception ex)
         {
-            // ignore the error because we will then set the name instead
+            _logger.LogTrace(ex, "Failed to obtain player info, are they on the server?");
         }
 
         playerInfo ??= new TmPlayerDetailedInfo {Login = playerLogin, NickName = name ?? accountId};
