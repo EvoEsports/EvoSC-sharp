@@ -11,17 +11,18 @@ namespace EvoSC.Common.Services;
 
 public class PlayerManagerService : IPlayerManagerService
 {
-    private readonly ILogger<PlayerManagerService> _logger;
     private readonly IPlayerRepository _playerRepository;
     private readonly IPlayerCacheService _playerCache;
     private readonly IServerClient _server;
+    private readonly ILogger<PlayerManagerService> _logger;
 
-    public PlayerManagerService(ILogger<PlayerManagerService> logger, IPlayerRepository playerRepository, IPlayerCacheService playerCache, IServerClient server)
+    public PlayerManagerService(IPlayerRepository playerRepository, IPlayerCacheService playerCache,
+        IServerClient server, ILogger<PlayerManagerService> logger)
     {
-        _logger = logger;
         _playerRepository = playerRepository;
         _playerCache = playerCache;
         _server = server;
+        _logger = logger;
     }
 
     public async Task<IPlayer?> GetPlayerAsync(string accountId) =>
@@ -39,25 +40,23 @@ public class PlayerManagerService : IPlayerManagerService
         return await CreatePlayerAsync(accountId);
     }
 
-    public async Task<IPlayer> CreatePlayerAsync(string accountId)
+    public Task<IPlayer> CreatePlayerAsync(string accountId) => CreatePlayerAsync(accountId, null);
+
+    public async Task<IPlayer> CreatePlayerAsync(string accountId, string? name)
     {
         var playerLogin = PlayerUtils.ConvertAccountIdToLogin(accountId);
 
         TmPlayerDetailedInfo? playerInfo = null;
-        // TODO: Create player with default properties when limited information is available #81 https://github.com/EvoTM/EvoSC-sharp/issues/81
         try
         {
             playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Player not on server");
+            _logger.LogTrace(ex, "Failed to obtain player info, are they on the server?");
         }
 
-        if (playerInfo == null)
-        {
-            throw new InvalidOperationException("Player info is null, cannot create player.");
-        }
+        playerInfo ??= new TmPlayerDetailedInfo {Login = playerLogin, NickName = name ?? accountId};
 
         return await _playerRepository.AddPlayerAsync(accountId, playerInfo);
     }
