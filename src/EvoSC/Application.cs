@@ -19,6 +19,7 @@ using EvoSC.Common.Services;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Util;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -82,6 +83,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         SetupControllerManager();
         await SetupModulesAsync();
         await StartBackgroundServicesAsync();
+        await EnableModulesAsync();
         
         sw.Stop();
         
@@ -171,6 +173,11 @@ public sealed class Application : IEvoSCApplication, IDisposable
         _services.GetInstance<IServerCallbackHandler>();
         _services.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(_runningToken.Token);
+    }
+    
+    private async Task EnableModulesAsync()
+    {
+        await _services.GetRequiredService<IModuleManager>().EnableModulesAsync();
     }
 
     public void Dispose()
