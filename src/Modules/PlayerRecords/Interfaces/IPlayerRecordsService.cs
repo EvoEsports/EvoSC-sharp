@@ -15,13 +15,7 @@ public interface IPlayerRecordsService
     /// <param name="checkpoints">Checkpoint times that was driven for this record.</param>
     /// <returns></returns>
     public Task<(IPlayerRecord, RecordUpdateStatus)> SetPbRecordAsync(IPlayer player, IMap map, int score, IEnumerable<int> checkpoints);
-    
-    /// <summary>
-    /// Get the current map on the server. Todo: https://github.com/EvoTM/EvoSC-sharp/issues/92
-    /// </summary>
-    /// <returns></returns>
-    public Task<IMap> GetOrAddCurrentMapAsync();
-    
+
     /// <summary>
     /// Get a record of a player.
     /// </summary>
