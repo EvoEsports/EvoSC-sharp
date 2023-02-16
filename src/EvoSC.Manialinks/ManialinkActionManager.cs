@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using EvoSC.Common.Util;
+using EvoSC.Manialinks.Attributes;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Manialinks.Models;
@@ -16,7 +17,7 @@ public class ManialinkActionManager : IManialinkActionManager
     private static char RouteDelimiter = '/';
     
     private readonly ILogger<ManialinkActionManager> _logger;
-    private readonly IMlRouteNode _rootNode = new MlRouteNode("<root>");
+    private readonly IMlRouteNode _rootNode = new MlRouteNode("<root>"){Children = new Dictionary<string, IMlRouteNode>()};
 
     public ManialinkActionManager(ILogger<ManialinkActionManager> logger)
     {
@@ -25,6 +26,13 @@ public class ManialinkActionManager : IManialinkActionManager
 
     private string GetControllerRoute(Type type)
     {
+        var routeAttr = type.GetCustomAttribute<ManialinkRouteAttribute>();
+
+        if (routeAttr != null)
+        {
+            return routeAttr.Route;
+        }
+        
         var name = type.Name;
 
         if (name.EndsWith("Controller", StringComparison.OrdinalIgnoreCase))
@@ -37,6 +45,13 @@ public class ManialinkActionManager : IManialinkActionManager
 
     private string GetMethodRoute(MethodInfo method, IMlActionParameter firstParameter)
     {
+        var routeAttr = method.GetCustomAttribute<ManialinkRouteAttribute>();
+
+        if (routeAttr != null)
+        {
+            return routeAttr.Route;
+        }
+        
         var name = method.Name;
 
         if (name.EndsWith("Async", StringComparison.OrdinalIgnoreCase))
@@ -93,6 +108,7 @@ public class ManialinkActionManager : IManialinkActionManager
         if (methodRoute.StartsWith(RouteDelimiter))
         {
             route.Clear();
+            methodRoute = methodRoute[1..];
         }
         else if (!string.IsNullOrEmpty(controllerRoute))
         {
@@ -111,7 +127,7 @@ public class ManialinkActionManager : IManialinkActionManager
             if (currentActionParameter == null)
             {
                 throw new InvalidOperationException(
-                    $"Route is expecting a parameter '{routeComponent}', but the action method does not have any for this one.");
+                    $"Action method missing parameter for route parameter '{routeComponent}'.");
             }
 
             newNode.IsParameter = true;
@@ -126,8 +142,13 @@ public class ManialinkActionManager : IManialinkActionManager
         return currentActionParameter;
     }
 
-    private void AddAction(string route, IManialinkAction action)
+    private void AddActionInternal(string route, IManialinkAction action)
     {
+        if (route.StartsWith(RouteDelimiter))
+        {
+            throw new InvalidOperationException($"Routes cannot begin with the route delimiter '{RouteDelimiter}'.");
+        }
+        
         var currentNode = _rootNode;
         var routeComponents = route.Split(RouteDelimiter);
         var currentActionParameter = action.FirstParameter;
@@ -170,7 +191,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
     public void AddActions(Type controllerType)
     {
-        if (!controllerType.IsControllerClass())
+       if (!controllerType.IsControllerClass())
         {
             throw new InvalidOperationException($"The provided type {controllerType.Name} is not a controller class.");
         }
@@ -199,18 +220,87 @@ public class ManialinkActionManager : IManialinkActionManager
                 FirstParameter = firstActionParameter
             };
 
-            AddAction(route, action);
+            AddActionInternal(route, action);
         }
     }
 
-    public IManialinkAction FindAction(string action)
+
+    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, IMlRouteNode currentNode)
     {
+        if (nextComponents.Length == 0 || currentNode.Children == null)
+        {
+            var name = nextComponents.Length > 0 ? nextComponents.First() : currentNode.Name;
+            return (currentNode.Action,
+                new MlRouteNode(name) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
+        }
+
+        var currentComponent = nextComponents.First();
+        var pathNode = new MlRouteNode(currentComponent)
+        {
+            Children = new Dictionary<string, IMlRouteNode>(),
+            IsParameter = currentNode.IsParameter
+        };
+
+        foreach (var child in currentNode.Children.Values)
+        {
+            if (!child.IsParameter && !child.Name.Equals(currentComponent, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var (manialinkAction, nextNode) = FindActionInternal(nextComponents[1..], child);
+
+            if (nextNode != null)
+            {
+                pathNode.Children[nextNode.Name] = nextNode;
+            }
+
+            if (manialinkAction != null)
+            {
+                return (manialinkAction, pathNode);
+            }
+        }
+
+        return (null, null);
+    }
+    
+    public (IManialinkAction, IMlRouteNode) FindAction(string action)
+    {
+        var routeComponents = action.Split(RouteDelimiter);
+
+        foreach (var child in _rootNode.Children.Values)
+        {
+            var (manialinkAction, path) = FindActionInternal(routeComponents, child);
+
+            if (manialinkAction == null || path == null)
+            {
+                continue;
+            }
+
+            return (manialinkAction, path);
+        }
+
+        throw new InvalidOperationException($"No manialink route matches '{action}'.");
+
+        /* var routeComponents = action.Split(RouteDelimiter);
+        var currentNode = _rootNode;
+
+        foreach (var routeComponent in routeComponents)
+        {
+            if (currentNode.Children == null || !currentNode.Children.ContainsKey(routeComponent))
+            {
+                throw new InvalidOperationException($"No manialink route matches '{action}'.");
+            }
+
+            currentNode = currentNode.Children[routeComponent];
+        }
+        
         return new ManialinkAction
         {
             Permission = null,
             ControllerType = null,
             HandlerMethod = null,
             FirstParameter = null
-        };
+        }; */
     }
 }

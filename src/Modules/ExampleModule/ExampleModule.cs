@@ -10,6 +10,8 @@ public class ExampleModule : EvoScModule, IToggleable
     public ExampleModule(IManialinkActionManager manialinks)
     {
         manialinks.AddActions(typeof(ExampleManialinkController));
+        
+        var action = manialinks.FindAction("a/234");
     }
     
     public Task EnableAsync()

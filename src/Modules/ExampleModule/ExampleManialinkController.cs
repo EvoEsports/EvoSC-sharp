@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Manialinks.Attributes;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
@@ -10,7 +11,8 @@ public class ExampleFormModel
 [Controller]
 public class ExampleManialinkController : ManialinkController
 {
-    public async Task HandleActionAsync(int param)
+    [ManialinkRoute(Route = "/a/{param1}")]
+    public async Task HandleActionAsync(int a)
     {
         
     }

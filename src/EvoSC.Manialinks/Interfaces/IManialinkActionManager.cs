@@ -6,5 +6,5 @@ namespace EvoSC.Manialinks.Interfaces;
 public interface IManialinkActionManager
 {
     public void AddActions(Type controllerType);
-    public IManialinkAction FindAction(string action);
+    public (IManialinkAction, IMlRouteNode) FindAction(string action);
 }
