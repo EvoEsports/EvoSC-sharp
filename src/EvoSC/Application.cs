@@ -16,6 +16,8 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
+using EvoSC.Manialinks;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Util;
@@ -107,6 +109,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         _services.AddEvoScChatCommands();
         _services.AddEvoScMiddlewarePipelines();
         _services.AddEvoScPermissions();
+        _services.AddEvoScManialinks();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
         
@@ -167,6 +170,9 @@ public sealed class Application : IEvoSCApplication, IDisposable
 
         // initialize player cache
         _services.GetInstance<IPlayerCacheService>();
+        
+        // initialize manialink handler
+        _services.GetInstance<IManialinkInteractionHandler>();
 
         // connect to the dedicated server and setup callbacks and chat router
         var serverClient = _services.GetInstance<IServerClient>();

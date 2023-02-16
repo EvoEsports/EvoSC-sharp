@@ -2,6 +2,8 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules.Official.ExampleModule;
@@ -9,25 +11,30 @@ namespace EvoSC.Modules.Official.ExampleModule;
 [Controller]
 public class ExampleController2 : EvoScController<CommandInteractionContext>
 {
-    private readonly IModuleManager _modules;
+    private readonly IServerClient _server;
     
-    public ExampleController2(IModuleManager modules)
+    public ExampleController2(IServerClient server)
     {
-        _modules = modules;
+        _server = server;
     }
 
-    [ChatCommand("module", "Manage a module")]
-    public async Task ManageModule(string action, string loadIdStr)
+    [ChatCommand("show", "Show a manialink")]
+    public async Task ShowManialink()
     {
-        var loadId = Guid.Parse(loadIdStr);
+        var manialink = """
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<manialink version="3" name="my-manialink">
+    <entry name="MyValue" valuetype="Ml_String" selecttext="1" size="100 5" />
+    <label pos="0 -5" text="submit" action="ExampleManialink/HandleAction/1" />
+</manialink>
+""";
 
-        if (action == "load")
-        {
-            await _modules.EnableAsync(loadId);
-        }
-        else if (action == "unload")
-        {
-            await _modules.UnloadAsync(loadId);
-        }
+        await _server.Remote.SendDisplayManialinkPageToLoginAsync(Context.Player.GetLogin(), manialink, 0, false);
+    }
+    
+    [ChatCommand("hide", "Hide a manialink")]
+    public async Task HideManialink()
+    {
+        await _server.Remote.SendHideManialinkPageAsync();
     }
 }

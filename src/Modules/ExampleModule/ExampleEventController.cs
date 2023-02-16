@@ -4,6 +4,7 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
+using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;
@@ -23,5 +24,11 @@ public class ExampleEventController : EvoScController<EventControllerContext>
     {
         _logger.LogInformation("Player waypoint, {Player}: {Time}", args.AccountId, args.RaceTime);
         return Task.CompletedTask;
+    }
+
+    [Subscribe(GbxRemoteEvent.ManialinkPageAnswer)]
+    public async Task PageAnswer(object sender, ManiaLinkPageActionEventArgs args)
+    {
+        
     }
 }
