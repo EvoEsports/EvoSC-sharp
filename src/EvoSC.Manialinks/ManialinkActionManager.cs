@@ -281,26 +281,5 @@ public class ManialinkActionManager : IManialinkActionManager
         }
 
         throw new InvalidOperationException($"No manialink route matches '{action}'.");
-
-        /* var routeComponents = action.Split(RouteDelimiter);
-        var currentNode = _rootNode;
-
-        foreach (var routeComponent in routeComponents)
-        {
-            if (currentNode.Children == null || !currentNode.Children.ContainsKey(routeComponent))
-            {
-                throw new InvalidOperationException($"No manialink route matches '{action}'.");
-            }
-
-            currentNode = currentNode.Children[routeComponent];
-        }
-        
-        return new ManialinkAction
-        {
-            Permission = null,
-            ControllerType = null,
-            HandlerMethod = null,
-            FirstParameter = null
-        }; */
     }
 }
