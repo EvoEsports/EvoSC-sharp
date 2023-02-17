@@ -3,6 +3,8 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.PlayerRecords.Config;

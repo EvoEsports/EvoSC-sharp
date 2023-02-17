@@ -8,4 +8,5 @@ public interface IMlActionParameter
     public Type Type => ParameterInfo.ParameterType;
     public string Name => ParameterInfo.Name;
     public IMlActionParameter? NextParameter { get; set; }
+    public bool IsEntryModel { get; set; }
 }

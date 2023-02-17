@@ -13,4 +13,8 @@
         <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Manialink.mt" />
+    </ItemGroup>
+
 </Project>

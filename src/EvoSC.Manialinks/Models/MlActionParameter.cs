@@ -7,4 +7,5 @@ public class MlActionParameter : IMlActionParameter
 {
     public required ParameterInfo ParameterInfo { get; init; }
     public IMlActionParameter? NextParameter { get; set; }
+    public bool IsEntryModel { get; set; }
 }

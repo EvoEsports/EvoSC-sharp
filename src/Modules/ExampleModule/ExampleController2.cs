@@ -24,7 +24,7 @@ public class ExampleController2 : EvoScController<CommandInteractionContext>
         var manialink = """
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <manialink version="3" name="my-manialink">
-    <entry name="MyValue" valuetype="Ml_String" selecttext="1" size="100 5" />
+    <textedit name="MyValue" pos="30 0" size="100 20" textformat="Script" textsize="1" showlinenumbers="1" />
     <label pos="0 -5" text="submit" action="ExampleManialink/HandleAction/1" />
 </manialink>
 """;

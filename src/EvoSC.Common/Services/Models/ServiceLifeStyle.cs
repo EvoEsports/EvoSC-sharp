@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Modules;
+﻿namespace EvoSC.Common.Services.Models;
 
 public enum ServiceLifeStyle
 {

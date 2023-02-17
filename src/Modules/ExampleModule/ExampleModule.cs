@@ -1,4 +1,5 @@
 ﻿using EvoSC.Manialinks.Interfaces;
+using EvoSC.Manialinks.Models;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
 
@@ -9,9 +10,6 @@ public class ExampleModule : EvoScModule, IToggleable
 {
     public ExampleModule(IManialinkActionManager manialinks)
     {
-        manialinks.AddActions(typeof(ExampleManialinkController));
-        
-        var action = manialinks.FindAction("a/234");
     }
     
     public Task EnableAsync()

@@ -15,11 +15,11 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Middleware.Attributes;
 using EvoSC.Common.Permissions.Attributes;
 using EvoSC.Common.Permissions.Models;
+using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
-using EvoSC.Modules.Exceptions.ModuleServices;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
@@ -33,7 +33,7 @@ public class ModuleManager : IModuleManager
 {
     private readonly ILogger<ModuleManager> _logger;
     private readonly IControllerManager _controllers;
-    private readonly IModuleServicesManager _servicesManager;
+    private readonly IServiceContainerManager _servicesManager;
     private readonly IActionPipelineManager _pipelineManager;
     private readonly IPermissionManager _permissions;
     private readonly IEvoScBaseConfig _config;
@@ -45,7 +45,7 @@ public class ModuleManager : IModuleManager
     public IReadOnlyList<IModuleLoadContext> LoadedModules => _loadedModules.Values.ToList();
     
     public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
-        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions,
+        IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions,
         IConfigStoreRepository configStoreRepository)
     {
         _logger = logger;
@@ -304,7 +304,7 @@ public class ModuleManager : IModuleManager
                     if (!type.IsInterface)
                     {
                         _logger.LogError("Settings type {Type} must be an interface", type);
-                        throw new ModuleServicesException($"Settings type {type} must be an interface.");
+                        throw new ServicesException($"Settings type {type} must be an interface.");
                     }
 
                     var store = await CreateModuleConfigStoreAsync(moduleInfo.Name, type);

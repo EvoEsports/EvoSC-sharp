@@ -133,6 +133,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         var controllers = _services.GetInstance<IControllerManager>();
         controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
         controllers.AddControllerActionRegistry(_services.GetInstance<IChatCommandManager>());
+        controllers.AddControllerActionRegistry(_services.GetInstance<IManialinkActionManager>());
         
         var pipelineManager = _services.GetInstance<IActionPipelineManager>();
         pipelineManager.UseEvoScCommands(_services);

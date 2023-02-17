@@ -1,4 +1,6 @@
-﻿using EvoSC.Modules.Interfaces;
+﻿using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Services;
+using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 
 namespace EvoSC.Modules.Extensions;
@@ -12,7 +14,6 @@ public static class EvoScModulesServiceExtensions
     /// <returns></returns>
     public static Container AddEvoScModules(this Container services)
     {
-        services.RegisterSingleton<IModuleServicesManager, ModuleServicesManager>();
         services.RegisterSingleton<IModuleManager, ModuleManager>();
         return services;
     }

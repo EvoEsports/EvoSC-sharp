@@ -6,8 +6,8 @@ using EvoSC.Manialinks.Attributes;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Manialinks.Models;
+using LinqToDB.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 namespace EvoSC.Manialinks;
 
@@ -18,6 +18,7 @@ public class ManialinkActionManager : IManialinkActionManager
     
     private readonly ILogger<ManialinkActionManager> _logger;
     private readonly IMlRouteNode _rootNode = new MlRouteNode("<root>"){Children = new Dictionary<string, IMlRouteNode>()};
+    private readonly Dictionary<Type, List<string>> _controllerRoutes = new();
 
     public ManialinkActionManager(ILogger<ManialinkActionManager> logger)
     {
@@ -65,11 +66,14 @@ public class ManialinkActionManager : IManialinkActionManager
 
         while (currentParam != null)
         {
-            route.Append(RouteDelimiter);
-            route.Append('{');
-            route.Append(currentParam.Name);
-            route.Append('}');
-            
+            if (!currentParam.IsEntryModel)
+            {
+                route.Append(RouteDelimiter);
+                route.Append('{');
+                route.Append(currentParam.Name);
+                route.Append('}');
+            }
+
             currentParam = currentParam.NextParameter;
         }
 
@@ -92,7 +96,9 @@ public class ManialinkActionManager : IManialinkActionManager
 
         foreach (var methodParam in methodParams[1..])
         {
-            var nextParam = new MlActionParameter {ParameterInfo = methodParam};
+            var entryModelAttr = methodParam.ParameterType.GetCustomAttribute<EntryModelAttribute>();
+
+            var nextParam = new MlActionParameter {ParameterInfo = methodParam, IsEntryModel = entryModelAttr != null};
             currentParam.NextParameter = nextParam;
             currentParam = nextParam;
         }
@@ -189,49 +195,51 @@ public class ManialinkActionManager : IManialinkActionManager
         _logger.LogDebug("Registered manialink route: {Route}", route);
     }
 
-    public void AddActions(Type controllerType)
+    public void AddRoute(string route, IManialinkAction action) => AddActionInternal(route, action);
+
+
+    private void RemoveRouteInternal(IMlRouteNode route, IMlRouteNode currentNode)
     {
-       if (!controllerType.IsControllerClass())
+        if (route.IsAction || route.Children == null || route.Children.Count == 0)
         {
-            throw new InvalidOperationException($"The provided type {controllerType.Name} is not a controller class.");
+            return;
         }
-        
-        var methods = controllerType.GetMethods(ActionMethodBindingFlags);
-        var controllerRoute = GetControllerRoute(controllerType);
 
-        foreach (var method in methods)
+        var nextNode = currentNode?.Children?[route.Name];
+
+        if (nextNode != null)
         {
-            var firstActionParameter = GetActionParameters(method);
-            
-            // build route
-            var route = BuildActionRoute(controllerRoute, method, firstActionParameter);
+            RemoveRouteInternal(route.Children.Values.First(), nextNode); 
+        }
 
-            if (string.IsNullOrEmpty(route))
-            {
-                throw new InvalidOperationException(
-                    $"Route is empty for method {method.Name} in controller {controllerType.Name}.");
-            }
+        if (currentNode?.Children is {Count: 0 or 1})
+        {
+            currentNode.Children.Remove(route.Name);
+        }
+    }
+    
+    public void RemoveRoute(string route)
+    {
+        var (_, path) = FindAction(route);
+        RemoveRouteInternal(path, _rootNode);
 
-            var action = new ManialinkAction
-            {
-                Permission = null,
-                ControllerType = controllerType,
-                HandlerMethod = method,
-                FirstParameter = firstActionParameter
-            };
-
-            AddActionInternal(route, action);
+        if (path.Children is {Count: 0 or 1})
+        {
+            _rootNode.Children?.Remove(path.Name);
         }
     }
 
-
-    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, IMlRouteNode currentNode)
+    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, string lastComponent, IMlRouteNode currentNode)
     {
         if (nextComponents.Length == 0 || currentNode.Children == null)
         {
-            var name = nextComponents.Length > 0 ? nextComponents.First() : currentNode.Name;
+            if (nextComponents.Length > 0)
+            {
+                return (null, null);
+            }
+            
             return (currentNode.Action,
-                new MlRouteNode(name) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
+                new MlRouteNode(lastComponent) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
         }
 
         var currentComponent = nextComponents.First();
@@ -248,7 +256,7 @@ public class ManialinkActionManager : IManialinkActionManager
                 continue;
             }
 
-            var (manialinkAction, nextNode) = FindActionInternal(nextComponents[1..], child);
+            var (manialinkAction, nextNode) = FindActionInternal(nextComponents[1..], currentComponent, child);
 
             if (nextNode != null)
             {
@@ -270,16 +278,83 @@ public class ManialinkActionManager : IManialinkActionManager
 
         foreach (var child in _rootNode.Children.Values)
         {
-            var (manialinkAction, path) = FindActionInternal(routeComponents, child);
+            var (manialinkAction, path) = FindActionInternal(routeComponents[1..], routeComponents[0], child);
 
             if (manialinkAction == null || path == null)
             {
                 continue;
             }
+            
+            var pathNode = new MlRouteNode(routeComponents[0])
+            {
+                Children = new Dictionary<string, IMlRouteNode>(),
+                IsParameter = path.IsParameter
+            };
+            
+            pathNode.Children.Add(path.Name, path);
 
-            return (manialinkAction, path);
+            return (manialinkAction, pathNode);
         }
 
         throw new InvalidOperationException($"No manialink route matches '{action}'.");
+    }
+
+    public void RegisterForController(Type controllerType)
+    {
+        if (!controllerType.IsControllerClass())
+        {
+            throw new InvalidOperationException($"The provided type {controllerType.Name} is not a controller class.");
+        }
+
+        if (!typeof(ManialinkController).IsAssignableFrom(controllerType))
+        {
+            return;
+        }
+
+        if (!_controllerRoutes.ContainsKey(controllerType))
+        {
+            _controllerRoutes[controllerType] = new List<string>();
+        }
+        
+        var methods = controllerType.GetMethods(ActionMethodBindingFlags);
+        var controllerRoute = GetControllerRoute(controllerType);
+
+        foreach (var method in methods)
+        {
+            var firstActionParameter = GetActionParameters(method);
+
+            // build route
+            var route = BuildActionRoute(controllerRoute, method, firstActionParameter);
+
+            if (string.IsNullOrEmpty(route))
+            {
+                throw new InvalidOperationException(
+                    $"Route is empty for method {method.Name} in controller {controllerType.Name}.");
+            }
+
+            var action = new ManialinkAction
+            {
+                Permission = null,
+                ControllerType = controllerType,
+                HandlerMethod = method,
+                FirstParameter = firstActionParameter
+            };
+
+            AddActionInternal(route, action);
+            _controllerRoutes[controllerType].Add(route);
+        }
+    }
+
+    public void UnregisterForController(Type controllerType)
+    {
+        if (!_controllerRoutes.ContainsKey(controllerType))
+        {
+            return;
+        }
+
+        foreach (var route in _controllerRoutes[controllerType])
+        {
+            RemoveRoute(route);
+        }
     }
 }
