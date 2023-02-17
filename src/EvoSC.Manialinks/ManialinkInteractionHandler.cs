@@ -72,11 +72,12 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             {
                 ManialinkActionExecuted = action
             };
-            
+
             controller.SetContext(manialinkInteractionContext);
 
             var actionParams =
-                await ConvertRequestParametersAsync(action.FirstParameter, path, args.Entries, context.ServiceScope.Container);
+                await ConvertRequestParametersAsync(action.FirstParameter, path, args.Entries,
+                    context.ServiceScope.Container);
 
             var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
                 (Task?)action.HandlerMethod.Invoke(controller, actionParams) ?? Task.CompletedTask
@@ -108,6 +109,10 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "No action found for route '{Route}'", args.Answer);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to call manialink action for route '{Route}'", args.Answer);
         }
     }
 
@@ -141,13 +146,17 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             {
                 values.Add(await ConvertEntryModel(currentParam.Type, entries, services));
             }
+            else if (currentNode == null)
+            {
+                throw new InvalidOperationException("Missing parameters for manialink action.");
+            }
             else
             {
                 values.Add(await _valueReader.ConvertValueAsync(currentParam.Type, currentNode.Name));
+                currentNode = currentNode?.Children?.Values.First(); 
             }
 
             currentParam = currentParam.NextParameter;
-            currentNode = currentNode?.Children?.Values.First(); 
         }
 
         return values.ToArray();

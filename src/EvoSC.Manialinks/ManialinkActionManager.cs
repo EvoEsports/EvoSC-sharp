@@ -38,7 +38,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
         if (name.EndsWith("Controller", StringComparison.OrdinalIgnoreCase))
         {
-            return name[0..^10];
+            return name[..^10];
         }
 
         return name;
@@ -57,7 +57,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
         if (name.EndsWith("Async", StringComparison.OrdinalIgnoreCase))
         {
-            name = name[0..^5];
+            name = name[..^5];
         }
 
         var route = new StringBuilder(name);
@@ -80,6 +80,18 @@ public class ManialinkActionManager : IManialinkActionManager
         return route.ToString();
     }
 
+    private IMlActionParameter GetActionParameter(ParameterInfo parInfo)
+    {
+        var entryModelAttr = parInfo.ParameterType.GetCustomAttribute<EntryModelAttribute>();
+
+        return new MlActionParameter
+        {
+            ParameterInfo = parInfo, 
+            IsEntryModel = entryModelAttr != null,
+            NextParameter = null
+        };
+    }
+    
     private IMlActionParameter? GetActionParameters(MethodInfo method)
     {
         var methodParams = method.GetParameters();
@@ -91,14 +103,12 @@ public class ManialinkActionManager : IManialinkActionManager
             return null;
         }
 
-        var firstParam = new MlActionParameter {ParameterInfo = first, NextParameter = null};
+        var firstParam = GetActionParameter(first);
         var currentParam = firstParam;
 
         foreach (var methodParam in methodParams[1..])
         {
-            var entryModelAttr = methodParam.ParameterType.GetCustomAttribute<EntryModelAttribute>();
-
-            var nextParam = new MlActionParameter {ParameterInfo = methodParam, IsEntryModel = entryModelAttr != null};
+            var nextParam = GetActionParameter(methodParam);
             currentParam.NextParameter = nextParam;
             currentParam = nextParam;
         }
