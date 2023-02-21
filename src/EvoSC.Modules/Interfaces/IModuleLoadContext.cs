@@ -63,6 +63,8 @@ public interface IModuleLoadContext
     /// </summary>
     public List<Guid> LoadedDependencies { get; init; }
     
+    public List<IModuleManialinkTemplate> ManialinkTemplates { get; init; }
+
     /// <summary>
     /// Whether this module is currently enabled.
     /// </summary>

@@ -207,6 +207,33 @@ public class ModuleManager : IModuleManager
 
         return Task.CompletedTask;
     }
+    
+    private async Task RegisterManialinksTemplatesAsync(IModuleLoadContext loadContext)
+    {
+        foreach (var assembly in loadContext.Assemblies)
+        {
+            foreach (var resourceName in assembly.GetManifestResourceNames())
+            {
+                var nameComponents = resourceName.Split('.');
+                
+                if (nameComponents.Length <= 1 || !nameComponents[^1].Equals("mt", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var resourceStream = assembly.GetManifestResourceStream(resourceName);
+                using (var streamReader = new StreamReader(resourceStream))
+                {
+                    var contents = await streamReader.ReadToEndAsync();
+
+                    loadContext.ManialinkTemplates.Add(new ModuleManialinkTemplate
+                    {
+                        Content = contents, Name = nameComponents[^2]
+                    });
+                }
+            }
+        }
+    }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private Task TryCallModuleEnableAsync(IModuleLoadContext moduleContext)
@@ -424,7 +451,8 @@ public class ModuleManager : IModuleManager
             Assemblies = assemblies,
             Pipelines = CreateDefaultPipelines(),
             Permissions = new List<IPermission>(),
-            LoadedDependencies = loadedDependencies
+            LoadedDependencies = loadedDependencies,
+            ManialinkTemplates = new List<IModuleManialinkTemplate>()
         };
     }
 
@@ -457,6 +485,7 @@ public class ModuleManager : IModuleManager
 
         await RegisterMiddlewaresAsync(loadContext);
         await RegisterPermissionsAsync(loadContext);
+        await RegisterManialinksTemplatesAsync(loadContext);
 
         _loadedModules.Add(loadId, loadContext);
         _moduleNameMap[moduleInfo.Name] = loadId;

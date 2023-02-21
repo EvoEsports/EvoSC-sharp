@@ -9,6 +9,7 @@ public static class ManialinkServiceExtensions
     {
         services.RegisterSingleton<IManialinkInteractionHandler, ManialinkInteractionHandler>();
         services.RegisterSingleton<IManialinkActionManager, ManialinkActionManager>();
+        services.RegisterSingleton<IManialinkManager, ManialinkManager>();
         
         return services;
     }

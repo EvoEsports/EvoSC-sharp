@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using EvoSC.Common.Exceptions.Parsing;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
@@ -144,7 +145,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             
             if (currentParam.IsEntryModel)
             {
-                values.Add(await ConvertEntryModel(currentParam.Type, entries, services));
+                values.Add(await ConvertEntryModelAsync(currentParam.Type, entries, services));
             }
             else if (currentNode == null)
             {
@@ -162,7 +163,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         return values.ToArray();
     }
 
-    private async Task<object> ConvertEntryModel(Type type, TmSEntryVal[] entries, Container services)
+    private async Task<object> ConvertEntryModelAsync(Type type, TmSEntryVal[] entries, Container services)
     {
         var instance = ActivatorUtilities.CreateInstance(services, type);
         var modelProperties =
@@ -174,15 +175,25 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         {
             entriesDict[entry.Name] = entry;
         }
-        
+
         foreach (var modelProperty in modelProperties)
         {
             var name = modelProperty.Name;
+            object? value = null;
+            var entryExists = entriesDict.TryGetValue(name, out var entry);
 
-            if (entriesDict.TryGetValue(name, out var entry))
+            if (entryExists)
             {
-                var value = await _valueReader.ConvertValueAsync(modelProperty.PropertyType, entry.Value);
-                modelProperty.SetValue(instance, value);
+                try
+                {
+                    value = await _valueReader.ConvertValueAsync(modelProperty.PropertyType, entry.Value);
+                    modelProperty.SetValue(instance, value);
+                }
+                catch (ValueConversionException ex)
+                {
+                    _logger.LogDebug(ex, "Failed to convert entry value for property {Prop} in model {Model}",
+                        modelProperty.Name, type.Name);
+                }
             }
         }
 

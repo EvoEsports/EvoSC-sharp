@@ -15,10 +15,14 @@ public class ManialinkActionManager : IManialinkActionManager
 {
     private const BindingFlags ActionMethodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly;
     private static char RouteDelimiter = '/';
+    private static Regex RouteParamRegex = new("\\{[\\w\\d_]+\\}", RegexOptions.None, TimeSpan.FromMilliseconds(100));
+    private static Regex ValidCharactersInRouteNameRegex = new("[_\\.\\w\\d]+", RegexOptions.None, TimeSpan.FromMilliseconds(100));
     
     private readonly ILogger<ManialinkActionManager> _logger;
     private readonly IMlRouteNode _rootNode = new MlRouteNode("<root>"){Children = new Dictionary<string, IMlRouteNode>()};
+    private readonly object _rootNodeMutex = new();
     private readonly Dictionary<Type, List<string>> _controllerRoutes = new();
+    private readonly object _controllerRoutesMutex = new();
 
     public ManialinkActionManager(ILogger<ManialinkActionManager> logger)
     {
@@ -138,7 +142,7 @@ public class ManialinkActionManager : IManialinkActionManager
     private static IMlActionParameter? CheckParameterValidity(string route, string routeComponent,
         IMlActionParameter? currentActionParameter, MlRouteNode newNode)
     {
-        if (Regex.IsMatch(routeComponent, "\\{[\\w\\d_]+\\}"))
+        if (RouteParamRegex.IsMatch(routeComponent))
         {
             if (currentActionParameter == null)
             {
@@ -149,7 +153,7 @@ public class ManialinkActionManager : IManialinkActionManager
             newNode.IsParameter = true;
             return currentActionParameter.NextParameter;
         }
-        else if (!Regex.IsMatch(routeComponent, "[_\\.\\w\\d]+"))
+        else if (!ValidCharactersInRouteNameRegex.IsMatch(routeComponent))
         {
             throw new InvalidOperationException(
                 $"The route '{route}' contains the invalid component '{routeComponent}'.");
@@ -164,49 +168,52 @@ public class ManialinkActionManager : IManialinkActionManager
         {
             throw new InvalidOperationException($"Routes cannot begin with the route delimiter '{RouteDelimiter}'.");
         }
+
+        lock (_rootNodeMutex)
+        {
+            var currentNode = _rootNode;
+            var routeComponents = route.Split(RouteDelimiter);
+            var currentActionParameter = action.FirstParameter;
+
+            foreach (var routeComponent in routeComponents)
+            {
+                if (string.IsNullOrEmpty(routeComponent))
+                {
+                    throw new InvalidOperationException($"Route '{route}' contains an empty component.");
+                }
+            
+                if (currentNode.Children == null)
+                {
+                    currentNode.Children = new Dictionary<string, IMlRouteNode>();
+                }
+            
+                if (currentNode.Children.TryGetValue(routeComponent, out var child))
+                {
+                    currentNode = child;
+                }
+                else
+                {
+                    var newNode = new MlRouteNode(routeComponent);
+
+                    currentActionParameter = CheckParameterValidity(route, routeComponent, currentActionParameter, newNode);
+
+                    currentNode.Children[routeComponent] = newNode;
+                    currentNode = newNode;
+                }
+            }
+
+            if (currentNode.IsAction)
+            {
+                throw new InvalidOperationException($"An action already exists for the route '{route}'.");
+            }
+
+            currentNode.Action = action;
+        }
         
-        var currentNode = _rootNode;
-        var routeComponents = route.Split(RouteDelimiter);
-        var currentActionParameter = action.FirstParameter;
-
-        foreach (var routeComponent in routeComponents)
-        {
-            if (string.IsNullOrEmpty(routeComponent))
-            {
-                throw new InvalidOperationException($"Route '{route}' contains an empty component.");
-            }
-            
-            if (currentNode.Children == null)
-            {
-                currentNode.Children = new Dictionary<string, IMlRouteNode>();
-            }
-            
-            if (currentNode.Children.TryGetValue(routeComponent, out var child))
-            {
-                currentNode = child;
-            }
-            else
-            {
-                var newNode = new MlRouteNode(routeComponent);
-
-                currentActionParameter = CheckParameterValidity(route, routeComponent, currentActionParameter, newNode);
-
-                currentNode.Children[routeComponent] = newNode;
-                currentNode = newNode;
-            }
-        }
-
-        if (currentNode.IsAction)
-        {
-            throw new InvalidOperationException($"An action already exists for the route '{route}'.");
-        }
-
-        currentNode.Action = action;
         _logger.LogDebug("Registered manialink route: {Route}", route);
     }
 
     public void AddRoute(string route, IManialinkAction action) => AddActionInternal(route, action);
-
 
     private void RemoveRouteInternal(IMlRouteNode route, IMlRouteNode currentNode)
     {
@@ -230,12 +237,15 @@ public class ManialinkActionManager : IManialinkActionManager
     
     public void RemoveRoute(string route)
     {
-        var (_, path) = FindAction(route);
-        RemoveRouteInternal(path, _rootNode);
-
-        if (path.Children is {Count: 0 or 1})
+        lock (_rootNodeMutex)
         {
-            _rootNode.Children?.Remove(path.Name);
+            var (_, path) = FindAction(route);
+            RemoveRouteInternal(path, _rootNode);
+
+            if (path.Children is {Count: 0 or 1})
+            {
+                _rootNode.Children?.Remove(path.Name);
+            }
         }
     }
 
@@ -286,24 +296,27 @@ public class ManialinkActionManager : IManialinkActionManager
     {
         var routeComponents = action.Split(RouteDelimiter);
 
-        foreach (var child in _rootNode.Children.Values)
+        lock (_rootNodeMutex)
         {
-            var (manialinkAction, path) = FindActionInternal(routeComponents[1..], routeComponents[0], child);
-
-            if (manialinkAction == null || path == null)
+            foreach (var child in _rootNode.Children.Values)
             {
-                continue;
+                var (manialinkAction, path) = FindActionInternal(routeComponents[1..], routeComponents[0], child);
+
+                if (manialinkAction == null || path == null)
+                {
+                    continue;
+                }
+            
+                var pathNode = new MlRouteNode(routeComponents[0])
+                {
+                    Children = new Dictionary<string, IMlRouteNode>(),
+                    IsParameter = path.IsParameter
+                };
+            
+                pathNode.Children.Add(path.Name, path);
+
+                return (manialinkAction, pathNode);
             }
-            
-            var pathNode = new MlRouteNode(routeComponents[0])
-            {
-                Children = new Dictionary<string, IMlRouteNode>(),
-                IsParameter = path.IsParameter
-            };
-            
-            pathNode.Children.Add(path.Name, path);
-
-            return (manialinkAction, pathNode);
         }
 
         throw new InvalidOperationException($"No manialink route matches '{action}'.");
@@ -321,9 +334,12 @@ public class ManialinkActionManager : IManialinkActionManager
             return;
         }
 
-        if (!_controllerRoutes.ContainsKey(controllerType))
+        lock (_controllerRoutesMutex)
         {
-            _controllerRoutes[controllerType] = new List<string>();
+            if (!_controllerRoutes.ContainsKey(controllerType))
+            {
+                _controllerRoutes[controllerType] = new List<string>();
+            }
         }
         
         var methods = controllerType.GetMethods(ActionMethodBindingFlags);
@@ -351,20 +367,27 @@ public class ManialinkActionManager : IManialinkActionManager
             };
 
             AddActionInternal(route, action);
-            _controllerRoutes[controllerType].Add(route);
+
+            lock (_controllerRoutesMutex)
+            {
+                _controllerRoutes[controllerType].Add(route);
+            }
         }
     }
 
     public void UnregisterForController(Type controllerType)
     {
-        if (!_controllerRoutes.ContainsKey(controllerType))
+        lock (_controllerRoutesMutex)
         {
-            return;
-        }
+            if (!_controllerRoutes.ContainsKey(controllerType))
+            {
+                return;
+            }
 
-        foreach (var route in _controllerRoutes[controllerType])
-        {
-            RemoveRoute(route);
+            foreach (var route in _controllerRoutes[controllerType])
+            {
+                RemoveRoute(route);
+            }
         }
     }
 }
