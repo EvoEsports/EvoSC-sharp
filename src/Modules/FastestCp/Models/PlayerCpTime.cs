@@ -2,4 +2,4 @@
 
 namespace EvoSC.Modules.Official.FastestCp.Models;
 
-public record PlayerCpTime(IOnlinePlayer Player, int RaceTime);
+public record PlayerCpTime(IPlayer Player, int RaceTime);
