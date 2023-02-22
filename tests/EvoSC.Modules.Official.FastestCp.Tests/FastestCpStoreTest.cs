@@ -1,10 +1,12 @@
 ﻿using EvoSC.Modules.Official.FastestCp.Models;
+using EvoSC.Modules.Official.FastestCp.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EvoSC.Modules.Official.FastestCp.Tests;
 
 public class FastestCpStoreTest
 {
-    private readonly FastestCpStore _fastestCpStore = new();
+    private readonly FastestCpStore _fastestCpStore = new(new NullLogger<FastestCpStore>());
 
     [Fact]
     public void Empty_Records_Should_Be_Empty()

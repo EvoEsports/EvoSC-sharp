@@ -1,10 +1,12 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.FastestCp.Interfaces;
 using EvoSC.Modules.Official.FastestCp.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace EvoSC.Modules.Official.FastestCp.Services;
 
@@ -12,14 +14,17 @@ namespace EvoSC.Modules.Official.FastestCp.Services;
 public class FastestCpService : IFastestCpService
 {
     private readonly ILogger<FastestCpService> _logger;
+    private readonly LoggerFactory _loggerFactory;
     private readonly IPlayerManagerService _playerManagerService;
 
-    private FastestCpStore _fastestCpStore = new();
+    private FastestCpStore _fastestCpStore;
 
-    public FastestCpService(IPlayerManagerService playerManagerService, ILogger<FastestCpService> logger)
+    public FastestCpService(IPlayerManagerService playerManagerService, ILogger<FastestCpService> logger, LoggerFactory loggerFactory)
     {
         _playerManagerService = playerManagerService;
         _logger = logger;
+        _loggerFactory = loggerFactory;
+        _fastestCpStore = GetNewFastestCpStore();
     }
 
     public void RegisterCpTime(WayPointEventArgs args)
@@ -33,12 +38,27 @@ public class FastestCpService : IFastestCpService
 
     public async Task<PlayerCpTime[][]> GetCurrentBestCpTimes(int limit)
     {
+        var playerCache = new Dictionary<string, IPlayer>();
         return await Task.WhenAll(_fastestCpStore.GetFastestTimes(limit).Select(l => Task.WhenAll(l.Select(async time =>
-            new PlayerCpTime(await _playerManagerService.GetOrCreatePlayerAsync(time.AccountId), time.RaceTime)))));
+        {
+            if (playerCache.TryGetValue(time.AccountId, out var player))
+            {
+                return new PlayerCpTime(player, time.RaceTime);
+            }
+
+            player = await _playerManagerService.GetOrCreatePlayerAsync(time.AccountId);
+            playerCache.Add(time.AccountId, player);
+            return new PlayerCpTime(player, time.RaceTime);
+        }))));
     }
 
     public void ResetCpTimes()
     {
-        _fastestCpStore = new FastestCpStore();
+        _fastestCpStore = GetNewFastestCpStore();
+    }
+
+    private FastestCpStore GetNewFastestCpStore()
+    {
+        return new FastestCpStore(_loggerFactory.CreateLogger<FastestCpStore>());
     }
 }
