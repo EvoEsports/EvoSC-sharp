@@ -6,7 +6,6 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.FastestCp.Interfaces;
 using EvoSC.Modules.Official.FastestCp.Models;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace EvoSC.Modules.Official.FastestCp.Services;
 

@@ -1,5 +1,4 @@
 ﻿using EvoSC.Modules.Official.FastestCp.Models;
-using EvoSC.Modules.Official.FastestCp.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EvoSC.Modules.Official.FastestCp.Tests;
@@ -27,9 +26,9 @@ public class FastestCpStoreTest
         var data = _fastestCpStore.GetFastestTimes(3);
 
         Assert.True(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new(Account, RaceTime) } }, data);
+        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime) } }, data);
     }
-    
+
     [Fact]
     public void Faster_Record_Should_Be_Inserted()
     {
@@ -46,7 +45,7 @@ public class FastestCpStoreTest
         var data = _fastestCpStore.GetFastestTimes(3);
 
         Assert.True(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new(Account, RaceTime2) } }, data);
+        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime2) } }, data);
     }
 
     [Fact]
@@ -65,7 +64,7 @@ public class FastestCpStoreTest
         var data = _fastestCpStore.GetFastestTimes(3);
 
         Assert.False(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new(Account, RaceTime1) } }, data);
+        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime1) } }, data);
     }
 
     [Fact]
@@ -84,7 +83,7 @@ public class FastestCpStoreTest
         var data = _fastestCpStore.GetFastestTimes(3);
 
         Assert.False(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new(Account, RaceTime1) } }, data);
+        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime1) } }, data);
     }
 
     [Fact]
@@ -112,16 +111,16 @@ public class FastestCpStoreTest
         Assert.Equivalent(
             new List<List<AccountIdCpTime>>
             {
-                new() { new(Account1, RaceTime1), new(Account2, RaceTime2) }
+                new() { new AccountIdCpTime(Account1, RaceTime1), new AccountIdCpTime(Account2, RaceTime2) }
             }, data2);
         Assert.Equivalent(
             new List<List<AccountIdCpTime>>
             {
                 new()
                 {
-                    new(Account3, RaceTime3),
-                    new(Account1, RaceTime1),
-                    new(Account2, RaceTime2)
+                    new AccountIdCpTime(Account3, RaceTime3),
+                    new AccountIdCpTime(Account1, RaceTime1),
+                    new AccountIdCpTime(Account2, RaceTime2)
                 }
             }, data3);
     }
@@ -152,15 +151,15 @@ public class FastestCpStoreTest
         Assert.Equivalent(
             new List<List<AccountIdCpTime>>
             {
-                new() { new(Account1, RaceTime1), new(Account2, RaceTime2) }
+                new() { new AccountIdCpTime(Account1, RaceTime1), new AccountIdCpTime(Account2, RaceTime2) }
             }, data2);
         Assert.Equivalent(
             new List<List<AccountIdCpTime>>
             {
-                new() { new(Account3, RaceTime3), new(Account1, RaceTime1) }
+                new() { new AccountIdCpTime(Account3, RaceTime3), new AccountIdCpTime(Account1, RaceTime1) }
             }, data3);
     }
-    
+
     [Fact]
     public void Multiple_Records_Should_Be_Inserted_At_Different_Cps()
     {
@@ -176,9 +175,14 @@ public class FastestCpStoreTest
         var data = _fastestCpStore.GetFastestTimes(3);
 
         Assert.True(result2);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new(Account, RaceTime1) }, new() { new(Account, RaceTime2) } }, data);
+        Assert.Equivalent(
+            new List<List<AccountIdCpTime>>
+            {
+                new() { new AccountIdCpTime(Account, RaceTime1) }, new() { new AccountIdCpTime(Account, RaceTime2) }
+            },
+            data);
     }
-    
+
     [Fact]
     public void Multiple_Records_Should_Be_Inserted_At_Different_Cps_In_Wrong_Order()
     {
@@ -194,9 +198,14 @@ public class FastestCpStoreTest
         var data = _fastestCpStore.GetFastestTimes(3);
 
         Assert.True(result1);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new(Account, RaceTime1) }, new() { new(Account, RaceTime2) } }, data);
+        Assert.Equivalent(
+            new List<List<AccountIdCpTime>>
+            {
+                new() { new AccountIdCpTime(Account, RaceTime1) }, new() { new AccountIdCpTime(Account, RaceTime2) }
+            },
+            data);
     }
-    
+
     [Fact]
     public void Single_Record_Should_Be_Inserted_At_Different_Cps()
     {
@@ -208,6 +217,7 @@ public class FastestCpStoreTest
         var data = _fastestCpStore.GetFastestTimes(3);
 
         Assert.True(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new(), new() { new(Account, RaceTime) } }, data);
+        Assert.Equivalent(new List<List<AccountIdCpTime>> { new(), new() { new AccountIdCpTime(Account, RaceTime) } },
+            data);
     }
 }

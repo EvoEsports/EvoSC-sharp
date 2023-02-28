@@ -1,8 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace EvoSC.Modules.Official.FastestCp.Models;
 
-namespace EvoSC.Modules.Official.FastestCp.Models;
-
-public record ServerCpTime(int RaceTime, int Time) : IComparable<ServerCpTime>
+internal record ServerCpTime(int RaceTime, int Time) : IComparable<ServerCpTime>
 {
     public int CompareTo(ServerCpTime? other)
     {

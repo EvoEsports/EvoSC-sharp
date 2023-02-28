@@ -5,12 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>EvoSC.Modules.Official.FastestCp</RootNamespace>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
+        <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj"/>
+
+        <InternalsVisibleTo Include="EvoSC.Modules.Official.FastestCp.Tests"/>
     </ItemGroup>
 
 </Project>
