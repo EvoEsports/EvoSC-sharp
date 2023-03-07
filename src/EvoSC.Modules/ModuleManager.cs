@@ -18,6 +18,7 @@ using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Interfaces;
@@ -38,15 +39,17 @@ public class ModuleManager : IModuleManager
     private readonly IPermissionManager _permissions;
     private readonly IEvoScBaseConfig _config;
     private readonly IConfigStoreRepository _configStoreRepository;
+    private readonly IManialinkManager _manialinkManager;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
     private readonly Dictionary<string, Guid> _moduleNameMap = new();
 
     public IReadOnlyList<IModuleLoadContext> LoadedModules => _loadedModules.Values.ToList();
-    
+
     public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
-        IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions,
-        IConfigStoreRepository configStoreRepository)
+        IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager,
+        IPermissionManager permissions,
+        IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager)
     {
         _logger = logger;
         _config = config;
@@ -55,7 +58,8 @@ public class ModuleManager : IModuleManager
         _pipelineManager = pipelineManager;
         _permissions = permissions;
         _configStoreRepository = configStoreRepository;
-        
+        _manialinkManager = manialinkManager;
+
         WarnForDisabledVerification();
     }
 
@@ -210,6 +214,8 @@ public class ModuleManager : IModuleManager
     
     private async Task RegisterManialinksTemplatesAsync(IModuleLoadContext loadContext)
     {
+        var namespaceParts = loadContext.RootNamespace.Split(".");
+        
         foreach (var assembly in loadContext.Assemblies)
         {
             foreach (var resourceName in assembly.GetManifestResourceNames())
@@ -222,16 +228,56 @@ public class ModuleManager : IModuleManager
                 }
 
                 var resourceStream = assembly.GetManifestResourceStream(resourceName);
-                using (var streamReader = new StreamReader(resourceStream))
-                {
-                    var contents = await streamReader.ReadToEndAsync();
 
-                    loadContext.ManialinkTemplates.Add(new ModuleManialinkTemplate
-                    {
-                        Content = contents, Name = nameComponents[^2]
-                    });
+                if (resourceStream == null)
+                {
+                    continue;
                 }
+                
+                using var streamReader = new StreamReader(resourceStream);
+                var contents = await streamReader.ReadToEndAsync();
+                var templateName = GetManialinkTemplateName(loadContext, namespaceParts, nameComponents);
+
+                loadContext.ManialinkTemplates.Add(new ModuleManialinkTemplate
+                {
+                    Content = contents, Name = templateName
+                });
             }
+        }
+    }
+
+    private static string GetManialinkTemplateName(IModuleLoadContext loadContext, string[] namespaceParts,
+        string[] nameComponents)
+    {
+        var index = 0;
+        while (index < namespaceParts.Length &&
+               nameComponents[index].Equals(namespaceParts[index], StringComparison.Ordinal))
+        {
+            index++;
+        }
+
+        if (nameComponents[index].Equals("Templates", StringComparison.Ordinal))
+        {
+            index++;
+        }
+
+        var templateName = $"{loadContext.ModuleInfo.Name}.{string.Join(".", nameComponents[index..^1])}";
+        return templateName;
+    }
+
+    private async Task EnableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var component in moduleContext.ManialinkTemplates)
+        {
+            _manialinkManager.AddTemplate(component.Name, component.Content);
+        }
+    }
+    
+    private async Task DisableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var component in moduleContext.ManialinkTemplates)
+        {
+            _manialinkManager.RemoveTemplate(component.Name);
         }
     }
 
@@ -452,8 +498,32 @@ public class ModuleManager : IModuleManager
             Pipelines = CreateDefaultPipelines(),
             Permissions = new List<IPermission>(),
             LoadedDependencies = loadedDependencies,
-            ManialinkTemplates = new List<IModuleManialinkTemplate>()
+            ManialinkTemplates = new List<IModuleManialinkTemplate>(),
+            RootNamespace = mainClass.Namespace ??
+                            throw new InvalidOperationException("Failed to detect root namespace for module.")
         };
+    }
+
+    private string DetectRootNamespace(Assembly assembly)
+    {
+        var maxParts = int.MaxValue;
+        var nspace = "";
+        
+        foreach (var type in assembly.GetTypes())
+        {
+            if (type.Namespace != null)
+            {
+                var nParts = type.Namespace.Split(".").Length;
+
+                if (nParts < maxParts)
+                {
+                    maxParts = nParts;
+                    nspace = type.Namespace;
+                }
+            }
+        }
+
+        return nspace;
     }
 
     private List<Guid> GetLoadedDependencies(IModuleInfo moduleInfo)
@@ -502,6 +572,7 @@ public class ModuleManager : IModuleManager
 
         await EnableControllersAsync(moduleContext);
         await EnableMiddlewaresAsync(moduleContext);
+        await EnableManialinkTemplatesAsync(moduleContext);
         await TryCallModuleEnableAsync(moduleContext);
 
         moduleContext.SetEnabled(true);
@@ -524,6 +595,7 @@ public class ModuleManager : IModuleManager
 
         await DisableControllersAsync(moduleContext);
         await DisableMiddlewaresAsync(moduleContext);
+        await DisableManialinkTemplatesAsync(moduleContext);
         await TryCallModuleDisableAsync(moduleContext);
         
         moduleContext.SetEnabled(false);

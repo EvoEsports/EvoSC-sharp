@@ -26,5 +26,8 @@ public class ExampleManialinkController : ManialinkController
     public async Task HandleActionAsync(int b, ExampleFormModel myModel)
     {
         await _server.SuccessMessageAsync($"You entered: {myModel.MyValue}", Context.Player);
+        await View("MyManialink", new {Player = Context.Player});
     }
+
+    public Task ShowHelloAsync(ExampleFormModel myModel) => View("Hello", myModel);
 }

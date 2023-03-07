@@ -1,0 +1,3 @@
+[submodule "external/ManiaTemplates"]
+	path = external/ManiaTemplates
+	url = git@github.com:EvoTM/ManiaTemplates.git

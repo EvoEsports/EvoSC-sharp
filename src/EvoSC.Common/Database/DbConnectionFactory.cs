@@ -48,7 +48,7 @@ public class DbConnectionFactory : IDbConnectionFactory
             IDatabaseConfig.DatabaseType.PostgreSql => ProviderName.PostgreSQL,
             _ => throw new InvalidOperationException("Invalid database type requested.")
         }, _config.Database.GetConnectionString());
-
+ 
         return new DataConnection(configBuilder.Build());
     }
 

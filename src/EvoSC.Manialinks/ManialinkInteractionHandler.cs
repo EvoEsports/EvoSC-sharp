@@ -31,8 +31,8 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
     private readonly ValueReaderManager _valueReader = new();
 
     public ManialinkInteractionHandler(IEventManager events, IManialinkActionManager manialinkActionManager,
-        ILogger<ManialinkInteractionHandler> logger, IPlayerManagerService playerManager, 
-        IServiceContainerManager serviceManager, IControllerManager controllers, IPlayerManagerService players,
+        ILogger<ManialinkInteractionHandler> logger, IPlayerManagerService playerManager,
+        IControllerManager controllers, IPlayerManagerService players,
         IActionPipelineManager actionPipeline)
     {
         _manialinkActionManager = manialinkActionManager;
@@ -68,10 +68,19 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             var (action, path) = _manialinkActionManager.FindAction(args.Answer);
 
             var (controller, context) = _controllers.CreateInstance(action.ControllerType);
+
+            if (context.ServiceScope.Container == null)
+            {
+                throw new InvalidOperationException("Service scope container is null.");
+            }
+            
             var player = await GetPlayerAsync(args.Login);
+            var manialinkManager = context.ServiceScope.Container.GetRequiredService<IManialinkManager>();
+            
             var manialinkInteractionContext = new ManialinkInteractionContext(player, context)
             {
-                ManialinkActionExecuted = action
+                ManialinkActionExecuted = action,
+                ManialinkManager = manialinkManager
             };
 
             controller.SetContext(manialinkInteractionContext);

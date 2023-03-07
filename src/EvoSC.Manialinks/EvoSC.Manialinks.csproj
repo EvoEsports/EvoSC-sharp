@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\external\ManiaTemplates\ManiaTemplates.csproj" />
       <ProjectReference Include="..\EvoSC.Common\EvoSC.Common.csproj" />
     </ItemGroup>
 
