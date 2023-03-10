@@ -19,6 +19,7 @@ using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Manialinks.Models;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Interfaces;
@@ -269,7 +270,12 @@ public class ModuleManager : IModuleManager
     {
         foreach (var component in moduleContext.ManialinkTemplates)
         {
-            _manialinkManager.AddTemplate(component.Name, component.Content);
+            _manialinkManager.AddTemplate(new ManialinkTemplateInfo
+            {
+                Assemblies = moduleContext.Assemblies,
+                Name = component.Name,
+                Content = component.Content
+            });
         }
     }
     

@@ -22,10 +22,8 @@ public class ExampleController2 : EvoScController<CommandInteractionContext>
     [ChatCommand("show", "Show a manialink")]
     public async Task ShowManialink()
     {
-        await _manialinks.SendManialinkAsync("ExampleModule.MyManialink", new
-        {
-            Player = Context.Player
-        });
+        await _manialinks.SendManialinkAsync("ExampleModule.MyManialink",
+            new {MyObject = new MyObjectThings {Message = "Hello there!"}});
     }
     
     [ChatCommand("hide", "Hide a manialink")]

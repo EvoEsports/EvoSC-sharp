@@ -1,7 +1,9 @@
 ﻿<component>
-    <using namespace="EvoSC.Common.Interfaces.Models" />
+    <using namespace="EvoSC.Modules.Official.ExampleModule" />
+
+    <property type="MyObjectThings" name="MyObject"/>
     
     <template>
-        <Label text="Hello {{ Player.NickName }}!" />
+        <Label text="Message: {{ MyObject.Message }}!" />
     </template>
 </component>
