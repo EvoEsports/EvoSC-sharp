@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Controllers;
+﻿using System.Reflection;
+using EvoSC.Common.Controllers;
 using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Manialinks;

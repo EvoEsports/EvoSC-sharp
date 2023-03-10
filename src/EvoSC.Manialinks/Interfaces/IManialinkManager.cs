@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Manialinks.Interfaces;
+﻿using System.Reflection;
+
+namespace EvoSC.Manialinks.Interfaces;
 
 public interface IManialinkManager
 {

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using System.Reflection;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces;
 using ManiaTemplates;
@@ -29,7 +30,7 @@ public class ManialinkManager : IManialinkManager
 
     public async Task SendManialinkAsync(string name, dynamic data)
     {
-        var manialinkOutput = _engine.Render(name, data, typeof(ManiaTemplateEngine).Assembly);
+        var manialinkOutput = _engine.Render(name, data);
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
     }
 }

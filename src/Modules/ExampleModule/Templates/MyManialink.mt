@@ -1,4 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<manialink version="3" name="my-manialink">
-    <Label text="hello!" />
-</manialink>
+﻿<component>
+    <using namespace="EvoSC.Common.Interfaces.Models" />
+    
+    <template>
+        <Label text="Hello {{ Player.NickName }}!" />
+    </template>
+</component>
