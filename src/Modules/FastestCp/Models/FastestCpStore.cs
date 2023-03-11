@@ -75,4 +75,12 @@ internal class FastestCpStore
             return _fastestTimes.Select(sl => sl?.Values.Take(limit).ToList() ?? new List<AccountIdCpTime>()).ToList();
         }
     }
+
+    public List<AccountIdCpTime?> GetFastestTimes()
+    {
+        lock (_fastestTimes)
+        {
+            return _fastestTimes.Select(sl => sl?.Values.FirstOrDefault()).ToList();
+        }
+    }
 }

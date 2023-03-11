@@ -22,14 +22,12 @@ public class FastestCpController : EvoScController<EventControllerContext>
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task RegisterCpTime(object sender, WayPointEventArgs args)
     {
-        _fastestCpService.RegisterCpTime(args);
-        return Task.CompletedTask;
+        return _fastestCpService.RegisterCpTime(args);
     }
 
     [Subscribe(GbxRemoteEvent.EndMap)]
     public Task ResetCpTimes(object sender, MapEventArgs args)
     {
-        _fastestCpService.ResetCpTimes();
-        return Task.CompletedTask;
+        return _fastestCpService.ResetCpTimes();
     }
 }

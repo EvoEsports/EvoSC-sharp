@@ -10,18 +10,17 @@ public interface IFastestCpService
     /// </summary>
     /// <param name="args">Information about the waypoint</param>
     /// <returns></returns>
-    public void RegisterCpTime(WayPointEventArgs args);
+    public Task RegisterCpTime(WayPointEventArgs args);
 
     /// <summary>
     ///     Get the best current checkpoint times
     /// </summary>
-    /// <param name="limit">The amount of records to show</param>
     /// <returns></returns>
-    public Task<PlayerCpTime[][]> GetCurrentBestCpTimes(int limit);
+    public Task<PlayerCpTime?[]> GetCurrentBestCpTimes();
 
     /// <summary>
     ///     Clear current fastest checkpoints
     /// </summary>
     /// <returns></returns>
-    public void ResetCpTimes();
+    public Task ResetCpTimes();
 }
