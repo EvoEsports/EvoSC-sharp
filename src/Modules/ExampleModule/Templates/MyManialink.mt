@@ -1,9 +1,5 @@
 ﻿<component>
-    <using namespace="EvoSC.Modules.Official.ExampleModule" />
-
-    <property type="MyObjectThings" name="MyObject"/>
-    
     <template>
-        <Label text="Message: {{ MyObject.Message }}!" />
+        <Quad x="0" y="-10" w="20" h="20" bgcolor="fff" />
     </template>
 </component>
