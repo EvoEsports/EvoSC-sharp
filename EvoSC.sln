@@ -46,7 +46,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Manialinks.Tests", "t
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{F8214CD3-6664-4A08-846E-B2EB7D3E69C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManiaTemplates", "external\ManiaTemplates\ManiaTemplates.csproj", "{60CD081B-E4E7-43AF-BCA0-ECDE3ED16CBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManiaTemplates", "external\ManiaTemplates\src\ManiaTemplates\ManiaTemplates.csproj", "{60CD081B-E4E7-43AF-BCA0-ECDE3ED16CBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
