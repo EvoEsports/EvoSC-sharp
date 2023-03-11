@@ -4,7 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
+        <RootNamespace>EvoSC.Modules.Official.FastestCp.Tests</RootNamespace>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Modules\FastestCp\FastestCp.csproj"/>
+        <ProjectReference Include="..\..\..\src\Modules\FastestCp\FastestCp.csproj"/>
     </ItemGroup>
 
 </Project>
