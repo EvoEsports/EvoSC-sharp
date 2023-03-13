@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Util;
@@ -9,6 +10,7 @@ using EvoSC.Manialinks.Models;
 using EvoSC.Modules.Interfaces;
 using GbxRemoteNet;
 using ManiaTemplates;
+using ManiaTemplates.Lib;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Manialinks;
@@ -186,6 +188,43 @@ public class ManialinkManager : IManialinkManager
         }
 
         await _server.Remote.MultiCallAsync(multiCall);
+    }
+
+    private string CreateHideManialink(string name)
+    {
+        var sb = new StringBuilder()
+            .Append("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>\n")
+            .Append("<manialink version=\"3\" id=\"")
+            .Append(ManialinkNameUtils.KeyToId(name))
+            .Append("\">\n")
+            .Append("</manialink>\n");
+
+        return sb.ToString();
+    }
+
+    public Task HideManialinkAsync(string name)
+    {
+        var manialinkOutput = CreateHideManialink(name);
+        return _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 3, true);
+    }
+
+    public Task HideManialinkAsync(string name, IPlayer player)
+    {
+        var manialinkOutput = CreateHideManialink(name);
+        return _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 3, true);
+    }
+
+    public Task HideManialinkAsync(string name, IEnumerable<IPlayer> players)
+    {
+        var manialinkOutput = CreateHideManialink(name);
+        var multiCall = new MultiCall();
+
+        foreach (var player in players)
+        {
+            multiCall.Add("SendDisplayManialinkPageToLogin", player.GetLogin(), manialinkOutput, 3, true);
+        }
+
+        return _server.Remote.MultiCallAsync(multiCall);
     }
 
     public async Task PreprocessAllAsync()

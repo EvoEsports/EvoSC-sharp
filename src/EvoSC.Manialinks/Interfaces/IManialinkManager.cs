@@ -74,6 +74,10 @@ public interface IManialinkManager
     /// <param name="player">The players to send to</param>
     /// <returns></returns>
     public Task SendManialinkAsync(string name, dynamic data, IEnumerable<IPlayer> players);
+
+    public Task HideManialinkAsync(string name);
+    public Task HideManialinkAsync(string name, IPlayer player);
+    public Task HideManialinkAsync(string name, IEnumerable<IPlayer> players);
     
     /// <summary>
     /// Pre-process all current templates registered.

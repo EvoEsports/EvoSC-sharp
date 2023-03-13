@@ -1,5 +1,5 @@
 ﻿<component>
     <template>
-        <Quad size="10 5" color="f00" />
+        <Quad w="10" h="10" color="f00" />
     </template>
 </component>

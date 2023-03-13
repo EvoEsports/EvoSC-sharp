@@ -29,5 +29,6 @@ public class ExampleController2 : EvoScController<CommandInteractionContext>
     [ChatCommand("hide", "Hide a manialink")]
     public async Task HideManialink()
     {
+        await _manialinks.HideManialinkAsync("ExampleModule.MyManialink");
     }
 }
