@@ -190,7 +190,9 @@ public sealed class Application : IEvoSCApplication, IDisposable
     
     private async Task InitializeTemplatesAsync()
     {
-        await _services.GetRequiredService<IManialinkManager>().PreprocessAllAsync();
+        var maniaLinks = _services.GetRequiredService<IManialinkManager>();
+        await maniaLinks.AddDefaultTemplatesAsync();
+        await maniaLinks.PreprocessAllAsync();
     }
 
     public void Dispose()
