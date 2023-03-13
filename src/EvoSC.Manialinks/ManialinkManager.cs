@@ -14,6 +14,7 @@ public class ManialinkManager : IManialinkManager
     private readonly IServerClient _server;
     private readonly ManiaTemplateEngine _engine = new();
     private readonly Dictionary<string, IManialinkTemplateInfo> _templates = new();
+    private readonly Dictionary<string, IManiaScriptInfo> _scripts = new();
 
     public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server)
     {
@@ -32,6 +33,17 @@ public class ManialinkManager : IManialinkManager
         _templates[template.Name] = template;
     }
 
+    public void AddManiaScript(IManiaScriptInfo maniaScript)
+    {
+        if (_scripts.ContainsKey(maniaScript.Name))
+        {
+            throw new InvalidOperationException($"ManiaScript '{maniaScript.Name}' already exists."); 
+        }
+        
+        _engine.AddManiaScriptFromString(maniaScript.Name, maniaScript.Content);
+        _scripts[maniaScript.Name] = maniaScript;
+    }
+
     public void RemoveTemplate(string name)
     {
         // todo: remove template from engine also
@@ -48,7 +60,7 @@ public class ManialinkManager : IManialinkManager
         var assemblies = new List<Assembly> {typeof(IOnlinePlayer).Assembly};
         assemblies.AddRange(_templates[name].Assemblies);
         
-        var manialinkOutput = _engine.Render(name, data, assemblies);
+        var manialinkOutput = await _engine.RenderAsync(name, data, assemblies);
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
     }
 
