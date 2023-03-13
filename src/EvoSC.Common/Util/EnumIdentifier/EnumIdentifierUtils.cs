@@ -90,4 +90,23 @@ public static class EnumIdentifierUtils
 
         return aliases ?? Array.Empty<string>();
     }
+
+    /// <summary>
+    /// Get the enumeration value that corresponds to the specified identifier.
+    /// </summary>
+    /// <param name="identifier">The identifier to find the value of.</param>
+    /// <typeparam name="T">The enum type to search in.</typeparam>
+    /// <returns></returns>
+    public static T? ToEnumValue<T>(this string identifier) where T : struct, Enum
+    {
+        foreach (var value in Enum.GetValues<T>())
+        {
+            if (value.GetIdentifier().Equals(identifier, StringComparison.Ordinal))
+            {
+                return value;
+            }
+        }
+
+        return null;
+    }
 }

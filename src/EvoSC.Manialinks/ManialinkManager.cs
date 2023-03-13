@@ -50,6 +50,12 @@ public class ManialinkManager : IManialinkManager
         _templates.Remove(name);
     }
 
+    public void RemoveManiaScript(string name)
+    {
+        // todo: remove from engine
+        _scripts.Remove(name);
+    }
+
     public async Task SendManialinkAsync(string name, dynamic data)
     {
         if (!_templates.ContainsKey(name))

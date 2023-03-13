@@ -95,4 +95,12 @@ public class EnumIdentifierTests
         
         Assert.Equal("MyIdentifier3", idString);
     }
+
+    [Fact]
+    public void Get_Value_By_String_Identifier()
+    {
+        var value = "MyEnum.MyCustomIdentifierName".ToEnumValue<MyEnum>();
+        
+        Assert.Equal(MyEnum.MyIdentifier, value);
+    }
 }

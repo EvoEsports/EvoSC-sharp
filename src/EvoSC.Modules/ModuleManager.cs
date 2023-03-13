@@ -222,8 +222,16 @@ public class ModuleManager : IModuleManager
             foreach (var resourceName in assembly.GetManifestResourceNames())
             {
                 var nameComponents = resourceName.Split('.');
+
+                if (nameComponents.Length <= 1)
+                {
+                    continue;
+                }
                 
-                if (nameComponents.Length <= 1 || !nameComponents[^1].Equals("mt", StringComparison.OrdinalIgnoreCase))
+                var extension = nameComponents[^1];
+                var templateType = extension.ToEnumValue<ManialinkTemplateType>();
+
+                if (templateType == null)
                 {
                     continue;
                 }
@@ -241,7 +249,7 @@ public class ModuleManager : IModuleManager
 
                 loadContext.ManialinkTemplates.Add(new ModuleManialinkTemplate
                 {
-                    Content = contents, Name = templateName
+                    Content = contents, Name = templateName, Type = (ManialinkTemplateType)templateType
                 });
             }
         }
@@ -266,25 +274,53 @@ public class ModuleManager : IModuleManager
         return templateName;
     }
 
-    private async Task EnableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
+    private Task EnableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
     {
-        foreach (var component in moduleContext.ManialinkTemplates)
+        foreach (var template in moduleContext.ManialinkTemplates)
         {
-            _manialinkManager.AddTemplate(new ManialinkTemplateInfo
+            switch (template.Type)
             {
-                Assemblies = moduleContext.Assemblies,
-                Name = component.Name,
-                Content = component.Content
-            });
+                case ManialinkTemplateType.Script:
+                    _manialinkManager.AddManiaScript(new ManiaScriptInfo()
+                    {
+                        Name = template.Name,
+                        Content = template.Content
+                    });
+                    break;
+                case ManialinkTemplateType.Template:
+                    _manialinkManager.AddTemplate(new ManialinkTemplateInfo
+                    {
+                        Assemblies = moduleContext.Assemblies,
+                        Name = template.Name,
+                        Content = template.Content
+                    });
+                    break;
+                default:
+                    continue;
+            }
         }
+
+        return Task.CompletedTask;
     }
     
-    private async Task DisableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
+    private Task DisableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
     {
-        foreach (var component in moduleContext.ManialinkTemplates)
+        foreach (var template in moduleContext.ManialinkTemplates)
         {
-            _manialinkManager.RemoveTemplate(component.Name);
+            switch (template.Type)
+            {
+                case ManialinkTemplateType.Script:
+                    _manialinkManager.RemoveManiaScript(template.Name);
+                    break;
+                case ManialinkTemplateType.Template:
+                    _manialinkManager.RemoveTemplate(template.Name);
+                    break;
+                default:
+                    continue;
+            }
         }
+        
+        return Task.CompletedTask;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
