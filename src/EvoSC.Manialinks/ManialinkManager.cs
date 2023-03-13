@@ -1,11 +1,13 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Manialinks.Models;
 using EvoSC.Modules.Interfaces;
+using GbxRemoteNet;
 using ManiaTemplates;
 using Microsoft.Extensions.Logging;
 
@@ -113,7 +115,7 @@ public class ManialinkManager : IManialinkManager
         _templates[template.Name] = template;
     }
 
-    public Task AddTemplateAsync(IManialinkTemplateInfo template)
+    public Task AddAndPreProcessTemplateAsync(IManialinkTemplateInfo template)
     {
         AddTemplate(template);
         return _engine.PreProcessAsync(template.Name, template.Assemblies);
@@ -148,7 +150,7 @@ public class ManialinkManager : IManialinkManager
         _scripts.Remove(name);
     }
 
-    public async Task SendManialinkAsync(string name, dynamic data)
+    private async Task<string> PrepareAndRenderAsync(string name, dynamic data)
     {
         if (!_templates.ContainsKey(name))
         {
@@ -158,8 +160,32 @@ public class ManialinkManager : IManialinkManager
         var assemblies = new List<Assembly> {typeof(IOnlinePlayer).Assembly};
         assemblies.AddRange(_templates[name].Assemblies);
         
-        var manialinkOutput = await _engine.RenderAsync(name, data, assemblies);
+        return await _engine.RenderAsync(name, data, assemblies);
+    }
+    
+    public async Task SendManialinkAsync(string name, dynamic data)
+    {
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
+    }
+
+    public async Task SendManialinkAsync(string name, dynamic data, IPlayer player)
+    {
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
+    }
+
+    public async Task SendManialinkAsync(string name, dynamic data, IEnumerable<IPlayer> players)
+    {
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        var multiCall = new MultiCall();
+
+        foreach (var player in players)
+        {
+            multiCall.Add("SendDisplayManialinkPageToLogin", player.GetLogin(), manialinkOutput, 0, false);
+        }
+
+        await _server.Remote.MultiCallAsync(multiCall);
     }
 
     public async Task PreprocessAllAsync()
