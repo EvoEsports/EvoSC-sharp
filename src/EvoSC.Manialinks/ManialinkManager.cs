@@ -46,13 +46,13 @@ public class ManialinkManager : IManialinkManager
 
     public void RemoveTemplate(string name)
     {
-        // todo: remove template from engine also
+        _engine.RemoveTemplate(name);
         _templates.Remove(name);
     }
 
     public void RemoveManiaScript(string name)
     {
-        // todo: remove from engine
+        _engine.RemoveManiaScript(name);
         _scripts.Remove(name);
     }
 
