@@ -47,7 +47,7 @@ public class ManialinkManager : IManialinkManager
         
         var assemblies = new List<Assembly> {typeof(IOnlinePlayer).Assembly};
         assemblies.AddRange(_templates[name].Assemblies);
-     
+        
         var manialinkOutput = _engine.Render(name, data, assemblies);
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
     }
