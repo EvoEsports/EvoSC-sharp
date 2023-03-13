@@ -56,6 +56,7 @@ public class ManialinkManager : IManialinkManager
     {
         foreach (var template in _templates.Values)
         {
+            _logger.LogDebug("Preprocessing template {Name}", template.Name);
             await _engine.PreProcessAsync(template.Name, template.Assemblies);
         }
     }

@@ -86,6 +86,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         await SetupModulesAsync();
         await StartBackgroundServicesAsync();
         await EnableModulesAsync();
+        await InitializeTemplatesAsync();
         
         sw.Stop();
         
@@ -185,6 +186,11 @@ public sealed class Application : IEvoSCApplication, IDisposable
     private async Task EnableModulesAsync()
     {
         await _services.GetRequiredService<IModuleManager>().EnableModulesAsync();
+    }
+    
+    private async Task InitializeTemplatesAsync()
+    {
+        await _services.GetRequiredService<IManialinkManager>().PreprocessAllAsync();
     }
 
     public void Dispose()
