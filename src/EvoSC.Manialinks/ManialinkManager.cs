@@ -51,4 +51,12 @@ public class ManialinkManager : IManialinkManager
         var manialinkOutput = _engine.Render(name, data, assemblies);
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
     }
+
+    public async Task PreprocessAllAsync()
+    {
+        foreach (var template in _templates.Values)
+        {
+            await _engine.PreProcessAsync(template.Name, template.Assemblies);
+        }
+    }
 }
