@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Templates" />
+      <Folder Include="Utils" />
     </ItemGroup>
 
 </Project>

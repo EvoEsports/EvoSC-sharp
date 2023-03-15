@@ -23,6 +23,11 @@ public class ManialinkManager : IManialinkManager
     private readonly Dictionary<string, IManialinkTemplateInfo> _templates = new();
     private readonly Dictionary<string, IManiaScriptInfo> _scripts = new();
 
+    private static IEnumerable<Assembly> s_defaultAssemblies = new[]
+    {
+        typeof(IOnlinePlayer).Assembly, typeof(ManialinkManager).Assembly
+    };
+
     public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server)
     {
         _logger = logger;
@@ -158,8 +163,9 @@ public class ManialinkManager : IManialinkManager
         {
             throw new InvalidOperationException($"Template '{name}' not found.");
         }
-        
-        var assemblies = new List<Assembly> {typeof(IOnlinePlayer).Assembly};
+
+        var assemblies = new List<Assembly>();
+        assemblies.AddRange(s_defaultAssemblies);
         assemblies.AddRange(_templates[name].Assemblies);
         
         return await _engine.RenderAsync(name, data, assemblies);
@@ -232,7 +238,12 @@ public class ManialinkManager : IManialinkManager
         foreach (var template in _templates.Values)
         {
             _logger.LogDebug("Preprocessing template {Name}", template.Name);
-            await _engine.PreProcessAsync(template.Name, template.Assemblies);
+            
+            var assembles = new List<Assembly>();
+            assembles.AddRange(s_defaultAssemblies);
+            assembles.AddRange(template.Assemblies);
+
+            await _engine.PreProcessAsync(template.Name, assembles);
         }
     }
 }
