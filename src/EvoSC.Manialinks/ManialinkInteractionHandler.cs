@@ -12,6 +12,7 @@ using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
+using EvoSC.Manialinks.Models;
 using GbxRemoteNet.Events;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,17 +78,17 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             var player = await GetPlayerAsync(args.Login);
             var manialinkManager = context.ServiceScope.Container.GetRequiredService<IManialinkManager>();
             
+            var (actionParams, entryModel) =
+                await ConvertRequestParametersAsync(action.FirstParameter, path, args.Entries,
+                    context.ServiceScope.Container);
+
             var manialinkInteractionContext = new ManialinkInteractionContext(player, context)
             {
-                ManialinkActionExecuted = action,
+                ManialinkAction = new ManialinkActionContext {Action = action, EntryModel = entryModel},
                 ManialinkManager = manialinkManager
             };
 
             controller.SetContext(manialinkInteractionContext);
-
-            var actionParams =
-                await ConvertRequestParametersAsync(action.FirstParameter, path, args.Entries,
-                    context.ServiceScope.Container);
 
             var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
                 (Task?)action.HandlerMethod.Invoke(controller, actionParams) ?? Task.CompletedTask
@@ -141,9 +142,10 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         }
     }
     
-    private async Task<object[]> ConvertRequestParametersAsync(IMlActionParameter? currentParam, IMlRouteNode? currentNode, TmSEntryVal[] entries, Container services)
+    private async Task<(object[] values, object? entryModel)> ConvertRequestParametersAsync(IMlActionParameter? currentParam, IMlRouteNode? currentNode, TmSEntryVal[] entries, Container services)
     {
         var values = new List<object>();
+        object? entryModel = null;
 
         while (currentParam != null)
         {
@@ -154,7 +156,8 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             
             if (currentParam.IsEntryModel)
             {
-                values.Add(await ConvertEntryModelAsync(currentParam.Type, entries, services));
+                entryModel = await ConvertEntryModelAsync(currentParam.Type, entries, services);
+                values.Add(entryModel);
             }
             else if (currentNode == null)
             {
@@ -169,7 +172,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             currentParam = currentParam.NextParameter;
         }
 
-        return values.ToArray();
+        return (values: values.ToArray(), entryModel: entryModel);
     }
 
     private async Task<object> ConvertEntryModelAsync(Type type, TmSEntryVal[] entries, Container services)

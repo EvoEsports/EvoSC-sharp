@@ -14,9 +14,9 @@ namespace EvoSC.Manialinks;
 public class ManialinkActionManager : IManialinkActionManager
 {
     private const BindingFlags ActionMethodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly;
-    private static char RouteDelimiter = '/';
-    private static Regex RouteParamRegex = new("\\{[\\w\\d_]+\\}", RegexOptions.None, TimeSpan.FromMilliseconds(100));
-    private static Regex ValidCharactersInRouteNameRegex = new("[_\\.\\w\\d]+", RegexOptions.None, TimeSpan.FromMilliseconds(100));
+    private static readonly char RouteDelimiter = '/';
+    private static readonly Regex RouteParamRegex = new("\\{[\\w\\d_]+\\}", RegexOptions.None, TimeSpan.FromMilliseconds(100));
+    private static readonly Regex ValidCharactersInRouteNameRegex = new("[_\\.\\w\\d]+", RegexOptions.None, TimeSpan.FromMilliseconds(100));
     
     private readonly ILogger<ManialinkActionManager> _logger;
     private readonly IMlRouteNode _rootNode = new MlRouteNode("<root>"){Children = new Dictionary<string, IMlRouteNode>()};

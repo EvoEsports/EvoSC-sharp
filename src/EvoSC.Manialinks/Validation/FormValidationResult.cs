@@ -9,4 +9,6 @@ public class FormValidationResult
 
     public ValidationResult? GetResult(string name) =>
         _results.TryGetValue(name, out var result) ? result : null;
+
+    public bool IsValid => _results.Values.All(v => !v.IsInvalid);
 }

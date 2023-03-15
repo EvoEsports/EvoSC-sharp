@@ -8,7 +8,7 @@ namespace EvoSC.Manialinks;
 
 public class ManialinkInteractionContext : PlayerInteractionContext
 {
-    public required IManialinkAction ManialinkActionExecuted { get; init; }
+    public required IManialinkActionContext ManialinkAction { get; init; }
     public required IManialinkManager ManialinkManager { get; init; }
     
     public ManialinkInteractionContext(IOnlinePlayer player, IControllerContext context) : base(player, context)

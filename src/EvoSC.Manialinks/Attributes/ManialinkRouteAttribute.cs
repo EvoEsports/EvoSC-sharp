@@ -4,4 +4,5 @@
 public class ManialinkRouteAttribute : Attribute
 {
     public required string Route { get; set; }
+    public bool AutoValidate { get; init; } = true;
 }

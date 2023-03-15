@@ -55,6 +55,7 @@ public interface IManialinkManager
     /// <param name="name">The name of the template.</param>
     /// <param name="data">Any kind of data the template uses.</param>
     /// <returns></returns>
+    public Task SendManialinkAsync(string name, IDictionary<string, object?> data);
     public Task SendManialinkAsync(string name, dynamic data);
     
     /// <summary>
@@ -64,6 +65,7 @@ public interface IManialinkManager
     /// <param name="data">Data which the template uses</param>
     /// <param name="player">The player to send to</param>
     /// <returns></returns>
+    public Task SendManialinkAsync(string name, IDictionary<string, object?> data, IPlayer player);
     public Task SendManialinkAsync(string name, dynamic data, IPlayer player);
     
     /// <summary>
@@ -73,6 +75,7 @@ public interface IManialinkManager
     /// <param name="data">Data which the template uses</param>
     /// <param name="player">The players to send to</param>
     /// <returns></returns>
+    public Task SendManialinkAsync(string name, IDictionary<string, object?> data, IEnumerable<IPlayer> players);
     public Task SendManialinkAsync(string name, dynamic data, IEnumerable<IPlayer> players);
 
     public Task HideManialinkAsync(string name);

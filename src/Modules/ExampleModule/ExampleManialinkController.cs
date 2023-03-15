@@ -24,26 +24,24 @@ public class ExampleManialinkController : ManialinkController
     }
     
     [ManialinkRoute(Route = "/test/login")]
-    public Task HandleActionAsync(ExampleFormModel myModel)
-    {
+    public async Task HandleActionAsync(ExampleFormModel myModel)
+    {   
         _logger.LogInformation("Username: {User}, Password: {Pass}", myModel.Username, myModel.Password);
 
-        var validation = new FormValidationResult();
-
-        validation.AddResult(new ValidationResult
+        if (await IsModelValidAsync())
         {
-            Name = "Username",
-            IsInvalid = string.IsNullOrWhiteSpace(myModel.Username),
-            Message = "Invalid username."
-        });
-        validation.AddResult(new ValidationResult
+            _logger.LogInformation("Form submission valid!");
+        }
+        else
         {
-            Name = "Password",
-            IsInvalid = string.IsNullOrWhiteSpace(myModel.Password),
-            Message = "Invalid password."
-        });
+            _logger.LogInformation("Form submission is not valid!");
+        }
 
-        return ShowAsync("ExampleModule.MyManialink",
-            new {Validation = validation, Username = myModel.Username, Password = myModel.Password});
+        await ShowAsync("ExampleModule.MyManialink", new
+        {
+            Validation = Validation,
+            Username = myModel.Username, 
+            Password = myModel.Password
+        });
     }
 }

@@ -4,8 +4,8 @@ namespace EvoSC.Manialinks.Interfaces.Models;
 
 public interface IManialinkAction
 {
-    public string? Permission { get; set; }
-    public Type ControllerType { get; set; }
-    public MethodInfo HandlerMethod { get; set; }
-    public IMlActionParameter FirstParameter { get; set; }
+    public string? Permission { get; }
+    public Type ControllerType { get; }
+    public MethodInfo HandlerMethod { get; }
+    public IMlActionParameter FirstParameter { get; }
 }
