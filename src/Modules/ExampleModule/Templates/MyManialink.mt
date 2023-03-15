@@ -1,6 +1,7 @@
 ﻿<component>
     <using namespace="EvoSC.Manialinks.Validation" />
     <import component="EvoSC.FormEntry" as="FormEntry" />
+    <import component="EvoSC.FormSubmit" as="FormSubmit" />
     
     <property type="FormValidationResult" name="Validation" />
     <property type="string" name="Username" />
@@ -24,7 +25,7 @@
                     w="30"
                     y="-10"
             />
-            <label pos="18 -21" text="Login" action="test/login" />
+            <FormSubmit x="18" y="-21" text="Login" action="test/login" />
         </frame>
     </template>
 </component>
