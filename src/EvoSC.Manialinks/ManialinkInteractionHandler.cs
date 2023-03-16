@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using EvoSC.Common.Exceptions.Parsing;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
@@ -77,8 +78,8 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             
             var player = await GetPlayerAsync(args.Login);
             var manialinkManager = context.ServiceScope.Container.GetRequiredService<IManialinkManager>();
-            
-            var (actionParams, entryModel) =
+
+            var (actionParams, entryModel, validationResults) =
                 await ConvertRequestParametersAsync(action.FirstParameter, path, args.Entries,
                     context.ServiceScope.Container);
 
@@ -92,6 +93,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
 
             if (controller is ManialinkController manialinkController)
             {
+                manialinkController.AddEarlyValidationResults(validationResults);
                 await manialinkController.ValidateModelAsync();
             }
 
@@ -147,10 +149,11 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         }
     }
     
-    private async Task<(object[] values, object? entryModel)> ConvertRequestParametersAsync(IMlActionParameter? currentParam, IMlRouteNode? currentNode, TmSEntryVal[] entries, Container services)
+    private async Task<(object[] values, object? entryModel, IEnumerable<ValidationResult> validationResults)> ConvertRequestParametersAsync(IMlActionParameter? currentParam, IMlRouteNode? currentNode, TmSEntryVal[] entries, Container services)
     {
         var values = new List<object>();
         object? entryModel = null;
+        IEnumerable<ValidationResult> validationResults = new List<ValidationResult>();
 
         while (currentParam != null)
         {
@@ -167,9 +170,11 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
                 {
                     throw new InvalidOperationException("Cannot convert more than one Entry model.");
                 }
-                
-                entryModel = await ConvertEntryModelAsync(currentParam.Type, entries, services);
-                values.Add(entryModel);
+
+                var (entryModelInstance, modelValidationResults) =
+                    await ConvertEntryModelAsync(currentParam.Type, entries, services);
+                values.Add(entryModelInstance);
+                validationResults = modelValidationResults;
             }
             else if (currentNode == null)
             {
@@ -179,20 +184,21 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             {
                 // convert a route parameter
                 values.Add(await _valueReader.ConvertValueAsync(currentParam.Type, currentNode.Name));
-                currentNode = currentNode?.Children?.Values.First(); 
+                currentNode = currentNode?.Children?.Values.First();
             }
 
             currentParam = currentParam.NextParameter;
         }
 
-        return (values: values.ToArray(), entryModel: entryModel);
+        return (values: values.ToArray(), entryModel: entryModel, validationResults: validationResults);
     }
 
-    private async Task<object> ConvertEntryModelAsync(Type type, TmSEntryVal[] entries, Container services)
+    private async Task<(object, IEnumerable<ValidationResult>)> ConvertEntryModelAsync(Type type, TmSEntryVal[] entries, Container services)
     {
         var instance = ActivatorUtilities.CreateInstance(services, type);
         var modelProperties =
             type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+        var validationResults = new List<ValidationResult>();
 
         // build entry dict for faster lookup
         var entriesDict = new Dictionary<string, TmSEntryVal>();
@@ -214,15 +220,16 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
                     value = await _valueReader.ConvertValueAsync(modelProperty.PropertyType, entry.Value);
                     modelProperty.SetValue(instance, value);
                 }
-                catch (ValueConversionException ex)
+                catch (Exception ex) when (ex is ValueConversionException or FormatException)
                 {
                     // todo: add validation error that the value failed to convert to the required type
+                    validationResults.Add(new ValidationResult($"Wrong format, must be {modelProperty.PropertyType.Name}", new[] {name}));
                     _logger.LogDebug(ex, "Failed to convert entry value for property {Prop} in model {Model}",
                         modelProperty.Name, type.Name);
                 }
             }
         }
 
-        return instance;
+        return (instance, validationResults);
     }
 }

@@ -4,7 +4,7 @@
     <import component="EvoSC.FormSubmit" as="FormSubmit" />
     
     <property type="FormValidationResult" name="Validation" />
-    <property type="string" name="Username" />
+    <property type="int?" name="Username" />
     <property type="string" name="Password" />
     
     <template>

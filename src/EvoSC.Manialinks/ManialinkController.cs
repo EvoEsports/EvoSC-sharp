@@ -114,24 +114,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
 
                 var attrValidationResult = validationAttribute.GetValidationResult(propValue, new ValidationContext(model));
 
-                if (attrValidationResult == ValidationResult.Success)
-                {
-                    ModelValidation.AddResult(new EntryValidationResult
-                    {
-                        Name = modelProp.Name,
-                        IsInvalid = false,
-                        Message = attrValidationResult?.ErrorMessage ?? "Invalid Value."
-                    });
-                }
-                else
-                {
-                    ModelValidation.AddResult(new EntryValidationResult
-                    {
-                        Name = modelProp.Name,
-                        IsInvalid = true,
-                        Message = attrValidationResult?.ErrorMessage ?? "Invalid Value."
-                    });
-                }
+                AddModelValidationResult(attrValidationResult);
             }
         }
     }
@@ -162,24 +145,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
 
         foreach (var validationResult in validationResults)
         {
-            if (validationResult == ValidationResult.Success)
-            {
-                ModelValidation.AddResult(new EntryValidationResult
-                {
-                    Name = validationResult.MemberNames.FirstOrDefault() ?? "Invalid Value.",
-                    IsInvalid = false,
-                    Message = validationResult?.ErrorMessage ?? ""
-                });
-            }
-            else
-            {
-                ModelValidation.AddResult(new EntryValidationResult
-                {
-                    Name = validationResult.MemberNames.FirstOrDefault() ?? "",
-                    IsInvalid = true,
-                    Message = validationResult?.ErrorMessage ?? "Invalid Value."
-                });
-            }
+            AddModelValidationResult(validationResult);
         }
     }
 
@@ -198,5 +164,40 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         }
 
         return data;
+    }
+
+    private void AddModelValidationResult(ValidationResult? validationResult)
+    {
+        if (validationResult == null)
+        {
+            return;
+        }
+        
+        if (validationResult == ValidationResult.Success)
+        {
+            ModelValidation.AddResult(new EntryValidationResult
+            {
+                Name = validationResult.MemberNames.FirstOrDefault() ?? "Invalid Value.",
+                IsInvalid = false,
+                Message = validationResult?.ErrorMessage ?? ""
+            });
+        }
+        else
+        {
+            ModelValidation.AddResult(new EntryValidationResult
+            {
+                Name = validationResult.MemberNames.FirstOrDefault() ?? "",
+                IsInvalid = true,
+                Message = validationResult?.ErrorMessage ?? "Invalid Value."
+            });
+        }
+    }
+
+    internal void AddEarlyValidationResults(IEnumerable<ValidationResult> validationResults)
+    {
+        foreach (var valResult in validationResults)
+        {
+            AddModelValidationResult(valResult);
+        }
     }
 }

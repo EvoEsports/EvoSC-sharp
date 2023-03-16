@@ -9,36 +9,10 @@ using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [EntryModel]
-public class ExampleFormModel : IAsyncValidatableObject
+public class ExampleFormModel
 {
-    private readonly ILogger<ExampleFormModel> _logger;
-    
-    public ExampleFormModel(ILogger<ExampleFormModel> logger)
-    {
-        _logger = logger;
-    }
-    
-    public string Username { get; set; }
+    public int Username { get; set; }
     public string Password { get; set; }
-
-    public Task<IEnumerable<ValidationResult>> ValidateAsync(ValidationContext validationContext)
-    {
-        var results = new List<ValidationResult>();
-        
-        if (string.IsNullOrEmpty(Username))
-        {
-            results.Add(new ValidationResult("field is empty", new[] {nameof(Username)}));
-        }
-        
-        if (string.IsNullOrEmpty(Password))
-        {
-            results.Add(new ValidationResult("field is empty.", new[] {nameof(Password)}));
-        }
-        
-        _logger.LogInformation("done with validation!");
-
-        return Task.FromResult(results.AsEnumerable());
-    }
 }
 
 [Controller]
