@@ -222,7 +222,6 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
                 }
                 catch (Exception ex) when (ex is ValueConversionException or FormatException)
                 {
-                    // todo: add validation error that the value failed to convert to the required type
                     validationResults.Add(new ValidationResult($"Wrong format, must be {modelProperty.PropertyType.Name}", new[] {name}));
                     _logger.LogDebug(ex, "Failed to convert entry value for property {Prop} in model {Model}",
                         modelProperty.Name, type.Name);
