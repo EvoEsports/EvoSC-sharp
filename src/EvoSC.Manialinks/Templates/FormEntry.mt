@@ -1,7 +1,8 @@
 ﻿<component>
     <using namespace="EvoSC.Manialinks.Validation" />
+    <using namespace="System.Linq" />
     
-    <property type="ValidationResult?" name="validationResult" />
+    <property type="IEnumerable<EntryValidationResult>?" name="validationResults" />
     <property type="string?" name="value"/>
     <property type="string" name="name"/>
     <property type="int" name="zIndex"/>
@@ -33,12 +34,12 @@
                     valuetype="{{ valueType }}"
             />
             <Label
-                    text='$s$F00 {{ validationResult?.Message ?? "Invalid input." }}'
+                    text='$s$F00 {{ validationResults?.FirstOrDefault(v => v.IsInvalid)?.Message ?? "Invalid input." }}'
                     x="0"
                     y="-6"
-                    textsize="1"
+                    textsize="0.5"
                     halign="left" valign="top"
-                    if='validationResult?.IsInvalid ?? false'
+                    if='validationResults?.Any(v => v.IsInvalid) ?? false'
             />
         </frame>
     </template>

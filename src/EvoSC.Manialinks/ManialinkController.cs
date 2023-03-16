@@ -1,15 +1,18 @@
-﻿using System.Dynamic;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
 using System.Reflection;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Validation;
 using EvoSC.Modules.Interfaces;
+using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace EvoSC.Manialinks;
 
 public class ManialinkController : EvoScController<ManialinkInteractionContext>
 {
-    protected FormValidationResult? Validation { get; private set; }
+    protected FormValidationResult ModelValidation { get; } = new();
+    protected bool IsModelValid => ModelValidation?.IsValid ?? false;
     
     /// <summary>
     /// Display a manialink to all players.
@@ -72,21 +75,106 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     public Task HideAsync(IEnumerable<IOnlinePlayer> players, string maniaLink) =>
         Context.ManialinkManager.HideManialinkAsync(maniaLink, players);
 
-    protected Task<FormValidationResult> ValidateAsync() => ValidateInternalAsync();
-    protected async Task<bool> IsModelValidAsync() => (await ValidateAsync()).IsValid;
+    public Task<FormValidationResult> ValidateModelAsync() => ValidateModelInternalAsync();
 
-    internal Task<FormValidationResult> ValidateInternalAsync()
+    internal async Task<FormValidationResult> ValidateModelInternalAsync()
     {
-        return Task.FromResult(new FormValidationResult());
+        if (Context.ManialinkAction.EntryModel == null)
+        {
+            return ModelValidation;
+        }
+        
+        var model = Context.ManialinkAction.EntryModel;
+        
+        ValidateProperties(model);
+        ValidateValidatableObjectModel(model as IValidatableObject);
+
+        return ModelValidation;
+    }
+
+    private void ValidateProperties(object model)
+    {
+        var modelProperties = model.GetType().GetProperties(
+            BindingFlags.Instance
+            | BindingFlags.Public
+            | BindingFlags.DeclaredOnly);
+
+        foreach (var modelProp in modelProperties)
+        {
+            var attributes = modelProp.GetCustomAttributes();
+            var propValue = modelProp.GetValue(model);
+
+            foreach (var attribute in attributes)
+            {
+                if (attribute is not ValidationAttribute validationAttribute)
+                {
+                    continue;
+                }
+
+                var attrValidationResult = validationAttribute.GetValidationResult(propValue, new ValidationContext(model));
+
+                if (attrValidationResult == ValidationResult.Success)
+                {
+                    ModelValidation.AddResult(new EntryValidationResult
+                    {
+                        Name = modelProp.Name,
+                        IsInvalid = false,
+                        Message = attrValidationResult?.ErrorMessage ?? "Invalid Value."
+                    });
+                }
+                else
+                {
+                    ModelValidation.AddResult(new EntryValidationResult
+                    {
+                        Name = modelProp.Name,
+                        IsInvalid = true,
+                        Message = attrValidationResult?.ErrorMessage ?? "Invalid Value."
+                    });
+                }
+            }
+        }
+    }
+
+    private void ValidateValidatableObjectModel(IValidatableObject? model)
+    {
+        if (model == null)
+        {
+            return;
+            
+        }
+        
+        var validationResults = model.Validate(new ValidationContext(model));
+
+        foreach (var validationResult in validationResults)
+        {
+            if (validationResult == ValidationResult.Success)
+            {
+                ModelValidation.AddResult(new EntryValidationResult
+                {
+                    Name = validationResult.MemberNames.FirstOrDefault() ?? "Invalid Value.",
+                    IsInvalid = false,
+                    Message = validationResult?.ErrorMessage ?? ""
+                });
+            }
+            else
+            {
+                ModelValidation.AddResult(new EntryValidationResult
+                {
+                    Name = validationResult.MemberNames.FirstOrDefault() ?? "",
+                    IsInvalid = true,
+                    Message = validationResult?.ErrorMessage ?? "Invalid Value."
+                });
+            }
+        }
     }
 
     private dynamic PrepareManiailinkData(object userData)
     {
         dynamic data = new ExpandoObject();
 
-        if (Validation != null)
+        if (ModelValidation != null)
         {
-            data.Validation = Validation;
+            data.Validation = ModelValidation;
         }
 
         var dataDict = (IDictionary<string, object?>)data;

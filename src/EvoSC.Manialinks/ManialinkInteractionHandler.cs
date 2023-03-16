@@ -90,6 +90,11 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
 
             controller.SetContext(manialinkInteractionContext);
 
+            if (controller is ManialinkController manialinkController)
+            {
+                await manialinkController.ValidateModelAsync();
+            }
+
             var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
                 (Task?)action.HandlerMethod.Invoke(controller, actionParams) ?? Task.CompletedTask
             );
@@ -156,6 +161,11 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             
             if (currentParam.IsEntryModel)
             {
+                if (entryModel != null)
+                {
+                    throw new InvalidOperationException("Cannot convert more than one Entry model.");
+                }
+                
                 entryModel = await ConvertEntryModelAsync(currentParam.Type, entries, services);
                 values.Add(entryModel);
             }

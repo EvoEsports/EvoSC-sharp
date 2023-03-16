@@ -1,6 +1,6 @@
 ﻿namespace EvoSC.Manialinks.Validation;
 
-public class ValidationResult
+public class EntryValidationResult
 {
     public required string Name { get; init; }
     public required bool IsInvalid { get; init; }
