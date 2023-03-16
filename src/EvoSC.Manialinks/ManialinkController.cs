@@ -3,6 +3,7 @@ using System.Dynamic;
 using System.Reflection;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Manialinks.Interfaces.Validation;
 using EvoSC.Manialinks.Validation;
 using EvoSC.Modules.Interfaces;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
@@ -87,7 +88,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         var model = Context.ManialinkAction.EntryModel;
         
         ValidateProperties(model);
-        ValidateValidatableObjectModel(model as IValidatableObject);
+        await ValidateValidatableObjectModel(model);
 
         return ModelValidation;
     }
@@ -135,7 +136,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         }
     }
 
-    private void ValidateValidatableObjectModel(IValidatableObject? model)
+    private async Task ValidateValidatableObjectModel(object? model)
     {
         if (model == null)
         {
@@ -143,7 +144,21 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
             
         }
         
-        var validationResults = model.Validate(new ValidationContext(model));
+        IEnumerable<ValidationResult> validationResults;
+
+        switch (model)
+        {
+            // sync validation
+            case IValidatableObject validatableObject:
+                validationResults = validatableObject.Validate(new ValidationContext(model));
+                break;
+            // async validation
+            case IAsyncValidatableObject asyncValidatableObject:
+                validationResults = await asyncValidatableObject.ValidateAsync(new ValidationContext(model));
+                break;
+            default:
+                return;
+        }
 
         foreach (var validationResult in validationResults)
         {
@@ -171,11 +186,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     private dynamic PrepareManiailinkData(object userData)
     {
         dynamic data = new ExpandoObject();
-
-        if (ModelValidation != null)
-        {
-            data.Validation = ModelValidation;
-        }
+        data.Validation = ModelValidation;
 
         var dataDict = (IDictionary<string, object?>)data;
         foreach (var prop in userData.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))

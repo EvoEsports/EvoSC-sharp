@@ -154,6 +154,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
 
         while (currentParam != null)
         {
+            // ignores nodes which are not a parameter
             while (currentNode is {IsParameter: false})
             {
                 currentNode = currentNode?.Children?.Values.First();
@@ -161,6 +162,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             
             if (currentParam.IsEntryModel)
             {
+                // convert entry model, can only be one of them
                 if (entryModel != null)
                 {
                     throw new InvalidOperationException("Cannot convert more than one Entry model.");
@@ -175,6 +177,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             }
             else
             {
+                // convert a route parameter
                 values.Add(await _valueReader.ConvertValueAsync(currentParam.Type, currentNode.Name));
                 currentNode = currentNode?.Children?.Values.First(); 
             }
@@ -213,6 +216,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
                 }
                 catch (ValueConversionException ex)
                 {
+                    // todo: add validation error that the value failed to convert to the required type
                     _logger.LogDebug(ex, "Failed to convert entry value for property {Prop} in model {Model}",
                         modelProperty.Name, type.Name);
                 }
