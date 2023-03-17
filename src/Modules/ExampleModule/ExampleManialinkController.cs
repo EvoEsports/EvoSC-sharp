@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Permissions.Attributes;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Attributes;
 using EvoSC.Manialinks.Interfaces.Validation;
@@ -25,7 +26,7 @@ public class ExampleManialinkController : ManialinkController
         _logger = logger;
     }
 
-    [ManialinkRoute(Route = "/test/login")]
+    [ManialinkRoute(Route = "/test/login", Permission = MyPermissions.MyPerm1)]
     public async Task HandleActionAsync(ExampleFormModel myModel)
     {
         if (IsModelValid)

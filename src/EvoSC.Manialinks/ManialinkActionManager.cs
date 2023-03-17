@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Manialinks.Attributes;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
@@ -29,32 +30,47 @@ public class ManialinkActionManager : IManialinkActionManager
         _logger = logger;
     }
 
-    private string GetControllerRoute(Type type)
+    private ManialinkRouteAttribute GetControllerRoute(Type type)
     {
         var routeAttr = type.GetCustomAttribute<ManialinkRouteAttribute>();
 
         if (routeAttr != null)
         {
-            return routeAttr.Route;
+            return routeAttr;
         }
         
         var name = type.Name;
 
         if (name.EndsWith("Controller", StringComparison.OrdinalIgnoreCase))
         {
-            return name[..^10];
+            return new ManialinkRouteAttribute {Route = name[..^10]};
         }
 
-        return name;
+        return new ManialinkRouteAttribute {Route = name};
     }
 
-    private string GetMethodRoute(MethodInfo method, IMlActionParameter firstParameter)
+    private string? GetPermissionName(object? permission)
+    {
+        if (permission == null)
+        {
+            return null;
+        }
+
+        if (permission is Enum permEnum)
+        {
+            return permission.AsEnum().GetIdentifier();
+        }
+
+        return permission.ToString();
+    }
+    
+    private ManialinkRouteAttribute GetMethodRoute(MethodInfo method, IMlActionParameter firstParameter)
     {
         var routeAttr = method.GetCustomAttribute<ManialinkRouteAttribute>();
 
         if (routeAttr != null)
         {
-            return routeAttr.Route;
+            return routeAttr;
         }
         
         var name = method.Name;
@@ -81,7 +97,7 @@ public class ManialinkActionManager : IManialinkActionManager
             currentParam = currentParam.NextParameter;
         }
 
-        return route.ToString();
+        return new ManialinkRouteAttribute {Route = route.ToString()};
     }
 
     private IMlActionParameter GetActionParameter(ParameterInfo parInfo)
@@ -120,10 +136,11 @@ public class ManialinkActionManager : IManialinkActionManager
         return firstParam;
     }
 
-    private string BuildActionRoute(string controllerRoute, MethodInfo method, IMlActionParameter actionParameters)
+    private (string, ManialinkRouteAttribute) BuildActionRoute(string controllerRoute, MethodInfo method, IMlActionParameter actionParameters)
     {
         var route = new StringBuilder(controllerRoute);
-        var methodRoute = GetMethodRoute(method, actionParameters);
+        var routeInfo = GetMethodRoute(method, actionParameters);
+        var methodRoute = routeInfo.Route;
 
         if (methodRoute.StartsWith(RouteDelimiter))
         {
@@ -136,7 +153,7 @@ public class ManialinkActionManager : IManialinkActionManager
         }
 
         route.Append(methodRoute);
-        return route.ToString();
+        return (route.ToString(), routeInfo);
     }
     
     private static IMlActionParameter? CheckParameterValidity(string route, string routeComponent,
@@ -350,7 +367,7 @@ public class ManialinkActionManager : IManialinkActionManager
             var firstActionParameter = GetActionParameters(method);
 
             // build route
-            var route = BuildActionRoute(controllerRoute, method, firstActionParameter);
+            var (route, routeInfo) = BuildActionRoute(controllerRoute.Route, method, firstActionParameter);
 
             if (string.IsNullOrEmpty(route))
             {
@@ -360,7 +377,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
             var action = new ManialinkAction
             {
-                Permission = null,
+                Permission = GetPermissionName(routeInfo.Permission),
                 ControllerType = controllerType,
                 HandlerMethod = method,
                 FirstParameter = firstActionParameter

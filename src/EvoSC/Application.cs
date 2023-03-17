@@ -138,6 +138,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         
         var pipelineManager = _services.GetInstance<IActionPipelineManager>();
         pipelineManager.UseEvoScCommands(_services);
+        pipelineManager.UseEvoScManialinks(_services);
     }
 
     private async Task SetupModulesAsync()
