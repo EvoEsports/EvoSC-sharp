@@ -7,7 +7,6 @@ using EvoSC.Manialinks.Attributes;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Manialinks.Models;
-using LinqToDB.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Manialinks;

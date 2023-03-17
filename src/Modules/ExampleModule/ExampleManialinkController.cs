@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Permissions.Attributes;
+﻿using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Attributes;
-using EvoSC.Manialinks.Interfaces.Validation;
 using Microsoft.Extensions.Logging;
-using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 

@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Manialinks.Interfaces.Models;
 
 namespace EvoSC.Manialinks.Interfaces;

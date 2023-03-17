@@ -5,7 +5,6 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces.Validation;
 using EvoSC.Manialinks.Validation;
-using EvoSC.Modules.Interfaces;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace EvoSC.Manialinks;
