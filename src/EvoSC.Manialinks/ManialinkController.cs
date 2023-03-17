@@ -11,7 +11,14 @@ namespace EvoSC.Manialinks;
 
 public class ManialinkController : EvoScController<ManialinkInteractionContext>
 {
+    /// <summary>
+    /// The model validation result of the current context.
+    /// </summary>
     protected FormValidationResult ModelValidation { get; } = new();
+    
+    /// <summary>
+    /// Whether the model of the current context is valid or not.
+    /// </summary>
     protected bool IsModelValid => ModelValidation?.IsValid ?? false;
     
     /// <summary>
@@ -67,14 +74,35 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     public Task ShowAsync(IEnumerable<IOnlinePlayer> players, string maniaLink, object data) =>
         Context.ManialinkManager.SendManialinkAsync(maniaLink, PrepareManiailinkData(data), players);
 
+    /// <summary>
+    /// Hide a manialink for all players.
+    /// </summary>
+    /// <param name="maniaLink">The name of the manialink to hide.</param>
+    /// <returns></returns>
     public Task HideAsync(string maniaLink) => Context.ManialinkManager.HideManialinkAsync(maniaLink);
 
+    /// <summary>
+    /// Hide a manialink from a player.
+    /// </summary>
+    /// <param name="player">The player to hide the manialink from.</param>
+    /// <param name="maniaLink">The name of the manialink to hide.</param>
+    /// <returns></returns>
     public Task HideAsync(IOnlinePlayer player, string maniaLink) =>
         Context.ManialinkManager.HideManialinkAsync(maniaLink, player);
 
+    /// <summary>
+    /// Hide a manialink from a set of players.
+    /// </summary>
+    /// <param name="players">The players to hide the manialink from.</param>
+    /// <param name="maniaLink">The name of the manialink to hide.</param>
+    /// <returns></returns>
     public Task HideAsync(IEnumerable<IOnlinePlayer> players, string maniaLink) =>
         Context.ManialinkManager.HideManialinkAsync(maniaLink, players);
 
+    /// <summary>
+    /// Validate the model of the current context.
+    /// </summary>
+    /// <returns></returns>
     public Task<FormValidationResult> ValidateModelAsync() => ValidateModelInternalAsync();
 
     internal async Task<FormValidationResult> ValidateModelInternalAsync()

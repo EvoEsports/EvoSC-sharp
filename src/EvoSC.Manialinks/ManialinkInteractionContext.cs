@@ -8,7 +8,14 @@ namespace EvoSC.Manialinks;
 
 public class ManialinkInteractionContext : PlayerInteractionContext
 {
+    /// <summary>
+    /// Information about the manialink action that occured.
+    /// </summary>
     public required IManialinkActionContext ManialinkAction { get; init; }
+    
+    /// <summary>
+    /// The manialink manager service.
+    /// </summary>
     public required IManialinkManager ManialinkManager { get; init; }
     
     public ManialinkInteractionContext(IOnlinePlayer player, IControllerContext context) : base(player, context)
