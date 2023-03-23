@@ -2,10 +2,7 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
@@ -22,12 +19,15 @@ public class ExampleController2 : EvoScController<CommandInteractionContext>
     [ChatCommand("show", "Show a manialink")]
     public async Task ShowManialink()
     {
-        await _manialinks.SendManialinkAsync("ExampleModule.MyManialink", new {}, Context.Player);
+        await _manialinks.SendManialinkAsync(Context.Player, "MyModule.HelloPlayer", new
+        {
+            Name = Context.Player.NickName
+        });
     }
     
     [ChatCommand("hide", "Hide a manialink")]
     public async Task HideManialink()
     {
-        await _manialinks.HideManialinkAsync("ExampleModule.MyManialink", Context.Player);
+        await _manialinks.HideManialinkAsync(Context.Player, "ExampleModule.MyManialink");
     }
 }

@@ -17,6 +17,8 @@ public class ManialinkActionManager : IManialinkActionManager
     private static readonly char RouteDelimiter = '/';
     private static readonly Regex RouteParamRegex = new("\\{[\\w\\d_]+\\}", RegexOptions.None, TimeSpan.FromMilliseconds(100));
     private static readonly Regex ValidCharactersInRouteNameRegex = new("[_\\.\\w\\d]+", RegexOptions.None, TimeSpan.FromMilliseconds(100));
+    private static readonly string ControllerPostfix = "Controller";
+    private static readonly string AsyncMethodPostfix = "Async";
     
     private readonly ILogger<ManialinkActionManager> _logger;
     private readonly IMlRouteNode _rootNode = new MlRouteNode("<root>"){Children = new Dictionary<string, IMlRouteNode>()};
@@ -29,6 +31,11 @@ public class ManialinkActionManager : IManialinkActionManager
         _logger = logger;
     }
 
+    /// <summary>
+    /// Get the effective route to a controller.
+    /// </summary>
+    /// <param name="type">The type of the controller class.</param>
+    /// <returns></returns>
     private ManialinkRouteAttribute GetControllerRoute(Type type)
     {
         var routeAttr = type.GetCustomAttribute<ManialinkRouteAttribute>();
@@ -40,14 +47,20 @@ public class ManialinkActionManager : IManialinkActionManager
         
         var name = type.Name;
 
-        if (name.EndsWith("Controller", StringComparison.OrdinalIgnoreCase))
+        if (name.EndsWith(ControllerPostfix, StringComparison.OrdinalIgnoreCase))
         {
-            return new ManialinkRouteAttribute {Route = name[..^10]};
+            // return the name of the controller class without the "Controller" postfix
+            return new ManialinkRouteAttribute {Route = name[..^ControllerPostfix.Length]};
         }
 
         return new ManialinkRouteAttribute {Route = name};
     }
 
+    /// <summary>
+    /// Get the permission name from a string or enum identifier.
+    /// </summary>
+    /// <param name="permission">The permission to get the name of.</param>
+    /// <returns></returns>
     private string? GetPermissionName(object? permission)
     {
         if (permission == null)
@@ -63,7 +76,13 @@ public class ManialinkActionManager : IManialinkActionManager
         return permission.ToString();
     }
     
-    private ManialinkRouteAttribute GetMethodRoute(MethodInfo method, IMlActionParameter firstParameter)
+    /// <summary>
+    /// Get the effective route of a method.
+    /// </summary>
+    /// <param name="method">The method to get the route from.</param>
+    /// <param name="firstParameter">Pointer to the first parameter.</param>
+    /// <returns></returns>
+    private ManialinkRouteAttribute GetMethodRoute(MethodInfo method, IMlActionParameter? firstParameter)
     {
         var routeAttr = method.GetCustomAttribute<ManialinkRouteAttribute>();
 
@@ -74,13 +93,15 @@ public class ManialinkActionManager : IManialinkActionManager
         
         var name = method.Name;
 
-        if (name.EndsWith("Async", StringComparison.OrdinalIgnoreCase))
+        if (name.EndsWith(AsyncMethodPostfix, StringComparison.OrdinalIgnoreCase))
         {
-            name = name[..^5];
+            // get the name of the method without the "Async" postfix
+            name = name[..^AsyncMethodPostfix.Length];
         }
 
         var route = new StringBuilder(name);
 
+        // add route parameters from the method parameters
         var currentParam = firstParameter;
 
         while (currentParam != null)
@@ -99,6 +120,11 @@ public class ManialinkActionManager : IManialinkActionManager
         return new ManialinkRouteAttribute {Route = route.ToString()};
     }
 
+    /// <summary>
+    /// Build an info object for a parameter from an action.
+    /// </summary>
+    /// <param name="parInfo">The parameter to build the info object from.</param>
+    /// <returns></returns>
     private IMlActionParameter GetActionParameter(ParameterInfo parInfo)
     {
         var entryModelAttr = parInfo.ParameterType.GetCustomAttribute<EntryModelAttribute>();
@@ -111,6 +137,11 @@ public class ManialinkActionManager : IManialinkActionManager
         };
     }
     
+    /// <summary>
+    /// Get all the action parameters from a method.
+    /// </summary>
+    /// <param name="method">The method to get the parameters from.</param>
+    /// <returns></returns>
     private IMlActionParameter? GetActionParameters(MethodInfo method)
     {
         var methodParams = method.GetParameters();
@@ -119,6 +150,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
         if (first == null)
         {
+            // method contains no parameters
             return null;
         }
 
@@ -135,7 +167,14 @@ public class ManialinkActionManager : IManialinkActionManager
         return firstParam;
     }
 
-    private (string, ManialinkRouteAttribute) BuildActionRoute(string controllerRoute, MethodInfo method, IMlActionParameter actionParameters)
+    /// <summary>
+    /// Build the full route for an action.
+    /// </summary>
+    /// <param name="controllerRoute">Route to the controller which the action callback is part of.</param>
+    /// <param name="method">The method used as a callback for the action.</param>
+    /// <param name="actionParameters">Pointer to the first parameter for this action.</param>
+    /// <returns></returns>
+    private (string, ManialinkRouteAttribute) BuildActionRoute(string controllerRoute, MethodInfo method, IMlActionParameter? actionParameters)
     {
         var route = new StringBuilder(controllerRoute);
         var routeInfo = GetMethodRoute(method, actionParameters);
@@ -143,6 +182,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
         if (methodRoute.StartsWith(RouteDelimiter))
         {
+            // use the method route as the root route
             route.Clear();
             methodRoute = methodRoute[1..];
         }
@@ -155,8 +195,17 @@ public class ManialinkActionManager : IManialinkActionManager
         return (route.ToString(), routeInfo);
     }
     
+    /// <summary>
+    /// Validate the parameter for a route.
+    /// </summary>
+    /// <param name="route">The route which the parameter is part of.</param>
+    /// <param name="routeComponent">The route component of this parameter.</param>
+    /// <param name="currentActionParameter">The parameter to validate.</param>
+    /// <param name="nextNode">The next node in the parameter list.</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static IMlActionParameter? CheckParameterValidity(string route, string routeComponent,
-        IMlActionParameter? currentActionParameter, MlRouteNode newNode)
+        IMlActionParameter? currentActionParameter, MlRouteNode nextNode)
     {
         if (RouteParamRegex.IsMatch(routeComponent))
         {
@@ -166,7 +215,7 @@ public class ManialinkActionManager : IManialinkActionManager
                     $"Action method missing parameter for route parameter '{routeComponent}'.");
             }
 
-            newNode.IsParameter = true;
+            nextNode.IsParameter = true;
             return currentActionParameter.NextParameter;
         }
         else if (!ValidCharactersInRouteNameRegex.IsMatch(routeComponent))
@@ -178,6 +227,12 @@ public class ManialinkActionManager : IManialinkActionManager
         return currentActionParameter;
     }
 
+    /// <summary>
+    /// Main internal method for registering an action to the manager.
+    /// </summary>
+    /// <param name="route">The route to register.</param>
+    /// <param name="action">The action to be called for the specified route.</param>
+    /// <exception cref="InvalidOperationException"></exception>
     private void AddActionInternal(string route, IManialinkAction action)
     {
         if (route.StartsWith(RouteDelimiter))
@@ -198,17 +253,20 @@ public class ManialinkActionManager : IManialinkActionManager
                     throw new InvalidOperationException($"Route '{route}' contains an empty component.");
                 }
             
+                // make sure we create the child dict to avoid null references
                 if (currentNode.Children == null)
                 {
                     currentNode.Children = new Dictionary<string, IMlRouteNode>();
                 }
             
+                // try to find the next component in the route, if already registered
                 if (currentNode.Children.TryGetValue(routeComponent, out var child))
                 {
                     currentNode = child;
                 }
                 else
                 {
+                    // the current path is completely new, so we just register it
                     var newNode = new MlRouteNode(routeComponent);
 
                     currentActionParameter = CheckParameterValidity(route, routeComponent, currentActionParameter, newNode);
@@ -231,6 +289,11 @@ public class ManialinkActionManager : IManialinkActionManager
 
     public void AddRoute(string route, IManialinkAction action) => AddActionInternal(route, action);
 
+    /// <summary>
+    /// Main internal method for unregistering a route.
+    /// </summary>
+    /// <param name="route">Current route component in the recursive call.</param>
+    /// <param name="currentNode">Current node in the recursive call.</param>
     private void RemoveRouteInternal(IMlRouteNode route, IMlRouteNode currentNode)
     {
         if (route.IsAction || route.Children == null || route.Children.Count == 0)
@@ -245,6 +308,7 @@ public class ManialinkActionManager : IManialinkActionManager
             RemoveRouteInternal(route.Children.Values.First(), nextNode); 
         }
 
+        // make sure we don't remove the child node if there are more than 1 children
         if (currentNode?.Children is {Count: 0 or 1})
         {
             currentNode.Children.Remove(route.Name);
@@ -265,17 +329,26 @@ public class ManialinkActionManager : IManialinkActionManager
         }
     }
 
-    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, string lastComponent, IMlRouteNode currentNode)
+    /// <summary>
+    /// Recursively search for an action with the given route components.
+    /// </summary>
+    /// <param name="nextComponents">Next components in the route to search for.</param>
+    /// <param name="previousComponent">The previous component from the recursive call.</param>
+    /// <param name="currentNode">The current working route node.</param>
+    /// <returns></returns>
+    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, string previousComponent, IMlRouteNode currentNode)
     {
         if (nextComponents.Length == 0 || currentNode.Children == null)
         {
             if (nextComponents.Length > 0)
             {
+                // reached end of current branch, but did not find the action
                 return (null, null);
             }
             
+            // reached end of current branch and found an action
             return (currentNode.Action,
-                new MlRouteNode(lastComponent) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
+                new MlRouteNode(previousComponent) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
         }
 
         var currentComponent = nextComponents.First();
@@ -296,15 +369,18 @@ public class ManialinkActionManager : IManialinkActionManager
 
             if (nextNode != null)
             {
+                // found a branch to the route action
                 pathNode.Children[nextNode.Name] = nextNode;
             }
 
             if (manialinkAction != null)
             {
+                // found the corresponding action for the route, so let's just return here
                 return (manialinkAction, pathNode);
             }
         }
 
+        // no action found for current route
         return (null, null);
     }
     
@@ -320,6 +396,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
                 if (manialinkAction == null || path == null)
                 {
+                    // action not found, try next root node
                     continue;
                 }
             
@@ -342,7 +419,8 @@ public class ManialinkActionManager : IManialinkActionManager
     {
         if (!controllerType.IsControllerClass())
         {
-            throw new InvalidOperationException($"The provided type {controllerType.Name} is not a controller class.");
+            throw new InvalidOperationException(
+                $"The provided type {controllerType.Name} is not a manialink controller class.");
         }
 
         if (!typeof(ManialinkController).IsAssignableFrom(controllerType))
@@ -365,7 +443,6 @@ public class ManialinkActionManager : IManialinkActionManager
         {
             var firstActionParameter = GetActionParameters(method);
 
-            // build route
             var (route, routeInfo) = BuildActionRoute(controllerRoute.Route, method, firstActionParameter);
 
             if (string.IsNullOrEmpty(route))

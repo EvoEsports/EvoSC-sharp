@@ -195,13 +195,13 @@ public class ManialinkManager : IManialinkManager
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
     }
 
-    public async Task SendManialinkAsync(string name, IDictionary<string, object?> data, IPlayer player)
+    public async Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data)
     {
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
     }
 
-    public async Task SendManialinkAsync(string name, dynamic data, IPlayer player)
+    public async Task SendManialinkAsync(IPlayer player, string name, dynamic data)
     {
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
@@ -220,14 +220,14 @@ public class ManialinkManager : IManialinkManager
         return multiCall;
     }
     
-    public async Task SendManialinkAsync(string name, IDictionary<string, object?> data, IEnumerable<IPlayer> players)
+    public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, IDictionary<string, object?> data)
     {
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         var multiCall = CreateMultiCall(players, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
     }
 
-    public async Task SendManialinkAsync(string name, dynamic data, IEnumerable<IPlayer> players)
+    public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, dynamic data)
     {
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         var multiCall = CreateMultiCall(players, manialinkOutput);
@@ -252,13 +252,13 @@ public class ManialinkManager : IManialinkManager
         return _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 3, true);
     }
 
-    public Task HideManialinkAsync(string name, IPlayer player)
+    public Task HideManialinkAsync(IPlayer player, string name)
     {
         var manialinkOutput = CreateHideManialink(name);
         return _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 3, true);
     }
 
-    public Task HideManialinkAsync(string name, IEnumerable<IPlayer> players)
+    public Task HideManialinkAsync(IEnumerable<IPlayer> players, string name)
     {
         var manialinkOutput = CreateHideManialink(name);
         var multiCall = new MultiCall();
