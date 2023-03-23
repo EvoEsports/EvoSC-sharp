@@ -40,7 +40,7 @@ public class ManialinkActionManager : IManialinkActionManager
     {
         var routeAttr = type.GetCustomAttribute<ManialinkRouteAttribute>();
 
-        if (routeAttr != null)
+        if (routeAttr?.Route != null)
         {
             return routeAttr;
         }
@@ -53,7 +53,7 @@ public class ManialinkActionManager : IManialinkActionManager
             return new ManialinkRouteAttribute {Route = name[..^ControllerPostfix.Length]};
         }
 
-        return new ManialinkRouteAttribute {Route = name};
+        return new ManialinkRouteAttribute {Route = name, Permission = routeAttr?.Permission};
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public class ManialinkActionManager : IManialinkActionManager
     {
         var routeAttr = method.GetCustomAttribute<ManialinkRouteAttribute>();
 
-        if (routeAttr != null)
+        if (routeAttr?.Route != null)
         {
             return routeAttr;
         }

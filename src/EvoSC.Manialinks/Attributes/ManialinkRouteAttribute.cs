@@ -3,6 +3,6 @@
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
 public class ManialinkRouteAttribute : Attribute
 {
-    public required string Route { get; set; }
+    public string? Route { get; init; }
     public object? Permission { get; init; }
 }

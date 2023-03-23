@@ -22,7 +22,7 @@ public class ExampleManialinkController : ManialinkController
         _logger = logger;
     }
 
-    [ManialinkRoute(Route = "/test/login", Permission = MyPermissions.MyPerm1)]
+    [ManialinkRoute(Permission = MyPermissions.MyPerm1)]
     public async Task HandleActionAsync(ExampleFormModel myModel)
     {
         if (IsModelValid)

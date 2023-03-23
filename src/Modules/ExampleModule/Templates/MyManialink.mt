@@ -26,8 +26,7 @@
                     y="-10"
                     isPassword="true"
             />
-            <FormSubmit x="18" y="-21" text="Login" action="test/login" />
+            <FormSubmit x="18" y="-21" text="Login" action="ExampleManialink/HandleAction" />
         </frame>
     </template>
-    <script resource="Scripts.MyManialinkScript" />
 </component>
