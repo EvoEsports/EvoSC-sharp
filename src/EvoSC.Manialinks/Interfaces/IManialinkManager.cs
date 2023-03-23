@@ -56,6 +56,7 @@ public interface IManialinkManager
     /// <returns></returns>
     public Task SendManialinkAsync(string name, IDictionary<string, object?> data);
     public Task SendManialinkAsync(string name, dynamic data);
+    public Task SendManialinkAsync(string name) => SendManialinkAsync(name, new { });
     
     /// <summary>
     /// Render a template and send it to a specific player.
@@ -66,6 +67,7 @@ public interface IManialinkManager
     /// <returns></returns>
     public Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data);
     public Task SendManialinkAsync(IPlayer player, string name, dynamic data);
+    public Task SendManialinkAsync(IPlayer player, string name) => SendManialinkAsync(player, name, new { });
     
     /// <summary>
     /// Render a template and send it to a set of players.
@@ -76,6 +78,9 @@ public interface IManialinkManager
     /// <returns></returns>
     public Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, IDictionary<string, object?> data);
     public Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, dynamic data);
+
+    public Task SendManialinkAsync(IEnumerable<IPlayer> players, string name) =>
+        SendManialinkAsync(players, name, new { });
 
     public Task HideManialinkAsync(string name);
     public Task HideManialinkAsync(IPlayer player, string name);
