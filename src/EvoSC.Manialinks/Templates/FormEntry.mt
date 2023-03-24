@@ -1,7 +1,7 @@
 ﻿<component>
     <using namespace="EvoSC.Manialinks.Validation" />
     <using namespace="System.Linq" />
-    
+
     <property type="IEnumerable<EntryValidationResult>?" name="validationResults" />
     <property type="string?" name="value"/>
     <property type="string" name="name"/>
@@ -16,9 +16,9 @@
     
     <template>
         <frame pos="{{ x }} {{ y }}" size="{{ w }} {{ h }}">
-            <Label 
-                    text="{{ label }}" 
-                    x="0" 
+            <Label
+                    text="{{ label }}"
+                    x="0"
                     y="0"
                     textsize="1"
                     halign="left" valign="top"

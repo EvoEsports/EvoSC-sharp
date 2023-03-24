@@ -22,8 +22,21 @@ public class ExampleManialinkController : ManialinkController
         _logger = logger;
     }
 
-    [ManialinkRoute(Permission = MyPermissions.MyPerm1)]
     public async Task HandleActionAsync(ExampleFormModel myModel)
+    {
+        if (IsModelValid)
+        {
+            _logger.LogInformation("Username: {User}, Password: {Pass}", myModel.Username, myModel.Password);
+            await HideAsync(Context.Player, "ExampleModule.MyManialink");
+        }
+        else
+        {
+            _logger.LogInformation("Form submission is not valid!");
+            await ShowAsync(Context.Player, "ExampleModule.MyManialink", new {myModel.Username, myModel.Password});
+        }
+    }
+    
+    public async Task HandleAction2Async(ExampleFormModel myModel)
     {
         if (IsModelValid)
         {

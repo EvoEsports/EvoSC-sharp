@@ -186,13 +186,13 @@ public sealed class Application : IEvoSCApplication, IDisposable
     
     private async Task EnableModulesAsync()
     {
+        await _services.GetRequiredService<IManialinkManager>().AddDefaultTemplatesAsync();
         await _services.GetRequiredService<IModuleManager>().EnableModulesAsync();
     }
     
     private async Task InitializeTemplatesAsync()
     {
         var maniaLinks = _services.GetRequiredService<IManialinkManager>();
-        await maniaLinks.AddDefaultTemplatesAsync();
         await maniaLinks.PreprocessAllAsync();
     }
 

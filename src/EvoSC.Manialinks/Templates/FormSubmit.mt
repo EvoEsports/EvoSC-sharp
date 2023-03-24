@@ -1,5 +1,7 @@
 ﻿<component>
-    <property type="string" name="text" />
+    <using namespace="System.Linq" />
+    
+    <property type="string?" name="text" />
     <property type="string" name="action" />
     <property type="double" name="x" default="0.0" />
     <property type="double" name="y" default="0.0" />

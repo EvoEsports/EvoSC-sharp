@@ -50,7 +50,7 @@ public class ManialinkActionManager : IManialinkActionManager
         if (name.EndsWith(ControllerPostfix, StringComparison.OrdinalIgnoreCase))
         {
             // return the name of the controller class without the "Controller" postfix
-            return new ManialinkRouteAttribute {Route = name[..^ControllerPostfix.Length]};
+            return new ManialinkRouteAttribute {Route = name[..^ControllerPostfix.Length], Permission = routeAttr?.Permission};
         }
 
         return new ManialinkRouteAttribute {Route = name, Permission = routeAttr?.Permission};
@@ -117,7 +117,7 @@ public class ManialinkActionManager : IManialinkActionManager
             currentParam = currentParam.NextParameter;
         }
 
-        return new ManialinkRouteAttribute {Route = route.ToString()};
+        return new ManialinkRouteAttribute {Route = route.ToString(), Permission = routeAttr?.Permission};
     }
 
     /// <summary>
@@ -453,7 +453,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
             var action = new ManialinkAction
             {
-                Permission = GetPermissionName(routeInfo.Permission),
+                Permission = GetPermissionName(routeInfo.Permission ?? controllerRoute.Permission),
                 ControllerType = controllerType,
                 HandlerMethod = method,
                 FirstParameter = firstActionParameter
