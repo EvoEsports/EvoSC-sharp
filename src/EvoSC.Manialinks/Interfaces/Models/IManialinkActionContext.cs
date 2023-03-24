@@ -1,9 +1,12 @@
 ﻿namespace EvoSC.Manialinks.Interfaces.Models;
 
+/// <summary>
+/// Holds information about the execution context of a Manialink Action.
+/// </summary>
 public interface IManialinkActionContext
 {
     /// <summary>
-    /// Information about the current manialink action.
+    /// Information about the current Manialink Action.
     /// </summary>
     public IManialinkAction Action { get; }
     

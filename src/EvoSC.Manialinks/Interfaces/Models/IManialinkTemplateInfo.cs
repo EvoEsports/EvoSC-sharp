@@ -2,6 +2,9 @@
 
 namespace EvoSC.Manialinks.Interfaces.Models;
 
+/// <summary>
+/// Holds information about a Manialink template.
+/// </summary>
 public interface IManialinkTemplateInfo
 {
     /// <summary>

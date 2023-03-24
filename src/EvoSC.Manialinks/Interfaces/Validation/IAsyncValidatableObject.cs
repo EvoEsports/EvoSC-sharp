@@ -2,6 +2,9 @@
 
 namespace EvoSC.Manialinks.Interfaces.Validation;
 
+/// <summary>
+/// Enables asynchronous model-level validation.
+/// </summary>
 public interface IAsyncValidatableObject
 {
     /// <summary>

@@ -7,7 +7,6 @@ using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Manialinks.Models;
-using EvoSC.Modules.Interfaces;
 using GbxRemoteNet;
 using ManiaTemplates;
 using ManiaTemplates.Lib;

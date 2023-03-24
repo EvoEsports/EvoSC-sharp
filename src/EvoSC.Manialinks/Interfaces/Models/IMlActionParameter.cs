@@ -2,6 +2,10 @@
 
 namespace EvoSC.Manialinks.Interfaces.Models;
 
+/// <summary>
+/// Holds information about a parameter node for a Manialink Action. This can chain together
+/// a linked list. 
+/// </summary>
 public interface IMlActionParameter
 {
     /// <summary>

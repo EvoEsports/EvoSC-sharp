@@ -2,6 +2,9 @@
 
 namespace EvoSC.Manialinks.Interfaces.Models;
 
+/// <summary>
+/// Holds information about a registered Manialink Action.
+/// </summary>
 public interface IManialinkAction
 {
     /// <summary>

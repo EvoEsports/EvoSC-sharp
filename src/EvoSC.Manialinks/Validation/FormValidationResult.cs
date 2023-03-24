@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Manialinks.Validation;
 
+/// <summary>
+/// Holds all validation results for all entries within a Manialink Form.
+/// </summary>
 public class FormValidationResult
 {
     private readonly Dictionary<string, List<EntryValidationResult>> _results = new();

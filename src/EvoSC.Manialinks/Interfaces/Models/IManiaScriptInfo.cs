@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Manialinks.Interfaces.Models;
 
+/// <summary>
+/// Holds information about a ManiaScript content object.
+/// </summary>
 public interface IManiaScriptInfo
 {
     /// <summary>

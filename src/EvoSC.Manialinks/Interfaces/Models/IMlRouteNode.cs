@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Manialinks.Interfaces.Models;
 
+/// <summary>
+/// Holds general information about a component within a route.
+/// </summary>
 public interface IMlRouteNode
 {
     /// <summary>

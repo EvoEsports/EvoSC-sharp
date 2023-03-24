@@ -5,6 +5,10 @@ using EvoSC.Common.Middleware;
 
 namespace EvoSC.Manialinks.Middleware;
 
+/// <summary>
+/// This middleware checks if a user has the permission to execute a Manialink Action.
+/// A message in chat is sent to the player in case of insufficient permissions.
+/// </summary>
 public class ManialinkPermissionMiddleware
 {
     private readonly ActionDelegate _next;

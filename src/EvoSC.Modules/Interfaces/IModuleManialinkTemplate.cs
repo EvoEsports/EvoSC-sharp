@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Modules.Interfaces;
+﻿using EvoSC.Manialinks.Interfaces;
+
+namespace EvoSC.Modules.Interfaces;
 
 public interface IModuleManialinkTemplate
 {

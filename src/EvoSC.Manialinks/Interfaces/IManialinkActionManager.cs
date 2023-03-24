@@ -3,6 +3,9 @@ using EvoSC.Manialinks.Interfaces.Models;
 
 namespace EvoSC.Manialinks.Interfaces;
 
+/// <summary>
+/// Controls registration and searching of Manialink Actions.
+/// </summary>
 public interface IManialinkActionManager : IControllerActionRegistry
 {
     /// <summary>

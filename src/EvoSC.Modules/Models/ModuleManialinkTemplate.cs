@@ -1,4 +1,5 @@
-﻿using EvoSC.Modules.Interfaces;
+﻿using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules.Models;
 

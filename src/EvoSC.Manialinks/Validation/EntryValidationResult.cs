@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Manialinks.Validation;
 
+/// <summary>
+/// Holds validation result for an entry in a Manialink Form.
+/// </summary>
 public class EntryValidationResult
 {
     /// <summary>

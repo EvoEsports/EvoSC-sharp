@@ -1,7 +1,10 @@
 ﻿using EvoSC.Common.Util.EnumIdentifier;
 
-namespace EvoSC.Modules.Interfaces;
+namespace EvoSC.Manialinks.Interfaces;
 
+/// <summary>
+/// Possible template types for Manialink templates.
+/// </summary>
 public enum ManialinkTemplateType
 {
     /// <summary>
