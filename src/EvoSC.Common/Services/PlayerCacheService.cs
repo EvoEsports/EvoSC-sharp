@@ -92,7 +92,7 @@ public class PlayerCacheService : IPlayerCacheService
     private async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedEventArgs e)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(e.PlayerInfo.Login);
-        await ForceUpdatePlayerAsync(accountId);
+        await ForceUpdatePlayerInternalAsync(accountId);
     }
 
     private Task OnPlayerDisconnectAsync(object sender, PlayerDisconnectEventArgs e)
@@ -116,7 +116,7 @@ public class PlayerCacheService : IPlayerCacheService
         
         try
         {
-            await ForceUpdatePlayerAsync(accountId);
+            await ForceUpdatePlayerInternalAsync(accountId);
         }
         catch (Exception ex)
         {
@@ -124,7 +124,7 @@ public class PlayerCacheService : IPlayerCacheService
         }
     }
 
-    private async Task ForceUpdatePlayerAsync(string accountId)
+    private async Task ForceUpdatePlayerInternalAsync(string accountId)
     {
         var player = await GetOnlinePlayerCachedAsync(accountId, true);
 
@@ -243,4 +243,6 @@ public class PlayerCacheService : IPlayerCacheService
             _logger.LogDebug("Cached online player '{AccountId}'", accountId);
         }
     }
+
+    public Task UpdatePlayerAsync(IPlayer player) => ForceUpdatePlayerInternalAsync(player.AccountId);
 }

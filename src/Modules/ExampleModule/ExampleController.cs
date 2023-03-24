@@ -66,9 +66,9 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         }
     }
 
-    [ChatCommand("test", "Some testing.", "myperm")]
+    [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var action = _manialinkActions.FindAction("a/234");
+        var version = await _server.Remote.GetVersionAsync();
     }
 }

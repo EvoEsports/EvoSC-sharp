@@ -40,4 +40,9 @@ public class PlayerRepository : DbRepository, IPlayerRepository
         .Where(t => t.Id == player.Id)
         .Set(t => t.LastVisit, DateTime.UtcNow)
         .UpdateAsync();
+
+    public Task UpdateNicknameAsync(IPlayer player, string newNickname) => Table<DbPlayer>()
+        .Where(t => t.Id == player.Id)
+        .Set(t => t.NickName, newNickname)
+        .UpdateAsync();
 }
