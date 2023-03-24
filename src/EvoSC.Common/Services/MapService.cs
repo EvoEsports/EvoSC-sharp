@@ -46,7 +46,7 @@ public class MapService : IMapService
         }
 
         var fileName = $"{mapMetadata.MapName}.Map.Gbx";
-        var filePath = Path.Combine(_config.Path.Maps, "/EvoSC");
+        var filePath = Path.Combine(_config.Path.Maps, "EvoSC");
 
         await SaveMapFileAsync(mapFile, filePath, fileName);
 
@@ -163,7 +163,7 @@ public class MapService : IMapService
                 Directory.CreateDirectory(filePath);
             }
 
-            var fileStream = File.Create(Path.Combine(filePath, $"/{fileName}"));
+            var fileStream = File.Create(Path.Combine(filePath, $"{fileName}"));
             await mapStream.CopyToAsync(fileStream);
             fileStream.Close();
         }
