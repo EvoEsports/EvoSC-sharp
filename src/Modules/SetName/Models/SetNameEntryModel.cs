@@ -6,6 +6,9 @@ namespace EvoSC.Modules.Official.SetName.Models;
 [EntryModel]
 public class SetNameEntryModel
 {
+    /// <summary>
+    /// The new desired nickname of the player.
+    /// </summary>
     [MinLength(1)]
     public string Nickname { get; set; }
 }
