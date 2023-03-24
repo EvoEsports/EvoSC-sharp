@@ -1,7 +1,8 @@
-﻿<!--
-    Manialink Form submit button.
--->
-<component>
+﻿<component>
+    <!--
+        Manialink Form submit button.
+    -->
+    
     <using namespace="System.Linq" />
     
     <property type="string?" name="text" />

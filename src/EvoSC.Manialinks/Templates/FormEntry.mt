@@ -1,7 +1,8 @@
-﻿<!--
-    Generic input element for Mainalink Forms that can also handle validation errors.
--->
-<component>
+﻿<component>
+    <!--
+        Generic input element for Mainalink Forms that can also handle validation errors.
+    -->
+
     <using namespace="EvoSC.Manialinks.Validation" />
     <using namespace="System.Linq" />
 
