@@ -10,7 +10,7 @@ public class FastestCpStoreTest
     [Fact]
     public void Empty_Records_Should_Be_Empty()
     {
-        var result = _fastestCpStore.GetFastestTimes(3);
+        var result = _fastestCpStore.GetFastestTimes();
 
         Assert.Empty(result);
     }
@@ -21,12 +21,15 @@ public class FastestCpStoreTest
         const string Account = "AccountId";
         const int RaceTime = 10;
 
-        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime, 100);
+        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime);
 
-        var data = _fastestCpStore.GetFastestTimes(3);
+        var data = _fastestCpStore.GetFastestTimes();
 
         Assert.True(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime) } }, data);
+        Assert.Equivalent(new List<AccountIdCpTime?>
+        {
+            new(Account, RaceTime)
+        }, data);
     }
 
     [Fact]
@@ -35,17 +38,18 @@ public class FastestCpStoreTest
         const string Account = "AccountId";
         const int RaceTime1 = 10;
         const int RaceTime2 = 5;
-        const int ServerTime1 = 100;
-        const int ServerTime2 = 200;
 
-        _fastestCpStore.RegisterTime(Account, 0, RaceTime1, ServerTime1);
+        _fastestCpStore.RegisterTime(Account, 0, RaceTime1);
 
-        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime2, ServerTime2);
+        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime2);
 
-        var data = _fastestCpStore.GetFastestTimes(3);
+        var data = _fastestCpStore.GetFastestTimes();
 
         Assert.True(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime2) } }, data);
+        Assert.Equivalent(new List<AccountIdCpTime?>
+        {
+            new(Account, RaceTime2)
+        }, data);
     }
 
     [Fact]
@@ -54,17 +58,18 @@ public class FastestCpStoreTest
         const string Account = "AccountId";
         const int RaceTime1 = 10;
         const int RaceTime2 = 12;
-        const int ServerTime1 = 100;
-        const int ServerTime2 = 200;
 
-        _fastestCpStore.RegisterTime(Account, 0, RaceTime1, ServerTime1);
+        _fastestCpStore.RegisterTime(Account, 0, RaceTime1);
 
-        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime2, ServerTime2);
+        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime2);
 
-        var data = _fastestCpStore.GetFastestTimes(3);
+        var data = _fastestCpStore.GetFastestTimes();
 
         Assert.False(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime1) } }, data);
+        Assert.Equivalent(new List<AccountIdCpTime?>
+        {
+            new(Account, RaceTime1)
+        }, data);
     }
 
     [Fact]
@@ -73,17 +78,18 @@ public class FastestCpStoreTest
         const string Account = "AccountId";
         const int RaceTime1 = 10;
         const int RaceTime2 = 10;
-        const int ServerTime1 = 100;
-        const int ServerTime2 = 200;
 
-        _fastestCpStore.RegisterTime(Account, 0, RaceTime1, ServerTime1);
+        _fastestCpStore.RegisterTime(Account, 0, RaceTime1);
 
-        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime2, ServerTime2);
+        var result = _fastestCpStore.RegisterTime(Account, 0, RaceTime2);
 
-        var data = _fastestCpStore.GetFastestTimes(3);
+        var data = _fastestCpStore.GetFastestTimes();
 
         Assert.False(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new() { new AccountIdCpTime(Account, RaceTime1) } }, data);
+        Assert.Equivalent(new List<AccountIdCpTime?>
+        {
+            new(Account, RaceTime1)
+        }, data);
     }
 
     [Fact]
@@ -95,68 +101,25 @@ public class FastestCpStoreTest
         const int RaceTime1 = 10;
         const int RaceTime2 = 20;
         const int RaceTime3 = 5;
-        const int ServerTime1 = 100;
-        const int ServerTime2 = 200;
-        const int ServerTime3 = 300;
 
-        _fastestCpStore.RegisterTime(Account1, 0, RaceTime1, ServerTime1);
+        _fastestCpStore.RegisterTime(Account1, 0, RaceTime1);
 
-        var result2 = _fastestCpStore.RegisterTime(Account2, 0, RaceTime2, ServerTime2);
-        var data2 = _fastestCpStore.GetFastestTimes(3);
-        var result3 = _fastestCpStore.RegisterTime(Account3, 0, RaceTime3, ServerTime3);
-        var data3 = _fastestCpStore.GetFastestTimes(3);
+        var result2 = _fastestCpStore.RegisterTime(Account2, 0, RaceTime2);
+        var data2 = _fastestCpStore.GetFastestTimes();
+        var result3 = _fastestCpStore.RegisterTime(Account3, 0, RaceTime3);
+        var data3 = _fastestCpStore.GetFastestTimes();
 
-        Assert.True(result2);
+        Assert.False(result2);
         Assert.True(result3);
         Assert.Equivalent(
-            new List<List<AccountIdCpTime>>
+            new List<AccountIdCpTime>
             {
-                new() { new AccountIdCpTime(Account1, RaceTime1), new AccountIdCpTime(Account2, RaceTime2) }
+                new(Account1, RaceTime1)
             }, data2);
         Assert.Equivalent(
-            new List<List<AccountIdCpTime>>
+            new List<AccountIdCpTime?>
             {
-                new()
-                {
-                    new AccountIdCpTime(Account3, RaceTime3),
-                    new AccountIdCpTime(Account1, RaceTime1),
-                    new AccountIdCpTime(Account2, RaceTime2)
-                }
-            }, data3);
-    }
-
-    [Fact]
-    public void Multiple_Records_Should_Be_Limited()
-    {
-        const string Account1 = "AccountId1";
-        const string Account2 = "AccountId2";
-        const string Account3 = "AccountId3";
-        const int RaceTime1 = 10;
-        const int RaceTime2 = 20;
-        const int RaceTime3 = 5;
-        const int ServerTime1 = 100;
-        const int ServerTime2 = 200;
-        const int ServerTime3 = 300;
-
-        _fastestCpStore.RegisterTime(Account1, 0, RaceTime1, ServerTime1);
-
-        var result2 = _fastestCpStore.RegisterTime(Account2, 0, RaceTime2, ServerTime2);
-        var data2 = _fastestCpStore.GetFastestTimes(2);
-        var result3 = _fastestCpStore.RegisterTime(Account3, 0, RaceTime3, ServerTime3);
-        var data3 = _fastestCpStore.GetFastestTimes(2);
-
-
-        Assert.True(result2);
-        Assert.True(result3);
-        Assert.Equivalent(
-            new List<List<AccountIdCpTime>>
-            {
-                new() { new AccountIdCpTime(Account1, RaceTime1), new AccountIdCpTime(Account2, RaceTime2) }
-            }, data2);
-        Assert.Equivalent(
-            new List<List<AccountIdCpTime>>
-            {
-                new() { new AccountIdCpTime(Account3, RaceTime3), new AccountIdCpTime(Account1, RaceTime1) }
+                new(Account3, RaceTime3),
             }, data3);
     }
 
@@ -166,19 +129,18 @@ public class FastestCpStoreTest
         const string Account = "AccountId";
         const int RaceTime1 = 10;
         const int RaceTime2 = 20;
-        const int ServerTime1 = 100;
-        const int ServerTime2 = 200;
 
-        _fastestCpStore.RegisterTime(Account, 0, RaceTime1, ServerTime1);
-        var result2 = _fastestCpStore.RegisterTime(Account, 1, RaceTime2, ServerTime2);
+        _fastestCpStore.RegisterTime(Account, 0, RaceTime1);
+        var result2 = _fastestCpStore.RegisterTime(Account, 1, RaceTime2);
 
-        var data = _fastestCpStore.GetFastestTimes(3);
+        var data = _fastestCpStore.GetFastestTimes();
 
         Assert.True(result2);
         Assert.Equivalent(
-            new List<List<AccountIdCpTime>>
+            new List<AccountIdCpTime?>
             {
-                new() { new AccountIdCpTime(Account, RaceTime1) }, new() { new AccountIdCpTime(Account, RaceTime2) }
+                new(Account, RaceTime1), 
+                new(Account, RaceTime2)
             },
             data);
     }
@@ -189,19 +151,18 @@ public class FastestCpStoreTest
         const string Account = "AccountId";
         const int RaceTime1 = 10;
         const int RaceTime2 = 20;
-        const int ServerTime1 = 100;
-        const int ServerTime2 = 200;
 
-        _fastestCpStore.RegisterTime(Account, 1, RaceTime2, ServerTime2);
-        var result1 = _fastestCpStore.RegisterTime(Account, 0, RaceTime1, ServerTime1);
+        _fastestCpStore.RegisterTime(Account, 1, RaceTime2);
+        var result1 = _fastestCpStore.RegisterTime(Account, 0, RaceTime1);
 
-        var data = _fastestCpStore.GetFastestTimes(3);
+        var data = _fastestCpStore.GetFastestTimes();
 
         Assert.True(result1);
         Assert.Equivalent(
-            new List<List<AccountIdCpTime>>
+            new List<AccountIdCpTime?>
             {
-                new() { new AccountIdCpTime(Account, RaceTime1) }, new() { new AccountIdCpTime(Account, RaceTime2) }
+                new(Account, RaceTime1), 
+                new(Account, RaceTime2) 
             },
             data);
     }
@@ -212,12 +173,16 @@ public class FastestCpStoreTest
         const string Account = "AccountId";
         const int RaceTime = 10;
 
-        var result = _fastestCpStore.RegisterTime(Account, 1, RaceTime, 100);
+        var result = _fastestCpStore.RegisterTime(Account, 1, RaceTime);
 
-        var data = _fastestCpStore.GetFastestTimes(3);
+        var data = _fastestCpStore.GetFastestTimes();
 
         Assert.True(result);
-        Assert.Equivalent(new List<List<AccountIdCpTime>> { new(), new() { new AccountIdCpTime(Account, RaceTime) } },
+        Assert.Equivalent(new List<AccountIdCpTime?>
+            {
+                null, 
+                new(Account, RaceTime)
+            },
             data);
     }
 }

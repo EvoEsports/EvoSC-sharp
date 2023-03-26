@@ -4,8 +4,7 @@ namespace EvoSC.Modules.Official.FastestCp.Models;
 
 internal class FastestCpStore
 {
-    private readonly Dictionary<AccountIdCpNumber, ServerCpTime> _cache = new();
-    private readonly List<SortedList<ServerCpTime, AccountIdCpTime>?> _fastestTimes = new();
+    private readonly List<AccountIdCpTime?> _fastestTimes = new();
     private readonly ILogger<FastestCpStore> _logger;
 
     public FastestCpStore(ILogger<FastestCpStore> logger)
@@ -13,28 +12,9 @@ internal class FastestCpStore
         _logger = logger;
     }
 
-    public bool RegisterTime(string accountId, int cpIndex, int cpTime, int serverTime)
+    public bool RegisterTime(string accountId, int cpIndex, int cpTime)
     {
-        var accountIdCp = new AccountIdCpNumber(accountId, cpIndex);
         var accountIdCpTime = new AccountIdCpTime(accountId, cpTime);
-        var newCpTime = new ServerCpTime(cpTime, serverTime);
-
-        lock (_cache)
-        {
-            var oldCpTime = _cache.GetValueOrDefault(accountIdCp);
-            if (oldCpTime != null && oldCpTime.RaceTime <= cpTime)
-            {
-                _logger.LogDebug(
-                    "Not inserting slower checkpoint time of {cpTime} at checkpoint {cpIndex} driven by account {accountId} into the checkpoint times cache",
-                    cpTime, cpIndex, accountId);
-                return false;
-            }
-
-            _logger.LogDebug(
-                "Inserting faster checkpoint time of {cpTime} at checkpoint {cpIndex} driven by account {accountId} into the checkpoint times cache",
-                cpTime, cpIndex, accountId);
-            _cache[accountIdCp] = newCpTime;
-        }
 
         lock (_fastestTimes)
         {
@@ -44,43 +24,38 @@ internal class FastestCpStore
                     "Extending fastest checkpoint list from {oldSize} to {newSize} to insert first time driven ({cpTime}) at checkpoint {cpIndex}",
                     _fastestTimes.Count, cpIndex + 1, cpTime, cpIndex);
                 _fastestTimes.AddRange(
-                    new SortedList<ServerCpTime, AccountIdCpTime>[cpIndex - _fastestTimes.Count + 1]);
-                _fastestTimes[cpIndex] =
-                    new SortedList<ServerCpTime, AccountIdCpTime> { { newCpTime, accountIdCpTime } };
+                    new AccountIdCpTime[cpIndex - _fastestTimes.Count + 1]);
+                _fastestTimes[cpIndex] = new AccountIdCpTime(accountId, cpTime);
+                return true;
             }
-            else if (_fastestTimes[cpIndex] == null)
+
+            if (_fastestTimes[cpIndex] == null)
             {
                 _logger.LogDebug(
-                    "Inserting first checkpoint time ({cpTime}) into fastest checkpoint list driven at checkpoint {cpIndex}",
-                    cpTime, cpIndex);
-                _fastestTimes[cpIndex] =
-                    new SortedList<ServerCpTime, AccountIdCpTime> { { newCpTime, accountIdCpTime } };
-            }
-            else
-            {
-                _logger.LogDebug(
-                    "Update fastest checkpoint time ({cpTime}) in sorted checkpoint time list at checkpoint {cpIndex} driven by account {accountId}",
+                    "Inserting first checkpoint time ({cpTime}) at checkpoint {cpIndex} driven by account {accountId}",
                     cpTime, cpIndex, accountId);
-                _fastestTimes[cpIndex]![newCpTime] = accountIdCpTime;
+                _fastestTimes[cpIndex] = new AccountIdCpTime(accountId, cpTime);
+                return true;
             }
 
-            return true;
-        }
-    }
+            if (_fastestTimes[cpIndex]!.RaceTime > cpTime)
+            {
+                _logger.LogDebug(
+                    "Update fastest checkpoint time ({cpTime}) at checkpoint {cpIndex} driven by account {accountId}",
+                    cpTime, cpIndex, accountId);
+                _fastestTimes[cpIndex] = accountIdCpTime;
+                return true;
+            }
 
-    public List<List<AccountIdCpTime>> GetFastestTimes(int limit)
-    {
-        lock (_fastestTimes)
-        {
-            return _fastestTimes.Select(sl => sl?.Values.Take(limit).ToList() ?? new List<AccountIdCpTime>()).ToList();
+            _logger.LogTrace(
+                "Do not update slower checkpoint time ({cpTime}) at checkpoint {cpIndex} driven by account {accountId}",
+                cpTime, cpIndex, accountId);
+            return false;
         }
     }
 
     public List<AccountIdCpTime?> GetFastestTimes()
     {
-        lock (_fastestTimes)
-        {
-            return _fastestTimes.Select(sl => sl?.Values.FirstOrDefault()).ToList();
-        }
+        return _fastestTimes.ToList();
     }
 }

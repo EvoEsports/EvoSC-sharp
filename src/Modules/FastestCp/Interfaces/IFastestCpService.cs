@@ -13,12 +13,6 @@ public interface IFastestCpService
     public Task RegisterCpTime(WayPointEventArgs args);
 
     /// <summary>
-    ///     Get the best current checkpoint times
-    /// </summary>
-    /// <returns></returns>
-    public Task<PlayerCpTime?[]> GetCurrentBestCpTimes();
-
-    /// <summary>
     ///     Clear current fastest checkpoints
     /// </summary>
     /// <returns></returns>

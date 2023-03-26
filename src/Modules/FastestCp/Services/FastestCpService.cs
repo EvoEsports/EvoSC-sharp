@@ -32,7 +32,7 @@ public class FastestCpService : IFastestCpService
 
     public async Task RegisterCpTime(WayPointEventArgs args)
     {
-        var result = _fastestCpStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.Time);
+        var result = _fastestCpStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime);
         await _manialinkManager.SendManialinkAsync("FastestCp.FastestCp", new { data = await GetCurrentBestCpTimes() });
         if (result)
         {
