@@ -141,7 +141,15 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
 
                 var attrValidationResult = validationAttribute.GetValidationResult(propValue, new ValidationContext(model));
 
-                AddModelValidationResult(attrValidationResult);
+                if (attrValidationResult == ValidationResult.Success)
+                {
+                    AddModelValidationResult(attrValidationResult);
+                }
+                else
+                {
+                    AddModelValidationResult(new ValidationResult(attrValidationResult.ErrorMessage,
+                        new[] {modelProp.Name}));
+                }
             }
         }
     }

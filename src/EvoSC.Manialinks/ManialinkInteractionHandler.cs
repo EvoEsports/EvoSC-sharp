@@ -173,8 +173,10 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
 
                 var (entryModelInstance, modelValidationResults) =
                     await ConvertEntryModelAsync(currentParam.Type, entries, services);
+
                 values.Add(entryModelInstance);
                 validationResults = modelValidationResults;
+                entryModel = entryModelInstance;
             }
             else if (currentNode == null)
             {
