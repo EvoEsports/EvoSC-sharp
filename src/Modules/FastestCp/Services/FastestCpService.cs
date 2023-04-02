@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -33,39 +32,50 @@ public class FastestCpService : IFastestCpService
     public async Task RegisterCpTime(WayPointEventArgs args)
     {
         var result = _fastestCpStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime);
-        await _manialinkManager.SendManialinkAsync("FastestCp.FastestCp", new { data = await GetCurrentBestCpTimes() });
         if (result)
         {
-            // TODO update manialinks
+            await ShowWidget();
         }
     }
 
-    public async Task<PlayerCpTime?[]> GetCurrentBestCpTimes()
+    public async Task ShowWidget()
     {
-        var playerCache = new Dictionary<string, IPlayer>();
-        return await Task.WhenAll(_fastestCpStore.GetFastestTimes().Select(async time =>
-        {
-            if (time == null)
-            {
-                return null;
-            }
-
-            if (playerCache.TryGetValue(time.AccountId, out var player))
-            {
-                return new PlayerCpTime(player, time.RaceTime);
-            }
-
-            player = await _playerManagerService.GetOrCreatePlayerAsync(time.AccountId);
-            playerCache.Add(time.AccountId, player);
-            return new PlayerCpTime(player, time.RaceTime);
-        }));
+        await _manialinkManager.SendPersistentManialinkAsync("FastestCp.FastestCp",
+            new { times = await GetCurrentBestCpTimes() });
+        _logger.LogDebug("Update fastest cp manialink for all users");
     }
 
     public async Task ResetCpTimes()
     {
         _fastestCpStore = GetNewFastestCpStore();
-        await _manialinkManager.SendManialinkAsync("FastestCp.FastestCp", new { data = await GetCurrentBestCpTimes() });
+        await _manialinkManager.HideManialinkAsync("FastestCp.FastestCp");
+        _logger.LogDebug("Hide fastest cp manialink for all users");
     }
 
-    private FastestCpStore GetNewFastestCpStore() => new(_loggerFactory.CreateLogger<FastestCpStore>());
+    private async Task<PlayerCpTime?[]> GetCurrentBestCpTimes()
+    {
+        var fastestTimes = _fastestCpStore.GetFastestTimes();
+
+        var playerNameCache = new Dictionary<string, string>();
+        await Task.WhenAll(
+            fastestTimes.Where(s => s != null)
+                .Select(time => time!.AccountId)
+                .Distinct()
+                .Select(async id =>
+                {
+                    var player = await _playerManagerService.GetOrCreatePlayerAsync(id);
+                    playerNameCache[id] = player.StrippedNickName;
+                }));
+
+        return fastestTimes.Select(
+                time => time == null
+                    ? null
+                    : new PlayerCpTime(playerNameCache[time.AccountId], TimeSpan.FromMilliseconds(time.RaceTime)))
+            .ToArray();
+    }
+
+    private FastestCpStore GetNewFastestCpStore()
+    {
+        return new FastestCpStore(_loggerFactory.CreateLogger<FastestCpStore>());
+    }
 }

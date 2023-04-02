@@ -1,5 +1,3 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿namespace EvoSC.Modules.Official.FastestCp.Models;
 
-namespace EvoSC.Modules.Official.FastestCp.Models;
-
-public record PlayerCpTime(IPlayer Player, int RaceTime);
+public record PlayerCpTime(string Player, TimeSpan Time);

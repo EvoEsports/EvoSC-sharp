@@ -26,7 +26,7 @@ public class FastestCpController : EvoScController<EventControllerContext>
     }
 
     [Subscribe(GbxRemoteEvent.EndMap)]
-    public Task ResetCpTimes(object sender, MapEventArgs args)
+    public Task ResetCpTimes(object sender, MapGbxEventArgs args)
     {
         return _fastestCpService.ResetCpTimes();
     }
