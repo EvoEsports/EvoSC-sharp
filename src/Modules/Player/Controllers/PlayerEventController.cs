@@ -16,6 +16,6 @@ public class PlayerEventController : EvoScController<EventControllerContext>
     public PlayerEventController(IPlayerService playerService) => _playerService = playerService;
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnect(object sender, PlayerConnectEventArgs args) =>
+    public Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args) =>
         _playerService.UpdateAndGreetPlayerAsync(args.Login);
 }

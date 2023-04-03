@@ -50,7 +50,7 @@ public class PlayerCacheService : IPlayerCacheService
             .WithEvent(GbxRemoteEvent.PlayerConnect)
             .WithInstance(this)
             .WithInstanceClass<PlayerCacheService>()
-            .WithHandlerMethod<PlayerConnectEventArgs>(OnPlayerConnectAsync)
+            .WithHandlerMethod<PlayerConnectGbxEventArgs>(OnPlayerConnectAsync)
             .WithPriority(EventPriority.High)
             .AsAsync()
         );
@@ -59,7 +59,7 @@ public class PlayerCacheService : IPlayerCacheService
             .WithEvent(GbxRemoteEvent.PlayerDisconnect)
             .WithInstance(this)
             .WithInstanceClass<PlayerCacheService>()
-            .WithHandlerMethod<PlayerDisconnectEventArgs>(OnPlayerDisconnectAsync)
+            .WithHandlerMethod<PlayerDisconnectGbxEventArgs>(OnPlayerDisconnectAsync)
             .WithPriority(EventPriority.High)
             .AsAsync()
         );
@@ -68,7 +68,7 @@ public class PlayerCacheService : IPlayerCacheService
             .WithEvent(GbxRemoteEvent.PlayerInfoChanged)
             .WithInstance(this)
             .WithInstanceClass<PlayerCacheService>()
-            .WithHandlerMethod<PlayerInfoChangedEventArgs>(OnPlayerInfoChangedAsync)
+            .WithHandlerMethod<PlayerInfoChangedGbxEventArgs>(OnPlayerInfoChangedAsync)
             .WithPriority(EventPriority.High)
             .AsAsync()
         );
@@ -89,13 +89,13 @@ public class PlayerCacheService : IPlayerCacheService
         }
     }
 
-    private async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedEventArgs e)
+    private async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedGbxEventArgs e)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(e.PlayerInfo.Login);
         await ForceUpdatePlayerInternalAsync(accountId);
     }
 
-    private Task OnPlayerDisconnectAsync(object sender, PlayerDisconnectEventArgs e)
+    private Task OnPlayerDisconnectAsync(object sender, PlayerDisconnectGbxEventArgs e)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
 
@@ -110,7 +110,7 @@ public class PlayerCacheService : IPlayerCacheService
         return Task.CompletedTask;
     }
 
-    private async Task OnPlayerConnectAsync(object sender, PlayerConnectEventArgs e)
+    private async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs e)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
         

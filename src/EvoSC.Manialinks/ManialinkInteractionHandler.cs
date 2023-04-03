@@ -49,7 +49,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             .WithEvent(GbxRemoteEvent.ManialinkPageAnswer)
             .WithInstance(this)
             .WithInstanceClass<ManialinkInteractionContext>()
-            .WithHandlerMethod<ManiaLinkPageActionEventArgs>(HandleManialinkPageAnswerAsync)
+            .WithHandlerMethod<ManiaLinkPageActionGbxEventArgs>(HandleManialinkPageAnswerAsync)
             .AsAsync()
         );
     }
@@ -63,7 +63,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         _valueReader.AddReader(new OnlinePlayerReader(playerManager));
     }
 
-    private async Task HandleManialinkPageAnswerAsync(object? sender, ManiaLinkPageActionEventArgs args)
+    private async Task HandleManialinkPageAnswerAsync(object? sender, ManiaLinkPageActionGbxEventArgs args)
     {
         try
         {

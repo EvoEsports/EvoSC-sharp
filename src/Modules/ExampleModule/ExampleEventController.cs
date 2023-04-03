@@ -27,7 +27,7 @@ public class ExampleEventController : EvoScController<EventControllerContext>
     }
 
     [Subscribe(GbxRemoteEvent.ManialinkPageAnswer)]
-    public async Task PageAnswer(object sender, ManiaLinkPageActionEventArgs args)
+    public async Task PageAnswer(object sender, ManiaLinkPageActionGbxEventArgs args)
     {
         
     }

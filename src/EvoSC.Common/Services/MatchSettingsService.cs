@@ -75,7 +75,7 @@ public class MatchSettingsService : IMatchSettingsService
     private async Task<IMatchSettings> SaveMatchSettingsAsync(string name, MatchSettingsBuilder builder)
     {
         var builtMatchSettings = builder.Build();
-        var contents = new Base64(builtMatchSettings
+        var contents = new GbxBase64(builtMatchSettings
             .ToXmlDocument()
             .GetFullXmlString()
         );
