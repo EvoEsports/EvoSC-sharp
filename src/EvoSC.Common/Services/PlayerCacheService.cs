@@ -52,7 +52,6 @@ public class PlayerCacheService : IPlayerCacheService
             .WithInstanceClass<PlayerCacheService>()
             .WithHandlerMethod<PlayerConnectGbxEventArgs>(OnPlayerConnectAsync)
             .WithPriority(EventPriority.High)
-            .AsAsync()
         );
         
         events.Subscribe(s => s
@@ -61,7 +60,6 @@ public class PlayerCacheService : IPlayerCacheService
             .WithInstanceClass<PlayerCacheService>()
             .WithHandlerMethod<PlayerDisconnectGbxEventArgs>(OnPlayerDisconnectAsync)
             .WithPriority(EventPriority.High)
-            .AsAsync()
         );
         
         events.Subscribe(s => s
@@ -70,7 +68,6 @@ public class PlayerCacheService : IPlayerCacheService
             .WithInstanceClass<PlayerCacheService>()
             .WithHandlerMethod<PlayerInfoChangedGbxEventArgs>(OnPlayerInfoChangedAsync)
             .WithPriority(EventPriority.High)
-            .AsAsync()
         );
 
         _server.Remote.OnConnected += OnServerConnectedAsync;

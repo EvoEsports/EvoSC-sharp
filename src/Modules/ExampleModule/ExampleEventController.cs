@@ -2,8 +2,11 @@
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Common.Util;
+using EvoSC.Manialinks.Interfaces;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +16,14 @@ namespace EvoSC.Modules.Official.ExampleModule;
 public class ExampleEventController : EvoScController<EventControllerContext>
 {
     private readonly ILogger<ExampleEventController> _logger;
+    private readonly IManialinkManager _manialinks;
+    private readonly IPlayerManagerService _players;
     
-    public ExampleEventController(ILogger<ExampleEventController> logger)
+    public ExampleEventController(ILogger<ExampleEventController> logger, IManialinkManager manialinks, IPlayerManagerService players)
     {
         _logger = logger;
+        _manialinks = manialinks;
+        _players = players;
     }
     
     [Subscribe(ModeScriptEvent.WayPoint)]
@@ -30,5 +37,12 @@ public class ExampleEventController : EvoScController<EventControllerContext>
     public async Task PageAnswer(object sender, ManiaLinkPageActionGbxEventArgs args)
     {
         
+    }
+
+    [Subscribe(GbxRemoteEvent.PlayerConnect)]
+    public async Task PlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
+    {
+        var player = await _players.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
+        await _manialinks.SendManialinkAsync(player, "SetName.EditName");
     }
 }
