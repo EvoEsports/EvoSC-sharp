@@ -9,14 +9,14 @@ namespace EvoSC.Modules.Official.ExampleModule;
 [Module(IsInternal = true)]
 public class ExampleModule : EvoScModule, IToggleable
 {
-    public ExampleModule()
-    {
-    }
+    private readonly IManialinkManager _manialinks;
     
-    public Task EnableAsync()
+    public ExampleModule(IManialinkManager manialinks)
     {
-        return Task.CompletedTask;
+        _manialinks = manialinks;
     }
+
+    public Task EnableAsync() => _manialinks.SendPersistentManialinkAsync("ExampleModule.MyManialink");
 
     public Task DisableAsync()
     {
