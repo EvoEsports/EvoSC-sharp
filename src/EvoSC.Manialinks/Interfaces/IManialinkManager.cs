@@ -72,7 +72,33 @@ public interface IManialinkManager
     /// </summary>
     /// <param name="name">The name of the template.</param>
     /// <returns></returns>
-    public Task SendManialinkAsync(string name) => SendManialinkAsync(name, new { });
+    public Task SendManialinkAsync(string name);
+
+    /// <summary>
+    /// Send a manialink to all players which persists even if a player re-connects.
+    /// It will also automatically show for new players.
+    /// </summary>
+    /// <param name="name">Name of the template to show.</param>
+    /// <param name="data">any kind of data the template uses.</param>
+    /// <returns></returns>
+    public Task SendPersistentManialinkAsync(string name, IDictionary<string, object?> data);
+    
+    /// <summary>
+    /// Send a manialink to all players which persists even if a player re-connects.
+    /// It will also automatically show for new players.
+    /// </summary>
+    /// <param name="name">Name of the template to show.</param>
+    /// <param name="data">any kind of data the template uses.</param>
+    /// <returns></returns>
+    public Task SendPersistentManialinkAsync(string name, dynamic data);
+    
+    /// <summary>
+    /// Send a manialink to all players which persists even if a player re-connects.
+    /// It will also automatically show for new players.
+    /// </summary>
+    /// <param name="name">Name of the template to show.</param>
+    /// <returns></returns>
+    public Task SendPersistentManialinkAsync(string name);
     
     /// <summary>
     /// Render a template and send it to a specific player.

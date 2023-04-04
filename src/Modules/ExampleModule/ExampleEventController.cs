@@ -16,13 +16,13 @@ namespace EvoSC.Modules.Official.ExampleModule;
 public class ExampleEventController : EvoScController<EventControllerContext>
 {
     private readonly ILogger<ExampleEventController> _logger;
-    private readonly IManialinkManager _manialinks;
+    private readonly IManialinkManager _manialinkses;
     private readonly IPlayerManagerService _players;
     
-    public ExampleEventController(ILogger<ExampleEventController> logger, IManialinkManager manialinks, IPlayerManagerService players)
+    public ExampleEventController(ILogger<ExampleEventController> logger, IManialinkManager manialinkses, IPlayerManagerService players)
     {
         _logger = logger;
-        _manialinks = manialinks;
+        _manialinkses = manialinkses;
         _players = players;
     }
     
@@ -43,6 +43,6 @@ public class ExampleEventController : EvoScController<EventControllerContext>
     public async Task PlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
     {
         var player = await _players.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
-        await _manialinks.SendManialinkAsync(player, "SetName.EditName");
+        await _manialinkses.SendManialinkAsync(player, "SetName.EditName");
     }
 }
