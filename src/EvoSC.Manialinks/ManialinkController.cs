@@ -122,6 +122,10 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <returns></returns>
     public Task<FormValidationResult> ValidateModelAsync() => ValidateModelInternalAsync();
 
+    /// <summary>
+    /// Begins validation of the current entry model.
+    /// </summary>
+    /// <returns></returns>
     internal async Task<FormValidationResult> ValidateModelInternalAsync()
     {
         if (Context.ManialinkAction.EntryModel == null)
@@ -137,6 +141,10 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         return ModelValidation;
     }
 
+    /// <summary>
+    /// Runs validation on each property in the instance of an entry model.
+    /// </summary>
+    /// <param name="model">Instance of the entry model.</param>
     private void ValidateProperties(object model)
     {
         var modelProperties = model.GetType().GetProperties(
@@ -171,6 +179,10 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         }
     }
 
+    /// <summary>
+    /// Run the model-level validation methods on an entry model.
+    /// </summary>
+    /// <param name="model">The instance of the entry model.</param>
     private async Task ValidateValidatableObjectModel(object? model)
     {
         if (model == null)
@@ -201,6 +213,12 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         }
     }
 
+    /// <summary>
+    /// Utility that prepares manialink data before sending like setting up validation result so that
+    /// the developer don't need to do this manually.
+    /// </summary>
+    /// <param name="userData">Any custom data from the developer.</param>
+    /// <returns></returns>
     private dynamic PrepareManiailinkData(object userData)
     {
         dynamic data = new ExpandoObject();
@@ -218,6 +236,10 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         return data;
     }
 
+    /// <summary>
+    /// Add a new validation result to the form validation object.
+    /// </summary>
+    /// <param name="validationResult">Result from a validation step.</param>
     private void AddModelValidationResult(ValidationResult? validationResult)
     {
         if (validationResult == null)
@@ -245,6 +267,10 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         }
     }
 
+    /// <summary>
+    /// Adds any pre-validation results which is added before the value-level validation is run.
+    /// </summary>
+    /// <param name="validationResults">Validation results to be added.</param>
     internal void AddEarlyValidationResults(IEnumerable<ValidationResult> validationResults)
     {
         foreach (var valResult in validationResults)

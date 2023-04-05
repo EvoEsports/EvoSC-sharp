@@ -149,6 +149,15 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         }
     }
     
+    /// <summary>
+    /// Parse action parameters and create a list of values that can be used as arguments to the action method.
+    /// </summary>
+    /// <param name="currentParam">First parameter in the parameter list.</param>
+    /// <param name="currentNode">First node in the route components list.</param>
+    /// <param name="entries">Form entry input from the user.</param>
+    /// <param name="services">Services to be used for entry model instantiation.</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">Thrown if action parameters are missing.</exception>
     private async Task<(object[] values, object? entryModel, IEnumerable<ValidationResult> validationResults)> ConvertRequestParametersAsync(IMlActionParameter? currentParam, IMlRouteNode? currentNode, TmSEntryVal[] entries, Container services)
     {
         var values = new List<object>();
@@ -195,6 +204,14 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         return (values: values.ToArray(), entryModel: entryModel, validationResults: validationResults);
     }
 
+    /// <summary>
+    /// Instantiates the entry model and fills in the input data to it. It also performs basic validation
+    /// such as checking for correct data type.
+    /// </summary>
+    /// <param name="type">The type of the entry model.</param>
+    /// <param name="entries">Input data from the user.</param>
+    /// <param name="services">Service container to be used for entry model instantiation.</param>
+    /// <returns></returns>
     private async Task<(object, IEnumerable<ValidationResult>)> ConvertEntryModelAsync(Type type, TmSEntryVal[] entries, Container services)
     {
         var instance = ActivatorUtilities.CreateInstance(services, type);
