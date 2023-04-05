@@ -42,7 +42,7 @@ public class ExampleEventController : EvoScController<EventControllerContext>
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task PlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
     {
-        var player = await _players.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
-        await _manialinkses.SendManialinkAsync(player, "SetName.EditName");
+        /* var player = await _players.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
+        await _manialinkses.SendManialinkAsync(player, "SetName.EditName"); */
     }
 }

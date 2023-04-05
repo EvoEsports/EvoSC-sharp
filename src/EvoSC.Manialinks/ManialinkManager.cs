@@ -22,7 +22,6 @@ public class ManialinkManager : IManialinkManager
 {
     private readonly ILogger<ManialinkManager> _logger;
     private readonly IServerClient _server;
-    private readonly IPlayerManagerService _players;
 
     private readonly ManiaTemplateEngine _engine = new();
     private readonly Dictionary<string, IManialinkTemplateInfo> _templates = new();
@@ -34,11 +33,10 @@ public class ManialinkManager : IManialinkManager
         typeof(IOnlinePlayer).Assembly, typeof(ManialinkManager).Assembly
     };
 
-    public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server, IEventManager events, IPlayerManagerService players)
+    public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server, IEventManager events)
     {
         _logger = logger;
         _server = server;
-        _players = players;
         
         events.Subscribe(s => s
             .WithEvent(GbxRemoteEvent.PlayerConnect)
@@ -49,6 +47,9 @@ public class ManialinkManager : IManialinkManager
         );
     }
 
+    /// <summary>
+    /// Used to send persistent manialinks to newly connected players.
+    /// </summary>
     private async Task HandlePlayerConnect(object sender, PlayerConnectGbxEventArgs e)
     {
         try

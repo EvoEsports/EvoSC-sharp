@@ -134,7 +134,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         }
     }
 
-    public async Task<IOnlinePlayer> GetPlayerAsync(string login)
+    private async Task<IOnlinePlayer> GetPlayerAsync(string login)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(login);
 
