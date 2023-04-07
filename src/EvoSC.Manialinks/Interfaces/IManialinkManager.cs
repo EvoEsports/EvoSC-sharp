@@ -88,7 +88,7 @@ public interface IManialinkManager
     /// It will also automatically show for new players.
     /// </summary>
     /// <param name="name">Name of the template to show.</param>
-    /// <param name="data">any kind of data the template uses.</param>
+    /// <param name="data">Any kind of data the template uses.</param>
     /// <returns></returns>
     public Task SendPersistentManialinkAsync(string name, dynamic data);
     
