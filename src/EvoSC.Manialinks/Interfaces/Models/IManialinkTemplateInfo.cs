@@ -13,7 +13,7 @@ public interface IManialinkTemplateInfo
     public IEnumerable<Assembly> Assemblies { get; }
     
     /// <summary>
-    /// The full qualified name of this template.
+    /// The fully qualified name of this template.
     /// </summary>
     public string Name { get; }
     
