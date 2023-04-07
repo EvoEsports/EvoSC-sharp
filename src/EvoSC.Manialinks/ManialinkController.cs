@@ -268,7 +268,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     }
 
     /// <summary>
-    /// Adds any pre-validation results which is added before the value-level validation is run.
+    /// Adds any pre-validation results which are added before the value-level validation is run.
     /// </summary>
     /// <param name="validationResults">Validation results to be added.</param>
     internal void AddEarlyValidationResults(IEnumerable<ValidationResult> validationResults)
