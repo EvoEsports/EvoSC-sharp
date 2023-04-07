@@ -21,7 +21,7 @@ public class SetNameController : ManialinkController
         }
 
         await _setNameService.SetNicknameAsync(Context.Player, input.Nickname);
-        await HideAsync("SetName.EditName");
+        await HideAsync(Context.Player, "SetName.EditName");
 
         Context.AuditEvent
             .WithEventName("EditNickname")
