@@ -103,7 +103,7 @@ public class ServiceContainerManager : IServiceContainerManager
     {
         if (!_containers.ContainsKey(containerId))
         {
-            throw new ServicesException( $"No container for {containerId} was found.");
+            throw new ServicesException($"No container for {containerId} was found.");
         }
 
         var container = _containers[containerId];
