@@ -144,7 +144,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to get player during Manialink action");
+            _logger.LogError(ex, "Failed to get player during Manialink action");
             throw;
         }
     }
