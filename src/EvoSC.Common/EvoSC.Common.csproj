@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="EvoSC.Common.Tests" />
+    </ItemGroup>
+    
+    <ItemGroup>
       <PackageReference Include="Config.Net" Version="5.1.4" />
       <PackageReference Include="FluentMigrator" Version="3.3.2" />
       <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />

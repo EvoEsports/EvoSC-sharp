@@ -10,6 +10,7 @@
         <ProjectReference Include="..\..\external\ManiaTemplates\src\ManiaTemplates\ManiaTemplates.csproj" />
         <ProjectReference Include="..\EvoSC.Common\EvoSC.Common.csproj" />
         <EmbeddedResource Include="Templates\**\*" />
+        <InternalsVisibleTo Include="EvoSC.Modules" />
     </ItemGroup>
 
 </Project>
