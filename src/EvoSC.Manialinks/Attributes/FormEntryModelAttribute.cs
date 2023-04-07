@@ -4,7 +4,7 @@
 /// Specifies that the annotated class is used as an Form Entry Model.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class EntryModelAttribute : Attribute
+public class FormEntryModelAttribute : Attribute
 {
     
 }

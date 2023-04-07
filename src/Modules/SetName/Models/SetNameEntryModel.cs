@@ -3,7 +3,7 @@ using EvoSC.Manialinks.Attributes;
 
 namespace EvoSC.Modules.Official.SetName.Models;
 
-[EntryModel]
+[FormEntryModel]
 public class SetNameEntryModel
 {
     /// <summary>

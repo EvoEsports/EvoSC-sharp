@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
-[EntryModel]
+[FormEntryModel]
 public class ExampleFormModel
 {
     public int Username { get; set; }

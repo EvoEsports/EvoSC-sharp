@@ -127,7 +127,7 @@ public class ManialinkActionManager : IManialinkActionManager
     /// <returns></returns>
     private IMlActionParameter GetActionParameter(ParameterInfo parInfo)
     {
-        var entryModelAttr = parInfo.ParameterType.GetCustomAttribute<EntryModelAttribute>();
+        var entryModelAttr = parInfo.ParameterType.GetCustomAttribute<FormEntryModelAttribute>();
 
         return new MlActionParameter
         {
