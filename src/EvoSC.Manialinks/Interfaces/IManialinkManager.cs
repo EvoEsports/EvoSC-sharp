@@ -105,7 +105,7 @@ public interface IManialinkManager
     /// </summary>
     /// <param name="name">The name of the template.</param>
     /// <param name="data">Data which the template uses.</param>
-    /// <param name="player">The player to send to</param>
+    /// <param name="player">The player to send to.</param>
     /// <returns></returns>
     public Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data);
     
