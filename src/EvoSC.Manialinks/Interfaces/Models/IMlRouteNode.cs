@@ -6,7 +6,7 @@
 public interface IMlRouteNode
 {
     /// <summary>
-    /// The name of this route part.
+    /// The name of this route node.
     /// </summary>
     public string Name { get; set; }
     
