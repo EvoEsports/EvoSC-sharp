@@ -24,7 +24,7 @@ public interface IMlActionParameter
     public string Name => ParameterInfo.Name;
     
     /// <summary>
-    /// Pointer to the next parameter in the parameter list.
+    /// Reference to the next parameter in the parameter list.
     /// </summary>
     public IMlActionParameter? NextParameter { get; set; }
     
