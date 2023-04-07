@@ -26,7 +26,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// </summary>
     /// <param name="maniaLink">The manialink to show.</param>
     /// <returns></returns>
-    public Task ShowAsync(string maniaLink) => Context.ManialinkManager.SendManialinkAsync(maniaLink, PrepareManiailinkData(new object()));
+    public Task ShowAsync(string maniaLink) => Context.ManialinkManager.SendManialinkAsync(maniaLink, PrepareManialinkData(new object()));
     
     /// <summary>
     /// Display a manialink to all players.
@@ -34,7 +34,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <param name="maniaLink">The manialink to show.</param>
     /// <param name="data">Data to send to use with manialink template.</param>
     /// <returns></returns>
-    public Task ShowAsync(string maniaLink, object data) => Context.ManialinkManager.SendManialinkAsync(maniaLink, PrepareManiailinkData(data));
+    public Task ShowAsync(string maniaLink, object data) => Context.ManialinkManager.SendManialinkAsync(maniaLink, PrepareManialinkData(data));
 
     /// <summary>
     /// Display a manialink to a player.
@@ -43,7 +43,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <param name="maniaLink">The manialink to show.</param>
     /// <returns></returns>
     public Task ShowAsync(IOnlinePlayer player, string maniaLink) =>
-        Context.ManialinkManager.SendManialinkAsync(player, maniaLink, PrepareManiailinkData(new object()));
+        Context.ManialinkManager.SendManialinkAsync(player, maniaLink, PrepareManialinkData(new object()));
     
     /// <summary>
     /// Display a manialink to a player.
@@ -53,7 +53,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <param name="data">Data to send to use with manialink template.</param>
     /// <returns></returns>
     public Task ShowAsync(IOnlinePlayer player, string maniaLink, object data) =>
-        Context.ManialinkManager.SendManialinkAsync(player, maniaLink, PrepareManiailinkData(data));
+        Context.ManialinkManager.SendManialinkAsync(player, maniaLink, PrepareManialinkData(data));
     
     /// <summary>
     /// Display a manialink to a set of players.
@@ -62,7 +62,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <param name="maniaLink">The manialink to show.</param>
     /// <returns></returns>
     public Task ShowAsync(IEnumerable<IOnlinePlayer> players, string maniaLink) =>
-        Context.ManialinkManager.SendManialinkAsync(players, maniaLink, PrepareManiailinkData(new object()));
+        Context.ManialinkManager.SendManialinkAsync(players, maniaLink, PrepareManialinkData(new object()));
 
     /// <summary>
     /// Display a manialink to a set of players.
@@ -72,7 +72,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <param name="data">Data to send to use with manialink template.</param>
     /// <returns></returns>
     public Task ShowAsync(IEnumerable<IOnlinePlayer> players, string maniaLink, object data) =>
-        Context.ManialinkManager.SendManialinkAsync(players, maniaLink, PrepareManiailinkData(data));
+        Context.ManialinkManager.SendManialinkAsync(players, maniaLink, PrepareManialinkData(data));
 
     /// <summary>
     /// Show a manialink to all players which persists between player connections and will
@@ -80,7 +80,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// </summary>
     /// <param name="name">The name of the manialink to show.</param>
     /// <returns></returns>
-    public Task ShowPersistent(string name) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManiailinkData(new object()));
+    public Task ShowPersistent(string name) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(new object()));
     
     /// <summary>
     /// Show a manialink to all players which persists between player connections and will
@@ -89,7 +89,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <param name="name">Name of the manialink to show.</param>
     /// <param name="data">Data to be sent to the manialink template.</param>
     /// <returns></returns>
-    public Task ShowPersistent(string name, object data) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManiailinkData(data));
+    public Task ShowPersistent(string name, object data) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(data));
     
     /// <summary>
     /// Hide a manialink for all players.
