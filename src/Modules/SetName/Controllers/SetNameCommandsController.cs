@@ -9,14 +9,14 @@ namespace EvoSC.Modules.Official.SetName.Controllers;
 [Controller]
 public class SetNameCommandsController : EvoScController<CommandInteractionContext>
 {
-    private readonly IManialinkManager _manialinkses;
+    private readonly IManialinkManager _manialinks;
 
-    public SetNameCommandsController(IManialinkManager manialinkses) => _manialinkses = manialinkses;
+    public SetNameCommandsController(IManialinkManager manialinks) => _manialinks = manialinks;
 
     [ChatCommand("setname", "Set a custom nickname.")]
     public async Task SetNameAsync()
     {
-        await _manialinkses.SendManialinkAsync(Context.Player, "SetName.EditName",
+        await _manialinks.SendManialinkAsync(Context.Player, "SetName.EditName",
             new {Nickname = Context.Player.NickName});
     } 
 }
