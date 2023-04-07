@@ -219,7 +219,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// </summary>
     /// <param name="userData">Any custom data from the developer.</param>
     /// <returns></returns>
-    private dynamic PrepareManiailinkData(object userData)
+    private dynamic PrepareManialinkData(object userData)
     {
         dynamic data = new ExpandoObject();
         data.Validation = ModelValidation;
