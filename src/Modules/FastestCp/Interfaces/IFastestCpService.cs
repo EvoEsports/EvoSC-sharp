@@ -12,12 +12,6 @@ public interface IFastestCpService
     public Task RegisterCpTime(WayPointEventArgs args);
 
     /// <summary>
-    ///     Show fastest cp widget to all users
-    /// </summary>
-    /// <returns></returns>
-    public Task ShowWidget();
-
-    /// <summary>
     ///     Clear current fastest checkpoints
     /// </summary>
     /// <returns></returns>

@@ -38,13 +38,6 @@ public class FastestCpService : IFastestCpService
         }
     }
 
-    public async Task ShowWidget()
-    {
-        await _manialinkManager.SendPersistentManialinkAsync("FastestCp.FastestCp",
-            new { times = await GetCurrentBestCpTimes() });
-        _logger.LogDebug("Update fastest cp manialink for all users");
-    }
-
     public async Task ResetCpTimes()
     {
         _fastestCpStore = GetNewFastestCpStore();
@@ -52,7 +45,14 @@ public class FastestCpService : IFastestCpService
         _logger.LogDebug("Hide fastest cp manialink for all users");
     }
 
-    private async Task<PlayerCpTime?[]> GetCurrentBestCpTimes()
+    private async Task ShowWidget()
+    {
+        await _manialinkManager.SendPersistentManialinkAsync("FastestCp.FastestCp",
+            new { times = await GetCurrentBestCpTimes() });
+        _logger.LogDebug("Update fastest cp manialink for all users");
+    }
+
+    private async Task<PlayerCpTime[]> GetCurrentBestCpTimes()
     {
         var fastestTimes = _fastestCpStore.GetFastestTimes();
 
@@ -67,11 +67,9 @@ public class FastestCpService : IFastestCpService
                     playerNameCache[id] = player.StrippedNickName;
                 }));
 
-        return fastestTimes.Select(
-                time => time == null
-                    ? null
-                    : new PlayerCpTime(playerNameCache[time.AccountId], TimeSpan.FromMilliseconds(time.RaceTime)))
-            .ToArray();
+        return fastestTimes.Where(time => time != null).Select((time, index) =>
+                new PlayerCpTime(playerNameCache[time!.AccountId], index, TimeSpan.FromMilliseconds(time.RaceTime)))
+            .TakeLast(18).ToArray();
     }
 
     private FastestCpStore GetNewFastestCpStore()
