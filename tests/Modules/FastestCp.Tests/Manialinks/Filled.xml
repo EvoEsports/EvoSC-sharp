@@ -1,0 +1,72 @@
+<manialink version="3" id="MtFastestCpFastestCp" name="EvoSC#-MtFastestCpFastestCp">
+<frame pos="-123 89" size="40 5">
+<quad size="40 5" valign="center" opacity="0.5" z-index="-1" bgcolor="000" autoscale="0" keepratio="Inactive" />
+<label pos="2.5 -1" size="3 0" halign="center" valign="center" textfont="GameFont" textsize="0.75" text="2" />
+<quad pos="5 0" size="0.25 5" valign="center" bgcolor="41b562" autoscale="0" keepratio="Inactive" />
+<frame pos="7 -1">
+<label pos="10 0" halign="right" valign="center" opacity="0.5" z-index="1" textfont="GameFont" textsize="0.75" text="0.0.000" />
+<label pos="10 0" halign="right" valign="center" z-index="2" textfont="GameFont" textsize="0.75" text="0.000" />
+<label pos="14 0" valign="center" textfont="GameFont" textsize="0.75" />
+</frame>
+</frame>
+<frame pos="-82 89" size="40 5">
+<quad size="40 5" valign="center" opacity="0.5" z-index="-1" bgcolor="000" autoscale="0" keepratio="Inactive" />
+<label pos="2.5 -1" size="3 0" halign="center" valign="center" textfont="GameFont" textsize="0.75" text="3" />
+<quad pos="5 0" size="0.25 5" valign="center" bgcolor="41b562" autoscale="0" keepratio="Inactive" />
+<frame pos="7 -1">
+<label pos="10 0" halign="right" valign="center" opacity="0.5" z-index="1" textfont="GameFont" textsize="0.75" text="0.13.000" />
+<label pos="10 0" halign="right" valign="center" z-index="2" textfont="GameFont" textsize="0.75" text="13.000" />
+<label pos="14 0" valign="center" textfont="GameFont" textsize="0.75" text="V" />
+</frame>
+</frame>
+<frame pos="-41 89" size="40 5">
+<quad size="40 5" valign="center" opacity="0.5" z-index="-1" bgcolor="000" autoscale="0" keepratio="Inactive" />
+<label pos="2.5 -1" size="3 0" halign="center" valign="center" textfont="GameFont" textsize="0.75" text="4" />
+<quad pos="5 0" size="0.25 5" valign="center" bgcolor="41b562" autoscale="0" keepratio="Inactive" />
+<frame pos="7 -1">
+<label pos="10 0" halign="right" valign="center" opacity="0.5" z-index="1" textfont="GameFont" textsize="0.75" text="0.26.000" />
+<label pos="10 0" halign="right" valign="center" z-index="2" textfont="GameFont" textsize="0.75" text="26.000" />
+<label pos="14 0" valign="center" textfont="GameFont" textsize="0.75" text="Ve" />
+</frame>
+</frame>
+<frame pos="0 89" size="40 5">
+<quad size="40 5" valign="center" opacity="0.5" z-index="-1" bgcolor="000" autoscale="0" keepratio="Inactive" />
+<label pos="2.5 -1" size="3 0" halign="center" valign="center" textfont="GameFont" textsize="0.75" text="5" />
+<quad pos="5 0" size="0.25 5" valign="center" bgcolor="41b562" autoscale="0" keepratio="Inactive" />
+<frame pos="7 -1">
+<label pos="10 0" halign="right" valign="center" opacity="0.5" z-index="1" textfont="GameFont" textsize="0.75" text="0.39.000" />
+<label pos="10 0" halign="right" valign="center" z-index="2" textfont="GameFont" textsize="0.75" text="39.000" />
+<label pos="14 0" valign="center" textfont="GameFont" textsize="0.75" text="Ver" />
+</frame>
+</frame>
+<frame pos="41 89" size="40 5">
+<quad size="40 5" valign="center" opacity="0.5" z-index="-1" bgcolor="000" autoscale="0" keepratio="Inactive" />
+<label pos="2.5 -1" size="3 0" halign="center" valign="center" textfont="GameFont" textsize="0.75" text="6" />
+<quad pos="5 0" size="0.25 5" valign="center" bgcolor="41b562" autoscale="0" keepratio="Inactive" />
+<frame pos="7 -1">
+<label pos="10 0" halign="right" valign="center" opacity="0.5" z-index="1" textfont="GameFont" textsize="0.75" text="0.52.000" />
+<label pos="10 0" halign="right" valign="center" z-index="2" textfont="GameFont" textsize="0.75" text="52.000" />
+<label pos="14 0" valign="center" textfont="GameFont" textsize="0.75" text="Very" />
+</frame>
+</frame>
+<frame pos="82 89" size="40 5">
+<quad size="40 5" valign="center" opacity="0.5" z-index="-1" bgcolor="000" autoscale="0" keepratio="Inactive" />
+<label pos="2.5 -1" size="3 0" halign="center" valign="center" textfont="GameFont" textsize="0.75" text="7" />
+<quad pos="5 0" size="0.25 5" valign="center" bgcolor="41b562" autoscale="0" keepratio="Inactive" />
+<frame pos="7 -1">
+<label pos="10 0" halign="right" valign="center" z-index="2" textfont="GameFont" textsize="0.75" text="1.05.000" />
+<label pos="14 0" valign="center" textfont="GameFont" textsize="0.75" text="VeryL" />
+</frame>
+</frame>
+<frame pos="-123 86" size="40 5">
+<quad size="40 5" valign="center" opacity="0.5" z-index="-1" bgcolor="000" autoscale="0" keepratio="Inactive" />
+<label pos="2.5 -1" size="3 0" halign="center" valign="center" textfont="GameFont" textsize="0.75" text="8" />
+<quad pos="5 0" size="0.25 5" valign="center" bgcolor="41b562" autoscale="0" keepratio="Inactive" />
+<frame pos="7 -1">
+<label pos="10 0" halign="right" valign="center" z-index="2" textfont="GameFont" textsize="0.75" text="1.18.000" />
+<label pos="14 0" valign="center" textfont="GameFont" textsize="0.75" text="VeryLo" />
+</frame>
+</frame>
+<script><!--
+--></script>
+</manialink>

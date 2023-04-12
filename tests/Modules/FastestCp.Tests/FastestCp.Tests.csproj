@@ -26,4 +26,11 @@
         <ProjectReference Include="..\..\..\src\Modules\FastestCp\FastestCp.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ContentWithTargetPath Include="**\*.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>%(RecursiveDir)\%(Filename)%(Extension)</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
 </Project>
