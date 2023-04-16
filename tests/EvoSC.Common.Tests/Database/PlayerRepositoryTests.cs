@@ -85,15 +85,13 @@ public class PlayerRepositoryTests
             NickName = "TestAccount",
             Path = "World"
         });
-
-        var oldPlayerTime = new DateTime(((DbPlayer)player).LastVisit.Ticks).ToUniversalTime();
+        Assert.Null(((DbPlayer) player).LastVisit);
 
         await Task.Delay(1000);
         await playerRepo.UpdateLastVisitAsync(player);
         
         var updatedPlayer = await db.GetTable<DbPlayer>().FirstAsync(r => r.Id == 2);
-        var updatedPlayerTime = new DateTime(updatedPlayer.LastVisit.Ticks).ToUniversalTime();
 
-        Assert.NotEqual(oldPlayerTime, updatedPlayerTime);
+        Assert.NotNull(updatedPlayer.LastVisit);
     }
 }

@@ -21,13 +21,12 @@ public class PlayerRepository : DbRepository, IPlayerRepository
     {
         var player = new DbPlayer
         {
-            LastVisit = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             AccountId = accountId.ToLower(CultureInfo.InvariantCulture),
             NickName = playerInfo.NickName ?? accountId,
-            UbisoftName = playerInfo?.NickName ?? accountId,
-            Zone = playerInfo?.Path ?? "World"
+            UbisoftName = playerInfo.NickName ?? accountId,
+            Zone = playerInfo.Path ?? "World"
         };
 
         var id = await Database.InsertWithIdentityAsync(player);

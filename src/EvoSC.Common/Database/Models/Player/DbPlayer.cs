@@ -16,7 +16,7 @@ public class DbPlayer : IPlayer
     /// Time at which the player was last seen on the server.
     /// </summary>
     [Column]
-    public DateTime LastVisit { get; set; }
+    public DateTime? LastVisit { get; set; }
     
     /// <summary>
     /// Essentially the time at which the player first appeared on the server.
