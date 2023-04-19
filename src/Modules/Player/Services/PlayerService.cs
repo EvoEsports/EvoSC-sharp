@@ -38,9 +38,9 @@ public class PlayerService : IPlayerService
         }
         else
         {
-            await _playerManager.UpdateLastVisitAsync(player);
             await _server.InfoMessageAsync($"$<{player.NickName}$> joined!");
         }
+        await _playerManager.UpdateLastVisitAsync(player);
     }
 
     public async Task KickAsync(IPlayer player, IPlayer actor)
