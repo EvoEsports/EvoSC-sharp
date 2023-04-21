@@ -9,18 +9,6 @@ namespace EvoSC.Manialinks.Interfaces;
 public interface IManialinkManager
 {
     /// <summary>
-    /// Register a template, does not pre-process the template.
-    /// </summary>
-    /// <param name="template">The template to add.</param>
-    internal void AddTemplate(IManialinkTemplateInfo template);
-    
-    /// <summary>
-    /// Register a new ManiaScript resource.
-    /// </summary>
-    /// <param name="maniaScript">The ManiaScript to add</param>
-    internal void AddManiaScript(IManiaScriptInfo maniaScript);
-    
-    /// <summary>
     /// Add all the default templates from EvoSC.
     /// </summary>
     /// <returns></returns>
@@ -34,10 +22,16 @@ public interface IManialinkManager
     public Task AddAndPreProcessTemplateAsync(IManialinkTemplateInfo template);
 
     /// <summary>
+    /// Register a template, does not pre-process the template.
+    /// </summary>
+    /// <param name="template">The template to add.</param>
+    public void AddTemplate(IManialinkTemplateInfo template);
+    
+    /// <summary>
     /// Register a new ManiaScript resource.
     /// </summary>
     /// <param name="maniaScript">The ManiaScript to add</param>
-    public Task AddManiaScriptAsync(IManiaScriptInfo maniaScript);
+    public void AddManiaScript(IManiaScriptInfo maniaScript);
     
     /// <summary>
     /// Remove a template so that it can no longer be used.

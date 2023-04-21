@@ -182,12 +182,6 @@ public class ManialinkManager : IManialinkManager
         _scripts[maniaScript.Name] = maniaScript;
     }
 
-    public Task AddManiaScriptAsync(IManiaScriptInfo maniaScript)
-    {
-        AddManiaScript(maniaScript);
-        return Task.CompletedTask;
-    }
-
     public void RemoveTemplate(string name)
     {
         _engine.RemoveTemplate(name);
