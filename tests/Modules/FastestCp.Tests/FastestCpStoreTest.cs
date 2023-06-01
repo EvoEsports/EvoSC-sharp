@@ -7,8 +7,6 @@ public class FastestCpStoreTest
 {
     private readonly FastestCpStore _fastestCpStore = new(new NullLogger<FastestCpStore>());
 
-    public record TestEntry(string Account, int Index, int Race);
-
     public static IEnumerable<object[]> GetTestData()
     {
         yield return new object[] { new List<TestEntry>(), new List<bool>(), new List<AccountIdCpTime?>() };
@@ -66,4 +64,6 @@ public class FastestCpStoreTest
         Assert.Equivalent(results, actual);
         Assert.Equivalent(expected, data);
     }
+
+    public record TestEntry(string Account, int Index, int Race);
 }

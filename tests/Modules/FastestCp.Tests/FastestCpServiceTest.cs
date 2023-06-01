@@ -13,12 +13,11 @@ namespace EvoSC.Modules.Official.FastestCp.Tests;
 
 public class FastestCpServiceTest
 {
-    private readonly Mock<IPlayerManagerService> _playerManagerServiceMock = new();
-    private readonly Mock<IManialinkManager> _manialinkManagerMock = new();
-    private readonly ILoggerFactory _loggerFactory = new NullLoggerFactory();
-    private readonly ILogger<FastestCpService> _logger = new NullLogger<FastestCpService>();
-
     private readonly FastestCpService _fastestCpService;
+    private readonly ILogger<FastestCpService> _logger = new NullLogger<FastestCpService>();
+    private readonly ILoggerFactory _loggerFactory = new NullLoggerFactory();
+    private readonly Mock<IManialinkManager> _manialinkManagerMock = new();
+    private readonly Mock<IPlayerManagerService> _playerManagerServiceMock = new();
 
     public FastestCpServiceTest()
     {
@@ -46,8 +45,8 @@ public class FastestCpServiceTest
             BlockId = "",
             CheckpointInLap = 0,
             CheckpointInRace = 0,
-            CurrentLapCheckpoints = new int[0],
-            CurrentRaceCheckpoints = new int[0],
+            CurrentLapCheckpoints = Array.Empty<int>(),
+            CurrentRaceCheckpoints = Array.Empty<int>(),
             Time = 10,
             LapTime = 10,
             RaceTime = 10,
@@ -55,11 +54,12 @@ public class FastestCpServiceTest
             IsEndRace = false
         });
 
-        List<object> actualData = new List<object>();
+        var actualData = new List<object>();
         _manialinkManagerMock.Verify(
             manager => manager.SendPersistentManialinkAsync("FastestCp.FastestCp", Capture.In(actualData)), Times.Once);
         Assert.NotEmpty(actualData);
-        Assert.Equivalent(new { times = new List<PlayerCpTime?> { new("NickName1", 0, TimeSpan.FromMilliseconds(10)) } },
+        Assert.Equivalent(
+            new { times = new List<PlayerCpTime?> { new("NickName1", 0, TimeSpan.FromMilliseconds(10)) } },
             actualData[0]);
     }
 
@@ -77,8 +77,8 @@ public class FastestCpServiceTest
             BlockId = "",
             CheckpointInLap = 0,
             CheckpointInRace = 0,
-            CurrentLapCheckpoints = new int[0],
-            CurrentRaceCheckpoints = new int[0],
+            CurrentLapCheckpoints = Array.Empty<int>(),
+            CurrentRaceCheckpoints = Array.Empty<int>(),
             Time = 20,
             LapTime = 20,
             RaceTime = 20,

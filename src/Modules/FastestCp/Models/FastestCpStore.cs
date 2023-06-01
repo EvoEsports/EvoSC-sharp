@@ -21,7 +21,7 @@ internal class FastestCpStore
             if (cpIndex >= _fastestTimes.Count)
             {
                 _logger.LogDebug(
-                    "Extending fastest checkpoint list from {oldSize} to {newSize} to insert first time driven ({cpTime}) at checkpoint {cpIndex}",
+                    "Extending fastest checkpoint list from {OldSize} to {NewSize} to insert first time driven ({CpTime}) at checkpoint {CpIndex}",
                     _fastestTimes.Count, cpIndex + 1, cpTime, cpIndex);
                 _fastestTimes.AddRange(
                     new AccountIdCpTime[cpIndex - _fastestTimes.Count + 1]);
@@ -32,7 +32,7 @@ internal class FastestCpStore
             if (_fastestTimes[cpIndex] == null)
             {
                 _logger.LogDebug(
-                    "Inserting first checkpoint time ({cpTime}) at checkpoint {cpIndex} driven by account {accountId}",
+                    "Inserting first checkpoint time ({CpTime}) at checkpoint {CpIndex} driven by account {AccountId}",
                     cpTime, cpIndex, accountId);
                 _fastestTimes[cpIndex] = new AccountIdCpTime(accountId, cpTime);
                 return true;
@@ -41,14 +41,14 @@ internal class FastestCpStore
             if (_fastestTimes[cpIndex]!.RaceTime > cpTime)
             {
                 _logger.LogDebug(
-                    "Update fastest checkpoint time ({cpTime}) at checkpoint {cpIndex} driven by account {accountId}",
+                    "Update fastest checkpoint time ({CpTime}) at checkpoint {CpIndex} driven by account {AccountId}",
                     cpTime, cpIndex, accountId);
                 _fastestTimes[cpIndex] = accountIdCpTime;
                 return true;
             }
 
             _logger.LogTrace(
-                "Do not update slower checkpoint time ({cpTime}) at checkpoint {cpIndex} driven by account {accountId}",
+                "Do not update slower checkpoint time ({CpTime}) at checkpoint {CpIndex} driven by account {AccountId}",
                 cpTime, cpIndex, accountId);
             return false;
         }

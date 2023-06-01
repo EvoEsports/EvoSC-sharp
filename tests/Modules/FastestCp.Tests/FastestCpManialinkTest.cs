@@ -1,10 +1,9 @@
-﻿using System.Text.RegularExpressions;
-using EvoSC.Modules.Official.FastestCp.Models;
+﻿using EvoSC.Modules.Official.FastestCp.Models;
 using ManiaTemplates;
 
 namespace EvoSC.Modules.Official.FastestCp.Tests;
 
-public partial class FastestCpManialinkTest
+public class FastestCpManialinkTest
 {
     private const string Key = "FastestCp.FastestCp";
 
@@ -24,17 +23,17 @@ public partial class FastestCpManialinkTest
         var result = await _maniaTemplateEngine.RenderAsync(Key, new { times = Array.Empty<PlayerCpTime>() },
             new[] { typeof(FastestCpModule).Assembly });
         var expected = await File.ReadAllTextAsync("Manialinks/Empty.xml");
-        
+
         Assert.Equal(result, expected, ignoreLineEndingDifferences: true);
     }
-    
+
     [Fact]
     public async void ShouldRenderFilledWidget()
     {
         var result = await _maniaTemplateEngine.RenderAsync(Key, new { times = GetCpData() },
             new[] { typeof(FastestCpModule).Assembly });
         var expected = await File.ReadAllTextAsync("Manialinks/Filled.xml");
-        
+
         Assert.Equal(result, expected, ignoreLineEndingDifferences: true);
     }
 
