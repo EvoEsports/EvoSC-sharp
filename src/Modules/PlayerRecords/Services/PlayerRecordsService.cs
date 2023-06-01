@@ -6,7 +6,6 @@ using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
-using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.PlayerRecords.Events;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;

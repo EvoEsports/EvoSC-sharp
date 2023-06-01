@@ -281,7 +281,7 @@ public class ModuleManager : IModuleManager
             switch (template.Type)
             {
                 case ManialinkTemplateType.Script:
-                    _manialinkManager.AddManiaScript(new ManiaScriptInfo()
+                    _manialinkManager.AddManiaScript(new ManiaScriptInfo
                     {
                         Name = template.Name,
                         Content = template.Content
@@ -544,28 +544,6 @@ public class ModuleManager : IModuleManager
             RootNamespace = mainClass.Namespace ??
                             throw new InvalidOperationException("Failed to detect root namespace for module.")
         };
-    }
-
-    private string DetectRootNamespace(Assembly assembly)
-    {
-        var maxParts = int.MaxValue;
-        var nspace = "";
-        
-        foreach (var type in assembly.GetTypes())
-        {
-            if (type.Namespace != null)
-            {
-                var nParts = type.Namespace.Split(".").Length;
-
-                if (nParts < maxParts)
-                {
-                    maxParts = nParts;
-                    nspace = type.Namespace;
-                }
-            }
-        }
-
-        return nspace;
     }
 
     private List<Guid> GetLoadedDependencies(IModuleInfo moduleInfo)

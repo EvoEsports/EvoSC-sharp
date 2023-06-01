@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Services;
-using EvoSC.Modules.Interfaces;
+﻿using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 
 namespace EvoSC.Modules.Extensions;

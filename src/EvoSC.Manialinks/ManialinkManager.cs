@@ -41,7 +41,7 @@ public class ManialinkManager : IManialinkManager
             .WithEvent(GbxRemoteEvent.PlayerConnect)
             .WithInstance(this)
             .WithInstanceClass<ManialinkManager>()
-            .WithHandlerMethod<PlayerConnectGbxEventArgs>(HandlePlayerConnect)
+            .WithHandlerMethod<PlayerConnectGbxEventArgs>(HandlePlayerConnectAsync)
             .AsAsync()
         );
     }
@@ -49,7 +49,7 @@ public class ManialinkManager : IManialinkManager
     /// <summary>
     /// Used to send persistent manialinks to newly connected players.
     /// </summary>
-    private async Task HandlePlayerConnect(object sender, PlayerConnectGbxEventArgs e)
+    private async Task HandlePlayerConnectAsync(object sender, PlayerConnectGbxEventArgs e)
     {
         try
         {

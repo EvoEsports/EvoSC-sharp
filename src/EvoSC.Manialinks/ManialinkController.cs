@@ -80,7 +80,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// </summary>
     /// <param name="name">The name of the manialink to show.</param>
     /// <returns></returns>
-    public Task ShowPersistent(string name) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(new object()));
+    public Task ShowPersistentAsync(string name) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(new object()));
     
     /// <summary>
     /// Show a manialink to all players which persists between player connections and will
@@ -89,7 +89,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// <param name="name">Name of the manialink to show.</param>
     /// <param name="data">Data to be sent to the manialink template.</param>
     /// <returns></returns>
-    public Task ShowPersistent(string name, object data) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(data));
+    public Task ShowPersistentAsync(string name, object data) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(data));
     
     /// <summary>
     /// Hide a manialink for all players.
@@ -136,7 +136,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
         var model = Context.ManialinkAction.EntryModel;
         
         ValidateProperties(model);
-        await ValidateValidatableObjectModel(model);
+        await ValidateValidatableObjectModelAsync(model);
 
         return ModelValidation;
     }
@@ -183,7 +183,7 @@ public class ManialinkController : EvoScController<ManialinkInteractionContext>
     /// Run the model-level validation methods on an entry model.
     /// </summary>
     /// <param name="model">The instance of the entry model.</param>
-    private async Task ValidateValidatableObjectModel(object? model)
+    private async Task ValidateValidatableObjectModelAsync(object? model)
     {
         if (model == null)
         {

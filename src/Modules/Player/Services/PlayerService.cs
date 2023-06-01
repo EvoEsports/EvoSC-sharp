@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
-using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
 using Microsoft.Extensions.Logging;

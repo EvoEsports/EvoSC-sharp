@@ -68,7 +68,7 @@ public class ManialinkActionManager : IManialinkActionManager
             return null;
         }
 
-        if (permission is Enum permEnum)
+        if (permission is Enum)
         {
             return permission.AsEnum().GetIdentifier();
         }

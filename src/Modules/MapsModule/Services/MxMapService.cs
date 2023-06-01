@@ -4,7 +4,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.Maps.Interfaces;
 using ManiaExchange.ApiClient;
 using Microsoft.Extensions.Logging;
