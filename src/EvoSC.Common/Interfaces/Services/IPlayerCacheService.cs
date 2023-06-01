@@ -29,4 +29,6 @@ public interface IPlayerCacheService
     /// </summary>
     /// <returns></returns>
     public Task UpdatePlayerListAsync();
+
+    public Task UpdatePlayerAsync(IPlayer player);
 }

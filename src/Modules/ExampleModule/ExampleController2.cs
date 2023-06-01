@@ -2,32 +2,29 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Modules.Interfaces;
+using EvoSC.Manialinks.Interfaces;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [Controller]
 public class ExampleController2 : EvoScController<CommandInteractionContext>
 {
-    private readonly IModuleManager _modules;
+    private readonly IManialinkManager _manialinks;
     
-    public ExampleController2(IModuleManager modules)
+    public ExampleController2(IManialinkManager manialinks)
     {
-        _modules = modules;
+        _manialinks = manialinks;
     }
 
-    [ChatCommand("module", "Manage a module")]
-    public async Task ManageModule(string action, string loadIdStr)
+    [ChatCommand("show", "Show a manialink")]
+    public async Task ShowManialink()
     {
-        var loadId = Guid.Parse(loadIdStr);
-
-        if (action == "load")
-        {
-            await _modules.EnableAsync(loadId);
-        }
-        else if (action == "unload")
-        {
-            await _modules.UnloadAsync(loadId);
-        }
+        await _manialinks.SendPersistentManialinkAsync("ExampleModule.MyManialink");
+    }
+    
+    [ChatCommand("hide", "Hide a manialink")]
+    public async Task HideManialink()
+    {
+        await _manialinks.HideManialinkAsync(Context.Player, "ExampleModule.MyManialink");
     }
 }

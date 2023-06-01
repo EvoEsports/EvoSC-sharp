@@ -15,11 +15,13 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Middleware.Attributes;
 using EvoSC.Common.Permissions.Attributes;
 using EvoSC.Common.Permissions.Models;
+using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
+using EvoSC.Manialinks.Interfaces;
+using EvoSC.Manialinks.Models;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
-using EvoSC.Modules.Exceptions.ModuleServices;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
@@ -33,20 +35,22 @@ public class ModuleManager : IModuleManager
 {
     private readonly ILogger<ModuleManager> _logger;
     private readonly IControllerManager _controllers;
-    private readonly IModuleServicesManager _servicesManager;
+    private readonly IServiceContainerManager _servicesManager;
     private readonly IActionPipelineManager _pipelineManager;
     private readonly IPermissionManager _permissions;
     private readonly IEvoScBaseConfig _config;
     private readonly IConfigStoreRepository _configStoreRepository;
+    private readonly IManialinkManager _manialinkManager;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
     private readonly Dictionary<string, Guid> _moduleNameMap = new();
 
     public IReadOnlyList<IModuleLoadContext> LoadedModules => _loadedModules.Values.ToList();
-    
+
     public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
-        IModuleServicesManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions,
-        IConfigStoreRepository configStoreRepository)
+        IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager,
+        IPermissionManager permissions,
+        IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager)
     {
         _logger = logger;
         _config = config;
@@ -55,7 +59,8 @@ public class ModuleManager : IModuleManager
         _pipelineManager = pipelineManager;
         _permissions = permissions;
         _configStoreRepository = configStoreRepository;
-        
+        _manialinkManager = manialinkManager;
+
         WarnForDisabledVerification();
     }
 
@@ -207,6 +212,116 @@ public class ModuleManager : IModuleManager
 
         return Task.CompletedTask;
     }
+    
+    private async Task RegisterManialinksTemplatesAsync(IModuleLoadContext loadContext)
+    {
+        var namespaceParts = loadContext.RootNamespace.Split(".");
+        
+        foreach (var assembly in loadContext.Assemblies)
+        {
+            foreach (var resourceName in assembly.GetManifestResourceNames())
+            {
+                var nameComponents = resourceName.Split('.');
+
+                if (nameComponents.Length <= 1)
+                {
+                    continue;
+                }
+                
+                var extension = nameComponents[^1];
+                var templateType = extension.ToEnumValue<ManialinkTemplateType>();
+
+                if (templateType == null)
+                {
+                    continue;
+                }
+
+                var resourceStream = assembly.GetManifestResourceStream(resourceName);
+
+                if (resourceStream == null)
+                {
+                    continue;
+                }
+                
+                using var streamReader = new StreamReader(resourceStream);
+                var contents = await streamReader.ReadToEndAsync();
+                var templateName = GetManialinkTemplateName(loadContext, namespaceParts, nameComponents);
+
+                loadContext.ManialinkTemplates.Add(new ModuleManialinkTemplate
+                {
+                    Content = contents, Name = templateName, Type = (ManialinkTemplateType)templateType
+                });
+            }
+        }
+    }
+
+    private static string GetManialinkTemplateName(IModuleLoadContext loadContext, string[] namespaceParts,
+        string[] nameComponents)
+    {
+        var index = 0;
+        while (index < namespaceParts.Length &&
+               nameComponents[index].Equals(namespaceParts[index], StringComparison.Ordinal))
+        {
+            index++;
+        }
+
+        if (nameComponents[index].Equals("Templates", StringComparison.Ordinal))
+        {
+            index++;
+        }
+
+        var templateName = $"{loadContext.ModuleInfo.Name}.{string.Join(".", nameComponents[index..^1])}";
+        return templateName;
+    }
+
+    private Task EnableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var template in moduleContext.ManialinkTemplates)
+        {
+            switch (template.Type)
+            {
+                case ManialinkTemplateType.Script:
+                    _manialinkManager.AddManiaScript(new ManiaScriptInfo
+                    {
+                        Name = template.Name,
+                        Content = template.Content
+                    });
+                    break;
+                case ManialinkTemplateType.Template:
+                    _manialinkManager.AddTemplate(new ManialinkTemplateInfo
+                    {
+                        Assemblies = moduleContext.Assemblies,
+                        Name = template.Name,
+                        Content = template.Content
+                    });
+                    break;
+                default:
+                    continue;
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+    
+    private Task DisableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var template in moduleContext.ManialinkTemplates)
+        {
+            switch (template.Type)
+            {
+                case ManialinkTemplateType.Script:
+                    _manialinkManager.RemoveManiaScript(template.Name);
+                    break;
+                case ManialinkTemplateType.Template:
+                    _manialinkManager.RemoveTemplate(template.Name);
+                    break;
+                default:
+                    continue;
+            }
+        }
+        
+        return Task.CompletedTask;
+    }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private Task TryCallModuleEnableAsync(IModuleLoadContext moduleContext)
@@ -304,7 +419,7 @@ public class ModuleManager : IModuleManager
                     if (!type.IsInterface)
                     {
                         _logger.LogError("Settings type {Type} must be an interface", type);
-                        throw new ModuleServicesException($"Settings type {type} must be an interface.");
+                        throw new ServicesException($"Settings type {type} must be an interface.");
                     }
 
                     var store = await CreateModuleConfigStoreAsync(moduleInfo.Name, type);
@@ -424,7 +539,10 @@ public class ModuleManager : IModuleManager
             Assemblies = assemblies,
             Pipelines = CreateDefaultPipelines(),
             Permissions = new List<IPermission>(),
-            LoadedDependencies = loadedDependencies
+            LoadedDependencies = loadedDependencies,
+            ManialinkTemplates = new List<IModuleManialinkTemplate>(),
+            RootNamespace = mainClass.Namespace ??
+                            throw new InvalidOperationException("Failed to detect root namespace for module.")
         };
     }
 
@@ -457,6 +575,7 @@ public class ModuleManager : IModuleManager
 
         await RegisterMiddlewaresAsync(loadContext);
         await RegisterPermissionsAsync(loadContext);
+        await RegisterManialinksTemplatesAsync(loadContext);
 
         _loadedModules.Add(loadId, loadContext);
         _moduleNameMap[moduleInfo.Name] = loadId;
@@ -473,6 +592,7 @@ public class ModuleManager : IModuleManager
 
         await EnableControllersAsync(moduleContext);
         await EnableMiddlewaresAsync(moduleContext);
+        await EnableManialinkTemplatesAsync(moduleContext);
         await TryCallModuleEnableAsync(moduleContext);
 
         moduleContext.SetEnabled(true);
@@ -495,6 +615,7 @@ public class ModuleManager : IModuleManager
 
         await DisableControllersAsync(moduleContext);
         await DisableMiddlewaresAsync(moduleContext);
+        await DisableManialinkTemplatesAsync(moduleContext);
         await TryCallModuleDisableAsync(moduleContext);
         
         moduleContext.SetEnabled(false);

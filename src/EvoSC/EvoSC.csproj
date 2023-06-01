@@ -16,12 +16,14 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EvoSC.CLI\EvoSC.CLI.csproj" />
+      <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
       <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
       <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" />
       <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
       <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
       <ProjectReference Include="..\Modules\Player\Player.csproj" />
       <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />
+      <ProjectReference Include="..\Modules\SetName\SetName.csproj" />
     </ItemGroup>
 
     <ItemGroup>

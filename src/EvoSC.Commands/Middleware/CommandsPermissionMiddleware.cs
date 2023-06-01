@@ -6,13 +6,13 @@ using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Commands.Middleware;
 
-public class PermissionMiddleware
+public class CommandsPermissionMiddleware
 {
     private readonly ActionDelegate _next;
     private readonly IPermissionManager _permissions;
     private readonly IServerClient _server;
 
-    public PermissionMiddleware(ActionDelegate next, IPermissionManager permissions, IServerClient server)
+    public CommandsPermissionMiddleware(ActionDelegate next, IPermissionManager permissions, IServerClient server)
     {
         _next = next;
         _permissions = permissions;

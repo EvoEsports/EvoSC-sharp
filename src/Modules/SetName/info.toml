@@ -1,0 +1,6 @@
+﻿[info]
+name = "SetName"
+title = "Set Name"
+summary = "Adds the possibility to set custom styled nicknames."
+version = "1.0.0"
+author = "Evo"

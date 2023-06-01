@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Modules.Attributes;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 

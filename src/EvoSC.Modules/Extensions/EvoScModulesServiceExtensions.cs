@@ -12,7 +12,6 @@ public static class EvoScModulesServiceExtensions
     /// <returns></returns>
     public static Container AddEvoScModules(this Container services)
     {
-        services.RegisterSingleton<IModuleServicesManager, ModuleServicesManager>();
         services.RegisterSingleton<IModuleManager, ModuleManager>();
         return services;
     }

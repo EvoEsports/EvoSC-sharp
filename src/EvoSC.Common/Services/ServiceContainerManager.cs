@@ -1,68 +1,47 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Services;
-using EvoSC.Modules.Attributes;
-using EvoSC.Modules.Exceptions.ModuleServices;
-using EvoSC.Modules.Interfaces;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Exceptions;
+using EvoSC.Common.Services.Models;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
-namespace EvoSC.Modules;
+namespace EvoSC.Common.Services;
 
-public class ModuleServicesManager : IModuleServicesManager
+public class ServiceContainerManager : IServiceContainerManager
 {
     private readonly IEvoSCApplication _app;
-    private readonly ILogger<ModuleServicesManager> _logger;
+    private readonly ILogger<ServiceContainerManager> _logger;
 
-    private readonly Dictionary<Guid, Container> _moduleContainers = new();
+    private readonly Dictionary<Guid, Container> _containers = new();
     private readonly Dictionary<Guid, List<Guid>> _dependencyServices = new();
 
-    public ModuleServicesManager(IEvoSCApplication app, ILogger<ModuleServicesManager> logger)
+    public ServiceContainerManager(IEvoSCApplication app, ILogger<ServiceContainerManager> logger)
     {
         _app = app;
         _logger = logger;
     }
 
-    public void AddContainer(Guid moduleId, Container container)
+    public void AddContainer(Guid containerId, Container container)
     {
         container.ResolveUnregisteredType += (_, args) =>
         {
-            ResolveCoreService(args, moduleId);
+            ResolveCoreService(args, containerId);
         };
         
-        if (_moduleContainers.ContainsKey(moduleId))
+        if (_containers.ContainsKey(containerId))
         {
-            throw new ModuleServicesException($"A container is already registered for module: {moduleId}");
+            throw new ServicesException($"A container is already registered for ID: {containerId}");
         }
         
-        _moduleContainers.Add(moduleId, container);
+        _containers.Add(containerId, container);
         
-        _logger.LogDebug("Added service container with ID: {ModuleId}", moduleId);
+        _logger.LogDebug("Added service container with ID: {ContainerId}", containerId);
     }
 
-    public void RegisterDependency(Guid moduleId, Guid dependencyId)
-    {
-        if (!_moduleContainers.ContainsKey(moduleId))
-        {
-            throw new InvalidOperationException($"Module '{moduleId}' was not found to have a container.");
-        }
-
-        if (!_moduleContainers.ContainsKey(dependencyId))
-        {
-            throw new InvalidOperationException($"Dependency module '{moduleId}' was not found to have a container.");
-        }
-
-        if (!_dependencyServices.ContainsKey(moduleId))
-        {
-            _dependencyServices[moduleId] = new List<Guid>();
-        }
-        
-        _dependencyServices[moduleId].Add(dependencyId);
-        _logger.LogDebug("Registered dependency '{DepId}' for '{ModuleId}'", dependencyId, moduleId);
-    }
-
-    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies)
+    public Container NewContainer(Guid containerId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies)
     {
         var container = new Container();
         container.Options.EnableAutoVerification = false;
@@ -89,7 +68,7 @@ public class ModuleServicesManager : IModuleServicesManager
 
                     if (intf == null)
                     {
-                        throw new ModuleServicesException($"Service {type} must implement a custom interface.");
+                        throw new ServicesException($"Service {type} must implement a custom interface.");
                     }
 
                     switch (serviceAttr.LifeStyle)
@@ -104,63 +83,84 @@ public class ModuleServicesManager : IModuleServicesManager
                             container.Register(intf, type, Lifestyle.Scoped);
                             break;
                         default:
-                            throw new ModuleServicesException($"Unsupported lifetime type for module service: {type}");
+                            throw new ServicesException($"Unsupported lifetime type for service: {type}");
                     }
                 }
             }
         }
 
-        AddContainer(moduleId, container);
+        AddContainer(containerId, container);
         
         foreach (var dependency in loadedDependencies)
         {
-            RegisterDependency(moduleId, dependency);
+            RegisterDependency(containerId, dependency);
         }
         
         return container;
     }
 
-    public void RemoveContainer(Guid moduleId)
+    public void RemoveContainer(Guid containerId)
     {
-        if (!_moduleContainers.ContainsKey(moduleId))
+        if (!_containers.ContainsKey(containerId))
         {
-            throw new ModuleServicesException( $"No container for {moduleId} was found.");
+            throw new ServicesException($"No container for {containerId} was found.");
         }
 
-        var container = _moduleContainers[moduleId];
+        var container = _containers[containerId];
         container.Dispose();
-        _moduleContainers.Remove(moduleId);
+        _containers.Remove(containerId);
         
         GC.WaitForPendingFinalizers();
         GC.Collect();
         
-        _logger.LogDebug("Removed service container for module: {ModuleId}", moduleId);
+        _logger.LogDebug("Removed service container for container: {ContainerId}", containerId);
     }
 
-    private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid moduleId)
+    public void RegisterDependency(Guid containerId, Guid dependencyId)
+    {
+        if (!_containers.ContainsKey(containerId))
+        {
+            throw new InvalidOperationException($"Container '{containerId}' was not found to have a container.");
+        }
+
+        if (!_containers.ContainsKey(dependencyId))
+        {
+            throw new InvalidOperationException($"Dependency container '{containerId}' was not found to have a container.");
+        }
+
+        if (!_dependencyServices.ContainsKey(containerId))
+        {
+            _dependencyServices[containerId] = new List<Guid>();
+        }
+        
+        _dependencyServices[containerId].Add(dependencyId);
+        _logger.LogDebug("Registered dependency '{DepId}' for '{ContainerId}'", dependencyId, containerId);
+    }
+    
+    private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid containerId)
     {
         try
         {
             e.Register(() =>
             {
-                _logger.LogTrace("Will attempt to resolve service '{Service}' for {Module}", 
+                _logger.LogTrace("Will attempt to resolve service '{Service}' for {Container}", 
                     e.UnregisteredServiceType,
-                    moduleId);
+                    containerId);
                 
-                if (_dependencyServices.ContainsKey(moduleId))
+                if (_dependencyServices.ContainsKey(containerId))
                 {
-                    foreach (var dependencyId in _dependencyServices[moduleId])
+                    foreach (var dependencyId in _dependencyServices[containerId])
                     {
                         try
                         {
-                            return _moduleContainers[dependencyId].GetInstance(e.UnregisteredServiceType);
+                            return _containers[dependencyId].GetInstance(e.UnregisteredServiceType);
                         }
                         catch (ActivationException ex)
                         {
                             _logger.LogTrace(ex,
-                                "Did not find service {Service} for module {Module} in dependency {Dependency}",
+                                "Did not find service {Service} for container {Container} in dependency {Dependency}",
                                 e.UnregisteredServiceType,
-                                moduleId,
+                                containerId,
                                 dependencyId);
                         }
                     }
@@ -169,9 +169,9 @@ public class ModuleServicesManager : IModuleServicesManager
                 try
                 {
                     _logger.LogTrace(
-                        "Dependencies does not have service '{Service}' for {Module}. Will try core services",
+                        "Dependencies does not have service '{Service}' for {Container}. Will try core services",
                         e.UnregisteredServiceType,
-                        moduleId);
+                        containerId);
                     
                     return _app.Services.GetInstance(e.UnregisteredServiceType);
                 }

@@ -26,5 +26,6 @@ public interface IPlayerRepository
     /// <param name="player">The player to update.</param>
     /// <returns></returns>
     public Task UpdateLastVisitAsync(IPlayer player);
-    
+
+    public Task UpdateNicknameAsync(IPlayer player, string newNickname);
 }

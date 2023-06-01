@@ -20,6 +20,8 @@ public class ModuleLoadContext : IModuleLoadContext
     public required Dictionary<PipelineType, IActionPipeline> Pipelines { get; init; }
     public required List<IPermission> Permissions { get; set; }
     public required List<Guid> LoadedDependencies { get; init; }
+    public required List<IModuleManialinkTemplate> ManialinkTemplates { get; init; }
+    public required string RootNamespace { get; init; }
 
     public bool IsEnabled { get; private set; }
 

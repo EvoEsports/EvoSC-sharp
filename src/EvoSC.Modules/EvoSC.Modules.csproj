@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\EvoSC.Commands\EvoSC.Commands.csproj" />
       <ProjectReference Include="..\EvoSC.Common\EvoSC.Common.csproj" />
+      <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
     </ItemGroup>
 
 </Project>

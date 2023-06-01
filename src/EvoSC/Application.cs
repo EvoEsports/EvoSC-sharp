@@ -16,6 +16,8 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
+using EvoSC.Manialinks;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Util;
@@ -84,6 +86,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         await SetupModulesAsync();
         await StartBackgroundServicesAsync();
         await EnableModulesAsync();
+        await InitializeTemplatesAsync();
         
         sw.Stop();
         
@@ -107,6 +110,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
         _services.AddEvoScChatCommands();
         _services.AddEvoScMiddlewarePipelines();
         _services.AddEvoScPermissions();
+        _services.AddEvoScManialinks();
 
         _services.RegisterInstance<IEvoSCApplication>(this);
         
@@ -130,9 +134,11 @@ public sealed class Application : IEvoSCApplication, IDisposable
         var controllers = _services.GetInstance<IControllerManager>();
         controllers.AddControllerActionRegistry(_services.GetInstance<IEventManager>());
         controllers.AddControllerActionRegistry(_services.GetInstance<IChatCommandManager>());
+        controllers.AddControllerActionRegistry(_services.GetInstance<IManialinkActionManager>());
         
         var pipelineManager = _services.GetInstance<IActionPipelineManager>();
         pipelineManager.UseEvoScCommands(_services);
+        pipelineManager.UseEvoScManialinks(_services);
     }
 
     private async Task SetupModulesAsync()
@@ -167,6 +173,9 @@ public sealed class Application : IEvoSCApplication, IDisposable
 
         // initialize player cache
         _services.GetInstance<IPlayerCacheService>();
+        
+        // initialize manialink handler
+        _services.GetInstance<IManialinkInteractionHandler>();
 
         // connect to the dedicated server and setup callbacks and chat router
         var serverClient = _services.GetInstance<IServerClient>();
@@ -177,7 +186,14 @@ public sealed class Application : IEvoSCApplication, IDisposable
     
     private async Task EnableModulesAsync()
     {
+        await _services.GetRequiredService<IManialinkManager>().AddDefaultTemplatesAsync();
         await _services.GetRequiredService<IModuleManager>().EnableModulesAsync();
+    }
+    
+    private async Task InitializeTemplatesAsync()
+    {
+        var maniaLinks = _services.GetRequiredService<IManialinkManager>();
+        await maniaLinks.PreprocessAllAsync();
     }
 
     public void Dispose()

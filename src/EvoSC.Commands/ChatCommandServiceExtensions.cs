@@ -21,7 +21,7 @@ public static class ChatCommandServiceExtensions
 
     public static void UseEvoScCommands(this IActionPipelineManager pipelineManager, Container services)
     {
-        pipelineManager.UseMiddleware<PermissionMiddleware>(PipelineType.ControllerAction, services);
+        pipelineManager.UseMiddleware<CommandsPermissionMiddleware>(PipelineType.ControllerAction, services);
         pipelineManager.UseMiddleware<CommandsMiddleware>(PipelineType.ChatRouter, services);
     }
 }

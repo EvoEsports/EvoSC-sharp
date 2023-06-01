@@ -30,12 +30,12 @@ public class RemoteChatRouter : IRemoteChatRouter
             .WithEvent(GbxRemoteEvent.PlayerChat)
             .WithInstance(this)
             .WithInstanceClass<ServerCallbackHandler>()
-            .WithHandlerMethod<PlayerChatEventArgs>(HandlePlayerChatRoutingAsync)
+            .WithHandlerMethod<PlayerChatGbxEventArgs>(HandlePlayerChatRoutingAsync)
             .AsAsync()
         );
     }
 
-    private async Task HandlePlayerChatRoutingAsync(object sender, PlayerChatEventArgs e)
+    private async Task HandlePlayerChatRoutingAsync(object sender, PlayerChatGbxEventArgs e)
     {
         try
         {

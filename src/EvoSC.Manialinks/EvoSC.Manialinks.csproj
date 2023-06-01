@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\EvoSC.Common\EvoSC.Common.csproj" />
+        <EmbeddedResource Include="Templates\**\*" />
+        <InternalsVisibleTo Include="EvoSC.Modules" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ManiaTemplates" Version="0.0.1-alpha" />
+    </ItemGroup>
+
+</Project>

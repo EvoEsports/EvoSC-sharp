@@ -4,6 +4,9 @@ namespace EvoSC.Common.Controllers;
 
 public abstract class EvoScController<TContext> : IController where TContext : class, IControllerContext
 {
+    /// <summary>
+    /// Information related to the current action and data assigned for the action's context.
+    /// </summary>
     public TContext Context { get; private set; }
 
     void IController.SetContext(IControllerContext context)

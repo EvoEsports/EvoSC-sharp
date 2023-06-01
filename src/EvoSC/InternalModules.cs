@@ -5,6 +5,7 @@ using EvoSC.Modules.Official.Maps;
 using EvoSC.Modules.Official.MatchManagerModule;
 using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
+using EvoSC.Modules.Official.SetName;
 using FluentMigrator.Runner.Exceptions;
 
 namespace EvoSC;
@@ -17,7 +18,8 @@ public static class InternalModules
         typeof(ExampleModule),
         typeof(MapsModule),
         typeof(PlayerRecordsModule),
-        typeof(MatchManagerModule)
+        typeof(MatchManagerModule),
+        typeof(SetNameModule)
     };
 
     /// <summary>

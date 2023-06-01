@@ -108,7 +108,8 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
             var value = _document.GetValue(key[..lastDotIndex]) as TomlArray;
             return value.Count.ToString();
         }
-        else if (key.EndsWith("]", StringComparison.Ordinal))
+
+        if (key.EndsWith("]", StringComparison.Ordinal))
         {
             var indexStart = key.IndexOf("[", StringComparison.Ordinal);
             var index = int.Parse(key[(indexStart + 1)..^1]);
@@ -117,7 +118,14 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
             return value?.Skip(index)?.FirstOrDefault()?.StringValue;
         }
 
-        return _document.GetValue(key).StringValue;
+        var keyValue = _document.GetValue(key);
+
+        if (keyValue is TomlArray arrayValue)
+        {
+            return string.Join(" ", arrayValue.Select(v => v.StringValue));
+        }
+        
+        return keyValue.StringValue;
     }
 
     public void Write(string key, string? value)

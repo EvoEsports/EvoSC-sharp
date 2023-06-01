@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Modules.Attributes;
+﻿using EvoSC.Common.Services.Models;
+
+namespace EvoSC.Common.Services.Attributes;
 
 /// <summary>
 /// Classes annotated with this attribute will be automatically added to the
