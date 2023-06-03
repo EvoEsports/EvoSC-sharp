@@ -5,6 +5,7 @@ namespace EvoSC.Modules.Official.FastestCp.Models;
 internal class FastestCpStore
 {
     private readonly List<AccountIdCpTime?> _fastestTimes = new();
+    private readonly object _listMutex = new();
     private readonly ILogger<FastestCpStore> _logger;
 
     public FastestCpStore(ILogger<FastestCpStore> logger)
@@ -16,11 +17,11 @@ internal class FastestCpStore
     {
         var accountIdCpTime = new AccountIdCpTime(accountId, cpTime);
 
-        lock (_fastestTimes)
+        lock (_listMutex)
         {
             if (cpIndex >= _fastestTimes.Count)
             {
-                _logger.LogDebug(
+                _logger.LogTrace(
                     "Extending fastest checkpoint list from {OldSize} to {NewSize} to insert first time driven ({CpTime}) at checkpoint {CpIndex}",
                     _fastestTimes.Count, cpIndex + 1, cpTime, cpIndex);
                 _fastestTimes.AddRange(
@@ -31,7 +32,7 @@ internal class FastestCpStore
 
             if (_fastestTimes[cpIndex] == null)
             {
-                _logger.LogDebug(
+                _logger.LogTrace(
                     "Inserting first checkpoint time ({CpTime}) at checkpoint {CpIndex} driven by account {AccountId}",
                     cpTime, cpIndex, accountId);
                 _fastestTimes[cpIndex] = new AccountIdCpTime(accountId, cpTime);
@@ -40,7 +41,7 @@ internal class FastestCpStore
 
             if (_fastestTimes[cpIndex]!.RaceTime > cpTime)
             {
-                _logger.LogDebug(
+                _logger.LogTrace(
                     "Update fastest checkpoint time ({CpTime}) at checkpoint {CpIndex} driven by account {AccountId}",
                     cpTime, cpIndex, accountId);
                 _fastestTimes[cpIndex] = accountIdCpTime;

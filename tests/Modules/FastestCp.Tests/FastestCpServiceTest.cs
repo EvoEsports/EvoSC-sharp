@@ -29,7 +29,7 @@ public class FastestCpServiceTest
     }
 
     [Fact]
-    public async void ShouldRegisterTimeAndShowWidget()
+    public async void Should_Register_Time_And_Update_Widget()
     {
         _playerManagerServiceMock.Setup(service => service.GetOrCreatePlayerAsync("AccountId1"))
             .ReturnsAsync(() => new Player
@@ -37,7 +37,7 @@ public class FastestCpServiceTest
                 AccountId = "AccountId1", Id = 1, NickName = "NickName1", UbisoftName = "Ubisoft1"
             });
 
-        await _fastestCpService.RegisterCpTime(new WayPointEventArgs
+        await _fastestCpService.RegisterCpTimeAsync(new WayPointEventArgs
         {
             Login = "Login1",
             AccountId = "AccountId1",
@@ -64,12 +64,12 @@ public class FastestCpServiceTest
     }
 
     [Fact]
-    public async void ShouldRegisterTimeSlowerTimeAndNotShowWidget()
+    public async void Should_Register_Slower_Time_And_Not_Update_Widget()
     {
-        ShouldRegisterTimeAndShowWidget();
+        Should_Register_Time_And_Update_Widget();
         _manialinkManagerMock.Invocations.Clear();
 
-        await _fastestCpService.RegisterCpTime(new WayPointEventArgs
+        await _fastestCpService.RegisterCpTimeAsync(new WayPointEventArgs
         {
             Login = "Login2",
             AccountId = "AccountId2",
@@ -91,13 +91,13 @@ public class FastestCpServiceTest
     }
 
     [Fact]
-    public async void ShouldResetStore()
+    public async void Should_Reset_Store()
     {
         var fieldInfo = _fastestCpService.GetType()
             .GetField("_fastestCpStore", BindingFlags.NonPublic | BindingFlags.Instance);
         var before = fieldInfo?.GetValue(_fastestCpService);
 
-        await _fastestCpService.ResetCpTimes();
+        await _fastestCpService.ResetCpTimesAsync();
 
         var after = fieldInfo?.GetValue(_fastestCpService);
 

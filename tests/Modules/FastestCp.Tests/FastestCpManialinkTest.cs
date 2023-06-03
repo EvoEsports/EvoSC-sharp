@@ -12,13 +12,12 @@ public class FastestCpManialinkTest
     public FastestCpManialinkTest()
     {
         var file = typeof(FastestCpModule).Assembly.GetManifestResourceStream("EvoSC.Modules.Official.FastestCp.Templates.FastestCp.mt");
-        Assert.NotNull(file);
-        var reader = new StreamReader(file);
+        var reader = new StreamReader(file!);
         _maniaTemplateEngine.AddTemplateFromString(Key, reader.ReadToEnd());
     }
 
     [Fact]
-    public async void ShouldRenderEmptyWidget()
+    public async void Should_Render_Empty_Widget()
     {
         var result = await _maniaTemplateEngine.RenderAsync(Key, new { times = Array.Empty<PlayerCpTime>() },
             new[] { typeof(FastestCpModule).Assembly });
@@ -28,7 +27,7 @@ public class FastestCpManialinkTest
     }
 
     [Fact]
-    public async void ShouldRenderFilledWidget()
+    public async void Should_Render_Filled_Widget()
     {
         var result = await _maniaTemplateEngine.RenderAsync(Key, new { times = GetCpData() },
             new[] { typeof(FastestCpModule).Assembly });

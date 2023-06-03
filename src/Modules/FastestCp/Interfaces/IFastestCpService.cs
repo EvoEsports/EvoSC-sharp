@@ -9,11 +9,11 @@ public interface IFastestCpService
     /// </summary>
     /// <param name="args">Information about the waypoint</param>
     /// <returns></returns>
-    public Task RegisterCpTime(WayPointEventArgs args);
+    public Task RegisterCpTimeAsync(WayPointEventArgs args);
 
     /// <summary>
     ///     Clear current fastest checkpoints
     /// </summary>
     /// <returns></returns>
-    public Task ResetCpTimes();
+    public Task ResetCpTimesAsync();
 }

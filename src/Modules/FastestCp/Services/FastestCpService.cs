@@ -29,7 +29,7 @@ public class FastestCpService : IFastestCpService
         _fastestCpStore = GetNewFastestCpStore();
     }
 
-    public async Task RegisterCpTime(WayPointEventArgs args)
+    public async Task RegisterCpTimeAsync(WayPointEventArgs args)
     {
         var result = _fastestCpStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime);
         if (result)
@@ -38,7 +38,7 @@ public class FastestCpService : IFastestCpService
         }
     }
 
-    public async Task ResetCpTimes()
+    public async Task ResetCpTimesAsync()
     {
         _fastestCpStore = GetNewFastestCpStore();
         await _manialinkManager.HideManialinkAsync("FastestCp.FastestCp");

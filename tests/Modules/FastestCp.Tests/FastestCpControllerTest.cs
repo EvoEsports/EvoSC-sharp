@@ -17,7 +17,7 @@ public class FastestCpControllerTest
     }
 
     [Fact]
-    public async void ShouldRegisterTimeAndShowWidget()
+    public async void Should_Register_Time_And_Update_Widget()
     {
         var waypoint = new WayPointEventArgs
         {
@@ -37,13 +37,13 @@ public class FastestCpControllerTest
         };
 
         await _fastestCpController.RegisterCpTime(new object(), waypoint);
-        _fastestCpService.Verify(service => service.RegisterCpTime(waypoint), Times.Once);
+        _fastestCpService.Verify(service => service.RegisterCpTimeAsync(waypoint), Times.Once);
     }
 
     [Fact]
-    public async void ShouldResetStore()
+    public async void Should_Reset_Store()
     {
         await _fastestCpController.ResetCpTimes(new object(), new MapGbxEventArgs { Map = null });
-        _fastestCpService.Verify(service => service.ResetCpTimes(), Times.Once);
+        _fastestCpService.Verify(service => service.ResetCpTimesAsync(), Times.Once);
     }
 }
