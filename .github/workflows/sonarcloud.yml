@@ -43,7 +43,7 @@ jobs:
         shell: powershell
         run: |
           dotnet tool install --global dotnet-coverage
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"EvoTM_EvoSC-sharp" /o:"evotm" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"EvoTM_EvoSC-sharp" /o:"evotm" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.scm.revision=${{ github.event.workflow_run.head_sha }} /d:sonar.pullrequest.key=${{ github.event.workflow_run.pull_requests[0].number }} /d:sonar.pullrequest.branch=${{ github.event.workflow_run.pull_requests[0].head.ref }} /d:sonar.pullrequest.base=${{ github.event.workflow_run.pull_requests[0].base.ref }}
           dotnet build
           dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
