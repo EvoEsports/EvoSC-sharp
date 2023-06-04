@@ -1,7 +1,7 @@
 name: SonarCloud
 on:
   workflow_run:
-    workflows: [build_and_test]
+    workflows: [.NET]
     types: [completed]
 jobs:
   build:
