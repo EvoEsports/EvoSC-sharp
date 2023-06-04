@@ -42,14 +42,14 @@ public class FastestCpService : IFastestCpService
     {
         _fastestCpStore = GetNewFastestCpStore();
         await _manialinkManager.HideManialinkAsync("FastestCp.FastestCp");
-        _logger.LogDebug("Hide fastest cp manialink for all users");
+        _logger.LogDebug("Hiding fastest cp manialink for all users");
     }
 
     private async Task ShowWidget()
     {
         await _manialinkManager.SendPersistentManialinkAsync("FastestCp.FastestCp",
             new { times = await GetCurrentBestCpTimes() });
-        _logger.LogDebug("Update fastest cp manialink for all users");
+        _logger.LogDebug("Updating fastest cp manialink for all users");
     }
 
     private async Task<PlayerCpTime[]> GetCurrentBestCpTimes()
