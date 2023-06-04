@@ -31,5 +31,4 @@
       <Content Include="bin\Debug\net7.0\config\main.toml" />
     </ItemGroup>
     
-    
 </Project>
