@@ -8,12 +8,12 @@ internal class FastestCpStore
     private readonly object _listMutex = new();
     private readonly ILogger<FastestCpStore> _logger;
 
-    public FastestCpStore(ILogger<FastestCpStore> logger)
+    internal FastestCpStore(ILogger<FastestCpStore> logger)
     {
         _logger = logger;
     }
 
-    public bool RegisterTime(string accountId, int cpIndex, int cpTime)
+    internal bool RegisterTime(string accountId, int cpIndex, int cpTime)
     {
         var accountIdCpTime = new AccountIdCpTime(accountId, cpTime);
 
@@ -55,7 +55,7 @@ internal class FastestCpStore
         }
     }
 
-    public List<AccountIdCpTime?> GetFastestTimes()
+    internal List<AccountIdCpTime?> GetFastestTimes()
     {
         return _fastestTimes.ToList();
     }

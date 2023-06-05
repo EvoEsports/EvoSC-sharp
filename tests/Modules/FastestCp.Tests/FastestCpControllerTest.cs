@@ -36,14 +36,14 @@ public class FastestCpControllerTest
             IsEndRace = false
         };
 
-        await _fastestCpController.RegisterCpTime(new object(), waypoint);
+        await _fastestCpController.RegisterCpTimeAsync(new object(), waypoint);
         _fastestCpService.Verify(service => service.RegisterCpTimeAsync(waypoint), Times.Once);
     }
 
     [Fact]
     public async void Should_Reset_Store()
     {
-        await _fastestCpController.ResetCpTimes(new object(), new MapGbxEventArgs { Map = null });
+        await _fastestCpController.ResetCpTimesAsync(new object(), new MapGbxEventArgs { Map = null });
         _fastestCpService.Verify(service => service.ResetCpTimesAsync(), Times.Once);
     }
 }

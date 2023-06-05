@@ -34,7 +34,7 @@ public class FastestCpService : IFastestCpService
         var result = _fastestCpStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime);
         if (result)
         {
-            await ShowWidget();
+            await ShowWidgetAsync();
         }
     }
 
@@ -45,14 +45,14 @@ public class FastestCpService : IFastestCpService
         _logger.LogDebug("Hiding fastest cp manialink for all users");
     }
 
-    private async Task ShowWidget()
+    private async Task ShowWidgetAsync()
     {
         await _manialinkManager.SendPersistentManialinkAsync("FastestCp.FastestCp",
-            new { times = await GetCurrentBestCpTimes() });
+            new { times = await GetCurrentBestCpTimesAsync() });
         _logger.LogDebug("Updating fastest cp manialink for all users");
     }
 
-    private async Task<PlayerCpTime[]> GetCurrentBestCpTimes()
+    private async Task<PlayerCpTime[]> GetCurrentBestCpTimesAsync()
     {
         var fastestTimes = _fastestCpStore.GetFastestTimes();
 
