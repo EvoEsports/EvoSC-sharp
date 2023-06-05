@@ -1,8 +1,7 @@
 ﻿namespace EvoSC.Common.Remote.EventArgsModels;
 
-public class RespawnEventArgs : EventArgs
+public class RespawnEventArgs : TimedEventArgs
 {
-    public required int Time { get; init; }
     public required string Login { get; init; }
     public required string AccountId { get; init; }
     public required int NbRespawns { get; init; }

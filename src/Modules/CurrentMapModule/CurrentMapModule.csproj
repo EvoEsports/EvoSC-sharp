@@ -4,17 +4,17 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>EvoSC.Modules.Official.FastestCp</RootNamespace>
+        <RootNamespace>EvoSC.Modules.Official.CurrentMapModule</RootNamespace>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
-
-        <InternalsVisibleTo Include="FastestCp.Tests" />
+        <EmbeddedResource Include="Templates\**\*" />
     </ItemGroup>
-
+    
     <ItemGroup>
-        <EmbeddedResource Include="Templates\**\*.mt" />
+      <PackageReference Include="ISO3166" Version="1.0.4" />
     </ItemGroup>
+    
 </Project>

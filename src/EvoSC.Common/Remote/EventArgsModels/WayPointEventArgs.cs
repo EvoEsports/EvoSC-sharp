@@ -1,8 +1,7 @@
 ﻿namespace EvoSC.Common.Remote.EventArgsModels;
 
-public class WayPointEventArgs : EventArgs
+public class WayPointEventArgs : TimedEventArgs
 {
-    public required int Time { get; init; }
     public required string Login { get; init; }
     public required string AccountId { get; init; }
     public required int RaceTime { get; init; }

@@ -1,5 +1,6 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCp;
 using EvoSC.Modules.Official.Maps;
@@ -21,7 +22,8 @@ public static class InternalModules
         typeof(PlayerRecordsModule),
         typeof(MatchManagerModule),
         typeof(SetNameModule),
-        typeof(FastestCpModule)
+        typeof(FastestCpModule),
+        typeof(CurrentMapModule),
     };
 
     /// <summary>

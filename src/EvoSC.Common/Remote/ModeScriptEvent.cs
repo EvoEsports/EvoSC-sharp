@@ -53,6 +53,18 @@ public enum ModeScriptEvent
     Eliminated,
 
     /// <summary>
+    /// When a player got eliminated by an obstacle.
+    /// </summary>
+    [Identifier(Name = "ModeScript.PodiumStart")]
+    PodiumStart,
+    
+    /// <summary>
+    /// When a player got eliminated by an obstacle.
+    /// </summary>
+    [Identifier(Name = "ModeScript.PodiumEnd")]
+    PodiumEnd,
+    
+    /// <summary>
     /// When any Mode Script callback was called.
     /// </summary>
     [Identifier(Name = "ModeScript.Any")]

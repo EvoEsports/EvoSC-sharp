@@ -23,7 +23,7 @@
       <PackageReference Include="linq2db.SQLite" Version="4.4.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-      <PackageReference Include="MySqlConnector" Version="2.2.0" />
+      <PackageReference Include="MySqlConnector" Version="2.2.6" />
       <PackageReference Include="Samboy063.Tomlet" Version="5.0.1" />
       <PackageReference Include="SimpleInjector" Version="5.4.1" />
     </ItemGroup>

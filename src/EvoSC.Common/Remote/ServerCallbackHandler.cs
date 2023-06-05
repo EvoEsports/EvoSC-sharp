@@ -119,6 +119,16 @@ public class ServerCallbackHandler : IServerCallbackHandler
                         AccountId = data.GetValue("accountid", StringComparison.Ordinal).ToObject<string>()
                     });
                 break;
+            case "Maniaplanet.Podium_Start":
+                await _events.RaiseAsync(ModeScriptEvent.PodiumStart,
+                    new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
+                    break;
+                
+            case "Maniaplanet.Podium_End":
+                await _events.RaiseAsync(ModeScriptEvent.PodiumEnd,
+                    new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
+                break;
+                
         }
         
         await _events.RaiseAsync(ModeScriptEvent.Any, new ModeScriptEventArgs {Method = method, Args = data});
