@@ -1,14 +1,10 @@
-﻿using System.Data.SqlServerCe;
-using EvoSC.Common.Controllers;
+﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
-using EvoSC.Common.Events.CoreEvents;
-using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
-using EvoSC.Modules.Official.CurrentMapModule.Services;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
@@ -18,29 +14,27 @@ namespace EvoSC.Modules.Official.CurrentMapModule.Controllers;
 public class CurrentMapController : EvoScController<EventControllerContext>
 {
     private readonly ICurrentMapService _service;
-    private readonly ILogger<CurrentMapController> _logger;
 
-    public CurrentMapController(ICurrentMapService service, ILogger<CurrentMapController> logger)
+    public CurrentMapController(ICurrentMapService service)
     {
         _service = service;
-        _logger = logger;
     }
 
     [Subscribe(GbxRemoteEvent.BeginMatch)]
-    public Task OnBeginMatch(object sender, EventArgs args)
+    public Task OnBeginMatchAsync(object sender, EventArgs args)
     {
-        return _service.ShowWidget();
+        return _service.ShowWidgetAsync();
     }
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public Task OnBeginMap(object sender, MapGbxEventArgs args)
+    public Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
-        return _service.ShowWidget(args);
+        return _service.ShowWidgetAsync(args);
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public Task OnPodiumStart(object sender, PodiumEventArgs args)
+    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args)
     {
-        return _service.HideWidget();
+        return _service.HideWidgetAsync();
     }
 }

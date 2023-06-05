@@ -1,5 +1,4 @@
-﻿using System.Data.SqlServerCe;
-using EvoSC.Modules.Attributes;
+﻿using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.CurrentMapModule.Services;
 
@@ -15,6 +14,6 @@ public class CurrentMapModule : EvoScModule, IToggleable
         _service = service;
     }
 
-    public Task EnableAsync() => _service.ShowWidget();
+    public Task EnableAsync() => _service.ShowWidgetAsync();
     public Task DisableAsync() => Task.CompletedTask;
 }
