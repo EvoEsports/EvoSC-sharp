@@ -47,7 +47,7 @@ public class CurrentMapService : ICurrentMapService
 
         await _manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
             new { map = dbMap, country = country?.ThreeLetterCode ?? "WOR" });
-        _logger.LogDebug("Showing widget");
+        _logger.LogDebug("Showing current map widget");
     }
     
     public async Task ShowWidgetAsync()
@@ -64,6 +64,6 @@ public class CurrentMapService : ICurrentMapService
     public async Task HideWidgetAsync()
     {
         await _manialinkManager.HideManialinkAsync("CurrentMapModule.CurrentMapWidget");
-        _logger.LogDebug("Hiding widget");
+        _logger.LogDebug("Hiding current map widget");
     }
 }
