@@ -1,9 +1,7 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Tls;
 
 namespace EvoSC.Common.Remote;
 
