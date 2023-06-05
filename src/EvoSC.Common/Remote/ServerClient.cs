@@ -54,6 +54,7 @@ public partial class ServerClient : IServerClient
 
         await _gbxRemote.SetApiVersionAsync(GbxRemoteClient.DefaultApiVersion);
         await _gbxRemote.EnableCallbackTypeAsync();
+        await _gbxRemote.SendHideManialinkPageAsync(); //hide all manialinks on connect
         await _gbxRemote.ChatEnableManualRoutingAsync();
 
         return true;
@@ -110,6 +111,7 @@ public partial class ServerClient : IServerClient
     public async Task StopAsync(CancellationToken token)
     {
         await _gbxRemote.ChatEnableManualRoutingAsync(false);
+        await _gbxRemote.SendHideManialinkPageAsync();  //hide all manialinks on disconnect
         await _gbxRemote.DisconnectAsync();
     }
 }
