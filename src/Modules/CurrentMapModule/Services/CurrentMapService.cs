@@ -4,13 +4,13 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
+using Microsoft.Extensions.Logging;
 using GbxRemoteNet.Events;
 using ISO3166;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Singleton)]
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class CurrentMapService : ICurrentMapService
 {
     private readonly ILogger<CurrentMapService> _logger;
@@ -31,7 +31,7 @@ public class CurrentMapService : ICurrentMapService
     private static string GetCountry(string Zone)
     {
         var zones = Zone.Split("|");
-        if (zones.Length >= 2)
+        if (zones.Length > 2)
         {
             return zones[2];
         }
@@ -39,11 +39,9 @@ public class CurrentMapService : ICurrentMapService
         return "Other";
     }
 
-    public async Task ShowWidgetAsync()
+    private async Task ShowManialinkAsync(string mapUId)
     {
-        _logger.LogWarning("***Asd");
-        var map = await _client.Remote.GetCurrentMapInfoAsync();
-        var dbMap = await _mapRepository.GetMapByUidAsync(map.UId);
+        var dbMap = await _mapRepository.GetMapByUidAsync(mapUId);
         List<Country> countries = Country.List.ToList();
         var country = countries.Find(country => country.Name == GetCountry(dbMap?.Author?.Zone ?? ""));
 
@@ -51,16 +49,16 @@ public class CurrentMapService : ICurrentMapService
             new { map = dbMap, country = country?.ThreeLetterCode ?? "WOR" });
         _logger.LogDebug("Showing widget");
     }
+    
+    public async Task ShowWidgetAsync()
+    {
+        var map = await _client.Remote.GetCurrentMapInfoAsync();
+        await ShowManialinkAsync(map.UId);
+    }
 
     public async Task ShowWidgetAsync(MapGbxEventArgs args)
     {
-        var dbMap = await _mapRepository.GetMapByUidAsync(args.Map.Uid);
-        List<Country> countries = Country.List.ToList();
-        var country = countries.Find(country => country.Name == GetCountry(dbMap?.Author?.Zone ?? ""));
-
-        await _manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
-            new { map = dbMap, country = country?.ThreeLetterCode ?? "WOR" });
-        _logger.LogDebug("Showing widget");
+        await ShowManialinkAsync(args.Map.Uid);
     }
 
     public async Task HideWidgetAsync()

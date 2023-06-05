@@ -5,23 +5,21 @@ namespace EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 
 public interface ICurrentMapService
 {
-    
-    
     /// <summary>
-    /// Shows widget
+    /// Shows the widget
     /// </summary>
     /// <returns></returns>
     Task ShowWidgetAsync();
     
     /// <summary>
-    /// Shows Widget
+    /// Shows the Widget
     /// </summary>
     /// <param name="args">Information about the begin map event.</param>
-    /// <returns>Task</returns>
+    /// <returns></returns>
     Task ShowWidgetAsync(MapGbxEventArgs args);
     
     /// <summary>
-    /// Hides Widget
+    /// Hides the Widget
     /// </summary>
     /// <returns></returns>
     Task HideWidgetAsync();

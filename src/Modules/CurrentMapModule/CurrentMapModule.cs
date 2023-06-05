@@ -15,5 +15,5 @@ public class CurrentMapModule : EvoScModule, IToggleable
     }
 
     public Task EnableAsync() => _service.ShowWidgetAsync();
-    public Task DisableAsync() => Task.CompletedTask;
+    public Task DisableAsync() => _service.HideWidgetAsync();
 }

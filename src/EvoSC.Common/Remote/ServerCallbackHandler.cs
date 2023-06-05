@@ -3,6 +3,7 @@ using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Tls;
 
 namespace EvoSC.Common.Remote;
 
@@ -32,7 +33,7 @@ public class ServerCallbackHandler : IServerCallbackHandler
         _server.Remote.OnEcho += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.Echo, e, sender);
         _server.Remote.OnPlayerManialinkPageAnswer += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.ManialinkPageAnswer, e, sender);
         _server.Remote.OnMapListModified += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.MapListModified, e, sender);
-        
+        _server.Remote.OnStatusChanged += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.StatusChanged, e, sender);
         _server.Remote.OnModeScriptCallback += OnModeScriptCallbackAsync;
     }
 
@@ -123,12 +124,10 @@ public class ServerCallbackHandler : IServerCallbackHandler
                 await _events.RaiseAsync(ModeScriptEvent.PodiumStart,
                     new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
                     break;
-                
             case "Maniaplanet.Podium_End":
                 await _events.RaiseAsync(ModeScriptEvent.PodiumEnd,
                     new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
                 break;
-                
         }
         
         await _events.RaiseAsync(ModeScriptEvent.Any, new ModeScriptEventArgs {Method = method, Args = data});

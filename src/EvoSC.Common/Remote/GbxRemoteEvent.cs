@@ -59,5 +59,11 @@ public enum GbxRemoteEvent
     /// When the map list got modified.
     /// </summary>
     [Identifier(Name = "GbxRemote.MapListModified")]
-    MapListModified
+    MapListModified,
+    /// <summary>
+    /// When the server status changes
+    /// </summary>
+    [Identifier(Name = "GbxRemote.StatusChanged")]
+    StatusChanged,
+    
 }

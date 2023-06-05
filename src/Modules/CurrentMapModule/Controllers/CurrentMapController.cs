@@ -6,7 +6,6 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 using GbxRemoteNet.Events;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Controllers;
 
