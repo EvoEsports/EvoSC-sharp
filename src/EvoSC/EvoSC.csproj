@@ -5,6 +5,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <ApplicationIcon>appicon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,5 +31,5 @@
     <ItemGroup>
       <Content Include="bin\Debug\net7.0\config\main.toml" />
     </ItemGroup>
-
+    
 </Project>
