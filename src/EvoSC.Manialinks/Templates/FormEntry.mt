@@ -9,7 +9,7 @@
     <property type="IEnumerable<EntryValidationResult>?" name="validationResults" />
     <property type="string?" name="value"/>
     <property type="string" name="name"/>
-    <property type="int" name="zIndex"/>
+    <property type="int" name="zIndex" default="0"/>
     <property type="string" name="label" default=""/>
     <property type="double" name="w" default="0.0"/>
     <property type="double" name="h" default="9.0"/>

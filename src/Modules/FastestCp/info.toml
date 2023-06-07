@@ -1,0 +1,6 @@
+[info]
+name = "FastestCp"
+title = "Fastest Checkpoint"
+summary = "A module for handling fastest checkpoint times"
+version = "1.0.0"
+author = "Evo"

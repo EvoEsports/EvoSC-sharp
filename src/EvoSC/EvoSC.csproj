@@ -25,6 +25,7 @@
       <ProjectReference Include="..\Modules\Player\Player.csproj" />
       <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />
       <ProjectReference Include="..\Modules\SetName\SetName.csproj" />
+      <ProjectReference Include="..\Modules\FastestCp\FastestCp.csproj" />
     </ItemGroup>
 
     <ItemGroup>
