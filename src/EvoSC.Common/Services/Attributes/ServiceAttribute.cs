@@ -10,7 +10,7 @@ namespace EvoSC.Common.Services.Attributes;
 public class ServiceAttribute : Attribute
 {
     /// <summary>
-    /// The lifestyle of this service.
+    /// The lifestyle of this service. The default life-style is Transient.
     /// </summary>
-    public required ServiceLifeStyle LifeStyle { get; init; }
+    public ServiceLifeStyle LifeStyle { get; init; } = ServiceLifeStyle.Transient;
 }
