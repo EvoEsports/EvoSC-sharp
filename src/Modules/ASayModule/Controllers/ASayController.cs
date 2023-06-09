@@ -3,7 +3,6 @@ using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ASayModule.Controllers;
 
