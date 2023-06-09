@@ -1,15 +1,15 @@
 ﻿using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
-using EvoSC.Modules.Official.ASayModule.Services;
+using EvoSC.Modules.Official.ASayModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ASayModule;
 
 [Module(IsInternal = true)]
 public class ASayModule : EvoScModule, IToggleable
 {
-    private readonly ASayService _service;
+    private readonly IASayService _service;
 
-    public ASayModule(ASayService service)
+    public ASayModule(IASayService service)
     {
         _service = service;
     }
