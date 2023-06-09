@@ -2,6 +2,7 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Modules.Official.ASayModule.Events;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ASayModule.Controllers;
@@ -11,7 +12,6 @@ public class ASayController : EvoScController<CommandInteractionContext>
 {
     private readonly IASayService _asayService;
 
-    // You want to dependency inject the needed services here at the constructor
     public ASayController(IASayService asayService)
     {
         _asayService = asayService;
@@ -23,10 +23,17 @@ public class ASayController : EvoScController<CommandInteractionContext>
         if (!string.IsNullOrEmpty(text))
         {
             await _asayService.ShowAnnouncementAsync(text);
+            Context.AuditEvent.Success()
+                .WithEventName(AuditEvents.ShowAnnouncement)
+                .HavingProperties(new {Text = text})
+                .Comment("Announcement was shown.");
         }
         else
         {
             await _asayService.HideAnnouncementAsync();
+            Context.AuditEvent.Success()
+                .WithEventName(AuditEvents.ClearAnnouncement)
+                .Comment("Announcement was cleared.");
         }
     }
     
@@ -34,5 +41,8 @@ public class ASayController : EvoScController<CommandInteractionContext>
     public async Task ClearAnnouncementMessageForPlayersAsync()
     {
         await _asayService.HideAnnouncementAsync();
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.ClearAnnouncement)
+            .Comment("Announcement was cleared.");
     }
 }

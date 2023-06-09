@@ -1,12 +1,10 @@
 using EvoSC.Modules.Official.ASayModule.Controllers;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace EvoSC.Modules.Official.ASayModule.Tests;
 
-public class ASayControllerTest
+public sealed class ASayControllerTest : IDisposable
 {
     private readonly ASayController _controller;
     private readonly Mock<IASayService> _service = new();
@@ -17,7 +15,7 @@ public class ASayControllerTest
     }
 
     [Fact]
-    private async void Should_Show_Announcement_Message()
+    private async Task Should_Show_Announcement_Message()
     {
         var text = "example message";
         await _controller.ShowAnnounceMessageToPlayersAsync(text);
@@ -25,7 +23,7 @@ public class ASayControllerTest
     }
 
     [Fact]
-    private async void Should_Clear_Announcement_Message_With_Empty_Param()
+    private async Task Should_Clear_Announcement_Message_With_Empty_Param()
     {
         var empty = string.Empty;
         await _controller.ShowAnnounceMessageToPlayersAsync(empty);
@@ -33,9 +31,14 @@ public class ASayControllerTest
     }
 
     [Fact]
-    private async void Should_Clear_Announcement_Message()
+    private async Task Should_Clear_Announcement_Message()
     {
         await _controller.ClearAnnouncementMessageForPlayersAsync();
         _service.Verify(service => service.HideAnnouncementAsync());
+    }
+
+    public void Dispose()
+    {
+        _controller.Dispose();
     }
 }
