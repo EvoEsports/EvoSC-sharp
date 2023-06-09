@@ -29,6 +29,24 @@ public class CurrentMapService : ICurrentMapService
         _client = client;
     }
 
+    [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]
+    public async Task ShowWidgetAsync()
+    {
+        var map = await _client.Remote.GetCurrentMapInfoAsync();
+        await ShowManialinkAsync(map.UId);
+    }
+
+    public async Task ShowWidgetAsync(MapGbxEventArgs args)
+    {
+        await ShowManialinkAsync(args.Map.Uid);
+    }
+
+    public async Task HideWidgetAsync()
+    {
+        await _manialinkManager.HideManialinkAsync("CurrentMapModule.CurrentMapWidget");
+        _logger.LogDebug("Hiding current map widget");
+    }
+
     private static string GetCountry(string Zone)
     {
         var zones = Zone.Split("|");
@@ -49,23 +67,5 @@ public class CurrentMapService : ICurrentMapService
         await _manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
             new { map = dbMap, country = country?.ThreeLetterCode ?? "WOR" });
         _logger.LogDebug("Showing current map widget");
-    }
-    
-    [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]
-    public async Task ShowWidgetAsync()
-    {
-        var map = await _client.Remote.GetCurrentMapInfoAsync();
-        await ShowManialinkAsync(map.UId);
-    }
-
-    public async Task ShowWidgetAsync(MapGbxEventArgs args)
-    {
-        await ShowManialinkAsync(args.Map.Uid);
-    }
-
-    public async Task HideWidgetAsync()
-    {
-        await _manialinkManager.HideManialinkAsync("CurrentMapModule.CurrentMapWidget");
-        _logger.LogDebug("Hiding current map widget");
     }
 }
