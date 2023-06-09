@@ -18,18 +18,18 @@ public class ASayService : IASayService
         _manialinkManager = manialinkManager;
     }
 
-    public async Task OnDisable()
+    public async Task OnDisableAsync()
     {
         await _manialinkManager.HideManialinkAsync("ASayModule.Announcement");
         _logger.LogInformation("ASayModule disabled.");
     }
 
-    public async Task ShowAnnouncement(string text)
+    public async Task ShowAnnouncementAsync(string text)
     {
         await _manialinkManager.SendManialinkAsync("ASayModule.Announcement", new {text});
     }
 
-    public async Task HideAnnouncement()
+    public async Task HideAnnouncementAsync()
     {
         await _manialinkManager.HideManialinkAsync("ASayModule.Announcement");
     }

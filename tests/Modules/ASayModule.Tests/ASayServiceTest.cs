@@ -20,7 +20,7 @@ public class ASayServiceTest
     [Fact]
     private async void Should_On_Disable()
     {
-        await _aSayService.OnDisable();
+        await _aSayService.OnDisableAsync();
         _manialinkManager.Verify(manager => manager.HideManialinkAsync("ASayModule.Announcement"));
     }
     
@@ -28,14 +28,14 @@ public class ASayServiceTest
     private async void Should_Show_Announcement_Message()
     {
         var text = "example message";
-        await _aSayService.ShowAnnouncement(text);
+        await _aSayService.ShowAnnouncementAsync(text);
         _manialinkManager.Verify(manager => manager.SendManialinkAsync("ASayModule.Announcement", It.Is<object>(o => text.Equals(o.GetType().GetProperty("text")!.GetValue(o)))));
     }
 
     [Fact]
     private async void Should_Hide_Announcement_Message()
     {
-        await _aSayService.HideAnnouncement();
+        await _aSayService.HideAnnouncementAsync();
         _manialinkManager.Verify(manager => manager.HideManialinkAsync("ASayModule.Announcement"));
     }
 }

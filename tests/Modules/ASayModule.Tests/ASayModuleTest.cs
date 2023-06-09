@@ -17,6 +17,6 @@ public class ASayModuleTest
     async Task Should_Disable_Async()
     {
         await _module.DisableAsync();
-        _service.Verify(service => service.OnDisable());
+        _service.Verify(service => service.OnDisableAsync());
     }
 }

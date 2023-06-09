@@ -9,34 +9,33 @@ namespace EvoSC.Modules.Official.ASayModule.Tests;
 public class ASayControllerTest
 {
     private readonly ASayController _controller;
-    private readonly ILogger<ASayController> _logger = new NullLogger<ASayController>();
     private readonly Mock<IASayService> _service = new();
     
     public ASayControllerTest()
     {
-        _controller = new ASayController(_logger, _service.Object);
+        _controller = new ASayController(_service.Object);
     }
 
     [Fact]
     private async void Should_Show_Announcement_Message()
     {
         var text = "example message";
-        await _controller.ShowAnnounceMessageToPlayers(text);
-        _service.Verify(service => service.ShowAnnouncement(text));
+        await _controller.ShowAnnounceMessageToPlayersAsync(text);
+        _service.Verify(service => service.ShowAnnouncementAsync(text));
     }
 
     [Fact]
     private async void Should_Clear_Announcement_Message_With_Empty_Param()
     {
         var empty = string.Empty;
-        await _controller.ShowAnnounceMessageToPlayers(empty);
-        _service.Verify(service => service.HideAnnouncement());
+        await _controller.ShowAnnounceMessageToPlayersAsync(empty);
+        _service.Verify(service => service.HideAnnouncementAsync());
     }
 
     [Fact]
     private async void Should_Clear_Announcement_Message()
     {
-        await _controller.ClearAnnouncementMessageToPlayers();
-        _service.Verify(service => service.HideAnnouncement());
+        await _controller.ClearAnnouncementMessageForPlayersAsync();
+        _service.Verify(service => service.HideAnnouncementAsync());
     }
 }
