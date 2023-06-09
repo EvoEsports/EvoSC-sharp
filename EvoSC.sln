@@ -54,6 +54,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastestCp.Tests", "tests\Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule", "src\Modules\CurrentMapModule\CurrentMapModule.csproj", "{75867550-1DE2-4FBB-9FC1-BA840984AF49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule.Tests", "tests\Modules\CurrentMapModule.Tests\CurrentMapModule.Tests.csproj", "{B684B864-31BF-407E-9ED9-A95D32BC4FE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -148,6 +150,10 @@ Global
 		{75867550-1DE2-4FBB-9FC1-BA840984AF49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75867550-1DE2-4FBB-9FC1-BA840984AF49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75867550-1DE2-4FBB-9FC1-BA840984AF49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,5 +178,6 @@ Global
 		{6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A} = {46D790A2-EA9B-44A0-ABD2-A2A2CDC670D4}
 		{65E0FCC8-1908-409E-8214-9A9F5EC29402} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{75867550-1DE2-4FBB-9FC1-BA840984AF49} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{B684B864-31BF-407E-9ED9-A95D32BC4FE2} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 	EndGlobalSection
 EndGlobal

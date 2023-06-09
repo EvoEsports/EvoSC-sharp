@@ -1,5 +1,6 @@
-﻿using EvoSC.Common.Database.Repository.Maps;
+﻿using System.Diagnostics.CodeAnalysis;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -15,12 +16,12 @@ public class CurrentMapService : ICurrentMapService
 {
     private readonly ILogger<CurrentMapService> _logger;
     private readonly IManialinkManager _manialinkManager;
-    private readonly MapRepository _mapRepository;
+    private readonly IMapRepository _mapRepository;
     private readonly IServerClient _client;
 
     public CurrentMapService(IManialinkManager manialinkManager,
         ILogger<CurrentMapService> logger,
-        MapRepository mapRepository, IServerClient client)
+        IMapRepository mapRepository, IServerClient client)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
@@ -50,6 +51,7 @@ public class CurrentMapService : ICurrentMapService
         _logger.LogDebug("Showing current map widget");
     }
     
+    [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]
     public async Task ShowWidgetAsync()
     {
         var map = await _client.Remote.GetCurrentMapInfoAsync();
