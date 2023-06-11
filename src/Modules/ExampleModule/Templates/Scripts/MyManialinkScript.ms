@@ -1,3 +1,3 @@
 ﻿main() {
-    log("hello!");
+    log("hello");
 }
