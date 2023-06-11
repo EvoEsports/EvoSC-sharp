@@ -13,26 +13,17 @@ namespace EvoSC.Modules.Official.OpenPlanetControl.Controllers;
 [Controller]
 public class OpenPlanetControlController : EvoScController<EventControllerContext>
 {
-    private readonly ILogger<OpenPlanetControlController> _logger;
     private readonly IOpenPlanetControlService _service;
-    private readonly IServerClient _server;
     
-    public OpenPlanetControlController(
-        ILogger<OpenPlanetControlController> logger,
-        IOpenPlanetControlService service,
-        IServerClient server
-    )
+    public OpenPlanetControlController(IOpenPlanetControlService service)
     {
-        _logger = logger;
         _service = service;
-        _server = server;
     }
 
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task OnPlayerConnectAsync(PlayerConnectGbxEventArgs args)
+    [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
+    public Task OnPlayerConnectAsync(object sender, PlayerDisconnectGbxEventArgs args)
     {
-        if (args.IsSpectator) return;
-      
-        
+        _service.RemovePlayerByLogin(args.Login);
+        return Task.CompletedTask;
     }
 }

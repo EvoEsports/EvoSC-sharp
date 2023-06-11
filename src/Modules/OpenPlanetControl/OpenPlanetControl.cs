@@ -14,8 +14,7 @@ public class OpenPlanetControl : EvoScModule, IToggleable
         _service = service;
     }
 
-    public Task EnableAsync() => _service.onEnable();
-
-    // if no cleaning for the classes needed to be done, return here a completed task, otherwise clean the classes, and then complete the task. 
-    public Task DisableAsync() => _service.onDisable();
+    public Task EnableAsync() => _service.OnEnableAsync();
+    
+    public Task DisableAsync() => _service.OnEnableAsync();
 }
