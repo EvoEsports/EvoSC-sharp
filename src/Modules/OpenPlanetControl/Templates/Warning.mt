@@ -22,45 +22,11 @@
                 <quad bgcolor="7E002AFF" size="124.3 21.5" pos="0 -11.5" opacity="1" halign="center" valign="center" z-index="-1" />
             </frame>
             <frame pos="0 -70">
-                <label pos="0 0" z-index="0" size="200 5" text="Infotext" halign="center" valign="center" id="countdowntext" textfont="GameFontSemiBold"/><label pos="0 -5" z-index="0" size="200 5" text="Change signature mode now to cancel kick." halign="center" valign="center" id="countdowntext" textfont="GameFontRegular"/>
+                <label id="countdowntext" data-timeout="{{KickTimeout}}" pos="0 0" z-index="0" size="200 5" text="$iManiascript has an error. Check logs." halign="center" valign="center" textfont="GameFontSemiBold"/>
+                <label pos="0 -5" z-index="0" size="200 5" text="Change signature mode now to cancel kick." halign="center" valign="center" id="countdowntext" textfont="GameFontRegular"/>
             </frame>
             <quad pos="0 15" z-index="-10" size="240 104" opacity="0.7" halign="center" style="UICommon64_1" substyle="BgFrame1" colorize="000"/>
         </frame>
-        <script><!--
-    #Include "MathLib" as ML
-    #Include "TextLib" as TL
-
-    Void updateCountdownText(Integer value) {
-        declare countdownText <=> (Page.MainFrame.GetFirstChild("countdowntext") as CMlLabel);
-        declare plural = "s";
-        if (value == 1) {
-            plural = "";
-        }
-
-        if (value < 1) {
-            countdownText.SetText("You are about to be kicked.");
-            TriggerPageAction("OpenPlanetControl/Kick");
-        } else {
-            countdownText.SetText("You will be automatically kicked in " ^ value ^ " second" ^ plural ^ ".");
-        }
-    }
-
-    main() {
-        declare Integer countdown = 30;
-        declare lastUpdate = Now;
-
-        updateCountdownText(countdown);
-
-        while(True) {
-            yield;
-
-            if (Now - lastUpdate > 1000 && countdown > 0) {
-                countdown -= 1;
-                lastUpdate = Now;
-                updateCountdownText(countdown);
-            }
-        }
-    }
---></script>
     </template>
+    <script resource="OpenPlanetControl.Scripts.Kick" main="true" />
 </component>

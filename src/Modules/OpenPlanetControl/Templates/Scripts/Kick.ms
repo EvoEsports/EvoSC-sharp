@@ -10,14 +10,15 @@ Void updateCountdownText(Integer value) {
 
     if (value < 1) {
         countdownText.SetText("You are about to be kicked.");
-        TriggerPageAction("");
+        TriggerPageAction("OpenPlanetControl/Kick");
     } else {
         countdownText.SetText("You will be automatically kicked in " ^ value ^ " second" ^ plural ^ ".");
     }
 }
 
 main() {
-    declare Integer countdown = {{KickTimeout}};
+    declare CMlLabel countdownText <=> (Page.MainFrame.GetFirstChild("countdowntext") as CMlLabel);
+    declare Integer countdown = TL::ToInteger(countdownText.DataAttributeGet("timeout"));
     declare lastUpdate = Now;
 
     updateCountdownText(countdown);
