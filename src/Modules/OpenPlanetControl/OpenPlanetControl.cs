@@ -1,5 +1,6 @@
 ﻿using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Official.OpenPlanetControl.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetControl.Services;
 
 namespace EvoSC.Modules.Official.OpenPlanetControl;
@@ -7,9 +8,9 @@ namespace EvoSC.Modules.Official.OpenPlanetControl;
 [Module(IsInternal = true)]
 public class OpenPlanetControl : EvoScModule, IToggleable
 {
-    private readonly OpenPlanetControlService _service;
+    private readonly IOpenPlanetControlService _service;
 
-    public OpenPlanetControl(OpenPlanetControlService service)
+    public OpenPlanetControl(IOpenPlanetControlService service)
     {
         _service = service;
     }

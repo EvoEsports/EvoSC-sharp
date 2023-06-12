@@ -10,7 +10,7 @@ public interface IopSettings
     [Option(DefaultValue = true), Description("Is the module enabled")]
     public bool Enabled { get; }
     
-    [Option, Description("Allowed types")]
+    [Option(DefaultValue = "COMPETITION REGULAR"), Description("Allowed types")]
     public string[] AllowedTypes { get; }
     
 }

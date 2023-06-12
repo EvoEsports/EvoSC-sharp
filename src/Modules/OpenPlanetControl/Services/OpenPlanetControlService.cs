@@ -52,7 +52,7 @@ public class OpenPlanetControlService : IOpenPlanetControlService
         if (!info.isOpenPlanet) return;
 
         players.Add(login, info);
-        var allowedTypes = _settings.AllowedTypes.ToList();
+        var allowedTypes = _settings.AllowedTypes;
         if (!allowedTypes.Contains(info.signatureMode))
         {
             await _manialinkManager.SendManialinkAsync("OpenPlanetControl.Warning",

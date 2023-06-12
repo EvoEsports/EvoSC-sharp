@@ -16,17 +16,16 @@ namespace EvoSC;
 public static class InternalModules
 {
     public static readonly Type[] Modules =
-    { 
-        typeof(PlayerRecordsModule),
-        typeof(OpenPlanetControl),
-       /* typeof(PlayerModule),
+    {
+        typeof(PlayerModule),
         typeof(ExampleModule),
         typeof(MapsModule),
         typeof(PlayerRecordsModule),
         typeof(MatchManagerModule),
         typeof(SetNameModule),
         typeof(FastestCpModule),
-        typeof(CurrentMapModule),*/
+        typeof(CurrentMapModule),
+        typeof(OpenPlanetControl),
     };
 
     /// <summary>
