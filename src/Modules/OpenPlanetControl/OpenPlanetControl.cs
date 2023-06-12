@@ -16,5 +16,5 @@ public class OpenPlanetControl : EvoScModule, IToggleable
 
     public Task EnableAsync() => _service.OnEnableAsync();
     
-    public Task DisableAsync() => _service.OnEnableAsync();
+    public Task DisableAsync() => _service.OnDisableAsync();
 }

@@ -2,6 +2,7 @@
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.OpenPlanetControl.Config;
 using EvoSC.Modules.Official.OpenPlanetControl.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetControl.Models;
 using FluentMigrator.Runner;
@@ -17,20 +18,22 @@ public class OpenPlanetControlService : IOpenPlanetControlService
     private readonly IManialinkManager _manialinkManager;
     private readonly IServerClient _server;
     private readonly int _kickTimeout = 30;
-    private Dictionary<string, OpenPlanetInfo> _players { get; set; }
+    private readonly IopSettings _settings;
+    public Dictionary<string, OpenPlanetInfo> players { get; set; }
 
-    public OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, IManialinkManager manialinkManager,
-        IServerClient server)
+    public OpenPlanetControlService(ILogger<OpenPlanetControlService> logger,
+        IManialinkManager manialinkManager,
+        IServerClient server, IopSettings settings)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
-        _players = new Dictionary<string, OpenPlanetInfo>();
+        players = new Dictionary<string, OpenPlanetInfo>();
         _server = server;
+        _settings = settings;
     }
 
     public async Task OnEnableAsync()
     {
-        _logger.LogInformation("OpenPlanetControl enabled");
         await _manialinkManager.SendPersistentManialinkAsync("OpenPlanetControl.DetectOP", new { });
     }
 
@@ -42,17 +45,23 @@ public class OpenPlanetControlService : IOpenPlanetControlService
 
     public async Task OnDetectAsync(string login, string data)
     {
-        _logger.LogEmphasized("OnDetect");
+        if (!_settings.Enabled) return;
+
         var info = new OpenPlanetInfo(data);
-
+        players.Remove(login);
         if (!info.isOpenPlanet) return;
-        _players.Remove(login);
-        _players.Add(login, info);
 
-        if (info.signatureMode != "COMPETITION")
+        players.Add(login, info);
+        var allowedTypes = _settings.AllowedTypes.ToList();
+        if (!allowedTypes.Contains(info.signatureMode))
         {
             await _manialinkManager.SendManialinkAsync("OpenPlanetControl.Warning",
-                new { Mode = info.signatureMode, AllowedModeText = "COMPETITION", KickTimeout = _kickTimeout});
+                new
+                {
+                    Mode = info.signatureMode,
+                    AllowedModeText = string.Join("$fff, $9df", allowedTypes),
+                    KickTimeout = _kickTimeout
+                });
             return;
         }
 
@@ -61,11 +70,13 @@ public class OpenPlanetControlService : IOpenPlanetControlService
 
     public void RemovePlayerByLogin(string login)
     {
-        _players.Remove(login);
+        if (!_settings.Enabled) return;
+        players.Remove(login);
     }
 
     public async Task KickAsync(string login)
     {
+        if (!_settings.Enabled) return;
         await _server.Remote.KickAsync(login, "Incompatible Openplanet signature mode");
     }
 }

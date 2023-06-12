@@ -24,24 +24,24 @@ public class ServiceContainerManager : IServiceContainerManager
         _logger = logger;
     }
 
-    public void AddContainer(Guid containerId, Container container)
+    public void AddContainer(Guid moduleId, Container container)
     {
         container.ResolveUnregisteredType += (_, args) =>
         {
-            ResolveCoreService(args, containerId);
+            ResolveCoreService(args, moduleId);
         };
         
-        if (_containers.ContainsKey(containerId))
+        if (_containers.ContainsKey(moduleId))
         {
-            throw new ServicesException($"A container is already registered for ID: {containerId}");
+            throw new ServicesException($"A container is already registered for ID: {moduleId}");
         }
         
-        _containers.Add(containerId, container);
+        _containers.Add(moduleId, container);
         
-        _logger.LogDebug("Added service container with ID: {ContainerId}", containerId);
+        _logger.LogDebug("Added service container with ID: {ContainerId}", moduleId);
     }
 
-    public Container NewContainer(Guid containerId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies)
+    public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies)
     {
         var container = new Container();
         container.Options.EnableAutoVerification = false;
@@ -89,52 +89,52 @@ public class ServiceContainerManager : IServiceContainerManager
             }
         }
 
-        AddContainer(containerId, container);
+        AddContainer(moduleId, container);
         
         foreach (var dependency in loadedDependencies)
         {
-            RegisterDependency(containerId, dependency);
+            RegisterDependency(moduleId, dependency);
         }
         
         return container;
     }
 
-    public void RemoveContainer(Guid containerId)
+    public void RemoveContainer(Guid moduleId)
     {
-        if (!_containers.ContainsKey(containerId))
+        if (!_containers.ContainsKey(moduleId))
         {
-            throw new ServicesException($"No container for {containerId} was found.");
+            throw new ServicesException($"No container for {moduleId} was found.");
         }
 
-        var container = _containers[containerId];
+        var container = _containers[moduleId];
         container.Dispose();
-        _containers.Remove(containerId);
+        _containers.Remove(moduleId);
         
         GC.WaitForPendingFinalizers();
         GC.Collect();
         
-        _logger.LogDebug("Removed service container for container: {ContainerId}", containerId);
+        _logger.LogDebug("Removed service container for container: {ContainerId}", moduleId);
     }
 
-    public void RegisterDependency(Guid containerId, Guid dependencyId)
+    public void RegisterDependency(Guid moduleId, Guid dependencyId)
     {
-        if (!_containers.ContainsKey(containerId))
+        if (!_containers.ContainsKey(moduleId))
         {
-            throw new InvalidOperationException($"Container '{containerId}' was not found to have a container.");
+            throw new InvalidOperationException($"Container '{moduleId}' was not found to have a container.");
         }
 
         if (!_containers.ContainsKey(dependencyId))
         {
-            throw new InvalidOperationException($"Dependency container '{containerId}' was not found to have a container.");
+            throw new InvalidOperationException($"Dependency container '{moduleId}' was not found to have a container.");
         }
 
-        if (!_dependencyServices.ContainsKey(containerId))
+        if (!_dependencyServices.ContainsKey(moduleId))
         {
-            _dependencyServices[containerId] = new List<Guid>();
+            _dependencyServices[moduleId] = new List<Guid>();
         }
         
-        _dependencyServices[containerId].Add(dependencyId);
-        _logger.LogDebug("Registered dependency '{DepId}' for '{ContainerId}'", dependencyId, containerId);
+        _dependencyServices[moduleId].Add(dependencyId);
+        _logger.LogDebug("Registered dependency '{DepId}' for '{ContainerId}'", dependencyId, moduleId);
     }
     
     private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid containerId)

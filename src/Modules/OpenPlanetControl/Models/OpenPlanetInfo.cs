@@ -4,14 +4,6 @@ namespace EvoSC.Modules.Official.OpenPlanetControl.Models;
 
 public class OpenPlanetInfo
 {
-    /**
-    private readonly string MODE_REGULAR = "REGULAR"; //Default: all signed plugins
-    private readonly string MODE_DEV = "DEVMODE"; //All plugins, including unsigned ones 
-    private readonly string MODE_OFFICIAL = "OFFICIAL"; //Plugins shipped with Openplanet
-    private readonly string MODE_COMPETITION = "COMPETITION"; //Plugins approved for use in TMGL
-    private readonly string MODE_UNKNOWN = "UNKNOWN";
-**/
-
     public string version { get; set; } = "0.0.0";
 
     public string game { get; set; } = "unknown";
