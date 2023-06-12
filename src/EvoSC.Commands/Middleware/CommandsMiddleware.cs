@@ -38,19 +38,7 @@ public class CommandsMiddleware
         _serverClient = serverClient;
         _actionPipeline = actionPipeline;
         _playersManager = playersManager;
-        _parser = new ChatCommandParser(cmdManager, GetValueReader());
-    }
-    
-    private IValueReaderManager GetValueReader()
-    {
-        var valueReader = new ValueReaderManager();
-
-        valueReader.AddReader(new FloatReader());
-        valueReader.AddReader(new IntegerReader());
-        valueReader.AddReader(new Common.TextParsing.ValueReaders.StringReader());
-        valueReader.AddReader(new OnlinePlayerReader(_playersManager));
-
-        return valueReader;
+        _parser = new ChatCommandParser(cmdManager);
     }
 
     async Task HandleUserErrorsAsync(IParserResult result, string playerLogin)

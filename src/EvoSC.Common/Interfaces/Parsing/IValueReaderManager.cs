@@ -10,7 +10,13 @@ public interface IValueReaderManager
     /// </summary>
     /// <param name="reader">Instance of the value reader.</param>
     public void AddReader(IValueReader reader);
-    
+
+    /// <summary>
+    /// Remove multiple readers from the manager for the given type.
+    /// </summary>
+    /// <param name="types">The type of the readers.</param>
+    public void RemoveReaders(params Type[] types);
+
     /// <summary>
     /// Get all readers of a specific type.
     /// </summary>
