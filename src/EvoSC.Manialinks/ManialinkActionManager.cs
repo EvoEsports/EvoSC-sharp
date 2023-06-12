@@ -479,7 +479,14 @@ public class ManialinkActionManager : IManialinkActionManager
 
             foreach (var route in _controllerRoutes[controllerType])
             {
-                RemoveRoute(route);
+                try
+                {
+                    RemoveRoute(route);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    // ignore errors when the route already doesn't exist
+                }
             }
         }
     }

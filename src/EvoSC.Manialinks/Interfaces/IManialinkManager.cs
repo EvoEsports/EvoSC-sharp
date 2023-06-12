@@ -38,7 +38,15 @@ public interface IManialinkManager
     /// </summary>
     /// <param name="name">The name of the template</param>
     public void RemoveTemplate(string name);
-    
+
+    /// <summary>
+    /// Remove a template so that it can no longer be used. In addition to that
+    /// hide it from all players.
+    /// </summary>
+    /// <param name="name">The name of the template</param>
+    /// <returns></returns>
+    public Task RemoveAndHideTemplate(string name);
+
     /// <summary>
     /// Remove a ManiaScript resource.
     /// </summary>

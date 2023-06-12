@@ -198,6 +198,13 @@ public sealed class Application : IEvoSCApplication, IDisposable
 
     public void Dispose()
     {
+        var moduleManager = _services.GetInstance<IModuleManager>();
+
+        foreach (var module in moduleManager.LoadedModules)
+        {
+            moduleManager.UnloadAsync(module.LoadId).GetAwaiter().GetResult();
+        }
+        
         _services.Dispose();
         _runningToken.Dispose();
     }

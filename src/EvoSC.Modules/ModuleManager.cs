@@ -313,7 +313,7 @@ public class ModuleManager : IModuleManager
                     _manialinkManager.RemoveManiaScript(template.Name);
                     break;
                 case ManialinkTemplateType.Template:
-                    _manialinkManager.RemoveTemplate(template.Name);
+                    _manialinkManager.RemoveAndHideTemplate(template.Name);
                     break;
                 default:
                     continue;
@@ -625,9 +625,9 @@ public class ModuleManager : IModuleManager
 
         await TryCallModuleDisableAsync(moduleContext);
         
+        await DisableManialinkTemplatesAsync(moduleContext);
         await DisableControllersAsync(moduleContext);
         await DisableMiddlewaresAsync(moduleContext);
-        await DisableManialinkTemplatesAsync(moduleContext);
         await StopBackgroundServicesAsync(moduleContext);
         
         moduleContext.SetEnabled(false);
