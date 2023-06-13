@@ -1,7 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace EvoSC.Common.Remote;
@@ -32,7 +31,7 @@ public class ServerCallbackHandler : IServerCallbackHandler
         _server.Remote.OnEcho += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.Echo, e, sender);
         _server.Remote.OnPlayerManialinkPageAnswer += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.ManialinkPageAnswer, e, sender);
         _server.Remote.OnMapListModified += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.MapListModified, e, sender);
-        
+        _server.Remote.OnStatusChanged += (sender, e) => _events.RaiseAsync(GbxRemoteEvent.StatusChanged, e, sender);
         _server.Remote.OnModeScriptCallback += OnModeScriptCallbackAsync;
     }
 
@@ -118,6 +117,14 @@ public class ServerCallbackHandler : IServerCallbackHandler
                         Login = data.GetValue("login", StringComparison.Ordinal).ToObject<string>(),
                         AccountId = data.GetValue("accountid", StringComparison.Ordinal).ToObject<string>()
                     });
+                break;
+            case "Maniaplanet.Podium_Start":
+                await _events.RaiseAsync(ModeScriptEvent.PodiumStart,
+                    new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
+                    break;
+            case "Maniaplanet.Podium_End":
+                await _events.RaiseAsync(ModeScriptEvent.PodiumEnd,
+                    new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
                 break;
         }
         

@@ -55,6 +55,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule", "src\Modules\ModuleManagerModule\ModuleManagerModule.csproj", "{44DF85F6-28C7-4DE0-B1EE-29885979DC35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule.Tests", "tests\Modules\ModuleManagerModule.Tests\ModuleManagerModule.Tests.csproj", "{5263B4FD-E1EB-4286-90E8-C02107C195D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule", "src\Modules\CurrentMapModule\CurrentMapModule.csproj", "{75867550-1DE2-4FBB-9FC1-BA840984AF49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule.Tests", "tests\Modules\CurrentMapModule.Tests\CurrentMapModule.Tests.csproj", "{B684B864-31BF-407E-9ED9-A95D32BC4FE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
