@@ -614,6 +614,12 @@ public class ModuleManager : IModuleManager
     {
         foreach (var module in LoadedModules)
         {
+            if (_config.Modules.DisabledModules.Contains(module.ModuleInfo.Name))
+            {
+                _logger.LogDebug("Module {Name} is disabled", module.ModuleInfo.Name);
+                continue;
+            }
+            
             await EnableAsync(module.LoadId);
         }
     }
