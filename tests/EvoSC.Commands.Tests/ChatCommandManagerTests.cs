@@ -24,7 +24,7 @@ public class ChatCommandManagerTests
             .WithHandlerMethod(() => {})
             .Build();
 
-        var cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()));
+        var cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()), null);
         
         cmdManager.AddCommand(cmd);
 
@@ -43,7 +43,7 @@ public class ChatCommandManagerTests
             .WithHandlerMethod(() => {})
             .Build();
 
-        var cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()));
+        var cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()), null);
         
         cmdManager.AddCommand(cmd);
 
@@ -63,7 +63,7 @@ public class ChatCommandManagerTests
             .AddAlias("myAlias")
             .Build();
 
-        var cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()));
+        var cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()), null);
         
         cmdManager.AddCommand(cmd);
 

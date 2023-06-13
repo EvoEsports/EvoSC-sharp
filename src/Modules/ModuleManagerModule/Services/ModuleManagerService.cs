@@ -43,7 +43,6 @@ public class ModuleManagerService : IModuleManagerService
             {
                 await _server.SuccessMessageAsync($"The module '{module.ModuleInfo.Name}' was enabled.", actor);
             }
-            
         }
         catch (Exception ex)
         {
@@ -76,7 +75,6 @@ public class ModuleManagerService : IModuleManagerService
             {
                 await _server.SuccessMessageAsync($"The module '{module.ModuleInfo.Name}' was disabled.", actor);
             }
-            
         }
         catch (Exception ex)
         {
