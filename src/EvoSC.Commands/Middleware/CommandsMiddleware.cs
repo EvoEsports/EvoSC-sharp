@@ -6,7 +6,6 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Remote.ChatRouter;
 using EvoSC.Common.Util;
