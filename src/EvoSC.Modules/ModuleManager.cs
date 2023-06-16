@@ -313,7 +313,7 @@ public class ModuleManager : IModuleManager
                     _manialinkManager.RemoveManiaScript(template.Name);
                     break;
                 case ManialinkTemplateType.Template:
-                    _manialinkManager.RemoveAndHideTemplate(template.Name);
+                    _manialinkManager.RemoveAndHideTemplateAsync(template.Name);
                     break;
                 default:
                     continue;

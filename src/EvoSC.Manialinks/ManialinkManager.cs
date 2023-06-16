@@ -188,7 +188,7 @@ public class ManialinkManager : IManialinkManager
         _templates.Remove(name);
     }
 
-    public async Task RemoveAndHideTemplate(string name)
+    public async Task RemoveAndHideTemplateAsync(string name)
     {
         await HideManialinkAsync(name);
         RemoveTemplate(name);

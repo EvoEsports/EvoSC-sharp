@@ -45,7 +45,7 @@ public interface IManialinkManager
     /// </summary>
     /// <param name="name">The name of the template</param>
     /// <returns></returns>
-    public Task RemoveAndHideTemplate(string name);
+    public Task RemoveAndHideTemplateAsync(string name);
 
     /// <summary>
     /// Remove a ManiaScript resource.

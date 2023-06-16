@@ -6,12 +6,9 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Remote.ChatRouter;
-using EvoSC.Common.TextParsing;
-using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
 using Microsoft.Extensions.Logging;
@@ -25,19 +22,17 @@ public class CommandsMiddleware
     private readonly IControllerManager _controllers;
     private readonly IServerClient _serverClient;
     private readonly IActionPipelineManager _actionPipeline;
-    private readonly IPlayerManagerService _playersManager;
     private readonly ChatCommandParser _parser;
 
     public CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware> logger,
         IChatCommandManager cmdManager, IControllerManager controllers, IServerClient serverClient,
-        IActionPipelineManager actionPipeline, IPlayerManagerService playersManager)
+        IActionPipelineManager actionPipeline)
     {
         _next = next;
         _logger = logger;
         _controllers = controllers;
         _serverClient = serverClient;
         _actionPipeline = actionPipeline;
-        _playersManager = playersManager;
         _parser = new ChatCommandParser(cmdManager);
     }
 

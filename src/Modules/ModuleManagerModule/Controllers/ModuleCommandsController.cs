@@ -3,6 +3,7 @@ using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Official.ModuleManagerModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ModuleManagerModule.Controllers;
 

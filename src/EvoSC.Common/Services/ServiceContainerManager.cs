@@ -4,7 +4,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Services.Models;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -76,7 +75,6 @@ public class ServiceContainerManager : IServiceContainerManager
                     if (intf == typeof(IBackgroundService))
                     {
                         container.Collection.Append(typeof(IBackgroundService), type, Lifestyle.Singleton);
-                        // container.RegisterSingleton(typeof(IBackgroundService), type);
                         continue;
                     }
 

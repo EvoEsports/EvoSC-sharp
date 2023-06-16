@@ -1,7 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Interfaces;
 
-namespace EvoSC.Modules.Official.ModuleManagerModule;
+namespace EvoSC.Modules.Official.ModuleManagerModule.Interfaces;
 
 public interface IModuleManagerService
 {

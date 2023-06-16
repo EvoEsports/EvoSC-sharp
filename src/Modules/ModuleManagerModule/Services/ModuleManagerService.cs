@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
@@ -7,6 +6,7 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Util.TextFormatting;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ModuleManagerModule.Events;
+using EvoSC.Modules.Official.ModuleManagerModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ModuleManagerModule.Services;
 
