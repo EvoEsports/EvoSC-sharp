@@ -162,6 +162,8 @@ Global
 		{75867550-1DE2-4FBB-9FC1-BA840984AF49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {B684B864-31BF-407E-9ED9-A95D32BC4FE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
