@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
@@ -66,6 +67,8 @@ public interface IModuleLoadContext
     public List<IModuleManialinkTemplate> ManialinkTemplates { get; init; }
     
     public string RootNamespace { get; init; }
+    
+    public ILocale? Localization { get; }
 
     /// <summary>
     /// Whether this module is currently enabled.

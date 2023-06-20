@@ -8,9 +8,11 @@ using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Localization;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Middleware.Attributes;
 using EvoSC.Common.Permissions.Attributes;
@@ -520,11 +522,20 @@ public class ModuleManager : IModuleManager
     private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
     {
         var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
+        var rootNamespace = mainClass.Namespace ??
+                            throw new InvalidOperationException("Failed to detect root namespace for module.");
         
         var loadedDependencies = GetLoadedDependencies(moduleInfo);
         var moduleServices = _servicesManager.NewContainer(loadId, assemblies, loadedDependencies);
         moduleServices.RegisterInstance(moduleInfo);
         
+        var localization = GetModuleLocalization(mainClass.Assembly, rootNamespace, moduleInfo);
+
+        if (localization != null)
+        {
+            moduleServices.RegisterInstance(typeof(ILocale), localization);
+        }
+
         await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
         var moduleInstance = CreateModuleInstance(mainClass, moduleServices);
 
@@ -541,9 +552,27 @@ public class ModuleManager : IModuleManager
             Permissions = new List<IPermission>(),
             LoadedDependencies = loadedDependencies,
             ManialinkTemplates = new List<IModuleManialinkTemplate>(),
-            RootNamespace = mainClass.Namespace ??
-                            throw new InvalidOperationException("Failed to detect root namespace for module.")
+            RootNamespace = rootNamespace,
+            Localization = null
         };
+    }
+
+    private ILocale? GetModuleLocalization(Assembly assembly, string rootNamespace, IModuleInfo moduleInfo)
+    {
+        try
+        {
+            var locale = new Locale(assembly, $"{rootNamespace}.Localization");
+
+            _logger.LogDebug("Registered localization for module {Module}", moduleInfo.Name);
+            
+            return locale;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Localization not found for module {Module}", moduleInfo.Name);
+        }
+
+        return null;
     }
 
     private List<Guid> GetLoadedDependencies(IModuleInfo moduleInfo)
@@ -590,12 +619,12 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await TryCallModuleEnableAsync(moduleContext);
-        
         await EnableControllersAsync(moduleContext);
         await EnableMiddlewaresAsync(moduleContext);
         await EnableManialinkTemplatesAsync(moduleContext);
         await StartBackgroundServicesAsync(moduleContext);
+        
+        await TryCallModuleEnableAsync(moduleContext);
 
         moduleContext.SetEnabled(true);
         
@@ -629,12 +658,12 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
-        await TryCallModuleDisableAsync(moduleContext);
-        
         await DisableManialinkTemplatesAsync(moduleContext);
         await DisableControllersAsync(moduleContext);
         await DisableMiddlewaresAsync(moduleContext);
         await StopBackgroundServicesAsync(moduleContext);
+        
+        await TryCallModuleDisableAsync(moduleContext);
         
         moduleContext.SetEnabled(false);
         
