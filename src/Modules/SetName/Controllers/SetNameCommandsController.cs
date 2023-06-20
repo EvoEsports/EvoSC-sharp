@@ -2,6 +2,7 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Manialinks.Interfaces;
 
 namespace EvoSC.Modules.Official.SetName.Controllers;
@@ -10,13 +11,22 @@ namespace EvoSC.Modules.Official.SetName.Controllers;
 public class SetNameCommandsController : EvoScController<CommandInteractionContext>
 {
     private readonly IManialinkManager _manialinks;
+    private readonly ILocale _locale;
 
-    public SetNameCommandsController(IManialinkManager manialinks) => _manialinks = manialinks;
+    public SetNameCommandsController(IManialinkManager manialinks, ILocale locale)
+    {
+        _manialinks = manialinks;
+        _locale = locale;
+    }
 
     [ChatCommand("setname", "Set a custom nickname.")]
     public async Task SetNameAsync()
     {
         await _manialinks.SendManialinkAsync(Context.Player, "SetName.EditName",
-            new {Nickname = Context.Player.NickName});
+            new
+            {
+                Nickname = Context.Player.NickName, 
+                Locale = _locale
+            });
     } 
 }

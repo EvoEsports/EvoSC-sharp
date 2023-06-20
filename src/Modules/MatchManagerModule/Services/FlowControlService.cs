@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
@@ -13,12 +14,14 @@ public class FlowControlService : IFlowControlService
     private readonly IServerClient _server;
     private readonly IEventManager _events;
     private readonly IContextService _context;
+    private readonly ILocale _locale;
     
-    public FlowControlService(IServerClient server, IEventManager events, IContextService context)
+    public FlowControlService(IServerClient server, IEventManager events, IContextService context, ILocale locale)
     {
         _server = server;
         _events = events;
         _context = context;
+        _locale = locale;
     }
 
     public async Task EndRoundAsync()
@@ -31,7 +34,7 @@ public class FlowControlService : IFlowControlService
         _context
             .Audit().Success()
             .WithEventName(AuditEvents.EndRound)
-            .Comment("Round ended");
+            .Comment(_locale["Audit.RoundEnded"]);
     }
 
     public async Task RestartMatchAsync()
@@ -42,7 +45,7 @@ public class FlowControlService : IFlowControlService
         _context
             .Audit().Success()
             .WithEventName(AuditEvents.RestartMatch)
-            .Comment("Match restarted");
+            .Comment(_locale["Audit.MatchRestarted"]);
     }
 
     public async Task SkipMapAsync()
@@ -52,6 +55,6 @@ public class FlowControlService : IFlowControlService
         
         _context.Audit().Success()
             .WithEventName(AuditEvents.SkipMap)
-            .Comment("Map Skipped");
+            .Comment(_locale["Audit.MapSkipped"]);
     }
 }

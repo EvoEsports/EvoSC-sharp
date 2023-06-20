@@ -3,8 +3,10 @@ using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Models.Players;
 using EvoSC.Modules.Official.Maps.Events;
 using EvoSC.Modules.Official.Maps.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -18,14 +20,16 @@ public class MapsController : EvoScController<CommandInteractionContext>
     private readonly IMxMapService _mxMapService;
     private readonly IMapService _mapService;
     private readonly IServerClient _server;
+    private readonly ILocale _locale;
 
     public MapsController(ILogger<MapsController> logger, IMxMapService mxMapService, IMapService mapService,
-        IServerClient server)
+        IServerClient server, ILocale locale)
     {
         _logger = logger;
         _mxMapService = mxMapService;
         _mapService = mapService;
         _server = server;
+        _locale = locale;
     }
 
     [ChatCommand("add", "Adds a map to the server")]
@@ -39,22 +43,22 @@ public class MapsController : EvoScController<CommandInteractionContext>
         catch (Exception e)
         {
             _logger.LogInformation(e, "Failed adding map with ID {MapId}", mapId);
-            await _server.ErrorMessageAsync($"Something went wrong while trying to add map with ID {mapId}.");
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage["FailedAddingMap", mapId], Context.Player);
             return;
         }
 
         if (map == null)
         {
-            await _server.WarningMessageAsync($"Map with ID {mapId} could not be found.");
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage["MapIdNotFound", mapId], Context.Player);
             return;
         }
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MapAdded)
             .HavingProperties(new {Map = map})
-            .Comment("Map was added.");
+            .Comment(_locale["Audit.MapAdded"]);
         
-        await _server.SuccessMessageAsync($"Added {map.Name} by {map.Author.NickName} to the server.");
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage["MapAddedSuccessfully", map.Name, map.Author.NickName], Context.Player);
     }
 
     [ChatCommand("remove", "Removes a map from the server")]
@@ -64,7 +68,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
 
         if (map == null)
         {
-            await _server.WarningMessageAsync($"Map with ID {mapId} could not be found.");
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage["MapIdNotFound", mapId], Context.Player);
             return;
         }
 
@@ -73,9 +77,9 @@ public class MapsController : EvoScController<CommandInteractionContext>
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MapRemoved)
             .HavingProperties(new {Map = map})
-            .Comment("Map was removed.");
+            .Comment(_locale["Audit.MapRemoved"]);
         
-        await _server.SuccessMessageAsync($"Removed map with ID {mapId} from the maplist.");
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage["MapRemovedSuccessfully", mapId], Context.Player);
         _logger.LogInformation("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }
