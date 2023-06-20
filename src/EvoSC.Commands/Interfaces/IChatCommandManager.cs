@@ -1,9 +1,15 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Parsing;
 
 namespace EvoSC.Commands.Interfaces;
 
 public interface IChatCommandManager : IControllerActionRegistry
 {
+    /// <summary>
+    /// The value reader for command parameters.
+    /// </summary>
+    public IValueReaderManager ValueReader { get; }
+    
     /// <summary>
     /// Register a new chat command.
     /// </summary>

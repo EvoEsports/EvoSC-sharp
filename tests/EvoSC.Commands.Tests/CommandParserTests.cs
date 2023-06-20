@@ -31,7 +31,7 @@ public class CommandParserTests
             .WithHandlerMethod(() => {})
             .Build();
 
-        _cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()));
+        _cmdManager = new ChatCommandManager(new Logger<ChatCommandManager>(new LoggerFactory()), null);
         _cmdManager.AddCommand(cmd);
     }
 
@@ -49,7 +49,7 @@ public class CommandParserTests
     public async Task Simple_Command_Parsed()
     {
         var valueReader = GetFullValueReader();
-        var parser = new ChatCommandParser(_cmdManager, valueReader);
+        var parser = new ChatCommandParser(_cmdManager);
 
         var result = await parser.ParseAsync("/myCmd");
         
@@ -61,7 +61,7 @@ public class CommandParserTests
     public async Task Unknown_Command_Is_Intended()
     {
         var valueReader = GetFullValueReader();
-        var parser = new ChatCommandParser(_cmdManager, valueReader);
+        var parser = new ChatCommandParser(_cmdManager);
         
         var result = await parser.ParseAsync("/unknownCommand");
         
@@ -75,7 +75,7 @@ public class CommandParserTests
     public async Task Unknown_Alias_Is_Unintended_Command()
     {
         var valueReader = GetFullValueReader();
-        var parser = new ChatCommandParser(_cmdManager, valueReader);
+        var parser = new ChatCommandParser(_cmdManager);
         
         var result = await parser.ParseAsync("unknownAlias");
         

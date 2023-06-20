@@ -1,4 +1,5 @@
 ﻿using Config.Net;
+using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Attributes;
 
 namespace EvoSC.Modules.Official.ExampleModule;

@@ -2,6 +2,10 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Exceptions;
 using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Interfaces.Parsing;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.TextParsing;
+using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util;
 using Microsoft.Extensions.Logging;
 
@@ -14,13 +18,28 @@ public class ChatCommandManager : IChatCommandManager
     private readonly Dictionary<string, IChatCommand> _cmds = new();
     private readonly Dictionary<string, string> _aliasMap = new();
     private readonly Dictionary<Type, List<IChatCommand>> _controllerCommands = new();
+    private readonly IValueReaderManager _valueReader;
 
     private readonly ILogger<ChatCommandManager> _logger;
 
-
-    public ChatCommandManager(ILogger<ChatCommandManager> logger)
+    public IValueReaderManager ValueReader => _valueReader;
+    
+    public ChatCommandManager(ILogger<ChatCommandManager> logger, IPlayerManagerService playerManager)
     {
         _logger = logger;
+        _valueReader = SetupValueReader(playerManager);
+    }
+
+    private IValueReaderManager SetupValueReader(IPlayerManagerService playerManager)
+    {
+        var valueReader = new ValueReaderManager();
+
+        valueReader.AddReader(new FloatReader());
+        valueReader.AddReader(new IntegerReader());
+        valueReader.AddReader(new Common.TextParsing.ValueReaders.StringReader());
+        valueReader.AddReader(new OnlinePlayerReader(playerManager));
+
+        return valueReader;
     }
     
     public void RegisterForController(Type controllerType)

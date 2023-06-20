@@ -313,7 +313,7 @@ public class ModuleManager : IModuleManager
                     _manialinkManager.RemoveManiaScript(template.Name);
                     break;
                 case ManialinkTemplateType.Template:
-                    _manialinkManager.RemoveTemplate(template.Name);
+                    _manialinkManager.RemoveAndHideTemplateAsync(template.Name);
                     break;
                 default:
                     continue;
@@ -590,20 +590,36 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
+        await TryCallModuleEnableAsync(moduleContext);
+        
         await EnableControllersAsync(moduleContext);
         await EnableMiddlewaresAsync(moduleContext);
         await EnableManialinkTemplatesAsync(moduleContext);
-        await TryCallModuleEnableAsync(moduleContext);
+        await StartBackgroundServicesAsync(moduleContext);
 
         moduleContext.SetEnabled(true);
         
         _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
     }
 
+    private async Task StartBackgroundServicesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var service in moduleContext.Services.GetAllInstances<IBackgroundService>())
+        {
+            await service.StartAsync();
+        }
+    }
+
     public async Task EnableModulesAsync()
     {
         foreach (var module in LoadedModules)
         {
+            if (_config.Modules.DisabledModules.Contains(module.ModuleInfo.Name))
+            {
+                _logger.LogDebug("Module {Name} is disabled", module.ModuleInfo.Name);
+                continue;
+            }
+            
             await EnableAsync(module.LoadId);
         }
     }
@@ -613,14 +629,24 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
+        await TryCallModuleDisableAsync(moduleContext);
+        
+        await DisableManialinkTemplatesAsync(moduleContext);
         await DisableControllersAsync(moduleContext);
         await DisableMiddlewaresAsync(moduleContext);
-        await DisableManialinkTemplatesAsync(moduleContext);
-        await TryCallModuleDisableAsync(moduleContext);
+        await StopBackgroundServicesAsync(moduleContext);
         
         moduleContext.SetEnabled(false);
         
         _logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
+    }
+
+    private async Task StopBackgroundServicesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var service in moduleContext.Services.GetAllInstances<IBackgroundService>())
+        {
+            await service.StopAsync();
+        }
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
