@@ -29,6 +29,7 @@ using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleInjector;
 using Container = SimpleInjector.Container;
 
 namespace EvoSC.Modules;
@@ -533,7 +534,8 @@ public class ModuleManager : IModuleManager
 
         if (localization != null)
         {
-            moduleServices.RegisterInstance(typeof(ILocale), localization);
+            moduleServices.RegisterInstance(typeof(ILocalizationManager), localization);
+            moduleServices.Register<ILocale, Locale>(Lifestyle.Scoped);
         }
 
         await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
@@ -557,11 +559,11 @@ public class ModuleManager : IModuleManager
         };
     }
 
-    private ILocale? GetModuleLocalization(Assembly assembly, string rootNamespace, IModuleInfo moduleInfo)
+    private ILocalizationManager? GetModuleLocalization(Assembly assembly, string rootNamespace, IModuleInfo moduleInfo)
     {
         try
         {
-            var locale = new Locale(assembly, $"{rootNamespace}.Localization");
+            var locale = new LocalizationManager(assembly, $"{rootNamespace}.Localization");
 
             _logger.LogDebug("Registered localization for module {Module}", moduleInfo.Name);
             

@@ -56,11 +56,11 @@ public class PlayerService : IPlayerService
                 .HavingProperties(new {Player = player})
                 .Comment("Player kicked from the server.");
             
-            await _server.SuccessMessageAsync(_locale["PlayerKicked", player.NickName], actor);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerKicked", player.NickName], actor);
         }
         else
         {
-            await _server.ErrorMessageAsync(_locale["PlayerKickingFailed"], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage["PlayerKickingFailed"], actor);
         }
     }
 
@@ -73,8 +73,8 @@ public class PlayerService : IPlayerService
                 .HavingProperties(new {Player = player})
                 .Comment(_locale["Audit.Muted"]);
             
-            await _server.WarningMessageAsync(_locale["YouWereMuted"], player);
-            await _server.SuccessMessageAsync(_locale["PlayerMuted", player.NickName], actor);
+            await _server.WarningMessageAsync(_locale.PlayerLanguage["YouWereMuted"], player);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerMuted", player.NickName], actor);
         }
         else
         {
@@ -91,12 +91,12 @@ public class PlayerService : IPlayerService
                 .HavingProperties(new {Player = player})
                 .Comment(_locale["Audit.Unmuted"]);
             
-            await _server.InfoMessageAsync(_locale["YouGotUnmuted"], player);
-            await _server.SuccessMessageAsync(_locale["PlayerUnmuted", player.NickName], actor);
+            await _server.InfoMessageAsync(_locale.PlayerLanguage["YouGotUnmuted"], player);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerUnmuted", player.NickName], actor);
         }
         else
         {
-            await _server.ErrorMessageAsync(_locale["PlayerUnmutingFailed"], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage["PlayerUnmutingFailed"], actor);
         }
     }
 
@@ -119,7 +119,7 @@ public class PlayerService : IPlayerService
             .HavingProperties(new {Player = player})
             .Comment(_locale["Audit.Banned"]);
         
-        await _server.SuccessMessageAsync(_locale["PlayerBanned", player.NickName], actor);
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerBanned", player.NickName], actor);
     }
 
     public async Task UnbanAsync(string login, IPlayer actor)

@@ -12,7 +12,9 @@ public interface IContextService
     /// <param name="controller">The controller to create the context for.</param>
     /// <returns></returns>
     internal IControllerContext CreateContext(Scope scope, IController controller);
-    
+
+    public void UpdateContext(IControllerContext context);
+
     /// <summary>
     /// Get the current context in the current scope.
     /// </summary>

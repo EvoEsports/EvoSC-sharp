@@ -30,6 +30,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
     private readonly IPlayerManagerService _players;
     private readonly IControllerManager _controllers;
     private readonly IActionPipelineManager _actionPipeline;
+    
     private readonly ValueReaderManager _valueReader = new();
 
     public ManialinkInteractionHandler(IEventManager events, IManialinkActionManager manialinkActionManager,
@@ -90,6 +91,8 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             };
 
             controller.SetContext(manialinkInteractionContext);
+            var contextService = context.ServiceScope.GetInstance<IContextService>();
+            contextService.UpdateContext(manialinkInteractionContext);
 
             if (controller is ManialinkController manialinkController)
             {

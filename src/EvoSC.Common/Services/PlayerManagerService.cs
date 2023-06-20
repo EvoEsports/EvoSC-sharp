@@ -30,11 +30,20 @@ public class PlayerManagerService : IPlayerManagerService
 
     public async Task<IPlayer> GetOrCreatePlayerAsync(string accountId)
     {
-        var player = await GetPlayerAsync(accountId);
-
-        if (player != null)
+        try
         {
-            return player;
+            var player = await GetPlayerAsync(accountId);
+
+            if (player != null)
+            {
+                return player;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex,
+                "Error when trying to get player with Account ID '{AccountID}'. Will attempt creating it instead",
+                accountId);
         }
 
         return await CreatePlayerAsync(accountId);

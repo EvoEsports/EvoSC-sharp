@@ -68,6 +68,8 @@ public class CommandsMiddleware
         };
         
         controller.SetContext(playerInteractionContext);
+        var contextService = context.ServiceScope.GetInstance<IContextService>();
+        contextService.UpdateContext(playerInteractionContext);
 
         var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
             (Task?)cmd.HandlerMethod.Invoke(controller, args) ?? Task.CompletedTask

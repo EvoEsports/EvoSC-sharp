@@ -233,6 +233,9 @@ public class EventManager : IEventManager
         var (instance, scopeContext) = _controllers.CreateInstance(subscription.InstanceClass);
         var context = new EventControllerContext(scopeContext);
         instance.SetContext(context);
+
+        var contextService = scopeContext.ServiceScope.GetInstance<IContextService>();
+        contextService.UpdateContext(context);
         
         return instance;
     }
