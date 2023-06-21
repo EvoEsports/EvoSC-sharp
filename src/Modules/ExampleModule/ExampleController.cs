@@ -5,6 +5,7 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.MatchSettings;
@@ -26,10 +27,12 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IMapRepository _mapRepo;
     private readonly IMatchSettingsService _matchSettings;
     private readonly IManialinkActionManager _manialinkActions;
+    private readonly ILocale _locale;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
         IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo,
-        IMapRepository mapRepo, IMatchSettingsService matchSettings, IManialinkActionManager manialinkActions)
+        IMapRepository mapRepo, IMatchSettingsService matchSettings, IManialinkActionManager manialinkActions,
+        ILocale locale)
     {
         _settings = settings;
         _server = server;
@@ -39,6 +42,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
         _mapRepo = mapRepo;
         _matchSettings = matchSettings;
         _manialinkActions = manialinkActions;
+        _locale = locale;
     }
 
     [ChatCommand("hey", "Say hey!")]
@@ -69,6 +73,7 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var version = await _server.Remote.GetVersionAsync();
+        var translation = _locale.Translate("some [TestValue] sdf [TestValue] ds", "Elon Musk");
+        Console.WriteLine(translation);
     }
 }

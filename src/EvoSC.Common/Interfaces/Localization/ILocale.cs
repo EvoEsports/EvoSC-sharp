@@ -8,4 +8,5 @@ public abstract class ILocale : DynamicObject
     public abstract string this[string name, params object[] args] { get; }
     public abstract ILocale PlayerLanguage { get; }
     public abstract ResourceSet? GetResourceSet();
+    public abstract string Translate(string pattern, params object[] args);
 }

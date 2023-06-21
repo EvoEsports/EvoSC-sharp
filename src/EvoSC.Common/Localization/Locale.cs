@@ -1,7 +1,8 @@
 ﻿using System.Dynamic;
 using System.Globalization;
-using System.Reflection;
 using System.Resources;
+using System.Text;
+using System.Text.RegularExpressions;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces.Controllers;
@@ -17,6 +18,9 @@ public class Locale : ILocale
     
     private bool _useDefaultCulture = true;
 
+    private static readonly Regex TranslationTag =
+        new Regex(@"\[([\w\d_]+)\]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(50));
+
     public override string this[string name, params object[] args] => GetString(name, args);
 
     public override ILocale PlayerLanguage => UsePlayerLanguage();
@@ -30,6 +34,24 @@ public class Locale : ILocale
 
     public override ResourceSet? GetResourceSet() =>
         _localeManager.Manager.GetResourceSet(GetCulture(), true, true);
+
+    public override string Translate(string pattern, params object[] args)
+    {
+        var matches = TranslationTag.Matches(pattern);
+        var sb = new StringBuilder();
+
+        var currIndex = 0;
+        foreach (Match match in matches)
+        {
+            sb.Append(pattern.Substring(currIndex, match.Index - currIndex));
+            var translation = GetString(match.Groups[1].Value, args);
+            currIndex = match.Index + match.Value.Length;
+
+            sb.Append(translation);
+        }
+
+        return sb.ToString();
+    }
 
     private CultureInfo GetCulture()
     {
