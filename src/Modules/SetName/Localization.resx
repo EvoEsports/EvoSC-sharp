@@ -24,10 +24,10 @@
   <data name="NameSuccessfullySet" xml:space="preserve">
     <value>Name successfully set!</value>
   </data>
-  <data name="UI.PlayerChangedTheirName" xml:space="preserve">
+  <data name="PlayerChangedTheirName" xml:space="preserve">
     <value>{0} changed their name to {1}</value>
   </data>
-  <data name="EditYourNickname" xml:space="preserve">
+  <data name="UI.EditYourNickname" xml:space="preserve">
     <value>Edit your nickname</value>
   </data>
   <data name="UI.Nickname" xml:space="preserve">

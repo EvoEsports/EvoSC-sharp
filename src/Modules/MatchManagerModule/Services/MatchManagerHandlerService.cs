@@ -24,7 +24,7 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
     private readonly ILogger<MatchManagerHandlerService> _logger;
     private readonly IEventManager _events;
     private readonly IContextService _context;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
 
     public MatchManagerHandlerService(ILiveModeService liveModeService, IServerClient server,
         IMatchSettingsService matchSettings, ILogger<MatchManagerHandlerService> logger, IEventManager events,
@@ -44,7 +44,7 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
         if (mode == "list")
         {
             var modes = string.Join(", ", _liveModeService.GetAvailableModes());
-            await _server.SuccessMessageAsync(_locale.PlayerLanguage["AvailableModes", modes], actor);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage.AvailableModes(modes), actor);
         }
         else
         {
@@ -58,7 +58,7 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
             catch (LiveModeNotFoundException ex)
             {
                 var modes = string.Join(", ", _liveModeService.GetAvailableModes());
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage["LiveModeNotFound", ex.Message, modes], actor);
+                await _server.ErrorMessageAsync(_locale.PlayerLanguage.LiveModeNotFound(ex.Message, modes), actor);
             }
         }
     }
@@ -73,18 +73,18 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
                 .WithEventName(AuditEvents.MatchSettingsLoaded)
                 .HavingProperties(new {Name = name});
             
-            await _server.InfoMessageAsync(_locale["LoadedMatchSettings", actor.NickName, name]);
+            await _server.InfoMessageAsync(_locale.LoadedMatchSettings(actor.NickName, name));
 
             await _events.RaiseAsync(MatchSettingsEvent.MatchSettingsLoaded,
                 new MatchSettingsLoadedEventArgs {Name = name});
         }
         catch (FileNotFoundException ex)
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["CannotFindMatchSettings", name], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.CannotFindMatchSettings(name), actor);
         }
         catch (Exception ex)
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["UnknownErrorWhenLoadingMatchSettings"], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.UnknownErrorWhenLoadingMatchSettings, actor);
             _logger.LogError(ex, "Failed to load MatchSettings");
             throw;
         }
@@ -115,23 +115,23 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
             _context.Audit().Success()
                 .WithEventName(AuditEvents.ScriptSettingsModified)
                 .HavingProperties(new {Name = name, Value = value})
-                .Comment(_locale["Audit.ModeScriptSettingsModified"]);
+                .Comment(_locale.Audit_ModeScriptSettingsModified);
             
-            await _server.SuccessMessageAsync(_locale["ScriptSettingsSetTo", name, value]);
+            await _server.SuccessMessageAsync(_locale.ScriptSettingsSetTo(name, value));
         }
         catch (FormatException ex)
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["WrongScriptSettingFormat"], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.WrongScriptSettingFormat, actor);
             _logger.LogError(ex, "Wrong format while setting script setting value");
         }
         catch (XmlRpcFaultException ex)
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["FailedSettingScriptSetting", name, ex.Fault.FaultString], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguageFailedSettingScriptSetting(name, ex.Fault.FaultString), actor);
             _logger.LogError(ex, "XMLRPC fault while setting script setting");
         }
         catch (Exception ex)
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["ErrorOccuredWhenSettingScriptSetting", ex.Message], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.ErrorOccuredWhenSettingScriptSetting(ex.Message), actor);
             _logger.LogError(ex, "Failed to set script setting value");
             throw;
         }

@@ -18,7 +18,7 @@ public class SetNameService : ISetNameService
     private readonly IPlayerRepository _playerRepository;
     private readonly IPlayerCacheService _playerCache;
     private readonly IEventManager _events;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
 
     public SetNameService(IServerClient server, IPlayerRepository playerRepository, IPlayerCacheService playerCache,
         IEventManager events, ILocale locale)
@@ -34,15 +34,15 @@ public class SetNameService : ISetNameService
     {
         if (player.NickName.Equals(newName, StringComparison.Ordinal))
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["DidNotChangeName"], player);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.DidNotChangeName, player);
             return;
         }
         
         await _playerRepository.UpdateNicknameAsync(player, newName);
         await _playerCache.UpdatePlayerAsync(player);
         
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage["NameSuccessfullySet", newName], player);
-        await _server.InfoMessageAsync(_locale["PlayerChangedTheirName", player.NickName, newName]);
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.NameSuccessfullySet(newName), player);
+        await _server.InfoMessageAsync(_locale.PlayerChangedTheirName(player.NickName, newName));
         
         await _events.RaiseAsync(SetNameEvents.NicknameUpdated, new NicknameUpdatedEventArgs
         {

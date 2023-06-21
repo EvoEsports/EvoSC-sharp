@@ -24,7 +24,7 @@ public class LiveModeService : ILiveModeService
 
     private readonly IServerClient _server;
     private readonly IContextService _context;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
 
     public LiveModeService(IServerClient server, IContextService context, ILocale locale)
     {
@@ -50,7 +50,7 @@ public class LiveModeService : ILiveModeService
         _context.Audit().Success()
             .WithEventName(AuditEvents.LoadMode)
             .HavingProperties(new {ModeName = modeName})
-            .Comment(_locale["Audit.LoadedModeLive"]);
+            .Comment(_locale.Audit_LoadedModeLive);
         
         return modeName;
     }

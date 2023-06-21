@@ -14,7 +14,7 @@ public class FlowControlService : IFlowControlService
     private readonly IServerClient _server;
     private readonly IEventManager _events;
     private readonly IContextService _context;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
     
     public FlowControlService(IServerClient server, IEventManager events, IContextService context, ILocale locale)
     {
@@ -34,7 +34,7 @@ public class FlowControlService : IFlowControlService
         _context
             .Audit().Success()
             .WithEventName(AuditEvents.EndRound)
-            .Comment(_locale["Audit.RoundEnded"]);
+            .Comment(_locale.Audit_RoundEnded);
     }
 
     public async Task RestartMatchAsync()
@@ -45,7 +45,7 @@ public class FlowControlService : IFlowControlService
         _context
             .Audit().Success()
             .WithEventName(AuditEvents.RestartMatch)
-            .Comment(_locale["Audit.MatchRestarted"]);
+            .Comment(_locale.Audit_MatchRestarted);
     }
 
     public async Task SkipMapAsync()
@@ -55,6 +55,6 @@ public class FlowControlService : IFlowControlService
         
         _context.Audit().Success()
             .WithEventName(AuditEvents.SkipMap)
-            .Comment(_locale["Audit.MapSkipped"]);
+            .Comment(_locale.Audit_MapSkipped);
     }
 }

@@ -18,7 +18,7 @@ public class ModuleManagerService : IModuleManagerService
     private readonly IContextService _context;
     private readonly IModuleManager _modules;
     private readonly IServerClient _server;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
     
     public ModuleManagerService(IContextService context, IModuleManager modules, IServerClient server, ILocale locale)
     {
@@ -33,7 +33,7 @@ public class ModuleManagerService : IModuleManagerService
         _context.Audit()
             .WithEventName(AuditEvents.ModuleEnabled)
             .HavingProperties(new {module.LoadId, module.ModuleInfo})
-            .Comment(_locale["Audit.ModuleEnabled"]);
+            .Comment(_locale.Audit_ModuleEnabled);
 
         var actor = _context.Audit().Actor;
         
@@ -44,7 +44,7 @@ public class ModuleManagerService : IModuleManagerService
             
             if (actor != null)
             {
-                await _server.SuccessMessageAsync(_locale.PlayerLanguage["ModuleWasEnabled", module.ModuleInfo.Name], actor);
+                await _server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name), actor);
             }
         }
         catch (Exception ex)
@@ -53,7 +53,7 @@ public class ModuleManagerService : IModuleManagerService
             
             if (actor != null)
             {
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage["FailedEnablingModule", ex.Message], actor);
+                await _server.ErrorMessageAsync(_locale.PlayerLanguage.FailedEnablingModule(ex.Message), actor);
             }
             
             throw;
@@ -65,7 +65,7 @@ public class ModuleManagerService : IModuleManagerService
         _context.Audit()
             .WithEventName(AuditEvents.ModuleEnabled)
             .HavingProperties(new {module.LoadId, module.ModuleInfo})
-            .Comment(_locale["Audit.ModuleDisabled"]);
+            .Comment(_locale.Audit_ModuleDisabled);
 
         var actor = _context.Audit().Actor;
         
@@ -76,7 +76,7 @@ public class ModuleManagerService : IModuleManagerService
             
             if (actor != null)
             {
-                await _server.SuccessMessageAsync(_locale.PlayerLanguage["ModuleWasDisabled", module.ModuleInfo.Name], actor);
+                await _server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name), actor);
             }
         }
         catch (Exception ex)
@@ -85,7 +85,7 @@ public class ModuleManagerService : IModuleManagerService
             
             if (actor != null)
             {
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage["FailedDisablingModule", ex.Message], actor);
+                await _server.ErrorMessageAsync(_locale.PlayerLanguage.FailedDisablingModule(ex.Message), actor);
             }
             
             throw;
@@ -95,7 +95,7 @@ public class ModuleManagerService : IModuleManagerService
     public Task ListModulesAsync(IPlayer actor)
     {
         var message = new TextFormatter();
-        message.AddText(_locale.PlayerLanguage["LoadedModules"]);
+        message.AddText(_locale.PlayerLanguage.LoadedModules);
 
         foreach (var module in _modules.LoadedModules)
         {

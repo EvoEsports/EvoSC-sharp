@@ -15,7 +15,7 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
 {
     private readonly IFlowControlService _flowControl;
     private readonly IServerClient _server;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
 
     public FlowControlCommands(IFlowControlService flowControl, IServerClient server, ILocale locale)
     {
@@ -29,14 +29,14 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
     public async Task RestartMatchAsync()
     {
         await _flowControl.RestartMatchAsync();
-        await _server.InfoMessageAsync(_locale["RestartedMatch", Context.Player.NickName]);
+        await _server.InfoMessageAsync(_locale.RestartedMatch(Context.Player.NickName));
     }
 
     [ChatCommand("endround", "Force end the current round.", FlowControlPermissions.EndRound)]
     public async Task EndRoundAsync()
     {
         await _flowControl.EndRoundAsync();
-        await _server.InfoMessageAsync(_locale["ForcedRoundEnd", Context.Player.NickName]);
+        await _server.InfoMessageAsync(_locale.ForcedRoundEnd(Context.Player.NickName));
     }
 
     [ChatCommand("skipmap", "Skip to the next map.", FlowControlPermissions.SkipMap)]
@@ -44,6 +44,6 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
     public async Task SkipMapAsync()
     {
         await _flowControl.SkipMapAsync();
-        await _server.InfoMessageAsync(_locale["SkippedToNextMap", Context.Player.NickName]);
+        await _server.InfoMessageAsync(_locale.SkippedToNextMap(Context.Player.NickName));
     }
 }

@@ -1,4 +1,6 @@
-﻿using EvoSC.Commands;
+﻿using System.Collections;
+using System.Dynamic;
+using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
@@ -11,14 +13,14 @@ namespace EvoSC.Modules.Official.SetName.Controllers;
 public class SetNameCommandsController : EvoScController<CommandInteractionContext>
 {
     private readonly IManialinkManager _manialinks;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
 
     public SetNameCommandsController(IManialinkManager manialinks, ILocale locale)
     {
         _manialinks = manialinks;
         _locale = locale;
     }
-
+    
     [ChatCommand("setname", "Set a custom nickname.")]
     public async Task SetNameAsync()
     {

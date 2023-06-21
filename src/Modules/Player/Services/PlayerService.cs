@@ -19,7 +19,7 @@ public class PlayerService : IPlayerService
     private readonly IServerClient _server;
     private readonly ILogger<PlayerService> _logger;
     private readonly IContextService _context;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
     
     public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger, IContextService context, ILocale locale)
     {
@@ -38,11 +38,11 @@ public class PlayerService : IPlayerService
         if (player == null)
         {
             player = await _playerManager.CreatePlayerAsync(accountId);
-            await _server.InfoMessageAsync(_locale["PlayerFirstJoined", player.NickName]);
+            await _server.InfoMessageAsync(_locale.PlayerFirstJoined(player.NickName));
         }
         else
         {
-            await _server.InfoMessageAsync(_locale["PlayerJoined", player.NickName]);
+            await _server.InfoMessageAsync(_locale.PlayerJoined(player.NickName));
         }
         await _playerManager.UpdateLastVisitAsync(player);
     }
@@ -54,13 +54,13 @@ public class PlayerService : IPlayerService
             _context.Audit().Success()
                 .WithEventName(AuditEvents.PlayerKicked)
                 .HavingProperties(new {Player = player})
-                .Comment("Player kicked from the server.");
+                .Comment(_locale.Audit_Kicked);
             
-            await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerKicked", player.NickName], actor);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerKicked(player.NickName), actor);
         }
         else
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["PlayerKickingFailed"], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.PlayerKickingFailed, actor);
         }
     }
 
@@ -71,14 +71,14 @@ public class PlayerService : IPlayerService
             _context.Audit().Success()
                 .WithEventName(AuditEvents.PlayerMuted)
                 .HavingProperties(new {Player = player})
-                .Comment(_locale["Audit.Muted"]);
+                .Comment(_locale.Audit_Muted);
             
-            await _server.WarningMessageAsync(_locale.PlayerLanguage["YouWereMuted"], player);
-            await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerMuted", player.NickName], actor);
+            await _server.WarningMessageAsync(_locale.PlayerLanguage.YouWereMuted, player);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerMuted(player.NickName), actor);
         }
         else
         {
-            await _server.ErrorMessageAsync(_locale["PlayerMutingFailed"]);
+            await _server.ErrorMessageAsync(_locale.PlayerMutingFailed);
         }
     }
 
@@ -89,14 +89,14 @@ public class PlayerService : IPlayerService
             _context.Audit().Success()
                 .WithEventName(AuditEvents.PlayerUnmuted)
                 .HavingProperties(new {Player = player})
-                .Comment(_locale["Audit.Unmuted"]);
+                .Comment(_locale.Audit_Unmuted);
             
-            await _server.InfoMessageAsync(_locale.PlayerLanguage["YouGotUnmuted"], player);
-            await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerUnmuted", player.NickName], actor);
+            await _server.InfoMessageAsync(_locale.PlayerLanguage.YouGotUnmuted, player);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerUnmuted(player.NickName), actor);
         }
         else
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage["PlayerUnmutingFailed"], actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.PlayerUnmutingFailed, actor);
         }
     }
 
@@ -117,9 +117,9 @@ public class PlayerService : IPlayerService
         _context.Audit().Success()
             .WithEventName(AuditEvents.PlayerBanned)
             .HavingProperties(new {Player = player})
-            .Comment(_locale["Audit.Banned"]);
+            .Comment(_locale.Audit_Banned);
         
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage["PlayerBanned", player.NickName], actor);
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerBanned(player.NickName), actor);
     }
 
     public async Task UnbanAsync(string login, IPlayer actor)
@@ -131,15 +131,15 @@ public class PlayerService : IPlayerService
                 _context.Audit().Success()
                     .WithEventName(AuditEvents.PlayerUnbanned)
                     .HavingProperties(new {PlayerLogin = login})
-                    .Comment(_locale["Audit.Unbanned"]);
+                    .Comment(_locale.Audit_Unbanned);
                 
-                await _server.SuccessMessageAsync(_locale["PlayerUnbanned", login]);
+                await _server.SuccessMessageAsync(_locale.PlayerUnbanned(login));
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to unban player {Login}", login);
-            await _server.ErrorMessageAsync(_locale["PlayerUnbanningFailed", login]);
+            await _server.ErrorMessageAsync(_locale.PlayerUnbanningFailed(login));
         }
 
         try
@@ -149,15 +149,15 @@ public class PlayerService : IPlayerService
                 _context.Audit().Success()
                     .WithEventName(AuditEvents.PlayerUnblacklisted)
                     .HavingProperties(new {PlayerLogin = login})
-                    .Comment(_locale["Audit.Unblacklisted"]);
+                    .Comment(_locale.Audit_Unblacklisted);
                 
-                await _server.SuccessMessageAsync(_locale["PlayerUnblacklisted", login]);
+                await _server.SuccessMessageAsync(_locale.PlayerUnblacklisted(login));
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to un-blacklist player {Login}", login);
-            await _server.ErrorMessageAsync(_locale["PlayerUnblacklistingFailed", login]);
+            await _server.ErrorMessageAsync(_locale.PlayerUnblacklistingFailed(login));
         }
     }
 }

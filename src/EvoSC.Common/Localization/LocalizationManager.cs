@@ -14,7 +14,9 @@ public class LocalizationManager : ILocalizationManager
         _resourceManager = new ResourceManager(resource, assembly);
         _resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true);
     }
-    
+
+    public ResourceManager Manager => _resourceManager;
+
     public string GetString(CultureInfo culture, string name, params object[] args)
     {
         var localeString = _resourceManager.GetString(name, culture);

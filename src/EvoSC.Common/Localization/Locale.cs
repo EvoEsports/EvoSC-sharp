@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Dynamic;
+using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using EvoSC.Common.Config.Models;
@@ -16,9 +17,9 @@ public class Locale : ILocale
     
     private bool _useDefaultCulture = true;
 
-    public string this[string name, params object[] args] => GetString(name, args);
+    public override string this[string name, params object[] args] => GetString(name, args);
 
-    ILocale ILocale.PlayerLanguage => UsePlayerLanguage();
+    public override ILocale PlayerLanguage => UsePlayerLanguage();
 
     public Locale(ILocalizationManager localeManager, IContextService context, IEvoScBaseConfig config)
     {
@@ -26,6 +27,9 @@ public class Locale : ILocale
         _context = context;
         _config = config;
     }
+
+    public override ResourceSet? GetResourceSet() =>
+        _localeManager.Manager.GetResourceSet(GetCulture(), true, true);
 
     private CultureInfo GetCulture()
     {
@@ -50,5 +54,19 @@ public class Locale : ILocale
         var localString = _localeManager.GetString(GetCulture(), name, args);
         _useDefaultCulture = true;
         return localString;
+    }
+
+    public override bool TryGetMember(GetMemberBinder binder, out object? result)
+    {
+        var name = binder.Name.Replace("_", ".");
+        result = this[name];
+        return true;
+    }
+
+    public override bool TryInvokeMember(InvokeMemberBinder binder, object?[]? args, out object? result)
+    {
+        var name = binder.Name.Replace("_", ".");
+        result = this[name, args!];
+        return true;
     }
 }

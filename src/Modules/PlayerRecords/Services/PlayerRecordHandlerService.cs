@@ -23,7 +23,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
     private readonly IPlayerRecordSettings _recordOptions;
     private readonly IServerClient _server;
     private readonly IMapService _maps;
-    private readonly ILocale _locale;
+    private readonly dynamic _locale;
 
     public PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
         IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server, IMapService maps,
@@ -62,9 +62,9 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
     public Task SendRecordUpdateToChatAsync(IPlayerRecord record) => _recordOptions.EchoPb switch
     {
         EchoOptions.All => _server.InfoMessageAsync(
-            _locale["PlayerGotANewPb", record.Player.NickName, FormattingUtils.FormatTime(record.Score)]),
+            _locale.PlayerGotANewPb(record.Player.NickName, FormattingUtils.FormatTime(record.Score))),
         EchoOptions.Player => _server.InfoMessageAsync(
-            _locale.PlayerLanguage["YouGotANewPb", FormattingUtils.FormatTime(record.Score)], record.Player),
+            _locale.PlayerLanguage.YouGotANewPb(FormattingUtils.FormatTime(record.Score)), record.Player),
         _ => Task.CompletedTask
     };
 
@@ -75,7 +75,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
 
         if (pb == null)
         {
-            await _server.InfoMessageAsync(_locale.PlayerLanguage["YouHaveNotSetATime"], player);
+            await _server.InfoMessageAsync(_locale.PlayerLanguage.YouHaveNotSetATime, player);
             return;
         }
 
@@ -84,6 +84,6 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
         var m = pb.Score / 1000 / 60;
         var formattedTime = $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
 
-        await _server.InfoMessageAsync(_locale.PlayerLanguage["YourCurrentPbIs", formattedTime], player);
+        await _server.InfoMessageAsync(_locale.PlayerLanguage.YourCurrentPbIs(formattedTime), player);
     }
 }

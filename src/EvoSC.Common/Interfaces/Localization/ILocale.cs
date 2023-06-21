@@ -1,7 +1,11 @@
-﻿namespace EvoSC.Common.Interfaces.Localization;
+﻿using System.Dynamic;
+using System.Resources;
 
-public interface ILocale
+namespace EvoSC.Common.Interfaces.Localization;
+
+public abstract class ILocale : DynamicObject
 {
-    public string this[string name, params object[] args] { get; }
-    public ILocale PlayerLanguage { get; }
+    public abstract string this[string name, params object[] args] { get; }
+    public abstract ILocale PlayerLanguage { get; }
+    public abstract ResourceSet? GetResourceSet();
 }
