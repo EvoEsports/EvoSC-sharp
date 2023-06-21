@@ -19,7 +19,7 @@ public class Locale : ILocale
     private bool _useDefaultCulture = true;
 
     private static readonly Regex TranslationTag =
-        new Regex(@"\[([\w\d_]+)\]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(50));
+        new(@"\[([\w\d_]+)\]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(50));
 
     public override string this[string name, params object[] args] => GetString(name, args);
 
@@ -48,6 +48,11 @@ public class Locale : ILocale
             currIndex = match.Index + match.Value.Length;
 
             sb.Append(translation);
+        }
+
+        if (currIndex + 1 < pattern.Length)
+        {
+            sb.Append(pattern.Substring(currIndex));
         }
 
         return sb.ToString();
