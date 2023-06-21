@@ -6,12 +6,12 @@ namespace EvoSC.Modules.Official.ModuleManagerModule;
 [PermissionGroup]
 public enum ModuleManagerPermissions
 {
-    [Description("Can enable or disable modules.")]
+    [Description("[Permission.ActivateModule]")]
     ActivateModule,
     
-    [Description("Can install or uninstall modules.")]
+    [Description("[Permission.InstallModule]")]
     InstallModule,
     
-    [Description("Can access all modules's configuration.")]
+    [Description("Permission.ConfigureModules")]
     ConfigureModules
 }

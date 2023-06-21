@@ -24,7 +24,7 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
         _locale = locale;
     }
 
-    [ChatCommand("restartmatch", "Restart the current match.", FlowControlPermissions.RestartMatch)]
+    [ChatCommand("restartmatch", "[Command.RestartMatch]", FlowControlPermissions.RestartMatch)]
     [CommandAlias("/resmatch", hide: true)]
     public async Task RestartMatchAsync()
     {
@@ -32,14 +32,14 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
         await _server.InfoMessageAsync(_locale.RestartedMatch(Context.Player.NickName));
     }
 
-    [ChatCommand("endround", "Force end the current round.", FlowControlPermissions.EndRound)]
+    [ChatCommand("endround", "[Command.EndRound]", FlowControlPermissions.EndRound)]
     public async Task EndRoundAsync()
     {
         await _flowControl.EndRoundAsync();
         await _server.InfoMessageAsync(_locale.ForcedRoundEnd(Context.Player.NickName));
     }
 
-    [ChatCommand("skipmap", "Skip to the next map.", FlowControlPermissions.SkipMap)]
+    [ChatCommand("skipmap", "[Command.Skip]", FlowControlPermissions.SkipMap)]
     [CommandAlias("/skip", hide: true)]
     public async Task SkipMapAsync()
     {

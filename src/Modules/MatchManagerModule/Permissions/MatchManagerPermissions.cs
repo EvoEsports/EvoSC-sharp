@@ -6,9 +6,9 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Permissions;
 [PermissionGroup]
 public enum MatchManagerPermissions
 {
-    [Description("Can set the current live mode.")]
+    [Description("[Permission.SetLiveMode]")]
     SetLiveMode,
     
-    [Description("Can load match settings files.")]
+    [Description("[Permission.LoadMatchSettings]")]
     LoadMatchSettings
 }

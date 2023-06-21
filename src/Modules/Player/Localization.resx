@@ -52,7 +52,7 @@
     <value>You got un-muted by an admin.</value>
   </data>
   <data name="PlayerUnmuted" xml:space="preserve">
-    <value>$&lt;{0}$&gt; was muted.</value>
+    <value>$&lt;{0}$&gt; was un-muted.</value>
   </data>
   <data name="PlayerUnmutingFailed" xml:space="preserve">
     <value>Failed to un-mute the player. Did they leave already?</value>
@@ -80,5 +80,29 @@
   </data>
   <data name="PlayerUnblacklistingFailed" xml:space="preserve">
     <value>Player with login '{0}' was not found in the blacklist.</value>
+  </data>
+  <data name="Command.Kick" xml:space="preserve">
+    <value>Kick a player from the server.</value>
+  </data>
+  <data name="Command.Mute" xml:space="preserve">
+    <value>Mute a player from the chat.</value>
+  </data>
+  <data name="Command.Unmute" xml:space="preserve">
+    <value>Un-mute player from the chat.</value>
+  </data>
+  <data name="Command.Ban" xml:space="preserve">
+    <value>Ban and blacklist a player from the server.</value>
+  </data>
+  <data name="Command.Unban" xml:space="preserve">
+    <value>Remove a player from the ban- and blacklist.</value>
+  </data>
+  <data name="Permission.KickPlayer" xml:space="preserve">
+    <value>Can kick players from the server.</value>
+  </data>
+  <data name="Permission.BanPlayer" xml:space="preserve">
+    <value>Can ban or blacklist players from the server.</value>
+  </data>
+  <data name="Permission.MutePlayer" xml:space="preserve">
+    <value>Can mute the player from the chat.</value>
   </data>
 </root>

@@ -37,7 +37,7 @@
     <value>Map skipped.</value>
   </data>
   <data name="Audit.LoadedModeLive" xml:space="preserve">
-    <value>Loaded mode live.</value>
+    <value>Loaded mode using live loading.</value>
   </data>
   <data name="AvailableModes" xml:space="preserve">
     <value>Available modes: $fff{0}</value>
@@ -67,6 +67,45 @@
     <value>Failed to set script setting '{0}': {1}</value>
   </data>
   <data name="ErrorOccuredWhenSettingScriptSetting" xml:space="preserve">
-    <value>An error occured while trying to set the script setting: {0e}</value>
+    <value>An error occured while trying to set the script setting: {0}</value>
+  </data>
+  <data name="Command.RestartMatch" xml:space="preserve">
+    <value>Restart the current match.</value>
+  </data>
+  <data name="Command.EndRound" xml:space="preserve">
+    <value>Force end the current round.</value>
+  </data>
+  <data name="Command.Skip" xml:space="preserve">
+    <value>Skip to the next map.</value>
+  </data>
+  <data name="Command.SetMode" xml:space="preserve">
+    <value>Change current game mode.</value>
+  </data>
+  <data name="Command.SetMode.Mode" xml:space="preserve">
+    <value>The mode to change to.</value>
+  </data>
+  <data name="Command.LoadMatchSettings" xml:space="preserve">
+    <value>Load a match settings file.</value>
+  </data>
+  <data name="Command.LoadMatchSettings.Name" xml:space="preserve">
+    <value>The name of the matchsettings file, without extension.</value>
+  </data>
+  <data name="Command.ScriptSetting" xml:space="preserve">
+    <value>Set the value of a script setting.</value>
+  </data>
+  <data name="Permission.RestartMatch" xml:space="preserve">
+    <value>Can restart the current map.</value>
+  </data>
+  <data name="Permission.EndRound" xml:space="preserve">
+    <value>Can end the current round.</value>
+  </data>
+  <data name="Permission.SkipMap" xml:space="preserve">
+    <value>Can skip the current map and load the next one.</value>
+  </data>
+  <data name="Permission.SetLiveMode" xml:space="preserve">
+    <value>Can set the current live mode.</value>
+  </data>
+  <data name="Permission.LoadMatchSettings" xml:space="preserve">
+    <value>Can load match settings files.</value>
   </data>
 </root>

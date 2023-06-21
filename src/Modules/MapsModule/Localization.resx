@@ -36,4 +36,10 @@
   <data name="Audit.MapRemoved" xml:space="preserve">
     <value>Map was removed.</value>
   </data>
+  <data name="Command.Add" xml:space="preserve">
+    <value>Add a map to the server.</value>
+  </data>
+  <data name="Command.Remove" xml:space="preserve">
+    <value>Remove a map from the server.</value>
+  </data>
 </root>

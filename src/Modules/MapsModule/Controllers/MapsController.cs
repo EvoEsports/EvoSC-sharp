@@ -32,7 +32,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
         _locale = locale;
     }
 
-    [ChatCommand("add", "Adds a map to the server")]
+    [ChatCommand("add", "[Commmand.Add]")]
     public async Task AddMap(string mapId)
     {
         IMap? map;
@@ -61,7 +61,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
         await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author.NickName), Context.Player);
     }
 
-    [ChatCommand("remove", "Removes a map from the server")]
+    [ChatCommand("remove", "[Command.Remove]")]
     public async Task RemoveMap(long mapId)
     {
         var map = await _mapService.GetMapByIdAsync(mapId);

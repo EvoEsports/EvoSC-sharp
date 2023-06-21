@@ -30,4 +30,7 @@
   <data name="YourCurrentPbIs" xml:space="preserve">
     <value>Your current pb is $&lt;$fff{0}$&gt;</value>
   </data>
+  <data name="Command.Pb" xml:space="preserve">
+    <value>Show your best time on the current map.</value>
+  </data>
 </root>

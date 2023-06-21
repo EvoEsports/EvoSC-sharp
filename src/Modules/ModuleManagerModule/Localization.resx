@@ -39,4 +39,22 @@
   <data name="LoadedModules" xml:space="preserve">
     <value>Loaded modules: </value>
   </data>
+  <data name="Command.EnableModule" xml:space="preserve">
+    <value>Enable a module.</value>
+  </data>
+  <data name="Command.DisableModule" xml:space="preserve">
+    <value>Disable a module.</value>
+  </data>
+  <data name="Command.Modules" xml:space="preserve">
+    <value>List loaded modules in the chat.</value>
+  </data>
+  <data name="Permission.ActivateModule" xml:space="preserve">
+    <value>Can enable or disable modules.</value>
+  </data>
+  <data name="Permission.InstallModule" xml:space="preserve">
+    <value>Can install or uninstall modules.</value>
+  </data>
+  <data name="Permission.ConfigureModules" xml:space="preserve">
+    <value>Can access all modules's configuration.</value>
+  </data>
 </root>

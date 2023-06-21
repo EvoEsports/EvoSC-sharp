@@ -21,7 +21,7 @@ public class SetNameCommandsController : EvoScController<CommandInteractionConte
         _locale = locale;
     }
     
-    [ChatCommand("setname", "Set a custom nickname.")]
+    [ChatCommand("setname", "[Command.SetName]")]
     public async Task SetNameAsync()
     {
         await _manialinks.SendManialinkAsync(Context.Player, "SetName.EditName",

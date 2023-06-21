@@ -14,6 +14,6 @@ public class CommandController : EvoScController<CommandInteractionContext>
     public CommandController(IPlayerRecordHandlerService playerRecordHandler) =>
         _playerRecordHandler = playerRecordHandler;
 
-    [ChatCommand("pb", "Show your best time on the current map.")]
+    [ChatCommand("pb", "[Command.Pb]")]
     public Task ShowPb() => _playerRecordHandler.ShowCurrentPlayerPbAsync(Context.Player);
 }

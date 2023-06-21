@@ -39,4 +39,7 @@
   <data name="UI.Cancel" xml:space="preserve">
     <value>$f00Cancel</value>
   </data>
+  <data name="Command.SetName" xml:space="preserve">
+    <value>Set a custom nickname.</value>
+  </data>
 </root>
