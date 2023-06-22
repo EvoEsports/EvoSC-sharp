@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Linq;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Database.Models.Player;
@@ -118,5 +119,40 @@ public class LocaleTests
         var result = locale.TestKeyWithArgs("My Argument");
         
         Assert.Equal("This is the argument: My Argument", result);
+    }
+
+    [Fact]
+    public void Returns_Resource_Set()
+    {
+        var locale = new Locale(_manager, _contextService.Object, _config.Object);
+
+        var resources = locale
+            .GetResourceSet()?
+            .Cast<DictionaryEntry>()
+            .ToArray();
+        
+        Assert.NotNull(resources);
+        Assert.Equal("TestKey", resources[0].Key);
+        Assert.Equal("This is a sentence.", resources[0].Value);
+        Assert.Equal("TestKeyWithArgs", resources[1].Key);
+        Assert.Equal("This is the argument: {0}", resources[1].Value);
+    }
+    
+    [Fact]
+    public void Returns_Resource_Set_Of_Player_Language()
+    {
+        var locale = new Locale(_manager, _contextService.Object, _config.Object);
+
+        var resources = locale
+            .PlayerLanguage
+            .GetResourceSet()?
+            .Cast<DictionaryEntry>()
+            .ToArray();
+        
+        Assert.NotNull(resources);
+        Assert.Equal("TestKey", resources[0].Key);
+        Assert.Equal("Dette er en setning.", resources[0].Value);
+        Assert.Equal("TestKeyWithArgs", resources[1].Key);
+        Assert.Equal("Dette er argumentet: {0}", resources[1].Value);
     }
 }
