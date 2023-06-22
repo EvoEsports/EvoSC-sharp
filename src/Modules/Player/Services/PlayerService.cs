@@ -21,7 +21,7 @@ public class PlayerService : IPlayerService
     private readonly IContextService _context;
     private readonly dynamic _locale;
     
-    public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger, IContextService context, ILocale locale)
+    public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger, IContextService context, Locale locale)
     {
         _playerManager = playerManager;
         _server = server;

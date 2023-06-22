@@ -3,7 +3,7 @@ using System.Resources;
 
 namespace EvoSC.Common.Interfaces.Localization;
 
-public abstract class ILocale : DynamicObject
+public abstract class Locale : DynamicObject
 {
     /// <summary>
     /// Get the string of a locale key.
@@ -15,7 +15,7 @@ public abstract class ILocale : DynamicObject
     /// <summary>
     /// Use the player's selected language when returning locale strings.
     /// </summary>
-    public abstract ILocale PlayerLanguage { get; }
+    public abstract Locale PlayerLanguage { get; }
     
     /// <summary>
     /// Get the resource set for the current resource.

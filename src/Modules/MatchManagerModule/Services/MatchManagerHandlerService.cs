@@ -28,7 +28,7 @@ public class MatchManagerHandlerService : IMatchManagerHandlerService
 
     public MatchManagerHandlerService(ILiveModeService liveModeService, IServerClient server,
         IMatchSettingsService matchSettings, ILogger<MatchManagerHandlerService> logger, IEventManager events,
-        IContextService context, ILocale locale)
+        IContextService context, Locale locale)
     {
         _liveModeService = liveModeService;
         _server = server;

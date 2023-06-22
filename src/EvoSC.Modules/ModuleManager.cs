@@ -535,7 +535,7 @@ public class ModuleManager : IModuleManager
         if (localization != null)
         {
             moduleServices.RegisterInstance(typeof(ILocalizationManager), localization);
-            moduleServices.Register<ILocale, Locale>(Lifestyle.Scoped);
+            moduleServices.Register<Locale, LocaleResource>(Lifestyle.Scoped);
         }
 
         await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);

@@ -10,7 +10,7 @@ using EvoSC.Common.Interfaces.Localization;
 
 namespace EvoSC.Common.Localization;
 
-public class Locale : ILocale
+public class LocaleResource : Locale
 {
     private readonly ILocalizationManager _localeManager;
     private readonly IContextService _context;
@@ -23,9 +23,9 @@ public class Locale : ILocale
 
     public override string this[string name, params object[] args] => GetString(name, args);
 
-    public override ILocale PlayerLanguage => UsePlayerLanguage();
+    public override Locale PlayerLanguage => UsePlayerLanguage();
 
-    public Locale(ILocalizationManager localeManager, IContextService context, IEvoScBaseConfig config)
+    public LocaleResource(ILocalizationManager localeManager, IContextService context, IEvoScBaseConfig config)
     {
         _localeManager = localeManager;
         _context = context;
@@ -70,7 +70,7 @@ public class Locale : ILocale
         return CultureInfo.GetCultureInfo(context.Player.Settings.DisplayLanguage);
     }
 
-    private ILocale UsePlayerLanguage()
+    private Locale UsePlayerLanguage()
     {
         _useDefaultCulture = false;
         return this;
@@ -85,14 +85,14 @@ public class Locale : ILocale
 
     public override bool TryGetMember(GetMemberBinder binder, out object? result)
     {
-        var name = binder.Name.Replace("_", ".");
+        var name = binder.Name.Replace("_", ".", StringComparison.Ordinal);
         result = this[name];
         return true;
     }
 
     public override bool TryInvokeMember(InvokeMemberBinder binder, object?[]? args, out object? result)
     {
-        var name = binder.Name.Replace("_", ".");
+        var name = binder.Name.Replace("_", ".", StringComparison.Ordinal);
         result = this[name, args!];
         return true;
     }

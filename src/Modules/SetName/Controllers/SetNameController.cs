@@ -10,9 +10,9 @@ namespace EvoSC.Modules.Official.SetName.Controllers;
 public class SetNameController : ManialinkController
 {
     private readonly ISetNameService _setNameService;
-    private readonly ILocale _locale;
+    private readonly Locale _locale;
 
-    public SetNameController(ISetNameService setNameService, ILocale locale)
+    public SetNameController(ISetNameService setNameService, Locale locale)
     {
         _setNameService = setNameService;
         _locale = locale;

@@ -6,7 +6,6 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models.Players;
 using EvoSC.Modules.Official.Maps.Events;
 using EvoSC.Modules.Official.Maps.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -23,7 +22,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
     private readonly dynamic _locale;
 
     public MapsController(ILogger<MapsController> logger, IMxMapService mxMapService, IMapService mapService,
-        IServerClient server, ILocale locale)
+        IServerClient server, Locale locale)
     {
         _logger = logger;
         _mxMapService = mxMapService;

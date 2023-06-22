@@ -16,7 +16,7 @@ public class FlowControlService : IFlowControlService
     private readonly IContextService _context;
     private readonly dynamic _locale;
     
-    public FlowControlService(IServerClient server, IEventManager events, IContextService context, ILocale locale)
+    public FlowControlService(IServerClient server, IEventManager events, IContextService context, Locale locale)
     {
         _server = server;
         _events = events;

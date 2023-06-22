@@ -27,7 +27,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
 
     public PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
         IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server, IMapService maps,
-        ILocale locale)
+        Locale locale)
     {
         _playerRecords = playerRecords;
         _players = players;

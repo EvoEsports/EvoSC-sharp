@@ -20,7 +20,7 @@ public class ModuleManagerService : IModuleManagerService
     private readonly IServerClient _server;
     private readonly dynamic _locale;
     
-    public ModuleManagerService(IContextService context, IModuleManager modules, IServerClient server, ILocale locale)
+    public ModuleManagerService(IContextService context, IModuleManager modules, IServerClient server, Locale locale)
     {
         _context = context;
         _modules = modules;

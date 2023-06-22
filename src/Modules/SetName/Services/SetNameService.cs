@@ -7,7 +7,6 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.SetName.Events;
 using EvoSC.Modules.Official.SetName.Interfaces;
-using GBX.NET.Engines.Game;
 
 namespace EvoSC.Modules.Official.SetName.Services;
 
@@ -21,7 +20,7 @@ public class SetNameService : ISetNameService
     private readonly dynamic _locale;
 
     public SetNameService(IServerClient server, IPlayerRepository playerRepository, IPlayerCacheService playerCache,
-        IEventManager events, ILocale locale)
+        IEventManager events, Locale locale)
     {
         _server = server;
         _playerRepository = playerRepository;

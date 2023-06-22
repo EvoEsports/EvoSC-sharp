@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Dynamic;
-using EvoSC.Commands;
+﻿using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
@@ -15,7 +13,7 @@ public class SetNameCommandsController : EvoScController<CommandInteractionConte
     private readonly IManialinkManager _manialinks;
     private readonly dynamic _locale;
 
-    public SetNameCommandsController(IManialinkManager manialinks, ILocale locale)
+    public SetNameCommandsController(IManialinkManager manialinks, Locale locale)
     {
         _manialinks = manialinks;
         _locale = locale;

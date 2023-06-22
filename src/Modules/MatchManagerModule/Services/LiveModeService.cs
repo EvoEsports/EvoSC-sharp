@@ -26,7 +26,7 @@ public class LiveModeService : ILiveModeService
     private readonly IContextService _context;
     private readonly dynamic _locale;
 
-    public LiveModeService(IServerClient server, IContextService context, ILocale locale)
+    public LiveModeService(IServerClient server, IContextService context, Locale locale)
     {
         _server = server;
         _context = context;

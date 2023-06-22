@@ -71,7 +71,7 @@ public class LocaleTests
     [Fact]
     public void Get_Locale_From_Indexer()
     {
-        var locale = new Locale(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
 
         var result = locale["TestKey"];
         
@@ -81,7 +81,7 @@ public class LocaleTests
     [Fact]
     public void Returns_Player_Defined_Locale()
     {
-        var locale = new Locale(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
 
         var result = locale.PlayerLanguage["TestKey"];
         
@@ -94,7 +94,7 @@ public class LocaleTests
     [InlineData("A random [TestKey] string [TestKey] with [TestKey] Locales in [TestKey] between.", "A random This is a sentence. string This is a sentence. with This is a sentence. Locales in This is a sentence. between.")]
     public void Replaces_Locales_In_Arbitrary_Strings(string toTranslate, string expected)
     {
-        var locale = new Locale(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
 
         var result = locale.Translate(toTranslate);
 
@@ -104,7 +104,7 @@ public class LocaleTests
     [Fact]
     public void Dynamic_Accessor_Returns_Locale()
     {
-        dynamic locale = new Locale(_manager, _contextService.Object, _config.Object);
+        dynamic locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
 
         var result = locale.TestKey;
         
@@ -114,7 +114,7 @@ public class LocaleTests
     [Fact]
     public void Dynamic_Accessor_Returns_Locale_With_Args()
     {
-        dynamic locale = new Locale(_manager, _contextService.Object, _config.Object);
+        dynamic locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
 
         var result = locale.TestKeyWithArgs("My Argument");
         
@@ -124,7 +124,7 @@ public class LocaleTests
     [Fact]
     public void Returns_Resource_Set()
     {
-        var locale = new Locale(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
 
         var resources = locale
             .GetResourceSet()?
@@ -141,7 +141,7 @@ public class LocaleTests
     [Fact]
     public void Returns_Resource_Set_Of_Player_Language()
     {
-        var locale = new Locale(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
 
         var resources = locale
             .PlayerLanguage

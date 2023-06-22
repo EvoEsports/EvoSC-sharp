@@ -27,12 +27,12 @@ public class ExampleController : EvoScController<PlayerInteractionContext>
     private readonly IMapRepository _mapRepo;
     private readonly IMatchSettingsService _matchSettings;
     private readonly IManialinkActionManager _manialinkActions;
-    private readonly ILocale _locale;
+    private readonly Locale _locale;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
         IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo,
         IMapRepository mapRepo, IMatchSettingsService matchSettings, IManialinkActionManager manialinkActions,
-        ILocale locale)
+        Locale locale)
     {
         _settings = settings;
         _server = server;

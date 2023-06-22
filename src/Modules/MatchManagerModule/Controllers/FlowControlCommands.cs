@@ -4,7 +4,6 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 
@@ -17,7 +16,7 @@ public class FlowControlCommands : EvoScController<CommandInteractionContext>
     private readonly IServerClient _server;
     private readonly dynamic _locale;
 
-    public FlowControlCommands(IFlowControlService flowControl, IServerClient server, ILocale locale)
+    public FlowControlCommands(IFlowControlService flowControl, IServerClient server, Locale locale)
     {
         _flowControl = flowControl;
         _server = server;
