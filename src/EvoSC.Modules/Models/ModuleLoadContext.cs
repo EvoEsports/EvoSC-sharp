@@ -24,7 +24,7 @@ public class ModuleLoadContext : IModuleLoadContext
     public required List<IModuleManialinkTemplate> ManialinkTemplates { get; init; }
     public required string RootNamespace { get; init; }
     
-    public required ILocale? Localization { get; init; }
+    public required ILocalizationManager? Localization { get; init; }
 
     public bool IsEnabled { get; private set; }
 

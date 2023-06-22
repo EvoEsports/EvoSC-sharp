@@ -555,7 +555,7 @@ public class ModuleManager : IModuleManager
             LoadedDependencies = loadedDependencies,
             ManialinkTemplates = new List<IModuleManialinkTemplate>(),
             RootNamespace = rootNamespace,
-            Localization = null
+            Localization = localization
         };
     }
 
