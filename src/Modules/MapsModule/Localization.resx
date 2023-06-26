@@ -28,7 +28,7 @@
     <value>Added {0} by {1} to the server.</value>
   </data>
   <data name="MapRemovedSuccessfully" xml:space="preserve">
-    <value>Removed map with ID {0} from the maplist.</value>
+    <value>Removed map {0} by {1} from the maplist.</value>
   </data>
   <data name="Audit.MapAdded" xml:space="preserve">
     <value>Map was added.</value>

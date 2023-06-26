@@ -78,7 +78,7 @@ public class MapsController : EvoScController<CommandInteractionContext>
             .HavingProperties(new {Map = map})
             .Comment(_locale.Audit_MapRemoved);
         
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapRemovedSuccessfully(mapId), Context.Player);
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName), Context.Player);
         _logger.LogInformation("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }
