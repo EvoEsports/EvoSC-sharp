@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
@@ -18,13 +19,15 @@ public class PlayerService : IPlayerService
     private readonly IServerClient _server;
     private readonly ILogger<PlayerService> _logger;
     private readonly IContextService _context;
+    private readonly dynamic _locale;
     
-    public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger, IContextService context)
+    public PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger, IContextService context, Locale locale)
     {
         _playerManager = playerManager;
         _server = server;
         _logger = logger;
         _context = context;
+        _locale = locale;
     }
 
     public async Task UpdateAndGreetPlayerAsync(string login)
@@ -35,11 +38,11 @@ public class PlayerService : IPlayerService
         if (player == null)
         {
             player = await _playerManager.CreatePlayerAsync(accountId);
-            await _server.InfoMessageAsync($"$<{player.NickName}$> joined for the first time!");
+            await _server.InfoMessageAsync(_locale.PlayerFirstJoined(player.NickName));
         }
         else
         {
-            await _server.InfoMessageAsync($"$<{player.NickName}$> joined!");
+            await _server.InfoMessageAsync(_locale.PlayerJoined(player.NickName));
         }
         await _playerManager.UpdateLastVisitAsync(player);
     }
@@ -51,13 +54,13 @@ public class PlayerService : IPlayerService
             _context.Audit().Success()
                 .WithEventName(AuditEvents.PlayerKicked)
                 .HavingProperties(new {Player = player})
-                .Comment("Player kicked from the server.");
+                .Comment(_locale.Audit_Kicked);
             
-            await _server.SuccessMessageAsync($"$284{player.NickName} was kicked.", actor);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerKicked(player.NickName), actor);
         }
         else
         {
-            await _server.ErrorMessageAsync("$f13Failed to kick the player. Did they leave already?", actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.PlayerKickingFailed, actor);
         }
     }
 
@@ -68,14 +71,14 @@ public class PlayerService : IPlayerService
             _context.Audit().Success()
                 .WithEventName(AuditEvents.PlayerMuted)
                 .HavingProperties(new {Player = player})
-                .Comment("Player muted from the chat.");
+                .Comment(_locale.Audit_Muted);
             
-            await _server.WarningMessageAsync("$f13You were muted by an admin.", player);
-            await _server.SuccessMessageAsync($"$284{player.NickName} was muted.", actor);
+            await _server.WarningMessageAsync(_locale.PlayerLanguage.YouWereMuted, player);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerMuted(player.NickName), actor);
         }
         else
         {
-            await _server.ErrorMessageAsync("$f13Failed to mute the player. Did they leave already?");
+            await _server.ErrorMessageAsync(_locale.PlayerMutingFailed);
         }
     }
 
@@ -86,14 +89,14 @@ public class PlayerService : IPlayerService
             _context.Audit().Success()
                 .WithEventName(AuditEvents.PlayerUnmuted)
                 .HavingProperties(new {Player = player})
-                .Comment("Player un-muted from the chat.");
+                .Comment(_locale.Audit_Unmuted);
             
-            await _server.InfoMessageAsync("$284You got un-muted by an admin.", player);
-            await _server.SuccessMessageAsync($"$284{player.NickName} was muted.", actor);
+            await _server.InfoMessageAsync(_locale.PlayerLanguage.YouGotUnmuted, player);
+            await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerUnmuted(player.NickName), actor);
         }
         else
         {
-            await _server.ErrorMessageAsync("$f13Failed to mute the player. Did they leave already?", actor);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.PlayerUnmutingFailed, actor);
         }
     }
 
@@ -114,9 +117,9 @@ public class PlayerService : IPlayerService
         _context.Audit().Success()
             .WithEventName(AuditEvents.PlayerBanned)
             .HavingProperties(new {Player = player})
-            .Comment("Player banned and added to the blacklist.");
+            .Comment(_locale.Audit_Banned);
         
-        await _server.SuccessMessageAsync($"$284{player.NickName} was banned.", actor);
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerBanned(player.NickName), actor);
     }
 
     public async Task UnbanAsync(string login, IPlayer actor)
@@ -128,15 +131,15 @@ public class PlayerService : IPlayerService
                 _context.Audit().Success()
                     .WithEventName(AuditEvents.PlayerUnbanned)
                     .HavingProperties(new {PlayerLogin = login})
-                    .Comment("Player was unbanned.");
+                    .Comment(_locale.Audit_Unbanned);
                 
-                await _server.SuccessMessageAsync($"$284Player with login '{login}' was unbanned.");
+                await _server.SuccessMessageAsync(_locale.PlayerUnbanned(login));
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to unban player {Login}", login);
-            await _server.ErrorMessageAsync($"$f13The login '{login}' was not found in the banlist.");
+            await _server.ErrorMessageAsync(_locale.PlayerUnbanningFailed(login));
         }
 
         try
@@ -146,15 +149,15 @@ public class PlayerService : IPlayerService
                 _context.Audit().Success()
                     .WithEventName(AuditEvents.PlayerUnblacklisted)
                     .HavingProperties(new {PlayerLogin = login})
-                    .Comment("Player removed from the blacklist.");
+                    .Comment(_locale.Audit_Unblacklisted);
                 
-                await _server.SuccessMessageAsync($"$284Player with login '{login}' removed from the blacklist.");
+                await _server.SuccessMessageAsync(_locale.PlayerUnblacklisted(login));
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to un-blacklist player {Login}", login);
-            await _server.ErrorMessageAsync($"$f13Player with login '{login}' was not found in the blacklist.");
+            await _server.ErrorMessageAsync(_locale.PlayerUnblacklistingFailed(login));
         }
     }
 }

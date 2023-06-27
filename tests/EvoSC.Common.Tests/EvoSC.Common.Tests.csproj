@@ -55,4 +55,9 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="Localization\TestLocalization.resx">
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

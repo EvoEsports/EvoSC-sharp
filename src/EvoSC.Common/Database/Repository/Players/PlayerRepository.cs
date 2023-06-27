@@ -15,6 +15,7 @@ public class PlayerRepository : DbRepository, IPlayerRepository
     }
 
     public async Task<IPlayer?> GetPlayerByAccountIdAsync(string accountId) => await Table<DbPlayer>()
+        .LoadWith(p => p.DbSettings)
         .SingleOrDefaultAsync(t => t.AccountId == accountId);
 
     public async Task<IPlayer> AddPlayerAsync(string accountId, TmPlayerDetailedInfo playerInfo)
@@ -31,6 +32,15 @@ public class PlayerRepository : DbRepository, IPlayerRepository
 
         var id = await Database.InsertWithIdentityAsync(player);
         player.Id =  Convert.ToInt64(id);
+
+        var playerSettings = new DbPlayerSettings
+        {
+            PlayerId = player.Id, 
+            DisplayLanguage = "en"
+            
+        };
+
+        await Database.InsertAsync(playerSettings);
 
         return player;
     }

@@ -14,4 +14,9 @@
         <PackageReference Include="ManiaExchange.ApiClient" Version="1.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="Localization.resx">
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

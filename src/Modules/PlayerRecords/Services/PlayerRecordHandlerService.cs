@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
@@ -22,9 +23,11 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
     private readonly IPlayerRecordSettings _recordOptions;
     private readonly IServerClient _server;
     private readonly IMapService _maps;
-    
+    private readonly dynamic _locale;
+
     public PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
-        IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server, IMapService maps)
+        IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server, IMapService maps,
+        Locale locale)
     {
         _playerRecords = playerRecords;
         _players = players;
@@ -32,8 +35,9 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
         _recordOptions = recordOptions;
         _server = server;
         _maps = maps;
+        _locale = locale;
     }
-    
+
     public async Task CheckWaypointAsync(WayPointEventArgs waypoint)
     {
         if (!waypoint.IsEndRace)
@@ -58,9 +62,9 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
     public Task SendRecordUpdateToChatAsync(IPlayerRecord record) => _recordOptions.EchoPb switch
     {
         EchoOptions.All => _server.InfoMessageAsync(
-            $"$<{record.Player.NickName}$> got a new pb with time {FormattingUtils.FormatTime(record.Score)}"),
+            _locale.PlayerGotANewPb(record.Player.NickName, FormattingUtils.FormatTime(record.Score))),
         EchoOptions.Player => _server.InfoMessageAsync(
-            $"You got a new pb with time {FormattingUtils.FormatTime(record.Score)}", record.Player),
+            _locale.PlayerLanguage.YouGotANewPb(FormattingUtils.FormatTime(record.Score)), record.Player),
         _ => Task.CompletedTask
     };
 
@@ -71,7 +75,7 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
 
         if (pb == null)
         {
-            await _server.InfoMessageAsync("You have not set a time on this map yet.");
+            await _server.InfoMessageAsync(_locale.PlayerLanguage.YouHaveNotSetATime, player);
             return;
         }
 
@@ -80,6 +84,6 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
         var m = pb.Score / 1000 / 60;
         var formattedTime = $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
 
-        await _server.InfoMessageAsync($"Your current pb is $<$fff{formattedTime}$>");
+        await _server.InfoMessageAsync(_locale.PlayerLanguage.YourCurrentPbIs(formattedTime), player);
     }
 }

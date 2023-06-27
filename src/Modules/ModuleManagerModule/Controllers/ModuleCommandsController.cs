@@ -17,12 +17,12 @@ public class ModuleCommandsController : EvoScController<CommandInteractionContex
         _moduleManagerService = moduleManagerService;
     }
 
-    [ChatCommand("enablemodule", "Enable a module.", ModuleManagerPermissions.ActivateModule)]
+    [ChatCommand("enablemodule", "[Command.EnableModule]", ModuleManagerPermissions.ActivateModule)]
     public Task EnableModuleAsync(IModuleLoadContext module) => _moduleManagerService.EnableModuleAsync(module);
 
-    [ChatCommand("disablemodule", "Disable a module.", ModuleManagerPermissions.ActivateModule)]
+    [ChatCommand("disablemodule", "[Command.DisableModule]", ModuleManagerPermissions.ActivateModule)]
     public Task DisableModuleAsync(IModuleLoadContext module) => _moduleManagerService.DisableModuleAsync(module);
 
-    [ChatCommand("modules", "List loaded modules in the chat.")]
+    [ChatCommand("modules", "[Command.Modules]")]
     public Task ListLoadedModulesAsync() => _moduleManagerService.ListModulesAsync(Context.Player);
 }

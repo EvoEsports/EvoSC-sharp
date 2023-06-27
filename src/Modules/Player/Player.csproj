@@ -17,4 +17,9 @@
       <None Remove="Manialink.mt" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="Localization.resx">
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

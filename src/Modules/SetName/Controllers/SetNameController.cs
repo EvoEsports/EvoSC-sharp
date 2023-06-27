@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Manialinks;
 using EvoSC.Modules.Official.SetName.Interfaces;
 using EvoSC.Modules.Official.SetName.Models;
@@ -9,14 +10,19 @@ namespace EvoSC.Modules.Official.SetName.Controllers;
 public class SetNameController : ManialinkController
 {
     private readonly ISetNameService _setNameService;
+    private readonly Locale _locale;
 
-    public SetNameController(ISetNameService setNameService) => _setNameService = setNameService;
+    public SetNameController(ISetNameService setNameService, Locale locale)
+    {
+        _setNameService = setNameService;
+        _locale = locale;
+    }
     
     public async Task EditNameAsync(SetNameEntryModel input)
     {
         if (!IsModelValid)
         {
-            await ShowAsync(Context.Player, "SetName.EditName", new {input.Nickname});
+            await ShowAsync(Context.Player, "SetName.EditName", new {input.Nickname, Locale = _locale});
             return;
         }
 

@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
@@ -23,11 +24,13 @@ public class LiveModeService : ILiveModeService
 
     private readonly IServerClient _server;
     private readonly IContextService _context;
+    private readonly dynamic _locale;
 
-    public LiveModeService(IServerClient server, IContextService context)
+    public LiveModeService(IServerClient server, IContextService context, Locale locale)
     {
         _server = server;
         _context = context;
+        _locale = locale;
     }
     
     public IEnumerable<string> GetAvailableModes() => _availableModes.Keys;
@@ -47,7 +50,7 @@ public class LiveModeService : ILiveModeService
         _context.Audit().Success()
             .WithEventName(AuditEvents.LoadMode)
             .HavingProperties(new {ModeName = modeName})
-            .Comment("Loaded mode live");
+            .Comment(_locale.Audit_LoadedModeLive);
         
         return modeName;
     }

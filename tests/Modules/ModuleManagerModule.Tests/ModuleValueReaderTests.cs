@@ -33,7 +33,8 @@ public class ModuleValueReaderTests
             Permissions = null,
             LoadedDependencies = null,
             ManialinkTemplates = null,
-            RootNamespace = null
+            RootNamespace = null,
+            Localization = null
         };
 
         var moduleManager = new Mock<IModuleManager>();

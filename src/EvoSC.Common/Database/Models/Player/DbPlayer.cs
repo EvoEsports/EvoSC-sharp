@@ -41,7 +41,12 @@ public class DbPlayer : IPlayer
     
     [Column]
     public string? Zone { get; set; }
-    
+
+    public IPlayerSettings Settings => DbSettings;
+
+    [Association(ThisKey = nameof(Id), OtherKey = nameof(DbPlayerSettings.PlayerId))]
+    public DbPlayerSettings DbSettings { get; set; }
+
     public DbPlayer() {}
 
     public DbPlayer(IPlayer? player)

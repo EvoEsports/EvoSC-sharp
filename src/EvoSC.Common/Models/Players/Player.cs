@@ -10,6 +10,7 @@ public class Player : IPlayer
     public string NickName { get; init; }
     public string UbisoftName { get; init; }
     public string? Zone { get; init; }
+    public IPlayerSettings Settings { get; set; }
 
     public Player()
     {
@@ -22,5 +23,6 @@ public class Player : IPlayer
         NickName = dbPlayer.NickName;
         UbisoftName = dbPlayer.UbisoftName;
         Zone = dbPlayer.Zone;
+        Settings = dbPlayer.Settings;
     }
 }

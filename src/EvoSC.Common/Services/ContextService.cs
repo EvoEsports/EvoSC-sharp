@@ -30,6 +30,11 @@ public class ContextService : IContextService
         return context;
     }
 
+    public void UpdateContext(IControllerContext context)
+    {
+        _context = context;
+    }
+
     public IControllerContext GetContext()
     {
         if (_context == null)

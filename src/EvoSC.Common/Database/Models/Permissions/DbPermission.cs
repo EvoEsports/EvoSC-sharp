@@ -14,7 +14,7 @@ public class DbPermission : IPermission
     
     [Column]
     public string Description { get; set; }
-    
+
     public DbPermission(){}
 
     public DbPermission(IPermission permission)

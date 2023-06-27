@@ -18,21 +18,21 @@ public class MatchSettingsCommandsController : EvoScController<CommandInteractio
         _matchHandler = matchHandler;
     }
 
-    [ChatCommand("setmode", "Change current game mode.", MatchManagerPermissions.SetLiveMode)]
+    [ChatCommand("setmode", "[Command.SetMode]", MatchManagerPermissions.SetLiveMode)]
     [CommandAlias("/mode", hide: true)]
     public Task SetModeAsync(
-        [Description("The mode to change to.")]
+        [Description("[Command.SetMode.Mode]")]
         string mode
     ) => _matchHandler.SetModeAsync(mode, Context.Player);
 
-    [ChatCommand("loadmatchsettings", "Load a match settings file.", MatchManagerPermissions.LoadMatchSettings)]
+    [ChatCommand("loadmatchsettings", "[Command.LoadMatchSettings]", MatchManagerPermissions.LoadMatchSettings)]
     [CommandAlias("/loadmatch", hide: true)]
     public Task LoadMatchSettingsAsync(
-        [Description("The name of the matchsettings file, without extension.")]
+        [Description("[Command.LoadMatchSettings.Name")]
         string name
     ) => _matchHandler.LoadMatchSettingsAsync(name, Context.Player);
 
-    [ChatCommand("scriptsetting", "Set the value of a script setting.", MatchManagerPermissions.SetLiveMode)]
+    [ChatCommand("scriptsetting", "[Command.ScriptSetting]", MatchManagerPermissions.SetLiveMode)]
     [CommandAlias("/ssetting", hide: true)]
     public Task SetScriptSettingAsync(string name, string value) => _matchHandler.SetScriptSettingAsync(name, value, Context.Player);
 }

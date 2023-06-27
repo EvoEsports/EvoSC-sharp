@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
@@ -63,9 +64,20 @@ public interface IModuleLoadContext
     /// </summary>
     public List<Guid> LoadedDependencies { get; init; }
     
+    /// <summary>
+    /// Registered Manialink templates for this module.
+    /// </summary>
     public List<IModuleManialinkTemplate> ManialinkTemplates { get; init; }
     
+    /// <summary>
+    /// The root namespace of the assembly which the main class is part of.
+    /// </summary>
     public string RootNamespace { get; init; }
+    
+    /// <summary>
+    /// The localization manager for this module if the module includes localizations.
+    /// </summary>
+    public ILocalizationManager? Localization { get; }
 
     /// <summary>
     /// Whether this module is currently enabled.
