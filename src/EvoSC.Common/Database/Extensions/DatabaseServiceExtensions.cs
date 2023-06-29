@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using EvoSC.Common.Application;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Repository.Audit;
 using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Database.Repository.Permissions;
@@ -13,7 +14,7 @@ namespace EvoSC.Common.Database.Extensions;
 
 public static class DatabaseServiceExtensions
 {
-    public static Container AddEvoScDatabase(this Container services, IDatabaseConfig config)
+    public static ServicesBuilder AddEvoScDatabase(this ServicesBuilder services, IDatabaseConfig config)
     {
         services.Register<IDbConnectionFactory, DbConnectionFactory>();
         
@@ -26,7 +27,7 @@ public static class DatabaseServiceExtensions
         return services;
     }
 
-    public static Container AddEvoScMigrations(this Container services)
+    public static ServicesBuilder AddEvoScMigrations(this ServicesBuilder services)
     {
         services.Register<IMigrationManager, MigrationManager>(Lifestyle.Scoped);
         return services;

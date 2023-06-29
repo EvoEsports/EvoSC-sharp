@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
+using EvoSC.CLI;
 using EvoSC.Commands;
 using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Application;
 using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers;
@@ -30,43 +32,60 @@ namespace EvoSC;
 
 public sealed class Application : IEvoSCApplication, IDisposable
 {
-    private readonly string[] _args;
-    private Container _services;
     private readonly bool _isDebug;
     private ILogger<Application> _logger;
 
+    private readonly IEvoScBaseConfig _config;
+
     private readonly CancellationTokenSource _runningToken = new();
 
-    public CancellationToken MainCancellationToken => _runningToken.Token;
-    public Container Services => _services;
+    public IStartupPipeline StartupPipeline { get; }
 
-    public Application(string[] args)
+    public CancellationToken MainCancellationToken => _runningToken.Token;
+    public Container Services => StartupPipeline.ServiceContainer;
+
+    public Application(IEvoScBaseConfig config)
     {
-        _args = args;
+        _config = config;
         _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
+        StartupPipeline = new StartupPipeline(_config);
+
+        StartupPipeline.Services("Application", s => s.RegisterInstance<IEvoSCApplication>(this));
+        StartupPipeline.Services("Config", s => s.RegisterInstance(_config));
 
         ConfigureServiceContainer();
     }
 
     private void ConfigureServiceContainer()
     {
-        _services = new Container();
-        _services.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-        _services.Options.EnableAutoVerification = false;
-        _services.Options.ResolveUnregisteredConcreteTypes = true;
-        _services.Options.SuppressLifestyleMismatchVerification = true;
-        _services.Options.UseStrictLifestyleMismatchBehavior = false;
+        StartupPipeline.ServiceContainer.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+        StartupPipeline.ServiceContainer.Options.EnableAutoVerification = false;
+        StartupPipeline.ServiceContainer.Options.ResolveUnregisteredConcreteTypes = true;
+        StartupPipeline.ServiceContainer.Options.SuppressLifestyleMismatchVerification = true;
+        StartupPipeline.ServiceContainer.Options.UseStrictLifestyleMismatchBehavior = false;
     }
 
     public async Task RunAsync()
     {
-        await SetupApplicationAsync();
+        // await SetupApplicationAsync();
+        
+        StartupPipeline.SetupBasePipeline(_config);
+        await StartupPipeline.ExecuteAllAsync();
 
         // wait indefinitely
         WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
     }
-
+    
     public async Task ShutdownAsync()
+    {
+        var serverClient = Services.GetInstance<IServerClient>();
+        await serverClient.StopAsync(_runningToken.Token);
+        
+        // cancel the token to stop the application itself
+        _runningToken.Cancel();
+    }
+
+    /* public async Task ShutdownAsync()
     {
         var serverClient = _services.GetInstance<IServerClient>();
         await serverClient.StopAsync(_runningToken.Token);
@@ -79,7 +98,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
     {
         var sw = new Stopwatch();
         sw.Start();
-        
+
         SetupServices();
         MigrateDatabase();
         SetupControllerManager();
@@ -95,12 +114,10 @@ public sealed class Application : IEvoSCApplication, IDisposable
 
     private void SetupServices()
     {
-        var config = _services.AddEvoScConfig();
-
-        _services.AddEvoScLogging(config.Logging);
+        _services.AddEvoScLogging(_config.Logging);
         
         _services.AddEvoScMigrations();
-        _services.AddEvoScDatabase(config.Database);
+        _services.AddEvoScDatabase(_config.Database);
         
         _services.AddGbxRemoteClient();
         _services.AddEvoScEvents();
@@ -194,18 +211,18 @@ public sealed class Application : IEvoSCApplication, IDisposable
     {
         var maniaLinks = _services.GetRequiredService<IManialinkManager>();
         await maniaLinks.PreprocessAllAsync();
-    }
+    } */
 
     public void Dispose()
     {
-        var moduleManager = _services.GetInstance<IModuleManager>();
+        var moduleManager = Services.GetInstance<IModuleManager>();
 
         foreach (var module in moduleManager.LoadedModules)
         {
             moduleManager.UnloadAsync(module.LoadId).GetAwaiter().GetResult();
         }
         
-        _services.Dispose();
+        Services.Dispose();
         _runningToken.Dispose();
     }
 }

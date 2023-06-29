@@ -99,6 +99,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
         return string.Join(" ", value.Select(v => v.StringValue));
     }
+    
     public string? Read(string key)
     {
         var lastDotIndex = key.LastIndexOf(".", StringComparison.Ordinal);

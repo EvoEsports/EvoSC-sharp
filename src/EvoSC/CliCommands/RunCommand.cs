@@ -1,16 +1,26 @@
 ﻿using EvoSC.CLI;
 using EvoSC.CLI.Attributes;
-using EvoSC.CLI.Interfaces;
+using EvoSC.CLI.Models;
+using EvoSC.Common.Application;
+using EvoSC.Common.Config;
+using EvoSC.Common.Config.Models;
 
 namespace EvoSC.CliCommands;
 
 [CliCommand(Name = "run", Description = "Start the server controller.")]
-[CliOption(typeof(int), "Verbosity level of the output.", "--verbosity", "-v")]
-public class RunCommand : ICliCommand
+[RequiredFeatures(AppFeature.Config)]
+public class RunCommand
 {
-    public async Task ExecuteAsync(CancellationToken cancelToken, CliCommandContext context)
+    private readonly IEvoScBaseConfig _config;
+    
+    public RunCommand(IEvoScBaseConfig config)
     {
-        var app = new Application(context.Args);
+        _config = config;
+    }
+    
+    public async Task ExecuteAsync()
+    {
+        var app = new Application(_config);
         await app.RunAsync();
         app.Dispose();
     }
