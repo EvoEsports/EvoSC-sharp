@@ -6,9 +6,9 @@ namespace EvoSC.Common.Config.Stores;
 public class EvoScBaseConfigStore : IConfigStore
 {
     private readonly TomlConfigStore<IEvoScBaseConfig> _tomlConfigStore;
-    private readonly Dictionary<string, object> _cliOptions;
+    private readonly Dictionary<string, string> _cliOptions;
     
-    public EvoScBaseConfigStore(string path, Dictionary<string, object> cliOptions)
+    public EvoScBaseConfigStore(string path, Dictionary<string, string> cliOptions)
     {
         _cliOptions = cliOptions;
         _tomlConfigStore = new TomlConfigStore<IEvoScBaseConfig>(path);

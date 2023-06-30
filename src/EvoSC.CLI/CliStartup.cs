@@ -1,4 +1,5 @@
-﻿using EvoSC.Commands;
+﻿using System.Reflection.PortableExecutable;
+using EvoSC.Commands;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
@@ -24,19 +25,20 @@ using SimpleInjector;
 
 namespace EvoSC.CLI;
 
-public static class BaseStartup
+public static class CliStartup
 {
     public static void SetupBasePipeline(this IStartupPipeline pipeline, IEvoScBaseConfig config)
     {
         pipeline
+            .Services(AppFeature.Config, s => s.RegisterInstance(config))
+
             .Services(AppFeature.Logging, s => s.AddEvoScLogging(config.Logging))
 
             .Services(AppFeature.DatabaseMigrations, s => s.AddEvoScMigrations())
 
             .Services(AppFeature.Database, s => s
-                .DependsOn("DatabaseMigrations")
-                .AddEvoScDatabase(config.Database)
-            )
+                    .AddEvoScDatabase(config.Database)
+                , "DatabaseMigrations")
 
             .Services(AppFeature.Events, s => s.AddEvoScEvents())
 
@@ -78,108 +80,46 @@ public static class BaseStartup
 
             .Services(AppFeature.Manialinks, s => s.AddEvoScManialinks())
 
-            .Action("ActionMigrateDatabase", MigrateDatabase)
-
-            .Action("ActionSetupControllerManager", SetupControllerManager)
-
-            .ActionAsync("ActionSetupModules", SetupModules)
+            .Action("ActionMigrateDatabase", MigrateDatabase, "DatabaseMigrations")
 
             .Action("ActionInitializeEventManager", s => s
-                .DependsOn("Events")
-                .GetInstance<IEventManager>()
-            )
+                    .GetInstance<IEventManager>()
+                , "Events")
 
             .Action("ActionInitializePlayerCache", s => s
-                .DependsOn("PlayerCache")
-                .GetInstance<IPlayerCacheService>()
-            )
+                    .GetInstance<IPlayerCacheService>()
+                , "PlayerCache")
 
             .Action("ActionInitializeManialinkInteractionHandler", s => s
-                .DependsOn("ActionInitializeEventManager", "ActionInitializePlayerCache")
-            )
-            
-            .ActionAsync("InitializeGbxRemoteConnection", SetupGbxRemoteConnection)
-            
-            .ActionAsync("ActionEnableModules", EnableModules)
-            
-            .ActionAsync("ActionInitializeTemplates", InitializeTemplates);
+                    .GetInstance<IManialinkInteractionHandler>()
+                , "ActionInitializeEventManager", "ActionInitializePlayerCache")
+
+            .ActionAsync("InitializeGbxRemoteConnection", SetupGbxRemoteConnection,
+                "ActionInitializeEventManager",
+                "ActionInitializePlayerCache",
+                "ActionInitializeManialinkInteractionHandler",
+                "GbxRemoteClient")
+
+            .ActionAsync("ActionInitializeTemplates", InitializeTemplates, "Manialinks");
     }
     
     private static async Task InitializeTemplates(ServicesBuilder s)
     {
-        s.DependsOn("Manialinks");
-    
         var maniaLinks = s.GetInstance<IManialinkManager>();
         await maniaLinks.PreprocessAllAsync();
     }
 
-    private static async Task EnableModules(ServicesBuilder s)
-    {
-        await s.GetInstance<IManialinkManager>().AddDefaultTemplatesAsync();
-        await s.GetInstance<IModuleManager>().EnableModulesAsync();
-    }
-
     private static void MigrateDatabase(ServicesBuilder s)
     {
-        s.DependsOn("DatabaseMigrations");
         using var scope = new Scope(s);
         var manager = scope.GetInstance<IMigrationManager>();
     
         // main migrations
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
-    
-        // internal modules
-        // manager.RunInternalModuleMigrations();
-    }
-
-    private static void SetupControllerManager(ServicesBuilder s)
-    {
-        s.DependsOn("ControllerManager", "ActionPipelines");
-
-        var controllers = s.GetInstance<IControllerManager>();
-        controllers.AddControllerActionRegistry(s.GetInstance<IEventManager>());
-        controllers.AddControllerActionRegistry(s.GetInstance<IChatCommandManager>());
-        controllers.AddControllerActionRegistry(s.GetInstance<IManialinkActionManager>());
-    
-        var pipelineManager = s.GetInstance<IActionPipelineManager>();
-        pipelineManager.UseEvoScCommands(s);
-        pipelineManager.UseEvoScManialinks(s);
-    }
-
-    private static async Task SetupModules(ServicesBuilder s)
-    {
-        s.DependsOn("Modules", "Config");
-
-        var modules = s.GetInstance<IModuleManager>();
-        var config = s.GetInstance<IEvoScBaseConfig>();
-
-        // await modules.LoadInternalModulesAsync();
-
-        var dirs = config.Modules.ModuleDirectories;
-        var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
-        foreach (var dir in dirs)
-        {
-            if (!Directory.Exists(dir))
-            {
-                continue;
-            }
-
-            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
-        }
-
-        externalModules.SetIgnoredDependencies(modules.LoadedModules.Select(m => m.ModuleInfo.Name));
-        await modules.LoadAsync(externalModules);
     }
 
     private static async Task SetupGbxRemoteConnection(ServicesBuilder s)
     {
-        s.DependsOn(
-            "ActionInitializeEventManager",
-            "ActionInitializePlayerCache",
-            "ActionInitializeManialinkInteractionHandler",
-            "GbxRemoteClient"
-        );
-
         var serverClient = s.GetInstance<IServerClient>();
         s.GetInstance<IServerCallbackHandler>();
         s.GetInstance<IRemoteChatRouter>();

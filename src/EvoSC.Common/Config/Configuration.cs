@@ -17,7 +17,7 @@ public static class Configuration
     /// </summary>
     /// <param name="configFile">The TOML file containing the base config.</param>
     /// <returns></returns>
-    public static IEvoScBaseConfig GetBaseConfig(string configFile, Dictionary<string, object> cliOptions)
+    public static IEvoScBaseConfig GetBaseConfig(string configFile, Dictionary<string, string> cliOptions)
     {
         ConfigMapper.SetupDefaultMappers();
 
@@ -33,5 +33,5 @@ public static class Configuration
     /// Set up and parse EvoSC's base configuration.
     /// </summary>
     /// <returns></returns>
-    public static IEvoScBaseConfig GetBaseConfig(Dictionary<string, object> cliOptions) => GetBaseConfig(MainConfigFile, cliOptions);
+    public static IEvoScBaseConfig GetBaseConfig(Dictionary<string, string> cliOptions) => GetBaseConfig(MainConfigFile, cliOptions);
 }

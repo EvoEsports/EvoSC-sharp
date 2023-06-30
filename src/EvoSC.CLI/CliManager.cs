@@ -9,6 +9,7 @@ using EvoSC.Common.Application;
 using EvoSC.Common.Config;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.CLI;
@@ -16,7 +17,7 @@ namespace EvoSC.CLI;
 public class CliManager : ICliManager
 {
     private readonly RootCommand _rootCommand;
-    private readonly Option<CliEvoScConfig> _configOption;
+    private readonly Option<IEnumerable<string>> _configOption;
     private readonly List<ICliCommandInfo> _registeredCommands = new();
 
     public CliManager()
@@ -24,7 +25,7 @@ public class CliManager : ICliManager
         _rootCommand = new RootCommand("EvoSC# TrackMania server controller.");
 
         _configOption =
-            new Option<CliEvoScConfig>(new[] {"--option", "-o"},
+            new Option<IEnumerable<string>>(new[] {"--option", "-o"},
                 description: "Override configuration options. Format is key:value");
         
         _rootCommand.AddGlobalOption(_configOption);
@@ -34,7 +35,13 @@ public class CliManager : ICliManager
     {
         foreach (var cmdClass in assembly.AssemblyTypesWithAttribute<CliCommandAttribute>())
         {
-            var handlerMethod = cmdClass.GetInstanceMethod("ExecuteAsync");
+            var handlerMethod = cmdClass.GetMethod("ExecuteAsync");
+
+            if (handlerMethod == null)
+            {
+                throw new InvalidOperationException(
+                    $"Did not find the ExecuteAsync method in CLI command: {cmdClass.Name}");
+            }
             
             var cmdAttr = cmdClass.GetCustomAttribute<CliCommandAttribute>();
             var requiredFeatures = cmdClass.GetCustomAttribute<RequiredFeaturesAttribute>();
@@ -72,6 +79,7 @@ public class CliManager : ICliManager
             });
 
             _registeredCommands.Add(commandInfo);
+            _rootCommand.AddCommand(command);
         }
 
         return this;
@@ -83,12 +91,35 @@ public class CliManager : ICliManager
 
         foreach (var option in command.Options)
         {
+            if (option == _configOption)
+            {
+                continue;
+            }
+            
             var optionValue = context.BindingContext.ParseResult.GetValueForOption(option);
             paramValues.Add(optionValue);
         }
 
         var cliConfig = context.BindingContext.ParseResult.GetValueForOption(_configOption);
-        var config = Configuration.GetBaseConfig(cliConfig?.Options ?? new Dictionary<string, object>());
+        var cliConfigOptions = new Dictionary<string, string> ();
+
+        if (cliConfig != null)
+        {
+            foreach (var cliConfigOption in cliConfig)
+            {
+                var kv = cliConfigOption.Split(':', 2);
+
+                if (kv.Length < 2)
+                {
+                    throw new InvalidOperationException(
+                        $"The provided config option {cliConfigOption} is in an invalid format.");
+                }
+
+                cliConfigOptions[kv[0]] = kv[1];
+            }
+        }
+
+        var config = Configuration.GetBaseConfig(cliConfigOptions);
 
         var startupPipeline = new StartupPipeline(config);
         startupPipeline.SetupBasePipeline(config);
@@ -100,7 +131,8 @@ public class CliManager : ICliManager
 
         var cmdObject = ActivatorUtilities.CreateInstance(startupPipeline.ServiceContainer, command.CommandClass);
 
-        var task = ReflectionUtils.CallMethod(cmdObject, "ExecuteAsync", paramValues) as Task;
+        var methodArgs = paramValues?.ToArray() ?? Array.Empty<object>();
+        var task = ReflectionUtils.CallMethod(cmdObject, "ExecuteAsync", methodArgs) as Task;
 
         if (task == null)
         {
@@ -129,6 +161,6 @@ public class CliManager : ICliManager
 
     public Task<int> ExecuteAsync(string[] args)
     {
-        throw new NotImplementedException();
+        return _rootCommand.InvokeAsync(args);
     }
 }

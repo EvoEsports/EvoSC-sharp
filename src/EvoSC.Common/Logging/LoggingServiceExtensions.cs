@@ -41,8 +41,7 @@ public static class LoggingServiceExtensions
                 });
             }
         });
-        
-        
+
         services.RegisterInstance<ILoggerFactory>(loggerFactory);
         services.RegisterSingleton(typeof(ILogger<>), typeof(Logger<>));
         

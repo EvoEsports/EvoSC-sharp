@@ -69,7 +69,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
     {
         // await SetupApplicationAsync();
         
-        StartupPipeline.SetupBasePipeline(_config);
+        StartupPipeline.SetupPipeline(_config);
         await StartupPipeline.ExecuteAllAsync();
 
         // wait indefinitely

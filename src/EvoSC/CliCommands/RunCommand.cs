@@ -1,8 +1,6 @@
-﻿using EvoSC.CLI;
-using EvoSC.CLI.Attributes;
+﻿using EvoSC.CLI.Attributes;
 using EvoSC.CLI.Models;
 using EvoSC.Common.Application;
-using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
 
 namespace EvoSC.CliCommands;

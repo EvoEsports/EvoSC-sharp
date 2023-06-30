@@ -12,7 +12,7 @@ public static class StoreExtensions
     /// <typeparam name="TInterface">The interface which defines the config options.</typeparam>
     /// <returns></returns>
     public static ConfigurationBuilder<TInterface> UseEvoScConfig<TInterface>(
-        this ConfigurationBuilder<TInterface> builder, string path, Dictionary<string, object> cliOptions) where TInterface : class
+        this ConfigurationBuilder<TInterface> builder, string path, Dictionary<string, string> cliOptions) where TInterface : class
     {
         builder.UseConfigStore(new EvoScBaseConfigStore(path, cliOptions));
         return builder;
