@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Application.Models;
+﻿using EvoSC.Common.Application.Exceptions;
+using EvoSC.Common.Application.Models;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Application;
@@ -79,8 +80,7 @@ public class StartupPipeline : IStartupPipeline
         {
             if (dependencyPath.Contains(name))
             {
-                throw new InvalidOperationException(
-                    $"Startup dependency cycle detected: {string.Join(" -> ", dependencyPath)}");
+                throw new StartupDependencyCycleException(dependencyPath);
             }
             
             if (_components.TryGetValue(name, out var component))
@@ -97,7 +97,7 @@ public class StartupPipeline : IStartupPipeline
             }
             else
             {
-                throw new InvalidOperationException($"Startup component {name} does not exist.");
+                throw new StartupPipelineException($"Startup component {name} does not exist.");
             }
         }
     }
