@@ -78,6 +78,13 @@ public sealed class Application : IEvoSCApplication, IDisposable
     
     public async Task ShutdownAsync()
     {
+        var moduleManager = Services.GetInstance<IModuleManager>();
+
+        foreach (var module in moduleManager.LoadedModules)
+        {
+            await moduleManager.UnloadAsync(module.LoadId);
+        }
+        
         var serverClient = Services.GetInstance<IServerClient>();
         await serverClient.StopAsync(_runningToken.Token);
         
@@ -215,13 +222,6 @@ public sealed class Application : IEvoSCApplication, IDisposable
 
     public void Dispose()
     {
-        var moduleManager = Services.GetInstance<IModuleManager>();
-
-        foreach (var module in moduleManager.LoadedModules)
-        {
-            moduleManager.UnloadAsync(module.LoadId).GetAwaiter().GetResult();
-        }
-        
         Services.Dispose();
         _runningToken.Dispose();
     }
