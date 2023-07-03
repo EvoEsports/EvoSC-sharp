@@ -1,22 +1,26 @@
 ﻿using System.CommandLine;
+using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.ComponentModel;
 using System.Reflection;
 using EvoSC.CLI.Attributes;
+using EvoSC.CLI.Exceptions;
 using EvoSC.CLI.Interfaces;
 using EvoSC.CLI.Models;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyInjection;
+using Org.BouncyCastle.Asn1.X509.Qualified;
 
 namespace EvoSC.CLI;
 
 public class CliManager : ICliManager
 {
     private readonly RootCommand _rootCommand;
+    private readonly Parser _cliParser;
     private readonly Option<IEnumerable<string>> _configOption;
     private readonly List<ICliCommandInfo> _registeredCommands = new();
 
@@ -29,58 +33,83 @@ public class CliManager : ICliManager
                 description: "Override configuration options. Format is key:value");
         
         _rootCommand.AddGlobalOption(_configOption);
+
+        _cliParser = new CommandLineBuilder(_rootCommand)
+            .UseVersionOption()
+            .UseHelp()
+            .UseEnvironmentVariableDirective()
+            .UseParseDirective()
+            .UseSuggestDirective()
+            .RegisterWithDotnetSuggest()
+            .UseTypoCorrections()
+            .UseParseErrorReporting()
+            .CancelOnProcessTermination()
+            .Build();
     }
     
     public ICliManager RegisterCommands(Assembly assembly)
     {
         foreach (var cmdClass in assembly.AssemblyTypesWithAttribute<CliCommandAttribute>())
         {
-            var handlerMethod = cmdClass.GetMethod("ExecuteAsync");
-
-            if (handlerMethod == null)
-            {
-                throw new InvalidOperationException(
-                    $"Did not find the ExecuteAsync method in CLI command: {cmdClass.Name}");
-            }
-            
-            var cmdAttr = cmdClass.GetCustomAttribute<CliCommandAttribute>();
-            var requiredFeatures = cmdClass.GetCustomAttribute<RequiredFeaturesAttribute>();
-
-            var command = new Command(cmdAttr!.Name, cmdAttr.Description);
-
-            var options = new List<Option>();
-            foreach (var param in handlerMethod.GetParameters())
-            {
-                var option = CreateOption(param);
-
-                if (option == null)
-                {
-                    throw new InvalidOperationException($"Failed to create option for CLI command {cmdClass.Name}");
-                }
-
-                options.Add(option);
-                command.AddOption(option);
-            }
-            
-            options.Add(_configOption);
-
-            var commandInfo = new CliCommandInfo
-            {
-                Command = command,
-                CommandClass = cmdClass,
-                HandlerMethod = handlerMethod,
-                Options = options.ToArray(),
-                RequiredFeatures = requiredFeatures?.Features ?? Array.Empty<AppFeature>()
-            };
-
-            command.SetHandler(async context =>
-            {
-                await ExecuteHandlerAsync(commandInfo, context);
-            });
-
-            _registeredCommands.Add(commandInfo);
-            _rootCommand.AddCommand(command);
+            RegisterCommand(cmdClass);
         }
+
+        return this;
+    }
+
+    public ICliManager RegisterCommand(Type cmdClass)
+    {
+        var handlerMethod = cmdClass.GetMethod("ExecuteAsync");
+
+        if (handlerMethod == null)
+        {
+            throw new InvalidCommandClassFormatException(
+                $"Did not find the ExecuteAsync method in CLI command: {cmdClass.Name}");
+        }
+        
+        var cmdAttr = cmdClass.GetCustomAttribute<CliCommandAttribute>();
+
+        if (cmdAttr == null)
+        {
+            throw new InvalidCommandClassFormatException("Missing CliCommand");
+        }
+        
+        var requiredFeatures = cmdClass.GetCustomAttribute<RequiredFeaturesAttribute>();
+
+        var command = new Command(cmdAttr!.Name, cmdAttr.Description);
+
+        var options = new List<Option>();
+        foreach (var param in handlerMethod.GetParameters())
+        {
+            var option = CreateOption(param);
+
+            if (option == null)
+            {
+                throw new InvalidOperationException($"Failed to create option for CLI command {cmdClass.Name}");
+            }
+
+            options.Add(option);
+            command.AddOption(option);
+        }
+            
+        options.Add(_configOption);
+
+        var commandInfo = new CliCommandInfo
+        {
+            Command = command,
+            CommandClass = cmdClass,
+            HandlerMethod = handlerMethod,
+            Options = options.ToArray(),
+            RequiredFeatures = requiredFeatures?.Features ?? Array.Empty<AppFeature>()
+        };
+
+        command.SetHandler(async context =>
+        {
+            await ExecuteHandlerAsync(commandInfo, context);
+        });
+
+        _registeredCommands.Add(commandInfo);
+        _rootCommand.AddCommand(command);
 
         return this;
     }
@@ -90,9 +119,15 @@ public class CliManager : ICliManager
         var paramValues = new List<object?>();
 
         foreach (var option in command.Options)
-        {
+        { 
             if (option == _configOption)
             {
+                continue;
+            }
+
+            if (option.ValueType == typeof(InvocationContext))
+            {
+                paramValues.Add(context);
                 continue;
             }
             
@@ -154,13 +189,14 @@ public class CliManager : ICliManager
 
         var description = param.GetCustomAttribute<DescriptionAttribute>();
 
-        var option = Activator.CreateInstance(cmdOptionType, aliases, description?.Description ?? "") as Option;
+        var option = Activator.CreateInstance(cmdOptionType, aliases.ToArray(), description?.Description ?? "") as Option;
 
         return option;
     }
 
     public Task<int> ExecuteAsync(string[] args)
     {
-        return _rootCommand.InvokeAsync(args);
+        // return _rootCommand.InvokeAsync(args);
+        return _cliParser.InvokeAsync(args);
     }
 }
