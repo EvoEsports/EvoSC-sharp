@@ -13,13 +13,21 @@ public class TextColorTypeParser : ITypeParser
             return false;
         }
 
-        var r = Convert.FromHexString("0"+ value[0]).First();
-        var g = Convert.FromHexString("0"+ value[1]).First();
-        var b = Convert.FromHexString("0"+ value[2]).First();
+        try
+        {
+            var r = Convert.FromHexString("0" + value[0]).First();
+            var g = Convert.FromHexString("0" + value[1]).First();
+            var b = Convert.FromHexString("0" + value[2]).First();
 
-        result = new TextColor(r, g, b);
+            result = new TextColor(r, g, b);
 
-        return true;
+            return true;
+        }
+        catch (FormatException ex)
+        {
+            result = null;
+            return false;
+        }
     }
 
     public string? ToRawString(object? value)
