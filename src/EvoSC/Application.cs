@@ -2,7 +2,6 @@
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Interfaces;
-using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 

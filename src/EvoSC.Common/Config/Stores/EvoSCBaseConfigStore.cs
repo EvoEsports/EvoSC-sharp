@@ -1,4 +1,5 @@
-﻿using Config.Net;
+﻿using System.Globalization;
+using Config.Net;
 using EvoSC.Common.Config.Models;
 
 namespace EvoSC.Common.Config.Stores;
@@ -27,8 +28,9 @@ public class EvoScBaseConfigStore : IConfigStore
         {
             return null;
         }
-        
-        var enviName = $"EVOSC_{key.Replace(".", "_", StringComparison.Ordinal).ToUpper()}";
+
+        var enviKey = key.Replace(".", "_", StringComparison.Ordinal).ToUpper(CultureInfo.InvariantCulture);
+        var enviName = $"EVOSC_{enviKey}";
         var enviValue = Environment.GetEnvironmentVariable(enviName);
 
         _cliOptions.TryGetValue(key, out var cliValue);

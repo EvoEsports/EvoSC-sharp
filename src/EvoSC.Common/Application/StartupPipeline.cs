@@ -9,7 +9,7 @@ using SimpleInjector;
 
 namespace EvoSC.Common.Application;
 
-public class StartupPipeline : IStartupPipeline
+public class StartupPipeline : IStartupPipeline, IDisposable
 {
     private readonly ServicesBuilder _services;
     private readonly ILogger<StartupPipeline> _logger;
@@ -111,5 +111,10 @@ public class StartupPipeline : IStartupPipeline
         {
             await ExecuteComponentAsync(component);
         }
+    }
+
+    public void Dispose()
+    {
+        _services.Dispose();
     }
 }
