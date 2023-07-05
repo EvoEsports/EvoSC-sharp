@@ -39,7 +39,7 @@ public class EvoScBaseConfigStore : IConfigStore
 
     public void Write(string key, string? value)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public bool CanRead => true;

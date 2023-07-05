@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EvoSC.Common.Config;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Config.Stores;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Config.Stores;
@@ -9,7 +10,24 @@ namespace EvoSC.Common.Tests.Config.Stores;
 public class EvoScBaseConfigStoreTests
 {
     private static string ConfigFile = "TestFiles/Config/BasicConfig/main.toml";
+
+    [Fact]
+    public void Can_Read()
+    {
+        var store = new EvoScBaseConfigStore(ConfigFile, new Dictionary<string, string>());
+        
+        Assert.True(store.CanRead);
+    }
     
+    [Fact]
+    public void Cant_Write()
+    {
+        var store = new EvoScBaseConfigStore(ConfigFile, new Dictionary<string, string>());
+        
+        Assert.False(store.CanWrite);
+        Assert.Throws<NotSupportedException>(() => store.Write("test", "test"));
+    }
+
     [Fact]
     public void Environment_Variables_Overrides_FileConfig_Simple_Option()
     {
