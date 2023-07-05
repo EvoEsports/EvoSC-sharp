@@ -1,6 +1,4 @@
-﻿using System.CommandLine.Binding;
-
-namespace EvoSC.CLI.Models;
+﻿namespace EvoSC.CLI.Models;
 
 public class CliEvoScConfig
 {

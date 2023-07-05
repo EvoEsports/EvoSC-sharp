@@ -3,7 +3,7 @@ using Tomlet;
 
 namespace EvoSC.Common.Config.Mapping.Toml;
 
-public class ConfigMapper
+public static class ConfigMapper
 {
     public static void AddMapper<T>(ITomlTypeMapper<T> mapper) =>
         TomletMain.RegisterMapper(mapper.Serialize, mapper.Deserialize);

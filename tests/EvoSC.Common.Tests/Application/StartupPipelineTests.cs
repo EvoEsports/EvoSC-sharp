@@ -81,7 +81,7 @@ public class StartupPipelineTests
         
         startup.Services("TestService", s => s.Register<IMyService, MyService>());
         startup.Action("MyAction", s => actionExecuted = true);
-        startup.ActionAsync("MyAsyncAction", s =>
+        startup.AsyncAction("MyAsyncAction", s =>
         {
             asyncActionExecuted = true;
             return Task.CompletedTask;

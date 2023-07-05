@@ -3,8 +3,6 @@ using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Config.Mapping;
 using EvoSC.Common.Config.Mapping.Toml;
-using EvoSC.Common.Interfaces.Config.Mapping;
-using SimpleInjector;
 
 namespace EvoSC.Common.Config;
 

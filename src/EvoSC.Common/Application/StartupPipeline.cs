@@ -11,14 +11,12 @@ namespace EvoSC.Common.Application;
 
 public class StartupPipeline : IStartupPipeline
 {
-    private readonly IEvoScBaseConfig _config;
     private readonly ServicesBuilder _services;
     private readonly ILogger<StartupPipeline> _logger;
     private readonly Dictionary<string, IStartupComponent> _components = new();
     
     public StartupPipeline(IEvoScBaseConfig config)
     {
-        _config = config;
         _services = new ServicesBuilder();
 
         _logger = new Container().AddEvoScLogging(config.Logging).GetInstance<ILogger<StartupPipeline>>();
@@ -36,21 +34,21 @@ public class StartupPipeline : IStartupPipeline
         return this;
     }
 
-    public IStartupPipeline Action(string name, Action<ServicesBuilder> action, params string[] dependencies)
+    public IStartupPipeline Action(string name, Action<ServicesBuilder> actionFunc, params string[] dependencies)
     {
         _components[name] = new ActionStartupComponent
         {
-            Name = name, Dependencies = dependencies.ToList(), Action = action
+            Name = name, Dependencies = dependencies.ToList(), Action = actionFunc
         };
         
         return this;
     }
 
-    public IStartupPipeline ActionAsync(string name, Func<ServicesBuilder, Task> action, params string[] dependencies)
+    public IStartupPipeline AsyncAction(string name, Func<ServicesBuilder, Task> actionFunc, params string[] dependencies)
     {
         _components[name] = new AsyncActionStartupComponent
         {
-            Name = name, Dependencies = dependencies.ToList(), AsyncAction = action
+            Name = name, Dependencies = dependencies.ToList(), AsyncAction = actionFunc
         };
 
         return this;
@@ -74,7 +72,7 @@ public class StartupPipeline : IStartupPipeline
         }
     }
     
-    private async Task ExecuteAsyncInternal(IEnumerable<string> components, List<string> dependencyPath)
+    private async Task ExecuteAsyncInternalAsync(IEnumerable<string> components, List<string> dependencyPath)
     {
         foreach (var name in components)
         {
@@ -90,7 +88,7 @@ public class StartupPipeline : IStartupPipeline
                     var newPath = new List<string>();
                     newPath.AddRange(dependencyPath);
                     newPath.Add(name);
-                    await ExecuteAsyncInternal(component.Dependencies.ToArray(), newPath);
+                    await ExecuteAsyncInternalAsync(component.Dependencies.ToArray(), newPath);
                 }
 
                 await ExecuteComponentAsync(component);
@@ -104,7 +102,7 @@ public class StartupPipeline : IStartupPipeline
     
     public Task ExecuteAsync(params string[] components)
     {
-        return ExecuteAsyncInternal(components, Array.Empty<string>().ToList());
+        return ExecuteAsyncInternalAsync(components, Array.Empty<string>().ToList());
     }
 
     public async Task ExecuteAllAsync()

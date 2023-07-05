@@ -1,6 +1,5 @@
 ﻿using System.CommandLine;
 using System.Reflection;
-using EvoSC.CLI.Attributes;
 using EvoSC.Common.Application;
 
 namespace EvoSC.CLI.Interfaces;

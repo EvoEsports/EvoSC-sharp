@@ -28,7 +28,7 @@ public class EvoScBaseConfigStore : IConfigStore
             return null;
         }
         
-        var enviName = $"EVOSC_{key.Replace(".", "_").ToUpper()}";
+        var enviName = $"EVOSC_{key.Replace(".", "_", StringComparison.Ordinal).ToUpper()}";
         var enviValue = Environment.GetEnvironmentVariable(enviName);
 
         _cliOptions.TryGetValue(key, out var cliValue);

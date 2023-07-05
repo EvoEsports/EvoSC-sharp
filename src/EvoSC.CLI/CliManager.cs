@@ -13,7 +13,6 @@ using EvoSC.Common.Config;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using Microsoft.Extensions.DependencyInjection;
-using Org.BouncyCastle.Asn1.X509.Qualified;
 
 namespace EvoSC.CLI;
 
@@ -196,7 +195,6 @@ public class CliManager : ICliManager
 
     public Task<int> ExecuteAsync(string[] args)
     {
-        // return _rootCommand.InvokeAsync(args);
         return _cliParser.InvokeAsync(args);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using EvoSC.CLI.Attributes;
-using EvoSC.CLI.Models;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
 

@@ -1,6 +1,4 @@
-﻿using System.Reflection.PortableExecutable;
-using EvoSC.Commands;
-using EvoSC.Commands.Interfaces;
+﻿using EvoSC.Commands;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Controllers;
@@ -8,8 +6,6 @@ using EvoSC.Common.Database;
 using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Logging;
 using EvoSC.Common.Middleware;
@@ -19,8 +15,6 @@ using EvoSC.Common.Services;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
-using EvoSC.Modules.Interfaces;
-using EvoSC.Modules.Util;
 using SimpleInjector;
 
 namespace EvoSC.CLI;
@@ -94,16 +88,16 @@ public static class CliStartup
                     .GetInstance<IManialinkInteractionHandler>()
                 , "ActionInitializeEventManager", "ActionInitializePlayerCache")
 
-            .ActionAsync("InitializeGbxRemoteConnection", SetupGbxRemoteConnection,
+            .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync,
                 "ActionInitializeEventManager",
                 "ActionInitializePlayerCache",
                 "ActionInitializeManialinkInteractionHandler",
                 "GbxRemoteClient")
 
-            .ActionAsync("ActionInitializeTemplates", InitializeTemplates, "Manialinks");
+            .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
     }
     
-    private static async Task InitializeTemplates(ServicesBuilder s)
+    private static async Task InitializeTemplatesAsync(ServicesBuilder s)
     {
         var maniaLinks = s.GetInstance<IManialinkManager>();
         await maniaLinks.PreprocessAllAsync();
@@ -118,7 +112,7 @@ public static class CliStartup
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
     }
 
-    private static async Task SetupGbxRemoteConnection(ServicesBuilder s)
+    private static async Task SetupGbxRemoteConnectionAsync(ServicesBuilder s)
     {
         var serverClient = s.GetInstance<IServerClient>();
         s.GetInstance<IServerCallbackHandler>();
