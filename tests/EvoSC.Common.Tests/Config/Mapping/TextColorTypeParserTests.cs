@@ -1,6 +1,9 @@
 ﻿using System;
 using EvoSC.Common.Config.Mapping;
+using EvoSC.Common.Config.Mapping.Toml;
 using EvoSC.Common.Util.TextFormatting;
+using Tomlet.Exceptions;
+using Tomlet.Models;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Config.Mapping;
@@ -58,5 +61,46 @@ public class TextColorTypeParserTests
         var value = colorParser.ToRawString(textColor);
         
         Assert.Equal(expected, value);
+    }
+
+    [Theory]
+    [InlineData("123", new byte[]{1, 2, 3})]
+    [InlineData("000", new byte[]{0, 0, 0})]
+    [InlineData("fff", new byte[]{0xf, 0xf, 0xf})]
+    public void Mapper_Serializes_Color_Correctly(string expected, byte[] color)
+    {
+        var mapper = new TextColorTomlMapper();
+
+        var value = mapper.Serialize(new TextColor(color[0], color[1], color[2]));
+
+        Assert.Equal(expected, value.StringValue);
+    }
+
+    [Theory]
+    [InlineData("123", new byte[]{1, 2, 3})]
+    [InlineData("000", new byte[]{0, 0, 0})]
+    [InlineData("fff", new byte[]{0xf, 0xf, 0xf})]
+    public void Mapper_Deserializes_Color_Correctly(string value, byte[] color)
+    {
+        var mapper = new TextColorTomlMapper();
+        var tomlValue = new TomlString(value);
+        var r = Convert.ToHexString(color, 0, 1)[1..];
+        var g = Convert.ToHexString(color, 1, 1)[1..];
+        var b = Convert.ToHexString(color, 2, 1)[1..];
+
+        var textColor = mapper.Deserialize(tomlValue);
+
+        var expected = $"${r}{g}{b}".ToLower();
+        
+        Assert.Equal(expected, textColor.ToString());
+    }
+
+    [Fact]
+    public void Mapper_Deserializer_Throws_On_Wrong_Toml_Value_Type()
+    {
+        var mapper = new TextColorTomlMapper();
+        var tomlValue = new TomlLong(123);
+
+        Assert.Throws<TomlTypeMismatchException>(() => mapper.Deserialize(tomlValue));
     }
 }
