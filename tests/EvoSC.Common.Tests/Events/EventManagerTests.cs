@@ -4,6 +4,8 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moq;
+using SimpleInjector;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Events;
@@ -15,19 +17,20 @@ public class EventManagerTests
 
     private readonly ILogger<EventManager> _logger;
     private readonly IServiceProvider _services;
-    private readonly IEvoSCApplication _app;
+    private readonly Mock<IEvoSCApplication> _app;
 
     public EventManagerTests()
     {
         _logger = LoggerFactory.Create(c => { }).CreateLogger<EventManager>();
         _services = new ServiceCollection().BuildServiceProvider();
-        _app = new Application(Array.Empty<string>());
+        _app = new Mock<IEvoSCApplication>();
+        _app.Setup(a => a.Services).Returns(new Container());
     }
     
     [Fact]
     public async Task Event_Added_AndFired_Dont_Throw_Exception()
     {
-        IEventManager manager = new EventManager(_logger, _app, null);
+        IEventManager manager = new EventManager(_logger, _app.Object, null);
 
         manager.Subscribe("test", (object sender, EventArgs args) =>
         {
@@ -42,7 +45,7 @@ public class EventManagerTests
     [Fact]
     public void Event_Added_And_Fired()
     {
-        IEventManager manager = new EventManager(_logger, _app, null);
+        IEventManager manager = new EventManager(_logger, _app.Object, null);
 
         manager.Subscribe<EventArgs>("test", (sender, args) => throw new HandlerRanException());
 
@@ -55,7 +58,7 @@ public class EventManagerTests
     [Fact]
     public async Task Event_Added_And_Removed()
     {
-        IEventManager manager = new EventManager(_logger, _app, null);
+        IEventManager manager = new EventManager(_logger, _app.Object, null);
 
         var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
         
@@ -70,7 +73,7 @@ public class EventManagerTests
     [Fact]
     public void Only_Equal_Event_Handler_Removed()
     {
-        IEventManager manager = new EventManager(_logger, _app, null);
+        IEventManager manager = new EventManager(_logger, _app.Object, null);
 
         var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
         var handler2 = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException2());

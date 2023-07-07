@@ -11,10 +11,10 @@ public static class StoreExtensions
     /// <param name="path">The path to the config file.</param>
     /// <typeparam name="TInterface">The interface which defines the config options.</typeparam>
     /// <returns></returns>
-    public static ConfigurationBuilder<TInterface> UseTomlFile<TInterface>(
-        this ConfigurationBuilder<TInterface> builder, string path) where TInterface : class
+    public static ConfigurationBuilder<TInterface> UseEvoScConfig<TInterface>(
+        this ConfigurationBuilder<TInterface> builder, string path, Dictionary<string, string> cliOptions) where TInterface : class
     {
-        builder.UseConfigStore(new TomlConfigStore<TInterface>(path));
+        builder.UseConfigStore(new EvoScBaseConfigStore(path, cliOptions));
         return builder;
     }
 }

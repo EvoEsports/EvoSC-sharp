@@ -4,6 +4,8 @@ namespace EvoSC.Common.Interfaces;
 
 public interface IEvoSCApplication
 {
+    public IStartupPipeline StartupPipeline { get; }
+    
     /// <summary>
     /// Global cancellation token of the application. This is set when ShutdownAsync is called.
     /// </summary>

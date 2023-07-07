@@ -3,12 +3,12 @@ using Tomlet;
 
 namespace EvoSC.Common.Config.Mapping.Toml;
 
-public class TomlMappingManager : ITomlMappingManager
+public static class ConfigMapper
 {
-    public void AddMapper<T>(ITomlTypeMapper<T> mapper) =>
+    public static void AddMapper<T>(ITomlTypeMapper<T> mapper) =>
         TomletMain.RegisterMapper(mapper.Serialize, mapper.Deserialize);
 
-    public void SetupDefaultMappers()
+    public static void SetupDefaultMappers()
     {
         AddMapper(new TextColorTomlMapper());
     }

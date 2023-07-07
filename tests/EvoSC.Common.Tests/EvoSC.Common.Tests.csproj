@@ -28,7 +28,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\EvoSC.Common\EvoSC.Common.csproj" />
-      <ProjectReference Include="..\..\src\EvoSC\EvoSC.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -58,6 +57,10 @@
     <ItemGroup>
       <EmbeddedResource Update="Localization\TestLocalization.resx">
       </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Config\Stores\TestFiles\" />
     </ItemGroup>
 
 </Project>
