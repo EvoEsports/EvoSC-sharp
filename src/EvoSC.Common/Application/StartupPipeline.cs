@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Application;
 using EvoSC.Common.Logging;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Security;
 using SimpleInjector;
 
 namespace EvoSC.Common.Application;
@@ -71,38 +72,54 @@ public class StartupPipeline : IStartupPipeline, IDisposable
             await asyncActionComponent.AsyncAction(_services);
         }
     }
-    
-    private async Task ExecuteAsyncInternalAsync(IEnumerable<string> components, List<string> dependencyPath)
+
+    private void CreatedDependencyOrder(IEnumerable<string> components, Dictionary<string, IStartupComponent> services,
+        Dictionary<string, IStartupComponent> actions, HashSet<string> previousComponents)
     {
         foreach (var name in components)
         {
-            if (dependencyPath.Contains(name))
+            if (previousComponents.Contains(name))
             {
-                throw new StartupDependencyCycleException(dependencyPath);
+                throw new StartupDependencyCycleException(previousComponents);
             }
             
-            if (_components.TryGetValue(name, out var component))
+            if (!_components.ContainsKey(name))
             {
-                if (component.Dependencies.Count > 0)
-                {
-                    var newPath = new List<string>();
-                    newPath.AddRange(dependencyPath);
-                    newPath.Add(name);
-                    await ExecuteAsyncInternalAsync(component.Dependencies.ToArray(), newPath);
-                }
+                throw new StartupPipelineException($"Startup component {name} does not exist.");
+            }
+            
+            var component = _components[name];
 
-                await ExecuteComponentAsync(component);
+            var currentComponents = new HashSet<string>(previousComponents) {name};
+            CreatedDependencyOrder(component.Dependencies, services, actions, currentComponents);
+            
+            if (component is IServiceStartupComponent)
+            {
+                services[name] = component;
             }
             else
             {
-                throw new StartupPipelineException($"Startup component {name} does not exist.");
+                actions[name] = component;
             }
         }
     }
     
-    public Task ExecuteAsync(params string[] components)
+    public async Task ExecuteAsync(params string[] components)
     {
-        return ExecuteAsyncInternalAsync(components, Array.Empty<string>().ToList());
+        var services = new Dictionary<string, IStartupComponent>();
+        var actions = new Dictionary<string, IStartupComponent>();
+
+        CreatedDependencyOrder(components, services, actions, new HashSet<string>());
+
+        foreach (var (_, component) in services)
+        {
+            await ExecuteComponentAsync(component);
+        }
+
+        foreach (var (_, component) in actions)
+        {
+            await ExecuteComponentAsync(component);
+        }
     }
 
     public async Task ExecuteAllAsync()

@@ -116,4 +116,18 @@ public class StartupPipelineTests
         var startup = new StartupPipeline(_config.Object);
         await Assert.ThrowsAsync<StartupPipelineException>(() => startup.ExecuteAsync("InvalidComponent"));
     }
+
+    [Fact]
+    public async Task Services_Is_Executed_Before_Actions()
+    {
+        var startup = new StartupPipeline(_config.Object);
+
+        startup.Services("MyService", s => throw new Exception("service"), "MyAction");
+        startup.Services("MyService2", s => { }, "MyService");
+        startup.Action("MyAction", s => throw new Exception("action"));
+
+        var exception = await Assert.ThrowsAsync<Exception>(() => startup.ExecuteAsync("MyService2"));
+        
+        Assert.Equal("service", exception.Message);
+    }
 }
