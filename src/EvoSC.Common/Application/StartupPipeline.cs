@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Application;
 using EvoSC.Common.Logging;
 using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Security;
 using SimpleInjector;
 
 namespace EvoSC.Common.Application;
