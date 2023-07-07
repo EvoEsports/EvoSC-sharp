@@ -5,7 +5,7 @@ using EvoSC.Common.Config.Models;
 namespace EvoSC.CliCommands;
 
 [CliCommand(Name = "run", Description = "Start the server controller.")]
-[RequiredFeatures(AppFeature.Config)]
+[RequiredFeatures(AppFeature.DatabaseMigrations)]
 public class RunCommand
 {
     private readonly IEvoScBaseConfig _config;

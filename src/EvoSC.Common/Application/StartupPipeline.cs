@@ -16,6 +16,8 @@ public class StartupPipeline : IStartupPipeline, IDisposable
     private readonly ILogger<StartupPipeline> _logger;
     private readonly Dictionary<string, IStartupComponent> _components = new();
     
+    public Container ServiceContainer => _services;
+    
     public StartupPipeline(IEvoScBaseConfig config)
     {
         _services = new ServicesBuilder();
@@ -23,7 +25,41 @@ public class StartupPipeline : IStartupPipeline, IDisposable
         _logger = new Container().AddEvoScLogging(config.Logging).GetInstance<ILogger<StartupPipeline>>();
     }
 
-    public Container ServiceContainer => _services;
+    private void CreatedDependencyOrder(IEnumerable<string> components, Dictionary<string, IStartupComponent> services,
+        Dictionary<string, IStartupComponent> actions, HashSet<string> previousComponents)
+    {
+        foreach (var name in components)
+        {
+            if (previousComponents.Contains(name))
+            {
+                throw new StartupDependencyCycleException(previousComponents);
+            }
+            
+            if (!_components.ContainsKey(name))
+            {
+                throw new StartupPipelineException($"Startup component {name} does not exist.");
+            }
+            
+            var component = _components[name];
+
+            var currentComponents = new HashSet<string>(previousComponents) {name};
+            CreatedDependencyOrder(component.Dependencies, services, actions, currentComponents);
+            
+            if (component is IServiceStartupComponent)
+            {
+                services[name] = component;
+            }
+            else
+            {
+                actions[name] = component;
+            }
+        }
+    }
+
+    private void LogExecutionSuccess()
+    {
+        _logger.LogDebug("Startup pipeline finished");
+    }
     
     public IStartupPipeline Services(string name, Action<ServicesBuilder> servicesConfig, params string[] dependencies)
     {
@@ -73,37 +109,6 @@ public class StartupPipeline : IStartupPipeline, IDisposable
         }
     }
 
-    private void CreatedDependencyOrder(IEnumerable<string> components, Dictionary<string, IStartupComponent> services,
-        Dictionary<string, IStartupComponent> actions, HashSet<string> previousComponents)
-    {
-        foreach (var name in components)
-        {
-            if (previousComponents.Contains(name))
-            {
-                throw new StartupDependencyCycleException(previousComponents);
-            }
-            
-            if (!_components.ContainsKey(name))
-            {
-                throw new StartupPipelineException($"Startup component {name} does not exist.");
-            }
-            
-            var component = _components[name];
-
-            var currentComponents = new HashSet<string>(previousComponents) {name};
-            CreatedDependencyOrder(component.Dependencies, services, actions, currentComponents);
-            
-            if (component is IServiceStartupComponent)
-            {
-                services[name] = component;
-            }
-            else
-            {
-                actions[name] = component;
-            }
-        }
-    }
-    
     public async Task ExecuteAsync(params string[] components)
     {
         var services = new Dictionary<string, IStartupComponent>();
@@ -120,6 +125,8 @@ public class StartupPipeline : IStartupPipeline, IDisposable
         {
             await ExecuteComponentAsync(component);
         }
+        
+        LogExecutionSuccess();
     }
 
     public async Task ExecuteAllAsync()
@@ -128,6 +135,8 @@ public class StartupPipeline : IStartupPipeline, IDisposable
         {
             await ExecuteComponentAsync(component);
         }
+        
+        LogExecutionSuccess();
     }
 
     public void Dispose()

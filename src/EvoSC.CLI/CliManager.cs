@@ -10,6 +10,7 @@ using EvoSC.CLI.Interfaces;
 using EvoSC.CLI.Models;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config;
+using EvoSC.Common.Services;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using Microsoft.Extensions.DependencyInjection;
@@ -156,6 +157,7 @@ public class CliManager : ICliManager
         var config = Configuration.GetBaseConfig(cliConfigOptions);
 
         var startupPipeline = new StartupPipeline(config);
+        startupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();
         startupPipeline.SetupBasePipeline(config);
 
         await startupPipeline.ExecuteAsync(command.RequiredFeatures

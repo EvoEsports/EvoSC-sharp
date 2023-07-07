@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Services;
 using EvoSC.Modules.Interfaces;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -26,18 +27,8 @@ public sealed class Application : IEvoSCApplication, IDisposable
         _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
         StartupPipeline = new StartupPipeline(_config);
 
+        StartupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();
         StartupPipeline.Services("Application", s => s.RegisterInstance<IEvoSCApplication>(this));
-
-        ConfigureServiceContainer();
-    }
-
-    private void ConfigureServiceContainer()
-    {
-        StartupPipeline.ServiceContainer.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-        StartupPipeline.ServiceContainer.Options.EnableAutoVerification = false;
-        StartupPipeline.ServiceContainer.Options.ResolveUnregisteredConcreteTypes = true;
-        StartupPipeline.ServiceContainer.Options.SuppressLifestyleMismatchVerification = true;
-        StartupPipeline.ServiceContainer.Options.UseStrictLifestyleMismatchBehavior = false;
     }
 
     public async Task RunAsync()
