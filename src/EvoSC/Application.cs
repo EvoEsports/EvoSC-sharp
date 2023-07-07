@@ -27,7 +27,6 @@ public sealed class Application : IEvoSCApplication, IDisposable
         StartupPipeline = new StartupPipeline(_config);
 
         StartupPipeline.Services("Application", s => s.RegisterInstance<IEvoSCApplication>(this));
-        StartupPipeline.Services("Config", s => s.RegisterInstance(_config));
 
         ConfigureServiceContainer();
     }

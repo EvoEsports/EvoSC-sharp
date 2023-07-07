@@ -35,13 +35,12 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
 
     public ManialinkInteractionHandler(IEventManager events, IManialinkActionManager manialinkActionManager,
         ILogger<ManialinkInteractionHandler> logger, IPlayerManagerService playerManager,
-        IControllerManager controllers, IPlayerManagerService players,
-        IActionPipelineManager actionPipeline)
+        IControllerManager controllers, IActionPipelineManager actionPipeline)
     {
         _manialinkActionManager = manialinkActionManager;
         _logger = logger;
         _controllers = controllers;
-        _players = players;
+        _players = playerManager;
         _actionPipeline = actionPipeline;
 
         SetupValueReader(playerManager);

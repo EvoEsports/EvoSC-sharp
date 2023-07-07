@@ -35,12 +35,13 @@ public class PlayerCacheService : IPlayerCacheService
         }
     }
 
-    public PlayerCacheService(IEventManager events, IServerClient server, ILogger<PlayerCacheService> logger, IPlayerRepository playerRepository)
+    public PlayerCacheService(IEventManager events, IServerClient server, ILogger<PlayerCacheService> logger,
+        IPlayerRepository playerRepository)
     {
         _server = server;
         _logger = logger;
         _playerRepository = playerRepository;
-        
+
         SetupEvents(events);
     }
 

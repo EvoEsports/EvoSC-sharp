@@ -28,73 +28,89 @@ public static class CliStartup
 
             .Services(AppFeature.Logging, s => s.AddEvoScLogging(config.Logging))
 
-            .Services(AppFeature.DatabaseMigrations, s => s.AddEvoScMigrations())
+            .Services(AppFeature.DatabaseMigrations, s => s
+                    .AddEvoScMigrations()
+                , "Config")
 
             .Services(AppFeature.Database, s => s
                     .AddEvoScDatabase(config.Database)
-                , "DatabaseMigrations")
+                , "DatabaseMigrations", "Logging", "ActionMigrateDatabase")
 
-            .Services(AppFeature.Events, s => s.AddEvoScEvents())
+            .Services(AppFeature.Events, s => s
+                    .AddEvoScEvents()
+                , "Logging", "ControllerManager", "ActionInitializeEventManager")
 
-            .Services(AppFeature.GbxRemoteClient, s => s.AddGbxRemoteClient())
+            .Services(AppFeature.GbxRemoteClient, s => s
+                    .AddGbxRemoteClient()
+                , "Logging", "Config", "Events", "PlayerManager", "ActionPipelines", "InitializeGbxRemoteConnection")
 
-            .Services(AppFeature.Modules, s => s.AddEvoScModules())
+            .Services(AppFeature.Modules, s => s
+                    .AddEvoScModules()
+                , "Logging", "Config", "ControllerManager", "ServicesManager", "ActionPipelines", "Permissions",
+                "Database", "Manialinks")
 
-            .Services(AppFeature.ControllerManager, s => s.AddEvoScControllers())
+            .Services(AppFeature.ControllerManager, s => s
+                    .AddEvoScControllers()
+                , "Logging")
 
             .Services(AppFeature.PlayerManager, s => s
-                .Register<IPlayerManagerService, PlayerManagerService>(Lifestyle.Transient)
-            )
+                    .Register<IPlayerManagerService, PlayerManagerService>(Lifestyle.Transient)
+                , "Logging", "Database", "PlayerCache", "GbxRemoteClient")
 
             .Services(AppFeature.MapsManager, s => s
-                .Register<IMapService, MapService>(Lifestyle.Transient)
-            )
+                    .Register<IMapService, MapService>(Lifestyle.Transient)
+                , "Logging", "Config", "Database", "PlayerManager", "GbxRemoteClient")
 
             .Services(AppFeature.PlayerCache, s => s
-                .RegisterSingleton<IPlayerCacheService, PlayerCacheService>()
-            )
+                    .RegisterSingleton<IPlayerCacheService, PlayerCacheService>()
+                , "Logging", "Events", "Database", "GbxRemoteClient", "ActionInitializePlayerCache")
 
             .Services(AppFeature.MatchSettings, s => s
-                .Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient)
-            )
+                    .Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient)
+                , "Logging", "GbxRemoteClient", "Config")
 
             .Services(AppFeature.Auditing, s => s
-                .Register<IAuditService, AuditService>(Lifestyle.Transient)
-            )
+                    .Register<IAuditService, AuditService>(Lifestyle.Transient)
+                , "Logging", "Database")
 
             .Services(AppFeature.ServicesManager, s => s
-                .RegisterSingleton<IServiceContainerManager, ServiceContainerManager>()
-            )
+                    .RegisterSingleton<IServiceContainerManager, ServiceContainerManager>()
+                , "Logging")
 
-            .Services(AppFeature.ChatCommands, s => s.AddEvoScChatCommands())
+            .Services(AppFeature.ChatCommands, s => s
+                    .AddEvoScChatCommands()
+                , "Logging", "PlayerManager")
 
-            .Services(AppFeature.ActionPipelines, s => s.AddEvoScMiddlewarePipelines())
+            .Services(AppFeature.ActionPipelines, s => s
+                    .AddEvoScMiddlewarePipelines()
+                , "Logging")
 
-            .Services(AppFeature.Permissions, s => s.AddEvoScPermissions())
+            .Services(AppFeature.Permissions, s => s
+                    .AddEvoScPermissions()
+                , "Database")
 
-            .Services(AppFeature.Manialinks, s => s.AddEvoScManialinks())
+            .Services(AppFeature.Manialinks, s => s
+                    .AddEvoScManialinks()
+                , "Logging", "Events", "PlayerManager", "ControllerManager", "PipelineManager", "GbxRemoteClient", "ActionInitializeTemplates")
 
-            .Action("ActionMigrateDatabase", MigrateDatabase, "DatabaseMigrations")
+            .Action("ActionMigrateDatabase", MigrateDatabase)
 
             .Action("ActionInitializeEventManager", s => s
-                    .GetInstance<IEventManager>()
-                , "Events")
+                .GetInstance<IEventManager>()
+            )
 
             .Action("ActionInitializePlayerCache", s => s
-                    .GetInstance<IPlayerCacheService>()
-                , "PlayerCache")
+                .GetInstance<IPlayerCacheService>()
+            )
 
             .Action("ActionInitializeManialinkInteractionHandler", s => s
                     .GetInstance<IManialinkInteractionHandler>()
                 , "ActionInitializeEventManager", "ActionInitializePlayerCache")
 
-            .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync,
-                "ActionInitializeEventManager",
-                "ActionInitializePlayerCache",
-                "ActionInitializeManialinkInteractionHandler",
-                "GbxRemoteClient")
+            .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync
+                , "ActionInitializeEventManager", "ActionInitializePlayerCache", "ActionInitializeManialinkInteractionHandler")
 
-            .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
+            .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync);
     }
     
     private static async Task InitializeTemplatesAsync(ServicesBuilder s)
