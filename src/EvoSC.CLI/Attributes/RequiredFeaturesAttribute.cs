@@ -2,6 +2,9 @@
 
 namespace EvoSC.CLI.Attributes;
 
+/// <summary>
+/// Define a required Application Feature for a command.
+/// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class RequiredFeaturesAttribute :  Attribute
 {

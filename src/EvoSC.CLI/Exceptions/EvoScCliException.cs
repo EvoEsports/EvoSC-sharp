@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.CLI.Exceptions;
 
+/// <summary>
+/// Exception that occured within the CLI handler.
+/// </summary>
 public class EvoScCliException : Exception
 {
     public EvoScCliException()

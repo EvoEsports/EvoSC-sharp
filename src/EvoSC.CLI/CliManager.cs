@@ -46,73 +46,6 @@ public class CliManager : ICliManager
             .CancelOnProcessTermination()
             .Build();
     }
-    
-    public ICliManager RegisterCommands(Assembly assembly)
-    {
-        foreach (var cmdClass in assembly.AssemblyTypesWithAttribute<CliCommandAttribute>())
-        {
-            RegisterCommand(cmdClass);
-        }
-
-        return this;
-    }
-
-    public ICliManager RegisterCommand(Type cmdClass)
-    {
-        var handlerMethod = cmdClass.GetMethod("ExecuteAsync");
-
-        if (handlerMethod == null)
-        {
-            throw new InvalidCommandClassFormatException(
-                $"Did not find the ExecuteAsync method in CLI command: {cmdClass.Name}");
-        }
-        
-        var cmdAttr = cmdClass.GetCustomAttribute<CliCommandAttribute>();
-
-        if (cmdAttr == null)
-        {
-            throw new InvalidCommandClassFormatException("Missing CliCommand");
-        }
-        
-        var requiredFeatures = cmdClass.GetCustomAttribute<RequiredFeaturesAttribute>();
-
-        var command = new Command(cmdAttr!.Name, cmdAttr.Description);
-
-        var options = new List<Option>();
-        foreach (var param in handlerMethod.GetParameters())
-        {
-            var option = CreateOption(param);
-
-            if (option == null)
-            {
-                throw new InvalidOperationException($"Failed to create option for CLI command {cmdClass.Name}");
-            }
-
-            options.Add(option);
-            command.AddOption(option);
-        }
-            
-        options.Add(_configOption);
-
-        var commandInfo = new CliCommandInfo
-        {
-            Command = command,
-            CommandClass = cmdClass,
-            HandlerMethod = handlerMethod,
-            Options = options.ToArray(),
-            RequiredFeatures = requiredFeatures?.Features ?? Array.Empty<AppFeature>()
-        };
-
-        command.SetHandler(async context =>
-        {
-            await ExecuteHandlerAsync(commandInfo, context);
-        });
-
-        _registeredCommands.Add(commandInfo);
-        _rootCommand.AddCommand(command);
-
-        return this;
-    }
 
     private async Task ExecuteHandlerAsync(ICliCommandInfo command, InvocationContext context)
     {
@@ -193,6 +126,73 @@ public class CliManager : ICliManager
         var option = Activator.CreateInstance(cmdOptionType, aliases.ToArray(), description?.Description ?? "") as Option;
 
         return option;
+    }
+    
+    public ICliManager RegisterCommands(Assembly assembly)
+    {
+        foreach (var cmdClass in assembly.AssemblyTypesWithAttribute<CliCommandAttribute>())
+        {
+            RegisterCommand(cmdClass);
+        }
+
+        return this;
+    }
+
+    public ICliManager RegisterCommand(Type cmdClass)
+    {
+        var handlerMethod = cmdClass.GetMethod("ExecuteAsync");
+
+        if (handlerMethod == null)
+        {
+            throw new InvalidCommandClassFormatException(
+                $"Did not find the ExecuteAsync method in CLI command: {cmdClass.Name}");
+        }
+        
+        var cmdAttr = cmdClass.GetCustomAttribute<CliCommandAttribute>();
+
+        if (cmdAttr == null)
+        {
+            throw new InvalidCommandClassFormatException("Missing CliCommand");
+        }
+        
+        var requiredFeatures = cmdClass.GetCustomAttribute<RequiredFeaturesAttribute>();
+
+        var command = new Command(cmdAttr!.Name, cmdAttr.Description);
+
+        var options = new List<Option>();
+        foreach (var param in handlerMethod.GetParameters())
+        {
+            var option = CreateOption(param);
+
+            if (option == null)
+            {
+                throw new InvalidOperationException($"Failed to create option for CLI command {cmdClass.Name}");
+            }
+
+            options.Add(option);
+            command.AddOption(option);
+        }
+            
+        options.Add(_configOption);
+
+        var commandInfo = new CliCommandInfo
+        {
+            Command = command,
+            CommandClass = cmdClass,
+            HandlerMethod = handlerMethod,
+            Options = options.ToArray(),
+            RequiredFeatures = requiredFeatures?.Features ?? Array.Empty<AppFeature>()
+        };
+
+        command.SetHandler(async context =>
+        {
+            await ExecuteHandlerAsync(commandInfo, context);
+        });
+
+        _registeredCommands.Add(commandInfo);
+        _rootCommand.AddCommand(command);
+
+        return this;
     }
 
     public Task<int> ExecuteAsync(string[] args)

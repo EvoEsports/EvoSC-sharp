@@ -33,9 +33,5 @@
     <ItemGroup>
         <Content Include="bin\Debug\net7.0\config\main.toml" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Interfaces\" />
-    </ItemGroup>
     
 </Project>

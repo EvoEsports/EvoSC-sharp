@@ -1,5 +1,8 @@
 ﻿namespace EvoSC.Common.Application.Exceptions;
 
+/// <summary>
+/// General exception for the startup pipeline.
+/// </summary>
 public class StartupPipelineException : Exception
 {
     public StartupPipelineException()
