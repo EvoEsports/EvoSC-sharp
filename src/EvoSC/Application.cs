@@ -4,7 +4,6 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Services;
 using EvoSC.Modules.Interfaces;
 using SimpleInjector;
-using SimpleInjector.Lifestyles;
 
 namespace EvoSC;
 
