@@ -29,6 +29,7 @@ public static class ApplicationSetup
     public static void SetupPipeline(this IStartupPipeline pipeline, IEvoScBaseConfig config)
     {
         pipeline
+                // Setting up service container
             .Services(AppFeature.Config, s => s.RegisterInstance(config))
 
             .Services(AppFeature.Logging, s => s.AddEvoScLogging(config.Logging))
@@ -79,6 +80,7 @@ public static class ApplicationSetup
 
             .Services(AppFeature.Manialinks, s => s.AddEvoScManialinks())
 
+                // initialize the application
             .Action("ActionMigrateDatabase", MigrateDatabase)
 
             .Action("ActionSetupControllerManager", SetupControllerManager)
@@ -104,18 +106,30 @@ public static class ApplicationSetup
             .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
     }
     
+    /// <summary>
+    /// Preprocesses manialinks.
+    /// </summary>
+    /// <param name="s"></param>
     private static async Task InitializeTemplatesAsync(ServicesBuilder s)
     {
         var maniaLinks = s.GetInstance<IManialinkManager>();
         await maniaLinks.PreprocessAllAsync();
     }
 
+    /// <summary>
+    /// Enables internal and external modules.
+    /// </summary>
+    /// <param name="s"></param>
     private static async Task EnableModulesAsync(ServicesBuilder s)
     {
         await s.GetInstance<IManialinkManager>().AddDefaultTemplatesAsync();
         await s.GetInstance<IModuleManager>().EnableModulesAsync();
     }
 
+    /// <summary>
+    /// Run database migrations.
+    /// </summary>
+    /// <param name="s"></param>
     private static void MigrateDatabase(ServicesBuilder s)
     {
         using var scope = new Scope(s);
@@ -128,6 +142,10 @@ public static class ApplicationSetup
         manager.RunInternalModuleMigrations();
     }
 
+    /// <summary>
+    /// Initialize controller registries and set up command and manialink controller managers.
+    /// </summary>
+    /// <param name="s"></param>
     private static void SetupControllerManager(ServicesBuilder s)
     {
         var controllers = s.GetInstance<IControllerManager>();
@@ -140,6 +158,10 @@ public static class ApplicationSetup
         pipelineManager.UseEvoScManialinks(s);
     }
 
+    /// <summary>
+    /// Load internal and external modules.
+    /// </summary>
+    /// <param name="s"></param>
     private static async Task SetupModulesAsync(ServicesBuilder s)
     {
         var modules = s.GetInstance<IModuleManager>();
@@ -163,6 +185,10 @@ public static class ApplicationSetup
         await modules.LoadAsync(externalModules);
     }
 
+    /// <summary>
+    /// Connect to XMLRPC and set up callback handler and chat router.
+    /// </summary>
+    /// <param name="s"></param>
     private static async Task SetupGbxRemoteConnectionAsync(ServicesBuilder s)
     {
         var serverClient = s.GetInstance<IServerClient>();

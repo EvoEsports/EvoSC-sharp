@@ -24,6 +24,7 @@ public static class CliStartup
     public static void SetupBasePipeline(this IStartupPipeline pipeline, IEvoScBaseConfig config)
     {
         pipeline
+                // Set up service container
             .Services(AppFeature.Config, s => s.RegisterInstance(config))
 
             .Services(AppFeature.Logging, s => s.AddEvoScLogging(config.Logging))
@@ -93,6 +94,7 @@ public static class CliStartup
                     .AddEvoScManialinks()
                 , "Logging", "Events", "PlayerManager", "ControllerManager", "PipelineManager", "GbxRemoteClient", "ActionInitializeTemplates")
 
+                // initialization of features
             .Action("ActionMigrateDatabase", MigrateDatabase)
 
             .Action("ActionInitializeEventManager", s => s
@@ -113,12 +115,20 @@ public static class CliStartup
             .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync);
     }
     
+    /// <summary>
+    /// Initialize and preprocess all registered templates.
+    /// </summary>
+    /// <param name="s"></param>
     private static async Task InitializeTemplatesAsync(ServicesBuilder s)
     {
         var maniaLinks = s.GetInstance<IManialinkManager>();
         await maniaLinks.PreprocessAllAsync();
     }
 
+    /// <summary>
+    /// Run database migrations.
+    /// </summary>
+    /// <param name="s"></param>
     private static void MigrateDatabase(ServicesBuilder s)
     {
         using var scope = new Scope(s);
@@ -128,6 +138,10 @@ public static class CliStartup
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
     }
 
+    /// <summary>
+    /// Connect to XMLRPC and initialize server callback and chat router.
+    /// </summary>
+    /// <param name="s"></param>
     private static async Task SetupGbxRemoteConnectionAsync(ServicesBuilder s)
     {
         var serverClient = s.GetInstance<IServerClient>();

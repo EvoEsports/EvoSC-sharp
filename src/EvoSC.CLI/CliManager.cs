@@ -113,8 +113,8 @@ public class CliManager : ICliManager
 
     private Option? CreateOption(ParameterInfo param)
     {
-        var cmdOptionType = typeof(Option<>).MakeGenericType(new[] {param.ParameterType});
-        var aliases = cmdOptionType
+        var cmdOptionType = typeof(Option<>).MakeGenericType(param.ParameterType);
+        var aliases = param
             .GetCustomAttributes<AliasAttribute>()
             .Select(a => a.Name)
             .ToList();
