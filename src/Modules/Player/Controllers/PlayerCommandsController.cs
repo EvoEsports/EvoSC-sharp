@@ -1,5 +1,6 @@
 ﻿using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Models;
@@ -8,7 +9,7 @@ using EvoSC.Modules.Official.Player.Interfaces;
 namespace EvoSC.Modules.Official.Player.Controllers;
 
 [Controller]
-public class PlayerCommandsController : EvoScController<CommandInteractionContext>
+public class PlayerCommandsController : EvoScController<ICommandInteractionContext>
 {
     private readonly IPlayerService _players;
 

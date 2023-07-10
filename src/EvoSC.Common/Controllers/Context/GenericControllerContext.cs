@@ -8,7 +8,7 @@ namespace EvoSC.Common.Controllers.Context;
 /// Generic context for any action within a controller. If you have multiple action types, you need to use
 /// this.
 /// </summary>
-public class GenericControllerContext : IControllerContext
+public class GenericControllerContext : IGenericControllerContext
 {
     public Scope ServiceScope { get; private set; }
     public IController Controller { get; init; }
