@@ -1,5 +1,5 @@
-﻿using EvoSC.Commands;
-using EvoSC.Commands.Attributes;
+﻿using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
@@ -7,7 +7,7 @@ using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 namespace EvoSC.Modules.Official.PlayerRecords.Controllers;
 
 [Controller]
-public class CommandController : EvoScController<CommandInteractionContext>
+public class CommandController : EvoScController<ICommandInteractionContext>
 {
     private readonly IPlayerRecordHandlerService _playerRecordHandler;
 

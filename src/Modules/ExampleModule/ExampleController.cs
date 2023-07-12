@@ -4,6 +4,7 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Services;
@@ -17,7 +18,7 @@ using EvoSC.Manialinks.Interfaces;
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [Controller]
-public class ExampleController : EvoScController<PlayerInteractionContext>
+public class ExampleController : EvoScController<IPlayerInteractionContext>
 {
     private readonly IMySettings _settings;
     private readonly IServerClient _server;

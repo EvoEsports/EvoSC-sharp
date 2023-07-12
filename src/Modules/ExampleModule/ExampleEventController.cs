@@ -3,6 +3,7 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.ExampleModule;
 
 [Controller]
-public class ExampleEventController : EvoScController<EventControllerContext>
+public class ExampleEventController : EvoScController<IEventControllerContext>
 {
     private readonly ILogger<ExampleEventController> _logger;
     private readonly IManialinkManager _manialinkses;

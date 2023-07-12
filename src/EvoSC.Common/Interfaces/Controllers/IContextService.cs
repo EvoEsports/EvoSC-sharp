@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Util.Auditing;
+﻿using EvoSC.Common.Interfaces.Util.Auditing;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;
@@ -25,5 +25,5 @@ public interface IContextService
     /// Begin auditing a new event.
     /// </summary>
     /// <returns></returns>
-    public AuditEventBuilder Audit();
+    public IAuditEventBuilder Audit();
 }

@@ -1,5 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Middleware;
-using EvoSC.Common.Util.Auditing;
+using EvoSC.Common.Interfaces.Util.Auditing;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;
@@ -19,7 +19,7 @@ public interface IControllerContext : IPipelineContext
     /// <summary>
     /// The audit associated with the event of this context.
     /// </summary>
-    public AuditEventBuilder AuditEvent { get; }
+    public IAuditEventBuilder AuditEvent { get; }
     
     /// <summary>
     /// This is any data that can be set to be included with the context.

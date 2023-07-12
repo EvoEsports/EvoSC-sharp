@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Models.Audit;
-using EvoSC.Common.Util.Auditing;
 using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Common.Interfaces.Services;
@@ -24,21 +24,21 @@ public interface IAuditService
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewEvent(string eventName);
+    public IAuditEventBuilder NewEvent(string eventName);
     
     /// <summary>
     /// Begin auditing a new event.
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewEvent(Enum eventName);
+    public IAuditEventBuilder NewEvent(Enum eventName);
 
     /// <summary>
     /// Begin auditing a new successful event.
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewSuccessEvent(string eventName) =>
+    public IAuditEventBuilder NewSuccessEvent(string eventName) =>
         NewEvent(eventName).WithStatus(AuditEventStatus.Success);
 
     /// <summary>
@@ -46,7 +46,7 @@ public interface IAuditService
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewSuccessEvent(Enum eventName) =>
+    public IAuditEventBuilder NewSuccessEvent(Enum eventName) =>
         NewEvent(eventName.GetIdentifier(true)).WithStatus(AuditEventStatus.Success);
     
     /// <summary>
@@ -54,7 +54,7 @@ public interface IAuditService
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewErrorEvent(string eventName) =>
+    public IAuditEventBuilder NewErrorEvent(string eventName) =>
         NewEvent(eventName).WithStatus(AuditEventStatus.Error);
 
     /// <summary>
@@ -62,7 +62,7 @@ public interface IAuditService
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewErrorEvent(Enum eventName) =>
+    public IAuditEventBuilder NewErrorEvent(Enum eventName) =>
         NewEvent(eventName.GetIdentifier(true)).WithStatus(AuditEventStatus.Error);
     
     /// <summary>
@@ -70,7 +70,7 @@ public interface IAuditService
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewInfoEvent(string eventName) =>
+    public IAuditEventBuilder NewInfoEvent(string eventName) =>
         NewEvent(eventName).WithStatus(AuditEventStatus.Info);
 
     /// <summary>
@@ -78,6 +78,6 @@ public interface IAuditService
     /// </summary>
     /// <param name="eventName">The name of the audit.</param>
     /// <returns></returns>
-    public AuditEventBuilder NewInfoEvent(Enum eventName) =>
+    public IAuditEventBuilder NewInfoEvent(Enum eventName) =>
         NewEvent(eventName.GetIdentifier(true)).WithStatus(AuditEventStatus.Info);
 }

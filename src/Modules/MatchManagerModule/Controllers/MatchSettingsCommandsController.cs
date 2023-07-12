@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
@@ -9,7 +9,7 @@ using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 
 [Controller]
-public class MatchSettingsCommandsController : EvoScController<CommandInteractionContext>
+public class MatchSettingsCommandsController : EvoScController<ICommandInteractionContext>
 {
     private readonly IMatchManagerHandlerService _matchHandler;
 

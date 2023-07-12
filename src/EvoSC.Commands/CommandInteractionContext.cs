@@ -5,11 +5,8 @@ using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Commands;
 
-public class CommandInteractionContext : PlayerInteractionContext
+public class CommandInteractionContext : PlayerInteractionContext, ICommandInteractionContext
 {
-    /// <summary>
-    /// The command that was executed in this context.
-    /// </summary>
     public required IChatCommand CommandExecuted { get; init; }
     
     public CommandInteractionContext(IOnlinePlayer player, IControllerContext context) : base(player, context)

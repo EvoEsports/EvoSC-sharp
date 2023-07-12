@@ -30,6 +30,7 @@ public class SetNameController : ManialinkController
         await HideAsync(Context.Player, "SetName.EditName");
 
         Context.AuditEvent
+            .Success()
             .WithEventName("EditNickname")
             .HavingProperties(new {OldNickname = Context.Player.NickName, NewNickname = input.Nickname});
     }
