@@ -1,5 +1,6 @@
 ﻿using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Modules.Interfaces;
@@ -8,7 +9,7 @@ using EvoSC.Modules.Official.ModuleManagerModule.Interfaces;
 namespace EvoSC.Modules.Official.ModuleManagerModule.Controllers;
 
 [Controller]
-public class ModuleCommandsController : EvoScController<CommandInteractionContext>
+public class ModuleCommandsController : EvoScController<ICommandInteractionContext>
 {
     private readonly IModuleManagerService _moduleManagerService;
     

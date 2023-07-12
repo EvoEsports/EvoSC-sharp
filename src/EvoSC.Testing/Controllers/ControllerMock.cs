@@ -11,7 +11,7 @@ public class ControllerMock<TController, TContext> : ControllerContextMock<TCont
 
     public TController Controller => _controller;
 
-    public virtual void InitMock(params Mock[] services)
+    public virtual void InitMock(params object[] services)
     {
         _controller = Mocking.NewControllerMock<TController, TContext>(this, services);
     }

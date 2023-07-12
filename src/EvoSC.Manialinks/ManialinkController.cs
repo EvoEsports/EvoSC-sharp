@@ -3,13 +3,14 @@ using System.Dynamic;
 using System.Reflection;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Validation;
 using EvoSC.Manialinks.Validation;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace EvoSC.Manialinks;
 
-public class ManialinkController : EvoScController<ManialinkInteractionContext>
+public class ManialinkController : EvoScController<IManialinkInteractionContext>
 {
     /// <summary>
     /// The model validation result of the current context.

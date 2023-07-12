@@ -1,5 +1,6 @@
 ﻿using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Localization;
@@ -8,7 +9,7 @@ using EvoSC.Manialinks.Interfaces;
 namespace EvoSC.Modules.Official.SetName.Controllers;
 
 [Controller]
-public class SetNameCommandsController : EvoScController<CommandInteractionContext>
+public class SetNameCommandsController : EvoScController<ICommandInteractionContext>
 {
     private readonly IManialinkManager _manialinks;
     private readonly dynamic _locale;

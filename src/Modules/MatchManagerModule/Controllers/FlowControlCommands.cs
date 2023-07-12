@@ -1,5 +1,6 @@
 ﻿using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
@@ -10,7 +11,7 @@ using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 
 [Controller]
-public class FlowControlCommands : EvoScController<CommandInteractionContext>
+public class FlowControlCommands : EvoScController<ICommandInteractionContext>
 {
     private readonly IFlowControlService _flowControl;
     private readonly IServerClient _server;

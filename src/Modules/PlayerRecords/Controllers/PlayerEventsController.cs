@@ -2,6 +2,7 @@
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.PlayerRecords.Events;
@@ -10,7 +11,7 @@ using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 namespace EvoSC.Modules.Official.PlayerRecords.Controllers;
 
 [Controller]
-public class PlayerEventsController : EvoScController<EventControllerContext>
+public class PlayerEventsController : EvoScController<IEventControllerContext>
 {
     private readonly IPlayerRecordHandlerService _playerRecordHandler;
 

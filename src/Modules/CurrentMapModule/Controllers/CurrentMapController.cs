@@ -2,6 +2,7 @@
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
@@ -10,7 +11,7 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.CurrentMapModule.Controllers;
 
 [Controller]
-public class CurrentMapController : EvoScController<EventControllerContext>
+public class CurrentMapController : EvoScController<IEventControllerContext>
 {
     private readonly ICurrentMapService _service;
 

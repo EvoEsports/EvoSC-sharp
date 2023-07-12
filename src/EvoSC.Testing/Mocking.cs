@@ -10,6 +10,8 @@ using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Localization;
+using EvoSC.Common.Models.Audit;
+using EvoSC.Common.Util.Auditing;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
@@ -71,11 +73,11 @@ public static class Mocking
         new ControllerContextMock<IManialinkInteractionContext>().SetupMock(actor, actionContext);
 
     public static TController NewControllerMock<TController,
-        TContext>(ControllerContextMock<TContext> contextMock, params Mock[] services)
+        TContext>(ControllerContextMock<TContext> contextMock, params object[] services)
         where TController : class, IController
         where TContext : class, IControllerContext
     {
-        var ctorArgs = services.Select(s => s.Object).ToArray();
+        var ctorArgs = services.Select(s => s.GetType().IsAssignableTo(typeof(Mock)) ? ((Mock)s).Object : s).ToArray();
         var controller = Activator.CreateInstance(typeof(TController), ctorArgs) as TController;
 
         if (controller == null)
@@ -89,7 +91,7 @@ public static class Mocking
     }
 
     public static (TController Controller, ControllerContextMock<TContext> ContextMock) NewControllerMock<TController,
-        TContext>(params Mock[] services)
+        TContext>(params object[] services)
         where TController : class, IController
         where TContext : class, IControllerContext
     {
@@ -133,5 +135,25 @@ public static class Mocking
         client.Setup(m => m.Remote).Returns(remote.Object);
 
         return (client, remote);
+    }
+
+    public static Mock<IAuditEventBuilder> NewAuditEventBuilderMock()
+    {
+        var builder = new Mock<IAuditEventBuilder>();
+
+        builder.Setup(m => m.CausedBy(It.IsAny<IPlayer>())).Returns(builder.Object);
+        builder.Setup(m => m.Comment(It.IsAny<string>())).Returns(builder.Object);
+        builder.Setup(m => m.HavingProperties(It.IsAny<object>())).Returns(builder.Object);
+        builder.Setup(m => m.Cancel()).Returns(builder.Object);
+        builder.Setup(m => m.Cancel(It.IsAny<bool>())).Returns(builder.Object);
+        builder.Setup(m => m.Error()).Returns(builder.Object);
+        builder.Setup(m => m.Info()).Returns(builder.Object);
+        builder.Setup(m => m.Success()).Returns(builder.Object);
+        builder.Setup(m => m.UnCancel()).Returns(builder.Object);
+        builder.Setup(m => m.WithStatus(It.IsAny<AuditEventStatus>())).Returns(builder.Object);
+        builder.Setup(m => m.WithEventName(It.IsAny<string>())).Returns(builder.Object);
+        builder.Setup(m => m.WithEventName(It.IsAny<Enum>())).Returns(builder.Object);
+
+        return builder;
     }
 }
