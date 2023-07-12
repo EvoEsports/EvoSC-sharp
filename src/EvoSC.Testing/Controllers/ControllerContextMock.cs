@@ -13,9 +13,24 @@ public class ControllerContextMock<TContext> where TContext : class, IController
     private Mock<IAuditService> _auditService;
     private Mock<IAuditEventBuilder> _auditEventBuilder;
     
+    /// <summary>
+    /// The context mock.
+    /// </summary>
     public Mock<TContext> Context => _context;
-    public Mock<IAuditService> AuditService => _auditService;
+    
+    /// <summary>
+    /// The context service mock.
+    /// </summary>
     public Mock<IContextService> ContextService => _contextService;
+    
+    /// <summary>
+    /// The audit service mock.
+    /// </summary>
+    public Mock<IAuditService> AuditService => _auditService;
+
+    /// <summary>
+    /// The audit event builder mock.
+    /// </summary>
     public Mock<IAuditEventBuilder> AuditEventBuilder => _auditEventBuilder;
 
     public ControllerContextMock()
@@ -26,8 +41,6 @@ public class ControllerContextMock<TContext> where TContext : class, IController
         _context = new Mock<TContext>();
         _context.Setup(c => c.AuditEvent).Returns(_auditEventBuilder.Object);
 
-        _contextService = new Mock<IContextService>();
-        _contextService.Setup(m => m.GetContext()).Returns(_context.Object);
-        _contextService.Setup(m => m.Audit()).Returns(_auditEventBuilder.Object);
+        _contextService = Mocking.NewContextServiceMock(Context.Object, null);
     }
 }
