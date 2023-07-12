@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet;
+using GbxRemoteNet.Interfaces;
 
 namespace EvoSC.Common.Interfaces;
 
@@ -8,7 +9,7 @@ public interface IServerClient
     /// <summary>
     /// The GBXRemote client instance.
     /// </summary>
-    public GbxRemoteClient Remote { get; }
+    public IGbxRemoteClient Remote { get; }
     /// <summary>
     /// Whether the client is connected to the remote XMLRPC server or not.
     /// </summary>

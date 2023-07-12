@@ -4,14 +4,17 @@ using System.Resources;
 using EvoSC.Commands;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Localization;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Testing.Controllers;
+using GbxRemoteNet.Interfaces;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Moq;
 using Org.BouncyCastle.Crypto.Tls;
@@ -121,5 +124,14 @@ public static class Mocking
 
         var locale = new LocaleResource(localeManager.Object, contextService, config.Object);
         return locale;
+    }
+
+    public static (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) NewServerClientMock()
+    {
+        var remote = new Mock<IGbxRemoteClient>();
+        var client = new Mock<IServerClient>();
+        client.Setup(m => m.Remote).Returns(remote.Object);
+
+        return (client, remote);
     }
 }

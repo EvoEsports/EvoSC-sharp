@@ -79,7 +79,7 @@ public class PlayerService : IPlayerService
         }
         else
         {
-            await _server.ErrorMessageAsync(_locale.PlayerMutingFailed);
+            await _server.ErrorMessageAsync(_locale.PlayerMutingFailed, actor);
         }
     }
 
@@ -134,13 +134,13 @@ public class PlayerService : IPlayerService
                     .HavingProperties(new {PlayerLogin = login})
                     .Comment(_locale.Audit_Unbanned);
                 
-                await _server.SuccessMessageAsync(_locale.PlayerUnbanned(login));
+                await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerUnbanned(login), actor);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to unban player {Login}", login);
-            await _server.ErrorMessageAsync(_locale.PlayerUnbanningFailed(login));
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.PlayerUnbanningFailed(login), actor);
         }
 
         try
@@ -152,13 +152,13 @@ public class PlayerService : IPlayerService
                     .HavingProperties(new {PlayerLogin = login})
                     .Comment(_locale.Audit_Unblacklisted);
                 
-                await _server.SuccessMessageAsync(_locale.PlayerUnblacklisted(login));
+                await _server.SuccessMessageAsync(_locale.PlayerLanguage.PlayerUnblacklisted(login), actor);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to un-blacklist player {Login}", login);
-            await _server.ErrorMessageAsync(_locale.PlayerUnblacklistingFailed(login));
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.PlayerUnblacklistingFailed(login), actor);
         }
     }
 }
