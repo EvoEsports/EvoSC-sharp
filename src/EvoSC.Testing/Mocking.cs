@@ -59,18 +59,19 @@ public static class Mocking
 
     public static ControllerContextMock<IManialinkInteractionContext> SetupMock(
         this ControllerContextMock<IManialinkInteractionContext> mock, IOnlinePlayer actor,
-        IManialinkActionContext actionContext)
+        IManialinkActionContext actionContext, IManialinkManager mlManager)
     {
         mock.Context.Setup(c => c.Player).Returns(actor);
         mock.Context.Setup(c => c.ManialinkAction).Returns(actionContext);
+        mock.Context.Setup(m => m.ManialinkManager).Returns(mlManager);
         mock.Context.Object.AuditEvent.CausedBy(actor);
 
         return mock;
     }
 
     public static ControllerContextMock<IManialinkInteractionContext> NewManialinkInteractionContextMock(
-        IOnlinePlayer actor, IManialinkActionContext actionContext) =>
-        new ControllerContextMock<IManialinkInteractionContext>().SetupMock(actor, actionContext);
+        IOnlinePlayer actor, IManialinkActionContext actionContext, IManialinkManager mlManager) =>
+        new ControllerContextMock<IManialinkInteractionContext>().SetupMock(actor, actionContext, mlManager);
 
     public static TController NewControllerMock<TController,
         TContext>(ControllerContextMock<TContext> contextMock, params object[] services)

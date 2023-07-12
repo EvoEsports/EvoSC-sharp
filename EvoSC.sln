@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Testing", "src\EvoSC.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapsModule.Tests", "tests\Modules\MapsModule.Tests\MapsModule.Tests.csproj", "{42628040-A753-48AC-A1B8-0FB90D2BD278}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetName.Tests", "tests\Modules\SetName.Tests\SetName.Tests.csproj", "{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -182,6 +184,10 @@ Global
 		{42628040-A753-48AC-A1B8-0FB90D2BD278}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42628040-A753-48AC-A1B8-0FB90D2BD278}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42628040-A753-48AC-A1B8-0FB90D2BD278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -211,5 +217,6 @@ Global
 		{B684B864-31BF-407E-9ED9-A95D32BC4FE2} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{BA828B35-E9B7-4F18-B139-7F000B267D4C} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{42628040-A753-48AC-A1B8-0FB90D2BD278} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
+		{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 	EndGlobalSection
 EndGlobal
