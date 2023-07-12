@@ -1,6 +1,7 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Models.Audit;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Testing.Tests.TestClasses;
@@ -150,5 +151,44 @@ public class MockingTests
         Assert.Equal(contextMock.Context.Object, mock.Object.GetContext());
         contextMock.AuditEventBuilder.Verify(m => m.CausedBy(actor.Object), Times.Once);
     }
-    
+
+    [Fact]
+    public void NewLocaleMock_Returns_Simplified_Mock()
+    {
+        var context = Mocking.NewControllerContextMock<IPlayerInteractionContext>();
+        var locale = Mocking.NewLocaleMock(context.ContextService.Object);
+
+        var str = locale["SomeRandomLocale"];
+        
+        Assert.Equal("Test_Locale_String", str);
+    }
+
+    [Fact]
+    public void NewServerClientMock_Returns_Mocked_Client()
+    {
+        var server = Mocking.NewServerClientMock();
+        
+        Assert.NotNull(server.Remote);
+        Assert.Equal(server.Remote.Object, server.Client.Object.Remote);
+    }
+
+    [Fact]
+    public void NewAuditEventBuilderMock_Returns_Mock_With_No_Null_Methods()
+    {
+        var player = new Mock<IOnlinePlayer>();
+        var mock = Mocking.NewAuditEventBuilderMock();
+        
+        Assert.NotNull(mock.Object.WithEventName(""));
+        Assert.NotNull(mock.Object.WithEventName(TestEnum.TestField));
+        Assert.NotNull(mock.Object.HavingProperties(new{}));
+        Assert.NotNull(mock.Object.WithStatus(AuditEventStatus.Info));
+        Assert.NotNull(mock.Object.Success());
+        Assert.NotNull(mock.Object.Info());
+        Assert.NotNull(mock.Object.Error());
+        Assert.NotNull(mock.Object.CausedBy(player.Object));
+        Assert.NotNull(mock.Object.Cancel());
+        Assert.NotNull(mock.Object.Cancel(true));
+        Assert.NotNull(mock.Object.UnCancel());
+        Assert.NotNull(mock.Object.Comment(""));
+    }
 }
