@@ -1,7 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Models.Audit;
-using EvoSC.Common.Util.Auditing;
 using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Common.Interfaces.Services;

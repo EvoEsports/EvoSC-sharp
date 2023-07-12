@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Util.Auditing;
-using EvoSC.Common.Util.Auditing;
 using SimpleInjector;
 
 namespace EvoSC.Common.Controllers.Context;

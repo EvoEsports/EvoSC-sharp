@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using EvoSC.Commands;
 using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
