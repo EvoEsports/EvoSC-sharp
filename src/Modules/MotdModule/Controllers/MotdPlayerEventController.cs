@@ -18,20 +18,38 @@ public class MotdPlayerEventController : EvoScController<IEventControllerContext
     private readonly IManialinkManager _manialink;
     private readonly IPlayerManagerService _playerManager;
     private readonly IMotdService _motdService;
+    private readonly IMotdRepository _motdRepository;
     
     public MotdPlayerEventController(IManialinkManager manialink,
-        IPlayerManagerService playerManager, IMotdService motdService)
+        IPlayerManagerService playerManager, IMotdService motdService, IMotdRepository motdRepository)
     {
         _manialink = manialink;
         _playerManager = playerManager;
         _motdService = motdService;
+        _motdRepository = motdRepository;
     }
 
     [Subscribe(GbxRemoteEvent.PlayerChat)]
     public async Task OnPlayerChat(object sender, PlayerChatGbxEventArgs args)
-        => await _motdService.ShowAsync();
+        => await ShowAsync(args.Login, true);
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
-        => await _motdService.ShowAsync();
+        => await ShowAsync(args.Login);
+
+    private async Task ShowAsync(string login, bool explicitly = false)
+    {
+        var player = await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(login));
+        if (player is null)
+            return;
+
+        if (!explicitly) // check if the player hid the menu
+        {
+            var playerEntry = await _motdRepository.GetEntryAsync(player);
+            if (playerEntry is not null && playerEntry.Hidden)
+                return;
+        }
+        
+        await _motdService.ShowAsync(player);
+    }
 }

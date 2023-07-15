@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Manialinks;
+using EvoSC.Modules.Official.MotdModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MotdModule.Controllers;
 
@@ -7,22 +8,17 @@ namespace EvoSC.Modules.Official.MotdModule.Controllers;
 public class MotdManialinkController : ManialinkController
 {
     private const string Template = "MotdModule.MotdTemplate";
-    private bool _isChecked = false;
     
-    public MotdManialinkController()
+    private readonly IMotdService _motdService;
+
+    public MotdManialinkController(IMotdService motdService)
     {
-        
+        _motdService = motdService;
     }
 
-    public async Task ToggleCheckbox()
-    {
-        _isChecked = !_isChecked;
-        //await Close();
-        //await ShowAsync(Context.Player, Template, new { isChecked = _isChecked });
-    }
-    
-    public async Task Close()
+    public async Task Close(bool isChecked)
     {
         await HideAsync(Context.Player, Template);
+        await _motdService.InsertOrUpdateEntryAsync(Context.Player, isChecked);
     }
 }

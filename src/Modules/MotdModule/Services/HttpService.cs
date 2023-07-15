@@ -2,6 +2,8 @@
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
+using EvoSC.Modules.Official.MotdModule.Models;
+using Newtonsoft.Json;
 
 namespace EvoSC.Modules.Official.MotdModule.Services;
 
@@ -22,6 +24,10 @@ public class HttpService : IHttpService
     public async Task<string> GetAsync(string uri)
     {
         using HttpResponseMessage response = await _httpClient.GetAsync(uri);
-        return await response.Content.ReadAsStringAsync();
+        var result = await response.Content.ReadAsStringAsync();
+        MotdResponse? responseObject = JsonConvert.DeserializeObject<MotdResponse>(result);
+        if (responseObject is null)
+            return "";
+        return responseObject.data.FirstOrDefault()?.message ?? "";
     }
 }

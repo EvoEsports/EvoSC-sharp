@@ -1,37 +1,73 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using System.Timers;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
+using Microsoft.Extensions.Logging;
+using ILogger = Castle.Core.Logging.ILogger;
+using Timer = System.Timers.Timer;
 
 namespace EvoSC.Modules.Official.MotdModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class MotdService : IMotdService
 {
-    const string MotdUrl = "https://directus.evoesports.de/items/motd";
-    
     private readonly IManialinkManager _manialink;
-    private readonly IPlayerManagerService _playerManager;
     private readonly IHttpService _httpService;
+    private readonly IMotdRepository _repository;
+    private readonly ILogger<MotdService> _logger;
 
-    public MotdService(IManialinkManager manialink, IPlayerManagerService playerManager, IHttpService httpService)
+    private readonly Timer _motdUpdateTimer;
+    private readonly string _motdUrl;
+    private readonly int _timerInterval;
+
+    private string MotdText { get; set; } = "";
+
+    public MotdService(IManialinkManager manialink, IHttpService httpService, 
+        IMotdRepository repository, IMotdSettings motdSettings, ILogger<MotdService> logger)
     {
-        _playerManager = playerManager;
         _manialink = manialink;
         _httpService = httpService;
-    }
-    
-    public async Task ShowAsync()
-    {
-        var players = await _playerManager.GetOnlinePlayersAsync();
-        //var accountId = PlayerUtils.ConvertLoginToAccountId(args.PlayerInfo.Login);
-        //var player = await _playerManager.GetPlayerAsync(accountId);
-        var player = players.FirstOrDefault();
-        var motdText = await GetMotd();
-        if(player is not null)
-            await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate", new { test="hallo"});
+        _repository = repository;
+        _motdUrl = motdSettings.MotdUrl;
+        _timerInterval = motdSettings.MotdFetchInterval;
+        _logger = logger;
+        
+        _motdUpdateTimer = new Timer()
+        {
+            Interval = 1,
+            Enabled = true,
+            AutoReset = true
+        };
+        _motdUpdateTimer.Elapsed += MotdUpdateTimerOnElapsed;
     }
 
-    private async Task<string> GetMotd() => await _httpService.GetAsync(MotdUrl);
+    private void MotdUpdateTimerOnElapsed(object? sender, ElapsedEventArgs e)
+    {
+        if (sender is not Timer timer)
+            return;
+        
+        timer.Interval = _timerInterval;
+        MotdText = GetMotd().Result;
+        _logger.LogDebug("Timer fired");
+    }
+
+    public async Task ShowAsync(IPlayer player)
+    {
+        var isChecked = (await _repository.GetEntryAsync(player))?.Hidden ?? false;
+        await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate", new { isChecked = isChecked, text = MotdText });
+    }
+    
+    public async Task<string> GetMotd()
+    {
+        return await _httpService.GetAsync(_motdUrl);
+    }
+
+    public async Task<IMotdEntry?> GetEntryAsync(IPlayer player) 
+        => await _repository.GetEntryAsync(player);
+
+    public async Task InsertOrUpdateEntryAsync(IPlayer player, bool hidden)
+        => await _repository.InsertOrUpdateEntryAsync(player, hidden);
 }
