@@ -1,29 +1,28 @@
-﻿using EvoSC.Common.Controllers;
-using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Events.Attributes;
-using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Remote;
-using EvoSC.Common.Util;
+﻿using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Manialinks;
-using EvoSC.Manialinks.Interfaces;
-using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.MotdModule.Controllers;
 
 [Controller]
 public class MotdManialinkController : ManialinkController
 {
-    private readonly IManialinkManager _manialink;
+    private const string Template = "MotdModule.MotdTemplate";
+    private bool _isChecked = false;
     
-    public MotdManialinkController(IManialinkManager manialink)
+    public MotdManialinkController()
     {
-        _manialink = manialink;
+        
+    }
+
+    public async Task ToggleCheckbox()
+    {
+        _isChecked = !_isChecked;
+        //await Close();
+        //await ShowAsync(Context.Player, Template, new { isChecked = _isChecked });
     }
     
-    public async Task ShowMotdAsync(IPlayer player)
+    public async Task Close()
     {
-        await ShowAsync((IOnlinePlayer)player, "MotdModule.MotdTemplate", new { Name = player.NickName });
+        await HideAsync(Context.Player, Template);
     }
 }

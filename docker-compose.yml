@@ -7,8 +7,8 @@ services:
       - 2350:2350/tcp
       - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-      MASTER_LOGIN: "SERVERLOGIN"
-      MASTER_PASSWORD: "SERVERPASS"
+      MASTER_LOGIN: "evo"
+      MASTER_PASSWORD: "s&y0_jv}hvob+?_p"
       XMLRPC_ALLOWREMOTE: "True"
     volumes:
       - UserData:/server/UserData

@@ -4,8 +4,10 @@ using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.MotdModule.Interfaces;
 using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.MotdModule.Controllers;
@@ -15,22 +17,21 @@ public class MotdPlayerEventController : EvoScController<IEventControllerContext
 {
     private readonly IManialinkManager _manialink;
     private readonly IPlayerManagerService _playerManager;
-    private readonly MotdManialinkController _manialinkController;
+    private readonly IMotdService _motdService;
     
-    public MotdPlayerEventController(IManialinkManager manialink,IPlayerManagerService playerManager)
+    public MotdPlayerEventController(IManialinkManager manialink,
+        IPlayerManagerService playerManager, IMotdService motdService)
     {
         _manialink = manialink;
         _playerManager = playerManager;
-        _manialinkController = new MotdManialinkController(manialink);
+        _motdService = motdService;
     }
-    
+
+    [Subscribe(GbxRemoteEvent.PlayerChat)]
+    public async Task OnPlayerChat(object sender, PlayerChatGbxEventArgs args)
+        => await _motdService.ShowAsync();
+
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task ShowMotdAsync(object sender, PlayerConnectGbxEventArgs args)
-    {
-        var accountId = PlayerUtils.ConvertLoginToAccountId(args.Login);
-        var player = await _playerManager.GetPlayerAsync(accountId);
-        
-        if(player is not null)
-            await _manialinkController.ShowMotdAsync(player);
-    }
+    public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
+        => await _motdService.ShowAsync();
 }
