@@ -13,7 +13,7 @@ public class HttpServiceTests
     [Theory]
     [InlineData(TestServerUri)]
     [InlineData("https://www.google.de")]
-    async Task GetAsyncTest(string uri)
+    private async Task GetAsync_Test(string uri)
     {
         var result = await _service.GetAsync(uri);
         Assert.Equal(uri.Contains("evo", StringComparison.InvariantCulture) ? "This is a MOTD message served by the API. Including $f00styling." : "",
@@ -21,7 +21,7 @@ public class HttpServiceTests
     }
 
     [Fact]
-    async Task DataModelTest()
+    private async Task DataModel_Test()
     {
         var httpClient = new HttpClient();
         using HttpResponseMessage response = await httpClient.GetAsync(new Uri(TestServerUri));
@@ -38,7 +38,7 @@ public class HttpServiceTests
     }
 
     [Fact]
-    async Task DisposeTest()
+    private async Task Dispose_Test()
     {
         await _service.GetAsync("https://asd");
         _service.Dispose();

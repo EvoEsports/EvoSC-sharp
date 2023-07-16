@@ -27,7 +27,7 @@ public class MotdPlayerEventControllerTest : ControllerMock<MotdPlayerEventContr
     [InlineData(true)]
     [InlineData(false)]
     [InlineData(true, true)]
-    async Task OnPlayerConnectTest(bool returnPlayer, bool hasEntry = false)
+    private async Task OnPlayerConnect_Test(bool returnPlayer, bool hasEntry = false)
     {
         _playerManager.Setup(r => r.GetPlayerAsync(It.IsAny<string>()))
             .Returns((returnPlayer) ? Task.FromResult((IPlayer)_player.Object) : Task.FromResult<IPlayer>(null));
