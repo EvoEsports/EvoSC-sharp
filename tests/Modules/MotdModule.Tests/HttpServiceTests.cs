@@ -1,7 +1,6 @@
 ﻿using EvoSC.Modules.Official.MotdModule.Models;
 using EvoSC.Modules.Official.MotdModule.Services;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace MotdModule.Tests;
 
@@ -12,7 +11,7 @@ public class HttpServiceTests
 
     [Theory]
     [InlineData(TestServerUri)]
-    [InlineData("https://www.google.de")]
+    [InlineData("https://www.google.com")]
     private async Task Get_Async_Test(string uri)
     {
         var result = await _service.GetAsync(uri);
@@ -23,11 +22,11 @@ public class HttpServiceTests
     [Fact]
     private async Task Data_Model_Test()
     {
-        var responseObject = new MotdResponse()
+        var responseObject = new MotdResponse
         {
             Data = new()
             {
-                new ResponseData()
+                new ResponseData
                 {
                     Id = 1, Message = "test message", Server = "testServer"
                 }

@@ -131,7 +131,7 @@ public class MotdServiceTests
         SetupController();
         var dbPlayer = new DbPlayer(_player.Object);
         _repository.Setup(r => r.GetEntryAsync(_player.Object))
-            .Returns(Task.FromResult(new MotdEntry() { Hidden = true, DbPlayer = dbPlayer, PlayerId = 1})!);
+            .Returns(Task.FromResult(new MotdEntry { Hidden = true, DbPlayer = dbPlayer, PlayerId = 1})!);
         var entry = await _motdService!.GetEntryAsync(_player.Object) as MotdEntry;
         
         _repository.Verify(r => r.GetEntryAsync(_player.Object), Times.Once);
@@ -180,7 +180,7 @@ public class MotdServiceTests
         
         SetupMocks();
         SetupController();
-        await _motdService!.ShowAsync(_player.Object);
+        await _motdService!.ShowAsync(_player.Object, true);
         
         _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
             It.IsAny<object>()), Times.Once);
@@ -208,7 +208,7 @@ public class MotdServiceTests
         SetupMocks();
         SetupController();
         await Task.Delay(500);
-        await _motdService!.ShowAsync(_player.Object);
+        await _motdService!.ShowAsync(_player.Object, true);
         
         _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
             It.IsAny<object>()), Times.Once);

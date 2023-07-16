@@ -150,7 +150,7 @@ public class MotdService : IMotdService, IDisposable
     public async Task ShowAsync(string login, bool explicitly)
         => await ShowAsync(await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(login)), explicitly);
 
-    public async Task ShowAsync(IPlayer? player, bool explicitly = true)
+    public async Task ShowAsync(IPlayer? player, bool explicitly)
     {
         bool? hidden = null;
         if (player is null)

@@ -1,10 +1,6 @@
-﻿using EvoSC.Common.Database.Models.Player;
-using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MotdModule.Controllers;
-using EvoSC.Modules.Official.MotdModule.Database.Models;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;
@@ -20,7 +16,7 @@ public class MotdPlayerEventControllerTest : ControllerMock<MotdPlayerEventContr
     
     public MotdPlayerEventControllerTest()
     {
-        InitMock(_playerManager, _motdService, _motdRepository);
+        InitMock(_motdService);
     }
 
     [Fact]
