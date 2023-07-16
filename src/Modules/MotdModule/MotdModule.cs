@@ -7,26 +7,7 @@ using EvoSC.Modules.Official.MotdModule.Services;
 namespace EvoSC.Modules.Official.MotdModule;
 
 [Module(IsInternal = true)]
-public class MotdModule : EvoScModule, IToggleable
+public class MotdModule : EvoScModule
 {
-    private readonly IMotdService _motdService;
-    private readonly IPlayerManagerService _playerManager;
-    
-    public MotdModule(IMotdService motdService, IPlayerManagerService playerManager)
-    {
-        _motdService = motdService;
-        _playerManager = playerManager;
-    }
-    
-    public async Task EnableAsync()
-    {
-        var player = (await _playerManager.GetOnlinePlayersAsync()).FirstOrDefault();
-        if(player is not null)
-            await _motdService.ShowAsync(player);
-    }
 
-    public async Task DisableAsync()
-    {
-        
-    }
 }

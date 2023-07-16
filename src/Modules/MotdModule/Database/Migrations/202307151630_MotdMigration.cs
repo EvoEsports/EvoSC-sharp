@@ -1,7 +1,9 @@
-﻿using FluentMigrator;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentMigrator;
 
 namespace EvoSC.Modules.Official.MotdModule.Database.Migrations;
 
+[ExcludeFromCodeCoverage(Justification = "Database is not testable.")]
 [Migration(1689431400)]
 public class MotdMigration : FluentMigrator.Migration
 {

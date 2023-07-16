@@ -29,26 +29,19 @@ public class MotdPlayerEventController : EvoScController<IEventControllerContext
         _motdRepository = motdRepository;
     }
 
-    [Subscribe(GbxRemoteEvent.PlayerChat)]
-    public async Task OnPlayerChat(object sender, PlayerChatGbxEventArgs args)
-        => await ShowAsync(args.Login, true);
-
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
         => await ShowAsync(args.Login);
 
-    private async Task ShowAsync(string login, bool explicitly = false)
+    private async Task ShowAsync(string login)
     {
         var player = await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(login));
         if (player is null)
             return;
-
-        if (!explicitly) // check if the player hid the menu
-        {
-            var playerEntry = await _motdRepository.GetEntryAsync(player);
-            if (playerEntry is not null && playerEntry.Hidden)
-                return;
-        }
+        
+        var playerEntry = await _motdRepository.GetEntryAsync(player);
+        if (playerEntry is not null && playerEntry.Hidden)
+            return;
         
         await _motdService.ShowAsync(player);
     }

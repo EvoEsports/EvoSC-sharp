@@ -25,7 +25,11 @@ public class HttpService : IHttpService
     {
         using HttpResponseMessage response = await _httpClient.GetAsync(uri);
         var result = await response.Content.ReadAsStringAsync();
-        MotdResponse? responseObject = JsonConvert.DeserializeObject<MotdResponse>(result);
+        MotdResponse? responseObject = null;
+        try
+        {
+            responseObject = JsonConvert.DeserializeObject<MotdResponse>(result);
+        }catch(Exception _) { }
         if (responseObject is null)
             return "";
         return responseObject.data.FirstOrDefault()?.message ?? "";

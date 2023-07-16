@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Database.Models.Player;
+﻿using System.Diagnostics.CodeAnalysis;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MotdModule.Database.Repositories;
 
+[ExcludeFromCodeCoverage(Justification = "Database is not testable.")]
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MotdRepository : DbRepository, IMotdRepository
 {
