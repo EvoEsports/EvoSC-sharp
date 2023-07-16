@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.MotdModule.Interfaces;
 

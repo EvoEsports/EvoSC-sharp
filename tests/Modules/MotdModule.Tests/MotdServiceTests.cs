@@ -10,14 +10,14 @@ namespace MotdModule.Tests;
 
 public class MotdServiceTests
 {
-    private Mock<IManialinkManager> _maniaLinkManager = new();
-    private Mock<IHttpService> _httpService = new();
-    private Mock<IMotdRepository> _repository = new();
-    private Mock<IMotdSettings> _settings = new();
-    private Mock<ILogger<MotdService>> _logger = new();
-    private Mock<IOnlinePlayer> _player = new();
+    private readonly Mock<IManialinkManager> _maniaLinkManager = new();
+    private readonly Mock<IHttpService> _httpService = new();
+    private readonly Mock<IMotdRepository> _repository = new();
+    private readonly Mock<IMotdSettings> _settings = new();
+    private readonly Mock<ILogger<MotdService>> _logger = new();
+    private readonly Mock<IOnlinePlayer> _player = new();
 
-    private MotdService _motdService;
+    private MotdService? _motdService;
 
     private void SetupMocks()
     {
@@ -41,7 +41,7 @@ public class MotdServiceTests
     {
         SetupMocks();
         SetupController();
-        _motdService.SetInterval(100);
+        _motdService!.SetInterval(100);
         await Task.Delay(110 * times);
         _httpService.Verify(r => r.GetAsync(It.IsAny<string>()),
             Times.Exactly(times));
@@ -53,7 +53,7 @@ public class MotdServiceTests
         SetupMocks();
         SetupController();
         _httpService.Setup(r => r.GetAsync("test")).Returns(Task.FromResult("test"));
-        _motdService.SetInterval(1000);
+        _motdService!.SetInterval(1000);
         _motdService.SetUrl("test");
         await Task.Delay(1000);
 
@@ -66,8 +66,8 @@ public class MotdServiceTests
         SetupMocks();
         SetupController();
         _repository.Setup(r => r.GetEntryAsync(_player.Object))
-            .Returns(Task.FromResult(new MotdEntry()));
-        await _motdService.GetEntryAsync(_player.Object);
+            .Returns(Task.FromResult(new MotdEntry())!);
+        await _motdService!.GetEntryAsync(_player.Object);
         
         _repository.Verify(r => r.GetEntryAsync(_player.Object), Times.Once);
     }
@@ -79,7 +79,7 @@ public class MotdServiceTests
         SetupController();
         _repository.Setup(r => r.InsertOrUpdateEntryAsync(_player.Object, true))
             .Returns(Task.FromResult(new MotdEntry()));
-        await _motdService.InsertOrUpdateEntryAsync(_player.Object, true);
+        await _motdService!.InsertOrUpdateEntryAsync(_player.Object, true);
         
         _repository.Verify(r => r.InsertOrUpdateEntryAsync(_player.Object, true), Times.Once);
     }
@@ -94,7 +94,7 @@ public class MotdServiceTests
         
         await Task.Delay(1000);
         _httpService.Verify(r => r.GetAsync(It.IsAny<string>()), Times.AtLeast(1));
-        _motdService.SetUrl("test");
+        _motdService!.SetUrl("test");
         _httpService.Setup(r => r.GetAsync(It.IsAny<string>()))
             .Returns(Task.FromResult("test"));
         await Task.Delay(300);
@@ -111,7 +111,7 @@ public class MotdServiceTests
         
         SetupMocks();
         SetupController();
-        await _motdService.ShowAsync(_player.Object);
+        await _motdService!.ShowAsync(_player.Object);
         
         _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
             It.IsAny<object>()), Times.Once);
@@ -124,7 +124,7 @@ public class MotdServiceTests
             .Throws(new InvalidOperationException());
         
         SetupController();
-        var motd = await _motdService.GetMotd();
+        var motd = await _motdService!.GetMotd();
         Assert.Equal(MotdService.ErrorTextMotdNotLoaded, motd);
         
         _httpService.Verify(r => r.GetAsync(It.IsAny<string>()),
@@ -140,7 +140,7 @@ public class MotdServiceTests
         SetupMocks();
         SetupController();
         await Task.Delay(500);
-        await _motdService.ShowAsync(_player.Object);
+        await _motdService!.ShowAsync(_player.Object);
         
         _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
             It.IsAny<object>()), Times.Once);

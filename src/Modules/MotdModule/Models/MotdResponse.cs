@@ -2,12 +2,12 @@
 
 public class Data
 {
-    public int id { get; set; }
-    public string message { get; set; }
-    public string server { get; set; }
+    public int id { get; }
+    public string message { get; }
+    public string server { get; }
 }
 
 public class MotdResponse
 {
-    public List<Data> data { get; set; }
+    public List<Data> data { get; }
 }

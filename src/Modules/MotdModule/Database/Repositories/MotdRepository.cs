@@ -7,9 +7,7 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MotdModule.Database.Models;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
-using GBX.NET.Engines.Game;
 using LinqToDB;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MotdModule.Database.Repositories;
 
@@ -17,11 +15,8 @@ namespace EvoSC.Modules.Official.MotdModule.Database.Repositories;
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MotdRepository : DbRepository, IMotdRepository
 {
-    private readonly ILogger<MotdRepository> _logger;
-    
-    public MotdRepository(IDbConnectionFactory dbConnFactory, ILogger<MotdRepository> logger) : base(dbConnFactory)
+    public MotdRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
     {
-        _logger = logger;
     }
 
     public Task<MotdEntry?> GetEntryAsync(IPlayer player)

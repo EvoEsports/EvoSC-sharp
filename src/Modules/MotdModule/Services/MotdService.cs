@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Timers;
+﻿using System.Timers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -71,8 +70,8 @@ public class MotdService : IMotdService
 
     public async Task ShowAsync(IPlayer player)
     {
-        var isChecked = (await _repository.GetEntryAsync(player))?.Hidden ?? false;
-        await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate", new { isChecked = isChecked, text = MotdText });
+        var isCheckboxChecked = (await _repository.GetEntryAsync(player))?.Hidden ?? false;
+        await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate", new { isChecked = isCheckboxChecked, text = MotdText });
     }
     
     public async Task<string> GetMotd()
@@ -84,6 +83,7 @@ public class MotdService : IMotdService
         catch (InvalidOperationException ex)
         {
             _logger.LogError($"Motd couldn't be fetched from url \"{_motdUrl}\"");
+            _logger.LogError(ex.Message);
             _motdUpdateTimer.Enabled = false; // disable the timer if the url is wrong.
         }
         return ErrorTextMotdNotLoaded;

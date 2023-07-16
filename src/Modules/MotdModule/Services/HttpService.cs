@@ -1,5 +1,4 @@
-﻿using System.Net;
-using EvoSC.Common.Services.Attributes;
+﻿using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 using EvoSC.Modules.Official.MotdModule.Models;
@@ -14,10 +13,6 @@ public class HttpService : IHttpService
 
     public HttpService()
     {
-        HttpClientHandler httpClientHandler = new HttpClientHandler()
-        {
-            AutomaticDecompression = DecompressionMethods.All
-        };
         _httpClient = new HttpClient();
     }
 
@@ -29,7 +24,8 @@ public class HttpService : IHttpService
         try
         {
             responseObject = JsonConvert.DeserializeObject<MotdResponse>(result);
-        }catch(Exception _) { }
+        }
+        catch (Exception) { }
         if (responseObject is null)
             return "";
         return responseObject.data.FirstOrDefault()?.message ?? "";

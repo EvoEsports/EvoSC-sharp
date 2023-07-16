@@ -4,9 +4,7 @@ using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
-using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util;
-using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 using GbxRemoteNet.Events;
 
@@ -15,15 +13,12 @@ namespace EvoSC.Modules.Official.MotdModule.Controllers;
 [Controller]
 public class MotdPlayerEventController : EvoScController<IEventControllerContext>
 {
-    private readonly IManialinkManager _manialink;
     private readonly IPlayerManagerService _playerManager;
     private readonly IMotdService _motdService;
     private readonly IMotdRepository _motdRepository;
     
-    public MotdPlayerEventController(IManialinkManager manialink,
-        IPlayerManagerService playerManager, IMotdService motdService, IMotdRepository motdRepository)
+    public MotdPlayerEventController(IPlayerManagerService playerManager, IMotdService motdService, IMotdRepository motdRepository)
     {
-        _manialink = manialink;
         _playerManager = playerManager;
         _motdService = motdService;
         _motdRepository = motdRepository;
