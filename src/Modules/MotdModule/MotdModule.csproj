@@ -16,6 +16,7 @@
     <!-- Source generator for Module Info -->
     <ItemGroup>
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Player\Player.csproj" />
     </ItemGroup>
 
     <!-- Project references for dependencies -->

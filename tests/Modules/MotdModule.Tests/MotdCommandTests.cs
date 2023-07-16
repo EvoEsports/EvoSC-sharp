@@ -1,9 +1,9 @@
+using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MotdModule.Controllers;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
-using EvoSC.Modules.Official.Player.Controllers;
-using EvoSC.Modules.Official.Player.Interfaces;
+using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using Moq;
 
@@ -11,18 +11,34 @@ namespace MotdModule.Tests;
 
 public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommandController>
 {
-    private Mock<IMotdService> _motdService = new();
-    private Mock<IOnlinePlayer> _player = new();
-    Mock<IManialinkManager> _maniaLinkManager = new();
-
+    private readonly Mock<IMotdService> _motdService = new();
+    private readonly Mock<IContextService> _context;
+    private readonly ControllerContextMock<ICommandInteractionContext> _commandContext = Mocking.NewControllerContextMock<ICommandInteractionContext>();
     
     public MotdCommandTests()
     {
-        InitMock(_motdService);
+        _context = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
+        InitMock(_motdService, _context.Object);
+    }
+
+    [Theory]
+    [InlineData("true")]
+    [InlineData("false")]
+    public async Task SetMotdLocal_Test(string isLocal)
+    {
+        Controller.SetMotdLocal(isLocal);
+        _motdService.Verify(r => r.SetMotdSource(bool.Parse(isLocal), null));
+    }
+
+    [Fact]
+    public async Task OpenEditMotdAsync_Test()
+    {
+        await Controller.OpenEditMotdAsync();
+        _motdService.Verify(r => r.ShowEditAsync(It.IsAny<IPlayer>()));
     }
     
     [Fact]
-    public async Task OpenMotdTest()
+    public async Task OpenMotdAsync_Test()
     {
         await Controller.OpenMotdAsync();
         
@@ -30,18 +46,18 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     }
     
     [Fact]
-    public void SetUrlTest()
+    public void SetUrl_Test()
     {
         Controller.SetUrl("testing");
         
-        _motdService.Verify(r => r.SetUrl(It.IsAny<string>()), Times.Once);
+        _motdService.Verify(r => r.SetUrl(It.IsAny<string>(), It.IsAny<IPlayer>()), Times.Once);
     }
     
     [Fact]
-    public void SetIntervalTest()
+    public void SetInterval_Test()
     {
         Controller.SetFetchInterval(1000);
         
-        _motdService.Verify(r => r.SetInterval(It.IsAny<int>()), Times.Once);
+        _motdService.Verify(r => r.SetInterval(It.IsAny<int>(), It.IsAny<IPlayer>()), Times.Once);
     }
 }

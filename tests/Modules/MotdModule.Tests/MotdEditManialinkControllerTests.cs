@@ -7,25 +7,23 @@ using Moq;
 
 namespace MotdModule.Tests;
 
-public class MotdManialinkControllerTests : ManialinkControllerTestBase<MotdManialinkController>
+public class MotdEditManialinkControllerTests : ManialinkControllerTestBase<MotdEditManialinkController>
 {
     private readonly Mock<IManialinkActionContext> _manialinkActionContext = new();
     private readonly Mock<IOnlinePlayer> _actor = new();
     private readonly Mock<IMotdService> _motdService = new();
 
-    public MotdManialinkControllerTests()
+    public MotdEditManialinkControllerTests()
     {
         InitMock(_actor.Object, _manialinkActionContext.Object, _motdService.Object);
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    async Task CloseTest(bool hidden)
+    [Fact]
+    public async Task SaveAsync()
     {
-        await Controller.CloseAsync(hidden);
-        
-        ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "MotdModule.MotdTemplate"));
-        _motdService.Verify(r => r.InsertOrUpdateEntryAsync(_actor.Object, hidden));
+        await Controller.SaveAsync("testing stuff");
+
+        ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "MotdModule.MotdEdit"));
+        _motdService.Verify(r => r.SetLocalMotd("testing stuff", It.IsAny<IPlayer>()));
     }
 }

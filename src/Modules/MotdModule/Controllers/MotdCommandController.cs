@@ -2,6 +2,7 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MotdModule.Controllers;
@@ -11,10 +12,27 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
 {
     private readonly IMotdService _motdService;
 
-    public MotdCommandController(IMotdService motdService)
+    public MotdCommandController(IMotdService motdService, IContextService context)
     {
         _motdService = motdService;
     }
+
+    [ChatCommand("motdsetlocal", "[Command.SetMotdLocal]")]
+    public void SetMotdLocal(string local)
+    {
+        if (local == "true")
+        {
+            _motdService.SetMotdSource(true, Context.Player);
+        }
+        else if (local == "false")
+        {
+            _motdService.SetMotdSource(false, Context.Player);
+        }
+    } 
+
+    [ChatCommand("motdedit", "[Command.EditMotd]")]
+    public async Task OpenEditMotdAsync()
+        => await _motdService.ShowEditAsync(Context.Player);
 
     [ChatCommand("motd", "[Command.OpenMotd]")]
     public async Task OpenMotdAsync()
@@ -23,12 +41,12 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
     [ChatCommand("motdsetinterval", "[Command.MotdSetFetchInterval]", "MotdPermissions.SetFetchInterval")]
     public void SetFetchInterval(int interval)
     {
-        _motdService.SetInterval(interval);
+        _motdService.SetInterval(interval, Context.Player);
     }
     
     [ChatCommand("motdseturl", "[Command.MotdSetUrl]", "MotdPermissions.SetUrl")]
     public void SetUrl(string url)
     {
-        _motdService.SetUrl(url);
+        _motdService.SetUrl(url, Context.Player);
     }
 }

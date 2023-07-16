@@ -8,7 +8,7 @@ namespace MotdModule.Tests;
 public class HttpServiceTests
 {
     private const string TestServerUri = "https://directus.evoesports.de/items/motd?filter[server][_eq]=testserver";
-    private HttpService _service = new(new Logger<HttpService>(new LoggerFactory()));
+    private readonly HttpService _service = new(new Logger<HttpService>(new LoggerFactory()));
 
     [Theory]
     [InlineData(TestServerUri)]
@@ -16,7 +16,7 @@ public class HttpServiceTests
     async Task GetAsyncTest(string uri)
     {
         var result = await _service.GetAsync(uri);
-        Assert.Equal(uri.Contains("evo") ? "This is a MOTD message served by the API. Including $f00styling." : "",
+        Assert.Equal(uri.Contains("evo", StringComparison.InvariantCulture) ? "This is a MOTD message served by the API. Including $f00styling." : "",
             result);
     }
 
@@ -24,13 +24,12 @@ public class HttpServiceTests
     async Task DataModelTest()
     {
         var httpClient = new HttpClient();
-        using HttpResponseMessage response = await httpClient.GetAsync(TestServerUri);
+        using HttpResponseMessage response = await httpClient.GetAsync(new Uri(TestServerUri));
         var result = await response.Content.ReadAsStringAsync();
         MotdResponse? responseObject = null;
-        try
-        {
-            responseObject = JsonConvert.DeserializeObject<MotdResponse>(result);
-        }catch(Exception _) { }
+
+        responseObject = JsonConvert.DeserializeObject<MotdResponse>(result);
+
         Assert.NotNull(responseObject);
         
         Assert.Equal(2, responseObject.data.FirstOrDefault()!.id);

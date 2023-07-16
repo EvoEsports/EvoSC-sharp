@@ -11,4 +11,10 @@ public interface IMotdSettings
     
     [Option(DefaultValue = 600000)]
     public int MotdFetchInterval { get; set; }
+    
+    [Option(DefaultValue = "")]
+    public string MotdLocalText { get; set; }
+    
+    [Option(DefaultValue = false)]
+    public bool UseLocalMotd { get; set; }
 }

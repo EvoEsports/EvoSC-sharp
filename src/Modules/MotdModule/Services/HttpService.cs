@@ -48,11 +48,11 @@ public class HttpService : IHttpService, IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
-        IsDisposed = true;
     }
     
     protected virtual void Dispose(bool disposing)
     {
         _httpClient.Dispose();
+        IsDisposed = true;
     }
 }
