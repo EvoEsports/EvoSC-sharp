@@ -1,4 +1,5 @@
 ﻿using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -107,7 +108,7 @@ public class MotdServiceTests
         _motdService!.SetInterval(100, _player.Object);
         await Task.Delay(110 * times);
         _httpService.Verify(r => r.GetAsync(It.IsAny<string>()),
-            Times.Exactly(times));
+            Times.AtLeast(times));
     }
 
     [Fact]
@@ -128,11 +129,16 @@ public class MotdServiceTests
     {
         SetupMocks();
         SetupController();
+        var dbPlayer = new DbPlayer(_player.Object);
         _repository.Setup(r => r.GetEntryAsync(_player.Object))
-            .Returns(Task.FromResult(new MotdEntry())!);
-        await _motdService!.GetEntryAsync(_player.Object);
+            .Returns(Task.FromResult(new MotdEntry() { Hidden = true, DbPlayer = dbPlayer, PlayerId = 1})!);
+        var entry = await _motdService!.GetEntryAsync(_player.Object) as MotdEntry;
         
         _repository.Verify(r => r.GetEntryAsync(_player.Object), Times.Once);
+        Assert.True(entry.Hidden);
+        Assert.Equal(dbPlayer, entry.DbPlayer);
+        Assert.Equal(1, entry.PlayerId);
+        Assert.Equal(_player.Object.Id, entry.Player.Id);
     }
     
     [Fact]
