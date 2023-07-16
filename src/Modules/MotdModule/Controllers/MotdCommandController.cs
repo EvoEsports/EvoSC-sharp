@@ -17,7 +17,7 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
         _motdService = motdService;
     }
 
-    [ChatCommand("motdsetlocal", "[Command.SetMotdLocal]")]
+    [ChatCommand("motdsetlocal", "[Command.SetMotdLocal]", MotdPermissions.SetLocal)]
     public void SetMotdLocal(string local)
     {
         if (local == "true")
@@ -30,7 +30,7 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
         }
     } 
 
-    [ChatCommand("motdedit", "[Command.EditMotd]")]
+    [ChatCommand("motdedit", "[Command.EditMotd]", MotdPermissions.OpenMotdEdit)]
     public async Task OpenEditMotdAsync()
         => await _motdService.ShowEditAsync(Context.Player);
 
@@ -38,13 +38,13 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
     public async Task OpenMotdAsync()
         => await _motdService.ShowAsync(Context.Player, true);
     
-    [ChatCommand("motdsetinterval", "[Command.MotdSetFetchInterval]", "MotdPermissions.SetFetchInterval")]
+    [ChatCommand("motdsetinterval", "[Command.MotdSetFetchInterval]", MotdPermissions.SetFetchInterval)]
     public void SetFetchInterval(int interval)
     {
         _motdService.SetInterval(interval, Context.Player);
     }
     
-    [ChatCommand("motdseturl", "[Command.MotdSetUrl]", "MotdPermissions.SetUrl")]
+    [ChatCommand("motdseturl", "[Command.MotdSetUrl]", MotdPermissions.SetUrl)]
     public void SetUrl(string url)
     {
         _motdService.SetUrl(url, Context.Player);

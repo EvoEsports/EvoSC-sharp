@@ -21,7 +21,7 @@ public class MotdManialinkControllerTests : ManialinkControllerTestBase<MotdMani
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    private async Task CloseAsync_Test(bool hidden)
+    private async Task Close_Async_Test(bool hidden)
     {
         await Controller.CloseAsync(hidden);
         

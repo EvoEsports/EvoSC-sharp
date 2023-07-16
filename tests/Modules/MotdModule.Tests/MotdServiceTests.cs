@@ -53,7 +53,7 @@ public class MotdServiceTests
     [InlineData(true)]
     [InlineData(false)]
     [InlineData(false, true)]
-    private async Task SetMotdSource_Test(bool local, bool presetUseLocal = false)
+    private async Task Set_Motd_Source_Test(bool local, bool presetUseLocal = false)
     {
         SetupMocks(200);
         if (presetUseLocal)
@@ -75,7 +75,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task SetLocalMotd_Test()
+    private async Task Set_Local_Motd_Test()
     {
         SetupMocks();
         SetupController();
@@ -100,7 +100,7 @@ public class MotdServiceTests
     [InlineData(2)]
     [InlineData(3)]
     [InlineData(6)]
-    private async Task SetInterval_Test(int times)
+    private async Task Set_Interval_Test(int times)
     {
         SetupMocks();
         SetupController();
@@ -111,7 +111,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task SetUrl_Test()
+    private async Task Set_Url_Test()
     {
         SetupMocks();
         SetupController();
@@ -124,7 +124,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task GetEntry_Test()
+    private async Task Get_Entry_Test()
     {
         SetupMocks();
         SetupController();
@@ -136,7 +136,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task InsertOrUpdateEntry_Test()
+    private async Task Insert_Or_Update_Entry_Test()
     {
         SetupMocks();
         SetupController();
@@ -148,7 +148,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task SetUrlReEnable_Test()
+    private async Task Set_Url_Re_Enable_Test()
     {
         SetupMocks();
         SetupController();
@@ -165,7 +165,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task GetMotd_Test()
+    private async Task Get_Motd_Test()
     {
         _httpService.Setup(r => r.GetAsync(It.IsAny<string>()))
             .Returns(Task.FromResult("test"));
@@ -181,7 +181,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task GetMotdThrow_Test()
+    private async Task Get_Motd_Throw_Test()
     {
         _httpService.Setup(r => r.GetAsync(It.IsAny<string>()))
             .Throws(new InvalidOperationException());
@@ -194,7 +194,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task ShowAsync_Test()
+    private async Task Show_Async_Test()
     {
         _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
             It.IsAny<object>())).Returns(Task.CompletedTask);
@@ -209,7 +209,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task ShowAsyncLogin_Test()
+    private async Task Show_Async_Login_Test()
     {
         _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
             It.IsAny<object>())).Returns(Task.CompletedTask);
@@ -228,7 +228,7 @@ public class MotdServiceTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    private async Task ShowAsyncNotExplicitly_Test(bool isHidden)
+    private async Task Show_Async_Not_Explicitly_Test(bool isHidden)
     {
         _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
             It.IsAny<object>())).Returns(Task.CompletedTask);
@@ -245,7 +245,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task ShowAsyncPlayerNull_Test()
+    private async Task Show_Async_Player_Null_Test()
     {
         SetupMocks();
         SetupController();

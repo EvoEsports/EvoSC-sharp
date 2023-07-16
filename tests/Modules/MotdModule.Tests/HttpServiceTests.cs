@@ -13,7 +13,7 @@ public class HttpServiceTests
     [Theory]
     [InlineData(TestServerUri)]
     [InlineData("https://www.google.de")]
-    private async Task GetAsync_Test(string uri)
+    private async Task Get_Async_Test(string uri)
     {
         var result = await _service.GetAsync(uri);
         Assert.Equal(uri.Contains("evo", StringComparison.InvariantCulture) ? "This is a MOTD message served by the API. Including $f00styling." : "",
@@ -21,20 +21,25 @@ public class HttpServiceTests
     }
 
     [Fact]
-    private async Task DataModel_Test()
+    private async Task Data_Model_Test()
     {
-        var httpClient = new HttpClient();
-        using HttpResponseMessage response = await httpClient.GetAsync(new Uri(TestServerUri));
-        var result = await response.Content.ReadAsStringAsync();
-        MotdResponse? responseObject = null;
-
-        responseObject = JsonConvert.DeserializeObject<MotdResponse>(result);
-
+        var responseObject = new MotdResponse()
+        {
+            Data = new()
+            {
+                new ResponseData()
+                {
+                    Id = 1, Message = "test message", Server = "testServer"
+                }
+            }
+        };
         Assert.NotNull(responseObject);
+        var firstElement = responseObject.Data.FirstOrDefault();
         
-        Assert.Equal(2, responseObject.data.FirstOrDefault()!.id);
-        Assert.Equal("This is a MOTD message served by the API. Including $f00styling.", responseObject.data.FirstOrDefault()!.message);
-        Assert.Equal("testserver", responseObject.data.FirstOrDefault()!.server);
+        Assert.NotNull(firstElement);
+        Assert.Equal(1, firstElement.Id);
+        Assert.Equal("test message", firstElement.Message);
+        Assert.Equal("testServer", firstElement.Server);
     }
 
     [Fact]

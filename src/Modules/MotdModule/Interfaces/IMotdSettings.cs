@@ -1,4 +1,5 @@
-﻿using Config.Net;
+﻿using System.ComponentModel;
+using Config.Net;
 using EvoSC.Modules.Attributes;
 
 namespace EvoSC.Modules.Official.MotdModule.Interfaces;
@@ -6,15 +7,15 @@ namespace EvoSC.Modules.Official.MotdModule.Interfaces;
 [Settings]
 public interface IMotdSettings
 {
-    [Option(DefaultValue = "https://directus.evoesports.de/items/motd?filter[server][_eq]=testserver")]
+    [Option(DefaultValue = ""), Description("The URL from which the controller fetches the motd.")]
     public string MotdUrl { get; set; }
     
-    [Option(DefaultValue = 600000)]
+    [Option(DefaultValue = 600000), Description("The interval in which the motd gets fetched from the server.")]
     public int MotdFetchInterval { get; set; }
     
-    [Option(DefaultValue = "")]
+    [Option(DefaultValue = "This is the Motd!"), Description("The locally stored Motd text if it should not be fetched from a server.")]
     public string MotdLocalText { get; set; }
     
-    [Option(DefaultValue = false)]
+    [Option(DefaultValue = true), Description("Indicator if the locally stored motd should be used.")]
     public bool UseLocalMotd { get; set; }
 }

@@ -41,7 +41,7 @@ public class HttpService : IHttpService, IDisposable
             return "";
         }
 
-        return responseObject.data?.FirstOrDefault()?.message ?? "";
+        return responseObject.Data?.FirstOrDefault()?.Message ?? "";
     }
     
     public void Dispose()

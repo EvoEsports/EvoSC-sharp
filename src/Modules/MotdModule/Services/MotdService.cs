@@ -181,8 +181,7 @@ public class MotdService : IMotdService, IDisposable
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError($"Motd couldn't be fetched from url \"{_motdUrl}\". Falling back to local motd");
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, "Motd couldn't be fetched from url {MotdUrl}. Falling back to local motd", _motdUrl);
             _motdUpdateTimer.Enabled = false; // disable the timer if the url is wrong.
             return _settings.MotdLocalText;
         }

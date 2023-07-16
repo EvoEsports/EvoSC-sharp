@@ -14,7 +14,6 @@ namespace MotdModule.Tests;
 
 public class MotdPlayerEventControllerTest : ControllerMock<MotdPlayerEventController, IEventControllerContext>
 {
-    private readonly Mock<IOnlinePlayer> _player = new();
     private readonly Mock<IPlayerManagerService> _playerManager = new();
     private readonly Mock<IMotdService> _motdService = new();
     private readonly Mock<IMotdRepository> _motdRepository = new();
@@ -25,7 +24,7 @@ public class MotdPlayerEventControllerTest : ControllerMock<MotdPlayerEventContr
     }
 
     [Fact]
-    private async Task OnPlayerConnect_Test()
+    private async Task On_Player_Connect_Test()
     {
         await Controller.OnPlayerConnectAsync(null, new PlayerConnectGbxEventArgs { Login = "F4aNYLSUS4iB3_Td_a4c8Q" });
         _motdService.Verify(r => r.ShowAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
