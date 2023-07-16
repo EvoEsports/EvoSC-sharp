@@ -30,18 +30,6 @@ public class MotdPlayerEventController : EvoScController<IEventControllerContext
 
     private async Task ShowAsync(string login)
     {
-        var player = await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(login));
-        if (player is null)
-        {
-            return;
-        }
-
-        var playerEntry = await _motdRepository.GetEntryAsync(player);
-        if (playerEntry is not null && playerEntry.Hidden)
-        {
-            return;
-        }
-
-        await _motdService.ShowAsync(player);
+        await _motdService.ShowAsync(login, false);
     }
 }

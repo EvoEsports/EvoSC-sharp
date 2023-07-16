@@ -4,7 +4,8 @@ namespace EvoSC.Modules.Official.MotdModule.Interfaces;
 
 public interface IMotdService
 {
-    public Task ShowAsync(IPlayer player);
+    public Task ShowAsync(IPlayer player, bool explicitly);
+    public Task ShowAsync(string login, bool explicitly);
     public Task ShowEditAsync(IPlayer player);
     public void SetMotdSource(bool local, IPlayer player);
     public void SetLocalMotd(string text, IPlayer player);

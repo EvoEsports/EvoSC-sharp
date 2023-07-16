@@ -1,8 +1,10 @@
 ﻿using System.Timers;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MotdModule.Events;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
@@ -20,6 +22,7 @@ public class MotdService : IMotdService, IDisposable
     private readonly IMotdSettings _settings;
     private readonly ILogger<MotdService> _logger;
     private readonly IContextService _context;
+    private readonly IPlayerManagerService _playerManager;
 
     private readonly Timer _motdUpdateTimer;
     
@@ -33,12 +36,13 @@ public class MotdService : IMotdService, IDisposable
 
     public MotdService(IManialinkManager manialink, IHttpService httpService, 
         IMotdRepository repository, IMotdSettings motdSettings, ILogger<MotdService> logger,
-        IContextService context)
+        IContextService context, IPlayerManagerService playerManager)
     {
         _manialink = manialink;
         _httpService = httpService;
         _repository = repository;
         _settings = motdSettings;
+        _playerManager = playerManager;
         _motdUrl = motdSettings.MotdUrl;
         _timerInterval = motdSettings.MotdFetchInterval;
         _isMotdLocal = motdSettings.UseLocalMotd;
@@ -143,9 +147,29 @@ public class MotdService : IMotdService, IDisposable
         await _manialink.SendManialinkAsync(player, "MotdModule.MotdEdit", new { text = _settings.MotdLocalText });
     }
 
-    public async Task ShowAsync(IPlayer player)
+    public async Task ShowAsync(string login, bool explicitly)
+        => await ShowAsync(await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(login)), explicitly);
+
+    public async Task ShowAsync(IPlayer? player, bool explicitly = true)
     {
-        var isCheckboxChecked = (await _repository.GetEntryAsync(player))?.Hidden ?? false;
+        bool? hidden = null;
+        if (player is null)
+        {
+            return;
+        }
+        if (!explicitly)
+        {
+            var playerEntry = await _repository.GetEntryAsync(player);
+            if (playerEntry is not null)
+            {
+                if (playerEntry.Hidden)
+                {
+                    return;
+                }
+                hidden = playerEntry.Hidden;
+            }
+        }
+        var isCheckboxChecked = hidden ?? false;
         await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate", new { isChecked = isCheckboxChecked, text = MotdText });
     }
     

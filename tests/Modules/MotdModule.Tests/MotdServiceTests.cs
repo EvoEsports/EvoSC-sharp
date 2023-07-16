@@ -1,6 +1,7 @@
 ﻿using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MotdModule.Database.Models;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
@@ -20,6 +21,7 @@ public class MotdServiceTests
     private readonly Mock<IMotdSettings> _settings = new();
     private readonly Mock<ILogger<MotdService>> _logger = new();
     private readonly Mock<IOnlinePlayer> _player = new();
+    private readonly Mock<IPlayerManagerService> _playerManager = new();
     private readonly Mock<IContextService> _context;
     
     private readonly ControllerContextMock<ICommandInteractionContext> _commandContext = Mocking.NewControllerContextMock<ICommandInteractionContext>();
@@ -44,7 +46,7 @@ public class MotdServiceTests
     private void SetupController()
     {
         _motdService = new(_maniaLinkManager.Object, _httpService.Object, _repository.Object, _settings.Object,
-            _logger.Object, _context.Object);
+            _logger.Object, _context.Object, _playerManager.Object);
     }
 
     [Theory]
@@ -95,9 +97,9 @@ public class MotdServiceTests
     }
 
     [Theory]
-    [InlineData(1)]
     [InlineData(2)]
-    [InlineData(5)]
+    [InlineData(3)]
+    [InlineData(6)]
     private async Task SetInterval_Test(int times)
     {
         SetupMocks();
@@ -204,6 +206,54 @@ public class MotdServiceTests
         
         _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
             It.IsAny<object>()), Times.Once);
+    }
+    
+    [Fact]
+    private async Task ShowAsyncLogin_Test()
+    {
+        _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
+            It.IsAny<object>())).Returns(Task.CompletedTask);
+        _playerManager.Setup(r => r.GetPlayerAsync(It.IsAny<string>()))
+            .Returns(Task.FromResult((IPlayer?)_player.Object));
+        
+        SetupMocks();
+        SetupController();
+        await Task.Delay(500);
+        await _motdService!.ShowAsync("F4aNYLSUS4iB3_Td_a4c8Q", true);
+        
+        _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
+            It.IsAny<object>()), Times.Once);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    private async Task ShowAsyncNotExplicitly_Test(bool isHidden)
+    {
+        _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
+            It.IsAny<object>())).Returns(Task.CompletedTask);
+        _repository.Setup(r => r.GetEntryAsync(It.IsAny<IPlayer>()))
+            .Returns(Task.FromResult(new MotdEntry { Hidden = isHidden }));
+        
+        SetupMocks();
+        SetupController();
+        await Task.Delay(500);
+        await _motdService!.ShowAsync(_player.Object, false);
+        
+        _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
+            It.IsAny<object>()), (isHidden) ? Times.Never : Times.Once);
+    }
+    
+    [Fact]
+    private async Task ShowAsyncPlayerNull_Test()
+    {
+        SetupMocks();
+        SetupController();
+        await Task.Delay(500);
+        await _motdService!.ShowAsync((IPlayer)null, false);
+        
+        _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
+            It.IsAny<object>()), Times.Never);
     }
 
     [Fact]

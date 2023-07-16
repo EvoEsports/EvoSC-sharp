@@ -36,7 +36,7 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
 
     [ChatCommand("motd", "[Command.OpenMotd]")]
     public async Task OpenMotdAsync()
-        => await _motdService.ShowAsync(Context.Player);
+        => await _motdService.ShowAsync(Context.Player, true);
     
     [ChatCommand("motdsetinterval", "[Command.MotdSetFetchInterval]", "MotdPermissions.SetFetchInterval")]
     public void SetFetchInterval(int interval)

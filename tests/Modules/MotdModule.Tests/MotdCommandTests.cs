@@ -42,7 +42,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     {
         await Controller.OpenMotdAsync();
         
-        _motdService.Verify(r => r.ShowAsync(It.IsAny<IOnlinePlayer>()), Times.Once);
+        _motdService.Verify(r => r.ShowAsync(It.IsAny<IOnlinePlayer>(), It.IsAny<bool>()), Times.Once);
     }
     
     [Fact]
