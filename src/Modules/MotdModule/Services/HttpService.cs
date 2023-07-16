@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace EvoSC.Modules.Official.MotdModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class HttpService : IHttpService
+public class HttpService : IHttpService, IDisposable
 {
     private readonly HttpClient _httpClient;
 
@@ -29,5 +29,10 @@ public class HttpService : IHttpService
         if (responseObject is null)
             return "";
         return responseObject.data.FirstOrDefault()?.message ?? "";
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
     }
 }

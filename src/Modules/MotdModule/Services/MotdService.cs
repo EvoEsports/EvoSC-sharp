@@ -10,7 +10,7 @@ using Timer = System.Timers.Timer;
 namespace EvoSC.Modules.Official.MotdModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class MotdService : IMotdService
+public class MotdService : IMotdService, IDisposable
 {
     public const string ErrorTextMotdNotLoaded = "Motd couldn't be fetched.";
     
@@ -94,4 +94,9 @@ public class MotdService : IMotdService
 
     public async Task InsertOrUpdateEntryAsync(IPlayer player, bool hidden)
         => await _repository.InsertOrUpdateEntryAsync(player, hidden);
+
+    public void Dispose()
+    {
+        _motdUpdateTimer.Dispose();
+    }
 }
