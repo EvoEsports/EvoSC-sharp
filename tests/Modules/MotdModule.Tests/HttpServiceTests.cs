@@ -1,5 +1,6 @@
 ﻿using EvoSC.Modules.Official.MotdModule.Models;
 using EvoSC.Modules.Official.MotdModule.Services;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace MotdModule.Tests;
@@ -7,7 +8,7 @@ namespace MotdModule.Tests;
 public class HttpServiceTests
 {
     private const string TestServerUri = "https://directus.evoesports.de/items/motd?filter[server][_eq]=testserver";
-    private HttpService _service = new();
+    private HttpService _service = new(new Logger<HttpService>(new LoggerFactory()));
 
     [Theory]
     [InlineData(TestServerUri)]
