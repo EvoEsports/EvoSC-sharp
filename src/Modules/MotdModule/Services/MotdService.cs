@@ -12,7 +12,7 @@ namespace EvoSC.Modules.Official.MotdModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class MotdService : IMotdService, IDisposable
 {
-    public const string ErrorTextMotdNotLoaded = "Motd couldn't be fetched.";
+    public static readonly string ErrorTextMotdNotLoaded = "Motd couldn't be fetched.";
     
     private readonly IManialinkManager _manialink;
     private readonly IHttpService _httpService;
@@ -36,7 +36,7 @@ public class MotdService : IMotdService, IDisposable
         _timerInterval = motdSettings.MotdFetchInterval;
         _logger = logger;
         
-        _motdUpdateTimer = new Timer()
+        _motdUpdateTimer = new Timer
         {
             Interval = 1,
             Enabled = true,
@@ -50,7 +50,7 @@ public class MotdService : IMotdService, IDisposable
         Timer timer = (Timer)sender!;
 
         timer.Interval = _timerInterval;
-        MotdText = GetMotd().Result;
+        MotdText = GetMotdAsync().Result;
         _logger.LogDebug($"Fetching ");
     }
     
@@ -63,9 +63,11 @@ public class MotdService : IMotdService, IDisposable
     public void SetUrl(string url)
     {
         _motdUrl = url;
-        MotdText = GetMotd().Result;
+        MotdText = GetMotdAsync().Result;
         if (!_motdUpdateTimer.Enabled)
+        {
             _motdUpdateTimer.Enabled = true; // re-enable the timer when the url updates.
+        }
     }
 
     public async Task ShowAsync(IPlayer player)
@@ -74,7 +76,7 @@ public class MotdService : IMotdService, IDisposable
         await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate", new { isChecked = isCheckboxChecked, text = MotdText });
     }
     
-    public async Task<string> GetMotd()
+    public async Task<string> GetMotdAsync()
     {
         try
         {
@@ -96,6 +98,12 @@ public class MotdService : IMotdService, IDisposable
         => await _repository.InsertOrUpdateEntryAsync(player, hidden);
 
     public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+    
+    protected virtual void Dispose(bool disposing)
     {
         _motdUpdateTimer.Dispose();
     }

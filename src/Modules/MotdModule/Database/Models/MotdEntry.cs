@@ -15,7 +15,7 @@ public class MotdEntry : IMotdEntry
     public bool Hidden { get; set; }
     
     [Association(ThisKey = nameof(PlayerId), OtherKey = nameof(Common.Database.Models.Player.DbPlayer.Id))]
-    public DbPlayer? DbPlayer;
-
-    public IPlayer Player => DbPlayer!;
+    public DbPlayer DbPlayer { get; set; }
+    
+    public IPlayer Player => DbPlayer;
 }

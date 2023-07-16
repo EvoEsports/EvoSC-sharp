@@ -43,7 +43,7 @@ public class MotdPlayerEventControllerTest : ControllerMock<MotdPlayerEventContr
             Assert.Equal(_player.Object.Id, entry.Player.Id);
         }
         
-        await Controller.OnPlayerConnect(null, new PlayerConnectGbxEventArgs() { Login = "F4aNYLSUS4iB3_Td_a4c8Q" });
+        await Controller.OnPlayerConnectAsync(null, new PlayerConnectGbxEventArgs() { Login = "F4aNYLSUS4iB3_Td_a4c8Q" });
         _playerManager.Verify(r => r.GetPlayerAsync(It.IsAny<string>()), Times.Once);
         _motdService.Verify(r => r.ShowAsync(It.IsAny<IPlayer>()), (returnPlayer && !hasEntry) ? Times.Once : Times.Never);
     }

@@ -1,6 +1,6 @@
 ﻿namespace EvoSC.Modules.Official.MotdModule.Models;
 
-public class Data
+public class ResponseData
 {
     public int id { get; set; }
     public string message { get; set; }
@@ -9,5 +9,5 @@ public class Data
 
 public class MotdResponse
 {
-    public List<Data> data { get; set; }
+    public List<ResponseData> data { get; set; }
 }

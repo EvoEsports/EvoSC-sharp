@@ -25,19 +25,23 @@ public class MotdPlayerEventController : EvoScController<IEventControllerContext
     }
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
+    public async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
         => await ShowAsync(args.Login);
 
     private async Task ShowAsync(string login)
     {
         var player = await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(login));
         if (player is null)
+        {
             return;
-        
+        }
+
         var playerEntry = await _motdRepository.GetEntryAsync(player);
         if (playerEntry is not null && playerEntry.Hidden)
+        {
             return;
-        
+        }
+
         await _motdService.ShowAsync(player);
     }
 }

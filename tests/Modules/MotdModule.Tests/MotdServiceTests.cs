@@ -124,7 +124,7 @@ public class MotdServiceTests
             .Throws(new InvalidOperationException());
         
         SetupController();
-        var motd = await _motdService!.GetMotd();
+        var motd = await _motdService!.GetMotdAsync();
         Assert.Equal(MotdService.ErrorTextMotdNotLoaded, motd);
         
         _httpService.Verify(r => r.GetAsync(It.IsAny<string>()),

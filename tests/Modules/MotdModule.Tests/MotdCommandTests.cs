@@ -24,7 +24,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     [Fact]
     public async Task OpenMotdTest()
     {
-        await Controller.OpenMotd();
+        await Controller.OpenMotdAsync();
         
         _motdService.Verify(r => r.ShowAsync(It.IsAny<IOnlinePlayer>()), Times.Once);
     }
@@ -32,7 +32,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     [Fact]
     public void SetUrlTest()
     {
-        Controller.SetUrlAsync("testing");
+        Controller.SetUrl("testing");
         
         _motdService.Verify(r => r.SetUrl(It.IsAny<string>()), Times.Once);
     }
@@ -40,7 +40,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     [Fact]
     public void SetIntervalTest()
     {
-        Controller.SetFetchIntervalAsync(1000);
+        Controller.SetFetchInterval(1000);
         
         _motdService.Verify(r => r.SetInterval(It.IsAny<int>()), Times.Once);
     }

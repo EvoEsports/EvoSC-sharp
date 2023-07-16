@@ -16,7 +16,7 @@ public class MotdManialinkController : ManialinkController
         _motdService = motdService;
     }
 
-    public async Task Close(bool isChecked)
+    public async Task CloseAsync(bool isChecked)
     {
         await HideAsync(Context.Player, Template);
         await _motdService.InsertOrUpdateEntryAsync(Context.Player, isChecked);

@@ -24,7 +24,7 @@ public class MotdManialinkControllerTests : ManialinkControllerTestBase<MotdMani
     [InlineData(false)]
     async Task CloseTest(bool hidden)
     {
-        await Controller.Close(hidden);
+        await Controller.CloseAsync(hidden);
         
         ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "MotdModule.MotdTemplate"));
         _motdService.Verify(r => r.InsertOrUpdateEntryAsync(_actor.Object, hidden));

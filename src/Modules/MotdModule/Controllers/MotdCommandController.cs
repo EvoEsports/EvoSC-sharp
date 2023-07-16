@@ -17,17 +17,17 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
     }
 
     [ChatCommand("motd", "[Command.OpenMotd]")]
-    public async Task OpenMotd()
+    public async Task OpenMotdAsync()
         => await _motdService.ShowAsync(Context.Player);
     
     [ChatCommand("motdsetinterval", "[Command.MotdSetFetchInterval]", "MotdPermissions.SetFetchInterval")]
-    public void SetFetchIntervalAsync(int interval)
+    public void SetFetchInterval(int interval)
     {
         _motdService.SetInterval(interval);
     }
     
     [ChatCommand("motdseturl", "[Command.MotdSetUrl]", "MotdPermissions.SetUrl")]
-    public void SetUrlAsync(string url)
+    public void SetUrl(string url)
     {
         _motdService.SetUrl(url);
     }
