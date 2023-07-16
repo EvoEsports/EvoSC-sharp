@@ -18,13 +18,12 @@ public class MotdPlayerEventControllerTest : ControllerMock<MotdPlayerEventContr
 {
     private readonly Mock<IOnlinePlayer> _player = new();
     private readonly Mock<IPlayerManagerService> _playerManager = new();
-    private readonly Mock<IManialinkManager> _maniaManager = new();
     private readonly Mock<IMotdService> _motdService = new();
     private readonly Mock<IMotdRepository> _motdRepository = new();
     
     public MotdPlayerEventControllerTest()
     {
-        InitMock(_maniaManager, _playerManager, _motdService, _motdRepository);
+        InitMock(_playerManager, _motdService, _motdRepository);
     }
 
     [Theory]

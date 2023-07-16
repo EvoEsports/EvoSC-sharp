@@ -28,7 +28,7 @@ public class HttpService : IHttpService, IDisposable
         catch (Exception) { }
         if (responseObject is null)
             return "";
-        return responseObject.data.FirstOrDefault()?.message ?? "";
+        return responseObject.data?.FirstOrDefault()?.message ?? "";
     }
 
     public void Dispose()
