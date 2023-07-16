@@ -25,6 +25,8 @@ public class MotdService : IMotdService, IDisposable
     private int _timerInterval;
 
     private string MotdText { get; set; } = "";
+    
+    public bool IsDisposed { get; private set; }
 
     public MotdService(IManialinkManager manialink, IHttpService httpService, 
         IMotdRepository repository, IMotdSettings motdSettings, ILogger<MotdService> logger)
@@ -101,6 +103,7 @@ public class MotdService : IMotdService, IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+        IsDisposed = true;
     }
     
     protected virtual void Dispose(bool disposing)

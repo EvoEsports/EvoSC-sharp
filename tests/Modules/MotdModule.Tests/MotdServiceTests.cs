@@ -145,4 +145,12 @@ public class MotdServiceTests
         _maniaLinkManager.Verify(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate", 
             It.IsAny<object>()), Times.Once);
     }
+
+    [Fact]
+    async Task DisposeTest()
+    {
+        SetupController();
+        _motdService.Dispose();
+        Assert.True(_motdService.IsDisposed);
+    } 
 }

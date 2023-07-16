@@ -37,4 +37,12 @@ public class HttpServiceTests
         Assert.Equal("This is a MOTD message served by the API. Including $f00styling.", responseObject.data.FirstOrDefault()!.message);
         Assert.Equal("testserver", responseObject.data.FirstOrDefault()!.server);
     }
+
+    [Fact]
+    async Task DisposeTest()
+    {
+        await _service.GetAsync("https://asd");
+        _service.Dispose();
+        Assert.True(_service.IsDisposed);
+    }
 }
