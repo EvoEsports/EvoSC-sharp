@@ -15,7 +15,7 @@ public class AuditRepository : DbRepository, IAuditRepository
     public async Task<IAuditRecord> AddRecordAsync(DbAuditRecord record)
     {
         var id = await Database.InsertWithIdentityAsync(record);
-        record.Id = (long)id;
+        record.Id = Convert.ToInt64(id);
         return record;
     }
 }
