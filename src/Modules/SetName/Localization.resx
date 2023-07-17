@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -19,13 +17,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DidNotChangeName" xml:space="preserve">
-    <value>Did not change the name as it equals the old.</value>
+    <value>Did not change the nickname as it equals the old.</value>
   </data>
   <data name="NameSuccessfullySet" xml:space="preserve">
-    <value>Name successfully set!</value>
+    <value>Nickame successfully set!</value>
   </data>
   <data name="PlayerChangedTheirName" xml:space="preserve">
-    <value>{0} changed their name to {1}</value>
+    <value>$&lt;{0}$&gt; changed their nickname to $&lt;{1}$&gt;</value>
   </data>
   <data name="UI.EditYourNickname" xml:space="preserve">
     <value>Edit your nickname</value>

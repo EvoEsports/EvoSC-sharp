@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -25,10 +23,10 @@
     <value>Map with ID {0} could not be found.</value>
   </data>
   <data name="MapAddedSuccessfully" xml:space="preserve">
-    <value>Added {0} by {1} to the server.</value>
+    <value>Added {0} by $&lt;{1}$&gt; to the server.</value>
   </data>
   <data name="MapRemovedSuccessfully" xml:space="preserve">
-    <value>Removed map {0} by {1} from the maplist.</value>
+    <value>Removed {0} by $&lt;{1}$&gt; from the server.</value>
   </data>
   <data name="Audit.MapAdded" xml:space="preserve">
     <value>Map was added.</value>
