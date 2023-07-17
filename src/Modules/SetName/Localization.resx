@@ -20,7 +20,7 @@
     <value>Did not change the nickname as it equals the old.</value>
   </data>
   <data name="NameSuccessfullySet" xml:space="preserve">
-    <value>Nickame successfully set!</value>
+    <value>Nickname successfully set!</value>
   </data>
   <data name="PlayerChangedTheirName" xml:space="preserve">
     <value>$&lt;{0}$&gt; changed their nickname to $&lt;{1}$&gt;</value>
