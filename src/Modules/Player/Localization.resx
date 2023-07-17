@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -25,7 +23,7 @@
     <value>$&lt;{0}$&gt; joined!</value>
   </data>
   <data name="PlayerKicked" xml:space="preserve">
-    <value>$&lt;{0}$&gt; was kicked.</value>
+    <value>$&lt;{0}$&gt; was kicked from the server.</value>
   </data>
   <data name="PlayerKickingFailed" xml:space="preserve">
     <value>Failed to kick the player. Did they leave already?</value>
@@ -61,7 +59,7 @@
     <value>Player banned and added to the blacklist.</value>
   </data>
   <data name="PlayerBanned" xml:space="preserve">
-    <value>$&lt;{0}$&gt; was banned.</value>
+    <value>$&lt;{0}$&gt; was banned from the server.</value>
   </data>
   <data name="Audit.Unbanned" xml:space="preserve">
     <value>Player was unbanned.</value>
