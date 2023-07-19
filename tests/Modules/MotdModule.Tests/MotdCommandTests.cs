@@ -24,21 +24,21 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     [Theory]
     [InlineData("true")]
     [InlineData("false")]
-    private async Task SetMotdLocal_Sets_Motd_Source_To_Local_Test(string isLocal)
+    public void SetMotdLocal_Sets_Motd_Source_To_Local(string isLocal)
     {
         Controller.SetMotdLocal(isLocal);
         _motdService.Verify(r => r.SetMotdSource(bool.Parse(isLocal), null));
     }
 
     [Fact]
-    private async Task OpenEditMotdAsync_Shows_Edit_Test()
+    public async Task OpenEditMotdAsync_Shows_Edit()
     {
         await Controller.OpenEditMotdAsync();
         _motdService.Verify(r => r.ShowEditAsync(It.IsAny<IPlayer>()));
     }
     
     [Fact]
-    private async Task OpenMotdAsync_Shows_Motd_Test()
+    public async Task OpenMotdAsync_Shows_Motd()
     {
         await Controller.OpenMotdAsync();
         
@@ -46,7 +46,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     }
     
     [Fact]
-    private void SetUrl_Changes_Motd_Url_Test()
+    public void SetUrl_Changes_Motd_Url()
     {
         Controller.SetUrl("testing");
         
@@ -54,7 +54,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     }
     
     [Fact]
-    private void SetInterval_Changes_MotdTimer_Interval_Test()
+    public void SetInterval_Changes_MotdTimer_Interval()
     {
         Controller.SetFetchInterval(1000);
         

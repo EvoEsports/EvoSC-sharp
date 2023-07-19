@@ -11,7 +11,6 @@ using LinqToDB;
 
 namespace EvoSC.Modules.Official.MotdModule.Database.Repositories;
 
-[ExcludeFromCodeCoverage(Justification = "Database is not testable.")]
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MotdRepository : DbRepository, IMotdRepository
 {

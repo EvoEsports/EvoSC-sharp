@@ -26,6 +26,7 @@
       <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
       <ProjectReference Include="..\..\..\src\Modules\MotdModule\MotdModule.csproj" />
       <ProjectReference Include="..\..\..\src\Modules\Player\Player.csproj" />
+      <ProjectReference Include="..\..\EvoSC.Common.Tests\EvoSC.Common.Tests.csproj" />
     </ItemGroup>
 
 </Project>

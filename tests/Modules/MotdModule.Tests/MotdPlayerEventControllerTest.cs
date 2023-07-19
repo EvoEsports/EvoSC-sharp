@@ -17,7 +17,7 @@ public class MotdPlayerEventControllerTest : ControllerMock<MotdPlayerEventContr
     }
 
     [Fact]
-    private async Task OnPlayerConnect_Shows_Motd_Test()
+    public async Task OnPlayerConnect_Shows_Motd()
     {
         await Controller.OnPlayerConnectAsync(null, new PlayerConnectGbxEventArgs { Login = "F4aNYLSUS4iB3_Td_a4c8Q" });
         _motdService.Verify(r => r.ShowAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);

@@ -12,14 +12,14 @@ public class HttpServiceTests
     [Theory]
     [InlineData(TestServerUri, "This is a MOTD message served by the API. Including $f00styling.")]
     [InlineData("https://www.google.com", "")]
-    private async Task GetAsync_Returns_Correct_Format_Test(string uri, string expectedResult)
+    public async Task GetAsync_Returns_Correct_Format(string uri, string expectedResult)
     {
         var result = await _service.GetAsync(uri);
         Assert.Equal(expectedResult,result);
     }
 
     [Fact]
-    private async Task DataModel_MotdResponse_Creation_Successful_Test()
+    public async Task DataModel_MotdResponse_Creation_Successful()
     {
         var responseObject = new MotdResponse
         {
@@ -41,7 +41,7 @@ public class HttpServiceTests
     }
 
     [Fact]
-    private async Task Dispose_Test()
+    public async Task Dispose_Test()
     {
         await _service.GetAsync("https://asd");
         _service.Dispose();
