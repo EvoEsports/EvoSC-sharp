@@ -54,7 +54,7 @@ public class MotdServiceTests
     [InlineData(true)]
     [InlineData(false)]
     [InlineData(false, true)]
-    private async Task Set_Motd_Source_Test(bool local, bool presetUseLocal = false)
+    private async Task SetMotdSource_Sets_Correct_Source_Test(bool local, bool presetUseLocal = false)
     {
         SetupMocks(200);
         if (presetUseLocal)
@@ -76,7 +76,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task Set_Local_Motd_Test()
+    private async Task SetLocalMotd_Sets_Locally_Stored_Motd_Correctly_Test()
     {
         SetupMocks();
         SetupController();
@@ -101,7 +101,7 @@ public class MotdServiceTests
     [InlineData(2)]
     [InlineData(3)]
     [InlineData(6)]
-    private async Task Set_Interval_Test(int times)
+    private async Task SetInterval_Timer_Fires_Given_Amount_Of_Times_Test(int times)
     {
         SetupMocks();
         SetupController();
@@ -112,7 +112,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task Set_Url_Test()
+    private async Task SetUrl_Sets_Url_Correctly_And_Timer_Fires_Test()
     {
         SetupMocks();
         SetupController();
@@ -125,7 +125,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task Get_Entry_Test()
+    private async Task GetEntry_Gets_Correct_Entry_Test()
     {
         SetupMocks();
         SetupController();
@@ -142,7 +142,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task Insert_Or_Update_Entry_Test()
+    private async Task InsertOrUpdateEntry_Sets_Hidden_State_Test()
     {
         SetupMocks();
         SetupController();
@@ -154,7 +154,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task Set_Url_Re_Enable_Test()
+    private async Task SetUrlReEnable_ReEnables_Timer_Test()
     {
         SetupMocks();
         SetupController();
@@ -171,7 +171,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task Get_Motd_Test()
+    private async Task GetMotd_Gets_Correct_Text_Test()
     {
         _httpService.Setup(r => r.GetAsync(It.IsAny<string>()))
             .Returns(Task.FromResult("test"));
@@ -187,7 +187,7 @@ public class MotdServiceTests
     }
 
     [Fact]
-    private async Task Get_Motd_Throw_Test()
+    private async Task GetMotd_Trows_Error_Test()
     {
         _httpService.Setup(r => r.GetAsync(It.IsAny<string>()))
             .Throws(new InvalidOperationException());
@@ -200,7 +200,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task Show_Async_Test()
+    private async Task ShowAsync_Shows_Motd_Manialink_Test()
     {
         _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
             It.IsAny<object>())).Returns(Task.CompletedTask);
@@ -215,7 +215,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task Show_Async_Login_Test()
+    private async Task ShowAsyncLogin_Shows_Motd_Manialink_Test()
     {
         _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
             It.IsAny<object>())).Returns(Task.CompletedTask);
@@ -234,7 +234,7 @@ public class MotdServiceTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    private async Task Show_Async_Not_Explicitly_Test(bool isHidden)
+    private async Task ShowAsyncNotExplicitly_Shows_Manialink_Depending_On_Hidden_State_Test(bool isHidden)
     {
         _maniaLinkManager.Setup(r => r.SendManialinkAsync(_player.Object, "MotdModule.MotdTemplate",
             It.IsAny<object>())).Returns(Task.CompletedTask);
@@ -251,7 +251,7 @@ public class MotdServiceTests
     }
     
     [Fact]
-    private async Task Show_Async_Player_Null_Test()
+    private async Task ShowAsync_Abort_Player_Null_Test()
     {
         SetupMocks();
         SetupController();

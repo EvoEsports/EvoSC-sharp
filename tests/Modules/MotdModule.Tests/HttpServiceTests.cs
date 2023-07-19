@@ -10,17 +10,16 @@ public class HttpServiceTests
     private readonly HttpService _service = new(new Logger<HttpService>(new LoggerFactory()));
 
     [Theory]
-    [InlineData(TestServerUri)]
-    [InlineData("https://www.google.com")]
-    private async Task Get_Async_Test(string uri)
+    [InlineData(TestServerUri, "This is a MOTD message served by the API. Including $f00styling.")]
+    [InlineData("https://www.google.com", "")]
+    private async Task GetAsync_Returns_Correct_Format_Test(string uri, string expectedResult)
     {
         var result = await _service.GetAsync(uri);
-        Assert.Equal(uri.Contains("evo", StringComparison.InvariantCulture) ? "This is a MOTD message served by the API. Including $f00styling." : "",
-            result);
+        Assert.Equal(expectedResult,result);
     }
 
     [Fact]
-    private async Task Data_Model_Test()
+    private async Task DataModel_MotdResponse_Creation_Successful_Test()
     {
         var responseObject = new MotdResponse
         {

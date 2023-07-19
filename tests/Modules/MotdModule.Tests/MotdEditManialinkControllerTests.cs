@@ -19,7 +19,7 @@ public class MotdEditManialinkControllerTests : ManialinkControllerTestBase<Motd
     }
 
     [Fact]
-    private async Task Save_Async_Test()
+    private async Task SaveAsync_Closes_Manialink_And_Sets_LocalMotd_Test()
     {
         await Controller.SaveAsync("testing stuff");
 
