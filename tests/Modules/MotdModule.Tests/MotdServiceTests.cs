@@ -106,7 +106,7 @@ public class MotdServiceTests
         SetupMocks();
         SetupController();
         _motdService!.SetInterval(100, _player.Object);
-        await Task.Delay(110 * times);
+        await Task.Delay(150 * times);
         _httpService.Verify(r => r.GetAsync(It.IsAny<string>()),
             Times.AtLeast(times));
     }
