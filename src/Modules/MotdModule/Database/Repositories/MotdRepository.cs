@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using EvoSC.Common.Database.Models.Player;
+﻿using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
