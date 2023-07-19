@@ -10,16 +10,25 @@ namespace EvoSC.Modules.Official.MotdModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class HttpService : IHttpService, IDisposable
 {
-    private readonly HttpClient _httpClient;
+    private HttpClient _httpClient;
     private readonly ILogger<HttpService> _logger;
     
     public bool IsDisposed { get; private set; }
 
     public HttpService(ILogger<HttpService> logger)
     {
-        _httpClient = new HttpClient();
+        _httpClient ??= new();
         _logger = logger;
         IsDisposed = false;
+    }
+
+    /// <summary>
+    /// Only for unit testing!
+    /// </summary>
+    /// <param name="httpClient"></param>
+    public void SetHttpClient(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
     }
 
     public async Task<string> GetAsync(string uri)
@@ -33,7 +42,7 @@ public class HttpService : IHttpService, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, ex.Message);
         }
 
         if (responseObject is null)

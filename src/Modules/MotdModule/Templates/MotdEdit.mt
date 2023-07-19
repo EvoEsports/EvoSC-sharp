@@ -1,5 +1,5 @@
 ﻿<component>
-    <import component="MotdModule.MotdWindow" as="MotdWindow" />
+    <import component="EvoSC.Window" as="Window" />
     
     <property type="string" name="text" />
 
@@ -18,7 +18,7 @@
     <property type="double" name="h" default="90" />
     
     <template>
-        <MotdWindow id="window" h="{{ h }}" w="{{ w }}" x="0" y="0" zIndex="1000" title="Message of the Day" titleBarHeight="{{ titleBarHeight }}">
+        <Window id="window" h="{{ h }}" w="{{ w }}" x="0" y="0" zIndex="1000" title="Message of the Day" titleBarHeight="{{ titleBarHeight }}">
             <!--
             <label autonewline="1" text="{{ text }}" z-index="{{ zIndex + 1 }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
             -->
@@ -32,7 +32,7 @@
                 <label id="button_close" scriptevents="1" focusareacolor1="{{ backgroundColor }}" focusareacolor2="{{ backgroundColor }}" 
                        style="CardButtonMediumWide" hidden="0" text="Close" z-index="20" pos="{{ w/2 }} 0" halign="right" size="0 {{ buttonBarHeight/2 }}" />
             </frame>
-        </MotdWindow>
+        </Window>
         <script>
             <!--
             *** OnMouseClick ***

@@ -1,5 +1,5 @@
 ﻿<component>
-    <import component="MotdModule.MotdWindow" as="MotdWindow" />
+    <import component="EvoSC.Window" as="Window" />
 
     <property type="bool" name="isChecked" />
     <property type="string" name="text" />
@@ -20,7 +20,7 @@
     <property type="double" name="h" default="90" />
     
     <template>
-        <MotdWindow h="{{ h }}" w="{{ w }}" x="0" y="0" isChecked="{{ isChecked }}" zIndex="1000" title="Message of the Day" titleBarHeight="{{ titleBarHeight }}">
+        <Window h="{{ h }}" w="{{ w }}" x="0" y="0" isChecked="{{ isChecked }}" zIndex="1000" title="Message of the Day" titleBarHeight="{{ titleBarHeight }}">
             <label autonewline="1" text="{{ text }}" z-index="{{ zIndex + 1 }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
             <!-- ButtonBar -->
             <frame pos="0 {{ -h + buttonBarHeight*2 + 2 }}" size="{{ w }} {{ buttonBarHeight }}" z-index="{{ zIndex + 1 }}">
@@ -31,7 +31,7 @@
                 <!-- Close Button -->
                 <label scriptevents="1" focusareacolor1="{{ backgroundColor }}" focusareacolor2="{{ backgroundColor }}" id="button_close" style="CardButtonMediumWide" hidden="0" text="{{ buttonText }}" z-index="20" pos="{{ w/2 }} 0" halign="center" size="0 {{ buttonBarHeight/2 }}" />
             </frame>
-        </MotdWindow>
+        </Window>
         <script>
             <!--
             *** OnMouseClick ***

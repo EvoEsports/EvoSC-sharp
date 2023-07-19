@@ -1,7 +1,4 @@
 <component>
-    <!--
-    <script resource="MotdModule.Templates.Scripts.MotdWindow" />
-    -->
     <property type="int" name="zIndex" default="0"/>
     <property type="double" name="x" default="0.0"/>
     <property type="double" name="y" default="0.0"/>
