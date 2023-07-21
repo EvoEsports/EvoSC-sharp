@@ -1,32 +1,18 @@
 ﻿<component>
-    <using namespace="EvoSC.Manialinks.Validation" />
-    <import component="EvoSC.FormEntry" as="FormEntry" />
-    <import component="EvoSC.FormSubmit" as="FormSubmit" />
-    
-    <property type="FormValidationResult" name="Validation" />
-    <property type="int?" name="Username" />
-    <property type="string" name="Password" />
+    <import component="EvoSC.Dropdown" as="Dropdown" />
+    <import component="EvoSC.Button" as="Button" />
+    <import component="EvoSC.IconButton" as="IconButton" />
     
     <template>
-        <frame pos="0 0">
-            <quad pos="0 0" size="30 26" bgcolor="000000" opacity="0.5" />
-            <FormEntry
-                    validationResults='{{ Validation?.GetResult("Username") }}'
-                    value='{{ Username }}'
-                    name="Username"
-                    label="Username:"
-                    w="30"
-            />
-            <FormEntry
-                    validationResults='{{ Validation?.GetResult("Password") }}'
-                    value='{{ Password }}'
-                    name="Password"
-                    label="Password:"
-                    w="30"
-                    y="-10"
-                    isPassword="true"
-            />
-            <FormSubmit x="18" y="-21" text="Login" action="ExampleManialink/HandleAction" />
-        </frame>
+        <quad bgcolor="0000ff" size="1 1" halign="center" valign="center" />
+        
+        <Dropdown text="Dropdown" id="mybtn" x="10" y="20">
+            <Button text="Normal" id="myAction1" y="0" />
+            <Button text="Secondary" id="myAction2" y="-5" type="secondary" />
+            <Button text="Disabled" id="myAction3" y="-10" disabled="true" />
+            <IconButton icon="" text="Icon" id="myAction4" y="-15" />
+        </Dropdown>
     </template>
+
+    <script resource="EvoSC.Scripts.UIScripts" />
 </component>
