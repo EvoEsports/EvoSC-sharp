@@ -1,5 +1,5 @@
 ﻿<component>
-    <import component="EvoSC.Button" as="Button" />
+    <import component="EvoSC.Controls.Button" as="Button" />
 
     <property type="string" name="text" default=""/>
     <property type="double" name="x" default="0.0" />

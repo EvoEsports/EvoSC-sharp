@@ -16,4 +16,8 @@
       <PackageReference Include="ManiaTemplates" Version="0.0.5-alpha" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Util\" />
+    </ItemGroup>
+
 </Project>
