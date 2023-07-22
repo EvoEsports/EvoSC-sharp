@@ -21,8 +21,6 @@ declare Text[] EvoSC_UI_DropdownIds = [];
         declare ControlId = Event.Control.DataAttributeGet("id");
         declare Panel <=> Page.MainFrame.GetFirstChild(ControlId^"-panel") as CMlFrame;
         
-        log("YEP 2");
-        
         Panel.Visible = !Panel.Visible;
     } else {
          foreach (id in EvoSC_UI_DropdownIds) {

@@ -63,6 +63,25 @@
                     bgcolor="47495A"
                     textcolor="47495A"
             />
+            
+            <!-- Checkbox -->
+            <style
+                    class="checkbox-default"
+                    bgcolor="ff0058"
+                    textcolor="ff0058"
+                    textsize="1.5"
+                    textfont="RajdhaniMono"
+                    bgcolorfocus="ff0058"
+                    focusareacolor1="00000000"
+                    focusareacolor2="00000000"
+            />
+            <style
+                    class="checkbox-outline-default"
+                    bgcolor="ff0058"
+                    bgcolorfocus="ff0058"
+                    focusareacolor1="00000000"
+                    focusareacolor2="00000000"
+            />
         </stylesheet>
     </template>
 </component>
