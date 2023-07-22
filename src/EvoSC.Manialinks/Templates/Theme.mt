@@ -50,6 +50,19 @@
                     class="textinput-outline-default"
                     bgcolor="ffffff"
             />
+            
+            <!-- Toggle Switch -->
+            <style 
+                    class="toggleswitch-on-default"
+                    bgcolor="ff0058"
+                    textcolor="ff0058"
+            />
+            
+            <style
+                    class="toggleswitch-off-default"
+                    bgcolor="47495A"
+                    textcolor="47495A"
+            />
         </stylesheet>
     </template>
 </component>

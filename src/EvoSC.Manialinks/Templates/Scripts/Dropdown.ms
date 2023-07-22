@@ -1,9 +1,4 @@
-﻿Void ShowDropdownPanel(Text idName, Boolean visible) {
-    declare panel = Page.MainFrame.GetFirstChild(idName^"-panel") as CMlFrame;
-    panel.Visible = visible;
-}
-
-*** OnInitialization ***
+﻿*** OnInitialization ***
 ***
     declare mybtnVisible = False;
     ShowDropdownPanel("mybtn", mybtnVisible);

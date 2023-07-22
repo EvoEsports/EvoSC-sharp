@@ -26,5 +26,6 @@
         </frame>
     </template>
     
+    <script resource="EvoSC.Scripts.DropdownMethods" once="true" />
     <script resource="EvoSC.Scripts.Dropdown" />
 </component>

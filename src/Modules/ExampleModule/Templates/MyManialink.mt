@@ -3,6 +3,7 @@
     <import component="EvoSC.Controls.Button" as="Button" />
     <import component="EvoSC.Controls.IconButton" as="IconButton" />
     <import component="EvoSC.Controls.TextInput" as="TextInput" />
+    <import component="EvoSC.Controls.Switch" as="Switch" />
     
     <template>
         <!-- <Dropdown text="Dropdown" id="mybtn" x="10" y="20">
@@ -12,7 +13,10 @@
             <IconButton icon="" text="Icon" id="myAction4" y="-15" />
         </Dropdown> -->
         
-        <TextInput name="myinput" value="something" />
+        <!-- <TextInput name="myinput" value="something" /> -->
+        
+        <Switch value="false" id="switch1" />
+        <Switch value="false" y="-6" id="switch2" />
     </template>
 
     <script resource="EvoSC.Scripts.UIScripts" />
