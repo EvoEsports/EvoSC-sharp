@@ -10,10 +10,11 @@
     <property type="string" name="type" default="default" />
     <property type="string" name="action" default="" />
     <property type="bool" name="disabled" default="false" />
+    <property type="string" name="className" default="evosc-button" />
     
     <template>
         <Theme />
-        <frame pos="{{ x }} {{ y }}">
+        <frame id="{{ id }}" pos="{{ x }} {{ y }}" class="{{ className }}-frame" data-disabled="{{ disabled }}">
             <frame if="!disabled">
                 <quad
                         class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
@@ -21,19 +22,18 @@
                         scriptevents="1"
                 />
                 <label
-                        id="{{ id }}"
                         size="{{ width }} {{ height }}"
-                        class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
+                        class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }} {{ className }}-btn'
                         text="{{ text }}"
                         scriptevents="1"
                         halign="center"
                         valign="center"
                         pos="{{ width/2 }} {{ -height/2 }}"
                         if='action.Equals("", StringComparison.Ordinal)'
+                        data-id="{{ id }}"
                 />
                 <label
-                        id="{{ id }}"
-                        class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
+                        class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }} {{ className }}-btn'
                         size="{{ width }} {{ height }}"
                         text="{{ text }}"
                         scriptevents="1"
@@ -42,6 +42,7 @@
                         valign="center"
                         pos="{{ width/2 }} {{ -height/2 }}"
                         if='!action.Equals("", StringComparison.Ordinal)'
+                        data-id="{{ id }}"
                 />
             </frame>
             <frame if="disabled">

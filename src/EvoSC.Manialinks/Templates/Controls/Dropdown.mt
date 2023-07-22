@@ -20,12 +20,12 @@
                 id="{{ id }}-btn"
                 type="{{ type }}"
                 disabled="{{ disabled }}"
+                className="evosc-dropdown"
         />
-        <frame id="{{ id }}-panel" pos="{{ x }} {{ y-height }}">
+        <frame id="{{ id }}-btn-panel" pos="{{ x }} {{ y-height }}">
             <slot />
         </frame>
     </template>
     
-    <script resource="EvoSC.Scripts.DropdownMethods" once="true" />
-    <script resource="EvoSC.Scripts.Dropdown" />
+    <script resource="EvoSC.Scripts.Dropdown" once="true"/>
 </component>
