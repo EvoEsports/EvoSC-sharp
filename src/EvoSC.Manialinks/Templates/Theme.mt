@@ -1,7 +1,12 @@
 ﻿<component>
     <template>
         <stylesheet>
-            <style class="text" textfont="RajdhaniMono" textcolor="ffffff" textsize="1.5"/>
+            <style 
+                    class="text"
+                    textfont="RajdhaniMono" 
+                    textcolor="ffffff"
+                    textsize="1.5"
+            />
             
             <!-- Buttons -->
             <style 
@@ -79,6 +84,16 @@
                     class="checkbox-outline-default"
                     bgcolor="ff0058"
                     bgcolorfocus="ff0058"
+                    focusareacolor1="00000000"
+                    focusareacolor2="00000000"
+            />
+            
+            <!-- Radio Button -->
+            <style 
+                    class="radiobutton-default"
+                    textsize="1.5"
+                    textfont="RajdhaniMono"
+                    textcolor="ff0058"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />

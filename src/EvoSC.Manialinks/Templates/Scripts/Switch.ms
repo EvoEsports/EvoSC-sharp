@@ -48,7 +48,9 @@ Void SetSwitchState(Text idName, Boolean value) {
         
         SetSwitchState(ControlId, !SwitchValue);
         
-        +++ OnSwitchToggle +++
+        {
+            +++ OnSwitchToggle +++
+        }
     }
 ***
 -->

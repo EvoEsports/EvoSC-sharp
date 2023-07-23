@@ -2,10 +2,10 @@
     <import component="EvoSC.Theme" as="Theme" />
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
 
+    <property type="string" name="id" />
     <property type="double" name="x" default="0.0"/>
     <property type="double" name="y" default="0.0"/>
     <property type="bool" name="value" default="false"/>
-    <property type="string" name="id" />
     
     <template>
         <Theme />

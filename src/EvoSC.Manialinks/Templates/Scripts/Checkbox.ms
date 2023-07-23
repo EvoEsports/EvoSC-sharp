@@ -31,14 +31,15 @@ Void SetCheckboxState(Text idName, Boolean value) {
 *** OnMouseClick ***
 ***
     if (Event.Control.HasClass("evosc-checkbox")) {
-        log("test");
         declare ControlId = Event.Control.DataAttributeGet("id");
         declare Control <=> Page.MainFrame.GetFirstChild(ControlId);
         declare IsChecked for Control = False;
         
         SetCheckboxState(ControlId, !IsChecked);
         
-        +++ OnCheckboxToggle +++
+        {
+            +++ OnCheckboxToggle +++
+        }
     }
 ***
 -->
