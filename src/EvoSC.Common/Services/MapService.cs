@@ -40,7 +40,6 @@ public class MapService : IMapService
         IMap? existingMap = await GetMapByUidAsync(mapMetadata.MapUid);
         if (existingMap != null && MapVersionExistsInDb(existingMap, mapMetadata))
         {
-            // TODO: #79 Expand Map module with more accurate exceptions https://github.com/EvoTM/EvoSC-sharp/issues/79
             _logger.LogDebug("Map with UID {MapUid} already exists in database.", mapMetadata.MapUid);
             throw new DuplicateNameException($"Map with UID {mapMetadata.MapUid} already exists in database");
         }
@@ -60,30 +59,13 @@ public class MapService : IMapService
 
         if (existingMap != null)
         {
-            try
-            {
-                _logger.LogDebug("Updating map with ID {MapId} to the database", existingMap.Id);
-                map = await _mapRepository.UpdateMapAsync(existingMap.Id, mapMetadata);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "Something went wrong while trying to update map with ID {MapId} to the database",
-                    existingMap.Id);
-                throw;
-            }
+            _logger.LogDebug("Updating map with ID {MapId} to the database", existingMap.Id);
+            map = await _mapRepository.UpdateMapAsync(existingMap.Id, mapMetadata);
         }
         else
         {
-            try
-            {
-                _logger.LogDebug("Adding map to the database");
-                map = await _mapRepository.AddMapAsync(mapMetadata, author, filePath);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, $"Something went wrong while trying to add a map to the database");
-                throw;
-            }
+            _logger.LogDebug("Adding map to the database");
+            map = await _mapRepository.AddMapAsync(mapMetadata, author, filePath);
         }
 
         await _serverClient.Remote.InsertMapAsync($"EvoSC/{fileName}");
