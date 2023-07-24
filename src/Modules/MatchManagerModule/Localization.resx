@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -19,13 +17,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ForcedRoundEnd" xml:space="preserve">
-    <value>{0} forced the round to end.</value>
+    <value>$&lt;{0}$&gt; forced the round to end.</value>
   </data>
   <data name="RestartedMatch" xml:space="preserve">
-    <value>{0} restarted the match.</value>
+    <value>$&lt;{0}$&gt; restarted the match.</value>
   </data>
   <data name="SkippedToNextMap" xml:space="preserve">
-    <value>{0} skipped to the next map.</value>
+    <value>$&lt;{0}$&gt; skipped to the next map.</value>
   </data>
   <data name="Audit.RoundEnded" xml:space="preserve">
     <value>Round ended.</value>

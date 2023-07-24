@@ -28,6 +28,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\EvoSC.Common\EvoSC.Common.csproj" />
+      <ProjectReference Include="..\..\src\Modules\MotdModule\MotdModule.csproj" />
     </ItemGroup>
 
     <ItemGroup>
