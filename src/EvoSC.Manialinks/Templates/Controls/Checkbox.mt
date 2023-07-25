@@ -1,7 +1,6 @@
 ﻿<component>
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
-    <import component="EvoSC.Theme" as="Theme" />
-
+    
     <property type="string" name="id" />
     <property type="double" name="x" default="0.0" />
     <property type="double" name="y" default="0.0" />
@@ -9,7 +8,6 @@
     <property type="string" name="text" default="" />
     
     <template>
-        <Theme />
         <frame pos="{{ x }} {{ y }}" class="evosc-checkbox-frame" id="{{ id }}">
             <quad scriptevents="1" class="checkbox-outline-default evosc-checkbox" data-id="{{ id }}" size="0.1 3" pos="0 0" />
             <quad scriptevents="1" class="checkbox-outline-default evosc-checkbox" data-id="{{ id }}" size="0.1 3" pos="2.9 0" />

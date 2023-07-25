@@ -1,6 +1,4 @@
 ﻿<component>
-    <import component="EvoSC.Theme" as="Theme" />
-    
     <property type="string" name="text" />
     <property type="double" name="x" default="0.0" />
     <property type="double" name="y" default="0.0" />
@@ -13,8 +11,7 @@
     <property type="string" name="className" default="evosc-button" />
     
     <template>
-        <Theme />
-        <frame id="{{ id }}" pos="{{ x }} {{ y }}" class="{{ className }}-frame" data-disabled="{{ disabled }}">
+        <frame id="{{ id }}-frame" pos="{{ x }} {{ y }}" class="{{ className }}-frame" data-disabled="{{ disabled }}">
             <frame if="!disabled">
                 <quad
                         class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
@@ -31,6 +28,7 @@
                         pos="{{ width/2 }} {{ -height/2 }}"
                         if='action.Equals("", StringComparison.Ordinal)'
                         data-id="{{ id }}"
+                        id="{{ id }}"
                 />
                 <label
                         class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }} {{ className }}-btn'
@@ -43,6 +41,7 @@
                         pos="{{ width/2 }} {{ -height/2 }}"
                         if='!action.Equals("", StringComparison.Ordinal)'
                         data-id="{{ id }}"
+                        id="{{ id }}"
                 />
             </frame>
             <frame if="disabled">

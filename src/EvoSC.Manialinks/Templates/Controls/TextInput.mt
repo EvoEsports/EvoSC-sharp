@@ -1,6 +1,4 @@
 ﻿<component>
-    <import component="EvoSC.Theme" as="Theme" />
-
     <property type="string" name="name" />
     <property type="double" name="x" default="0.0"/>
     <property type="double" name="y" default="0.0"/>
@@ -13,7 +11,6 @@
     <property type="int" name="maxLength" default="255" />
     
     <template>
-        <Theme />
         <frame pos="{{ x }} {{ y }}">
             <quad 
                     class="textinput-outline-default"

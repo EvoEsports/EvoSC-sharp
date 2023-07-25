@@ -1,5 +1,4 @@
 ﻿<component>
-    <import component="EvoSC.Theme" as="Theme" />
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
 
     <property type="string" name="id" />
@@ -8,7 +7,6 @@
     <property type="bool" name="value" default="false"/>
     
     <template>
-        <Theme />
         <frame pos="{{ x }} {{ y }}" size="10 5" scriptevents="1" id="{{ id }}" class="evosc-toggleswitch-frame">
             <quad 
                     class='{{ value ? "toggleswitch-on-default" : "toggleswitch-off-default" }} evosc-toggleswitch'
