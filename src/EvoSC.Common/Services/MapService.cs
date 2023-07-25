@@ -1,6 +1,6 @@
-﻿using System.Data;
-using EvoSC.Common.Config.Models;
+﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Repository.Maps;
+using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -41,7 +41,7 @@ public class MapService : IMapService
         if (existingMap != null && MapVersionExistsInDb(existingMap, mapMetadata))
         {
             _logger.LogDebug("Map with UID {MapUid} already exists in database.", mapMetadata.MapUid);
-            throw new DuplicateNameException($"Map with UID {mapMetadata.MapUid} already exists in database");
+            throw new DuplicateMapException($"Map with UID {mapMetadata.MapUid} already exists in database");
         }
 
         var fileName = $"{mapMetadata.MapName}.Map.Gbx";

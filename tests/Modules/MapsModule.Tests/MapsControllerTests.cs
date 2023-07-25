@@ -1,8 +1,8 @@
+using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models.Maps;
 using EvoSC.Modules.Official.Maps.Controllers;
 using EvoSC.Modules.Official.Maps.Events;
 using EvoSC.Modules.Official.Maps.Interfaces;
@@ -53,12 +53,47 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     {
         var ex = new Exception();
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
-            .Returns(() => throw ex);
+            .Throws(ex);
 
-        await Controller.AddMap("123");
+        Exception exception = null;
+
+        try
+        {
+            await Controller.AddMap("123");
+        }
+        catch (Exception e)
+        {
+            exception = e;
+        }
         
-        _logger.Verify(LogLevel.Information, ex, null, Times.Once());
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        Assert.Equal(ex, exception);
+    }
+
+    [Fact]
+    public async Task Adding_Duplicate_Map_Returns_Error()
+    {
+        var ex = new DuplicateMapException("Failed map add");
+        _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
+            .Throws(ex);
+
+        Exception exception = null;
+
+        try
+        {
+            await Controller.AddMap("123");
+        }
+        catch (DuplicateMapException e)
+        {
+            exception = e;
+        }
+        catch (Exception)
+        {
+            Assert.Fail("Incorrect exception was thrown when duplicate map exception was thrown previously");
+        }
+        
+        _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        Assert.Equal(ex, exception);
     }
     
     [Fact]
