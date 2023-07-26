@@ -61,7 +61,7 @@ if (Event.Control.HasClass("evosc-window-closebtn")) {
 
 *** OnMouseDown ***
 ***
-{
+if ({{ canMove }}) {
     declare IsFocused for WindowInstance = False;
     declare DragStartPosition for WindowInstance = WindowInstance.RelativePosition_V3;
     
@@ -93,7 +93,7 @@ if (Event.Control.HasClass("evosc-window-closebtn")) {
 
 *** OnMouseDrag ***
 ***
-{
+if ({{ canMove }}) {
     declare IsFocused for WindowInstance = False;
     
     if (IsFocused) {

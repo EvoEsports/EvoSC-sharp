@@ -9,6 +9,8 @@
     <property type="string" name="style" default="default"/>
     <property type="bool" name="canClose" default="true" />
     <property type="bool" name="canMinimize" default="false" />
+    <property type="bool" name="canMove" default="true" />
+    <property type="bool" name="hasTitlebar" default="true" />
 
     <template>
         <frame 
@@ -25,6 +27,7 @@
             <quad 
                     class="window-header-{{ style }} evosc-window-header evosc-window"
                     size="{{ width }} {{ 5 }}"
+                    if="hasTitlebar"
             />
 
             <label
@@ -33,7 +36,7 @@
                     text="{{ icon }}"
                     size="{{ width-1.5 }} 5"
                     pos="1.5 -2.2"
-                    if='icon != ""'
+                    if='hasTitlebar &amp;&amp; icon != ""'
             />
             
             <label 
@@ -42,6 +45,7 @@
                     text="{{ title }}"
                     size='{{ width-1.5 }} 5'
                     pos='{{ icon != "" ? 5.5 : 1.5 }} -2.2'
+                    if="hasTitlebar"
             />
             
             <label
@@ -52,7 +56,7 @@
                     size="5 5"
                     pos="{{ width-4.5 }} -2.2"
                     scriptevents="1"
-                    if="canClose"
+                    if="hasTitlebar &amp;&amp; canClose"
             />
 
             <label
@@ -63,10 +67,10 @@
                     size="5 5"
                     pos="{{ width - 4.5 - (canClose ? 4 : 0) }} -2.2"
                     scriptevents="1"
-                    if="canMinimize"
+                    if="hasTitlebar &amp;&amp; canMinimize"
             />
 
-            <frame pos="1 -6" size="{{ width-2 }} {{ height-7 }}">
+            <frame pos="1 -{{ hasTitlebar ? 6 : 1 }}" size="{{ width-2 }} {{ height-(hasTitlebar ? 7 : 2) }}">
                 <slot />
             </frame>
         </frame>

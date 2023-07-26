@@ -11,12 +11,12 @@
     
     <template>
         <Theme />
-        <Dropdown text="Dropdown" id="myDropdown" x="10" y="20">
+        <!-- <Dropdown text="Dropdown" id="myDropdown" x="10" y="20">
             <Button text="Normal" id="myAction1" y="0" />
             <Button text="Secondary" id="myAction2" y="-5" type="secondary" />
             <Button text="Disabled" id="myAction3" y="-10" disabled="true" />
             <IconButton icon="" text="Icon" id="myAction4" y="-15" />
-        </Dropdown>
+        </Dropdown> -->
         
         <!-- <TextInput name="myinput" value="something" /> -->
         
@@ -33,9 +33,9 @@
         <RadioButton id="radio4" text="Group 2 Btn 2" group="group2" y="-22" />
         <RadioButton id="radio5" text="Group 2 Btn 3" group="group2" y="-26" /> -->
         
-        <!-- <Window>
+        <Window style="secondary" hasTitlebar="false">
             <label text="test" />
-        </Window> -->
+        </Window>
     </template>
 
     <script>
