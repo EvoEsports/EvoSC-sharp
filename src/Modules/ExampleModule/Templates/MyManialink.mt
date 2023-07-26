@@ -20,8 +20,8 @@
         
         <!-- <TextInput name="myinput" value="something" /> -->
         
-        <!-- <Switch value="false" id="switch1" />
-        <Switch value="false" y="-6" id="switch2" /> -->
+        <Switch value="false" id="switch1" />
+        <Switch value="false" y="-6" id="switch2" />
         
         <!-- <Checkbox id="mycheck" text="Check this!" />
         <Checkbox id="mycheck2" text="Check this!" isChecked="true" y="-4" /> -->
@@ -33,9 +33,9 @@
         <RadioButton id="radio4" text="Group 2 Btn 2" group="group2" y="-22" />
         <RadioButton id="radio5" text="Group 2 Btn 3" group="group2" y="-26" /> -->
         
-        <Window style="secondary" hasTitlebar="false">
+        <!-- <Window style="secondary" hasTitlebar="false">
             <label text="test" />
-        </Window>
+        </Window> -->
     </template>
 
     <script>

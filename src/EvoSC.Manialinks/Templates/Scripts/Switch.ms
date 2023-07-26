@@ -13,15 +13,15 @@ Void SetSwitchState(Text idName, Boolean value) {
     
     if (value) {
         bg.BgColor = onColor;
-        head.RelativePosition_V3 = <5., 0.>;
-        icon.RelativePosition_V3 = <7.5, -2.1>;
         icon.SetText("");
+        AnimMgr.Add(head, """<quad pos='5 0' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
+        AnimMgr.Add(icon, """<label pos='7.5 -2.1' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         icon.TextColor = onColor;
         entry.SetText("True", False);
     } else {
         bg.BgColor = offColor;
-        head.RelativePosition_V3 = <0., 0.>;
-        icon.RelativePosition_V3 = <2.5, -2.1>;
+        AnimMgr.Add(head, """<quad pos='0 0' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
+        AnimMgr.Add(icon, """<label pos='2.5 -2.1' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         icon.SetText("");
         icon.TextColor = offColor;
         entry.SetText("False", False);
