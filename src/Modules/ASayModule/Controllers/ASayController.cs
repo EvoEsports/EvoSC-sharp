@@ -2,6 +2,8 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Modules.Official.ASayModule.Events;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
 
@@ -14,6 +16,7 @@ public class ASayController : EvoScController<CommandInteractionContext>
 
     public ASayController(IASayService asayService)
     {
+
         _asayService = asayService;
     }
 
@@ -23,17 +26,11 @@ public class ASayController : EvoScController<CommandInteractionContext>
         if (!string.IsNullOrEmpty(text))
         {
             await _asayService.ShowAnnouncementAsync(text);
-            Context.AuditEvent.Success()
-                .WithEventName(AuditEvents.ShowAnnouncement)
-                .HavingProperties(new {Text = text})
-                .Comment("Announcement was shown.");
+
         }
         else
         {
             await _asayService.HideAnnouncementAsync();
-            Context.AuditEvent.Success()
-                .WithEventName(AuditEvents.ClearAnnouncement)
-                .Comment("Announcement was cleared.");
         }
     }
     
@@ -41,8 +38,5 @@ public class ASayController : EvoScController<CommandInteractionContext>
     public async Task ClearAnnouncementMessageForPlayersAsync()
     {
         await _asayService.HideAnnouncementAsync();
-        Context.AuditEvent.Success()
-            .WithEventName(AuditEvents.ClearAnnouncement)
-            .Comment("Announcement was cleared.");
     }
 }

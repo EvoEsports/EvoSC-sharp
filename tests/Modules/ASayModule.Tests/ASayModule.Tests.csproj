@@ -25,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
       <ProjectReference Include="..\..\..\src\Modules\ASayModule\ASayModule.csproj" />
     </ItemGroup>
 

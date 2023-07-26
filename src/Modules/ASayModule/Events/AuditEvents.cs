@@ -8,5 +8,8 @@ public enum AuditEvents
     ShowAnnouncement,
     
     [Identifier(Name = "ASay:ClearAnnouncement")]
-    ClearAnnouncement
+    ClearAnnouncement,
+    
+    [Identifier(Name = "ASay:DisableModule")]
+    DisableModule
 }
