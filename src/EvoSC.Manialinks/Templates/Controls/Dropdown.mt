@@ -22,7 +22,12 @@
                 disabled="{{ disabled }}"
                 className="evosc-dropdown"
         />
-        <frame id="{{ id }}-btn-panel" pos="{{ x }} {{ y-height }}">
+        <frame 
+                id="{{ id }}-btn-slotpanel" 
+                pos="{{ x }} {{ y-height }}" 
+                class="evosc-dropdown-slotpanel"
+                data-id="{{ id }}"
+        >
             <slot />
         </frame>
     </template>

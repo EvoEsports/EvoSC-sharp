@@ -4,13 +4,14 @@
 declare Text[] EvoSC_UI_DropdownIds = [];
 
 {
-    Page.GetClassChildren("evosc-dropdown-frame", Page.MainFrame, True);
+    Page.GetClassChildren("evosc-dropdown-slotpanel", Page.MainFrame, True);
             
-    foreach (ctrl in Page.GetClassChildren_Result) {
-        log(ctrl.ControlId^"-panel");
+    foreach (Panel in Page.GetClassChildren_Result) {
+        /* log(ctrl.ControlId^"-panel");
         declare Panel <=> Page.MainFrame.GetFirstChild(ctrl.ControlId^"-panel") as CMlFrame;
+        log(Panel); */
         Panel.Visible = False;
-        EvoSC_UI_DropdownIds.add(ctrl.ControlId);
+        EvoSC_UI_DropdownIds.add(Panel.DataAttributeGet("id"));
     }
 }
 ***
@@ -19,12 +20,13 @@ declare Text[] EvoSC_UI_DropdownIds = [];
 ***
     if (Event.Control.HasClass("evosc-dropdown-btn")) {
         declare ControlId = Event.Control.DataAttributeGet("id");
-        declare Panel <=> Page.MainFrame.GetFirstChild(ControlId^"-panel") as CMlFrame;
+        declare Panel <=> Page.MainFrame.GetFirstChild(ControlId^"-slotpanel") as CMlFrame;
         
         Panel.Visible = !Panel.Visible;
+        log(Panel.Size);
     } else {
          foreach (id in EvoSC_UI_DropdownIds) {
-             declare Panel <=> Page.MainFrame.GetFirstChild(id^"-panel") as CMlFrame;
+             declare Panel <=> Page.MainFrame.GetFirstChild(id^"-btn-slotpanel") as CMlFrame;
              Panel.Visible = False;
          }
      }
