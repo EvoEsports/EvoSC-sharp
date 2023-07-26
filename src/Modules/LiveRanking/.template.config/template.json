@@ -10,7 +10,7 @@
     "type": "project"
   },
   "guids": [],
-  "sourceName": "ASay",
+  "sourceName": "LiveRanking",
   "preferNameDirectory": true,
   "baselines": {
     "app": {
