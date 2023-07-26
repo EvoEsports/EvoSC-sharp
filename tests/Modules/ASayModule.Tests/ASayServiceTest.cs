@@ -96,7 +96,7 @@ public class ASayServiceTest
         var text = "example message";
         await mock.ASayService.ShowAnnouncementAsync(text);
         mock.Audit.Verify(m=>m.Success(), Times.Once());
-        _manialinkManager.Verify(manager => manager.SendManialinkAsync("ASayModule.Announcement", It.Is<object>(o => text.Equals(o.GetType().GetProperty("text")!.GetValue(o)))));
+        _manialinkManager.Verify(manager => manager.SendPersistentManialinkAsync("ASayModule.Announcement", It.Is<object>(o => text.Equals(o.GetType().GetProperty("text")!.GetValue(o)))));
     }
 
     [Fact]

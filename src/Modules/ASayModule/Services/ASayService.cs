@@ -36,7 +36,7 @@ public class ASayService : IASayService
 
     public async Task ShowAnnouncementAsync(string text)
     {
-        await _manialinkManager.SendManialinkAsync("ASayModule.Announcement", new {text});
+        await _manialinkManager.SendPersistentManialinkAsync("ASayModule.Announcement", new {text});
         _contextService.Audit().Success()
             .WithEventName(AuditEvents.ShowAnnouncement)
             .HavingProperties(new {Text = text})

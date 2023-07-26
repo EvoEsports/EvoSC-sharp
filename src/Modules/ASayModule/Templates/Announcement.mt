@@ -13,7 +13,7 @@
             <quad size="10 10" style="UICommon64_1" substyle="BgFrame1" halign="left" colorize="fff" opacity="1"
                   pos="0 0" valign="center" z-index="2"/>
         </frame>
-        <script>
+        <script main="true">
             <!--
             #Include "MathLib" as ML
             #Const C_MaxWidth 160.
