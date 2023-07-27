@@ -94,6 +94,6 @@ public class MapsController : EvoScController<ICommandInteractionContext>
 
         await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName),
             Context.Player);
-        _logger.LogInformation("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
+        _logger.LogDebug("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }

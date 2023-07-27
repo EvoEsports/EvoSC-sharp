@@ -51,7 +51,7 @@ public class MapServiceTests
             Uid = "Uid"
         };
         _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
-            .Returns(Task.FromResult((IMap)map)!);
+            .Returns(Task.FromResult((IMap?)map));
 
         var retrievedMap = await _mapService.GetMapByIdAsync(123);
 
@@ -63,7 +63,7 @@ public class MapServiceTests
     public async Task Get_Map_By_Id_Returns_Null_If_Map_Not_Exist()
     {
         _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
-            .Returns(Task.FromResult((IMap)null));
+            .Returns(Task.FromResult((IMap?)null));
 
         var retrievedMap = await _mapService.GetMapByIdAsync(123);
 
@@ -95,7 +95,7 @@ public class MapServiceTests
     public async Task Get_Map_By_Uid_Returns_Null_If_Map_Not_Exist()
     {
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult((IMap)null));
+            .Returns(Task.FromResult((IMap?)null));
 
         var retrievedMap = await _mapService.GetMapByUidAsync("123");
 
@@ -140,7 +140,7 @@ public class MapServiceTests
         };
 
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult((IMap)null));
+            .Returns(Task.FromResult((IMap?)null));
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
         _config.Setup(c => c.Path.Maps).Returns("/maps");
@@ -198,7 +198,7 @@ public class MapServiceTests
         };
 
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult((IMap)map));
+            .Returns(Task.FromResult((IMap?)map));
         _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
             .Returns(Task.FromResult((IMap)map));
         _config.Setup(c => c.Path.Maps).Returns("/maps");
@@ -256,7 +256,7 @@ public class MapServiceTests
         };
 
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult((IMap)map));
+            .Returns(Task.FromResult((IMap?)map));
         _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
             .Returns(Task.FromResult((IMap)map));
 
@@ -312,11 +312,11 @@ public class MapServiceTests
         };
 
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult((IMap)null));
+            .Returns(Task.FromResult((IMap?)null));
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
         _config.Setup(c => c.Path.Maps).Returns("/maps");
-        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));
+        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
 
         var createdMaps = await _mapService.AddMapsAsync(new List<MapStream> { mapStream, mapStream2 });
 
@@ -338,7 +338,7 @@ public class MapServiceTests
             Uid = "Uid"
         };
         _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
-            .Returns(Task.FromResult((IMap)map)!);
+            .Returns(Task.FromResult((IMap?)map));
 
         await _mapService.RemoveMapAsync(123);
 
@@ -430,7 +430,7 @@ public class MapServiceTests
         _server.Remote.Setup(r => r.GetCurrentMapInfoAsync())
             .Returns(Task.FromResult(tmMapInfo));
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult((IMap)null));
+            .Returns(Task.FromResult((IMap?)null));
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
         _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));

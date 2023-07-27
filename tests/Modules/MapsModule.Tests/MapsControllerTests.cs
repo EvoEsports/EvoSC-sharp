@@ -55,19 +55,9 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Throws(ex);
 
-        Exception exception = null;
-
-        try
-        {
-            await Controller.AddMap("123");
-        }
-        catch (Exception e)
-        {
-            exception = e;
-        }
+        await Assert.ThrowsAsync<Exception>(() => Controller.AddMap("123"));
         
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
-        Assert.Equal(ex, exception);
     }
 
     [Fact]
@@ -77,23 +67,9 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Throws(ex);
 
-        Exception exception = null;
-
-        try
-        {
-            await Controller.AddMap("123");
-        }
-        catch (DuplicateMapException e)
-        {
-            exception = e;
-        }
-        catch (Exception)
-        {
-            Assert.Fail("Incorrect exception was thrown when duplicate map exception was thrown previously");
-        }
+        await Assert.ThrowsAsync<DuplicateMapException>(() => Controller.AddMap("123"));
         
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
-        Assert.Equal(ex, exception);
     }
     
     [Fact]
@@ -120,7 +96,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MapRemoved), Times.Once);
         _server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);
-        _logger.Verify(LogLevel.Information, null, null, Times.Once());
+        _logger.Verify(LogLevel.Debug, null, null, Times.Once());
     }
 
     [Fact]
