@@ -9,11 +9,9 @@ Void SetCheckboxState(Text idName, Boolean value) {
     IsChecked = value;
     
     if (value) {
-        /* bg.Opacity = 1.; */
         AnimMgr.Add(bg, """<quad opacity='1' />""", 500, CAnimManager::EAnimManagerEasing::ExpOut);
         icon.SetText("");
     } else {
-        /* bg.Opacity = 0.; */
         AnimMgr.Add(bg, """<quad opacity='0' />""", 500, CAnimManager::EAnimManagerEasing::ExpOut);
         icon.SetText("");
     }

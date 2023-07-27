@@ -1,4 +1,6 @@
-﻿Void __DoNothing() {}
+﻿#Include "TextLib" as TextLib
+
+Void __DoNothing() {}
 
 main() {
     declare Boolean MouseIsDown = False;

@@ -7,9 +7,6 @@ declare Text[] EvoSC_UI_DropdownIds = [];
     Page.GetClassChildren("evosc-dropdown-slotpanel", Page.MainFrame, True);
             
     foreach (Panel in Page.GetClassChildren_Result) {
-        /* log(ctrl.ControlId^"-panel");
-        declare Panel <=> Page.MainFrame.GetFirstChild(ctrl.ControlId^"-panel") as CMlFrame;
-        log(Panel); */
         Panel.Visible = False;
         EvoSC_UI_DropdownIds.add(Panel.DataAttributeGet("id"));
     }
