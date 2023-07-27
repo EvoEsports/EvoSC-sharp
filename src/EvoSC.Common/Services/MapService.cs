@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
