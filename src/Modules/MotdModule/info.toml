@@ -1,0 +1,6 @@
+﻿[info]
+name = "MotdModule"
+title = "Message of the day"
+summary = "A module to display the motd to joining players"
+version = "1.0.0"
+author = "Evo"
