@@ -202,11 +202,11 @@ public class MapServiceTests
         _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
             .Returns(Task.FromResult((IMap)map));
         _config.Setup(c => c.Path.Maps).Returns("maps");
-        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));
+        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
 
         var updatedMap = await _mapService.AddMapAsync(mapStream);
 
-        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapName + ".Map.Gbx"));
+        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC" + mapMetadata.MapName + ".Map.Gbx"));
 
         Assert.NotEqual(mapMetadata.ExternalVersion, updatedMap.ExternalVersion);
         Assert.Equal(MapProviders.ManiaExchange, updatedMap.ExternalMapProvider);
