@@ -2,9 +2,6 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Modules.Official.ASayModule.Events;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ASayModule.Controllers;

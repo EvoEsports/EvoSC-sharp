@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
-using EvoSC.Common.Models.Players;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
 using EvoSC.Modules.Official.ASayModule.Services;
@@ -27,12 +26,10 @@ public class ASayServiceTest
     private ILogger<ASayService> _logger = new NullLogger<ASayService>();
     private Mock<IOnlinePlayer> _actor = new();
     private readonly Mock<IManialinkManager> _manialinkManager = new();
-    private ControllerContextMock<IEventControllerContext> _eventContext;
     private ControllerContextMock<ICommandInteractionContext> _commandContext;
 
     public ASayServiceTest()
     {
-        _eventContext = Mocking.NewControllerContextMock<IEventControllerContext>();
         _commandContext = Mocking.NewCommandInteractionContextMock(_actor.Object);
 
         _actor.Setup(m => m.NickName).Returns(PlayerNickName);
@@ -85,7 +82,6 @@ public class ASayServiceTest
         
         await mock.ASayService.OnDisableAsync();
         mock.Audit.Verify(m=>m.Success(), Times.Once);
-        _manialinkManager.Verify(manager => manager.HideManialinkAsync("ASayModule.Announcement"));
     }
     
     [Fact]

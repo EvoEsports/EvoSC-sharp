@@ -27,7 +27,6 @@ public class ASayService : IASayService
 
     public async Task OnDisableAsync()
     {
-        await _manialinkManager.HideManialinkAsync("ASayModule.Announcement");
         _logger.LogInformation("ASayModule disabled");
         _contextService.Audit().Success()
             .WithEventName(AuditEvents.DisableModule)

@@ -1,10 +1,11 @@
 using EvoSC.Modules.Official.ASayModule.Controllers;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
+using EvoSC.Testing.Controllers;
 using Moq;
 
 namespace EvoSC.Modules.Official.ASayModule.Tests;
 
-public class ASayControllerTest
+public class ASayControllerTest : CommandInteractionControllerTestBase<ASayController>
 {
     private readonly ASayController _controller;
     private readonly Mock<IASayService> _service = new();
