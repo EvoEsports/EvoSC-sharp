@@ -67,15 +67,15 @@ if ({{ canMove }}) {
     
     DragStartPosition = WindowInstance.RelativePosition_V3;
     
-    if (MouseX >= DragStartPosition[0] && MouseX <= DragStartPosition[0] + WindowInstance.Size[0]
-        && MouseY <= DragStartPosition[1] && MouseY >= DragStartPosition[1] - 5) {
+    if (MouseX >= DragStartPosition.X && MouseX <= DragStartPosition.X + WindowInstance.Size.X
+        && MouseY <= DragStartPosition.Y && MouseY >= DragStartPosition.Y - 5) {
         IsFocused = True;
     }
     
-    if (MouseX >= DragStartPosition[0]
-     && MouseX <= DragStartPosition[0] + WindowInstance.Size[0]
-     && MouseY <= DragStartPosition[1]
-     && MouseY >= DragStartPosition[1] - WindowInstance.Size[1]) {
+    if (MouseX >= DragStartPosition.X
+     && MouseX <= DragStartPosition.X + WindowInstance.Size.X
+     && MouseY <= DragStartPosition.Y
+     && MouseY >= DragStartPosition.Y - WindowInstance.Size.Y) {
         declare Real EvoSC_Window_Z_Index for This = 100.;
         EvoSC_Window_Z_Index += 1;
         WindowInstance.ZIndex = EvoSC_Window_Z_Index;
@@ -99,8 +99,8 @@ if ({{ canMove }}) {
     if (IsFocused) {
         declare DragStartPosition for WindowInstance = WindowInstance.RelativePosition_V3;
         
-        declare NewX = DragStartPosition[0] + (MouseX - MouseDragStartX);
-        declare NewY = DragStartPosition[1] + (MouseY - MouseDragStartY);
+        declare NewX = DragStartPosition.X + (MouseX - MouseDragStart.X);
+        declare NewY = DragStartPosition.Y + (MouseY - MouseDragStart.Y);
         
         WindowInstance.RelativePosition_V3 = <NewX, NewY>;
     }

@@ -19,7 +19,6 @@ Void HideAlert(Text alertId) {
     declare startX = TextLib::ToInteger(frame.DataAttributeGet("startX"));
     declare startY = TextLib::ToInteger(frame.DataAttributeGet("startY"));
 
-    log("hide");
     AnimMgr.Add(frame, "<frame pos='"^(startX - width+6)^" "^startY^"' />", 250, CAnimManager::EAnimManagerEasing::ExpOut);    
     AnimMgr.Add(frameInner, "<frame pos='"^(width-6)^" 0' />", 250, CAnimManager::EAnimManagerEasing::ExpOut);    
     sleep(250);
@@ -30,16 +29,16 @@ Void HideAlert(Text alertId) {
 ***
     Page.GetClassChildren("evosc-alert-frame", Page.MainFrame, True);
         
-        foreach (alertFrame in Page.GetClassChildren_Result) {
-            declare frame <=> alertFrame as CMlFrame;
-            declare frameInner <=> frame.Controls[0] as CMlFrame;
-            
-            declare width = TextLib::ToInteger(frame.DataAttributeGet("width"));
-            declare startX = TextLib::ToInteger(frame.DataAttributeGet("startX"));
-            declare startY = TextLib::ToReal(frame.DataAttributeGet("startY"));
-            
-            frame.RelativePosition_V3 = <startX - width+6., startY>;
-            frameInner.RelativePosition_V3 = <width - 6., 7.>;
-        }
+    foreach (alertFrame in Page.GetClassChildren_Result) {
+        declare frame <=> alertFrame as CMlFrame;
+        declare frameInner <=> frame.Controls[0] as CMlFrame;
+        
+        declare width = TextLib::ToInteger(frame.DataAttributeGet("width"));
+        declare startX = TextLib::ToInteger(frame.DataAttributeGet("startX"));
+        declare startY = TextLib::ToReal(frame.DataAttributeGet("startY"));
+        
+        frame.RelativePosition_V3 = <startX - width+6., startY>;
+        frameInner.RelativePosition_V3 = <width - 6., 7.>;
+    }
 ***
 -->

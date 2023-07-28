@@ -1,13 +1,12 @@
-﻿#Include "TextLib" as TextLib
+﻿<!--
+#Include "TextLib" as TextLib
 
 Void __DoNothing() {}
 
 main() {
     declare Boolean MouseIsDown = False;
-    declare Real MouseLastX = MouseX;
-    declare Real MouseLastY = MouseY;
-    declare Real MouseDragStartX = 0.0;
-    declare Real MouseDragStartY = 0.0;
+    declare Vec2 MouseLastPos = <MouseX, MouseY>;
+    declare Vec2 MouseDragStart = <0., 0.>;
 
     +++ OnInitialization +++
     
@@ -43,8 +42,7 @@ main() {
         
         if (MouseLeftButton && !MouseIsDown) {
             MouseIsDown = True;
-            MouseDragStartX = MouseX;
-            MouseDragStartY = MouseY;
+            MouseDragStart = <MouseX, MouseY>;
             
             +++ OnMouseDown +++
         } else if (!MouseLeftButton && MouseIsDown) {
@@ -53,17 +51,17 @@ main() {
             +++ OnMouseUp +++
         }
         
-        if (MouseX != MouseLastX || MouseY != MouseLastY) {
+        if (MouseX != MouseLastPos.X || MouseY != MouseLastPos.Y) {
             +++ OnMouseMove +++
             
             if (MouseIsDown) {
                 +++ OnMouseDrag +++
             }
             
-            MouseLastX = MouseX;
-            MouseLastY = MouseY;
+            MouseLastPos = <MouseX, MouseY>;
         }
         
         +++ OnLoop +++
     }
 }
+-->

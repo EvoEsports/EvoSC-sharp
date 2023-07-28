@@ -6,8 +6,8 @@ Void SetSwitchState(Text idName, Boolean value) {
     declare head <=> switchFrame.Controls[1] as CMlQuad;
     declare icon <=> switchFrame.Controls[2] as CMlLabel;
     declare entry <=> switchFrame.Controls[3] as CMlEntry;
-    declare onColor = <1., 0., 0.3450980392>; // #ff0058
-    declare offColor = <0.2784313725, 0.2862745098, 0.3529411765>; // #47495A
+    declare onColor = TextLib::ToColor("ff0058");
+    declare offColor = TextLib::ToColor("47495A" );
     
     SwitchValue = value;
     
