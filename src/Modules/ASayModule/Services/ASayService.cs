@@ -9,28 +9,18 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ASayModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Transient)]
+[Service(LifeStyle = ServiceLifeStyle.Scoped)]
 public class ASayService : IASayService
 {
     private readonly ILogger<ASayService> _logger;
     private readonly IManialinkManager _manialinkManager;
     private readonly IContextService _contextService;
-    private readonly dynamic _locale;
 
-    public ASayService(ILogger<ASayService> logger, IManialinkManager manialinkManager, IContextService context, Locale locale)
+    public ASayService(ILogger<ASayService> logger, IManialinkManager manialinkManager, IContextService context)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
         _contextService = context;
-        _locale = locale;
-    }
-
-    public async Task OnDisableAsync()
-    {
-        _logger.LogInformation("ASayModule disabled");
-        _contextService.Audit().Success()
-            .WithEventName(AuditEvents.DisableModule)
-            .Comment("ASay Module was disabled.");
     }
 
     public async Task ShowAnnouncementAsync(string text)

@@ -39,7 +39,6 @@ public class ASayServiceTest
     private (
         IASayService ASayService,
         Mock<IContextService> ContextService,
-        Locale Locale,
         Mock<IPlayerManagerService> PlayerManager,
         Mock<ILogger<ASayService>> Logger,
         (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
@@ -51,12 +50,11 @@ public class ASayServiceTest
     {
         var logger = new Mock<ILogger<ASayService>>(); 
         var contextService = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
-        var locale = Mocking.NewLocaleMock(contextService.Object);
         var playerManager = new Mock<IPlayerManagerService>();
 
         var server = Mocking.NewServerClientMock();
 
-        var aSayService = new ASayService(_logger, _manialinkManager.Object, contextService.Object, locale);
+        var aSayService = new ASayService(_logger, _manialinkManager.Object, contextService.Object);
 
         var player = new Mock<IOnlinePlayer>();
         player.Setup(m => m.AccountId).Returns(PlayerAccountId);
@@ -65,7 +63,6 @@ public class ASayServiceTest
         return (
             ASayService: aSayService,
             ContextService: contextService,
-            Locale: locale,
             PlayerManager: playerManager,
             Logger: logger,
             Server: server,
@@ -73,15 +70,6 @@ public class ASayServiceTest
             Actor: _actor,
             Audit: _commandContext.AuditEventBuilder
         );
-    }
-
-    [Fact]
-    private async void Should_On_Disable()
-    {
-        var mock = NewASayServiceMock();
-        
-        await mock.ASayService.OnDisableAsync();
-        mock.Audit.Verify(m=>m.Success(), Times.Once);
     }
     
     [Fact]

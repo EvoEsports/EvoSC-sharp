@@ -2,13 +2,6 @@
 
 public interface IASayService
 {
-
-    /// <summary>
-    /// Called on when module is disabled
-    /// </summary>
-    /// <returns></returns>
-    Task OnDisableAsync();
-    
     /// <summary>
     /// Displays an announcement banner containing a user-defined message.
     /// </summary>
