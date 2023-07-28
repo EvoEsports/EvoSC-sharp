@@ -22,8 +22,7 @@ public class ASayServiceTest
     private const string PlayerNickName = "Evo.Chris92";
     private const string PlayerAccountId = "17868d60-b494-4b88-81df-f4ddfdae1cf1";
     private const string PlayerLogin = "F4aNYLSUS4iB3_Td_a4c8Q";
-    
-    private ILogger<ASayService> _logger = new NullLogger<ASayService>();
+
     private Mock<IOnlinePlayer> _actor = new();
     private readonly Mock<IManialinkManager> _manialinkManager = new();
     private ControllerContextMock<ICommandInteractionContext> _commandContext;
@@ -40,7 +39,6 @@ public class ASayServiceTest
         IASayService ASayService,
         Mock<IContextService> ContextService,
         Mock<IPlayerManagerService> PlayerManager,
-        Mock<ILogger<ASayService>> Logger,
         (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
         Mock<IOnlinePlayer> Player,
         Mock<IOnlinePlayer> Actor,
@@ -48,13 +46,12 @@ public class ASayServiceTest
         )
         NewASayServiceMock()
     {
-        var logger = new Mock<ILogger<ASayService>>(); 
         var contextService = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
         var playerManager = new Mock<IPlayerManagerService>();
 
         var server = Mocking.NewServerClientMock();
 
-        var aSayService = new ASayService(_logger, _manialinkManager.Object, contextService.Object);
+        var aSayService = new ASayService(_manialinkManager.Object, contextService.Object);
 
         var player = new Mock<IOnlinePlayer>();
         player.Setup(m => m.AccountId).Returns(PlayerAccountId);
@@ -64,7 +61,6 @@ public class ASayServiceTest
             ASayService: aSayService,
             ContextService: contextService,
             PlayerManager: playerManager,
-            Logger: logger,
             Server: server,
             Player: player,
             Actor: _actor,

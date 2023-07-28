@@ -12,13 +12,11 @@ namespace EvoSC.Modules.Official.ASayModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
 public class ASayService : IASayService
 {
-    private readonly ILogger<ASayService> _logger;
     private readonly IManialinkManager _manialinkManager;
     private readonly IContextService _contextService;
 
-    public ASayService(ILogger<ASayService> logger, IManialinkManager manialinkManager, IContextService context)
+    public ASayService(IManialinkManager manialinkManager, IContextService context)
     {
-        _logger = logger;
         _manialinkManager = manialinkManager;
         _contextService = context;
     }
