@@ -143,7 +143,7 @@ public class MapServiceTests
             .Returns(Task.FromResult((IMap?)null));
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
-        _config.Setup(c => c.Path.Maps).Returns("/maps");
+        _config.Setup(c => c.Path.Maps).Returns("maps");
         _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));
 
         var createdMap = await _mapService.AddMapAsync(mapStream);
@@ -201,7 +201,7 @@ public class MapServiceTests
             .Returns(Task.FromResult((IMap?)map));
         _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
             .Returns(Task.FromResult((IMap)map));
-        _config.Setup(c => c.Path.Maps).Returns("/maps");
+        _config.Setup(c => c.Path.Maps).Returns("maps");
         _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));
 
         var updatedMap = await _mapService.AddMapAsync(mapStream);
@@ -315,7 +315,7 @@ public class MapServiceTests
             .Returns(Task.FromResult((IMap?)null));
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
-        _config.Setup(c => c.Path.Maps).Returns("/maps");
+        _config.Setup(c => c.Path.Maps).Returns("maps");
         _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
 
         var createdMaps = await _mapService.AddMapsAsync(new List<MapStream> { mapStream, mapStream2 });
