@@ -8,7 +8,7 @@
     <property type="string" name="text" default="" />
     
     <template>
-        <frame pos="{{ x }} {{ y }}" class="evosc-checkbox-frame" id="{{ id }}">
+        <frame pos="{{ x }} {{ y }}" class="evosc-checkbox-frame" id="{{ id }}" data-value="{{ isChecked }}">
             <quad scriptevents="1" class="checkbox-outline-default evosc-checkbox" data-id="{{ id }}" size="0.1 3" pos="0 0" />
             <quad scriptevents="1" class="checkbox-outline-default evosc-checkbox" data-id="{{ id }}" size="0.1 3" pos="2.9 0" />
             <quad scriptevents="1" class="checkbox-outline-default evosc-checkbox" data-id="{{ id }}" size="3 0.1" pos="0 0" />

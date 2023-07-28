@@ -7,7 +7,14 @@
     <property type="bool" name="value" default="false"/>
     
     <template>
-        <frame pos="{{ x }} {{ y }}" size="10 5" scriptevents="1" id="{{ id }}" class="evosc-toggleswitch-frame">
+        <frame 
+                pos="{{ x }} {{ y }}" 
+                size="10 5"
+                scriptevents="1" 
+                id="{{ id }}"
+                class="evosc-toggleswitch-frame"
+                data-value="{{ value }}"
+        >
             <quad 
                     class='{{ value ? "toggleswitch-on-default" : "toggleswitch-off-default" }} evosc-toggleswitch'
                     size="10 5"

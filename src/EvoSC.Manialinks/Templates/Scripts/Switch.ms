@@ -34,7 +34,8 @@ Void SetSwitchState(Text idName, Boolean value) {
     Page.GetClassChildren("evosc-toggleswitch-frame", Page.MainFrame, True);
     
     foreach (switchCtrl in Page.GetClassChildren_Result) {
-        SetSwitchState(switchCtrl.ControlId, False);
+        declare valueText = TextLib::ToLowerCase(switchCtrl.DataAttributeGet("value"));
+        SetSwitchState(switchCtrl.ControlId, valueText == "true");
     }
 }
 ***

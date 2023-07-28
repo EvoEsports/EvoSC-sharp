@@ -23,7 +23,8 @@ Void SetCheckboxState(Text idName, Boolean value) {
         Page.GetClassChildren("evosc-checkbox-frame", Page.MainFrame, True);
             
         foreach (ctrl in Page.GetClassChildren_Result) {
-            SetCheckboxState(ctrl.ControlId, False);
+            declare valueText = TextLib::ToLowerCase(ctrl.DataAttributeGet("value"));
+            SetCheckboxState(ctrl.ControlId, valueText == "true");
         }
     }
 ***

@@ -20,10 +20,10 @@ Void HideAlert(Text alertId) {
     declare startY = TextLib::ToInteger(frame.DataAttributeGet("startY"));
 
     log("hide");
-    AnimMgr.Add(frame, "<frame pos='"^(startX - width+6)^" 0' />", 250, CAnimManager::EAnimManagerEasing::ExpOut);    
+    AnimMgr.Add(frame, "<frame pos='"^(startX - width+6)^" "^startY^"' />", 250, CAnimManager::EAnimManagerEasing::ExpOut);    
     AnimMgr.Add(frameInner, "<frame pos='"^(width-6)^" 0' />", 250, CAnimManager::EAnimManagerEasing::ExpOut);    
     sleep(250);
-    AnimMgr.Add(frameInner, "<frame pos='"^(width-6)^" 7' />", 250, CAnimManager::EAnimManagerEasing::ExpOut);
+    AnimMgr.Add(frameInner, "<frame pos='"^(width-6)^" "^(startY+7)^"' />", 250, CAnimManager::EAnimManagerEasing::ExpOut);
 }
 
 *** OnInitialization ***
@@ -36,9 +36,9 @@ Void HideAlert(Text alertId) {
             
             declare width = TextLib::ToInteger(frame.DataAttributeGet("width"));
             declare startX = TextLib::ToInteger(frame.DataAttributeGet("startX"));
-            declare startY = TextLib::ToInteger(frame.DataAttributeGet("startY"));
+            declare startY = TextLib::ToReal(frame.DataAttributeGet("startY"));
             
-            frame.RelativePosition_V3 = <startX - width+6., 0.>;
+            frame.RelativePosition_V3 = <startX - width+6., startY>;
             frameInner.RelativePosition_V3 = <width - 6., 7.>;
         }
 ***
