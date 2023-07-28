@@ -43,7 +43,7 @@ public static class PlayerUtils
             return NadeoPlayer.AccountId;
         }
 
-        if (accountId.StartsWith("*fakeplayer"))
+        if (accountId.StartsWith("*fakeplayer", StringComparison.Ordinal))
         {
             return accountId;
         }
@@ -68,7 +68,7 @@ public static class PlayerUtils
             return NadeoPlayer.AccountId;
         }
 
-        if (login.StartsWith("*fakeplayer"))
+        if (login.StartsWith("*fakeplayer", StringComparison.Ordinal))
         {
             return login;
         }
