@@ -1,13 +1,31 @@
-﻿<component>
+﻿<!--
+Toggles a panel below the button that can contain any components.
+-->
+<component>
     <import component="EvoSC.Controls.Button" as="Button" />
-    
-    <property type="string" name="text" default="Dropdown" />
-    <property type="double" name="x" default="0.0" />
-    <property type="double" name="y" default="0.0" />
-    <property type="double" name="width" default="20.0" />
-    <property type="double" name="height" default="5.0" />
-    <property type="string" name="type" default="default" />
+
+    <!-- The ID of the dropdown. -->
     <property type="string" name="id" />
+    
+    <!-- The text to display in the button. -->
+    <property type="string" name="text" default="Dropdown" />
+    
+    <!-- X position of the button. -->
+    <property type="double" name="x" default="0.0" />
+    
+    <!-- Y position of the button. -->
+    <property type="double" name="y" default="0.0" />
+    
+    <!-- Width of the button background. -->
+    <property type="double" name="width" default="20.0" />
+    
+    <!-- Height of the button background. -->
+    <property type="double" name="height" default="5.0" />
+    
+    <!-- Style type of the button, can be default or secondary. -->
+    <property type="string" name="type" default="default" />
+
+    <!-- Whether the dropdown button is disabled or not. If disabled, the panel wont open. -->
     <property type="bool" name="disabled" default="false" />
     
     <template>

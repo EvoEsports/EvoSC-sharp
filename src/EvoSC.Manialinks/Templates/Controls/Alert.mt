@@ -1,9 +1,23 @@
-﻿<component>
+﻿<!--
+    Shows an animated alert box with a text and icon.
+-->
+<component>
+    <!-- The ID of the control. -->
     <property type="string" name="id" default="evosc_alert" />
+    
+    <!-- X position of the control. -->
     <property type="double" name="x" default="-30.0" />
+    
+    <!-- Y position of the control. -->
     <property type="double" name="y" default="0.0" />
+    
+    <!-- The area width of the alert text. -->
     <property type="double" name="width" default="60.0" />
+    
+    <!-- Icon to show for the alert. -->
     <property type="string" name="icon" default="" />
+    
+    <!-- The text to display in the alert. -->
     <property type="string" name="text" default="This is an alert" />
     
     <template>
@@ -15,6 +29,7 @@
                 class="evosc-alert-frame"
                 data-startX="{{ x }}"
                 data-startY="{{ y }}"
+                z-index="100"
         >
             <frame id="{{ id }}-inner-frame" pos="0 0" size="{{ width+7 }} 7">
                 <framemodel id="EvoSC_Model_Alert_Circle_C1_{{ id }}">

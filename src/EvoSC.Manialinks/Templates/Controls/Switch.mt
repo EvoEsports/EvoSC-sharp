@@ -1,9 +1,19 @@
-﻿<component>
+﻿<!--
+    A toggleable switch control that is either on or off.
+-->
+<component>
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
 
+    <!-- The ID of the switch. -->
     <property type="string" name="id" />
+    
+    <!-- The X position of the switch. -->
     <property type="double" name="x" default="0.0"/>
+    
+    <!-- The Y position of the switch. -->
     <property type="double" name="y" default="0.0"/>
+    
+    <!-- The initial value of the switch. -->
     <property type="bool" name="value" default="false"/>
     
     <template>

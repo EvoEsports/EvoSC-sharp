@@ -1,4 +1,7 @@
-﻿<component>
+﻿<!--
+    General theme component for all UI elements. Must be imported for the UI to work.
+-->
+<component>
     <template>
         <stylesheet>
             <style 

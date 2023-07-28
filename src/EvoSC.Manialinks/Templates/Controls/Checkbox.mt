@@ -1,10 +1,22 @@
-﻿<component>
+﻿<!--
+    Simple checkbox with on or off state.
+-->
+<component>
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
     
+    <!-- The ID of the checkbox. -->
     <property type="string" name="id" />
+    
+    <!-- The X position of the checkbox. -->
     <property type="double" name="x" default="0.0" />
+    
+    <!-- The Y position of the checkbox. -->
     <property type="double" name="y" default="0.0" />
+    
+    <!-- The initial state of the checkbox. -->
     <property type="bool" name="isChecked" default="false" />
+    
+    <!-- Text to display alongside the checkbox. -->
     <property type="string" name="text" default="" />
     
     <template>

@@ -1,15 +1,44 @@
+<!--
+General purpose window that can hold any type of component. The window is designed to only be used once per Manialink.
+-->
 <component>
+    <!-- The ID of the window. Default is 'evosc-window' -->
     <property type="string" name="id" default="evosc-window" />
+    
+    <!-- The X position of the window. -->
     <property type="double" name="x" default="-50"/>
+    
+    <!-- The Y position of the window. -->
     <property type="double" name="y" default="30"/>
+    
+    <!-- The overall width of the window. -->
     <property type="double" name="width" default="100" />
+    
+    <!-- 
+    The overall height of the window. Keep in mind that the titlebar is 
+    exactly 5 units high and is included in the overall height.
+     -->
     <property type="double" name="height" default="60" />
+    
+    <!-- The text to show in the titlebar. -->
     <property type="string" name="title" default="New Window"/>
+    
+    <!-- The icon to show in the titlebar. -->
     <property type="string" name="icon" default="⬜"/>
+    
+    <!-- The style of the window, can be default or secondary. -->
     <property type="string" name="style" default="default"/>
+    
+    <!-- Whether to show the close button. -->
     <property type="bool" name="canClose" default="true" />
+    
+    <!-- Whether to show the minimize button. -->
     <property type="bool" name="canMinimize" default="false" />
+    
+    <!-- Whether the user can drag the window around. -->
     <property type="bool" name="canMove" default="true" />
+    
+    <!-- Whether to display the titlebar or not. -->
     <property type="bool" name="hasTitlebar" default="true" />
 
     <template>
