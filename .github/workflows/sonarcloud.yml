@@ -87,7 +87,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
-        run: .\.sonar\scanner\dotnet-sonarscanner begin /k:"EvoTM_EvoSC-sharp" /o:"evotm" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.scm.revision=${{ github.event.workflow_run.head_sha }} /d:sonar.pullrequest.key=${{ fromJson(steps.get_pr_data.outputs.data).number }} /d:sonar.pullrequest.branch=${{ fromJson(steps.get_pr_data.outputs.data).head.ref }} /d:sonar.pullrequest.base=${{ fromJson(steps.get_pr_data.outputs.data).base.ref }}
+        run: .\.sonar\scanner\dotnet-sonarscanner begin /k:"EvoEsports_EvoSC-sharp" /o:"evoesports" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.scm.revision=${{ github.event.workflow_run.head_sha }} /d:sonar.pullrequest.key=${{ fromJson(steps.get_pr_data.outputs.data).number }} /d:sonar.pullrequest.branch=${{ fromJson(steps.get_pr_data.outputs.data).head.ref }} /d:sonar.pullrequest.base=${{ fromJson(steps.get_pr_data.outputs.data).base.ref }}
       
       - name: Sonar Scanner on Push
         if: github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.event.repository.full_name
@@ -95,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
-        run: .\.sonar\scanner\dotnet-sonarscanner begin /k:"EvoTM_EvoSC-sharp" /o:"evotm" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+        run: .\.sonar\scanner\dotnet-sonarscanner begin /k:"EvoEsports_EvoSC-sharp" /o:"evoesports" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
       
       - name: Finish Sonarcloud And Upload Results
         env:
@@ -105,4 +105,4 @@ jobs:
         run: |
           dotnet build
           dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
