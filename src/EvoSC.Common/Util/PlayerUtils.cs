@@ -42,6 +42,11 @@ public static class PlayerUtils
         {
             return NadeoPlayer.AccountId;
         }
+
+        if (accountId.StartsWith("*fakeplayer", StringComparison.Ordinal))
+        {
+            return accountId;
+        }
         
         var bytes = Convert.FromHexString(accountId.Replace("-", ""));
 
@@ -61,6 +66,11 @@ public static class PlayerUtils
         if (login.Equals(NadeoPlayer.AccountId, StringComparison.Ordinal))
         {
             return NadeoPlayer.AccountId;
+        }
+
+        if (login.StartsWith("*fakeplayer", StringComparison.Ordinal))
+        {
+            return login;
         }
         
         var base64 = login

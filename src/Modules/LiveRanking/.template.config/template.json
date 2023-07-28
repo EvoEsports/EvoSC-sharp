@@ -1,0 +1,54 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Evo Esports",
+  "name": "EvoSC Module",
+  "description": "A project for creating EvoSC# internal modules.",
+  "identity": "EvoSC.Module.Internal.1.0",
+  "shortName": "evosc-module-internal",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "guids": [],
+  "sourceName": "LiveRanking",
+  "preferNameDirectory": true,
+  "baselines": {
+    "app": {
+      "description": "Target .NET",
+      "defaultOverrides": {
+        "Framework": "net7.0"
+      }
+    }
+  },
+  "sources": [
+    {
+      "source": "./",
+      "exclude": [
+        "*.csProj"
+      ]
+    }
+  ],
+  "thirdPartyNotices": "https://evosc.io/",
+  "symbols": {
+    "author": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Sets the author of the plugin",
+      "defaultValue": "Evo",
+      "replaces": "Evo",
+      "isEnabled": true
+    },
+    "description": {
+      "isEnabled": true,
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Sets the description of the plugin",
+      "defaultValue": "A module for ...",
+      "replaces": "A module for ..."
+    }
+  },
+  "classifications": [
+    "EvoSc",
+    "Plugin"
+  ]
+ }

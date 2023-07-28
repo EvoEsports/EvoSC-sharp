@@ -47,7 +47,7 @@ public class MxMapService : IMxMapService
             MapName = mapInfoDto.GbxMapName,
             AuthorId = mapInfoDto.AuthorLogin,
             AuthorName = mapInfoDto.Username,
-            ExternalId = mapInfoDto.MapID.ToString(),
+            ExternalId = mapInfoDto.TrackID.ToString(),
             ExternalVersion = Convert.ToDateTime(mapInfoDto.UpdatedAt, NumberFormatInfo.InvariantInfo).ToUniversalTime(),
             ExternalMapProvider = MapProviders.ManiaExchange
         };
