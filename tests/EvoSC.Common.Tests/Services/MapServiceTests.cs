@@ -206,7 +206,7 @@ public class MapServiceTests
 
         var updatedMap = await _mapService.AddMapAsync(mapStream);
 
-        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC" + mapMetadata.MapName + ".Map.Gbx"));
+        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapName + ".Map.Gbx"));
 
         Assert.NotEqual(mapMetadata.ExternalVersion, updatedMap.ExternalVersion);
         Assert.Equal(MapProviders.ManiaExchange, updatedMap.ExternalMapProvider);
