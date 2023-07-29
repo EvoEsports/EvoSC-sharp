@@ -53,7 +53,7 @@ public class MapRepository : DbRepository, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Failed adding map with UID {map.MapUid} to the database");
+            _logger.LogError(e, "Failed adding map with UID {MapMapUid} to the database", map.MapUid);
             await transaction.RollbackAsync();
             throw new EvoScDatabaseException($"Failed adding map with UID {map.MapUid} to the database", e);
         }
@@ -92,7 +92,7 @@ public class MapRepository : DbRepository, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Failed to update map with UID {map.MapUid}");
+            _logger.LogError(e, "Failed to update map with UID {MapMapUid}", map.MapUid);
             await transaction.RollbackAsync();
             throw new EvoScDatabaseException($"Failed to update map with UID {map.MapUid}", e);
         }

@@ -40,7 +40,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Returns(Task.FromResult(_map.Object));
         
-        await Controller.AddMap("123");
+        await Controller.AddMapAsync("123");
         
         _mxMapService.Verify(m => m.FindAndDownloadMapAsync(123, null, _actor.Object), Times.Once);
         AuditEventBuilder.Verify(m => m.Success(), Times.Once);
@@ -55,7 +55,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Throws(ex);
 
-        await Assert.ThrowsAsync<Exception>(() => Controller.AddMap("123"));
+        await Assert.ThrowsAsync<Exception>(() => Controller.AddMapAsync("123"));
         
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
@@ -67,7 +67,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Throws(ex);
 
-        await Assert.ThrowsAsync<DuplicateMapException>(() => Controller.AddMap("123"));
+        await Assert.ThrowsAsync<DuplicateMapException>(() => Controller.AddMapAsync("123"));
         
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
@@ -78,7 +78,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Returns(Task.FromResult((IMap?)null));
 
-        await Controller.AddMap("123");
+        await Controller.AddMapAsync("123");
         
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
@@ -88,7 +88,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     {
         _mapService.Setup(m => m.GetMapByIdAsync(123)).Returns(Task.FromResult(_map.Object));
 
-        await Controller.RemoveMap(123);
+        await Controller.RemoveMapAsync(123);
         
         _mapService.Verify(m => m.GetMapByIdAsync(123), Times.Once);
         _mapService.Verify(m => m.RemoveMapAsync(123), Times.Once);
@@ -104,7 +104,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     {
         _mapService.Setup(m => m.GetMapByIdAsync(123)).Returns(Task.FromResult((IMap?)null));
 
-        await Controller.RemoveMap(123);
+        await Controller.RemoveMapAsync(123);
         
         _mapService.Verify(m => m.RemoveMapAsync(123), Times.Never);
         _server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);

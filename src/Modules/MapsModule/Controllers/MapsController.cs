@@ -33,7 +33,7 @@ public class MapsController : EvoScController<ICommandInteractionContext>
     }
 
     [ChatCommand("add", "[Commmand.Add]", MapsPermissions.AddMap)]
-    public async Task AddMap(string mapId)
+    public async Task AddMapAsync(string mapId)
     {
         IMap? map;
         try
@@ -62,12 +62,12 @@ public class MapsController : EvoScController<ICommandInteractionContext>
             .HavingProperties(new { Map = map })
             .Comment(_locale.Audit_MapAdded);
 
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author.NickName),
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author?.NickName),
             Context.Player);
     }
 
     [ChatCommand("remove", "[Command.Remove]", MapsPermissions.RemoveMap)]
-    public async Task RemoveMap(long mapId)
+    public async Task RemoveMapAsync(long mapId)
     {
         var map = await _mapService.GetMapByIdAsync(mapId);
 
