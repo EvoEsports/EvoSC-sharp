@@ -144,7 +144,7 @@ public class MapServiceTests
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
         _config.Setup(c => c.Path.Maps).Returns("maps");
-        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));
+        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
 
         var createdMap = await _mapService.AddMapAsync(mapStream);
 
