@@ -23,9 +23,8 @@
     <template>
         <frame 
                 pos="{{ x }} {{ y }}" 
-                size="{{ width+8 }} 7" 
-                id="{{ id }}" 
-                data-width="{{ width+7 }}"
+                size="{{ width+7 }} 7" 
+                id="{{ id }}"
                 class="evosc-alert-frame"
                 data-startX="{{ x }}"
                 data-startY="{{ y }}"

@@ -8,11 +8,15 @@ main() {
     declare Vec2 MouseLastPos = <MouseX, MouseY>;
     declare Vec2 MouseDragStart = <0., 0.>;
 
+    // set to true before initialization if scripts wants to terminate immediately
+    declare Boolean ScriptRunning for This = False;
+    ScriptRunning = True;
+
     +++ OnInitialization +++
     
-    while (True) {
+    while (ScriptRunning) {
         yield;
-        
+
         if (!PageIsVisible) {
             continue;
         }
@@ -63,5 +67,7 @@ main() {
         
         +++ OnLoop +++
     }
+    
+    log("Script execution finished.");
 }
 -->

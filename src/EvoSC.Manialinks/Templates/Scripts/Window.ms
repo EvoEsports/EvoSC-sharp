@@ -2,6 +2,8 @@
 Void CloseWindow(Text windowId) {
     declare Window = Page.MainFrame.GetFirstChild(windowId) as CMlFrame;
     Window.Hide();
+    declare Boolean ScriptRunning for This;
+    ScriptRunning = False;
     
     +++ OnWindowClosed +++
 }
@@ -55,7 +57,7 @@ if (Event.Control.HasClass("evosc-window-ctrlbtn")) {
 ***
 if (Event.Control.HasClass("evosc-window-closebtn")) {
     declare windowId = Event.Control.DataAttributeGet("id");
-    HideWindow(windowId);
+    CloseWindow(windowId);
 }
 ***
 
