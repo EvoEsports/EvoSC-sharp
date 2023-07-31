@@ -2,6 +2,7 @@
 Void ShowAlert(Text alertId) {
     declare frame <=> Page.MainFrame.GetFirstChild(alertId) as CMlFrame;
     declare frameInner <=> Page.MainFrame.GetFirstChild(alertId^"-inner-frame") as CMlFrame;
+    
     declare startX = frame.DataAttributeGet("startX");
     declare startY = frame.DataAttributeGet("startY");
     
@@ -14,6 +15,7 @@ Void ShowAlert(Text alertId) {
 Void HideAlert(Text alertId) {
     declare frame <=> Page.MainFrame.GetFirstChild(alertId) as CMlFrame;
     declare frameInner <=> Page.MainFrame.GetFirstChild(alertId^"-inner-frame") as CMlFrame;
+    
     declare width = frame.Size.X;
     declare startX = TextLib::ToInteger(frame.DataAttributeGet("startX"));
     declare startY = TextLib::ToInteger(frame.DataAttributeGet("startY"));
