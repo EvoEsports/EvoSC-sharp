@@ -1,5 +1,7 @@
 ﻿<component>
     <import component="EvoSC.Window" as="Window" />
+    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Controls.Button" as="Button" />
     
     <property type="string" name="text" />
 
@@ -18,65 +20,29 @@
     <property type="double" name="h" default="90" />
     
     <template>
-        <Window id="window" h="{{ h }}" w="{{ w }}" x="0" y="0" zIndex="1000" title="Message of the Day" titleBarHeight="{{ titleBarHeight }}">
-            <!--
-            <label autonewline="1" text="{{ text }}" z-index="{{ zIndex + 1 }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
-            -->
-            <textedit id="textedit_text" text="{{ text }}" autonewline="1" z-index="{{ zIndex + 1 }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
-            
-            <!-- ButtonBar -->
+        <Theme />
+        <Window width="{{ w }}" height="{{ h }}" x="{{ -w/2 }}" y="{{ h/2 }}" title="Edit Message of the Day">
+            <textedit class="text" id="textedit_text" default="{{ text }}" autonewline="1" z-index="{{ zIndex + 1 }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
+
             <frame pos="0 {{ -h + buttonBarHeight*2 + 2 }}" size="{{ w }} {{ buttonBarHeight+2 }}" z-index="{{ zIndex + 1 }}">
-                <!-- Close Button -->
-                <label id="button_save" scriptevents="1" focusareacolor1="{{ backgroundColor }}" focusareacolor2="{{ backgroundColor }}" 
-                       style="CardButtonMediumWide" hidden="0" text="Save" z-index="20" pos="{{ w/2 }} 0" halign="left" size="0 {{ buttonBarHeight/2 }}" />
-                <label id="button_close" scriptevents="1" focusareacolor1="{{ backgroundColor }}" focusareacolor2="{{ backgroundColor }}" 
-                       style="CardButtonMediumWide" hidden="0" text="Close" z-index="20" pos="{{ w/2 }} 0" halign="right" size="0 {{ buttonBarHeight/2 }}" />
+                <Button text="Save" id="button_save" x="{{ w/2-19 }}" width="18" />
+                <Button text="Close" id="button_close" width="18" x="{{ w/2+1 }}" type="secondary" />
             </frame>
         </Window>
-        <script>
-            <!--
-            *** OnMouseClick ***
-            ***
-            if(Event.Control.ControlId == "button_close") {
-                Page.GetFirstChild("window").Hide();
-            } else if(Event.Control.ControlId == "button_save") {
-                TriggerPageAction("MotdEditManialinkController/Save/"^(Page.GetFirstChild("textedit_text") as CMlTextEdit).Value);
-            }
-            ***
-            
-            main() {
-              +++OnInit+++
-            
-              while(True) {
-                yield;
-                if (!PageIsVisible || InputPlayer == Null) {
-                          continue;
-                  }
-            
-                foreach (Event in PendingEvents) {
-                        switch (Event.Type) {
-                            case CMlScriptEvent::Type::EntrySubmit: {
-                                +++EntrySubmit+++
-                            }
-                            case CMlScriptEvent::Type::KeyPress: {
-                                +++OnKeyPress+++
-                            }
-                            case CMlScriptEvent::Type::MouseClick: {
-                                +++OnMouseClick+++
-                            }
-                            case CMlScriptEvent::Type::MouseOut: {
-                                +++OnMouseOut+++
-                            }
-                            case CMlScriptEvent::Type::MouseOver: {
-                                +++OnMouseOver+++
-                            }
-                        }
-                    }
-            
-                    +++Loop+++
-              }
-            }
-            -->
-        </script>
     </template>
+
+    <script>
+        <!--
+        *** OnMouseClick ***
+        ***
+        if (Event.Control.ControlId == "button_save") {
+            TriggerPageAction("MotdEditManialinkController/Save/"^(Page.GetFirstChild("textedit_text") as CMlTextEdit).Value);
+            CloseWindow("evosc-window");
+        } else if (Event.Control.ControlId == "button_close") {
+            CloseWindow("evosc-window");
+        }
+        ***
+        -->
+    </script>
+    <script resource="EvoSC.Scripts.UIScripts" />
 </component>

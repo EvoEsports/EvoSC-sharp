@@ -19,4 +19,8 @@
         <EmbeddedResource Update="Localization.resx">
         </EmbeddedResource>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Templates\Scripts\" />
+    </ItemGroup>
 </Project>
