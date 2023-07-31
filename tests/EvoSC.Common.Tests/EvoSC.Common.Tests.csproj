@@ -14,6 +14,7 @@
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.2" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+        <PackageReference Include="Moq" Version="4.18.4" />
         <PackageReference Include="xunit" Version="2.4.2" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,7 +28,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\EvoSC.Common\EvoSC.Common.csproj" />
-      <ProjectReference Include="..\..\src\EvoSC\EvoSC.csproj" />
+      <ProjectReference Include="..\..\src\Modules\MotdModule\MotdModule.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -52,6 +53,15 @@
       <None Update="TestFiles\Util\MatchSettings\expected_matchsettings_with_maps.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Localization\TestLocalization.resx">
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Config\Stores\TestFiles\" />
     </ItemGroup>
 
 </Project>

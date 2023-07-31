@@ -37,4 +37,5 @@ public interface IPlayer
     /// </summary>
     public string? Zone { get; }
     
+    public IPlayerSettings Settings { get; }
 }

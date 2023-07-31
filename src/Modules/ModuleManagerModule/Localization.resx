@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Audit.ModuleEnabled" xml:space="preserve">
+    <value>Module enabled.</value>
+  </data>
+  <data name="ModuleWasEnabled" xml:space="preserve">
+    <value>The module '{0}' was enabled.</value>
+  </data>
+  <data name="FailedEnablingModule" xml:space="preserve">
+    <value>Failed to enable the module: {0}</value>
+  </data>
+  <data name="Audit.ModuleDisabled" xml:space="preserve">
+    <value>Module disabled.</value>
+  </data>
+  <data name="ModuleWasDisabled" xml:space="preserve">
+    <value>The module '{0}' was disabled.</value>
+  </data>
+  <data name="FailedDisablingModule" xml:space="preserve">
+    <value>Failed to disable the module: {0}</value>
+  </data>
+  <data name="LoadedModules" xml:space="preserve">
+    <value>Loaded modules: </value>
+  </data>
+  <data name="Command.EnableModule" xml:space="preserve">
+    <value>Enable a module.</value>
+  </data>
+  <data name="Command.DisableModule" xml:space="preserve">
+    <value>Disable a module.</value>
+  </data>
+  <data name="Command.Modules" xml:space="preserve">
+    <value>List loaded modules in the chat.</value>
+  </data>
+  <data name="Permission.ActivateModule" xml:space="preserve">
+    <value>Can enable or disable modules.</value>
+  </data>
+  <data name="Permission.InstallModule" xml:space="preserve">
+    <value>Can install or uninstall modules.</value>
+  </data>
+  <data name="Permission.ConfigureModules" xml:space="preserve">
+    <value>Can access all modules's configuration.</value>
+  </data>
+</root>

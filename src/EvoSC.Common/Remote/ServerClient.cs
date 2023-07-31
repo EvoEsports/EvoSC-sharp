@@ -2,20 +2,21 @@
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using GbxRemoteNet;
+using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;
 
 public partial class ServerClient : IServerClient
 {
-    private readonly GbxRemoteClient _gbxRemote;
+    private readonly IGbxRemoteClient _gbxRemote;
     private readonly IEvoScBaseConfig _config;
     private readonly ILogger<ServerClient> _logger;
     private readonly IEvoSCApplication _app;
 
     private bool _connected;
 
-    public GbxRemoteClient Remote => _gbxRemote;
+    public IGbxRemoteClient Remote => _gbxRemote;
     public bool Connected => _connected;
 
     public ServerClient(IEvoScBaseConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
@@ -110,7 +111,7 @@ public partial class ServerClient : IServerClient
 
     public async Task StopAsync(CancellationToken token)
     {
-        await _gbxRemote.ChatEnableManualRoutingAsync(false);
+        await _gbxRemote.ChatEnableManualRoutingAsync(false, false);
         await _gbxRemote.SendHideManialinkPageAsync();  //hide all manialinks on disconnect
         await _gbxRemote.DisconnectAsync();
     }

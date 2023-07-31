@@ -16,14 +16,14 @@ public class MatchSettingsService : IMatchSettingsService
     private readonly ILogger<MatchSettingsService> _logger;
     private readonly IServerClient _server;
     private readonly IEvoScBaseConfig _config;
-    
+
     public MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IEvoScBaseConfig config)
     {
         _logger = logger;
         _server = server;
         _config = config;
     }
-    
+
     public async Task SetCurrentScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
     {
         var settings = await _server.Remote.GetModeScriptSettingsAsync();

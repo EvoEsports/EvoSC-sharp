@@ -35,12 +35,13 @@ public class PlayerCacheService : IPlayerCacheService
         }
     }
 
-    public PlayerCacheService(IEventManager events, IServerClient server, ILogger<PlayerCacheService> logger, IPlayerRepository playerRepository)
+    public PlayerCacheService(IEventManager events, IServerClient server, ILogger<PlayerCacheService> logger,
+        IPlayerRepository playerRepository)
     {
         _server = server;
         _logger = logger;
         _playerRepository = playerRepository;
-        
+
         SetupEvents(events);
     }
 
@@ -173,7 +174,7 @@ public class PlayerCacheService : IPlayerCacheService
             throw new PlayerNotFoundException(accountId, "Failed to fetch or create player in the database.");
         }
 
-        return new OnlinePlayer(player)
+       return new OnlinePlayer(player)
         {
             State = onlinePlayerDetails.GetState(),
             Flags = onlinePlayerInfo.GetFlags()
@@ -182,9 +183,23 @@ public class PlayerCacheService : IPlayerCacheService
 
     private async Task<IPlayer> GetOrCreatePlayerAsync(string accountId, TmPlayerDetailedInfo onlinePlayerDetails)
     {
-        var player = await _playerRepository.GetPlayerByAccountIdAsync(accountId) ??
-                     await _playerRepository.AddPlayerAsync(accountId, onlinePlayerDetails);
-        return player;
+        try
+        {
+            var player = await _playerRepository.GetPlayerByAccountIdAsync(accountId);
+
+            if (player != null)
+            {
+                return player;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex,
+                "Error when trying to get player with Account ID '{AccountID}'. Will attempt creating it instead",
+                accountId);
+        }
+
+        return await _playerRepository.AddPlayerAsync(accountId, onlinePlayerDetails);
     }
 
     public async Task UpdatePlayerListAsync()

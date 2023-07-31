@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PlayerFirstJoined" xml:space="preserve">
+    <value>$&lt;{0}$&gt; joined for the first time!</value>
+  </data>
+  <data name="PlayerJoined" xml:space="preserve">
+    <value>$&lt;{0}$&gt; joined!</value>
+  </data>
+  <data name="PlayerKicked" xml:space="preserve">
+    <value>$&lt;{0}$&gt; was kicked from the server.</value>
+  </data>
+  <data name="PlayerKickingFailed" xml:space="preserve">
+    <value>Failed to kick the player. Did they leave already?</value>
+  </data>
+  <data name="YouWereMuted" xml:space="preserve">
+    <value>You were muted by an admin.</value>
+  </data>
+  <data name="PlayerMuted" xml:space="preserve">
+    <value>$&lt;{0}$&gt; was muted.</value>
+  </data>
+  <data name="PlayerMutingFailed" xml:space="preserve">
+    <value>Failed to mute the player. Did they leave already?</value>
+  </data>
+  <data name="Audit.Kicked" xml:space="preserve">
+    <value>Player kicked from the server.</value>
+  </data>
+  <data name="Audit.Muted" xml:space="preserve">
+    <value>Player muted from the chat.</value>
+  </data>
+  <data name="Audit.Unmuted" xml:space="preserve">
+    <value>Player un-muted from the chat.</value>
+  </data>
+  <data name="YouGotUnmuted" xml:space="preserve">
+    <value>You got un-muted by an admin.</value>
+  </data>
+  <data name="PlayerUnmuted" xml:space="preserve">
+    <value>$&lt;{0}$&gt; was un-muted.</value>
+  </data>
+  <data name="PlayerUnmutingFailed" xml:space="preserve">
+    <value>Failed to un-mute the player. Did they leave already?</value>
+  </data>
+  <data name="Audit.Banned" xml:space="preserve">
+    <value>Player banned and added to the blacklist.</value>
+  </data>
+  <data name="PlayerBanned" xml:space="preserve">
+    <value>$&lt;{0}$&gt; was banned from the server.</value>
+  </data>
+  <data name="Audit.Unbanned" xml:space="preserve">
+    <value>Player was unbanned.</value>
+  </data>
+  <data name="PlayerUnbanned" xml:space="preserve">
+    <value>Player with login '{0}' was unbanned.</value>
+  </data>
+  <data name="PlayerUnbanningFailed" xml:space="preserve">
+    <value>The login '{0}' was not found in the banlist.</value>
+  </data>
+  <data name="Audit.Unblacklisted" xml:space="preserve">
+    <value>Player removed from the blacklist.</value>
+  </data>
+  <data name="PlayerUnblacklisted" xml:space="preserve">
+    <value>Player with login '{0}' removed from the blacklist.</value>
+  </data>
+  <data name="PlayerUnblacklistingFailed" xml:space="preserve">
+    <value>Player with login '{0}' was not found in the blacklist.</value>
+  </data>
+  <data name="Command.Kick" xml:space="preserve">
+    <value>Kick a player from the server.</value>
+  </data>
+  <data name="Command.Mute" xml:space="preserve">
+    <value>Mute a player from the chat.</value>
+  </data>
+  <data name="Command.Unmute" xml:space="preserve">
+    <value>Un-mute player from the chat.</value>
+  </data>
+  <data name="Command.Ban" xml:space="preserve">
+    <value>Ban and blacklist a player from the server.</value>
+  </data>
+  <data name="Command.Unban" xml:space="preserve">
+    <value>Remove a player from the ban- and blacklist.</value>
+  </data>
+  <data name="Permission.KickPlayer" xml:space="preserve">
+    <value>Can kick players from the server.</value>
+  </data>
+  <data name="Permission.BanPlayer" xml:space="preserve">
+    <value>Can ban or blacklist players from the server.</value>
+  </data>
+  <data name="Permission.MutePlayer" xml:space="preserve">
+    <value>Can mute the player from the chat.</value>
+  </data>
+</root>

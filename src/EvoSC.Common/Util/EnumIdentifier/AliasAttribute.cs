@@ -1,6 +1,6 @@
 ﻿namespace EvoSC.Common.Util.EnumIdentifier;
 
-[AttributeUsage(AttributeTargets.Enum | AttributeTargets.Field, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Enum | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = true)]
 public class AliasAttribute : Attribute
 {
     /// <summary>

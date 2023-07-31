@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Util.Auditing;
+﻿using EvoSC.Common.Interfaces.Util.Auditing;
 using SimpleInjector;
 
 namespace EvoSC.Common.Interfaces.Controllers;
@@ -12,7 +12,9 @@ public interface IContextService
     /// <param name="controller">The controller to create the context for.</param>
     /// <returns></returns>
     internal IControllerContext CreateContext(Scope scope, IController controller);
-    
+
+    public void UpdateContext(IControllerContext context);
+
     /// <summary>
     /// Get the current context in the current scope.
     /// </summary>
@@ -23,5 +25,5 @@ public interface IContextService
     /// Begin auditing a new event.
     /// </summary>
     /// <returns></returns>
-    public AuditEventBuilder Audit();
+    public IAuditEventBuilder Audit();
 }

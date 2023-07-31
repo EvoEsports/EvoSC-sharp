@@ -6,6 +6,8 @@ using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCp;
 using EvoSC.Modules.Official.Maps;
 using EvoSC.Modules.Official.MatchManagerModule;
+using EvoSC.Modules.Official.ModuleManagerModule;
+using EvoSC.Modules.Official.MotdModule;
 using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.SetName;
@@ -24,8 +26,10 @@ public static class InternalModules
         typeof(MatchManagerModule),
         typeof(SetNameModule),
         typeof(FastestCpModule),
+        typeof(ModuleManagerModule),
         typeof(CurrentMapModule),
-        typeof(OpenPlanetControl),
+        typeof(MotdModule),
+        typeof(OpenPlanetControl)
     };
 
     /// <summary>

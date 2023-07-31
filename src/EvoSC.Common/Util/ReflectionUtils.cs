@@ -97,7 +97,7 @@ public static class ReflectionUtils
     /// <param name="methodName">Name of the method to call.</param>
     /// <param name="args">Arguments to pass to the method.</param>
     /// <returns></returns>
-    public static object? CallMethod(object instance, string methodName, params object[] args)
+    public static object? CallMethod(object instance, string methodName, params object?[] args)
     {
         var method = instance.GetType().GetMethod(methodName);
         

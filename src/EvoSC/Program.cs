@@ -1,7 +1,7 @@
 ﻿
+using EvoSC;
 using EvoSC.CLI;
-using EvoSC.CliCommands;
 
-return await new CliHandler(args)
-    .RegisterCommand(new RunCommand())
-    .HandleAsync();
+return await new CliManager()
+    .RegisterCommands(typeof(Application).Assembly)
+    .ExecuteAsync(args);

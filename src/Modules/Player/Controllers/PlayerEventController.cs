@@ -1,7 +1,7 @@
 ﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Modules.Official.Player.Interfaces;
 using GbxRemoteNet.Events;
@@ -9,7 +9,7 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.Player.Controllers;
 
 [Controller]
-public class PlayerEventController : EvoScController<EventControllerContext>
+public class PlayerEventController : EvoScController<IEventControllerContext>
 {
     private readonly IPlayerService _playerService;
     

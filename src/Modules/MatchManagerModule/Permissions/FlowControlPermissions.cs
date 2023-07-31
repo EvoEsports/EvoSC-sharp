@@ -6,12 +6,12 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Permissions;
 [PermissionGroup]
 public enum FlowControlPermissions
 {
-    [Description("Can restart the current map.")]
+    [Description("[Permission.RestartMatch]")]
     RestartMatch,
     
-    [Description("Can end the current round.")]
+    [Description("[Permission.EndRound]")]
     EndRound,
     
-    [Description("Can skip the current map and load the next one.")]
+    [Description("[Permission.SkipMap]")]
     SkipMap
 }

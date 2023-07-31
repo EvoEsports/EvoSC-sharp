@@ -1,3 +1,19 @@
+[Database]
+# The type of database to use. Available types: PostgreSql, MySql, SQLite
+type = "PostgreSql"
+# Address to the database
+host = "123.123.123.123"
+# Port of the database
+port = 1234
+# The name of the database
+name = "testdb"
+# Name of the user to access the database
+username = "testdbname"
+# Password of the user to access the database
+password = "testdbpassword"
+# A string prefix to add to all table names
+tablePrefix = "testprefix"
+
 [Logging]
 # Possible values lowest to highest verbosity: none, critical, error, warning, information, debug, trace
 logLevel = "debug"
@@ -10,8 +26,39 @@ host = "123.123.123.123"
 # Port that the XMLRPC is listening to
 port = 1234
 # Username of the super admin account
-username = "My Admin "
+username = "TestAdmin"
 # Password of the super admin account
-password = " My Admin"
-# If enabled, the client will try to reconnect with the server every 1 second until a connection is established.
-retryConnection = false
+password = "TestPassword"
+# If enabled, the client will try to reconnect with the server every 1 second until a connection is established
+retryConnection = true
+
+[Path]
+# Path to the maps folder
+maps = "my/server/maps"
+
+[Theme]
+[Theme.Chat]
+# The primary text color to use.
+primaryTextColor = "123"
+# The secondary text color to use.
+secondaryTextColor = "567"
+# The color to use for info messages.
+infoTextColor = "89a"
+# The color to use for error messages.
+errorTextColor = "bcd"
+# The color to use for warning messages.
+warningTextColor = "ef0"
+# The color to use for success messages.
+successTextColor = "123"
+
+[Locale]
+# The default display language of the controller. Must be a "language tag" as found here: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-lcid/a9eac961-e77d-41a6-90a5-ce1a8b0cdb9c
+defaultLanguage = "no"
+
+[Modules]
+# Signature verification of module's files. If enabled and verification fails, the module will not load.
+requireSignatureVerification = false
+# Directories to scan for external modules.
+moduleDirectories = [ "mymodules", ]
+# Modules that will not load on startup. Note that if a module depend on a disabled module, it will load anyways.
+disabledModules = [ "mymodule", "mymodule2" ]

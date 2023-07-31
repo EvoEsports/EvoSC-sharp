@@ -188,6 +188,12 @@ public class ManialinkManager : IManialinkManager
         _templates.Remove(name);
     }
 
+    public async Task RemoveAndHideTemplateAsync(string name)
+    {
+        await HideManialinkAsync(name);
+        RemoveTemplate(name);
+    }
+
     public void RemoveManiaScript(string name)
     {
         _engine.RemoveManiaScript(name);

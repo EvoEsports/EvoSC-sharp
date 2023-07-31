@@ -50,6 +50,7 @@ public class ServiceContainerManager : IServiceContainerManager
         container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
         container.AddEvoScCommonScopedServices();
+        container.Collection.Register(Array.Empty<IBackgroundService>());
 
         foreach (var assembly in assemblies)
         {
@@ -69,6 +70,12 @@ public class ServiceContainerManager : IServiceContainerManager
                     if (intf == null)
                     {
                         throw new ServicesException($"Service {type} must implement a custom interface.");
+                    }
+
+                    if (intf == typeof(IBackgroundService))
+                    {
+                        container.Collection.Append(typeof(IBackgroundService), type, Lifestyle.Singleton);
+                        continue;
                     }
 
                     switch (serviceAttr.LifeStyle)

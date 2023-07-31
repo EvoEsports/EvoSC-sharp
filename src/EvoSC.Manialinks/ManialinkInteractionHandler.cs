@@ -30,17 +30,17 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
     private readonly IPlayerManagerService _players;
     private readonly IControllerManager _controllers;
     private readonly IActionPipelineManager _actionPipeline;
+    
     private readonly ValueReaderManager _valueReader = new();
 
     public ManialinkInteractionHandler(IEventManager events, IManialinkActionManager manialinkActionManager,
         ILogger<ManialinkInteractionHandler> logger, IPlayerManagerService playerManager,
-        IControllerManager controllers, IPlayerManagerService players,
-        IActionPipelineManager actionPipeline)
+        IControllerManager controllers, IActionPipelineManager actionPipeline)
     {
         _manialinkActionManager = manialinkActionManager;
         _logger = logger;
         _controllers = controllers;
-        _players = players;
+        _players = playerManager;
         _actionPipeline = actionPipeline;
 
         SetupValueReader(playerManager);
@@ -90,6 +90,8 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             };
 
             controller.SetContext(manialinkInteractionContext);
+            var contextService = context.ServiceScope.GetInstance<IContextService>();
+            contextService.UpdateContext(manialinkInteractionContext);
 
             if (controller is ManialinkController manialinkController)
             {

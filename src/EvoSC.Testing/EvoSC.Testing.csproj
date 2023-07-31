@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Moq" Version="4.18.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EvoSC.Commands\EvoSC.Commands.csproj" />
+      <ProjectReference Include="..\EvoSC.Common\EvoSC.Common.csproj" />
+      <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
+    </ItemGroup>
+
+</Project>

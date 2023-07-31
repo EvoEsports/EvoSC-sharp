@@ -8,9 +8,11 @@ using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Localization;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Middleware.Attributes;
 using EvoSC.Common.Permissions.Attributes;
@@ -27,6 +29,7 @@ using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleInjector;
 using Container = SimpleInjector.Container;
 
 namespace EvoSC.Modules;
@@ -313,7 +316,7 @@ public class ModuleManager : IModuleManager
                     _manialinkManager.RemoveManiaScript(template.Name);
                     break;
                 case ManialinkTemplateType.Template:
-                    _manialinkManager.RemoveTemplate(template.Name);
+                    _manialinkManager.RemoveAndHideTemplateAsync(template.Name);
                     break;
                 default:
                     continue;
@@ -520,11 +523,21 @@ public class ModuleManager : IModuleManager
     private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
     {
         var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
+        var rootNamespace = mainClass.Namespace ??
+                            throw new InvalidOperationException("Failed to detect root namespace for module.");
         
         var loadedDependencies = GetLoadedDependencies(moduleInfo);
         var moduleServices = _servicesManager.NewContainer(loadId, assemblies, loadedDependencies);
         moduleServices.RegisterInstance(moduleInfo);
         
+        var localization = GetModuleLocalization(mainClass.Assembly, rootNamespace, moduleInfo);
+
+        if (localization != null)
+        {
+            moduleServices.RegisterInstance(typeof(ILocalizationManager), localization);
+            moduleServices.Register<Locale, LocaleResource>(Lifestyle.Scoped);
+        }
+
         await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
         var moduleInstance = CreateModuleInstance(mainClass, moduleServices);
 
@@ -541,9 +554,27 @@ public class ModuleManager : IModuleManager
             Permissions = new List<IPermission>(),
             LoadedDependencies = loadedDependencies,
             ManialinkTemplates = new List<IModuleManialinkTemplate>(),
-            RootNamespace = mainClass.Namespace ??
-                            throw new InvalidOperationException("Failed to detect root namespace for module.")
+            RootNamespace = rootNamespace,
+            Localization = localization
         };
+    }
+
+    private ILocalizationManager? GetModuleLocalization(Assembly assembly, string rootNamespace, IModuleInfo moduleInfo)
+    {
+        try
+        {
+            var locale = new LocalizationManager(assembly, $"{rootNamespace}.Localization");
+
+            _logger.LogDebug("Registered localization for module {Module}", moduleInfo.Name);
+            
+            return locale;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Localization not found for module {Module}", moduleInfo.Name);
+        }
+
+        return null;
     }
 
     private List<Guid> GetLoadedDependencies(IModuleInfo moduleInfo)
@@ -593,6 +624,8 @@ public class ModuleManager : IModuleManager
         await EnableControllersAsync(moduleContext);
         await EnableMiddlewaresAsync(moduleContext);
         await EnableManialinkTemplatesAsync(moduleContext);
+        await StartBackgroundServicesAsync(moduleContext);
+        
         await TryCallModuleEnableAsync(moduleContext);
 
         moduleContext.SetEnabled(true);
@@ -600,10 +633,24 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
     }
 
+    private async Task StartBackgroundServicesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var service in moduleContext.Services.GetAllInstances<IBackgroundService>())
+        {
+            await service.StartAsync();
+        }
+    }
+
     public async Task EnableModulesAsync()
     {
         foreach (var module in LoadedModules)
         {
+            if (_config.Modules.DisabledModules.Contains(module.ModuleInfo.Name))
+            {
+                _logger.LogDebug("Module {Name} is disabled", module.ModuleInfo.Name);
+                continue;
+            }
+            
             await EnableAsync(module.LoadId);
         }
     }
@@ -613,14 +660,24 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
+        await DisableManialinkTemplatesAsync(moduleContext);
         await DisableControllersAsync(moduleContext);
         await DisableMiddlewaresAsync(moduleContext);
-        await DisableManialinkTemplatesAsync(moduleContext);
+        await StopBackgroundServicesAsync(moduleContext);
+        
         await TryCallModuleDisableAsync(moduleContext);
         
         moduleContext.SetEnabled(false);
         
         _logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
+    }
+
+    private async Task StopBackgroundServicesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var service in moduleContext.Services.GetAllInstances<IBackgroundService>())
+        {
+            await service.StopAsync();
+        }
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]

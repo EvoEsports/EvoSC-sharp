@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Util.Auditing;
 using SimpleInjector;
 
@@ -30,6 +31,11 @@ public class ContextService : IContextService
         return context;
     }
 
+    public void UpdateContext(IControllerContext context)
+    {
+        _context = context;
+    }
+
     public IControllerContext GetContext()
     {
         if (_context == null)
@@ -40,5 +46,5 @@ public class ContextService : IContextService
         return _context;
     }
 
-    public AuditEventBuilder Audit() => GetContext().AuditEvent;
+    public IAuditEventBuilder Audit() => GetContext().AuditEvent;
 }

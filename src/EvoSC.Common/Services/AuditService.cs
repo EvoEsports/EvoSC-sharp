@@ -4,6 +4,7 @@ using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Models.Audit;
 using EvoSC.Common.Util.Auditing;
 using EvoSC.Common.Util.EnumIdentifier;
@@ -64,7 +65,7 @@ public class AuditService : IAuditService
         LogLogger(auditRecord);
     }
 
-    public AuditEventBuilder NewEvent(string eventName) => new(this, eventName);
+    public IAuditEventBuilder NewEvent(string eventName) => new AuditEventBuilder(this, eventName);
 
-    public AuditEventBuilder NewEvent(Enum eventName) => NewEvent(eventName.GetIdentifier(true));
+    public IAuditEventBuilder NewEvent(Enum eventName) => NewEvent(eventName.GetIdentifier(true));
 }

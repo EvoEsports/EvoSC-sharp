@@ -1,0 +1,6 @@
+﻿[info]
+name = "ModuleManagerModule"
+title = "Module Manager"
+summary = "A module for configuring, installing and updating modules."
+version = "1.0.0"
+author = "Evo"

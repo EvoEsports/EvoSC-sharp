@@ -6,12 +6,12 @@ namespace EvoSC.Modules.Official.Player;
 [PermissionGroup]
 public enum ModPermissions
 {
-    [Description("Can kick players from the server.")]
+    [Description("[Permission.KickPlayer]")]
     KickPlayer,
     
-    [Description("Can ban or blacklist players from the server.")]
+    [Description("[Permission.BanPlayer]")]
     BanPlayer,
     
-    [Description("Can mute the player from the chat.")]
+    [Description("[Permission.MutePlayer]")]
     MutePlayer
 }

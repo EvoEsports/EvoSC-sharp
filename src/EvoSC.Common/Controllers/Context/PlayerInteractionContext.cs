@@ -7,7 +7,7 @@ namespace EvoSC.Common.Controllers.Context;
 /// Context for any action that was made by a player through one of the interaction systems. For example
 /// commands or Manialinks.
 /// </summary>
-public class PlayerInteractionContext : GenericControllerContext
+public class PlayerInteractionContext : GenericControllerContext, IPlayerInteractionContext
 {
     /// <summary>
     /// The player that executed the action.

@@ -7,14 +7,12 @@ namespace EvoSC.Commands.Parser;
 public class ChatCommandParser
 {
     private readonly IChatCommandManager _cmdManager;
-    private readonly IValueReaderManager _valueReader;
 
     public static string CommandPrefix = "/";
 
-    public ChatCommandParser(IChatCommandManager cmdManager, IValueReaderManager valueReader)
+    public ChatCommandParser(IChatCommandManager cmdManager)
     {
         _cmdManager = cmdManager;
-        _valueReader = valueReader;
     }
 
     public async Task<IParserResult> ParseAsync(string userInput)
@@ -80,7 +78,7 @@ public class ChatCommandParser
             var parameter = cmd.Parameters[i];
             try
             {
-                var value = await _valueReader.ConvertValueAsync(parameter.Type, parts[i - aliasArgCount]);
+                var value = await _cmdManager.ValueReader.ConvertValueAsync(parameter.Type, parts[i - aliasArgCount]);
                 convertedArgs.Add(value);
             }
             catch (FormatException e)

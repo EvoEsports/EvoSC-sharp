@@ -1,5 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Util.Auditing;
+using EvoSC.Common.Interfaces.Util.Auditing;
 using SimpleInjector;
 
 namespace EvoSC.Common.Controllers.Context;
@@ -8,11 +8,11 @@ namespace EvoSC.Common.Controllers.Context;
 /// Generic context for any action within a controller. If you have multiple action types, you need to use
 /// this.
 /// </summary>
-public class GenericControllerContext : IControllerContext
+public class GenericControllerContext : IGenericControllerContext
 {
     public Scope ServiceScope { get; private set; }
     public IController Controller { get; init; }
-    public AuditEventBuilder AuditEvent { get; init; }
+    public IAuditEventBuilder AuditEvent { get; init; }
 
     private readonly Dictionary<string, object> _customData = new();
     public Dictionary<string, object> CustomData => _customData;
