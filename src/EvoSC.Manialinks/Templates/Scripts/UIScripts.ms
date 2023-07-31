@@ -68,6 +68,8 @@ main() {
         +++ OnLoop +++
     }
     
+    +++ OnScriptExecutionFinished +++
+    
     log("Script execution finished.");
 }
 -->
