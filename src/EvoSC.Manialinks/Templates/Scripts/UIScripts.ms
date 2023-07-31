@@ -56,7 +56,7 @@ main() {
         }
         
         if (MouseX != MouseLastPos.X || MouseY != MouseLastPos.Y) {
-            +++ OnMouseMove +++
+            { +++ OnMouseMove +++ }
             
             if (MouseIsDown) {
                 +++ OnMouseDrag +++
