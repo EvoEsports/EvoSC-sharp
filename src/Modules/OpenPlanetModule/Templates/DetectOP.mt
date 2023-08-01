@@ -1,18 +1,20 @@
 <component>
-    <using namespace="EvoSC.Modules.Official.OpenPlanetControl.Config" />
+    <using namespace="EvoSC.Modules.Official.OpenPlanetModule.Config" />
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
     
     <property type="IOpenPlanetControlSettings" name="config" />
     
     <template>
     </template>
-    <script>
+    <script><!--
         Void CheckOpenPlanet() {
-            TriggerPageAction("OpenPlanetActions/Check/"^System.ExtraTool_Info);
+            TriggerPageAction("OpenPlanetActions/Check/"^TextLib::URLEncode(System.ExtraTool_Info));
         }
         
         *** OnInitialization ***
         ***
+        declare lastTime = Now;
+        declare lastToolInfo = System.ExtraTool_Info;
         
         if (!{{ config.SignatureModeCheckEnabled }}) {
             // exit script
@@ -21,7 +23,7 @@
         
         CheckOpenPlanet();
 
-        if (!{{ config.ContinousChecksEnabled }}) {
+        if (!{{ config.ContinuousChecksEnabled }}) {
             // don't continue to the loop if we dont have continous checks enabled
             return;
         }
@@ -29,8 +31,12 @@
         
         *** OnLoop ***
         ***
-        
+        if (lastTime + {{ config.CheckInterval }} <= Now && lastToolInfo != System.ExtraTool_Info) {
+            CheckOpenPlanet();
+            lastTime = Now;
+            lastToolInfo = System.ExtraTool_Info;
+        }
         ***
-    </script>
+    --></script>
     <script resource="EvoSC.Scripts.UIScripts" />
 </component>

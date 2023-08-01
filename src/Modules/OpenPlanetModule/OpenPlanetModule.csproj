@@ -4,7 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>EvoSC.Modules.Official.OpenPlanetControl</RootNamespace>
+        <RootNamespace>EvoSC.Modules.Official.OpenPlanetModule</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

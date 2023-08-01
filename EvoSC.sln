@@ -74,7 +74,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotdModule", "src\Modules\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotdModule.Tests", "tests\Modules\MotdModule.Tests\MotdModule.Tests.csproj", "{05630598-5446-4940-B2AA-FC6C0DD94A10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanetControl", "src\Modules\OpenPlanetControl\OpenPlanetControl.csproj", "{B3B78CE6-2EE5-4175-911B-C33792F5745A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanetModule", "src\Modules\OpenPlanetModule\OpenPlanetModule.csproj", "{B3B78CE6-2EE5-4175-911B-C33792F5745A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using EvoSC.Common.Util.EnumIdentifier;
-using EvoSC.Modules.Official.OpenPlanetControl.Interfaces.Models;
+using EvoSC.Modules.Official.OpenPlanetModule.Interfaces.Models;
 
-namespace EvoSC.Modules.Official.OpenPlanetControl.Models;
+namespace EvoSC.Modules.Official.OpenPlanetModule.Models;
 
 public class OpenPlanetInfo : IOpenPlanetInfo
 {

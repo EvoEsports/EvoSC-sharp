@@ -1,6 +1,6 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Interfaces;
-using EvoSC.Modules.Official.OpenPlanetControl;
+using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCp;
@@ -29,7 +29,7 @@ public static class InternalModules
         typeof(ModuleManagerModule),
         typeof(CurrentMapModule),
         typeof(MotdModule),
-        typeof(OpenPlanetControl)
+        typeof(OpenPlanetModule)
     };
 
     /// <summary>

@@ -1,6 +1,6 @@
-﻿using EvoSC.Modules.Official.OpenPlanetControl.Models;
+﻿using EvoSC.Modules.Official.OpenPlanetModule.Models;
 
-namespace EvoSC.Modules.Official.OpenPlanetControl.Interfaces.Models;
+namespace EvoSC.Modules.Official.OpenPlanetModule.Interfaces.Models;
 
 public interface IOpenPlanetInfo
 {
@@ -10,4 +10,6 @@ public interface IOpenPlanetInfo
     public string Build { get; set; }
     public OpenPlanetSignatureMode SignatureMode { get; set; }
     public bool IsOpenPlanet { get; set; }
+
+    public static abstract IOpenPlanetInfo Parse(string toolInfo);
 }

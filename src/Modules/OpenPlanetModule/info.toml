@@ -1,10 +1,10 @@
 [info]
 # A unique name for this module, this is used as a identifier
-name = "OpenPlanetControl"
+name = "OpenPlanetModule"
 # The title of the module
-title = "OpenPlanetControl"
+title = "OpenPlanet Module"
 # A short description of what the module is and does
-summary = "A module for reminding OpenPlanet should be set to tournament mode when joingin on a server."
+summary = "A module for handling OpenPlanet features such as restricting signature modes and BetterChat support."
 # The current version of this module, using SEMVER
 version = "1.0.0"
 # The name of the author that created this module

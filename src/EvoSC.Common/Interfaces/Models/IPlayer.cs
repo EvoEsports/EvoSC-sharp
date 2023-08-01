@@ -38,4 +38,10 @@ public interface IPlayer
     public string? Zone { get; }
     
     public IPlayerSettings Settings { get; }
+
+    public bool Equals(object? other)
+    {
+        var otherPlayer = other as IPlayer;
+        return otherPlayer != null && AccountId.Equals(otherPlayer.AccountId, StringComparison.Ordinal);
+    }
 }
