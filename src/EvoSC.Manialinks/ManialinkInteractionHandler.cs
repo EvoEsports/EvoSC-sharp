@@ -33,6 +33,8 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
     
     private readonly ValueReaderManager _valueReader = new();
 
+    public ValueReaderManager ValueReader => _valueReader;
+
     public ManialinkInteractionHandler(IEventManager events, IManialinkActionManager manialinkActionManager,
         ILogger<ManialinkInteractionHandler> logger, IPlayerManagerService playerManager,
         IControllerManager controllers, IActionPipelineManager actionPipeline)
