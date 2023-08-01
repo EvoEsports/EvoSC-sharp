@@ -37,6 +37,12 @@ public class OpenPlanetControlService : IOpenPlanetControlService
     public async Task VerifySignatureModeAsync(IPlayer player, IOpenPlanetInfo playerOpInfo)
     {
         _logger.LogDebug("Verifying OpenPlanet for Player {Player}", player.AccountId);
+
+        if (playerOpInfo.Version < _opcSettings.MinimumRequiredVersion)
+        {
+            await JailPlayerAsync(player, playerOpInfo);
+            return;
+        }
         
         if (!playerOpInfo.IsOpenPlanet)
         {
