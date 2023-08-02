@@ -1,6 +1,6 @@
 ﻿using EvoSC.Modules.Official.OpenPlanetModule.Models;
 
-namespace OpenPlanetModule.Tests.Models;
+namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Models;
 
 public class OpenPlanetInfoTests
 {

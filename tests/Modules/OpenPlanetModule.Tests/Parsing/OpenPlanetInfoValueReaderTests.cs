@@ -2,10 +2,20 @@
 using EvoSC.Modules.Official.OpenPlanetModule.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Parsing;
 
-namespace OpenPlanetModule.Tests.Parsing;
+namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Parsing;
 
 public class OpenPlanetInfoValueReaderTests
 {
+    [Fact]
+    public void Reader_Uses_Correct_Type()
+    {
+        var reader = new OpenPlanetInfoValueReader();
+        var type = reader.AllowedTypes.FirstOrDefault();
+        
+        Assert.NotNull(type);
+        Assert.Equal(typeof(IOpenPlanetInfo), type);
+    }
+    
     [Fact]
     public async Task Reader_Returns_OpenplanetInfo_Object_From_Input()
     {

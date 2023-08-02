@@ -33,7 +33,7 @@ public class OpenPlanetSchedulerWorker : IBackgroundService
 
     public Task StopAsync()
     {
-        _schedulerLoop.Start();
+        _schedulerLoop.Stop();
         return Task.CompletedTask;
     }
 }

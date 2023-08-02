@@ -42,9 +42,15 @@ public class OpenPlanetControlService : IOpenPlanetControlService
     {
         _logger.LogDebug("Verifying OpenPlanet for Player {Player}", player.AccountId);
 
+        if (!playerOpInfo.IsOpenPlanet)
+        {
+            await ReleasePlayerAsync(player);
+            return;
+        }
+        
         if (playerOpInfo.Version < _opcSettings.MinimumRequiredVersion)
         {
-            await JailPlayerAsync(player, playerOpInfo, OpJailReason.InvalidVersion);
+            await JailPlayerAsync(player, OpJailReason.InvalidVersion);
             return;
         }
 
@@ -52,7 +58,7 @@ public class OpenPlanetControlService : IOpenPlanetControlService
         var canBypass = await _permissions.HasPermissionAsync(player, OpenPlanetPermissions.CanBypassVerification);
         var correctSignature = _opcSettings.AllowedSignatureModes.HasFlag(playerOpInfo.SignatureMode);
 
-        if (!usingOp || canBypass || correctSignature)
+        if (_opcSettings.AllowOpenplanet && (canBypass || correctSignature))
         {
             await ReleasePlayerAsync(player);
             return;
@@ -62,7 +68,7 @@ public class OpenPlanetControlService : IOpenPlanetControlService
             ? OpJailReason.OpenPlanetNotAllowed
             : OpJailReason.InvalidSignatureMode;
         
-        await JailPlayerAsync(player, playerOpInfo, jailReason);
+        await JailPlayerAsync(player, jailReason);
     }
 
     private (string Explanation, string Question) GetWhatToDoByReason(OpJailReason reason) => reason switch
@@ -78,14 +84,10 @@ public class OpenPlanetControlService : IOpenPlanetControlService
         OpJailReason.OpenPlanetNotAllowed => (
             _locale.PlayerLanguage.Explanations_DisableOpenPlanet,
             _locale.PlayerLanguage.HowToQuestions_DisableOpenPlanet
-        ),
-        _ => (
-            _locale.PlayerLanguage.Explanations_DisableOpenPlanet,
-            _locale.PlayerLanguage.HowToQuestions_DisableOpenPlanet
         )
     };
     
-    private async Task JailPlayerAsync(IPlayer player, IOpenPlanetInfo playerOpInfo, OpJailReason reason)
+    private async Task JailPlayerAsync(IPlayer player, OpJailReason reason)
     {
         if (_scheduler.PlayerIsScheduledForKick(player))
         {
@@ -119,9 +121,6 @@ public class OpenPlanetControlService : IOpenPlanetControlService
                 break;
             case OpJailReason.OpenPlanetNotAllowed:
                 await _server.ErrorMessageAsync(_locale.PlayerLanguage.OpenPlanetProhibited, player);
-                break;
-            default:
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage.IncorrectOpenPlanetConfig, player);
                 break;
         }
     }

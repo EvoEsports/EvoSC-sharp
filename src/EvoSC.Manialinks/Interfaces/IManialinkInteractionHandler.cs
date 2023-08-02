@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.TextParsing;
+﻿using EvoSC.Common.Interfaces.Parsing;
 
 namespace EvoSC.Manialinks.Interfaces;
 
@@ -10,5 +10,5 @@ public interface IManialinkInteractionHandler
     /// <summary>
     /// Access the value reader manager for manialink interactions.
     /// </summary>
-    public ValueReaderManager ValueReader { get; }
+    public IValueReaderManager ValueReader { get; }
 }

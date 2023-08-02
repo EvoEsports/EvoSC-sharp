@@ -9,7 +9,7 @@ using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using Moq;
 
-namespace OpenPlanetModule.Tests.Controllers;
+namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Controllers;
 
 public class OpenPlanetControlManialinkControllerTests : ManialinkControllerTestBase<OpenPlanetControlManialinkController>
 {
