@@ -5,6 +5,9 @@ using EvoSC.Modules.Official.OpenPlanetModule.Models;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Parsing;
 
+/// <summary>
+/// Parses a extra tool info string to create a OpenPlanet info object.
+/// </summary>
 public class OpenPlanetInfoValueReader : IValueReader
 {
     public IEnumerable<Type> AllowedTypes => new[] {typeof(IOpenPlanetInfo)};

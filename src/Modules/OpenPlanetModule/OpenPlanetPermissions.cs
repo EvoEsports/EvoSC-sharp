@@ -6,6 +6,9 @@ namespace EvoSC.Modules.Official.OpenPlanetModule;
 [PermissionGroup]
 public enum OpenPlanetPermissions
 {
-    [Description("Allows players to bypass OpenPlanet signature mode verification.")]
-    CanBypassVerification
+    [Description("[Permission.CanBypassVerification]")]
+    CanBypassVerification,
+    
+    [Description("[Permission.CanUseControlPanel]")]
+    CanUseControlPanel
 }

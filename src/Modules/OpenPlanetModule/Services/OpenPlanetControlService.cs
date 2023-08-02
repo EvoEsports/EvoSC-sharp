@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
@@ -22,9 +23,11 @@ public class OpenPlanetControlService : IOpenPlanetControlService
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
     private readonly IOpenPlanetScheduler _scheduler;
+    private readonly dynamic _locale;
 
     public OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, IPermissionManager permissions,
-        IOpenPlanetControlSettings opcSettings, IManialinkManager manialinks, IServerClient server, IOpenPlanetScheduler scheduler)
+        IOpenPlanetControlSettings opcSettings, IManialinkManager manialinks, IServerClient server, IOpenPlanetScheduler scheduler,
+        Locale locale)
     {
         _logger = logger;
         _permissions = permissions;
@@ -32,6 +35,7 @@ public class OpenPlanetControlService : IOpenPlanetControlService
         _manialinks = manialinks;
         _server = server;
         _scheduler = scheduler;
+        _locale = locale;
     }
 
     public async Task VerifySignatureModeAsync(IPlayer player, IOpenPlanetInfo playerOpInfo)
@@ -40,34 +44,48 @@ public class OpenPlanetControlService : IOpenPlanetControlService
 
         if (playerOpInfo.Version < _opcSettings.MinimumRequiredVersion)
         {
-            await JailPlayerAsync(player, playerOpInfo);
+            await JailPlayerAsync(player, playerOpInfo, OpJailReason.InvalidVersion);
             return;
         }
-        
-        if (!playerOpInfo.IsOpenPlanet)
-        {
-            // player is not using openplanet
-            await ReleasePlayerAsync(player);
-            return;
-        }
-        
-        if (await _permissions.HasPermissionAsync(player, OpenPlanetPermissions.CanBypassVerification))
+
+        var usingOp = playerOpInfo.IsOpenPlanet;
+        var canBypass = await _permissions.HasPermissionAsync(player, OpenPlanetPermissions.CanBypassVerification);
+        var correctSignature = _opcSettings.AllowedSignatureModes.HasFlag(playerOpInfo.SignatureMode);
+
+        if (!usingOp || canBypass || correctSignature)
         {
             await ReleasePlayerAsync(player);
             return;
         }
 
-        if (_opcSettings.AllowedSignatureModes.HasFlag(playerOpInfo.SignatureMode))
-        {
-            // player has valid signature mode
-            await ReleasePlayerAsync(player);
-            return;
-        }
-
-        await JailPlayerAsync(player, playerOpInfo);
+        var jailReason = usingOp && !_opcSettings.AllowOpenplanet
+            ? OpJailReason.OpenPlanetNotAllowed
+            : OpJailReason.InvalidSignatureMode;
+        
+        await JailPlayerAsync(player, playerOpInfo, jailReason);
     }
 
-    private async Task JailPlayerAsync(IPlayer player, IOpenPlanetInfo playerOpInfo)
+    private (string Explanation, string Question) GetWhatToDoByReason(OpJailReason reason) => reason switch
+    {
+        OpJailReason.InvalidVersion => (
+            _locale.PlayerLanguage.Explanations_UpdateOpenPlanet,
+            _locale.PlayerLanguage.HowToQuestions_UpdateOpenPlanet
+        ),
+        OpJailReason.InvalidSignatureMode => (
+            _locale.PlayerLanguage.Explanations_SwitchSignatureMode,
+            _locale.PlayerLanguage.HowToQuestions_SwitchSignatureMode
+        ),
+        OpJailReason.OpenPlanetNotAllowed => (
+            _locale.PlayerLanguage.Explanations_DisableOpenPlanet,
+            _locale.PlayerLanguage.HowToQuestions_DisableOpenPlanet
+        ),
+        _ => (
+            _locale.PlayerLanguage.Explanations_DisableOpenPlanet,
+            _locale.PlayerLanguage.HowToQuestions_DisableOpenPlanet
+        )
+    };
+    
+    private async Task JailPlayerAsync(IPlayer player, IOpenPlanetInfo playerOpInfo, OpJailReason reason)
     {
         if (_scheduler.PlayerIsScheduledForKick(player))
         {
@@ -84,11 +102,28 @@ public class OpenPlanetControlService : IOpenPlanetControlService
         
         await _manialinks.SendManialinkAsync(player, "OpenPlanetModule.WarningWindow", new
         {
-            allowedSignatures,
-            config = _opcSettings
+            AllowedSignatures = allowedSignatures,
+            Config = _opcSettings,
+            Reason = reason,
+            WhatToDo = GetWhatToDoByReason(reason),
+            Locale = _locale
         });
 
-        await _server.ErrorMessageAsync("Prohibited OpenPlanet signature mode detected! Forced into spectator.", player);
+        switch (reason)
+        {
+            case OpJailReason.InvalidVersion:
+                await _server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedVersion, player);
+                break;
+            case OpJailReason.InvalidSignatureMode:
+                await _server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedSignatureMode, player);
+                break;
+            case OpJailReason.OpenPlanetNotAllowed:
+                await _server.ErrorMessageAsync(_locale.PlayerLanguage.OpenPlanetProhibited, player);
+                break;
+            default:
+                await _server.ErrorMessageAsync(_locale.PlayerLanguage.IncorrectOpenPlanetConfig, player);
+                break;
+        }
     }
     
     private async Task ReleasePlayerAsync(IPlayer player)
@@ -101,6 +136,6 @@ public class OpenPlanetControlService : IOpenPlanetControlService
         _scheduler.UnScheduleKickPlayer(player);
         await _manialinks.HideManialinkAsync("OpenPlanetModule.WarningWindow");
         await _server.Remote.ForceSpectatorAsync(player.GetLogin(), 0);
-        await _server.SuccessMessageAsync("Correct OpenPlanet signature mode selected! You can now play.", player);
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.CorrectSignatureMode, player);
     }
 }

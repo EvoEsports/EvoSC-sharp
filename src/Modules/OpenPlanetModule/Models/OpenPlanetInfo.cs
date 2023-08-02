@@ -26,7 +26,12 @@ public class OpenPlanetInfo : IOpenPlanetInfo
         SignatureMode = mode;
         IsOpenPlanet = isOpenPlanet;
     }
-
+    
+    /// <summary>
+    /// Parse the extra tool info to create a new OpenPlanet info object.
+    /// </summary>
+    /// <param name="toolInfo">Raw extra tool info string.</param>
+    /// <returns></returns>
     public static IOpenPlanetInfo Parse(string toolInfo)
     {
         var match = OpenPlanetRegex.Match(toolInfo);
