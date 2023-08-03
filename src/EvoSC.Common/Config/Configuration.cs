@@ -22,6 +22,7 @@ public static class Configuration
         var baseConfig = new ConfigurationBuilder<IEvoScBaseConfig>()
             .UseEvoScConfig(MainConfigFile, cliOptions)
             .UseTypeParser(new TextColorTypeParser())
+            .UseTypeParser(new VersionParser())
             .Build();
         
         return baseConfig;

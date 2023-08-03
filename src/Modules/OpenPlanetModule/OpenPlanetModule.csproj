@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>EvoSC.Modules.Official.OpenPlanetModule</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
+        <None Remove="Templates\**\*" />
+        <EmbeddedResource Include="Templates\**\*" />
+        <EmbeddedResource Update="Localization.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+
+</Project>
