@@ -31,7 +31,7 @@ public class OpenPlanetEventController : EvoScController<IEventControllerContext
         _server.Remote.KickAsync(args.Player.GetLogin());
 
     [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
-    public async Task OnPlayerDisconnect(object sender, PlayerDisconnectGbxEventArgs args)
+    public async Task OnPlayerDisconnectAsync(object sender, PlayerDisconnectGbxEventArgs args)
     {
         var player = await _players.GetPlayerAsync(args.Login);
         _trackerService.RemovePlayer(player);

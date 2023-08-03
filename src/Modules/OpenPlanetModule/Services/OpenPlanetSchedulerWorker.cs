@@ -22,7 +22,7 @@ public class OpenPlanetSchedulerWorker : IBackgroundService
 
     private void SchedulerLoopOnElapsed(object? sender, ElapsedEventArgs e)
     {
-        _scheduler.TriggerDuePlayerKicks().GetAwaiter().GetResult();
+        _scheduler.TriggerDuePlayerKicksAsync().GetAwaiter().GetResult();
     }
 
     public Task StartAsync()

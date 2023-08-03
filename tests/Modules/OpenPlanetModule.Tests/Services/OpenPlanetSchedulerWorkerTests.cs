@@ -43,6 +43,6 @@ public class OpenPlanetSchedulerWorkerTests
         await schedulerWorker.StopAsync();
         await Task.Delay(2000);
 
-       scheduler.Verify(m => m.TriggerDuePlayerKicks(), Times.Never);
+       scheduler.Verify(m => m.TriggerDuePlayerKicksAsync(), Times.Never);
     }
 }

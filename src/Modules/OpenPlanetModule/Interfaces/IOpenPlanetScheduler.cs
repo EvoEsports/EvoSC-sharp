@@ -31,7 +31,7 @@ public interface IOpenPlanetScheduler
     /// Trigger events for any player that is due to be kicked.
     /// </summary>
     /// <returns></returns>
-    public Task TriggerDuePlayerKicks();
+    public Task TriggerDuePlayerKicksAsync();
     
     /// <summary>
     /// Check if a player is scheduled to be kicked.

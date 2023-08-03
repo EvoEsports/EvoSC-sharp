@@ -43,7 +43,7 @@ public class OpenPlanetEventControllerTests : EventControllerTestBase<OpenPlanet
             .Setup(s => s.GetPlayerAsync(PlayerLogin))
             .Returns(Task.FromResult((IPlayer?)_player.Object));
 
-        await Controller.OnPlayerDisconnect(null,
+        await Controller.OnPlayerDisconnectAsync(null,
             new PlayerDisconnectGbxEventArgs {Login = PlayerLogin, Reason = null});
         
         _trackerService.Verify(s => s.RemovePlayer(_player.Object), Times.Once);

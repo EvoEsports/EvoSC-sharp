@@ -49,7 +49,7 @@ public class OpenPlanetSchedulerTests
         scheduler.ScheduleKickPlayer(_player.Object);
 
         await Task.Delay(1000);
-        await scheduler.TriggerDuePlayerKicks();
+        await scheduler.TriggerDuePlayerKicksAsync();
 
         _events.Verify(m => m.RaiseAsync(OpenPlanetEvents.PlayerDueForKick, It.IsAny<PlayerDueForKickEventArgs>()),
             Times.Once);
@@ -63,7 +63,7 @@ public class OpenPlanetSchedulerTests
 
         scheduler.ScheduleKickPlayer(_player.Object);
 
-        await scheduler.TriggerDuePlayerKicks();
+        await scheduler.TriggerDuePlayerKicksAsync();
 
         _events.Verify(m => m.RaiseAsync(OpenPlanetEvents.PlayerDueForKick, It.IsAny<PlayerDueForKickEventArgs>()),
             Times.Never);

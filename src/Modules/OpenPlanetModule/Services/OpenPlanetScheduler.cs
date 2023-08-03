@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -43,7 +42,7 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
         }
     }
 
-    public async Task TriggerDuePlayerKicks()
+    public async Task TriggerDuePlayerKicksAsync()
     {
         var duePlayers = new List<IPlayer>();
         lock (_scheduledKicksLock)
