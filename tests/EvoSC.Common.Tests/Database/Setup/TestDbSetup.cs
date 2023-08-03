@@ -1,7 +1,6 @@
 ﻿using System;
 using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Interfaces.Database;
-using EvoSC.Modules.Official.MotdModule.Database.Migrations;
 
 namespace EvoSC.Common.Tests.Database.Setup;
 

@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Exceptions.DatabaseExceptions;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
@@ -50,11 +51,11 @@ public class MapRepository : DbRepository, IMapRepository
             await transaction.CommitAsync();
             dbMap.Id = Convert.ToInt64(id);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex, "Failed to add map");
+            _logger.LogError(e, "Failed adding map with UID {MapMapUid} to the database", map.MapUid);
             await transaction.RollbackAsync();
-            throw;
+            throw new EvoScDatabaseException($"Failed adding map with UID {map.MapUid} to the database", e);
         }
 
         return dbMap;
@@ -91,9 +92,9 @@ public class MapRepository : DbRepository, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to update map");
+            _logger.LogError(e, "Failed to update map with UID {MapMapUid}", map.MapUid);
             await transaction.RollbackAsync();
-            throw;
+            throw new EvoScDatabaseException($"Failed to update map with UID {map.MapUid}", e);
         }
 
         return new Map(updatedMap);

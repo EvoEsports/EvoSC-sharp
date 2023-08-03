@@ -1,8 +1,8 @@
+using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Models.Maps;
 using EvoSC.Modules.Official.Maps.Controllers;
 using EvoSC.Modules.Official.Maps.Events;
 using EvoSC.Modules.Official.Maps.Interfaces;
@@ -40,7 +40,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Returns(Task.FromResult(_map.Object));
         
-        await Controller.AddMap("123");
+        await Controller.AddMapAsync("123");
         
         _mxMapService.Verify(m => m.FindAndDownloadMapAsync(123, null, _actor.Object), Times.Once);
         AuditEventBuilder.Verify(m => m.Success(), Times.Once);
@@ -53,11 +53,22 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     {
         var ex = new Exception();
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
-            .Returns(() => throw ex);
+            .Throws(ex);
 
-        await Controller.AddMap("123");
+        await Assert.ThrowsAsync<Exception>(() => Controller.AddMapAsync("123"));
         
-        _logger.Verify(LogLevel.Information, ex, null, Times.Once());
+        _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+    }
+
+    [Fact]
+    public async Task Adding_Duplicate_Map_Returns_Error()
+    {
+        var ex = new DuplicateMapException("Failed map add");
+        _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
+            .Throws(ex);
+
+        await Assert.ThrowsAsync<DuplicateMapException>(() => Controller.AddMapAsync("123"));
+        
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
     
@@ -67,7 +78,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
             .Returns(Task.FromResult((IMap?)null));
 
-        await Controller.AddMap("123");
+        await Controller.AddMapAsync("123");
         
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
@@ -77,7 +88,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     {
         _mapService.Setup(m => m.GetMapByIdAsync(123)).Returns(Task.FromResult(_map.Object));
 
-        await Controller.RemoveMap(123);
+        await Controller.RemoveMapAsync(123);
         
         _mapService.Verify(m => m.GetMapByIdAsync(123), Times.Once);
         _mapService.Verify(m => m.RemoveMapAsync(123), Times.Once);
@@ -85,7 +96,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MapRemoved), Times.Once);
         _server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
         _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);
-        _logger.Verify(LogLevel.Information, null, null, Times.Once());
+        _logger.Verify(LogLevel.Debug, null, null, Times.Once());
     }
 
     [Fact]
@@ -93,7 +104,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     {
         _mapService.Setup(m => m.GetMapByIdAsync(123)).Returns(Task.FromResult((IMap?)null));
 
-        await Controller.RemoveMap(123);
+        await Controller.RemoveMapAsync(123);
         
         _mapService.Verify(m => m.RemoveMapAsync(123), Times.Never);
         _server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);

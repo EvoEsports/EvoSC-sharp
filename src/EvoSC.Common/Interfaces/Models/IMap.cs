@@ -40,7 +40,7 @@ public interface IMap
     /// <summary>
     /// The maps external ID. E.g. the TrackmaniaIo ID.
     /// </summary>
-    public string ExternalId { get; set; }
+    public string? ExternalId { get; set; }
     
     /// <summary>
     /// The maps external version. E.g. the "last updated" value of the TrackmaniaIo map.
