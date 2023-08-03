@@ -13,12 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ManiaTemplates" Version="0.0.2-alpha" />
-      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="ManiaTemplates" Version="0.0.3-alpha" />
+      <PackageReference Include="ManiaTemplates" Version="0.0.8-alpha" />
     </ItemGroup>
 
 </Project>

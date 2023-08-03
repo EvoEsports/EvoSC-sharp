@@ -1,5 +1,8 @@
 ﻿<component>
     <import component="EvoSC.Window" as="Window" />
+    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
+    <import component="EvoSC.Controls.Button" as="Button" />
 
     <property type="bool" name="isChecked" />
     <property type="string" name="text" />
@@ -9,86 +12,43 @@
 
     <property type="double" name="titleBarHeight" default="6.0"/>
     
-    <property type="double" name="buttonBarHeight" default="7.0"/>
+    <property type="double" name="buttonBarHeight" default="8.0"/>
     <property type="string" name="buttonText" default="Close"/>
 
     <property type="string" name="checkboxUncheckedIcon" default="" />
     <property type="string" name="checkboxCheckedIcon" default="" />
 
-    <property type="int" name="zIndex" default="1" />
     <property type="double" name="w" default="160" />
     <property type="double" name="h" default="90" />
     
     <template>
-        <Window h="{{ h }}" w="{{ w }}" x="0" y="0" isChecked="{{ isChecked }}" zIndex="1000" title="Message of the Day" titleBarHeight="{{ titleBarHeight }}">
-            <label autonewline="1" text="{{ text }}" z-index="{{ zIndex + 1 }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
+        <Theme />
+        <Window height="{{ h }}" width="{{ w }}" x="{{ -w/2 }}" y="{{ h/2 }}" title="Message of the Day">
+            <label class="text" autonewline="1" text="{{ text }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
             <!-- ButtonBar -->
-            <frame pos="0 {{ -h + buttonBarHeight*2 + 2 }}" size="{{ w }} {{ buttonBarHeight }}" z-index="{{ zIndex + 1 }}">
-                <!-- Dont show again Checkbox -->
-                <label id="checkbox" scriptevents="1" focusareacolor1="{{ backgroundColor }}" focusareacolor2="{{ backgroundColor }}" pos="0 -.5" size="{{ buttonBarHeight/2 }} {{ buttonBarHeight/2 }}" z-index="{{ zIndex + 2}}" text="{{ (isChecked) ? checkboxCheckedIcon : checkboxUncheckedIcon }}" textcolor="{{ primaryColor }}"/>
-                <label id="checkboxText" scriptevents="1" focusareacolor1="{{ backgroundColor }}" focusareacolor2="{{ backgroundColor }}" pos="6 -2" size="{{ w/4 }} {{ buttonBarHeight/2 }}" textsize=".7" z-index="{{ zIndex + 2}}" text="Dont annoy me again!" />
-
+            <frame pos="0 {{ -h + buttonBarHeight*2 + 2 }}" size="{{ w }} {{ buttonBarHeight }}">
+                <Checkbox id="chkDontShowAgain" text="Dont annoy me again!" x="0" y="-.5" isChecked="{{ isChecked }}" />
+                
                 <!-- Close Button -->
-                <label scriptevents="1" focusareacolor1="{{ backgroundColor }}" focusareacolor2="{{ backgroundColor }}" id="button_close" style="CardButtonMediumWide" hidden="0" text="{{ buttonText }}" z-index="20" pos="{{ w/2 }} 0" halign="center" size="0 {{ buttonBarHeight/2 }}" />
+                <Button text="{{ buttonText }}" x="{{ (w-60)/2 }}" width="60" id="closeBtn" />
             </frame>
         </Window>
-        <script>
-            <!--
+    </template>
+
+    <script>
+        <!--
             *** OnMouseClick ***
             ***
-            if(Event.Control.ControlId == "checkbox" || Event.Control.ControlId == "checkboxText") {
-                if(checkboxChecked) {
-                    (Page.GetFirstChild("checkbox") as CMlLabel).Value = "";
+                log(Event.Control.ControlId);
+                if (Event.Control.ControlId == "closeBtn" || Event.Control.HasClass("evosc-window-closebtn")) {
+                    CloseWindow("evosc-window");
+            
+                    declare Checkbox <=> Page.MainFrame.GetFirstChild("chkDontShowAgain") as CMlFrame;
+                    declare IsChecked for Checkbox = False;
+                    TriggerPageAction("MotdManialinkController/Close/" ^ IsChecked);
                 }
-                else {
-                    (Page.GetFirstChild("checkbox") as CMlLabel).Value = "";
-                }
-                checkboxChecked = !checkboxChecked;
-            } else if(Event.Control.ControlId == "button_close") {
-                TriggerPageAction("MotdManialinkController/Close/"^checkboxChecked);
-            }
             ***
-            
-            main() {
-                declare Boolean checkboxChecked = False;
-                declare Text checkBoxText = (Page.GetFirstChild("checkbox") as CMlLabel).Value;
-                if(checkBoxText == "")
-                    checkboxChecked = False;
-                else
-                    checkboxChecked = True;
-                    
-              +++OnInit+++
-            
-              while(True) {
-                yield;
-                if (!PageIsVisible || InputPlayer == Null) {
-                          continue;
-                  }
-            
-                foreach (Event in PendingEvents) {
-                        switch (Event.Type) {
-                            case CMlScriptEvent::Type::EntrySubmit: {
-                                +++EntrySubmit+++
-                            }
-                            case CMlScriptEvent::Type::KeyPress: {
-                                +++OnKeyPress+++
-                            }
-                            case CMlScriptEvent::Type::MouseClick: {
-                                +++OnMouseClick+++
-                            }
-                            case CMlScriptEvent::Type::MouseOut: {
-                                +++OnMouseOut+++
-                            }
-                            case CMlScriptEvent::Type::MouseOver: {
-                                +++OnMouseOver+++
-                            }
-                        }
-                    }
-            
-                    +++Loop+++
-              }
-            }
-            -->
-        </script>
-    </template>
+        -->
+    </script>
+    <script resource="EvoSC.Scripts.UIScripts" main="true" />
 </component>

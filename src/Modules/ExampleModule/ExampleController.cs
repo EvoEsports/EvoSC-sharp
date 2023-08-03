@@ -8,12 +8,14 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Common.Util.MatchSettings.Builders;
 using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Manialinks.Interfaces;
+using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
@@ -29,11 +31,12 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     private readonly IMatchSettingsService _matchSettings;
     private readonly IManialinkActionManager _manialinkActions;
     private readonly Locale _locale;
+    private readonly IEventManager _events;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
         IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo,
         IMapRepository mapRepo, IMatchSettingsService matchSettings, IManialinkActionManager manialinkActions,
-        Locale locale)
+        Locale locale, IEventManager events)
     {
         _settings = settings;
         _server = server;
@@ -44,6 +47,7 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
         _matchSettings = matchSettings;
         _manialinkActions = manialinkActions;
         _locale = locale;
+        _events = events;
     }
 
     [ChatCommand("hey", "Say hey!")]
@@ -76,5 +80,16 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     {
         var translation = _locale.Translate("some [TestValue] sdf [TestValue] ds", "Elon Musk");
         Console.WriteLine(translation);
+    }
+
+    [ChatCommand("rejoin", "Simulates the player joining the server.")]
+    public async Task RejoinCommand()
+    {
+        _events.RaiseAsync(GbxRemoteEvent.PlayerConnect,
+            new PlayerConnectGbxEventArgs
+            {
+                Login = Context.Player.GetLogin(), 
+                IsSpectator = false
+            });
     }
 }

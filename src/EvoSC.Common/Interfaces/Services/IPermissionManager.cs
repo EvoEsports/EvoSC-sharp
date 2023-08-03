@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.Common.Interfaces.Services;
 
@@ -11,6 +12,15 @@ public interface IPermissionManager
     /// <param name="permission">Permission the user requires.</param>
     /// <returns>True if the permission is assigned to the user, or if the user is in a unrestricted group.</returns>
     public Task<bool> HasPermissionAsync(IPlayer player, string permission);
+
+    /// <summary>
+    /// Check if a player has the given permission.
+    /// </summary>
+    /// <param name="player">The player to check.</param>
+    /// <param name="permission">Permission the user requires.</param>
+    /// <returns>True if the permission is assigned to the user, or if the user is in a unrestricted group.</returns>
+    public Task<bool> HasPermissionAsync(IPlayer player, Enum permission) =>
+        HasPermissionAsync(player, permission.GetIdentifier());
     
     /// <summary>
     /// Get information about a permission from it's name.

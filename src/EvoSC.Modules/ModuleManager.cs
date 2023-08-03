@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using Config.Net;
+using EvoSC.Common.Config.Mapping;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Controllers.Attributes;
@@ -462,6 +463,8 @@ public class ModuleManager : IModuleManager
         }
         
         ReflectionUtils.CallMethod(builder, "UseConfigStore", store);
+        ReflectionUtils.CallMethod(builder, "UseTypeParser", new TextColorTypeParser());
+        ReflectionUtils.CallMethod(builder, "UseTypeParser", new VersionParser());
         return ReflectionUtils.CallMethod(builder, "Build");
     }
 
