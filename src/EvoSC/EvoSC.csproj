@@ -29,6 +29,7 @@
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
         <ProjectReference Include="..\Modules\Player\Player.csproj" />
         <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />
+        <ProjectReference Include="..\Modules\Scoreboard\Scoreboard.csproj" />
         <ProjectReference Include="..\Modules\SetName\SetName.csproj" />
         <ProjectReference Include="..\Modules\FastestCp\FastestCp.csproj" />
         <ProjectReference Include="..\Modules\CurrentMapModule\CurrentMapModule.csproj" />
