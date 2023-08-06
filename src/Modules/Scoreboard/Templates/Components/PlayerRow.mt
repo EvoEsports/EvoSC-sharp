@@ -5,8 +5,12 @@
     
     <template>
         <frame pos="{{ x }} {{ y }}">
-            <label text="name {{ id }}" textsize="1" />
-            <label text="score" pos="100" textsize="1" />
+            <label id="name" text="name {{ id }}" textsize="1" />
+            <label id="score" text="score" pos="100" textsize="1" />
         </frame>
     </template>
+    
+    <script once="true"><!--
+    //TODO: row methods
+    --></script>
 </component>
