@@ -6,10 +6,10 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 
 public interface IMatchTracker
 {
+    public bool IsTracking { get; }
     public IMatchTimeline LatestTimeline { get; }
     
     public Task TrackScoresAsync(ScoresEventArgs scoreArgs);
-    public Task TrackChatMessageAsync();
-    public Task BeginMatchAsync();
+    public Task<Guid> BeginMatchAsync();
     public Task<IMatchTimeline> EndMatchAsync();
 }

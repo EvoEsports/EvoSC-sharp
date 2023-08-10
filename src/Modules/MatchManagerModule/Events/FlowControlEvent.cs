@@ -4,12 +4,18 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Events;
 
 public enum FlowControlEvent
 {
-    [Identifier(Name = "MatchManager.FlowControl.MapSkipped")]
+    [Identifier(Name = "MatchManager.MatchControl.MapSkipped")]
     MapSkipped,
     
-    [Identifier(Name = "MatchManager.FlowControl.ForcedRoundEnd")]
+    [Identifier(Name = "MatchManager.MatchControl.ForcedRoundEnd")]
     ForcedRoundEnd,
     
-    [Identifier(Name = "MatchManager.FlowControl.MatchRestarted")]
-    MatchRestarted
+    [Identifier(Name = "MatchManager.MatchControl.MatchRestarted")]
+    MatchRestarted,
+    
+    [Identifier(Name = "MatchManager.MatchControl.MatchStarted")]
+    MatchStarted,
+    
+    [Identifier(Name = "MatchManager.MatchControl.MatchEnded")]
+    MatchEnded
 }

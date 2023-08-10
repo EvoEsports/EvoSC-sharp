@@ -4,13 +4,19 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Events;
 
 public enum AuditEvents
 {
-    [Identifier(Name = "FlowControl:EndRound")]
+    [Identifier(Name = "MatchControl:MatchStarted")]
+    MatchStarted,
+    
+    [Identifier(Name = "MatchControl:MatchEnded")]
+    MatchEnded,
+    
+    [Identifier(Name = "MatchControl:EndRound")]
     EndRound,
     
-    [Identifier(Name = "FlowControl:RestartMatch")]
+    [Identifier(Name = "MatchControl:RestartMatch")]
     RestartMatch,
     
-    [Identifier(Name = "FlowControl:SkipMap")]
+    [Identifier(Name = "MatchControl:SkipMap")]
     SkipMap,
     
     [Identifier(Name = "LiveMode:LoadMode")]

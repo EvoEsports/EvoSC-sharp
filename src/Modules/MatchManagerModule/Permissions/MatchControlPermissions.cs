@@ -4,7 +4,7 @@ using EvoSC.Common.Permissions.Attributes;
 namespace EvoSC.Modules.Official.MatchManagerModule.Permissions;
 
 [PermissionGroup]
-public enum FlowControlPermissions
+public enum MatchControlPermissions
 {
     [Description("[Permission.RestartMatch]")]
     RestartMatch,
@@ -13,5 +13,9 @@ public enum FlowControlPermissions
     EndRound,
     
     [Description("[Permission.SkipMap]")]
-    SkipMap
+    SkipMap,
+    
+    StartMatch,
+    
+    EndMatch
 }

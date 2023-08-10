@@ -1,10 +1,13 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Official.MatchManagerModule.Config;
+using EvoSC.Modules.Official.MatchManagerModule.Events;
+using EvoSC.Modules.Official.MatchManagerModule.Events.EventArgObjects;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Models;
@@ -15,44 +18,52 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Services;
 public class MatchTracker : IMatchTracker
 {
     private MatchStatus _status = MatchStatus.Unknown;
-    private IMatchTimeline _currentTimelime;
+    private IMatchTimeline _currentTimeline;
 
     private readonly ITrackerSettings _settings;
     private readonly IPlayerManagerService _players;
-    
-    public MatchTracker(ITrackerSettings settings, IPlayerManagerService players)
+    private readonly ITrackerStoreService _trackerStore;
+    private readonly IEventManager _events;
+
+    public MatchTracker(ITrackerSettings settings, IPlayerManagerService players, ITrackerStoreService trackerStore,
+        IEventManager events)
     {
         _settings = settings;
         _players = players;
+        _trackerStore = trackerStore;
+        _events = events;
     }
 
-    public IMatchTimeline LatestTimeline => _status != MatchStatus.Unknown && _currentTimelime != null
-        ? _currentTimelime
+    public bool IsTracking { get; private set; }
+    
+    public IMatchTimeline LatestTimeline => _status != MatchStatus.Unknown && _currentTimeline != null
+        ? _currentTimeline
         : throw new InvalidOperationException(
             "A match is currently not being tracked or is in an unknown state. Cannot return the timeline.");
 
     public async Task TrackScoresAsync(ScoresEventArgs scoreArgs)
     {
-        if (!_settings.AutomaticTracking && _status is MatchStatus.Ended or MatchStatus.Unknown)
-        {
-            throw new InvalidOperationException("Trying to track a un-started match with automatic tracking disabled.");
-        }
+        await VerifyTracker();
 
-        if (_settings.AutomaticTracking && _status is MatchStatus.Ended or MatchStatus.Unknown)
+        if (!IsTracking)
         {
-            await BeginMatchAsync();
+            return;
         }
-
-        IMatchState state = null;
         
+        IMatchState state;
+
         switch (scoreArgs.Section)
         {
-            case ModeScriptSection.EndMap:
-            case ModeScriptSection.EndMatch:
-            case ModeScriptSection.EndRound:
-            case ModeScriptSection.EndMatchEarly:
-            case ModeScriptSection.PreEndRound:
-                
+            case ModeScriptSection.EndMap when _settings.RecordEndMap:
+            case ModeScriptSection.EndMatch when _settings.RecordEndMatch:
+            case ModeScriptSection.EndRound when _settings.RecordEndRound:
+            case ModeScriptSection.EndMatchEarly when _settings.RecordEndMatchEarly:
+            case ModeScriptSection.PreEndRound when _settings.RecordPreEndRound:
+                return;
+            case ModeScriptSection.Undefined:
+                state = new MatchState {Status = MatchStatus.Unknown, Timestamp = DateTime.UtcNow, TimelineId = _currentTimeline.TimelineId};
+                break;
+            default:
                 {
                     var playerScores = new List<IPlayerScore>();
 
@@ -82,22 +93,28 @@ public class MatchTracker : IMatchTracker
                         Section = scoreArgs.Section,
                         Teams = scoreArgs.Teams.Select(t => new TeamScore
                         {
-                            TeamId = t.Id,
-                            TeamName = t.Name,
-                            RoundPoints = t.RoundPoints,
-                            MapPoints = t.MapPoints,
-                            MatchPoints = t.MatchPoints
+                            TeamId = t?.Id ?? 0,
+                            TeamName = t?.Name ?? "",
+                            RoundPoints = t?.RoundPoints ?? 0,
+                            MapPoints = t?.MapPoints ?? 0,
+                            MatchPoints = t?.MatchPoints ?? 0
                         }),
-                        Players = playerScores
+                        Players = playerScores,
+                        TimelineId = _currentTimeline.TimelineId
                     };
+                    break;
                 }
-                break;
-            default:
-                state = new MatchState {Status = MatchStatus.Unknown, Timestamp = DateTime.UtcNow};
-                break;
         }
         
-        _currentTimelime.States.Add(state);
+        _currentTimeline.States.Add(state);
+
+        if (_settings.ImmediateStoring)
+        {
+            await _trackerStore.SaveState(state);
+        }
+        
+        await _events.RaiseAsync(MatchTrackerEvent.StateTracked,
+            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
 
         if (scoreArgs.Section == ModeScriptSection.EndMatch && _settings.AutomaticMatchEnd)
         {
@@ -105,26 +122,77 @@ public class MatchTracker : IMatchTracker
         }
     }
 
-    public Task TrackChatMessageAsync()
+    public async Task<Guid> BeginMatchAsync()
     {
-        throw new NotImplementedException();
-    }
-
-    public Task BeginMatchAsync()
-    {
+        if (IsTracking)
+        {
+            await EndMatchAsync();
+        }
+        
         _status = MatchStatus.Started;
-        _currentTimelime = new MatchTimeline();
-        return Task.CompletedTask;
+        _currentTimeline = new MatchTimeline();
+        IsTracking = true;
+
+        var state = new MatchState
+        {
+            TimelineId = _currentTimeline.TimelineId, Status = MatchStatus.Started, Timestamp = DateTime.UtcNow
+        };
+        
+        _currentTimeline.States.Add(state);
+        
+        await _events.RaiseAsync(MatchTrackerEvent.StateTracked,
+            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+
+        if (_settings.ImmediateStoring)
+        {
+            await _trackerStore.SaveState(state);
+        }
+
+        return _currentTimeline.TimelineId;
     }
 
-    public Task<IMatchTimeline> EndMatchAsync()
+    public async Task<IMatchTimeline> EndMatchAsync()
     {
-        if (_status == MatchStatus.Ended)
+        if (!IsTracking)
         {
             throw new InvalidOperationException("Cannot end a match that has already ended.");
         }
         
         _status = MatchStatus.Ended;
-        return Task.FromResult(_currentTimelime);
+        IsTracking = false;
+
+        var state = new MatchState
+        {
+            TimelineId = _currentTimeline.TimelineId, Status = MatchStatus.Ended, Timestamp = DateTime.UtcNow
+        };
+        
+        _currentTimeline.States.Add(state);
+        
+        await _events.RaiseAsync(MatchTrackerEvent.StateTracked,
+            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+
+        if (_settings.ImmediateStoring)
+        {
+            await _trackerStore.SaveState(state);
+        }
+        else
+        {
+            await _trackerStore.SaveTimelineAsync(_currentTimeline);
+        }
+        
+        return _currentTimeline;
+    }
+
+    private async Task  VerifyTracker()
+    {
+        if (!_settings.AutomaticTracking && !IsTracking)
+        {
+            throw new InvalidOperationException("Trying to track a un-started match with automatic tracking disabled.");
+        }
+
+        if (_settings.AutomaticTracking && !IsTracking)
+        {
+            await BeginMatchAsync();
+        }
     }
 }

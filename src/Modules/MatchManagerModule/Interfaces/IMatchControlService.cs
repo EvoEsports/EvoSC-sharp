@@ -1,7 +1,11 @@
 ﻿namespace EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 
-public interface IFlowControlService
+public interface IMatchControlService
 {
+    public Task<Guid> StartMatch();
+
+    public Task<Guid> EndMatch();
+    
     /// <summary>
     /// End the current round.
     /// </summary>
