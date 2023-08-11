@@ -78,6 +78,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanetModule", "src\Mod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanetModule.Tests", "tests\Modules\OpenPlanetModule.Tests\OpenPlanetModule.Tests.csproj", "{E71BF902-1508-418A-8A01-8ECC26C10F79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchManagerModule.Tests", "tests\Modules\MatchManagerModule.Tests\MatchManagerModule.Tests.csproj", "{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -219,6 +221,10 @@ Global
 		{E71BF902-1508-418A-8A01-8ECC26C10F79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E71BF902-1508-418A-8A01-8ECC26C10F79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E71BF902-1508-418A-8A01-8ECC26C10F79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -254,5 +260,6 @@ Global
 		{05630598-5446-4940-B2AA-FC6C0DD94A10} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{B3B78CE6-2EE5-4175-911B-C33792F5745A} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{E71BF902-1508-418A-8A01-8ECC26C10F79} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 	EndGlobalSection
 EndGlobal

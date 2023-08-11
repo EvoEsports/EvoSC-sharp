@@ -23,7 +23,7 @@ public class MatchControlService : IMatchControlService
         _matchTracker = matchTracker;
     }
 
-    public async Task<Guid> StartMatch()
+    public async Task<Guid> StartMatchAsync()
     {
         await RestartMatchAsync();
         var timelineId = await _matchTracker.BeginMatchAsync();
@@ -33,7 +33,7 @@ public class MatchControlService : IMatchControlService
         return timelineId;
     }
 
-    public async Task<Guid> EndMatch()
+    public async Task<Guid> EndMatchAsync()
     {
         var timeline = await _matchTracker.EndMatchAsync();
 

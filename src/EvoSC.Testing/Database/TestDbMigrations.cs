@@ -2,7 +2,7 @@
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EvoSC.Common.Tests.Database;
+namespace EvoSC.Testing.Database;
 
 public static class TestDbMigrations
 {

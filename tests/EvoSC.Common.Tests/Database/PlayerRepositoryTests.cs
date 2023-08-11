@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository.Players;
 using EvoSC.Common.Interfaces.Database;
-using EvoSC.Common.Tests.Database.Setup;
+using EvoSC.Testing.Database;
 using GbxRemoteNet.Structs;
 using LinqToDB;
 using Microsoft.Data.Sqlite;
@@ -16,7 +17,7 @@ public class PlayerRepositoryTests
     [Fact]
     public async Task Player_Added_To_Database()
     {
-        var factory = TestDbSetup.CreateFullDb();
+        var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         var db = factory.GetConnection();
         var playerRepo = new PlayerRepository(factory);
 
@@ -37,7 +38,7 @@ public class PlayerRepositoryTests
     [Fact]
     public void Player_With_Same_Account_ID_Fails()
     {
-        var factory = TestDbSetup.CreateFullDb();
+        var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         var playerRepo = new PlayerRepository(factory);
 
         Assert.Throws<System.Data.SQLite.SQLiteException>(() =>
@@ -59,7 +60,7 @@ public class PlayerRepositoryTests
     [Fact]
     public async Task Get_Player_By_Account_ID_Returns_Correct()
     {
-        var factory = TestDbSetup.CreateFullDb();
+        var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         var playerRepo = new PlayerRepository(factory);
 
         await playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
@@ -76,7 +77,7 @@ public class PlayerRepositoryTests
     [Fact]
     public async Task Player_Last_Visit_Updated()
     {
-        var factory = TestDbSetup.CreateFullDb();
+        var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         var db = factory.GetConnection();
         var playerRepo = new PlayerRepository(factory);
 

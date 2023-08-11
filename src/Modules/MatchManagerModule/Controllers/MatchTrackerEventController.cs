@@ -13,14 +13,11 @@ namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 [Controller]
 public class MatchTrackerEventController : EvoScController<IEventControllerContext>
 {
-    private readonly ILogger<MatchTrackerEventController> _logger;
     private readonly ITrackerSettings _settings;
     private readonly IMatchTracker _tracker;
 
-    public MatchTrackerEventController(ILogger<MatchTrackerEventController> logger, ITrackerSettings settings,
-        IMatchTracker tracker)
+    public MatchTrackerEventController(ITrackerSettings settings, IMatchTracker tracker)
     {
-        _logger = logger;
         _settings = settings;
         _tracker = tracker;
     }

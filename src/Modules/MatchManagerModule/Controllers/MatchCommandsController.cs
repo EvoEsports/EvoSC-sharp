@@ -27,7 +27,7 @@ public class MatchCommandsController : EvoScController<ICommandInteractionContex
     [ChatCommand("startmatch", "Start a match.", MatchControlPermissions.StartMatch)]
     public async Task StartMatchAsync()
     {
-        var trackingId = await _matchControl.StartMatch();
+        var trackingId = await _matchControl.StartMatchAsync();
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MatchStarted)
@@ -38,7 +38,7 @@ public class MatchCommandsController : EvoScController<ICommandInteractionContex
     [ChatCommand("endmatch", "End a match.", MatchControlPermissions.EndMatch)]
     public async Task EndMatchAsync()
     {
-        var trackingId = await _matchControl.EndMatch();
+        var trackingId = await _matchControl.EndMatchAsync();
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MatchEnded)

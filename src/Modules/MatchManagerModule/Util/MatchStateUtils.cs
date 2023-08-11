@@ -11,6 +11,6 @@ public static class MatchStateUtils
             return matchState;
         }
 
-        return state;
+        return state as IMatchState;
     }
 }
