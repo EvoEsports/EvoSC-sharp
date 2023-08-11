@@ -6,6 +6,7 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Models.Database;
+using EvoSC.Modules.Official.MatchManagerModule.Util;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 
@@ -23,12 +24,13 @@ public class MatchRecordRepository : DbRepository, IMatchRecordRepository
 
     public async Task<DbMatchRecord> InsertStateAsync(IMatchState state)
     {
-        var report = JsonSerializer.Serialize(state);
+        var report = JsonSerializer.Serialize(state.CastToSuperClass());
         var record = new DbMatchRecord
         {
             TimelineId = state.TimelineId,
             Report = report,
-            Timestamp = state.Timestamp
+            Timestamp = state.Timestamp,
+            Status = state.Status
         };
 
         try
