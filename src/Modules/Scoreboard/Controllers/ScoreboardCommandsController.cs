@@ -25,20 +25,6 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
     [ChatCommand("sb", "[Command.ShowScoreboard]")]
     public async Task ShowScoreboard()
     {
-        /*
-        Server::triggerModeScriptEvent('Common.UIModules.SetProperties', [json_encode([
-            'uimodules' => $uiProperties
-        ])]);
-
-        {
-          "id": "Race_ScoresTable",
-          "position": [-50,0],
-          "scale": 1,
-          "visible": false,
-          "visible_update": true
-        }
-         */
-
         var hudSettings = new List<string>()
         {
             @"
@@ -59,5 +45,22 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
 
         await _manialinks.SendManialinkAsync(Context.Player, "Scoreboard.Scoreboard",
             new { Locale = _locale, MaxPlayers = 64 });
+    }
+
+    [ChatCommand("fake", "[Command.FakePlayer]")]
+    public async Task FakePlayer()
+    {
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
+        await _server.Remote.ConnectFakePlayerAsync();
     }
 }
