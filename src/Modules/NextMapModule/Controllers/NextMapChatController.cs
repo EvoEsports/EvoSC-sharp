@@ -4,9 +4,9 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.NextMapModule.Interfaces;
 
-namespace EvoSC.Modules.Official.Maps.Controllers;
+namespace EvoSC.Modules.Official.NextMapModule.Controllers;
 
 [Controller]
 public class NextMapChatController : EvoScController<ICommandInteractionContext>

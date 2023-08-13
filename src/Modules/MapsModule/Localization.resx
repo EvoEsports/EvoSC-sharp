@@ -46,7 +46,4 @@
   <data name="MapRemovedFailed" xml:space="preserve">
     <value>Failed removing map with ID {0}</value>
   </data>
-  <data name="NextMap" xml:space="preserve">
-    <value>Next map: $&lt;{0}$&gt; by $&lt;{1}$&gt;</value>
-  </data>
 </root>

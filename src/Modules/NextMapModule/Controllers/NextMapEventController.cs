@@ -5,14 +5,14 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.NextMapModule.Interfaces;
 
-namespace EvoSC.Modules.Official.Maps.Controllers;
+namespace EvoSC.Modules.Official.NextMapModule.Controllers;
 
 [Controller]
 public class NextMapEventController : EvoScController<IEventControllerContext>
 {
-    private const string Template = "Maps.NextMap";
+    private const string Template = "NextMapModule.NextMap";
     
     private readonly INextMapService _nextMapService;
     private readonly IManialinkManager _manialinkManager;

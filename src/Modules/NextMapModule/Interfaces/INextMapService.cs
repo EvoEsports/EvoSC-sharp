@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Modules.Official.Maps.Interfaces;
+namespace EvoSC.Modules.Official.NextMapModule.Interfaces;
 
 public interface INextMapService
 {

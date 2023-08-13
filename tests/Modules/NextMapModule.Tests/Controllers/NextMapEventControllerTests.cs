@@ -2,16 +2,17 @@
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.Maps.Controllers;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.NextMapModule.Controllers;
+using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing.Controllers;
 using Moq;
+using Xunit;
 
-namespace EvoSC.Modules.Official.MapsModule.Tests.Controllers;
+namespace EvoSC.Modules.Official.NextMapModule.Tests.Controllers;
 
 public class NextMapEventControllerTests : ControllerMock<NextMapEventController, IEventControllerContext>
 {
-    private const string Template = "Maps.NextMap";
+    private const string Template = "NextMapModule.NextMap";
 
     private readonly Mock<INextMapService> _nextMapService = new();
     private readonly Mock<IManialinkManager> _manialinkManager = new();

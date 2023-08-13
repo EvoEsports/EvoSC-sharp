@@ -2,14 +2,15 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Modules.Official.Maps.Controllers;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.NextMapModule.Controllers;
+using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using Moq;
+using Xunit;
 
-namespace EvoSC.Modules.Official.MapsModule.Tests.Controllers;
+namespace EvoSC.Modules.Official.NextMapModule.Tests.Controllers;
 
 public class NextMapChatControllerTests : CommandInteractionControllerTestBase<NextMapChatController>
 {

@@ -1,21 +1,15 @@
 ﻿using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Services;
-using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.Maps.Services;
-using EvoSC.Testing;
+using EvoSC.Modules.Official.NextMapModule.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Xunit;
 
-namespace EvoSC.Modules.Official.MapsModule.Tests.Services;
+namespace EvoSC.Modules.Official.NextMapModule.Tests.Services;
 
 public class NextMapServiceTests
 {
-    private const string Template = "Maps.NextMap";
-
     private readonly Mock<ILogger<NextMapService>> _mockLogger = new();
     private readonly Mock<IMapService> _mockMapService = new();
 

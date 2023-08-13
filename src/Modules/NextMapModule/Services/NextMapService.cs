@@ -2,10 +2,10 @@
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Modules.Official.Maps.Services;
+namespace EvoSC.Modules.Official.NextMapModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class NextMapService : INextMapService

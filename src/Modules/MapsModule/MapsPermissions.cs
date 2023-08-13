@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using EvoSC.Common.Permissions.Attributes;
 
-namespace EvoSC.Modules.Official.Maps;
+namespace EvoSC.Modules.Official.MapsModule;
 
 [PermissionGroup]
 public enum MapsPermissions

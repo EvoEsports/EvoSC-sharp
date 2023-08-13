@@ -2,7 +2,7 @@
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
 
-namespace EvoSC.Modules.Official.Maps;
+namespace EvoSC.Modules.Official.MapsModule;
 
 [Module(IsInternal = true)]
 public class MapsModule : EvoScModule, IToggleable
