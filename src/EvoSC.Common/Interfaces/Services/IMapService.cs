@@ -54,4 +54,10 @@ public interface IMapService
     /// </summary>
     /// <returns></returns>
     public Task<IMap> GetOrAddCurrentMapAsync();
+
+    /// <summary>
+    /// Get the next map on the server
+    /// </summary>
+    /// <returns></returns>
+    public Task<IMap?> GetNextMapAsync();
 }

@@ -9,9 +9,12 @@ public class MapsModule : EvoScModule, IToggleable
 {
     private readonly IMapService _maps;
 
-    public MapsModule(IMapService maps) => _maps = maps;
+    public MapsModule(IMapService maps)
+    {
+        _maps = maps;
+    }
 
-    public Task EnableAsync() => _maps.AddCurrentMapListAsync();
+    public async Task EnableAsync() => await _maps.AddCurrentMapListAsync();
 
     public Task DisableAsync() => Task.CompletedTask;
 }

@@ -12,7 +12,7 @@ using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace EvoSC.Modules.Official.MapsModule.Tests;
+namespace EvoSC.Modules.Official.MapsModule.Tests.Controllers;
 
 public class MapsControllerTests : CommandInteractionControllerTestBase<MapsController>
 {
