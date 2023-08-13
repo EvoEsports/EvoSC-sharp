@@ -80,7 +80,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanetModule.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextMapModule", "src\Modules\NextMapModule\NextMapModule.csproj", "{64688FA7-136C-4BB9-B716-4E96DD0AA82F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextMapModule.Tests", "Tests\Modules\NextMapModule.Tests\NextMapModule.Tests.csproj", "{6ED33E82-DE98-4246-9763-06C80EDAE6C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextMapModule.Tests", "tests\Modules\NextMapModule.Tests\NextMapModule.Tests.csproj", "{6ED33E82-DE98-4246-9763-06C80EDAE6C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
