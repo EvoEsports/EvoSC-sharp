@@ -1,9 +1,7 @@
 ﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Manialinks.Interfaces;
@@ -26,7 +24,7 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public async Task ShowNextMapOnPodiumStart(object sender, PodiumEventArgs args)
+    public async Task ShowNextMapOnPodiumStartAsync(object sender, PodiumEventArgs args)
     {
         var nextMap = await _nextMapService.GetNextMapAsync();
         await _manialinkManager.SendManialinkAsync(Template,
@@ -34,7 +32,7 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     }
 
     [Subscribe(ModeScriptEvent.PodiumEnd)]
-    public async Task HideNextMapOnPodiumEnd(object sender, PodiumEventArgs args)
+    public async Task HideNextMapOnPodiumEndAsync(object sender, PodiumEventArgs args)
     {
         await _manialinkManager.HideManialinkAsync(Template);
     }

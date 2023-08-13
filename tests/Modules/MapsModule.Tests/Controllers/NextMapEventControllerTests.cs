@@ -36,7 +36,7 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
         };
         _nextMapService.Setup(r => r.GetNextMapAsync()).Returns(Task.FromResult((IMap) map));
 
-        await Controller.ShowNextMapOnPodiumStart(new(), null);
+        await Controller.ShowNextMapOnPodiumStartAsync(new(), null);
         _manialinkManager.Verify(m => m.SendManialinkAsync(Template, It.IsAny<object>()), Times.Once());
     }
 
@@ -54,7 +54,7 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
         };
         _nextMapService.Setup(r => r.GetNextMapAsync()).Returns(Task.FromResult((IMap) map));
         
-        await Controller.HideNextMapOnPodiumEnd(new(), null);
+        await Controller.HideNextMapOnPodiumEndAsync(new(), null);
         _manialinkManager.Verify(r => r.HideManialinkAsync(Template), Times.Once);
     }
 }

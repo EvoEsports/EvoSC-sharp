@@ -1,5 +1,4 @@
-﻿using System.Data;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
 
 namespace EvoSC.Common.Interfaces.Services;
