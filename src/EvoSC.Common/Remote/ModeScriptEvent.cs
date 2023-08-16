@@ -65,6 +65,35 @@ public enum ModeScriptEvent
     PodiumEnd,
     
     /// <summary>
+    /// Sent when the "StartRound" section in a gamemode starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartRound_Start")]
+    StartRoundStart,
+    
+    /// <summary>
+    /// Sent when the "StartRound" section in a gamemode ends.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartRound_End")]
+    StartRoundEnd,
+    
+    [Identifier(Name = "ModeScript.EndRound_Start")]
+    EndRoundStart,
+    
+    [Identifier(Name = "ModeScript.EndRound_End")]
+    EndRoundEnd,
+    
+    [Identifier(Name = "ModeScript.StartMap_Start")]
+    StartMapStart,
+    
+    [Identifier(Name = "ModeScript.StartMap_End")]
+    StartMapEnd,
+    
+    [Identifier(Name = "ModeScript.EndMap_Start")]
+    EndMapStart,
+    
+    [Identifier(Name = "ModeScript.EndMap_End")]
+    EndMapEnd,
+    /// <summary>
     /// When any Mode Script callback was called.
     /// </summary>
     [Identifier(Name = "ModeScript.Any")]

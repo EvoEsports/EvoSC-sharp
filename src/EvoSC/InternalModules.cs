@@ -1,8 +1,10 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.CurrentMapModule;
+using EvoSC.Modules.Official.ASayModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCp;
+using EvoSC.Modules.Official.LiveRankingModule;
 using EvoSC.Modules.Official.Maps;
 using EvoSC.Modules.Official.MatchManagerModule;
 using EvoSC.Modules.Official.ModuleManagerModule;
@@ -27,7 +29,10 @@ public static class InternalModules
         typeof(FastestCpModule),
         typeof(ModuleManagerModule),
         typeof(CurrentMapModule),
-        typeof(MotdModule)
+        typeof(MotdModule),
+        typeof(LiveRankingModule),
+        typeof(ASayModule)
+        
     };
 
     /// <summary>

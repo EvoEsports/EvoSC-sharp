@@ -26,4 +26,11 @@ public static class FormattingUtils
         
         return $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
     }
+
+    public static string FormatTimeAsDelta(int milliseconds)
+    {
+        var ms = milliseconds % 1000;
+        var s = milliseconds / 1000 % 60;
+        return $"+ {s:0}.{ms:000}";
+    }
 }
