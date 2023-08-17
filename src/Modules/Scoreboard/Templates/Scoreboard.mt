@@ -2,6 +2,7 @@
     <using namespace="System.Linq"/>
 
     <import component="Scoreboard.Components.BackgroundBox" as="Background"/>
+    <import component="Scoreboard.Components.Settings" as="Settings"/>
 
     <property type="int" name="MaxPlayers" default="0"/>
     <property type="double" name="w" default="140"/>
@@ -17,11 +18,11 @@
 
 <!--    <property type="string" name="headerColor" default="0c0f31"/>-->
 <!--    <property type="string" name="color" default="041138"/>-->
-<!--    <property type="string" name="positionColor" default="1b3598"/>-->
+<!--    <property type="string" name="primaryColor" default="1b3598"/>-->
 
     <property type="string" name="headerColor" default="111111"/>
-    <property type="string" name="color" default="222222"/>
-    <property type="string" name="positionColor" default="bb0755"/>
+    <property type="string" name="backgroundColor" default="222222"/>
+    <property type="string" name="primaryColor" default="bb0755"/>
 
     <template layer="ScoresTable">
         <framemodel id="PointsBackground">
@@ -67,35 +68,35 @@
             <frame size="1 1">
                 <!-- top left corner -->
                 <quad size="2 2"
-                      modulatecolor="{{ positionColor }}"
+                      modulatecolor="{{ primaryColor }}"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
             <frame size="1 1" pos="{{ rowHeight * 1.2 }} {{ -rowHeight }}" rot="180">
                 <!-- bottom right corner -->
                 <quad size="2 2"
-                      modulatecolor="{{ positionColor }}"
+                      modulatecolor="{{ primaryColor }}"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
             <frame size="1 1" pos="{{ rowHeight * 1.2 }} 0" rot="90">
                 <!-- top right corner -->
                 <quad size="2 2"
-                      modulatecolor="{{ positionColor }}"
+                      modulatecolor="{{ primaryColor }}"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
             <frame size="1 1" pos="0 {{ -rowHeight }}" rot="-90">
                 <!-- bottom left -->
                 <quad size="2 2"
-                      modulatecolor="{{ positionColor }}"
+                      modulatecolor="{{ primaryColor }}"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
-            <quad pos="1 0" size="{{ rowHeight * 1.2 - 2.0 }} 1" bgcolor="{{ positionColor }}"/> <!-- top bar -->
+            <quad pos="1 0" size="{{ rowHeight * 1.2 - 2.0 }} 1" bgcolor="{{ primaryColor }}"/> <!-- top bar -->
             <quad pos="1 {{ 1.0 - rowHeight }}" size="{{ rowHeight * 1.2 - 2.0 }} 1"
-                  bgcolor="{{ positionColor }}"/> <!-- bottom bar -->
-            <quad pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="{{ positionColor }}"/> <!-- left bar -->
+                  bgcolor="{{ primaryColor }}"/> <!-- bottom bar -->
+            <quad pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="{{ primaryColor }}"/> <!-- left bar -->
             <quad pos="{{ rowHeight * 1.2 - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}"
-                  bgcolor="{{ positionColor }}"/> <!-- right bar -->
+                  bgcolor="{{ primaryColor }}"/> <!-- right bar -->
             <quad pos="1 -1" size="{{ rowHeight * 1.2 - 2.0 }} {{ rowHeight - 2.0 }}"
-                  bgcolor="{{ positionColor }}"/> <!-- center quad -->
+                  bgcolor="{{ primaryColor }}"/> <!-- center quad -->
         </framemodel>
 
         <framemodel id="player_row">
@@ -174,7 +175,7 @@
                    valign="center" 
                    halign="right" 
                    textsize="2.4"
-                   textcolor="{{ positionColor }}"
+                   textcolor="{{ primaryColor }}"
                    textfont="GameFontSemiBold"/>
 
             <!-- Custom Label (FINALIST, etc) -->
@@ -208,7 +209,13 @@
                            size="{{ pointsWidth }} {{ rowHeight }}" scale="0.65" hidden="1"/>
             <label id="points"
                    pos="{{ w - padding - (pointsWidth * 0.75) / 2.0 - rowHeight * 0.25 * 0.5 }} {{ rowHeight / -2.0 + 0.4 }}"
-                   text="x" valign="center" halign="center" textsize="2.6" textcolor="333" textfont="GameFontRegular"/>
+                   text="x" 
+                   valign="center" 
+                   halign="center" 
+                   textsize="2" 
+                   textcolor="333" 
+                   textfont="GameFontSemiBold"
+            />
         </framemodel>
 
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
@@ -216,8 +223,8 @@
                         radius="{{ backgroundBorderRadius }}"
                         headerHeight="{{ headerHeight }}"
                         headerColor="{{ headerColor }}"
-                        color="{{ color }}"
-                        gradientColor="{{ positionColor }}"
+                        color="{{ backgroundColor }}"
+                        gradientColor="{{ primaryColor }}"
             />
 
             <label id="map_name" pos="5 -7.5" text="MAP NAME" valign="center" textsize="3.3" textfont="GameFontBlack"/>
@@ -228,21 +235,21 @@
                 <frame size="1 1" pos="-2.6 3" rot="90">
                     <!-- top right corner -->
                     <quad size="2 2"
-                          modulatecolor="{{ positionColor }}"
+                          modulatecolor="{{ primaryColor }}"
                           image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
                 </frame>
-                <quad pos="-3.6 2" size="1 6.3" bgcolor="{{ positionColor }}"/> <!-- right bar -->
+                <quad pos="-3.6 2" size="1 6.3" bgcolor="{{ primaryColor }}"/> <!-- right bar -->
                 <frame size="1 1" pos="-2.6 -5.3" rot="180">
                     <!-- bottom right corner -->
                     <quad size="2 2"
-                          modulatecolor="{{ positionColor }}"
+                          modulatecolor="{{ primaryColor }}"
                           image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
                 </frame>
                 
                 <quad size="8.3 90"
                       rot="-90"
                       pos="-48.6 3.0"
-                      modulatecolor="{{ positionColor }}"
+                      modulatecolor="{{ primaryColor }}"
                       halign="right"
                       valign="center"
                       image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"/>
@@ -264,19 +271,45 @@
                 />
             </frame>
             
+            <!-- Sub Text (Below highlighted box) -->
             <label id="sub_text"
-                   pos="{{ w - 3.5 }} -14.5" 
+                   pos="{{ w - 7 }} -14.5" 
                    textcolor="fff" 
                    valign="center" 
                    halign="right"
                    textsize="1"
-                   textfont="GameFontRegular"/>
+                   textfont="GameFontRegular"
+            />
 
-            <frame id="frame_scroll" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ h - padding }}">
-                <frameinstance modelid="player_row"
-                               foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
-                               pos="0 {{ -rowId * (rowHeight + rowSpacing) }}"
-                />
+            <!-- Settings Icon -->
+            <label id="settings_icon"
+                   pos="{{ w - 4.5 }} -14.7" 
+                   size="5 5"
+                   textcolor="fff" 
+                   valign="center" 
+                   halign="center"
+                   textsize="1"
+                   text=""
+                   textfont="GameFontRegular"
+                   ScriptEvents="1"
+                   focusareacolor1="0000"
+                   focusareacolor2="0000"
+            />
+
+            <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ h - padding }}">
+                <frame id="rows_inner">
+                    <frame pos="{{ padding }} {{ h + padding }}">
+                        <frame pos="{{ padding }} {{ -padding }}">
+                            <Settings w="{{ w - padding * 2.0 }}" h="{{ h - padding * 2.0 }}" />
+                        </frame>
+                    </frame>
+                    <frame id="frame_scroll" size="{{ w }} {{ h - padding }}">
+                        <frameinstance modelid="player_row"
+                                       foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
+                                       pos="0 {{ -rowId * (rowHeight + rowSpacing) }}"
+                        />
+                    </frame>
+                </frame>
             </frame>
         </frame>
     </template>
@@ -308,6 +341,7 @@
         
         declare Integer CurrentScoreMode;
         declare CMlFrame RowsFrame;
+        declare Boolean SettingsVisible;
         
         Boolean ShouldShowPointsBox() {
             return CurrentScoreMode == C_Mode_LapTime
@@ -447,17 +481,18 @@
                 if (Net_TMxSM_ScoresTable_RaceProgression.Y > 0) {
                     scoreLabel.Value = TL::TimeToText(Net_TMxSM_ScoresTable_RaceProgression.Y, True, True);
                 } else {
-                    scoreLabel.Value = "00:00.000";
+                    scoreLabel.Value = "0:00.000";
                 }
             } else if (CurrentScoreMode == C_Mode_Trophy) {
                 customLabel.Value = "";
-                scoreLabel.Value = "00:00.000"; //todo: implement trophy mode
+                scoreLabel.Value = "0:00.000"; //todo: implement trophy mode
             } else {
                 customLabel.Value = "";
-                scoreLabel.Value = "00:00.000";
+                scoreLabel.Value = "0:00.000";
             }
             
-            scoreTwoLabel.Value = scoreLabel.Value;
+            // scoreTwoLabel.Value = scoreLabel.Value;
+            scoreTwoLabel.Value = "";
             scoreLabel.Value = StripLeadingZeroes(scoreLabel.Value);
             
             if(customLabel.Value != "" || roundPointsLabel.Value != ""){
@@ -505,7 +540,7 @@
 				declare LapsTotal = RaceHelpers::GetLapsNb(Teams[0]);
                 roundLabel.Value = TL::Compose("%1 | %2/%3", _("|Race|Lap"), TL::ToText(LapCurrent), TL::ToText(LapsTotal));
             }else if (CurrentScoreMode == C_Mode_Points) {
-                roundLabel.Value = TL::Compose("ROUND | %2/%3", TL::ToText(-1), TL::ToText(-1));
+                roundLabel.Value = TL::Compose("ROUND | %1/%2", TL::ToText(-1), TL::ToText(-1));
             }else{
                 roundLabel.Value = "";
             }
@@ -579,6 +614,19 @@
             UpdateHeaderInfo();
             UpdateScrollSize(cursor);
         }
+        
+        Void ToggleShowSettings() {
+            declare wrapperInnerFrame <=> (Page.MainFrame.GetFirstChild("rows_inner") as CMlFrame);
+            declare y = 0.0;
+            SettingsVisible = !SettingsVisible;
+        
+            if(SettingsVisible) {
+                y = {{ h + padding }} * -1.0;
+            }
+            
+            declare targetState = "<frame pos='0 " ^ y ^ "' />";
+            AnimMgr.Add(wrapperInnerFrame, targetState, 320, CAnimManager::EAnimManagerEasing::ExpInOut);
+        }
         -->
     </script>
 
@@ -598,6 +646,7 @@
             RowsFrame.ScrollGrid = <0.0, {{ rowHeight + rowSpacing }} * 1.0>;
             
             CurrentScoreMode = -1;
+            SettingsVisible = False;
         ***
         
         *** OnLoop *** 
@@ -611,6 +660,13 @@
                 CurrentScoreMode = Net_TMxSM_ScoresTable_ScoreMode;
                 UpdateScoreboardLayout();
                 log("[EvoSC#] Update scoreboard layout.");
+            }
+        ***
+        
+        *** OnMouseClick *** 
+        ***
+            if (Event.Control.ControlId == "settings_icon") {
+                ToggleShowSettings();
             }
         ***
         -->
