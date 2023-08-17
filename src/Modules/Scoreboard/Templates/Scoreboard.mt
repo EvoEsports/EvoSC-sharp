@@ -7,13 +7,21 @@
     <property type="double" name="w" default="140"/>
     <property type="double" name="h" default="71.2"/>
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
-    <property type="double" name="headerHeight" default="18.0"/>
+    <property type="double" name="headerHeight" default="19.0"/>
     <property type="double" name="rowHeight" default="8.0"/>
+    <property type="double" name="rowInnerHeight" default="5.0"/>
     <property type="double" name="pointsWidth" default="16.0"/>
     <property type="double" name="rowSpacing" default="0.6"/>
     <property type="double" name="padding" default="3.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
-    <property type="string" name="positionColor" default="1b3598" />
+
+<!--    <property type="string" name="headerColor" default="0c0f31"/>-->
+<!--    <property type="string" name="color" default="041138"/>-->
+<!--    <property type="string" name="positionColor" default="1b3598"/>-->
+
+    <property type="string" name="headerColor" default="111111"/>
+    <property type="string" name="color" default="222222"/>
+    <property type="string" name="positionColor" default="bb0755"/>
 
     <template layer="ScoresTable">
         <framemodel id="PointsBackground">
@@ -45,13 +53,16 @@
                       modulatecolor="fff"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
-            <quad class="set" pos="1 0" size="{{ pointsWidth - 2.0 }} 1" bgcolor="fff" /> <!-- top bar -->
-            <quad class="set" pos="1 {{ 1.0 - rowHeight }}" size="{{ pointsWidth - 2.0 }} 1" bgcolor="fff" /> <!-- bottom bar -->
-            <quad class="set" pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="fff" /> <!-- left bar -->
-            <quad class="set" pos="{{ pointsWidth - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="fff" /> <!-- right bar -->
-            <quad class="set" pos="1 -1" size="{{ pointsWidth - 2.0 }} {{ rowHeight - 2.0 }}" bgcolor="fff" /> <!-- center quad -->
+            <quad class="set" pos="1 0" size="{{ pointsWidth - 2.0 }} 1" bgcolor="fff"/> <!-- top bar -->
+            <quad class="set" pos="1 {{ 1.0 - rowHeight }}" size="{{ pointsWidth - 2.0 }} 1"
+                  bgcolor="fff"/> <!-- bottom bar -->
+            <quad class="set" pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="fff"/> <!-- left bar -->
+            <quad class="set" pos="{{ pointsWidth - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}"
+                  bgcolor="fff"/> <!-- right bar -->
+            <quad class="set" pos="1 -1" size="{{ pointsWidth - 2.0 }} {{ rowHeight - 2.0 }}"
+                  bgcolor="fff"/> <!-- center quad -->
         </framemodel>
-        
+
         <framemodel id="PositionBackground">
             <frame size="1 1">
                 <!-- top left corner -->
@@ -77,75 +88,189 @@
                       modulatecolor="{{ positionColor }}"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
-            <quad pos="1 0" size="{{ rowHeight * 1.2 - 2.0 }} 1" bgcolor="{{ positionColor }}" /> <!-- top bar -->
-            <quad pos="1 {{ 1.0 - rowHeight }}" size="{{ rowHeight * 1.2 - 2.0 }} 1" bgcolor="{{ positionColor }}" /> <!-- bottom bar -->
-            <quad pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="{{ positionColor }}" /> <!-- left bar -->
-            <quad pos="{{ rowHeight * 1.2 - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="{{ positionColor }}" /> <!-- right bar -->
-            <quad pos="1 -1" size="{{ rowHeight * 1.2 - 2.0 }} {{ rowHeight - 2.0 }}" bgcolor="{{ positionColor }}" /> <!-- center quad -->
+            <quad pos="1 0" size="{{ rowHeight * 1.2 - 2.0 }} 1" bgcolor="{{ positionColor }}"/> <!-- top bar -->
+            <quad pos="1 {{ 1.0 - rowHeight }}" size="{{ rowHeight * 1.2 - 2.0 }} 1"
+                  bgcolor="{{ positionColor }}"/> <!-- bottom bar -->
+            <quad pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="{{ positionColor }}"/> <!-- left bar -->
+            <quad pos="{{ rowHeight * 1.2 - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}"
+                  bgcolor="{{ positionColor }}"/> <!-- right bar -->
+            <quad pos="1 -1" size="{{ rowHeight * 1.2 - 2.0 }} {{ rowHeight - 2.0 }}"
+                  bgcolor="{{ positionColor }}"/> <!-- center quad -->
         </framemodel>
-        
+
         <framemodel id="player_row">
             <!-- Scroll activation -->
             <quad size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
-            
+
             <!-- Background -->
-            <quad pos="{{ padding + 1.0 }} 0" size="{{ w - padding * 2.0 - 2.0 }} {{ rowHeight }}" bgcolor="0c0f31" opacity="0.93"/>
-            <quad pos="{{ w - padding - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="0c0f31" opacity="0.93" z-index="10"/>
+            <quad pos="{{ padding + 1.0 }} 0" 
+                  size="{{ w - padding * 2.0 - 2.0 }} {{ rowHeight }}"
+                  bgcolor="{{ headerColor }}"
+                  opacity="0.6"/>
+            <quad pos="{{ w - padding - 1.0 }} -1"
+                  size="1 {{ rowHeight - 2.0 }}"
+                  bgcolor="{{ headerColor }}" 
+                  opacity="0.6"
+                  z-index="10"/>
             <frame size="1 1" pos="{{ w - padding }}" rot="90">
                 <!-- top left corner -->
                 <quad size="2 2"
-                      modulatecolor="0c0f31"
-                      opacity="0.93"
+                      modulatecolor="{{ headerColor }}"
+                      opacity="0.6"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
             <frame size="1 1" pos="{{ w - padding }} {{ -rowHeight }}" rot="180">
                 <!-- top left corner -->
                 <quad size="2 2"
-                      modulatecolor="0c0f31"
-                      opacity="0.93"
+                      modulatecolor="{{ headerColor }}"
+                      opacity="0.6"
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
 
             <!-- Position Box -->
-            <frameinstance id="position_box" modelid="PositionBackground" pos="{{ padding }} 0" />
-            <label id="position" pos="{{ padding + (rowHeight * 0.6) }} {{ rowHeight / -2.0 + 0.25 }}" valign="center" halign="center" textsize="2.6" textfont="GameFontBlack"/>
+            <frameinstance id="position_box" modelid="PositionBackground" pos="{{ padding }} 0" z-index="5"/>
+            <label id="position" pos="{{ padding + (rowHeight * 0.6) }} {{ rowHeight / -2.0 + 0.25 }}" valign="center"
+                   halign="center" textsize="2.6" textfont="GameFontBlack" z-index="5"/>
 
-            <frame pos="{{ padding + (rowHeight * 1.2) + innerSpacing }} 0">
+            <frame pos="{{ padding + (rowHeight * 1.2) + innerSpacing * 2.0 }} {{ rowHeight / -2.0 }}">
                 <!-- Flag -->
-                <quad id="flag" size="{{ rowHeight * 0.8 }} {{ rowHeight - innerSpacing * 2.0 }}" pos="{{ innerSpacing }} {{ -innerSpacing }}" bgcolor="00000033"/>
+                <quad id="flag"
+                      size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
+                      valign="center"
+                      image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
+                      alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
+                />
+
+                <!-- Club Tag Background -->
+                <quad id="club_bg"
+                      size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
+                      pos="{{ rowInnerHeight * 2 }}"
+                      valign="center"
+                      modulatecolor="{{ headerColor }}"
+                      image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
+                      alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
+                />
+
+                <!-- Club Tag -->
+                <label id="club"
+                       pos="{{ rowInnerHeight * 3 }} 0.2"
+                       size="5 3"
+                       valign="center"
+                       halign="center"
+                       textsize="0.9"
+                       textfont="GameFontSemiBold"
+                />
                 
-                <frame pos="{{ rowHeight * 0.8 + innerSpacing * 2.0 }} 0">
-                    <label id="club" pos="0 {{ rowHeight / -2.0 + 0.25 }}" valign="center" textsize="2.6" opacity="0.75" textprefix="$i" textfont="GameFontSemiBold"/>
-                    <label id="name" pos="0 {{ rowHeight / -2.0 + 0.25 }}" valign="center" textsize="2.6" textfont="GameFontSemiBold"/>
-                </frame>
+                <!-- Player Name -->
+                <label id="name"
+                       pos="{{ rowInnerHeight * 4 + innerSpacing }} 0.4"
+                       valign="center"
+                       textsize="2.6"
+                       textfont="GameFontSemiBold"/>
             </frame>
-            
+
+            <!-- Round Points -->
+            <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}" 
+                   valign="center" 
+                   halign="right" 
+                   textsize="2.4"
+                   textcolor="{{ positionColor }}"
+                   textfont="GameFontSemiBold"/>
+
+            <!-- Custom Label (FINALIST, etc) -->
+            <label id="custom_label" 
+                   pos="0 {{ rowHeight / -2.0 + 0.3 }}" 
+                   valign="center" 
+                   halign="right" 
+                   textsize="2.4"
+                   textfont="GameFontRegular"/>
+
+            <!-- Player Score -->
+            <label id="score_two" pos="0 {{ rowHeight / -2.0 + 0.4 }}" 
+                   valign="center"
+                   halign="right"
+                   textsize="2.4"
+                   textfont="GameFontRegular" 
+                   opacity="0.1"/>
+            <label id="score" 
+                   pos="0 {{ rowHeight / -2.0 + 0.4 }}" 
+                   valign="center"
+                   halign="right" 
+                   textsize="2.4"
+                   textfont="GameFontRegular"/>
+
             <!-- Points Box -->
-            <label id="score" pos="{{ padding + w - 9.0 }} {{ rowHeight / -2.0 + 0.25 }}" valign="center" halign="right" textsize="2.4" textfont="GameFontRegular"/>
-            <frameinstance id="points_box_outer" modelid="PointsBackground" pos="{{ w - padding - pointsWidth * 0.75 - rowHeight * 0.25 * 0.5 }} {{ rowHeight * 0.25 * -0.5 }}" size="{{ pointsWidth }} {{ rowHeight }}" scale="0.75" />
-            <frameinstance id="points_box" modelid="PointsBackground" pos="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -0.05 }} {{ rowHeight * 0.33 * -0.5 }}" size="{{ pointsWidth }} {{ rowHeight }}" scale="0.65" />
-            <label id="points" pos="{{ w - padding - (pointsWidth * 0.75) / 2.0 - rowHeight * 0.25 * 0.5 }} {{ rowHeight / -2.0 + 0.25 }}" text="x" valign="center" halign="center" textsize="2.6" textcolor="333" textfont="GameFontRegular"/>
+            <frameinstance id="points_box_outer" modelid="PointsBackground"
+                           pos="{{ w - padding - pointsWidth * 0.75 - rowHeight * 0.25 * 0.5 }} {{ rowHeight * 0.25 * -0.5 }}"
+                           size="{{ pointsWidth }} {{ rowHeight }}" scale="0.75" hidden="1"/>
+            <frameinstance id="points_box" modelid="PointsBackground"
+                           pos="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -0.05 }} {{ rowHeight * 0.33 * -0.5 }}"
+                           size="{{ pointsWidth }} {{ rowHeight }}" scale="0.65" hidden="1"/>
+            <label id="points"
+                   pos="{{ w - padding - (pointsWidth * 0.75) / 2.0 - rowHeight * 0.25 * 0.5 }} {{ rowHeight / -2.0 + 0.4 }}"
+                   text="x" valign="center" halign="center" textsize="2.6" textcolor="333" textfont="GameFontRegular"/>
         </framemodel>
 
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
-            <Background w="{{ w }}" h="{{ h }}" radius="{{ backgroundBorderRadius }}" headerHeight="{{ headerHeight }}"/>
+            <Background w="{{ w }}" h="{{ h }}" 
+                        radius="{{ backgroundBorderRadius }}"
+                        headerHeight="{{ headerHeight }}"
+                        headerColor="{{ headerColor }}"
+                        color="{{ color }}"
+                        gradientColor="{{ positionColor }}"
+            />
 
-            <frame pos="{{ w }} -5.5">
-                <quad size="6 80"
+            <label id="map_name" pos="5 -7.5" text="MAP NAME" valign="center" textsize="3.3" textfont="GameFontBlack"/>
+            <label id="author_name" pos="5 -12.5" textprefix="by " text="AUTHOR NAME" valign="center" textsize="1.6"
+                   textfont="GameFontRegular"/>
+
+            <frame pos="{{ w - 0.25 }} -6.5">
+                <frame size="1 1" pos="-2.6 3" rot="90">
+                    <!-- top right corner -->
+                    <quad size="2 2"
+                          modulatecolor="{{ positionColor }}"
+                          image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
+                </frame>
+                <quad pos="-3.6 2" size="1 6.3" bgcolor="{{ positionColor }}"/> <!-- right bar -->
+                <frame size="1 1" pos="-2.6 -5.3" rot="180">
+                    <!-- bottom right corner -->
+                    <quad size="2 2"
+                          modulatecolor="{{ positionColor }}"
+                          image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
+                </frame>
+                
+                <quad size="8.3 90"
                       rot="-90"
-                      pos="-40.0 3.0"
-                      modulatecolor="c22477"
+                      pos="-48.6 3.0"
+                      modulatecolor="{{ positionColor }}"
                       halign="right"
                       valign="center"
-                      image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
-                      opacity="0.6"/>
-                <label id="round_label" text="ROUND 1/?" pos="-3 0.25" valign="center" halign="right" textsize="2" textfont="GameFontBlack"/>
+                      image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"/>
+                <label id="round_label" 
+                       text="ROUND 1/?" 
+                       pos="-4 -2.2"
+                       valign="center"
+                       halign="right"
+                       textsize="1.9"
+                       textfont="GameFontBlack"/>
+                <label id="gradient_label_small" 
+                       text="MODE" 
+                       pos="-4 1.1" 
+                       valign="center"
+                       halign="right"
+                       textsize="0.7"
+                       opacity="0.75"
+                       textfont="GameFontSemiBold"
+                />
             </frame>
-
-            <label id="map_name" pos="5 -6" text="MAP NAME" valign="center" textsize="3" textfont="GameFontSemiBold"/>
-            <label id="author_name" pos="5 -11" text="AUTHOR NAME" valign="center" textsize="1.4" textfont="GameFontRegular"/>
-
-            <label id="sub_text" pos="{{ w - 3.0 }} -11" text="" valign="center" halign="right" textsize="1" opacity="0.9" textfont="GameFontRegular"/>
+            
+            <label id="sub_text"
+                   pos="{{ w - 3.5 }} -14.5" 
+                   textcolor="fff" 
+                   valign="center" 
+                   halign="right"
+                   textsize="1"
+                   textfont="GameFontRegular"/>
 
             <frame id="frame_scroll" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ h - padding }}">
                 <frameinstance modelid="player_row"
@@ -160,7 +285,10 @@
         <!--
         #Include "MathLib" as ML
         #Include "TextLib" as TL
+        #Include "ColorLib" as CL
+        #Include "Libs/Nadeo/ModeLibs/TrackMania/MV_Utils.Script.txt" as MV_Utils
         #Include "ManiaApps/Nadeo/TMxSM/Race/UIModules/ScoresTable_Common.Script.txt" as UIModules_ScoresTable
+        #Include "ManiaApps/Nadeo/TMxSM/Race/UIModules/Helpers_Client.Script.txt" as RaceHelpers
     
         #Const C_Status_Disconnected	0
         #Const C_Status_Spawned			1
@@ -174,7 +302,38 @@
         #Const UIModules_ScoresTable::C_Mode_Laps as C_Mode_Laps
         #Const UIModules_ScoresTable::C_Mode_Trophy as C_Mode_Trophy
         #Const UIModules_ScoresTable::C_Mode_RaceProgression as C_Mode_RaceProgression
-    
+
+        #Const C_CustomPoints_Text 0
+        #Const C_CustomPoints_Color 1
+        
+        declare Integer CurrentScoreMode;
+        declare CMlFrame RowsFrame;
+        
+        Boolean ShouldShowPointsBox() {
+            return CurrentScoreMode == C_Mode_LapTime
+                || CurrentScoreMode == C_Mode_Laps
+                || CurrentScoreMode == C_Mode_Points;
+        }
+        
+        Void UpdateScoreboardLayout() {
+            declare shouldShowPoints = ShouldShowPointsBox();
+            
+            foreach(Control in RowsFrame.Controls){
+                declare playerRow = (Control as CMlFrame);
+                declare pointsBoxOuterFrame = (playerRow.GetFirstChild("points_box_outer") as CMlFrame);
+                declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
+                declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
+                
+                pointsBoxOuterFrame.Visible = shouldShowPoints;
+                pointsBoxFrame.Visible = shouldShowPoints;
+                pointsLabel.Visible = shouldShowPoints;
+            }
+        }
+        
+        Text StripLeadingZeroes(Text input) {
+            return TL::RegexReplace("^[0.:]+", input, "", "");
+        }
+
         Integer[CSmScore] GetSortedScores() {
             declare persistent Boolean[Text] LibScoresTable2_Settings for This;
             declare SortedScores = Integer[CSmScore];
@@ -200,7 +359,7 @@
             return SortedScores.sort();
         }
         
-        Void setOuterPointsColor(CMlFrame pointsBoxOuterFrame, Vec3 color) {
+        Void SetOuterPointsColor(CMlFrame pointsBoxOuterFrame, Vec3 color) {
             Page.GetClassChildren("modulate", pointsBoxOuterFrame, True);
             foreach(Control in Page.GetClassChildren_Result){
                 (Control as CMlQuad).ModulateColor = color;
@@ -211,92 +370,214 @@
             }
         }
         
-        Void updateScoreTable() {
-            declare rowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
+        Void SetCountryFlag(CMlQuad flagQuad, Text login){
+            if(login != "" && !TL::StartsWith("*fakeplayer", login)){
+                flagQuad.ImageUrl = "file://ZoneFlags/Login/" ^ login ^ "/country";
+                flagQuad.ModulateColor = <1.0, 1.0, 1.0>;
+                flagQuad.Opacity = 1.0;
+            }else{
+                flagQuad.ImageUrl = "file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds";
+                flagQuad.ModulateColor = CL::HexToRgb("{{ headerColor }}");
+                flagQuad.Opacity = 0.5;
+            }
+        }
+        
+        Void UpdateScoreAndPoints(CSmScore Score, CMlLabel scoreLabel, CMlLabel scoreTwoLabel, CMlLabel pointsLabel, CMlLabel customLabel, CMlLabel roundPointsLabel){
+            declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
+            declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
+            
+            declare Boolean CustomPointsEnabled = Net_TMxSM_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
+            
+            if (CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy) {
+                if (Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Text)) {
+                    customLabel.Value = Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Text];
+                }else{
+                    customLabel.Value = "";
+                }
+                if (Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Color)) {
+                    customLabel.TextColor = CL::HexToRgb(Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Color]);
+                    customLabel.Opacity = 1.0;
+                }else{
+                    customLabel.TextColor = <1.0, 1.0, 1.0>;
+                    customLabel.Opacity = 0.5;
+                }
+            } else if (CurrentScoreMode == C_Mode_Points) {
+                //SetRacePoints(Frame_RoundPoints, Score.RoundPoints, IsLocalPlayer);
+                customLabel.Value = "";
+                pointsLabel.Value = TL::ToText(Score.Points);
+                
+                if(Score.PrevRaceTimes.count > 0) {
+                    scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
+                }
+                
+                if(Score.RoundPoints != 0){
+                    declare sign = "+";
+                    if(Score.RoundPoints < 0){
+                        sign = "-";
+                    }
+                    roundPointsLabel.Value = sign ^ Score.RoundPoints;
+                }else{
+                    roundPointsLabel.Value = "";
+                }
+            } else if (Net_TMxSM_ScoresTable_CustomTimes.existskey(Score.User.WebServicesUserId)) {
+                customLabel.Value = "";
+                if (Net_TMxSM_ScoresTable_CustomTimes[Score.User.WebServicesUserId] > 0){
+                    scoreLabel.Value = TL::TimeToText(Net_TMxSM_ScoresTable_CustomTimes[Score.User.WebServicesUserId], True, True);
+                } else {
+                    scoreLabel.Value = "nope";
+                }
+            } else if (CurrentScoreMode == C_Mode_BestTime && Score.BestRaceTimes.count > 0) {
+                customLabel.Value = "";
+                scoreLabel.Value = TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True);
+                log(TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True));
+            } else if (CurrentScoreMode == C_Mode_PrevTime && Score.PrevRaceTimes.count > 0) {
+                customLabel.Value = "";
+                scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
+            } else if (CurrentScoreMode == C_Mode_LapTime && Score.BestLapTimes.count > 0) {
+                customLabel.Value = "";
+                scoreLabel.Value = TL::TimeToText(Score.BestLapTimes[Score.BestLapTimes.count - 1], True, True);
+            } else if (CurrentScoreMode == C_Mode_Laps && Score.BestRaceTimes.count > 0) {
+                customLabel.Value = "";
+                scoreLabel.Value = TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True);
+                pointsLabel.Value = ""^Score.BestRaceTimes.count;
+            } else if (CurrentScoreMode == C_Mode_RaceProgression) {
+                customLabel.Value = "";
+                declare netread Int2 Net_TMxSM_ScoresTable_RaceProgression for Score;
+                pointsLabel.Value = ""^Net_TMxSM_ScoresTable_RaceProgression.X;
+                if (Net_TMxSM_ScoresTable_RaceProgression.Y > 0) {
+                    scoreLabel.Value = TL::TimeToText(Net_TMxSM_ScoresTable_RaceProgression.Y, True, True);
+                } else {
+                    scoreLabel.Value = "00:00.000";
+                }
+            } else if (CurrentScoreMode == C_Mode_Trophy) {
+                customLabel.Value = "";
+                scoreLabel.Value = "00:00.000"; //todo: implement trophy mode
+            } else {
+                customLabel.Value = "";
+                scoreLabel.Value = "00:00.000";
+            }
+            
+            scoreTwoLabel.Value = scoreLabel.Value;
+            scoreLabel.Value = StripLeadingZeroes(scoreLabel.Value);
+            
+            if(customLabel.Value != "" || roundPointsLabel.Value != ""){
+                customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X - scoreLabel.ComputeWidth(scoreLabel.Value) - {{ innerSpacing }};
+            }
+            if(roundPointsLabel.Value != ""){
+                roundPointsLabel.RelativePosition_V3.X = customLabel.RelativePosition_V3.X - customLabel.ComputeWidth(customLabel.Value) - {{ innerSpacing * 2.0 }};
+            }
+        }
+        
+        Void SetMapAndAuthorName() {
+            declare mapNameLabel <=> (Page.MainFrame.GetFirstChild("map_name") as CMlLabel);
+            declare authorName <=> (Page.MainFrame.GetFirstChild("author_name") as CMlLabel);
+        
+            mapNameLabel.Value = Map.MapName;
+            authorName.Value = Map.AuthorNickName;
+        }
+        
+        Text GetRecordText() {
+            return "$999AUTHOR TIME | $fff" ^ TL::TimeToText(Map.TMObjective_AuthorTime, True, True) ^ " | " ^ Map.AuthorNickName;
+        }
+        
+        Void UpdateHeaderInfo() {
+            declare subTextLabel <=> (Page.MainFrame.GetFirstChild("sub_text") as CMlLabel);
+            declare gradientSmallLabel <=> (Page.MainFrame.GetFirstChild("gradient_label_small") as CMlLabel);
+            declare roundLabel <=> (Page.MainFrame.GetFirstChild("round_label") as CMlLabel);
+            
+            subTextLabel.Value = GetRecordText();
+            
+            declare Owner <=> MV_Utils::GetOwner(This);
+            
+            if (CurrentScoreMode == C_Mode_BestTime || CurrentScoreMode == C_Mode_PrevTime){
+                declare timeLimit = RaceHelpers::GetTimeLimit(Teams[0]);
+                roundLabel.Value = "TIME LIMIT | ";
+                if(timeLimit <= 0){
+                    roundLabel.Value ^= "UNLIMITED";
+                }else{                   
+                    roundLabel.Value ^= TL::TimeToText(timeLimit);
+                }
+            }else if (CurrentScoreMode == C_Mode_LapTime || CurrentScoreMode == C_Mode_Laps){
+				declare Integer LapCurrent = -1;
+				if(Owner != Null){
+                    declare Integer LapCurrent = RaceHelpers::GetPlayerLap(Owner);
+				}
+				declare LapsTotal = RaceHelpers::GetLapsNb(Teams[0]);
+                roundLabel.Value = TL::Compose("%1 | %2/%3", _("|Race|Lap"), TL::ToText(LapCurrent), TL::ToText(LapsTotal));
+            }else if (CurrentScoreMode == C_Mode_Points) {
+                roundLabel.Value = TL::Compose("ROUND | %2/%3", TL::ToText(-1), TL::ToText(-1));
+            }else{
+                roundLabel.Value = "";
+            }
+            
+            gradientSmallLabel.Value = CurrentServerModeName;
+            SetMapAndAuthorName();
+        }
+        
+        Void UpdateScrollSize(Integer playerRowsFilled) {
+            declare scrollN = 0;
+            if(playerRowsFilled >= 8){
+                scrollN = playerRowsFilled - 8;
+            }
+            RowsFrame.ScrollMax = <0.0, {{ rowHeight + rowSpacing }} * scrollN * 1.0>;
+        }
+        
+        Void UpdateScoreTable() {
             declare cursor = 0;
-            declare isPointsBased = True;
             
             foreach(Score => Weight in GetSortedScores()){
                 declare CUser User <=> Score.User;
-                declare playerRow = (rowsFrame.Controls[cursor] as CMlFrame);
+                declare playerRow = (RowsFrame.Controls[cursor] as CMlFrame);
                 declare positionLabel = (playerRow.GetFirstChild("position") as CMlLabel);
+                declare clubBg = (playerRow.GetFirstChild("club_bg") as CMlQuad);
                 declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
                 declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
-                declare pointsBox = (playerRow.GetFirstChild("points_box") as CMlQuad);
                 declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
                 declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
+                declare scoreTwoLabel = (playerRow.GetFirstChild("score_two") as CMlLabel);
+                declare roundPointsLabel = (playerRow.GetFirstChild("round_points") as CMlLabel);
+                declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
                 declare pointsBoxOuterFrame = (playerRow.GetFirstChild("points_box_outer") as CMlFrame);
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 
                 positionLabel.Value = (cursor + 1) ^ "";
-                clubLabel.Value = TL::StripFormatting(User.ClubTag);
+                clubLabel.Value = User.ClubTag;
                 nameLabel.Value = User.Name;
-                nameLabel.RelativePosition_V3.X = clubLabel.RelativePosition_V3.X + clubLabel.ComputeWidth(clubLabel.Value) + {{ innerSpacing * 0.5 }};
                 
-                flagQuad.ImageUrl = "file://ZoneFlags/Login/" ^ User.Login ^ "/country";
-                
-                if(Score.BestLapTimes.count > 0 && Score.BestLapTimes[Score.BestLapTimes.count - 1] > 0){
-                    scoreLabel.Value = TL::TimeToText(Score.BestLapTimes[Score.BestLapTimes.count - 1], True, True);
-                    scoreLabel.Opacity = 1.0;
+                if(clubLabel.Value != ""){
+                    clubBg.Opacity = 1.0;
                 }else{
-                    scoreLabel.Value = "-"; //no finish
-                    scoreLabel.Opacity = 0.5;
+                    clubBg.Opacity = 0.5;
                 }
                 
-                if(isPointsBased){
-                    pointsLabel.Value = Score.Points ^ "";
-                    scoreLabel.RelativePosition_V3.X = pointsBox.RelativePosition_V3.X - {{ innerSpacing * 2.0 }};
+                UpdateScoreAndPoints(Score, scoreLabel, scoreTwoLabel, pointsLabel, customLabel, roundPointsLabel);
+                SetCountryFlag(flagQuad, User.Login);
+                
+                if(ShouldShowPointsBox()){
+                    scoreLabel.RelativePosition_V3.X = pointsBoxOuterFrame.RelativePosition_V3.X - {{ innerSpacing * 2.0 }};
                     pointsBoxOuterFrame.Show();
                     pointsBoxFrame.Show();
                 }else{
-                    pointsLabel.Value = "";
                     scoreLabel.RelativePosition_V3.X = {{ w - padding - innerSpacing * 2.0 }};
                     pointsBoxOuterFrame.Hide();
                     pointsBoxFrame.Hide();
                 }
+                scoreTwoLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X;
                 
                 playerRow.Show();
-                
-                if(cursor == 0){
-                    //for finalist mode
-                    setOuterPointsColor(pointsBoxOuterFrame, <0.3, 0.8, 0.3>);
-                }
                 
                 cursor += 1;
             }
             
+            //Hide remaining rows
             for(i, cursor, {{ MaxPlayers - 1 }}){
-                declare playerRow = (rowsFrame.Controls[i] as CMlFrame);
-                //declare positionLabel = (playerRow.GetFirstChild("position") as CMlLabel);
-                //declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
-                //positionLabel.Value = (i + 1) ^ "";
-                //nameLabel.Value = "empty_" ^ i;
+                declare playerRow = (RowsFrame.Controls[i] as CMlFrame);
                 playerRow.Hide();
             }
             
-            declare mapNameLabel <=> (Page.MainFrame.GetFirstChild("map_name") as CMlLabel);
-            declare authorName <=> (Page.MainFrame.GetFirstChild("author_name") as CMlLabel);
-            declare subTextLabel <=> (Page.MainFrame.GetFirstChild("sub_text") as CMlLabel);
-            declare roundLabel <=> (Page.MainFrame.GetFirstChild("round_label") as CMlLabel);
-            
-            mapNameLabel.Value = Map.MapName;
-            authorName.Value = Map.AuthorNickName;
-            subTextLabel.Value = "Author time: " ^ TL::TimeToText(Map.TMObjective_AuthorTime, True, True);
-            
-            if(isPointsBased){
-                roundLabel.Value = "ROUND 0/0";
-            }else{
-                roundLabel.Value = CurrentServerModeName;
-            }
-            
-            //TODO: update scroll size
-            declare scrollFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
-            declare scrollN = 0;
-            if(cursor >= 8){
-                scrollN = cursor - 8;
-            }
-            scrollFrame.ScrollMax = <0.0, {{ rowHeight + rowSpacing }} * scrollN * 1.0>;
+            UpdateHeaderInfo();
+            UpdateScrollSize(cursor);
         }
         -->
     </script>
@@ -305,22 +586,31 @@
         <!--
         *** OnInitialization ***
         ***
+            declare netread Integer Net_TMxSM_ScoresTable_ScoreMode for Teams[0];
             declare Integer scoreboardUpdateInterval = 500;
             declare Integer lastScoreboardUpdate = 0;
-            declare scrollFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
+            RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
             
-            scrollFrame.ScrollActive = True;
-            scrollFrame.ScrollGridSnap = True;
-            scrollFrame.ScrollMin = <0.0, 0.0>;
-            scrollFrame.ScrollMax = <0.0, {{ MaxPlayers * (rowHeight + rowSpacing) - h }} * 1.0>;
-            scrollFrame.ScrollGrid = <0.0, {{ rowHeight + rowSpacing }} * 1.0>;
+            RowsFrame.ScrollActive = True;
+            RowsFrame.ScrollGridSnap = True;
+            RowsFrame.ScrollMin = <0.0, 0.0>;
+            RowsFrame.ScrollMax = <0.0, {{ MaxPlayers * (rowHeight + rowSpacing) - h }} * 1.0>;
+            RowsFrame.ScrollGrid = <0.0, {{ rowHeight + rowSpacing }} * 1.0>;
+            
+            CurrentScoreMode = -1;
         ***
         
         *** OnLoop *** 
         ***
             if(lastScoreboardUpdate + scoreboardUpdateInterval < Now){
-                updateScoreTable();
+                UpdateScoreTable();
                 lastScoreboardUpdate = Now;
+            }
+            
+            if(CurrentScoreMode != Net_TMxSM_ScoresTable_ScoreMode){
+                CurrentScoreMode = Net_TMxSM_ScoresTable_ScoreMode;
+                UpdateScoreboardLayout();
+                log("[EvoSC#] Update scoreboard layout.");
             }
         ***
         -->
