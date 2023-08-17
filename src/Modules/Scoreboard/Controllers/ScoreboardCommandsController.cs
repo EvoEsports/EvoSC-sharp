@@ -20,11 +20,7 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
         _manialinks = manialinks;
         _locale = locale;
         _server = server;
-    }
-
-    [ChatCommand("sb", "[Command.ShowScoreboard]")]
-    public async Task ShowScoreboard()
-    {
+        
         var hudSettings = new List<string>()
         {
             @"
@@ -41,8 +37,12 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
 }"
         };
 
-        await _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
-
+        _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
+    }
+    
+    [ChatCommand("sb", "[Command.ShowScoreboard]")]
+    public async Task ShowScoreboard()
+    {
         await _manialinks.SendManialinkAsync(Context.Player, "Scoreboard.Scoreboard",
             new { Locale = _locale, MaxPlayers = 64 });
     }
@@ -50,11 +50,6 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
     [ChatCommand("fake", "[Command.FakePlayer]")]
     public async Task FakePlayer()
     {
-        await _server.Remote.ConnectFakePlayerAsync();
-        await _server.Remote.ConnectFakePlayerAsync();
-        await _server.Remote.ConnectFakePlayerAsync();
-        await _server.Remote.ConnectFakePlayerAsync();
-        await _server.Remote.ConnectFakePlayerAsync();
         await _server.Remote.ConnectFakePlayerAsync();
         await _server.Remote.ConnectFakePlayerAsync();
         await _server.Remote.ConnectFakePlayerAsync();
