@@ -3,24 +3,22 @@ using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Manialinks.Interfaces;
+using EvoSC.Common.Util;
+using EvoSC.Modules.Official.Scoreboard.Interfaces;
 
 namespace EvoSC.Modules.Official.Scoreboard.Controllers;
 
 [Controller]
 public class ScoreboardCommandsController : EvoScController<ICommandInteractionContext>
 {
-    private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
-    private readonly dynamic _locale;
+    private readonly IScoreboardService _scoreboardService;
 
-    public ScoreboardCommandsController(IManialinkManager manialinks, IServerClient server, Locale locale)
+    public ScoreboardCommandsController(IServerClient server, IScoreboardService scoreboardService)
     {
-        _manialinks = manialinks;
-        _locale = locale;
         _server = server;
-        
+        _scoreboardService = scoreboardService;
+
         var hudSettings = new List<string>()
         {
             @"
@@ -43,8 +41,7 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
     [ChatCommand("sb", "[Command.ShowScoreboard]")]
     public async Task ShowScoreboard()
     {
-        await _manialinks.SendManialinkAsync(Context.Player, "Scoreboard.Scoreboard",
-            new { Locale = _locale, MaxPlayers = 64 });
+        await _scoreboardService.ShowScoreboard(Context.Player.GetLogin());
     }
 
     [ChatCommand("fake", "[Command.FakePlayer]")]
