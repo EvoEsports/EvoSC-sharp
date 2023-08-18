@@ -174,9 +174,9 @@
             <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}" 
                    valign="center" 
                    halign="right" 
-                   textsize="2.4"
+                   textsize="2.6"
                    textcolor="{{ primaryColor }}"
-                   textfont="GameFontSemiBold"/>
+                   textfont="GameFontBlack"/>
 
             <!-- Custom Label (FINALIST, etc) -->
             <label id="custom_label" 
@@ -419,7 +419,6 @@
         Void UpdateScoreAndPoints(CSmScore Score, CMlLabel scoreLabel, CMlLabel scoreTwoLabel, CMlLabel pointsLabel, CMlLabel customLabel, CMlLabel roundPointsLabel){
             declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
             declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
-            
             declare Boolean CustomPointsEnabled = Net_TMxSM_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
             
             if (CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy) {
@@ -440,8 +439,16 @@
                 customLabel.Value = "";
                 pointsLabel.Value = TL::ToText(Score.Points);
                 
-                if(Score.PrevRaceTimes.count > 0) {
+                
+                if(Score.PrevRaceTimes.count > 0 && Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1] > 0){
                     scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
+                }else{
+                    declare CSmPlayer Driver for Score;
+                    if(Driver.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned){
+                        scoreLabel.Value = "DNF";
+                    }else{
+                        scoreLabel.Value = "";
+                    }
                 }
                 
                 if(Score.RoundPoints != 0){
@@ -496,10 +503,14 @@
             scoreLabel.Value = StripLeadingZeroes(scoreLabel.Value);
             
             if(customLabel.Value != "" || roundPointsLabel.Value != ""){
-                customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X - scoreLabel.ComputeWidth(scoreLabel.Value) - {{ innerSpacing }};
+                if(scoreLabel.Value == ""){
+                    customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X;
+                }else{
+                    customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X - scoreLabel.ComputeWidth(scoreLabel.Value) - {{ innerSpacing }};
+                }
             }
             if(roundPointsLabel.Value != ""){
-                roundPointsLabel.RelativePosition_V3.X = customLabel.RelativePosition_V3.X - customLabel.ComputeWidth(customLabel.Value) - {{ innerSpacing * 2.0 }};
+                roundPointsLabel.RelativePosition_V3.X = customLabel.RelativePosition_V3.X - customLabel.ComputeWidth(customLabel.Value);
             }
         }
         
@@ -558,8 +569,17 @@
         }
         
         Void UpdateScoreTable() {
+            if (CurrentScoreMode == C_Mode_Points) {
+                foreach (PlayerIndex => Player in Players) {
+                    if (Player.Score == Null) continue;
+                    
+                    declare CSmPlayer Driver for Player.Score;
+                    Driver <=> Player;
+                }
+            }
+        
             declare cursor = 0;
-            
+           
             foreach(Score => Weight in GetSortedScores()){
                 declare CUser User <=> Score.User;
                 declare playerRow = (RowsFrame.Controls[cursor] as CMlFrame);
@@ -635,7 +655,7 @@
         *** OnInitialization ***
         ***
             declare netread Integer Net_TMxSM_ScoresTable_ScoreMode for Teams[0];
-            declare Integer scoreboardUpdateInterval = 500;
+            declare Integer scoreboardUpdateInterval = 200;
             declare Integer lastScoreboardUpdate = 0;
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
             
