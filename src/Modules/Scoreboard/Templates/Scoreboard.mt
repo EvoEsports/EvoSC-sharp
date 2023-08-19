@@ -187,7 +187,7 @@
                       alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
                 />
 
-                <!-- Club Tag -->
+                <!-- Club Tag Text -->
                 <label id="club"
                        pos="{{ rowInnerHeight * 3 }} 0.2"
                        size="5 3"
@@ -394,15 +394,45 @@
         }
         
         Void UpdateScoreboardLayout() {
+            declare persistent Boolean TSB_ShowClubTags for LocalUser = True;
+            declare persistent Boolean TSB_ShowFlags for LocalUser = True;
             declare shouldShowPoints = ShouldShowPointsBox();
+            declare Real flagWidth = {{ rowInnerHeight }} * 2.0;
+            declare Real innerSpacing = {{ innerSpacing }} * 1.0;
             
             foreach(Control in RowsFrame.Controls){
+                declare Real offset = 0.0;
                 declare playerRow = (Control as CMlFrame);
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
+                declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
+                declare clubQuad = (playerRow.GetFirstChild("club_bg") as CMlQuad);
+                declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
+                declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
                 
                 pointsBoxFrame.Visible = shouldShowPoints;
                 pointsLabel.Visible = shouldShowPoints;
+                
+                if(TSB_ShowFlags){
+                    flagQuad.RelativePosition_V3.X = offset;
+                    flagQuad.Show();
+                    offset += flagWidth;
+                }else{
+                    flagQuad.Hide();
+                }
+                
+                if(TSB_ShowClubTags){
+                    clubQuad.RelativePosition_V3.X = offset;
+                    clubLabel.RelativePosition_V3.X = offset + (flagWidth / 2.0);
+                    clubQuad.Show();
+                    clubLabel.Show();
+                    offset += flagWidth;
+                }else{
+                    clubQuad.Hide();
+                    clubLabel.Hide();
+                }
+                
+                nameLabel.RelativePosition_V3.X = offset + innerSpacing;
             }
         }
         
@@ -743,8 +773,6 @@
             declare Integer lastScoreboardUpdate = 0;
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
             
-            declare persistent Boolean TSB_ShowClubTags for LocalUser = True;
-            
             RowsFrame.ScrollActive = True;
             RowsFrame.ScrollGridSnap = True;
             RowsFrame.ScrollMin = <0.0, 0.0>;
@@ -767,8 +795,6 @@
                 UpdateScoreboardLayout();
                 log("[EvoSC#] Update scoreboard layout.");
             }
-            
-            log("sho club tags: " ^ TSB_ShowClubTags);
         ***
         
         *** OnMouseClick *** 
