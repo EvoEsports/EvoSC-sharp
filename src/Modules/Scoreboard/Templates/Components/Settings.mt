@@ -6,14 +6,23 @@
 
     <template>
         <label text="SCOREBOARD SETTINGS" textsize="5" textfont="GameFontBlack" />
-        <label pos="0 -8" text="Player Settings" textsize="2" textfont="GameFontSemiBold" />
-
-        <label pos="0 -13" text=" Show country flags" textFont="GameFontRegular" textsize="1.4" />
-        <label pos="0 -18" text=" Show club tags" textFont="GameFontRegular" textsize="1.4" />
-        <label pos="0 -23" text=" Show echolon" textFont="GameFontRegular" textsize="1.4" />
-        <label pos="0 -28" text=" Force ubisoft name" textFont="GameFontRegular" textsize="1.4" />
-
-<!--        <Checkbox id="show_flags" y="-8" text="Show country flags" textFont="GameFontRegular" isChecked="{{ true }}" />-->
-<!--        <Checkbox id="show_club_tags" y="-10" text="Show club tags" textFont="GameFontRegular" isChecked="{{ true }}" />-->
+        <frame pos="0 -8">
+            <label text="Player Settings" textsize="2" textfont="GameFontSemiBold" />
+            <Checkbox id="show_flags" y="-6" text="Show country flags" textFont="GameFontRegular" isChecked="{{ true }}" />
+            <Checkbox id="show_club_tags" y="-11" text="Show club tags" textFont="GameFontRegular" isChecked="{{ true }}" />
+            <Checkbox id="show_echolon" y="-16" text="Show echolon" textFont="GameFontRegular" isChecked="{{ false }}" />
+        </frame>
     </template>
+    
+    <script>
+        <!--
+        *** OnCheckboxToggle ***
+        ***
+        if(ControlId == "show_club_tags"){
+            declare persistent Boolean TSB_ShowClubTags for LocalUser = True;
+            TSB_ShowClubTags = IsChecked;
+        }
+        ***
+        -->
+    </script>
 </component>

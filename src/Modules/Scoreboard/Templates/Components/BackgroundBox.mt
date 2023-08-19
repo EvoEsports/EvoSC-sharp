@@ -36,8 +36,8 @@
         <quad pos="0 {{ -headerHeight - headerGap }}" size="{{ w }} {{ h }}" bgcolor="{{ color }}" opacity="0.85"/>
 
         <!-- Bottom bar -->
-        <quad pos="0 {{ -h - headerHeight - headerGap }}" size="{{ w - radius }} {{ radius }}" bgcolor="{{ color }}" opacity="0.85"/>
-        <frameinstance modelid="Scoreboard_RoundedCorner" pos="{{ w }} {{ -h - headerHeight - headerGap - radius }}" rot="180"/>
+        <quad pos="0 {{ -h - headerHeight - headerGap }}" size="{{ w - radius }} {{ radius + 0.05 }}" bgcolor="{{ color }}" opacity="0.85"/>
+        <frameinstance modelid="Scoreboard_RoundedCorner" pos="{{ w }} {{ -h - headerHeight - headerGap - radius - 0.05 }}" rot="180"/>
 
         <!-- Gradient -->
         <frame pos="0 {{ -headerHeight - headerGap }}" size="{{ w }} {{ h + radius }}">

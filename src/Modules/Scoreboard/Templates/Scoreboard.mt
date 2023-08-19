@@ -17,8 +17,8 @@
     <property type="double" name="innerSpacing" default="1.6"/>
 
 <!--    <property type="string" name="headerColor" default="0c0f31"/>-->
-<!--    <property type="string" name="color" default="041138"/>-->
-<!--    <property type="string" name="primaryColor" default="1b3598"/>-->
+<!--    <property type="string" name="backgroundColor" default="041138"/>-->
+<!--    <property type="string" name="primaryColor" default="f23c8c"/>-->
 
     <property type="string" name="headerColor" default="111111"/>
     <property type="string" name="backgroundColor" default="222222"/>
@@ -63,6 +63,39 @@
             <quad class="set" pos="1 -1" size="{{ pointsWidth - 2.0 }} {{ rowHeight - 2.0 }}"
                   bgcolor="fff"/> <!-- center quad -->
         </framemodel>
+        
+        <framemodel id="CustomLabelGradient">
+            <frame size="1 1" pos="0 {{ -rowHeight }}" rot="180">
+                <!-- bottom right corner -->
+                <quad size="2 2"
+                      class="modulate"
+                      modulatecolor="f00"
+                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
+                      opacity="0.25"
+                />
+            </frame>
+            <frame size="1 1" pos="0 0" rot="90">
+                <!-- top right corner -->
+                <quad size="2 2"
+                      class="modulate"
+                      modulatecolor="f00"
+                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
+                      opacity="0.25"
+                />
+            </frame>
+            <quad class="set" pos="-1 -1.05" size="1 {{ rowHeight - 2.1 }}" bgcolor="f00" z-index="2" opacity="0.25"/> <!-- right bar -->
+            <frame pos="-2 0">
+                <quad size="{{ rowHeight }} {{ w / 2.0 }}"
+                      rot="-90"
+                      pos="-34.0 0"
+                      class="modulate"
+                      modulatecolor="f00"
+                      opacity="0.25"
+                      halign="right"
+                      valign="center"
+                      image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"/>
+            </frame>
+        </framemodel>
 
         <framemodel id="PositionBackground">
             <frame size="1 1">
@@ -103,7 +136,7 @@
             <!-- Scroll activation -->
             <quad size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
 
-            <!-- Background -->
+            <!-- Player Row Background -->
             <quad pos="{{ padding + 1.0 }} 0" 
                   size="{{ w - padding * 2.0 - 2.0 }} {{ rowHeight }}"
                   bgcolor="{{ headerColor }}"
@@ -111,8 +144,7 @@
             <quad pos="{{ w - padding - 1.0 }} -1"
                   size="1 {{ rowHeight - 2.0 }}"
                   bgcolor="{{ headerColor }}" 
-                  opacity="0.6"
-                  z-index="10"/>
+                  opacity="0.6"/>
             <frame size="1 1" pos="{{ w - padding }}" rot="90">
                 <!-- top left corner -->
                 <quad size="2 2"
@@ -128,12 +160,15 @@
                       image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
             </frame>
 
+            <!-- Custom Label Background -->
+            <frameinstance id="custom_gradient" modelid="CustomLabelGradient" pos="{{ w - padding }} 0" />
+
             <!-- Position Box -->
             <frameinstance id="position_box" modelid="PositionBackground" pos="{{ padding }} 0" z-index="5"/>
             <label id="position" pos="{{ padding + (rowHeight * 0.6) }} {{ rowHeight / -2.0 + 0.25 }}" valign="center"
                    halign="center" textsize="2.6" textfont="GameFontBlack" z-index="5"/>
 
-            <frame pos="{{ padding + (rowHeight * 1.2) + innerSpacing * 2.0 }} {{ rowHeight / -2.0 }}">
+            <frame pos="{{ padding + (rowHeight * 1.2) + innerSpacing * 2.0 }} {{ rowHeight / -2.0 }}" z-index="10">
                 <!-- Flag -->
                 <quad id="flag"
                       size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
@@ -169,53 +204,61 @@
                        textsize="2.6"
                        textfont="GameFontSemiBold"/>
             </frame>
-
-            <!-- Round Points -->
-            <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}" 
-                   valign="center" 
-                   halign="right" 
-                   textsize="2.6"
-                   textcolor="{{ primaryColor }}"
-                   textfont="GameFontBlack"/>
-
-            <!-- Custom Label (FINALIST, etc) -->
-            <label id="custom_label" 
-                   pos="0 {{ rowHeight / -2.0 + 0.3 }}" 
-                   valign="center" 
-                   halign="right" 
-                   textsize="2.4"
-                   textfont="GameFontRegular"/>
-
-            <!-- Player Score -->
-            <label id="score_two" pos="0 {{ rowHeight / -2.0 + 0.4 }}" 
-                   valign="center"
-                   halign="right"
-                   textsize="2.4"
-                   textfont="GameFontRegular" 
-                   opacity="0.1"/>
-            <label id="score" 
-                   pos="0 {{ rowHeight / -2.0 + 0.4 }}" 
-                   valign="center"
-                   halign="right" 
-                   textsize="2.4"
-                   textfont="GameFontRegular"/>
-
-            <!-- Points Box -->
-            <frameinstance id="points_box_outer" modelid="PointsBackground"
-                           pos="{{ w - padding - pointsWidth * 0.75 - rowHeight * 0.25 * 0.5 }} {{ rowHeight * 0.25 * -0.5 }}"
-                           size="{{ pointsWidth }} {{ rowHeight }}" scale="0.75" hidden="1"/>
-            <frameinstance id="points_box" modelid="PointsBackground"
-                           pos="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -0.05 }} {{ rowHeight * 0.33 * -0.5 }}"
-                           size="{{ pointsWidth }} {{ rowHeight }}" scale="0.65" hidden="1"/>
-            <label id="points"
-                   pos="{{ w - padding - (pointsWidth * 0.75) / 2.0 - rowHeight * 0.25 * 0.5 }} {{ rowHeight / -2.0 + 0.4 }}"
-                   text="x" 
-                   valign="center" 
-                   halign="center" 
-                   textsize="2" 
-                   textcolor="333" 
-                   textfont="GameFontSemiBold"
-            />
+            <frame z-index="10">
+                <!-- Spec/Disconnected -->
+                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
+                       valign="center"
+                       halign="right"
+                       textsize="2.6"
+                       textcolor="fff"
+                       opacity="0.5"
+                       textfont="GameFontSemiBold"/>
+            
+                <!-- Round Points -->
+                <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
+                       valign="center"
+                       halign="right"
+                       textsize="2.6"
+                       textcolor="{{ primaryColor }}"
+                       textfont="GameFontBlack"/>
+            
+                <!-- Custom Label (FINALIST, etc) -->
+                <label id="custom_label"
+                       pos="0 {{ rowHeight / -2.0 + 0.3 }}"
+                       valign="center"
+                       halign="right"
+                       textsize="2.4"
+                       textfont="GameFontRegular"/>
+            
+                <!-- Player Score -->
+                <label id="score_two" pos="0 {{ rowHeight / -2.0 + 0.4 }}"
+                       valign="center"
+                       halign="right"
+                       textsize="2.4"
+                       textfont="GameFontRegular"
+                       opacity="0.1"/>
+                <label id="score"
+                       pos="0 {{ rowHeight / -2.0 + 0.4 }}"
+                       valign="center"
+                       halign="right"
+                       textsize="2.4"
+                       textfont="GameFontRegular"/>
+            
+                <!-- Points Box -->
+                <frameinstance id="points_box" modelid="PointsBackground"
+                               pos="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -0.05 }} {{ rowHeight * 0.33 * -0.5 }}"
+                               size="{{ pointsWidth }} {{ rowHeight }}" scale="0.65" hidden="1" z-index="10"/>
+                <label id="points"
+                       pos="{{ w - padding - (pointsWidth * 0.75) / 2.0 - rowHeight * 0.25 * 0.5 }} {{ rowHeight / -2.0 + 0.4 }}"
+                       text="x"
+                       valign="center"
+                       halign="center"
+                       textsize="2"
+                       textcolor="333"
+                       textfont="GameFontSemiBold"
+                       z-index="11"
+                />
+            </frame>
         </framemodel>
 
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
@@ -283,9 +326,10 @@
 
             <!-- Settings Icon -->
             <label id="settings_icon"
-                   pos="{{ w - 4.5 }} -14.7" 
+                   pos="{{ w - 4.6 }} -14.7" 
                    size="5 5"
                    textcolor="fff" 
+                   opacity="0.9"
                    valign="center" 
                    halign="center"
                    textsize="1"
@@ -354,11 +398,9 @@
             
             foreach(Control in RowsFrame.Controls){
                 declare playerRow = (Control as CMlFrame);
-                declare pointsBoxOuterFrame = (playerRow.GetFirstChild("points_box_outer") as CMlFrame);
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
                 
-                pointsBoxOuterFrame.Visible = shouldShowPoints;
                 pointsBoxFrame.Visible = shouldShowPoints;
                 pointsLabel.Visible = shouldShowPoints;
             }
@@ -393,17 +435,6 @@
             return SortedScores.sort();
         }
         
-        Void SetOuterPointsColor(CMlFrame pointsBoxOuterFrame, Vec3 color) {
-            Page.GetClassChildren("modulate", pointsBoxOuterFrame, True);
-            foreach(Control in Page.GetClassChildren_Result){
-                (Control as CMlQuad).ModulateColor = color;
-            }
-            Page.GetClassChildren("set", pointsBoxOuterFrame, True);
-            foreach(Control in Page.GetClassChildren_Result){
-                (Control as CMlQuad).BgColor = color;
-            }
-        }
-        
         Void SetCountryFlag(CMlQuad flagQuad, Text login){
             if(login != "" && !TL::StartsWith("*fakeplayer", login)){
                 flagQuad.ImageUrl = "file://ZoneFlags/Login/" ^ login ^ "/country";
@@ -416,35 +447,72 @@
             }
         }
         
-        Void UpdateScoreAndPoints(CSmScore Score, CMlLabel scoreLabel, CMlLabel scoreTwoLabel, CMlLabel pointsLabel, CMlLabel customLabel, CMlLabel roundPointsLabel){
+        Void SetCustomLabel(CMlFrame playerRow, Text value, Text hexColor){
+            declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
+            declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
+            
+            customLabel.Value = value;
+            customLabel.TextColor = CL::HexToRgb(hexColor);
+            
+            Page.GetClassChildren("modulate", customGradientFrame, True);
+            foreach(Control in Page.GetClassChildren_Result){
+                (Control as CMlQuad).ModulateColor = customLabel.TextColor;
+            }
+            Page.GetClassChildren("set", customGradientFrame, True);
+            foreach(Control in Page.GetClassChildren_Result){
+                (Control as CMlQuad).BgColor = customLabel.TextColor;
+            }
+            
+            customGradientFrame.Show();
+        }
+        
+        Void HideCustomLabel(CMlFrame playerRow){
+            declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
+            declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
+            customLabel.Value = "";
+            customGradientFrame.Hide();
+        }
+        
+        Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow, CMlLabel scoreLabel, CMlLabel scoreTwoLabel, CMlLabel pointsLabel, CMlLabel customLabel, CMlLabel roundPointsLabel, CMlLabel specDisconnectedLabel){
             declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
             declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
             declare Boolean CustomPointsEnabled = Net_TMxSM_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
+            declare CSmPlayer Driver for Score;
+            declare Boolean Race_ScoresTable_IsSpectator for Score = False;
+            declare ScoresTable_PlayerLastUpdate for Score = -1;
+            declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
+            
+            if (!(CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy)) {
+                HideCustomLabel(playerRow);
+            }
             
             if (CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy) {
+                declare CustomLabelColorHex = "000";
+                declare CustomLabelValue = "";
+                
                 if (Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Text)) {
-                    customLabel.Value = Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Text];
+                    CustomLabelValue = Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Text];
                 }else{
-                    customLabel.Value = "";
+                    CustomLabelValue = "";
                 }
                 if (Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Color)) {
-                    customLabel.TextColor = CL::HexToRgb(Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Color]);
-                    customLabel.Opacity = 1.0;
+                    CustomLabelColorHex = Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Color];
+                }
+            
+                if(CustomLabelValue != ""){
+                    SetCustomLabel(playerRow, CustomLabelValue, CustomLabelColorHex);
                 }else{
-                    customLabel.TextColor = <1.0, 1.0, 1.0>;
-                    customLabel.Opacity = 0.5;
+                    HideCustomLabel(playerRow);
                 }
             } else if (CurrentScoreMode == C_Mode_Points) {
                 //SetRacePoints(Frame_RoundPoints, Score.RoundPoints, IsLocalPlayer);
                 customLabel.Value = "";
                 pointsLabel.Value = TL::ToText(Score.Points);
                 
-                
                 if(Score.PrevRaceTimes.count > 0 && Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1] > 0){
                     scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
                 }else{
-                    declare CSmPlayer Driver for Score;
-                    if(Driver.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned){
+                    if(Driver.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned && PlayerIsConnected && !Race_ScoresTable_IsSpectator){
                         scoreLabel.Value = "DNF";
                     }else{
                         scoreLabel.Value = "";
@@ -502,16 +570,26 @@
             scoreTwoLabel.Value = "";
             scoreLabel.Value = StripLeadingZeroes(scoreLabel.Value);
             
-            if(customLabel.Value != "" || roundPointsLabel.Value != ""){
-                if(scoreLabel.Value == ""){
-                    customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X;
+            //TODO: disconnected/spec ...
+            if (PlayerIsConnected) {
+                //connected
+                if(Race_ScoresTable_IsSpectator){
+                    specDisconnectedLabel.Value = "";
                 }else{
-                    customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X - scoreLabel.ComputeWidth(scoreLabel.Value) - {{ innerSpacing }};
+                    specDisconnectedLabel.Value = "";
                 }
+            }else{
+                //disconnected
+                specDisconnectedLabel.Value = "";
             }
-            if(roundPointsLabel.Value != ""){
-                roundPointsLabel.RelativePosition_V3.X = customLabel.RelativePosition_V3.X - customLabel.ComputeWidth(customLabel.Value);
+            
+            if(scoreLabel.Value == ""){
+                customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X;
+            }else{
+                customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X - scoreLabel.ComputeWidth(scoreLabel.Value) - {{ innerSpacing }};
             }
+            roundPointsLabel.RelativePosition_V3.X = customLabel.RelativePosition_V3.X - customLabel.ComputeWidth(customLabel.Value);
+            specDisconnectedLabel.RelativePosition_V3.X = roundPointsLabel.RelativePosition_V3.X - roundPointsLabel.ComputeWidth(roundPointsLabel.Value) - {{ innerSpacing }};
         }
         
         Void SetMapAndAuthorName() {
@@ -569,13 +647,17 @@
         }
         
         Void UpdateScoreTable() {
-            if (CurrentScoreMode == C_Mode_Points) {
-                foreach (PlayerIndex => Player in Players) {
-                    if (Player.Score == Null) continue;
-                    
-                    declare CSmPlayer Driver for Player.Score;
-                    Driver <=> Player;
-                }
+            foreach (PlayerIndex => Player in Players) {
+                if (Player.Score == Null) continue;
+                
+                declare ScoresTable_PlayerLastUpdate for Player.Score = -1;
+                ScoresTable_PlayerLastUpdate = Now;
+                
+                declare Boolean Race_ScoresTable_IsSpectator for Player.Score = False;
+                Race_ScoresTable_IsSpectator = Player.RequestsSpectate;
+                
+                declare CSmPlayer Driver for Player.Score;
+                Driver <=> Player;
             }
         
             declare cursor = 0;
@@ -591,9 +673,9 @@
                 declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
                 declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
                 declare scoreTwoLabel = (playerRow.GetFirstChild("score_two") as CMlLabel);
+                declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
                 declare roundPointsLabel = (playerRow.GetFirstChild("round_points") as CMlLabel);
                 declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
-                declare pointsBoxOuterFrame = (playerRow.GetFirstChild("points_box_outer") as CMlFrame);
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 
                 positionLabel.Value = (cursor + 1) ^ "";
@@ -606,16 +688,16 @@
                     clubBg.Opacity = 0.5;
                 }
                 
-                UpdateScoreAndPoints(Score, scoreLabel, scoreTwoLabel, pointsLabel, customLabel, roundPointsLabel);
+                declare Boolean CustomLabelVisible for playerRow = False;
+                
+                UpdateScoreAndPoints(Score, playerRow, scoreLabel, scoreTwoLabel, pointsLabel, customLabel, roundPointsLabel, specDisconnectedLabel);
                 SetCountryFlag(flagQuad, User.Login);
                 
                 if(ShouldShowPointsBox()){
-                    scoreLabel.RelativePosition_V3.X = pointsBoxOuterFrame.RelativePosition_V3.X - {{ innerSpacing * 2.0 }};
-                    pointsBoxOuterFrame.Show();
+                    scoreLabel.RelativePosition_V3.X = pointsBoxFrame.RelativePosition_V3.X - {{ innerSpacing * 2.0 }};
                     pointsBoxFrame.Show();
                 }else{
                     scoreLabel.RelativePosition_V3.X = {{ w - padding - innerSpacing * 2.0 }};
-                    pointsBoxOuterFrame.Hide();
                     pointsBoxFrame.Hide();
                 }
                 scoreTwoLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X;
@@ -642,6 +724,8 @@
         
             if(SettingsVisible) {
                 y = {{ h + padding }} * -1.0;
+            }else{
+                //TODO: apply settings
             }
             
             declare targetState = "<frame pos='0 " ^ y ^ "' />";
@@ -655,9 +739,11 @@
         *** OnInitialization ***
         ***
             declare netread Integer Net_TMxSM_ScoresTable_ScoreMode for Teams[0];
-            declare Integer scoreboardUpdateInterval = 200;
+            declare Integer scoreboardUpdateInterval = 250;
             declare Integer lastScoreboardUpdate = 0;
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
+            
+            declare persistent Boolean TSB_ShowClubTags for LocalUser = True;
             
             RowsFrame.ScrollActive = True;
             RowsFrame.ScrollGridSnap = True;
@@ -681,6 +767,8 @@
                 UpdateScoreboardLayout();
                 log("[EvoSC#] Update scoreboard layout.");
             }
+            
+            log("sho club tags: " ^ TSB_ShowClubTags);
         ***
         
         *** OnMouseClick *** 
