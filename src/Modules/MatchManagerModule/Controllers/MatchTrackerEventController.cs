@@ -6,7 +6,6 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.MatchManagerModule.Config;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 
