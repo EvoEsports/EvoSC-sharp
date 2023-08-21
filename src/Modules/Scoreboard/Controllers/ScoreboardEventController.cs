@@ -9,11 +9,11 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.Scoreboard.Controllers;
 
 [Controller]
-public class ScoreboardPlayerEventController : EvoScController<IEventControllerContext>
+public class ScoreboardEventController : EvoScController<IEventControllerContext>
 {
     private readonly IScoreboardService _scoreboardService;
 
-    public ScoreboardPlayerEventController(IScoreboardService scoreboardService)
+    public ScoreboardEventController(IScoreboardService scoreboardService)
     {
         _scoreboardService = scoreboardService;
     }
@@ -21,4 +21,6 @@ public class ScoreboardPlayerEventController : EvoScController<IEventControllerC
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
         => await _scoreboardService.ShowScoreboard(args.Login);
+    
+    //TODO: catch round number from event
 }

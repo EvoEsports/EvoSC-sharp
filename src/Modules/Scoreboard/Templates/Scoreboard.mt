@@ -503,7 +503,7 @@
             customGradientFrame.Hide();
         }
         
-        Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow, CMlLabel scoreLabel, CMlLabel scoreTwoLabel, CMlLabel pointsLabel, CMlLabel customLabel, CMlLabel roundPointsLabel, CMlLabel specDisconnectedLabel){
+        Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow){
             declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
             declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
             declare Boolean CustomPointsEnabled = Net_TMxSM_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
@@ -511,6 +511,12 @@
             declare Boolean Race_ScoresTable_IsSpectator for Score = False;
             declare ScoresTable_PlayerLastUpdate for Score = -1;
             declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
+                
+            declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
+            declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
+            declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
+            declare roundPointsLabel = (playerRow.GetFirstChild("round_points") as CMlLabel);
+            declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
             
             if (!(CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy)) {
                 HideCustomLabel(playerRow);
@@ -596,11 +602,8 @@
                 scoreLabel.Value = "0:00.000";
             }
             
-            // scoreTwoLabel.Value = scoreLabel.Value;
-            scoreTwoLabel.Value = "";
             scoreLabel.Value = StripLeadingZeroes(scoreLabel.Value);
             
-            //TODO: disconnected/spec ...
             if (PlayerIsConnected) {
                 //connected
                 if(Race_ScoresTable_IsSpectator){
@@ -613,13 +616,22 @@
                 specDisconnectedLabel.Value = "";
             }
             
-            if(scoreLabel.Value == ""){
-                customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X;
-            }else{
-                customLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X - scoreLabel.ComputeWidth(scoreLabel.Value) - {{ innerSpacing }};
+            //align items
+            declare offset = 0.0;
+            declare x = scoreLabel.RelativePosition_V3.X;
+            
+            if(scoreLabel.Value != ""){
+                offset += scoreLabel.ComputeWidth(scoreLabel.Value) + {{ innerSpacing }};
             }
-            roundPointsLabel.RelativePosition_V3.X = customLabel.RelativePosition_V3.X - customLabel.ComputeWidth(customLabel.Value);
-            specDisconnectedLabel.RelativePosition_V3.X = roundPointsLabel.RelativePosition_V3.X - roundPointsLabel.ComputeWidth(roundPointsLabel.Value) - {{ innerSpacing }};
+            customLabel.RelativePosition_V3.X = x - offset;
+            if(customLabel.Value != ""){
+                offset += customLabel.ComputeWidth(customLabel.Value) + {{ innerSpacing }};
+            }
+            roundPointsLabel.RelativePosition_V3.X = x - offset;
+            if(roundPointsLabel.Value != ""){
+                offset += roundPointsLabel.ComputeWidth(roundPointsLabel.Value) + {{ innerSpacing }};
+            }
+            specDisconnectedLabel.RelativePosition_V3.X = x - offset;
         }
         
         Void SetMapAndAuthorName() {
@@ -700,12 +712,8 @@
                 declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
                 declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
-                declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
                 declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
-                declare scoreTwoLabel = (playerRow.GetFirstChild("score_two") as CMlLabel);
-                declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
-                declare roundPointsLabel = (playerRow.GetFirstChild("round_points") as CMlLabel);
-                declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
+                declare scoreTwoLabel = (playerRow.GetFirstChild("score_two") as CMlLabel);                
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 
                 positionLabel.Value = (cursor + 1) ^ "";
@@ -720,7 +728,7 @@
                 
                 declare Boolean CustomLabelVisible for playerRow = False;
                 
-                UpdateScoreAndPoints(Score, playerRow, scoreLabel, scoreTwoLabel, pointsLabel, customLabel, roundPointsLabel, specDisconnectedLabel);
+                UpdateScoreAndPoints(Score, playerRow);
                 SetCountryFlag(flagQuad, User.Login);
                 
                 if(ShouldShowPointsBox()){
@@ -730,7 +738,6 @@
                     scoreLabel.RelativePosition_V3.X = {{ w - padding - innerSpacing * 2.0 }};
                     pointsBoxFrame.Hide();
                 }
-                scoreTwoLabel.RelativePosition_V3.X = scoreLabel.RelativePosition_V3.X;
                 
                 playerRow.Show();
                 
@@ -754,8 +761,6 @@
         
             if(SettingsVisible) {
                 y = {{ h + padding }} * -1.0;
-            }else{
-                //TODO: apply settings
             }
             
             declare targetState = "<frame pos='0 " ^ y ^ "' />";
@@ -769,7 +774,7 @@
         *** OnInitialization ***
         ***
             declare netread Integer Net_TMxSM_ScoresTable_ScoreMode for Teams[0];
-            declare Integer scoreboardUpdateInterval = 250;
+            declare Integer scoreboardUpdateInterval = 333;
             declare Integer lastScoreboardUpdate = 0;
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
             

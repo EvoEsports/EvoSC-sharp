@@ -18,24 +18,6 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
     {
         _server = server;
         _scoreboardService = scoreboardService;
-
-        var hudSettings = new List<string>()
-        {
-            @"
-{
-    ""uimodules"": [
-        {
-            ""id"": ""Race_ScoresTable"",
-            ""position"": [-50,0],
-            ""scale"": 1,
-            ""visible"": false,
-            ""visible_update"": true
-        }
-    ]
-}"
-        };
-
-        _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
     
     [ChatCommand("sb", "[Command.ShowScoreboard]")]
