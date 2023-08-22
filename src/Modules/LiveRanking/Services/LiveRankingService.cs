@@ -38,7 +38,7 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnEnableAsync()
     {
-        _logger.LogInformation("LiveRankingModule enabled.");
+        _logger.LogInformation("LiveRankingModule enabled");
         await CheckIsRoundsModeAsync();
         if (isRoundsMode)
         {

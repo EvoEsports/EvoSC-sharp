@@ -1,11 +1,11 @@
 ﻿<component>
-    <property type="text" name="ID" default="player1"/>
-    <property type="text" name="PlayerName" default="Playername12345"/>
-    <property type="text" name="CurrentPoints" default="0" />
-    <property type="text" name="PointsGainHidden" default="0" />
-    <property type="text" name="PointsGain" default="0"/>
-    <property type="text" name="X" default="-135" />
-    <property type="text" name="Y" default="80"/>
+    <property type="string" name="ID" default="player1"/>
+    <property type="string" name="PlayerName" default="Playername12345"/>
+    <property type="string" name="CurrentPoints" default="0" />
+    <property type="string" name="PointsGainHidden" default="0" />
+    <property type="string" name="PointsGain" default="0"/>
+    <property type="string" name="X" default="-135" />
+    <property type="string" name="Y" default="80"/>
     <template>
         <frame id="window_{{ID}}" pos="{{X}} {{Y}}">
             <frame id="textFrame_{{ID}}" size="45 10" pos="0 0" valign="center2" halign="left" z-index="0">
