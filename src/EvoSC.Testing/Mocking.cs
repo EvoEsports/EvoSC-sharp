@@ -179,7 +179,7 @@ public static class Mocking
     /// </summary>
     /// <param name="contextService">The context service to use for this localization manager.</param>
     /// <returns></returns>
-    public static Locale NewLocaleMock(IContextService? contextService)
+    public static Locale NewLocaleMock(IContextService contextService)
     {
         var config = new Mock<IEvoScBaseConfig>();
         config.Setup(m => m.Locale.DefaultLanguage).Returns("en");

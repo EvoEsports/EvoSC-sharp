@@ -4,14 +4,6 @@ using EvoSC.Modules.Interfaces;
 namespace EvoSC.Modules.Official.NextMapModule;
 
 [Module(IsInternal = true)]
-public class NextMapModule : EvoScModule, IToggleable
+public class NextMapModule : EvoScModule
 {
-
-    public NextMapModule()
-    {
-    }
-
-    public Task EnableAsync() => Task.CompletedTask;
-
-    public Task DisableAsync() => Task.CompletedTask;
 }
