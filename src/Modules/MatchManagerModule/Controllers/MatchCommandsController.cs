@@ -27,22 +27,20 @@ public class MatchCommandsController : EvoScController<ICommandInteractionContex
     [ChatCommand("startmatch", "Start a match.", MatchControlPermissions.StartMatch)]
     public async Task StartMatchAsync()
     {
-        var trackingId = await _matchControl.StartMatchAsync();
+        await _matchControl.StartMatchAsync();
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MatchStarted)
-            .HavingProperties(new { TrackingId =  trackingId })
             .Comment("Match was started.");
     }
     
     [ChatCommand("endmatch", "End a match.", MatchControlPermissions.EndMatch)]
     public async Task EndMatchAsync()
     {
-        var trackingId = await _matchControl.EndMatchAsync();
+        await _matchControl.EndMatchAsync();
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MatchEnded)
-            .HavingProperties(new {TrackingId = trackingId})
             .Comment("Match was ended.");
     }
     

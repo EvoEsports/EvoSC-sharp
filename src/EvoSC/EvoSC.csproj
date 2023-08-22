@@ -26,6 +26,8 @@
         <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" />
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
         <ProjectReference Include="..\Modules\Player\Player.csproj" />
         <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />

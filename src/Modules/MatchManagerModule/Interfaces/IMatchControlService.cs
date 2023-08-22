@@ -2,9 +2,9 @@
 
 public interface IMatchControlService
 {
-    public Task<Guid> StartMatchAsync();
+    public Task StartMatchAsync();
 
-    public Task<Guid> EndMatchAsync();
+    public Task EndMatchAsync();
     
     /// <summary>
     /// End the current round.

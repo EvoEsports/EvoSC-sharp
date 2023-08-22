@@ -14,32 +14,23 @@ public class MatchControlService : IMatchControlService
 {
     private readonly IServerClient _server;
     private readonly IEventManager _events;
-    private readonly IMatchTracker _matchTracker;
     
-    public MatchControlService(IServerClient server, IEventManager events, IMatchTracker matchTracker)
+    public MatchControlService(IServerClient server, IEventManager events)
     {
         _server = server;
         _events = events;
-        _matchTracker = matchTracker;
     }
 
-    public async Task<Guid> StartMatchAsync()
+    public async Task StartMatchAsync()
     {
         await RestartMatchAsync();
-        var timelineId = await _matchTracker.BeginMatchAsync();
 
-        await _events.RaiseAsync(FlowControlEvent.MatchStarted, new MatchStartedEventArgs {TimelineId = timelineId});
-
-        return timelineId;
+        await _events.RaiseAsync(FlowControlEvent.MatchStarted, EventArgs.Empty);
     }
 
-    public async Task<Guid> EndMatchAsync()
+    public async Task EndMatchAsync()
     {
-        var timeline = await _matchTracker.EndMatchAsync();
-
-        await _events.RaiseAsync(FlowControlEvent.MatchEnded, new MatchEndedEventArgs {Timeline = timeline});
-
-        return timeline.TimelineId;
+        await _events.RaiseAsync(FlowControlEvent.MatchEnded, EventArgs.Empty);
     }
 
     public async Task EndRoundAsync()
