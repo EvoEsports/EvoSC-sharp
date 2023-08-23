@@ -11,7 +11,7 @@ public class Map: IMap
     public IPlayer Author { get; set; }
     public string FilePath { get; set; }
     public bool Enabled { get; set; }
-    public string ExternalId { get; set; }
+    public string? ExternalId { get; set; }
     public DateTime? ExternalVersion { get; set; }
     public MapProviders? ExternalMapProvider { get; set; }
 

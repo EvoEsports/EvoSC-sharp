@@ -40,4 +40,10 @@
   <data name="Command.Remove" xml:space="preserve">
     <value>Remove a map from the server.</value>
   </data>
+  <data name="DuplicateMap" xml:space="preserve">
+    <value>A map with ID {0} already exist on the server.</value>
+  </data>
+  <data name="MapRemovedFailed" xml:space="preserve">
+    <value>Failed removing map with ID {0}</value>
+  </data>
 </root>

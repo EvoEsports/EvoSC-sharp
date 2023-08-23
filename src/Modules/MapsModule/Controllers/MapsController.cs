@@ -1,3 +1,4 @@
+using System.Data;
 using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
@@ -6,11 +7,11 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Modules.Official.Maps.Events;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.MapsModule.Events;
+using EvoSC.Modules.Official.MapsModule.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Modules.Official.Maps.Controllers;
+namespace EvoSC.Modules.Official.MapsModule.Controllers;
 
 [Controller]
 public class MapsController : EvoScController<ICommandInteractionContext>
@@ -32,18 +33,22 @@ public class MapsController : EvoScController<ICommandInteractionContext>
     }
 
     [ChatCommand("add", "[Commmand.Add]", MapsPermissions.AddMap)]
-    public async Task AddMap(string mapId)
+    public async Task AddMapAsync(string mapId)
     {
         IMap? map;
         try
         {
             map = await _mxMapService.FindAndDownloadMapAsync(Convert.ToInt32(mapId), null, Context.Player);
         }
-        catch (Exception e)
+        catch (DuplicateNameException)
         {
-            _logger.LogInformation(e, "Failed adding map with ID {MapId}", mapId);
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage.FailedAddingMap(mapId), Context.Player);
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.DuplicateMap(mapId), Context.Player);
             return;
+        }
+        catch (Exception)
+        {
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.FailedAddingMap(mapId), Context.Player);
+            throw;
         }
 
         if (map == null)
@@ -54,14 +59,15 @@ public class MapsController : EvoScController<ICommandInteractionContext>
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MapAdded)
-            .HavingProperties(new {Map = map})
+            .HavingProperties(new { Map = map })
             .Comment(_locale.Audit_MapAdded);
-        
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author.NickName), Context.Player);
+
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author?.NickName),
+            Context.Player);
     }
 
     [ChatCommand("remove", "[Command.Remove]", MapsPermissions.RemoveMap)]
-    public async Task RemoveMap(long mapId)
+    public async Task RemoveMapAsync(long mapId)
     {
         var map = await _mapService.GetMapByIdAsync(mapId);
 
@@ -71,14 +77,23 @@ public class MapsController : EvoScController<ICommandInteractionContext>
             return;
         }
 
-        await _mapService.RemoveMapAsync(mapId);
+        try
+        {
+            await _mapService.RemoveMapAsync(mapId);
+        }
+        catch (Exception)
+        {
+            await _server.ErrorMessageAsync(_locale.PlayerLanguage.MapRemovedFailed(mapId), Context.Player);
+            throw;
+        }
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MapRemoved)
-            .HavingProperties(new {Map = map})
+            .HavingProperties(new { Map = map })
             .Comment(_locale.Audit_MapRemoved);
-        
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName), Context.Player);
-        _logger.LogInformation("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
+
+        await _server.SuccessMessageAsync(_locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName),
+            Context.Player);
+        _logger.LogDebug("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }

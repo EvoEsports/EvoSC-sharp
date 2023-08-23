@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Parsing;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Remote;
@@ -32,6 +33,8 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
     private readonly IActionPipelineManager _actionPipeline;
     
     private readonly ValueReaderManager _valueReader = new();
+
+    public IValueReaderManager ValueReader => _valueReader;
 
     public ManialinkInteractionHandler(IEventManager events, IManialinkActionManager manialinkActionManager,
         ILogger<ManialinkInteractionHandler> logger, IPlayerManagerService playerManager,

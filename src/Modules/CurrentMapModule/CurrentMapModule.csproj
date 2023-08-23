@@ -15,6 +15,10 @@
     
     <ItemGroup>
       <PackageReference Include="ISO3166" Version="1.0.4" />
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
     
 </Project>

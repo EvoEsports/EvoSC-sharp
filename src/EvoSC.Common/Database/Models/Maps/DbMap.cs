@@ -27,7 +27,7 @@ public class DbMap : IMap
     public string Name { get; set; }
 
     [Column]
-    public string ExternalId { get; set; }
+    public string? ExternalId { get; set; }
 
     [Column]
     public DateTime? ExternalVersion { get; set; }

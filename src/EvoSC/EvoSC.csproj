@@ -11,6 +11,10 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
         <PackageReference Include="System.CommandLine.Rendering" Version="0.4.0-alpha.22272.1" />
     </ItemGroup>
@@ -23,11 +27,13 @@
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
+        <ProjectReference Include="..\Modules\NextMapModule\NextMapModule.csproj" />
         <ProjectReference Include="..\Modules\Player\Player.csproj" />
         <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />
         <ProjectReference Include="..\Modules\SetName\SetName.csproj" />
         <ProjectReference Include="..\Modules\FastestCp\FastestCp.csproj" />
         <ProjectReference Include="..\Modules\CurrentMapModule\CurrentMapModule.csproj" />
+        <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" />
         <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
         <ProjectReference Include="..\Modules\LiveRanking\LiveRankingModule.csproj" />

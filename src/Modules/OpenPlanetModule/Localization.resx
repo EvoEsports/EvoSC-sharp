@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Permission.CanBypassVerification" xml:space="preserve">
+    <value>Allows players to bypass OpenPlanet signature mode verification.</value>
+  </data>
+  <data name="Permission.CanUseControlPanel" xml:space="preserve">
+    <value>Can access the OpenPlanet control panel.</value>
+  </data>
+  <data name="ProhibitedSignatureMode" xml:space="preserve">
+    <value>Prohibited OpenPlanet signature mode detected! Forced into spectator.</value>
+  </data>
+  <data name="CorrectSignatureMode" xml:space="preserve">
+    <value>Correct OpenPlanet signature mode selected! You can now play.</value>
+  </data>
+  <data name="ProhibitedVersion" xml:space="preserve">
+    <value>The OpenPlanet version you are using is too old! Forced into spectator.</value>
+  </data>
+  <data name="IncorrectOpenPlanetConfig" xml:space="preserve">
+    <value>The OpenPlanet configuration you are using is not allowed on this server! Forced into spectator.</value>
+  </data>
+  <data name="Explanations.SwitchSignatureMode" xml:space="preserve">
+    <value>In the Openplanet menu click $9dfDeveloper$g then $9dfSignature Mode$g.</value>
+  </data>
+  <data name="Explanations.UpdateOpenPlanet" xml:space="preserve">
+    <value>Go to the $L[https://openplanet.dev/download/next]$9dfOpenPlanet Download$L$g website and download the latest version.</value>
+  </data>
+  <data name="Explanations.DisableOpenPlanet" xml:space="preserve">
+    <value>Close the game. Hold $9dfPAUSE$fff and then start the game, keep holding $9dfPAUSE$g. When you see $cccPlease wait ..$fff or the $cccblack warning screen$fff, release $9dfPAUSE$fff.</value>
+  </data>
+  <data name="OpenPlanetProhibited" xml:space="preserve">
+    <value>The use of OpenPlanet is not allowed on this server! Forced into spectator.</value>
+  </data>
+  <data name="HowToQuestions.DisableOpenPlanet" xml:space="preserve">
+    <value>How do I disable OpenPlanet?</value>
+  </data>
+  <data name="HowToQuestions.SwitchSignatureMode" xml:space="preserve">
+    <value>How do I switch signature mode?</value>
+  </data>
+  <data name="HowToQuestions.UpdateOpenPlanet" xml:space="preserve">
+    <value>How do I update OpenPlanet?</value>
+  </data>
+  <data name="WarningMl.OpenPlanetDetected" xml:space="preserve">
+    <value>OpenPlanet Detected</value>
+  </data>
+  <data name="WarningMl.OpenPlanetRestricted" xml:space="preserve">
+    <value>OpenPlanet has been restricted on this server.</value>
+  </data>
+  <data name="WarningMl.ChoseSignatureMode" xml:space="preserve">
+    <value>Chose the allowed signature mode:</value>
+  </data>
+  <data name="WarningMl.MinimumVersionRequired" xml:space="preserve">
+    <value>Minimum OpenPlanet version required:</value>
+  </data>
+  <data name="WarningMl.DisableOpenPlanet" xml:space="preserve">
+    <value>Please disable OpenPlanet.</value>
+  </data>
+  <data name="WarningMl.CountDownPart1" xml:space="preserve">
+    <value>You will be automatically kicked in </value>
+  </data>
+  <data name="WarningMl.CountDownPart2" xml:space="preserve">
+    <value> seconds.</value>
+  </data>
+</root>
