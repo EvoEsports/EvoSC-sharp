@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Util.EnumIdentifier;
 
-namespace EvoSC.Modules.Official.Maps.Events;
+namespace EvoSC.Modules.Official.MapsModule.Events;
 
 public enum AuditEvents
 {

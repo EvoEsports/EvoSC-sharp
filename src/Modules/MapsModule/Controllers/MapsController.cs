@@ -7,11 +7,11 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Modules.Official.Maps.Events;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.MapsModule.Events;
+using EvoSC.Modules.Official.MapsModule.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Modules.Official.Maps.Controllers;
+namespace EvoSC.Modules.Official.MapsModule.Controllers;
 
 [Controller]
 public class MapsController : EvoScController<ICommandInteractionContext>

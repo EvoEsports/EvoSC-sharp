@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Modules.Official.Maps.Interfaces;
+namespace EvoSC.Modules.Official.MapsModule.Interfaces;
 
 public interface IMxMapService
 {
