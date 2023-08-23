@@ -72,7 +72,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotdModule.Tests", "tests\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASayModule", "src\Modules\ASayModule\ASayModule.csproj", "{9DC9439C-BAD0-40CC-A176-C509D2022C96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRankingModule", "src\Modules\LiveRanking\LiveRankingModule.csproj", "{00B0132F-E0B0-46BB-844E-7B4F27A0E6C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRankingModule", "src\Modules\LiveRankingModule\LiveRankingModule.csproj", "{00B0132F-E0B0-46BB-844E-7B4F27A0E6C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule", "src\Modules\ModuleManagerModule\ModuleManagerModule.csproj", "{9953BD43-DA7D-4BBF-B6B5-4A9C29528BEA}"
 EndProject

@@ -50,10 +50,25 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.ResetRoundCounter();
             _liveRankingStore.IncreaseRoundCounter();
             _liveRankingStore.IncreaseTrackCounter();
-            var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
-            var widgetLiveRanking = GetLiveRankingForWidget(liveRanking);
+            var prevRanking = await _liveRankingStore.GetFullPreviousLiveRankingAsync();
+            var curRanking = await _liveRankingStore.GetFullLiveRankingAsync();
+
+            _liveRankingStore.SortLiveRanking();
+            var existingRanking = curRanking.Except(prevRanking, new RankingComparer()).ToList();
+
+            var newRanking = curRanking.Except(existingRanking).ToList();
+            var widgetPrevRanking = GetLiveRankingForWidget(prevRanking);
+
+            var widgetExistingRanking = GetLiveRankingForWidget(existingRanking);
+            var widgetNewRanking = GetLiveRankingForWidget(newRanking);
+
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
-                new { liverankings = widgetLiveRanking });
+                new
+                {
+                    previousRankings = widgetPrevRanking,
+                    rankingsExisting = widgetExistingRanking,
+                    rankingsNew = widgetNewRanking
+                });
             /*await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.MatchInfo",
                 new { data = _liveRankingStore.GetMatchInfo() });*/
         }
@@ -81,6 +96,7 @@ public class LiveRankingService : ILiveRankingService
             var prevRanking = await _liveRankingStore.GetFullPreviousLiveRankingAsync();
             var curRanking = await _liveRankingStore.GetFullLiveRankingAsync();
 
+            _liveRankingStore.SortLiveRanking();
             var existingRanking = curRanking.Except(prevRanking, new RankingComparer()).ToList();
 
             var newRanking = curRanking.Except(existingRanking).ToList();
@@ -89,7 +105,6 @@ public class LiveRankingService : ILiveRankingService
             var widgetExistingRanking = GetLiveRankingForWidget(existingRanking);
             var widgetNewRanking = GetLiveRankingForWidget(newRanking);
 
-            _liveRankingStore.SortLiveRanking();
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
                 new
                 {
