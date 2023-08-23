@@ -8,6 +8,7 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Models;
 internal class LiveRankingStore
 {
     private List<LiveRankingPosition> _curLiveRanking = new();
+    private List<LiveRankingPosition> _prevLiveRanking = new();
     private readonly ILogger<LiveRankingStore> _logger;
     private readonly IPlayerManagerService _playerManager;
     private MatchInfo _matchInfo = new();
@@ -16,13 +17,7 @@ internal class LiveRankingStore
     {
         _logger = logger;
         _playerManager = playerManager;
-        _logger.LogInformation("==================================================================");
-        _logger.LogInformation("==================================================================");
-        _logger.LogInformation("==================================================================");
-        _logger.LogInformation("Instantiated LiveRankingStore");
-        _logger.LogInformation("==================================================================");
-        _logger.LogInformation("==================================================================");
-        _logger.LogInformation("==================================================================");
+        _logger.LogDebug("Instantiated LiveRankingStore");
     }
 
     internal async Task ResetLiveRankingsAsync()
@@ -33,13 +28,14 @@ internal class LiveRankingStore
         {
             if (player.State == PlayerState.Playing)
             {
-                _curLiveRanking.Add(new LiveRankingPosition(player.AccountId, 0 , -1, false, false));
+                _curLiveRanking.Add(new LiveRankingPosition(player.AccountId, 0, -1, false, false));
             }
         }
     }
-    
+
     internal bool RegisterTime(string accountId, int cpIndex, int cpTime, bool isFinish)
     {
+        _prevLiveRanking = _curLiveRanking;
         var index = _curLiveRanking.FindIndex(x => x.accountId == accountId);
         var liveRankingPosition = new LiveRankingPosition(accountId, cpTime, cpIndex, false, isFinish);
         if (index != -1)
@@ -57,11 +53,13 @@ internal class LiveRankingStore
 
     internal bool RegisterPlayerGiveUp(string accountId)
     {
+        _prevLiveRanking = _curLiveRanking;
         var index = _curLiveRanking.FindIndex(x => x.accountId == accountId);
         if (index != -1)
         {
             var liveRanking = _curLiveRanking[index];
-            _curLiveRanking[index] = new LiveRankingPosition(accountId, liveRanking.cpTime, liveRanking.cpIndex, true, false);
+            _curLiveRanking[index] =
+                new LiveRankingPosition(accountId, liveRanking.cpTime, liveRanking.cpIndex, true, false);
             return true;
         }
         else
@@ -75,6 +73,12 @@ internal class LiveRankingStore
     {
         return _curLiveRanking;
     }
+
+    internal List<LiveRankingPosition> GetPreviousLiveRanking()
+    {
+        return _prevLiveRanking;
+    }
+
     /// <summary>
     /// This sorts the live ranking based on the following criteria:
     /// - DNFd players should always be at the bottom
@@ -106,6 +110,22 @@ internal class LiveRankingStore
         return expandedLiveRanking;
     }
 
+    internal async Task<List<ExpandedLiveRankingPosition>> GetFullPreviousLiveRankingAsync()
+    {
+        List<ExpandedLiveRankingPosition> expandedLiveRanking = new();
+        foreach (var rank in _prevLiveRanking)
+        {
+            var player = await _playerManager.GetOnlinePlayerAsync(rank.accountId);
+            expandedLiveRanking.Add(new ExpandedLiveRankingPosition(player,
+                rank.cpTime,
+                rank.cpIndex,
+                rank.isDNF,
+                rank.isFinish));
+        }
+
+        return expandedLiveRanking;
+    }
+
     internal void SetCurrentMap(string name)
     {
         _matchInfo.MapName = name;
@@ -116,21 +136,22 @@ internal class LiveRankingStore
         _matchInfo.WrHolderName = wrHolder;
         _matchInfo.WrTime = wrTime;
     }
-    
+
     internal void IncreaseRoundCounter()
     {
         _matchInfo.NumRound++;
     }
+
     internal void ResetRoundCounter()
     {
         _matchInfo.NumRound = 0;
     }
-    
+
     internal void IncreaseTrackCounter()
     {
         _matchInfo.NumTrack++;
     }
-    
+
     internal void ResetTrackCounter()
     {
         _matchInfo.NumTrack = 0;
@@ -140,6 +161,4 @@ internal class LiveRankingStore
     {
         return _matchInfo;
     }
-
-
 }
