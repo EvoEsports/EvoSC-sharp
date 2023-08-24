@@ -88,6 +88,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchReadyModule", "src\Mod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule.Tests", "MatchTrackerModule.Tests\MatchTrackerModule.Tests.csproj", "{1EBEC855-5BF7-43D3-BABF-A09343B8693A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeardownModule", "..\EvoSC-Sharp-Geardown\src\GeardownModule.csproj", "{D88C4373-B643-4265-983C-7317F411A334}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -249,6 +251,10 @@ Global
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D88C4373-B643-4265-983C-7317F411A334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D88C4373-B643-4265-983C-7317F411A334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D88C4373-B643-4265-983C-7317F411A334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D88C4373-B643-4265-983C-7317F411A334}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
