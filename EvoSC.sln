@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchReadyModule", "src\Mod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule.Tests", "MatchTrackerModule.Tests\MatchTrackerModule.Tests.csproj", "{1EBEC855-5BF7-43D3-BABF-A09343B8693A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeardownModule", "..\EvoSC-Sharp-Geardown\src\GeardownModule.csproj", "{D88C4373-B643-4265-983C-7317F411A334}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeardownModule", "src\Modules\GeardownModule\GeardownModule.csproj", "{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -251,10 +251,10 @@ Global
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D88C4373-B643-4265-983C-7317F411A334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D88C4373-B643-4265-983C-7317F411A334}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D88C4373-B643-4265-983C-7317F411A334}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D88C4373-B643-4265-983C-7317F411A334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -295,5 +295,6 @@ Global
 		{D857B9D4-D205-4C3C-A098-43A9603C50A2} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{0538B9AB-B556-45BF-8230-53087BA9D353} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 	EndGlobalSection
 EndGlobal

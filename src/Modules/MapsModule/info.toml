@@ -1,5 +1,5 @@
 ﻿[info]
-name = "Maps"
+name = "MapsModule"
 title = "Maps Module"
 summary = "Module for handling and managing maps."
 version = "1.0.0"

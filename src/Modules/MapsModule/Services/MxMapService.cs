@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Maps.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Singleton)]
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MxMapService : IMxMapService
 {
     private readonly ILogger<MxMapService> _logger;

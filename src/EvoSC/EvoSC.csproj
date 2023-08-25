@@ -24,6 +24,7 @@
         <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
         <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
         <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" />
+        <ProjectReference Include="..\Modules\GeardownModule\GeardownModule.csproj" />
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
         <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />

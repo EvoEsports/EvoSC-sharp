@@ -4,6 +4,7 @@ using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCp;
+using EvoSC.Modules.Official.GeardownModule;
 using EvoSC.Modules.Official.Maps;
 using EvoSC.Modules.Official.MatchManagerModule;
 using EvoSC.Modules.Official.MatchReadyModule;
@@ -33,7 +34,8 @@ public static class InternalModules
         typeof(MotdModule),
         typeof(OpenPlanetModule),
         typeof(MatchTrackerModule),
-        typeof(MatchReadyModule)
+        typeof(MatchReadyModule),
+        typeof(GeardownModule)
     };
 
     /// <summary>
