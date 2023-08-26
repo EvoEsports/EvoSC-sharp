@@ -4,9 +4,12 @@
     <import component="Scoreboard.Components.BackgroundBox" as="ScoreboardBackground"/>
     <import component="Scoreboard.Components.ScoreboardHeader" as="ScoreboardHeader"/>
     <import component="Scoreboard.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
+    <import component="Scoreboard.Components.Settings.Wrapper" as="SettingsWrapper"/>
+    <import component="Scoreboard.Components.Settings.Form" as="SettingsForm"/>
 
     <property type="int" name="MaxPlayers" default="0"/>
-    <property type="double" name="w" default="140"/>
+    
+    <property type="double" name="w" default="160"/>
     <property type="double" name="h" default="71.2"/>
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
     <property type="double" name="headerHeight" default="19.0"/>
@@ -374,7 +377,9 @@
 				declare LapsTotal = RaceHelpers::GetLapsNb(Teams[0]);
                 roundLabel.Value = TL::Compose("%1 | %2/%3", _("|Race|Lap"), TL::ToText(LapCurrent), TL::ToText(LapsTotal));
             }else if (CurrentScoreMode == C_Mode_Points) {
-                roundLabel.Value = TL::Compose("ROUND | %1/%2", TL::ToText(-1), TL::ToText(-1));
+                declare Integer SB_CurrentRound for UI = 0;
+                declare Integer SB_RoundsPerMap for UI = 0;
+                roundLabel.Value = TL::Compose("ROUND | %1/%2", TL::ToText(SB_CurrentRound), TL::ToText(SB_RoundsPerMap));
             }else{
                 roundLabel.Value = "";
             }

@@ -6,4 +6,6 @@ public interface IScoreboardService
     public Task ShowScoreboard();
     public Task HideNadeoScoreboard();
     public Task ShowNadeoScoreboard();
+    public Task SendRoundsInfo();
+    public void LoadAndUpdateRoundsPerMap();
 }

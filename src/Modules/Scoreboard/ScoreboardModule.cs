@@ -16,8 +16,9 @@ public class ScoreboardModule : EvoScModule, IToggleable
 
     public Task EnableAsync()
     {
+        _scoreboardService.LoadAndUpdateRoundsPerMap();
         _scoreboardService.HideNadeoScoreboard();
-
+        
         return _scoreboardService.ShowScoreboard();
     }
 
