@@ -16,7 +16,9 @@ public class ScoreboardModule : EvoScModule, IToggleable
 
     public Task EnableAsync()
     {
-        return _scoreboardService.HideNadeoScoreboard();
+        _scoreboardService.HideNadeoScoreboard();
+
+        return _scoreboardService.ShowScoreboard();
     }
 
     public Task DisableAsync()

@@ -31,6 +31,11 @@ public class ScoreboardService : IScoreboardService
             new { MaxPlayers = 64 });
     }
 
+    public async Task ShowScoreboard()
+    {
+        await _manialinks.SendManialinkAsync("Scoreboard.Scoreboard",new { MaxPlayers = 64 });
+    }
+
     public async Task HideNadeoScoreboard()
     {
         var hudSettings = new List<string>()
