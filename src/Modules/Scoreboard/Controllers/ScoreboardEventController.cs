@@ -21,6 +21,5 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
         => await _scoreboardService.ShowScoreboard(args.Login);
-    
-    //TODO: catch round number from event
 }
+

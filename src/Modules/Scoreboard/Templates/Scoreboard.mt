@@ -1,8 +1,9 @@
 ﻿<component>
     <using namespace="System.Linq"/>
 
-    <import component="Scoreboard.Components.BackgroundBox" as="Background"/>
-    <import component="Scoreboard.Components.Settings" as="Settings"/>
+    <import component="Scoreboard.Components.BackgroundBox" as="ScoreboardBackground"/>
+    <import component="Scoreboard.Components.ScoreboardHeader" as="ScoreboardHeader"/>
+    <import component="Scoreboard.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
 
     <property type="int" name="MaxPlayers" default="0"/>
     <property type="double" name="w" default="140"/>
@@ -16,337 +17,39 @@
     <property type="double" name="padding" default="3.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
 
-<!--    <property type="string" name="headerColor" default="0c0f31"/>-->
-<!--    <property type="string" name="backgroundColor" default="041138"/>-->
-<!--    <property type="string" name="primaryColor" default="f23c8c"/>-->
-
     <property type="string" name="headerColor" default="111111"/>
     <property type="string" name="backgroundColor" default="222222"/>
     <property type="string" name="primaryColor" default="bb0755"/>
 
     <template layer="ScoresTable">
-        <framemodel id="PointsBackground">
-            <frame size="1 1">
-                <!-- top left corner -->
-                <quad size="2 2"
-                      class="modulate"
-                      modulatecolor="fff"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <frame size="1 1" pos="{{ pointsWidth }} {{ -rowHeight }}" rot="180">
-                <!-- bottom right corner -->
-                <quad size="2 2"
-                      class="modulate"
-                      modulatecolor="fff"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <frame size="1 1" pos="{{ pointsWidth }} 0" rot="90">
-                <!-- top right corner -->
-                <quad size="2 2"
-                      class="modulate"
-                      modulatecolor="fff"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <frame size="1 1" pos="0 {{ -rowHeight }}" rot="-90">
-                <!-- bottom left -->
-                <quad size="2 2"
-                      class="modulate"
-                      modulatecolor="fff"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <quad class="set" pos="1 0" size="{{ pointsWidth - 2.0 }} 1" bgcolor="fff"/> <!-- top bar -->
-            <quad class="set" pos="1 {{ 1.0 - rowHeight }}" size="{{ pointsWidth - 2.0 }} 1"
-                  bgcolor="fff"/> <!-- bottom bar -->
-            <quad class="set" pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="fff"/> <!-- left bar -->
-            <quad class="set" pos="{{ pointsWidth - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}"
-                  bgcolor="fff"/> <!-- right bar -->
-            <quad class="set" pos="1 -1" size="{{ pointsWidth - 2.0 }} {{ rowHeight - 2.0 }}"
-                  bgcolor="fff"/> <!-- center quad -->
-        </framemodel>
-        
-        <framemodel id="CustomLabelGradient">
-            <frame size="1 1" pos="0 {{ -rowHeight }}" rot="180">
-                <!-- bottom right corner -->
-                <quad size="2 2"
-                      class="modulate"
-                      modulatecolor="f00"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
-                      opacity="0.25"
-                />
-            </frame>
-            <frame size="1 1" pos="0 0" rot="90">
-                <!-- top right corner -->
-                <quad size="2 2"
-                      class="modulate"
-                      modulatecolor="f00"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
-                      opacity="0.25"
-                />
-            </frame>
-            <quad class="set" pos="-1 -1.05" size="1 {{ rowHeight - 2.1 }}" bgcolor="f00" z-index="2" opacity="0.25"/> <!-- right bar -->
-            <frame pos="-2 0">
-                <quad size="{{ rowHeight }} {{ w / 2.0 }}"
-                      rot="-90"
-                      pos="-34.0 0"
-                      class="modulate"
-                      modulatecolor="f00"
-                      opacity="0.25"
-                      halign="right"
-                      valign="center"
-                      image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"/>
-            </frame>
-        </framemodel>
-
-        <framemodel id="PositionBackground">
-            <frame size="1 1">
-                <!-- top left corner -->
-                <quad size="2 2"
-                      modulatecolor="{{ primaryColor }}"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <frame size="1 1" pos="{{ rowHeight * 1.2 }} {{ -rowHeight }}" rot="180">
-                <!-- bottom right corner -->
-                <quad size="2 2"
-                      modulatecolor="{{ primaryColor }}"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <frame size="1 1" pos="{{ rowHeight * 1.2 }} 0" rot="90">
-                <!-- top right corner -->
-                <quad size="2 2"
-                      modulatecolor="{{ primaryColor }}"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <frame size="1 1" pos="0 {{ -rowHeight }}" rot="-90">
-                <!-- bottom left -->
-                <quad size="2 2"
-                      modulatecolor="{{ primaryColor }}"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <quad pos="1 0" size="{{ rowHeight * 1.2 - 2.0 }} 1" bgcolor="{{ primaryColor }}"/> <!-- top bar -->
-            <quad pos="1 {{ 1.0 - rowHeight }}" size="{{ rowHeight * 1.2 - 2.0 }} 1"
-                  bgcolor="{{ primaryColor }}"/> <!-- bottom bar -->
-            <quad pos="0 -1" size="1 {{ rowHeight - 2.0 }}" bgcolor="{{ primaryColor }}"/> <!-- left bar -->
-            <quad pos="{{ rowHeight * 1.2 - 1.0 }} -1" size="1 {{ rowHeight - 2.0 }}"
-                  bgcolor="{{ primaryColor }}"/> <!-- right bar -->
-            <quad pos="1 -1" size="{{ rowHeight * 1.2 - 2.0 }} {{ rowHeight - 2.0 }}"
-                  bgcolor="{{ primaryColor }}"/> <!-- center quad -->
-        </framemodel>
-
-        <framemodel id="player_row">
-            <!-- Scroll activation -->
-            <quad size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
-
-            <!-- Player Row Background -->
-            <quad pos="{{ padding + 1.0 }} 0" 
-                  size="{{ w - padding * 2.0 - 2.0 }} {{ rowHeight }}"
-                  bgcolor="{{ headerColor }}"
-                  opacity="0.6"/>
-            <quad pos="{{ w - padding - 1.0 }} -1"
-                  size="1 {{ rowHeight - 2.0 }}"
-                  bgcolor="{{ headerColor }}" 
-                  opacity="0.6"/>
-            <frame size="1 1" pos="{{ w - padding }}" rot="90">
-                <!-- top left corner -->
-                <quad size="2 2"
-                      modulatecolor="{{ headerColor }}"
-                      opacity="0.6"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-            <frame size="1 1" pos="{{ w - padding }} {{ -rowHeight }}" rot="180">
-                <!-- top left corner -->
-                <quad size="2 2"
-                      modulatecolor="{{ headerColor }}"
-                      opacity="0.6"
-                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-            </frame>
-
-            <!-- Custom Label Background -->
-            <frameinstance id="custom_gradient" modelid="CustomLabelGradient" pos="{{ w - padding }} 0" />
-
-            <!-- Position Box -->
-            <frameinstance id="position_box" modelid="PositionBackground" pos="{{ padding }} 0" z-index="5"/>
-            <label id="position" pos="{{ padding + (rowHeight * 0.6) }} {{ rowHeight / -2.0 + 0.25 }}" valign="center"
-                   halign="center" textsize="2.6" textfont="GameFontBlack" z-index="5"/>
-
-            <frame pos="{{ padding + (rowHeight * 1.2) + innerSpacing * 2.0 }} {{ rowHeight / -2.0 }}" z-index="10">
-                <!-- Flag -->
-                <quad id="flag"
-                      size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
-                      valign="center"
-                      image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
-                      alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
-                />
-
-                <!-- Club Tag Background -->
-                <quad id="club_bg"
-                      size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
-                      pos="{{ rowInnerHeight * 2 }}"
-                      valign="center"
-                      modulatecolor="{{ headerColor }}"
-                      image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
-                      alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
-                />
-
-                <!-- Club Tag Text -->
-                <label id="club"
-                       pos="{{ rowInnerHeight * 3 }} 0.2"
-                       size="5 3"
-                       valign="center"
-                       halign="center"
-                       textsize="0.9"
-                       textfont="GameFontSemiBold"
-                />
-                
-                <!-- Player Name -->
-                <label id="name"
-                       pos="{{ rowInnerHeight * 4 + innerSpacing }} 0.4"
-                       valign="center"
-                       textsize="2.6"
-                       textfont="GameFontSemiBold"/>
-            </frame>
-            <frame z-index="10">
-                <!-- Spec/Disconnected -->
-                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
-                       valign="center"
-                       halign="right"
-                       textsize="2.6"
-                       textcolor="fff"
-                       opacity="0.5"
-                       textfont="GameFontSemiBold"/>
-            
-                <!-- Round Points -->
-                <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
-                       valign="center"
-                       halign="right"
-                       textsize="2.6"
-                       textcolor="{{ primaryColor }}"
-                       textfont="GameFontBlack"/>
-            
-                <!-- Custom Label (FINALIST, etc) -->
-                <label id="custom_label"
-                       pos="0 {{ rowHeight / -2.0 + 0.3 }}"
-                       valign="center"
-                       halign="right"
-                       textsize="2.4"
-                       textfont="GameFontRegular"/>
-            
-                <!-- Player Score -->
-                <label id="score_two" pos="0 {{ rowHeight / -2.0 + 0.4 }}"
-                       valign="center"
-                       halign="right"
-                       textsize="2.4"
-                       textfont="GameFontRegular"
-                       opacity="0.1"/>
-                <label id="score"
-                       pos="0 {{ rowHeight / -2.0 + 0.4 }}"
-                       valign="center"
-                       halign="right"
-                       textsize="2.4"
-                       textfont="GameFontRegular"/>
-            
-                <!-- Points Box -->
-                <frameinstance id="points_box" modelid="PointsBackground"
-                               pos="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -0.05 }} {{ rowHeight * 0.33 * -0.5 }}"
-                               size="{{ pointsWidth }} {{ rowHeight }}" scale="0.65" hidden="1" z-index="10"/>
-                <label id="points"
-                       pos="{{ w - padding - (pointsWidth * 0.75) / 2.0 - rowHeight * 0.25 * 0.5 }} {{ rowHeight / -2.0 + 0.4 }}"
-                       text="x"
-                       valign="center"
-                       halign="center"
-                       textsize="2"
-                       textcolor="333"
-                       textfont="GameFontSemiBold"
-                       z-index="11"
-                />
-            </frame>
-        </framemodel>
+        <PlayerRowFramemodel headerColor="{{ headerColor }}"
+                             primaryColor="{{ primaryColor }}"
+                             w="{{ w }}"
+                             padding="{{ padding }}"
+                             rowHeight="{{ rowHeight }}"
+                             rowSpacing="{{ rowSpacing }}"
+                             innerSpacing="{{ innerSpacing }}"
+                             rowInnerHeight="{{ rowInnerHeight }}"
+                             pointsWidth="{{ pointsWidth }}"
+        />
 
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
-            <Background w="{{ w }}" h="{{ h }}" 
-                        radius="{{ backgroundBorderRadius }}"
-                        headerHeight="{{ headerHeight }}"
-                        headerColor="{{ headerColor }}"
-                        color="{{ backgroundColor }}"
-                        gradientColor="{{ primaryColor }}"
+            <ScoreboardBackground w="{{ w }}" h="{{ h }}"
+                                  radius="{{ backgroundBorderRadius }}"
+                                  headerHeight="{{ headerHeight }}"
+                                  headerColor="{{ headerColor }}"
+                                  color="{{ backgroundColor }}"
+                                  gradientColor="{{ primaryColor }}"
             />
 
-            <label id="map_name" pos="5 -7.5" text="MAP NAME" valign="center" textsize="3.3" textfont="GameFontBlack"/>
-            <label id="author_name" pos="5 -12.5" textprefix="by " text="AUTHOR NAME" valign="center" textsize="1.6"
-                   textfont="GameFontRegular"/>
+            <ScoreboardHeader w="{{ w }}" primaryColor="{{ primaryColor }}"/>
 
-            <frame pos="{{ w - 0.25 }} -6.5">
-                <frame size="1 1" pos="-2.6 3" rot="90">
-                    <!-- top right corner -->
-                    <quad size="2 2"
-                          modulatecolor="{{ primaryColor }}"
-                          image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-                </frame>
-                <quad pos="-3.6 2" size="1 6.3" bgcolor="{{ primaryColor }}"/> <!-- right bar -->
-                <frame size="1 1" pos="-2.6 -5.3" rot="180">
-                    <!-- bottom right corner -->
-                    <quad size="2 2"
-                          modulatecolor="{{ primaryColor }}"
-                          image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-                </frame>
-                
-                <quad size="8.3 90"
-                      rot="-90"
-                      pos="-48.6 3.0"
-                      modulatecolor="{{ primaryColor }}"
-                      halign="right"
-                      valign="center"
-                      image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"/>
-                <label id="round_label" 
-                       text="ROUND 1/?" 
-                       pos="-4 -2.2"
-                       valign="center"
-                       halign="right"
-                       textsize="1.9"
-                       textfont="GameFontBlack"/>
-                <label id="gradient_label_small" 
-                       text="MODE" 
-                       pos="-4 1.1" 
-                       valign="center"
-                       halign="right"
-                       textsize="0.7"
-                       opacity="0.75"
-                       textfont="GameFontSemiBold"
-                />
-            </frame>
-            
-            <!-- Sub Text (Below highlighted box) -->
-            <label id="sub_text"
-                   pos="{{ w - 7 }} -14.5" 
-                   textcolor="fff" 
-                   valign="center" 
-                   halign="right"
-                   textsize="1"
-                   textfont="GameFontRegular"
-            />
-
-            <!-- Settings Icon -->
-            <label id="settings_icon"
-                   pos="{{ w - 4.6 }} -14.7" 
-                   size="5 5"
-                   textcolor="fff" 
-                   opacity="0.9"
-                   valign="center" 
-                   halign="center"
-                   textsize="1"
-                   text=""
-                   textfont="GameFontRegular"
-                   ScriptEvents="1"
-                   focusareacolor1="0000"
-                   focusareacolor2="0000"
-            />
-
+            <!-- Player Rows -->
             <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ h - padding }}">
                 <frame id="rows_inner">
-                    <frame pos="{{ padding }} {{ h + padding }}">
-                        <frame pos="{{ padding }} {{ -padding }}">
-                            <Settings w="{{ w - padding * 2.0 }}" h="{{ h - padding * 2.0 }}" />
-                        </frame>
-                    </frame>
+                    <SettingsWrapper h="{{ h }}" padding="{{ padding }}">
+                        <SettingsForm w="{{ w - padding * 2.0 }}" h="{{ h - padding * 2.0 }}"/>
+                    </SettingsWrapper>
                     <frame id="frame_scroll" size="{{ w }} {{ h - padding }}">
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
