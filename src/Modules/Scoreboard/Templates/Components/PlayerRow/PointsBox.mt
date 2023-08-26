@@ -50,5 +50,16 @@
             <quad class="set" pos="1 -1" size="{{ pointsWidth - 2.0 }} {{ rowHeight - 2.0 }}"
                   bgcolor="fff"/> <!-- center quad -->
         </frame>
+        
+        <label id="points"
+               pos="{{ x + (pointsWidth * scale) / 2.0 }} {{ rowHeight / -2.0 + 0.4 }}"
+               text="x"
+               valign="center"
+               halign="center"
+               textsize="2"
+               textcolor="333"
+               textfont="GameFontSemiBold"
+               z-index="11"
+        />
     </template>
 </component>

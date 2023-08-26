@@ -1,31 +1,61 @@
 ﻿<component>
-    <property type="string" name="headerColor" />
+    <property type="string" name="backgroundColor" />
     <property type="double" name="rowHeight" />
     <property type="double" name="padding" />
     <property type="double" name="w" />
+    <property type="double" name="x" />
     
     <template>
-        <quad pos="{{ padding + 1.0 }} 0"
-              size="{{ w - padding * 2.0 - 2.0 }} {{ rowHeight }}"
-              bgcolor="{{ headerColor }}"
-              opacity="0.6"/>
-        <quad pos="{{ w - padding - 1.0 }} -1"
-              size="1 {{ rowHeight - 2.0 }}"
-              bgcolor="{{ headerColor }}"
-              opacity="0.6"/>
-        <frame size="1 1" pos="{{ w - padding }}" rot="90">
-            <!-- top left corner -->
-            <quad size="2 2"
-                  modulatecolor="{{ headerColor }}"
-                  opacity="0.6"
-                  image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
-        </frame>
-        <frame size="1 1" pos="{{ w - padding }} {{ -rowHeight }}" rot="180">
-            <!-- top left corner -->
-            <quad size="2 2"
-                  modulatecolor="{{ headerColor }}"
-                  opacity="0.6"
-                  image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
+        <frame pos="{{ x }}">
+            <!-- center -->
+            <quad size="{{ w - 1.0 }} {{ rowHeight }}"
+                  pos="0.5 0"
+                  bgcolor="{{ backgroundColor }}"
+                  opacity="0.6"/>
+            
+            <!-- corner top left -->
+            <frame size="0.5 0.5">
+                <quad size="1 1"
+                      modulatecolor="{{ backgroundColor }}"
+                      opacity="0.6"
+                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
+            </frame>
+            
+            <!-- corner bottom right -->
+            <frame size="0.5 0.5" pos="0 {{ -rowHeight }}" rot="270">
+                <quad size="1 1"
+                      modulatecolor="{{ backgroundColor }}"
+                      opacity="0.6"
+                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
+            </frame>
+            
+            <!-- corner top right -->
+            <frame size="0.5 0.5" pos="{{ w }}" rot="90">
+                <quad size="1 1"
+                      modulatecolor="{{ backgroundColor }}"
+                      opacity="0.6"
+                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
+            </frame>
+            
+            <!-- corner bottom right -->
+            <frame size="0.5 0.5" pos="{{ w }} {{ -rowHeight }}" rot="180">
+                <quad size="1 1"
+                      modulatecolor="{{ backgroundColor }}"
+                      opacity="0.6"
+                      image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
+            </frame>
+            
+            <!-- bar left -->
+            <quad pos="0 -0.53"
+                  size="0.5 {{ rowHeight - 1.06 }}"
+                  bgcolor="{{ backgroundColor }}"
+                  opacity="0.6"/>
+            
+            <!-- bar right -->
+            <quad pos="{{ w - 0.5 }} -0.53"
+                  size="0.5 {{ rowHeight - 1.06 }}"
+                  bgcolor="{{ backgroundColor }}"
+                  opacity="0.6"/>
         </frame>
     </template>
 </component>

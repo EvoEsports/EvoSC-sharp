@@ -6,9 +6,11 @@
     <import component="Scoreboard.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
     <import component="Scoreboard.Components.Settings.Wrapper" as="SettingsWrapper"/>
     <import component="Scoreboard.Components.Settings.Form" as="SettingsForm"/>
+    <import component="Scoreboard.Components.Scrollbar" as="Scrollbar"/>
 
     <property type="int" name="MaxPlayers" default="0"/>
-    
+    <property type="int" name="VisiblePlayers" default="8"/>
+
     <property type="double" name="w" default="160"/>
     <property type="double" name="h" default="71.2"/>
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
@@ -16,17 +18,22 @@
     <property type="double" name="rowHeight" default="8.0"/>
     <property type="double" name="rowInnerHeight" default="5.0"/>
     <property type="double" name="pointsWidth" default="16.0"/>
-    <property type="double" name="rowSpacing" default="0.6"/>
-    <property type="double" name="padding" default="3.0"/>
+    <property type="double" name="rowSpacing" default="0.8"/>
+    <property type="double" name="padding" default="2.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
+    <property type="double" name="scrollBarWidth" default="2.0"/>
 
-    <property type="string" name="headerColor" default="111111"/>
+    <property type="string" name="headerColor" default="0b1231"/>
+    <property type="string" name="positionBackgroundColor" default="47495a"/>
     <property type="string" name="backgroundColor" default="222222"/>
-    <property type="string" name="primaryColor" default="bb0755"/>
+    <property type="string" name="primaryColor" default="3759f4"/>
+
+    <property type="string" name="logoUrl" default="https://maptesting.evotm.com/images/xpevo_logo.png"/>
 
     <template layer="ScoresTable">
-        <PlayerRowFramemodel headerColor="{{ headerColor }}"
+        <PlayerRowFramemodel backgroundColor="{{ positionBackgroundColor }}"
                              primaryColor="{{ primaryColor }}"
+                             positionBackgroundColor="{{ positionBackgroundColor }}"
                              w="{{ w }}"
                              padding="{{ padding }}"
                              rowHeight="{{ rowHeight }}"
@@ -34,13 +41,16 @@
                              innerSpacing="{{ innerSpacing }}"
                              rowInnerHeight="{{ rowInnerHeight }}"
                              pointsWidth="{{ pointsWidth }}"
+                             scrollBarWidth="{{ scrollBarWidth }}"
         />
 
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
-            <ScoreboardBackground w="{{ w }}" h="{{ h }}"
+            <ScoreboardBackground w="{{ w }}" 
+                                  h="{{ VisiblePlayers * rowHeight * rowSpacing + padding - rowSpacing + headerHeight }}"
                                   radius="{{ backgroundBorderRadius }}"
                                   headerHeight="{{ headerHeight }}"
                                   headerColor="{{ headerColor }}"
+                                  primaryColor="{{ primaryColor }}"
                                   color="{{ backgroundColor }}"
                                   gradientColor="{{ primaryColor }}"
             />
@@ -48,20 +58,37 @@
             <ScoreboardHeader w="{{ w }}" primaryColor="{{ primaryColor }}"/>
 
             <!-- Player Rows -->
-            <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ h - padding }}">
+            <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
                 <frame id="rows_inner">
                     <SettingsWrapper h="{{ h }}" padding="{{ padding }}">
                         <SettingsForm w="{{ w - padding * 2.0 }}" h="{{ h - padding * 2.0 }}"/>
                     </SettingsWrapper>
-                    <frame id="frame_scroll" size="{{ w }} {{ h - padding }}">
+                    <frame id="frame_scroll" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
                                        pos="0 {{ -rowId * (rowHeight + rowSpacing) }}"
                         />
                     </frame>
+
+                    <!-- Scrollbar -->
+                    <Scrollbar x="{{ w - rowSpacing - scrollBarWidth }}"
+                               w="{{ scrollBarWidth }}"
+                               h="{{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing }}"
+                               opacity="0.5"
+                               accentColor="{{ positionBackgroundColor }}"
+                               id="scrollbar_bg"
+                    />
+                    <Scrollbar x="{{ w - rowSpacing - scrollBarWidth }}"
+                               w="{{ scrollBarWidth }}"
+                               h="10.0"
+                               accentColor="{{ primaryColor }}"
+                               id="scrollbar_handle"
+                    />
                 </frame>
             </frame>
         </frame>
+        
+        <quad pos="0 {{ h / 2.0 + headerHeight / 2.0 }}" image="{{ logoUrl }}" valign="center" halign="center" size="46 16" fit="contain" z-index="50" />
     </template>
 
     <script>
@@ -354,7 +381,7 @@
         
         Void UpdateHeaderInfo() {
             declare subTextLabel <=> (Page.MainFrame.GetFirstChild("sub_text") as CMlLabel);
-            declare gradientSmallLabel <=> (Page.MainFrame.GetFirstChild("gradient_label_small") as CMlLabel);
+            // declare gradientSmallLabel <=> (Page.MainFrame.GetFirstChild("gradient_label_small") as CMlLabel);
             declare roundLabel <=> (Page.MainFrame.GetFirstChild("round_label") as CMlLabel);
             
             subTextLabel.Value = GetRecordText();
@@ -384,7 +411,7 @@
                 roundLabel.Value = "";
             }
             
-            gradientSmallLabel.Value = CurrentServerModeName;
+            // gradientSmallLabel.Value = CurrentServerModeName;
             SetMapAndAuthorName();
         }
         
@@ -421,7 +448,6 @@
                 declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
                 declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
-                declare scoreTwoLabel = (playerRow.GetFirstChild("score_two") as CMlLabel);                
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 
                 positionLabel.Value = (cursor + 1) ^ "";

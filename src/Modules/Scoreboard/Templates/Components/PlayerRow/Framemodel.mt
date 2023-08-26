@@ -1,29 +1,42 @@
 ﻿<component>
     <import component="Scoreboard.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
     <import component="Scoreboard.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
-    <import component="Scoreboard.Components.PlayerRow.PointsBox" as="PointsBackground"/>
+    <import component="Scoreboard.Components.PlayerRow.PointsBox" as="PointsBox"/>
     <import component="Scoreboard.Components.PlayerRow.PositionBox" as="Position"/>
+
+    <property type="string" name="positionBackgroundColor"/>
+    <property type="string" name="backgroundColor"/>
+    <property type="string" name="primaryColor"/>
+    <property type="double" name="w"/>
+    <property type="double" name="padding"/>
+    <property type="double" name="rowHeight"/>
+    <property type="double" name="rowSpacing"/>
+    <property type="double" name="innerSpacing"/>
+    <property type="double" name="rowInnerHeight"/>
+    <property type="double" name="pointsWidth"/>
+    <property type="double" name="scrollBarWidth"/>
     
-    <property type="string" name="headerColor" />
-    <property type="string" name="primaryColor" />
-    <property type="double" name="w" />
-    <property type="double" name="padding" />
-    <property type="double" name="rowHeight" />
-    <property type="double" name="rowSpacing" />
-    <property type="double" name="innerSpacing" />
-    <property type="double" name="rowInnerHeight" />
-    <property type="double" name="pointsWidth" />
-    
+    <property type="double" name="positionBoxWidth" default="9.6"/>
+
     <template>
         <framemodel id="player_row">
             <!-- Scroll activation -->
             <quad size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
 
+            <!-- Position Box -->
+            <Position id="position_box"
+                      w="{{ positionBoxWidth }}"
+                      h="{{ rowHeight }}"
+                      z-index="5"
+                      positionBackgroundColor="{{ positionBackgroundColor }}"
+            />
+
             <!-- Player Row Background -->
             <PlayerRowBackground rowHeight="{{ rowHeight }}"
-                                 headerColor="{{ headerColor }}"
+                                 backgroundColor="{{ backgroundColor }}"
                                  padding="{{ padding }}"
-                                 w="{{ w }}"
+                                 w="{{ w - scrollBarWidth - rowSpacing * 2.0 - positionBoxWidth - rowSpacing }}"
+                                 x="{{ positionBoxWidth + rowSpacing }}"
             />
 
             <!-- Custom Label Background -->
@@ -34,15 +47,7 @@
                                    w="{{ w }}"
             />
 
-            <!-- Position Box -->
-            <Position id="position_box"
-                      x="{{ padding }}"
-                      z-index="5"
-                      rowHeight="{{ rowHeight }}"
-                      primaryColor="{{ primaryColor }}"
-            />
-
-            <frame pos="{{ padding + (rowHeight * 1.2) + innerSpacing * 2.0 }} {{ rowHeight / -2.0 }}" z-index="10">
+            <frame pos="{{ innerSpacing + positionBoxWidth + innerSpacing * 2.0 }} {{ rowHeight / -2.0 }}" z-index="10">
                 <!-- Flag -->
                 <quad id="flag"
                       size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
@@ -56,7 +61,7 @@
                       size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
                       pos="{{ rowInnerHeight * 2 }}"
                       valign="center"
-                      modulatecolor="{{ headerColor }}"
+                      modulatecolor="{{ backgroundColor }}"
                       image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
                       alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
                 />
@@ -105,12 +110,6 @@
                        textfont="GameFontRegular"/>
 
                 <!-- Player Score -->
-                <label id="score_two" pos="0 {{ rowHeight / -2.0 + 0.4 }}"
-                       valign="center"
-                       halign="right"
-                       textsize="2.4"
-                       textfont="GameFontRegular"
-                       opacity="0.1"/>
                 <label id="score"
                        pos="0 {{ rowHeight / -2.0 + 0.4 }}"
                        valign="center"
@@ -119,27 +118,17 @@
                        textfont="GameFontRegular"/>
 
                 <!-- Points Box -->
-                <PointsBackground id="points_box"
-                                  x="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -0.05 }}"
-                                  y="{{ rowHeight * 0.33 * -0.5 }}"
-                                  w="{{ pointsWidth }}"
-                                  h="{{ rowHeight }}"
-                                  scale="0.65"
-                                  hidden="1"
-                                  z-index="10"
-                                  rowHeight="{{ rowHeight }}"
-                                  pointsWidth="{{ pointsWidth }}"
-                                  padding="{{ padding }}"
-                />
-                <label id="points"
-                       pos="{{ w - padding - (pointsWidth * 0.75) / 2.0 - rowHeight * 0.25 * 0.5 }} {{ rowHeight / -2.0 + 0.4 }}"
-                       text="x"
-                       valign="center"
-                       halign="center"
-                       textsize="2"
-                       textcolor="333"
-                       textfont="GameFontSemiBold"
-                       z-index="11"
+                <PointsBox id="points_box"
+                           x="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -1.0 - padding}}"
+                           y="{{ rowHeight * 0.33 * -0.5 }}"
+                           w="{{ pointsWidth }}"
+                           h="{{ rowHeight }}"
+                           scale="0.65"
+                           hidden="1"
+                           z-index="10"
+                           rowHeight="{{ rowHeight }}"
+                           pointsWidth="{{ pointsWidth }}"
+                           padding="{{ padding }}"
                 />
             </frame>
         </framemodel>
