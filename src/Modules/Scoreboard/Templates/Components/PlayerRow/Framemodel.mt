@@ -100,7 +100,7 @@
                        halign="right"
                        textsize="2.6"
                        textcolor="{{ primaryColor }}"
-                       textfont="GameFontBlack"/>
+                       textfont="GameFontSemiBold"/>
 
                 <!-- Custom Label (FINALIST, etc) -->
                 <label id="custom_label"

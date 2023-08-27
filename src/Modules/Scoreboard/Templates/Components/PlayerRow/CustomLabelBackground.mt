@@ -4,6 +4,7 @@
     <property type="double" name="x" default="0.0"/>
     <property type="double" name="y" default="0.0"/>
     <property type="double" name="w" default="0.0"/>
+    <property type="double" name="widthMultiplier" default="0.63"/>
     <property type="int" name="zIndex" default="0"/>
     
     <template>
@@ -27,15 +28,13 @@
                 />
             </frame>
             <quad class="set" pos="-1 -1.05" size="1 {{ rowHeight - 2.1 }}" bgcolor="f00" z-index="2" opacity="0.25"/> <!-- right bar -->
-            <frame pos="-2 0">
-                <quad size="{{ rowHeight }} {{ w / 2.0 }}"
+            <frame pos="-1 {{ -rowHeight }}">
+                <quad size="{{ rowHeight }} {{ w * widthMultiplier }}"
+                      pos="{{ w * -widthMultiplier }} 0"
                       rot="-90"
-                      pos="-34.0 0"
                       class="modulate"
                       modulatecolor="f00"
                       opacity="0.25"
-                      halign="right"
-                      valign="center"
                       image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"/>
             </frame>
         </frame>

@@ -43,7 +43,7 @@
                                   gradientColor="{{ primaryColor }}"
             />
 
-            <ScoreboardHeader w="{{ w }}" primaryColor="{{ primaryColor }}"/>
+            <ScoreboardHeader w="{{ w }}" primaryColor="{{ primaryColor }}" headerHeight="{{ headerHeight }}"/>
 
             <!-- Player Rows -->
             <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
@@ -358,6 +358,7 @@
             
             declare positionBox = (playerRow.GetFirstChild("position_box") as CMlFrame);
             declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
+            //colorizePosition = True;
             if(PositionColors.existskey(position) && colorizePosition){
                 declare positionColor = PositionColors[position];
                 SetPositionBackgroundColor(positionBox, CL::HexToRgb(positionColor));
@@ -406,7 +407,7 @@
         }
         
         Text GetRecordText() {
-            return "$999AUTHOR TIME | $fff" ^ TL::TimeToText(Map.TMObjective_AuthorTime, True, True) ^ " | " ^ Map.AuthorNickName;
+            return "AUTHOR TIME | " ^ TL::TimeToText(Map.TMObjective_AuthorTime, True, True);
         }
         
         Void UpdateHeaderInfo() {
@@ -432,11 +433,11 @@
                     declare Integer LapCurrent = RaceHelpers::GetPlayerLap(Owner);
 				}
 				declare LapsTotal = RaceHelpers::GetLapsNb(Teams[0]);
-                roundLabel.Value = TL::Compose("%1 | %2/%3", _("|Race|Lap"), TL::ToText(LapCurrent), TL::ToText(LapsTotal));
+                roundLabel.Value = TL::Compose("%1 | %2 OF %3", _("|Race|Lap"), TL::ToText(LapCurrent), TL::ToText(LapsTotal));
             }else if (CurrentScoreMode == C_Mode_Points) {
                 declare Integer SB_CurrentRound for UI = 0;
                 declare Integer SB_RoundsPerMap for UI = 0;
-                roundLabel.Value = TL::Compose("ROUND | %1/%2", TL::ToText(SB_CurrentRound), TL::ToText(SB_RoundsPerMap));
+                roundLabel.Value = TL::Compose("ROUND | %1 OF %2", TL::ToText(SB_CurrentRound), TL::ToText(SB_RoundsPerMap));
             }else{
                 roundLabel.Value = "";
             }
