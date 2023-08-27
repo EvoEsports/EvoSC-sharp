@@ -1,6 +1,7 @@
 ﻿<component>
     <property type="string" name="id"/>
     <property type="string" name="accentColor"/>
+    <property type="int" name="visiblePlayers"/>
     <property type="double" name="w" default="0.0"/>
     <property type="double" name="h" default="0.0"/>
     <property type="double" name="x" default="0.0"/>
@@ -38,23 +39,21 @@
 
     <script once="true">
         <!--        
-        declare Real ScrollHandleHeight;
-        declare Real ScrollBackgroundHeight;
         declare CMlFrame ScrollHandleFrame;
-        
-        Void SetScrollbarHeight(CMlFrame scrollbarFrame, Real height) {
-            scrollbarFrame.Size.Y = height;
-            (scrollbarFrame.Controls[1] as CMlFrame).RelativePosition_V3.Y = height * -1.0;
-            (scrollbarFrame.Controls[2] as CMlQuad).Size.Y = height;
-            (scrollbarFrame.Controls[3] as CMlQuad).Size.Y = height - 1.0;
-            ScrollHandleHeight = height;
-        }
+        declare CMlFrame ScrollBgFrame;
         
         Void SetScrollbarPosition(CMlFrame rowsFrame, Integer playerRowsFilled, Integer rowsShown) {
+            if(playerRowsFilled > {{ visiblePlayers }}){
+                ScrollHandleFrame.Show();
+            }else{
+                ScrollHandleFrame.Hide();
+                return;
+            }
+            
             declare Real maxScroll = playerRowsFilled * {{ rowHeight }};
             declare Real adjustedViewPortHeight = maxScroll - (rowsShown * {{ rowHeight }});
             declare Real scrollOffset = rowsFrame.ScrollOffset.Y;
-            declare Real scrollableHeight = ScrollBackgroundHeight - ScrollHandleHeight;
+            declare Real scrollableHeight = ScrollBgFrame.Size.Y - ScrollHandleFrame.Size.Y;
             declare Real ratio = scrollOffset / adjustedViewPortHeight;
             ScrollHandleFrame.RelativePosition_V3.Y = ratio * scrollableHeight * -1.0;
         }
@@ -62,8 +61,7 @@
         *** OnInitialization *** 
         ***
             ScrollHandleFrame <=> (Page.MainFrame.GetFirstChild("scrollbar_handle") as CMlFrame);
-            ScrollHandleHeight = 1.0;
-            ScrollBackgroundHeight = 1.0;
+            ScrollBgFrame <=> (Page.MainFrame.GetFirstChild("scrollbar_bg") as CMlFrame);
         ***
         
         *** OnLoop *** 

@@ -15,7 +15,7 @@
     <property type="double" name="rowInnerHeight"/>
     <property type="double" name="pointsWidth"/>
     <property type="double" name="scrollBarWidth"/>
-    
+
     <property type="double" name="positionBoxWidth" default="9.6"/>
 
     <template>
@@ -32,7 +32,8 @@
             />
 
             <!-- Player Row Background -->
-            <PlayerRowBackground rowHeight="{{ rowHeight }}"
+            <PlayerRowBackground id="player_row_bg"
+                                 rowHeight="{{ rowHeight }}"
                                  backgroundColor="{{ backgroundColor }}"
                                  padding="{{ padding }}"
                                  w="{{ w - scrollBarWidth - rowSpacing - positionBoxWidth - rowSpacing }}"
@@ -47,7 +48,7 @@
                                    w="{{ w }}"
             />
 
-            <frame pos="{{ innerSpacing + positionBoxWidth + innerSpacing * 2.0 }} {{ rowHeight / -2.0 }}" z-index="10">
+            <frame pos="{{ innerSpacing + positionBoxWidth + innerSpacing * 1.5 }} {{ rowHeight / -2.0 }}" z-index="10">
                 <!-- Flag -->
                 <quad id="flag"
                       size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
@@ -119,7 +120,7 @@
 
                 <!-- Points Box -->
                 <PointsBox id="points_box"
-                           x="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 -1.0 - padding}}"
+                           x="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 }}"
                            y="{{ rowHeight * 0.33 * -0.5 }}"
                            w="{{ pointsWidth }}"
                            h="{{ rowHeight }}"
@@ -133,7 +134,7 @@
             </frame>
         </framemodel>
     </template>
-    
+
     <script once="true">
         <!--
         *** OnMouseClick ***

@@ -10,6 +10,7 @@
 
     <property type="int" name="MaxPlayers" default="0"/>
     <property type="int" name="VisiblePlayers" default="8"/>
+    <property type="Dictionary<int, string>" name="PositionColors"/>
 
     <property type="double" name="w" default="160"/>
     <property type="double" name="h" default="71.2"/>
@@ -21,11 +22,11 @@
     <property type="double" name="rowSpacing" default="0.8"/>
     <property type="double" name="padding" default="2.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
-    <property type="double" name="scrollBarWidth" default="1.0"/>
+    <property type="double" name="scrollBarWidth" default="1.5"/>
 
     <property type="string" name="headerColor" default="0b1231"/>
-    <property type="string" name="positionBackgroundColor" default="47495a"/>
-    <property type="string" name="backgroundColor" default="222222"/>
+    <property type="string" name="positionBackgroundColor" default="313440"/>
+    <property type="string" name="backgroundColor" default="111111"/>
     <property type="string" name="primaryColor" default="3759f4"/>
 
     <property type="string" name="logoUrl" default="https://maptesting.evotm.com/images/xpevo_logo.png"/>
@@ -77,17 +78,18 @@
                     <Scrollbar x="{{ w - scrollBarWidth }}"
                                w="{{ scrollBarWidth }}"
                                h="{{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing }}"
-                               opacity="0.5"
                                accentColor="{{ positionBackgroundColor }}"
+                               opacity="0.25"
                                rowHeight="{{ rowHeight + rowSpacing }}"
+                               visiblePlayers="{{ VisiblePlayers }}"
                                id="scrollbar_bg"
                     />
                     <Scrollbar x="{{ w - scrollBarWidth }}"
                                w="{{ scrollBarWidth }}"
-                               h="10.0"
-                               opacity="0.5"
-                               accentColor="{{ primaryColor }}"
+                               h="{{ (VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing) * 0.35 }}"
+                               accentColor="{{ positionBackgroundColor }}"
                                rowHeight="{{ rowHeight + rowSpacing }}"
+                               visiblePlayers="{{ VisiblePlayers }}"
                                id="scrollbar_handle"
                     />
                 </frame>
@@ -128,6 +130,7 @@
         declare Integer MaxPlayers;
         declare CMlFrame RowsFrame;
         declare Boolean SettingsVisible;
+        declare Text[Integer] PositionColors;
         
         Boolean ShouldShowPointsBox() {
             return CurrentScoreMode == C_Mode_LapTime
@@ -245,7 +248,7 @@
             customGradientFrame.Hide();
         }
         
-        Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow){
+        Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow, Integer position){
             declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
             declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
             declare Boolean CustomPointsEnabled = Net_TMxSM_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
@@ -253,6 +256,7 @@
             declare Boolean Race_ScoresTable_IsSpectator for Score = False;
             declare ScoresTable_PlayerLastUpdate for Score = -1;
             declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
+            declare Boolean colorizePosition = False;
                 
             declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
             declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
@@ -286,6 +290,7 @@
                 //SetRacePoints(Frame_RoundPoints, Score.RoundPoints, IsLocalPlayer);
                 customLabel.Value = "";
                 pointsLabel.Value = TL::ToText(Score.Points);
+                colorizePosition = Score.Points > 0;
                 
                 if(Score.PrevRaceTimes.count > 0 && Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1] > 0){
                     scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
@@ -310,16 +315,20 @@
                 customLabel.Value = "";
                 if (Net_TMxSM_ScoresTable_CustomTimes[Score.User.WebServicesUserId] > 0){
                     scoreLabel.Value = TL::TimeToText(Net_TMxSM_ScoresTable_CustomTimes[Score.User.WebServicesUserId], True, True);
+                    colorizePosition = True;
                 } else {
                     scoreLabel.Value = "nope";
                 }
             } else if (CurrentScoreMode == C_Mode_BestTime && Score.BestRaceTimes.count > 0) {
                 customLabel.Value = "";
-                scoreLabel.Value = TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True);
-                log(TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True));
+                declare bestRaceTime = Score.BestRaceTimes[Score.BestRaceTimes.count - 1];
+                scoreLabel.Value = TL::TimeToText(bestRaceTime, True, True);
+                colorizePosition = bestRaceTime > 0;
             } else if (CurrentScoreMode == C_Mode_PrevTime && Score.PrevRaceTimes.count > 0) {
                 customLabel.Value = "";
-                scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
+                declare bestPrevTime = Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1];
+                scoreLabel.Value = TL::TimeToText(bestPrevTime, True, True);
+                colorizePosition = bestPrevTime > 0;
             } else if (CurrentScoreMode == C_Mode_LapTime && Score.BestLapTimes.count > 0) {
                 customLabel.Value = "";
                 scoreLabel.Value = TL::TimeToText(Score.BestLapTimes[Score.BestLapTimes.count - 1], True, True);
@@ -333,6 +342,7 @@
                 pointsLabel.Value = ""^Net_TMxSM_ScoresTable_RaceProgression.X;
                 if (Net_TMxSM_ScoresTable_RaceProgression.Y > 0) {
                     scoreLabel.Value = TL::TimeToText(Net_TMxSM_ScoresTable_RaceProgression.Y, True, True);
+                    colorizePosition = True;
                 } else {
                     scoreLabel.Value = "0:00.000";
                 }
@@ -345,6 +355,17 @@
             }
             
             scoreLabel.Value = StripLeadingZeroes(scoreLabel.Value);
+            
+            declare positionBox = (playerRow.GetFirstChild("position_box") as CMlFrame);
+            declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
+            if(PositionColors.existskey(position) && colorizePosition){
+                declare positionColor = PositionColors[position];
+                SetPositionBackgroundColor(positionBox, CL::HexToRgb(positionColor));
+                SetPlayerBackgroundColor(playerRowBg, CL::HexToRgb(positionColor));
+            }else{
+                SetPositionBackgroundColor(positionBox, CL::HexToRgb("{{ positionBackgroundColor }}"));
+                SetPlayerBackgroundColor(playerRowBg, CL::HexToRgb("{{ positionBackgroundColor }}"));
+            }
             
             if (PlayerIsConnected) {
                 //connected
@@ -424,38 +445,13 @@
             SetMapAndAuthorName();
         }
         
-        Void UpdateScrollHandleSize(Integer playerRowsFilled) {
-            declare scrollbarBg <=> (Page.MainFrame.GetFirstChild("scrollbar_bg") as CMlFrame);
-            declare scrollbarHandle <=> (Page.MainFrame.GetFirstChild("scrollbar_handle") as CMlFrame);
-            PlayerRowsFilled = playerRowsFilled;
-            
-            if(playerRowsFilled <= {{ VisiblePlayers }}){
-                scrollbarHandle.Hide();
-                return;
-            }
-            
-            declare Real ratio = (playerRowsFilled * 1.0) / {{ MaxPlayers * 2.0 }};
-            if(ratio < 0.2){
-                ratio = 0.2;
-            }else if(ratio > 0.6){
-                ratio = 0.6;
-            }
-            
-            declare Real scrollHandleHeight = (1.0 - ratio) * scrollbarBg.Size.Y;
-            ScrollBackgroundHeight = scrollbarBg.Size.Y;
-            SetScrollbarHeight(scrollbarHandle, scrollHandleHeight);
-            scrollbarHandle.Show();
-        }
-        
         Void UpdateScrollSize(Integer playerRowsFilled) {
             declare scrollN = 0;
             if(playerRowsFilled >= 8){
                 scrollN = playerRowsFilled - 8;
             }
             RowsFrame.ScrollMax = <0.0, {{ rowHeight + rowSpacing }} * scrollN * 1.0>;
-            
-            //Update scroll handle
-            UpdateScrollHandleSize(playerRowsFilled);
+            PlayerRowsFilled = playerRowsFilled;
         }
         
         Void UpdateScoreTable() {
@@ -497,14 +493,14 @@
                 
                 declare Boolean CustomLabelVisible for playerRow = False;
                 
-                UpdateScoreAndPoints(Score, playerRow);
+                UpdateScoreAndPoints(Score, playerRow, cursor + 1);
                 SetCountryFlag(flagQuad, User.Login);
                 
                 if(ShouldShowPointsBox()){
-                    scoreLabel.RelativePosition_V3.X = pointsBoxFrame.RelativePosition_V3.X - {{ innerSpacing * 2.0 }};
+                    scoreLabel.RelativePosition_V3.X = pointsBoxFrame.RelativePosition_V3.X - {{ innerSpacing }};
                     pointsBoxFrame.Show();
                 }else{
-                    scoreLabel.RelativePosition_V3.X = {{ w - padding - innerSpacing * 2.0 }};
+                    scoreLabel.RelativePosition_V3.X = {{ w - padding - innerSpacing }};
                     pointsBoxFrame.Hide();
                 }
                 
@@ -558,6 +554,8 @@
             PlayerRowsFilled = -1;
             CurrentScoreMode = -1;
             SettingsVisible = False;
+            
+            {{ string.Join("\n", PositionColors.Select(pc => $"PositionColors[{pc.Key}] = \"{pc.Value}\";")) }}
         ***
         
         *** OnLoop *** 
