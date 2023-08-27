@@ -21,7 +21,7 @@
     <template>
         <framemodel id="player_row">
             <!-- Scroll activation -->
-            <quad size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
+            <quad id="player_row_trigger" size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
 
             <!-- Position Box -->
             <Position id="position_box"
@@ -35,7 +35,7 @@
             <PlayerRowBackground rowHeight="{{ rowHeight }}"
                                  backgroundColor="{{ backgroundColor }}"
                                  padding="{{ padding }}"
-                                 w="{{ w - scrollBarWidth - rowSpacing * 2.0 - positionBoxWidth - rowSpacing }}"
+                                 w="{{ w - scrollBarWidth - rowSpacing - positionBoxWidth - rowSpacing }}"
                                  x="{{ positionBoxWidth + rowSpacing }}"
             />
 
@@ -61,7 +61,7 @@
                       size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
                       pos="{{ rowInnerHeight * 2 }}"
                       valign="center"
-                      modulatecolor="{{ backgroundColor }}"
+                      modulatecolor="000"
                       image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
                       alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
                 />
@@ -133,4 +133,15 @@
             </frame>
         </framemodel>
     </template>
+    
+    <script once="true">
+        <!--
+        *** OnMouseClick ***
+        ***
+        if(Event.Control.ControlId == "player_row_trigger"){
+            log("ayy");
+        }
+        ***
+        -->
+    </script>
 </component>

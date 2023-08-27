@@ -21,7 +21,7 @@
     <property type="double" name="rowSpacing" default="0.8"/>
     <property type="double" name="padding" default="2.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
-    <property type="double" name="scrollBarWidth" default="2.0"/>
+    <property type="double" name="scrollBarWidth" default="1.0"/>
 
     <property type="string" name="headerColor" default="0b1231"/>
     <property type="string" name="positionBackgroundColor" default="47495a"/>
@@ -31,19 +31,6 @@
     <property type="string" name="logoUrl" default="https://maptesting.evotm.com/images/xpevo_logo.png"/>
 
     <template layer="ScoresTable">
-        <PlayerRowFramemodel backgroundColor="{{ positionBackgroundColor }}"
-                             primaryColor="{{ primaryColor }}"
-                             positionBackgroundColor="{{ positionBackgroundColor }}"
-                             w="{{ w }}"
-                             padding="{{ padding }}"
-                             rowHeight="{{ rowHeight }}"
-                             rowSpacing="{{ rowSpacing }}"
-                             innerSpacing="{{ innerSpacing }}"
-                             rowInnerHeight="{{ rowInnerHeight }}"
-                             pointsWidth="{{ pointsWidth }}"
-                             scrollBarWidth="{{ scrollBarWidth }}"
-        />
-
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
             <ScoreboardBackground w="{{ w }}" 
                                   h="{{ VisiblePlayers * rowHeight * rowSpacing + padding - rowSpacing + headerHeight }}"
@@ -60,9 +47,25 @@
             <!-- Player Rows -->
             <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
                 <frame id="rows_inner">
+                    <!-- Settings -->
                     <SettingsWrapper h="{{ h }}" padding="{{ padding }}">
                         <SettingsForm w="{{ w - padding * 2.0 }}" h="{{ h - padding * 2.0 }}"/>
                     </SettingsWrapper>
+                    
+                    
+                    <!-- Player Rows -->
+                    <PlayerRowFramemodel backgroundColor="{{ positionBackgroundColor }}"
+                                         primaryColor="{{ primaryColor }}"
+                                         positionBackgroundColor="{{ positionBackgroundColor }}"
+                                         w="{{ w }}"
+                                         padding="{{ padding }}"
+                                         rowHeight="{{ rowHeight }}"
+                                         rowSpacing="{{ rowSpacing }}"
+                                         innerSpacing="{{ innerSpacing }}"
+                                         rowInnerHeight="{{ rowInnerHeight }}"
+                                         pointsWidth="{{ pointsWidth }}"
+                                         scrollBarWidth="{{ scrollBarWidth }}"
+                    />
                     <frame id="frame_scroll" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
@@ -71,17 +74,20 @@
                     </frame>
 
                     <!-- Scrollbar -->
-                    <Scrollbar x="{{ w - rowSpacing - scrollBarWidth }}"
+                    <Scrollbar x="{{ w - scrollBarWidth }}"
                                w="{{ scrollBarWidth }}"
                                h="{{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing }}"
                                opacity="0.5"
                                accentColor="{{ positionBackgroundColor }}"
+                               rowHeight="{{ rowHeight + rowSpacing }}"
                                id="scrollbar_bg"
                     />
-                    <Scrollbar x="{{ w - rowSpacing - scrollBarWidth }}"
+                    <Scrollbar x="{{ w - scrollBarWidth }}"
                                w="{{ scrollBarWidth }}"
                                h="10.0"
+                               opacity="0.5"
                                accentColor="{{ primaryColor }}"
+                               rowHeight="{{ rowHeight + rowSpacing }}"
                                id="scrollbar_handle"
                     />
                 </frame>
@@ -117,6 +123,9 @@
         #Const C_CustomPoints_Color 1
         
         declare Integer CurrentScoreMode;
+        declare Integer PlayerRowsVisible;
+        declare Integer PlayerRowsFilled;
+        declare Integer MaxPlayers;
         declare CMlFrame RowsFrame;
         declare Boolean SettingsVisible;
         
@@ -415,12 +424,38 @@
             SetMapAndAuthorName();
         }
         
+        Void UpdateScrollHandleSize(Integer playerRowsFilled) {
+            declare scrollbarBg <=> (Page.MainFrame.GetFirstChild("scrollbar_bg") as CMlFrame);
+            declare scrollbarHandle <=> (Page.MainFrame.GetFirstChild("scrollbar_handle") as CMlFrame);
+            PlayerRowsFilled = playerRowsFilled;
+            
+            if(playerRowsFilled <= {{ VisiblePlayers }}){
+                scrollbarHandle.Hide();
+                return;
+            }
+            
+            declare Real ratio = (playerRowsFilled * 1.0) / {{ MaxPlayers * 2.0 }};
+            if(ratio < 0.2){
+                ratio = 0.2;
+            }else if(ratio > 0.6){
+                ratio = 0.6;
+            }
+            
+            declare Real scrollHandleHeight = (1.0 - ratio) * scrollbarBg.Size.Y;
+            ScrollBackgroundHeight = scrollbarBg.Size.Y;
+            SetScrollbarHeight(scrollbarHandle, scrollHandleHeight);
+            scrollbarHandle.Show();
+        }
+        
         Void UpdateScrollSize(Integer playerRowsFilled) {
             declare scrollN = 0;
             if(playerRowsFilled >= 8){
                 scrollN = playerRowsFilled - 8;
             }
             RowsFrame.ScrollMax = <0.0, {{ rowHeight + rowSpacing }} * scrollN * 1.0>;
+            
+            //Update scroll handle
+            UpdateScrollHandleSize(playerRowsFilled);
         }
         
         Void UpdateScoreTable() {
@@ -518,6 +553,9 @@
             RowsFrame.ScrollMax = <0.0, {{ MaxPlayers * (rowHeight + rowSpacing) - h }} * 1.0>;
             RowsFrame.ScrollGrid = <0.0, {{ rowHeight + rowSpacing }} * 1.0>;
             
+            MaxPlayers = {{ MaxPlayers }};
+            PlayerRowsVisible = {{ VisiblePlayers }};
+            PlayerRowsFilled = -1;
             CurrentScoreMode = -1;
             SettingsVisible = False;
         ***
