@@ -134,8 +134,7 @@ public class GeardownService : IGeardownService
                 }
             });
 
-            // builder.WithMaps(maps); // todo: uncomment this
-            builder.AddMap("Campaigns/CurrentQuarterly/Spring 2023 - 01.Map.Gbx");
+            builder.WithMaps(maps);
         });
 
         return name;

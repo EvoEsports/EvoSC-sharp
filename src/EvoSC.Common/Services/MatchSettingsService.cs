@@ -57,7 +57,7 @@ public class MatchSettingsService : IMatchSettingsService
         {
             var file = Path.GetFileName($"{name}.txt");
             await _server.Remote.LoadMatchSettingsAsync($"MatchSettings/{file}");
-            await _server.Remote.RestartMapAsync();
+            await _server.Remote.NextMapAsync();
         }
         catch (XmlRpcFaultException ex)
         {

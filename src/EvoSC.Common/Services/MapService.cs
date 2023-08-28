@@ -46,9 +46,10 @@ public class MapService : IMapService
         }
 
         var fileName = $"{mapMetadata.MapUid}.Map.Gbx";
-        var filePath = Path.Combine(_config.Path.Maps, "EvoSC");
+        var filePath = Path.Combine(_config.Path.Maps, "EvoSC", fileName);
+        var relativePath = Path.Combine("EvoSC", fileName);
 
-        await SaveMapFileAsync(mapFile, filePath, fileName);
+        await SaveMapFileAsync(mapFile, filePath);
 
         var playerId = PlayerUtils.IsAccountId(mapMetadata.AuthorId)
             ? mapMetadata.AuthorId
@@ -66,7 +67,7 @@ public class MapService : IMapService
         else
         {
             _logger.LogDebug("Adding map {Name} ({Uid}) to the database", mapMetadata.MapName, mapMetadata.MapUid);
-            map = await _mapRepository.AddMapAsync(mapMetadata, author, filePath);
+            map = await _mapRepository.AddMapAsync(mapMetadata, author, relativePath);
         }
 
         await _serverClient.Remote.InsertMapAsync($"EvoSC/{fileName}");
@@ -166,27 +167,26 @@ public class MapService : IMapService
         return map.ExternalVersion == mapMetadata.ExternalVersion;
     }
 
-    private async Task SaveMapFileAsync(Stream mapStream, string filePath, string fileName)
+    private async Task SaveMapFileAsync(Stream mapStream, string filePath)
     {
         try
         {
-            if (!Directory.Exists(filePath))
+            var directory = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directory))
             {
-                Directory.CreateDirectory(filePath);
+                Directory.CreateDirectory(directory);
             }
 
-            var path = Path.Combine(filePath, $"{fileName}");
-
-            if (File.Exists(path))
+            if (File.Exists(filePath))
             {
-                File.Delete(path);
+                File.Delete(filePath);
             }
             
-            var fileStream = File.Create(path);
+            var fileStream = File.Create(filePath);
             await mapStream.CopyToAsync(fileStream);
             fileStream.Close();
 
-            if (!File.Exists(path))
+            if (!File.Exists(filePath))
             {
                 throw new InvalidOperationException("Map file creation failed. Got right permissions?");
             }
