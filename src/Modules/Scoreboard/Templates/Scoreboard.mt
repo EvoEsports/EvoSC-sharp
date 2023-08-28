@@ -257,6 +257,8 @@
             declare ScoresTable_PlayerLastUpdate for Score = -1;
             declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
             declare Boolean colorizePosition = False;
+            declare CSmScore playerScore for playerRow;
+            playerScore <=> Score;
                 
             declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
             declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
@@ -493,9 +495,12 @@
                 }
                 
                 declare Boolean CustomLabelVisible for playerRow = False;
+                declare Boolean RowIsLocked for playerRow = False;
                 
-                UpdateScoreAndPoints(Score, playerRow, cursor + 1);
-                SetCountryFlag(flagQuad, User.Login);
+                if(!RowIsLocked){
+                    UpdateScoreAndPoints(Score, playerRow, cursor + 1);
+                    SetCountryFlag(flagQuad, User.Login);
+                }
                 
                 if(ShouldShowPointsBox()){
                     scoreLabel.RelativePosition_V3.X = pointsBoxFrame.RelativePosition_V3.X - {{ innerSpacing }};

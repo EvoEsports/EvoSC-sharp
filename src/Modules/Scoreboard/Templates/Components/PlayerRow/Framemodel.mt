@@ -3,6 +3,7 @@
     <import component="Scoreboard.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
     <import component="Scoreboard.Components.PlayerRow.PointsBox" as="PointsBox"/>
     <import component="Scoreboard.Components.PlayerRow.PositionBox" as="Position"/>
+    <import component="Scoreboard.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
 
     <property type="string" name="positionBackgroundColor"/>
     <property type="string" name="backgroundColor"/>
@@ -16,6 +17,7 @@
     <property type="double" name="pointsWidth"/>
     <property type="double" name="scrollBarWidth"/>
 
+    <property type="double" name="textSize" default="2.4"/>
     <property type="double" name="positionBoxWidth" default="9.6"/>
 
     <template>
@@ -84,12 +86,12 @@
                        textsize="2.6"
                        textfont="GameFontSemiBold"/>
             </frame>
-            <frame z-index="10">
+            <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
                 <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
-                       textsize="2.6"
+                       textsize="{{ textSize }}"
                        textcolor="fff"
                        opacity="0.5"
                        textfont="GameFontSemiBold"/>
@@ -98,7 +100,7 @@
                 <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
-                       textsize="2.6"
+                       textsize="{{ textSize }}"
                        textcolor="{{ primaryColor }}"
                        textfont="GameFontSemiBold"/>
 
@@ -107,7 +109,7 @@
                        pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
-                       textsize="2.4"
+                       textsize="{{ textSize }}"
                        textfont="GameFontRegular"/>
 
                 <!-- Player Score -->
@@ -115,7 +117,7 @@
                        pos="0 {{ rowHeight / -2.0 + 0.4 }}"
                        valign="center"
                        halign="right"
-                       textsize="2.4"
+                       textsize="{{ textSize }}"
                        textfont="GameFontRegular"/>
 
                 <!-- Points Box -->
@@ -132,16 +134,39 @@
                            padding="{{ padding }}"
                 />
             </frame>
+            <PlayerActions x="{{ w - padding }}" 
+                           y="{{ rowHeight / -2.0 }}" 
+                           rowHeight="{{ rowHeight }}"
+                           innerSpacing="{{ innerSpacing }}"
+                           highlightColor="{{ primaryColor }}"
+                           textsize="{{ textSize }}"
+            />
         </framemodel>
     </template>
 
     <script once="true">
         <!--
+        Void TogglePlayerActions(CMlFrame playerRow) {
+            declare playerActions = (playerRow.GetFirstChild("player_actions") as CMlFrame);
+            declare detailsWrapper = (playerRow.GetFirstChild("details_wrapper") as CMlFrame);
+            declare Boolean RowIsLocked for playerRow = False;
+            
+            if(!RowIsLocked){
+                playerActions.Show();
+                detailsWrapper.Hide();
+                RowIsLocked = True;
+            }else{
+                playerActions.Hide();
+                detailsWrapper.Show();
+                RowIsLocked = False;
+            }
+        }
+        
         *** OnMouseClick ***
         ***
-        if(Event.Control.ControlId == "player_row_trigger"){
-            log("ayy");
-        }
+            if(Event.Control.ControlId == "player_row_trigger"){
+                TogglePlayerActions(Event.Control.Parent as CMlFrame);
+            }
         ***
         -->
     </script>
