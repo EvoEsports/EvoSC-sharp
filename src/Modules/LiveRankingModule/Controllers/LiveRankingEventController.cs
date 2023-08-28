@@ -11,13 +11,13 @@ using EvoSC.Common.Interfaces.Controllers;
 namespace EvoSC.Modules.Official.LiveRankingModule.Controllers;
 
 [Controller]
-public class LiveRankingController : EvoScController<IEventControllerContext>
+public class LiveRankingEventController : EvoScController<IEventControllerContext>
 {
-    private readonly ILogger<LiveRankingController> _logger;
+    private readonly ILogger<LiveRankingEventController> _logger;
     private readonly ILiveRankingService _service;
 
     // You want to dependency inject the needed services here at the constructor
-    public LiveRankingController(ILogger<LiveRankingController> logger, ILiveRankingService service)
+    public LiveRankingEventController(ILogger<LiveRankingEventController> logger, ILiveRankingService service)
     {
         _logger = logger;
         _service = service;

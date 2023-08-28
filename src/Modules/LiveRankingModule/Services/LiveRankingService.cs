@@ -105,7 +105,7 @@ public class LiveRankingService : ILiveRankingService
             var widgetExistingRanking = GetLiveRankingForWidget(existingRanking);
             var widgetNewRanking = GetLiveRankingForWidget(newRanking);
 
-            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
                 new
                 {
                     previousRankings = widgetPrevRanking,
@@ -228,7 +228,8 @@ public class LiveRankingService : ILiveRankingService
             "Trackmania/TM_Rounds_Online.Script.txt", "Trackmania/TM_Cup_Online.Script.txt"
         };
         var modeScriptInfo = await _client.Remote.GetModeScriptInfoAsync();
-        isRoundsMode = validModes.Contains(modeScriptInfo.Name);
+        // isRoundsMode = validModes.Contains(modeScriptInfo.Name);
+        isRoundsMode = true;
         return isRoundsMode;
     }
 
