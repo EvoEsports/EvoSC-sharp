@@ -10,6 +10,6 @@ public interface IPathConfig
     public string Maps { get; }
     
     [Description("Default match settings file")]
-    [Option(Alias = "defaultMatchSettings")]
+    [Option(Alias = "defaultMatchSettings", DefaultValue = "example.txt")]
     public string DefaultMatchSettings { get; }
 }

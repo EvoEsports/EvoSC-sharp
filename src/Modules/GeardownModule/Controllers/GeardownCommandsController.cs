@@ -1,0 +1,36 @@
+﻿using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Controllers;
+using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces;
+using EvoSC.Modules.Evo.GeardownModule.Interfaces;
+
+namespace EvoSC.Modules.Evo.GeardownModule.Controllers;
+
+[Controller]
+public class GeardownCommandsController : EvoScController<ICommandInteractionContext>
+{
+    private readonly IGeardownService _geardown;
+    private readonly IServerClient _server;
+
+    public GeardownCommandsController(IGeardownService geardown, IServerClient server)
+    {
+        _geardown = geardown;
+        _server = server;
+    }
+
+    [ChatCommand("geardown_setup", "Setup the server for a match from geardown.")]
+    public async Task GeardownSetupAsync(string matchToken)
+    {
+        try
+        {
+            await _server.InfoMessageAsync("Setting up the match, please wait ...");
+            await _geardown.SetupServerAsync(matchToken);
+            await _server.SuccessMessageAsync("Match successfully set up! Reloading match settings ...");
+        }
+        catch (InvalidOperationException ex)
+        {
+            await _server.ErrorMessageAsync($"(Geardown) {ex.Message}", Context.Player);
+        }
+    }
+}

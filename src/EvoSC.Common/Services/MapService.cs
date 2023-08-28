@@ -31,6 +31,7 @@ public class MapService : IMapService
     public async Task<IMap?> GetMapByIdAsync(long id) => await _mapRepository.GetMapByIdAsync(id);
 
     public async Task<IMap?> GetMapByUidAsync(string uid) => await _mapRepository.GetMapByUidAsync(uid);
+    public async Task<IMap?> GetMapByExternalIdAsync(string id) => await _mapRepository.GetMapByExternalIdAsync(id);
 
     public async Task<IMap> AddMapAsync(MapStream mapStream)
     {
@@ -44,7 +45,7 @@ public class MapService : IMapService
             throw new DuplicateMapException($"Map with UID {mapMetadata.MapUid} already exists in database");
         }
 
-        var fileName = $"{mapMetadata.MapName}.Map.Gbx";
+        var fileName = $"{mapMetadata.MapUid}.Map.Gbx";
         var filePath = Path.Combine(_config.Path.Maps, "EvoSC");
 
         await SaveMapFileAsync(mapFile, filePath, fileName);
@@ -174,9 +175,21 @@ public class MapService : IMapService
                 Directory.CreateDirectory(filePath);
             }
 
-            var fileStream = File.Create(Path.Combine(filePath, $"{fileName}"));
+            var path = Path.Combine(filePath, $"{fileName}");
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            
+            var fileStream = File.Create(path);
             await mapStream.CopyToAsync(fileStream);
             fileStream.Close();
+
+            if (!File.Exists(path))
+            {
+                throw new InvalidOperationException("Map file creation failed. Got right permissions?");
+            }
         }
         catch (Exception e)
         {

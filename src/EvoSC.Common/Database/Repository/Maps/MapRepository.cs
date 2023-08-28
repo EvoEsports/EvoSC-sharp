@@ -27,6 +27,10 @@ public class MapRepository : DbRepository, IMapRepository
         .LoadWith(t => t.DbAuthor)
         .SingleOrDefaultAsync(m => m.Uid == uid);
 
+    public async Task<IMap?> GetMapByExternalIdAsync(string id) => await Table<DbMap>()
+        .LoadWith(t => t.DbAuthor)
+        .SingleOrDefaultAsync(m => m.ExternalId == id);
+    
     public async Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath)
     {
         var dbMap = new DbMap
@@ -102,6 +106,5 @@ public class MapRepository : DbRepository, IMapRepository
 
     public Task RemoveMapAsync(long id) => 
         Table<DbMap>().DeleteAsync(m => m.Id == id);
-
 }
 
