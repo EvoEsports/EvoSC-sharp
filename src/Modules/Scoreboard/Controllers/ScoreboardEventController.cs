@@ -31,9 +31,9 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
     public void OnMatchSettingsLoaded() => _scoreboardService.LoadAndUpdateRoundsPerMap();
 
     [Subscribe(ModeScriptEvent.RoundStart)]
-    public void OnRoundStart(object sender, RoundEventArgs args)
+    public async Task OnRoundStart(object sender, RoundEventArgs args)
     {
         _scoreboardService.SetCurrentRound(args.Round);
-        _scoreboardService.SendRoundsInfo();
+        await _scoreboardService.SendRoundsInfo();
     }
 }

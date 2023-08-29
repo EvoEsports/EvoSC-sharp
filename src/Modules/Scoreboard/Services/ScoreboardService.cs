@@ -35,21 +35,21 @@ public class ScoreboardService : IScoreboardService
         await _manialinks.SendManialinkAsync(
             await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin)),
             "Scoreboard.Scoreboard",
-            GetData()
+            await GetData()
         );
         await SendRoundsInfo(playerLogin);
     }
 
     public async Task ShowScoreboard()
     {
-        await _manialinks.SendManialinkAsync("Scoreboard.Scoreboard", GetData());
+        await _manialinks.SendManialinkAsync("Scoreboard.Scoreboard", await GetData());
     }
 
-    private dynamic GetData()
+    private async Task<dynamic> GetData()
     {
         return new
         {
-            MaxPlayers = 64,
+            MaxPlayers = await GetMaxPlayersAsync(),
             RoundsPerMap = _roundsPerMap,
             PositionColors = new Dictionary<int, string> { { 1, "d1b104" }, { 2, "9e9e9e" }, { 3, "915d29" } }
         };
@@ -131,5 +131,10 @@ public class ScoreboardService : IScoreboardService
         }
 
         return (int)rounds;
+    }
+
+    private async Task<int> GetMaxPlayersAsync()
+    {
+        return (await _server.Remote.GetMaxPlayersAsync()).CurrentValue;
     }
 }
