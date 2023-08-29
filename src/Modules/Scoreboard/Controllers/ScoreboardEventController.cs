@@ -3,6 +3,7 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.Scoreboard.Interfaces;
 using GbxRemoteNet.Events;
@@ -28,4 +29,11 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
 
     [Subscribe(MatchSettingsEvent.MatchSettingsLoaded)]
     public void OnMatchSettingsLoaded() => _scoreboardService.LoadAndUpdateRoundsPerMap();
+
+    [Subscribe(ModeScriptEvent.RoundStart)]
+    public void OnRoundStart(object sender, RoundEventArgs args)
+    {
+        _scoreboardService.SetCurrentRound(args.Round);
+        _scoreboardService.SendRoundsInfo();
+    }
 }

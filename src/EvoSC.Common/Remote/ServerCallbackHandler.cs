@@ -126,6 +126,10 @@ public class ServerCallbackHandler : IServerCallbackHandler
                 await _events.RaiseAsync(ModeScriptEvent.PodiumEnd,
                     new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
                 break;
+            case "Maniaplanet.StartRound_Start":
+                await _events.RaiseAsync(ModeScriptEvent.RoundStart,
+                    new RoundEventArgs { Round = data.GetValue("count", StringComparison.Ordinal).ToObject<int>() });
+                break;
         }
         
         await _events.RaiseAsync(ModeScriptEvent.Any, new ModeScriptEventArgs {Method = method, Args = data});

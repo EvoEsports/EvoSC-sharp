@@ -18,6 +18,7 @@ public class ScoreboardService : IScoreboardService
     private readonly ILogger<ScoreboardService> _logger;
 
     private int _roundsPerMap = -1;
+    private int _currentRound = 0;
 
     public ScoreboardService(ILogger<ScoreboardService> logger, IManialinkManager manialinks,
         IPlayerManagerService playerManager,
@@ -33,7 +34,10 @@ public class ScoreboardService : IScoreboardService
     {
         await _manialinks.SendManialinkAsync(
             await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin)),
-            "Scoreboard.Scoreboard", GetData());
+            "Scoreboard.Scoreboard",
+            GetData()
+        );
+        await SendRoundsInfo(playerLogin);
     }
 
     public async Task ShowScoreboard()
@@ -94,7 +98,16 @@ public class ScoreboardService : IScoreboardService
     public async Task SendRoundsInfo()
     {
         await _manialinks.SendManialinkAsync("Scoreboard.RoundsInfo",
-            new { RoundsPerMap = _roundsPerMap, CurrentRound = -1 });
+            new { RoundsPerMap = _roundsPerMap, CurrentRound = _currentRound });
+    }
+
+    public async Task SendRoundsInfo(string playerLogin)
+    {
+        await _manialinks.SendManialinkAsync(
+            await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin)),
+            "Scoreboard.RoundsInfo",
+            new { RoundsPerMap = _roundsPerMap, CurrentRound = _currentRound }
+        );
     }
 
     public async void LoadAndUpdateRoundsPerMap()
@@ -102,6 +115,11 @@ public class ScoreboardService : IScoreboardService
         _roundsPerMap = await GetRoundsPerMapAsync();
         _logger.LogInformation("Rounds per Map: {mode}", _roundsPerMap);
         await SendRoundsInfo();
+    }
+
+    public void SetCurrentRound(int round)
+    {
+        _currentRound = round;
     }
 
     private async Task<int> GetRoundsPerMapAsync()
