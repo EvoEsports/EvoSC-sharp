@@ -2,14 +2,19 @@
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Utils;
 
-public class RankingComparer : IEqualityComparer<ExpandedLiveRankingPosition>
+public class RankingComparer : IEqualityComparer<LiveRankingWidgetPosition>
 {
-    public bool Equals(ExpandedLiveRankingPosition? x, ExpandedLiveRankingPosition? y)
+    public bool Equals(LiveRankingWidgetPosition? x, LiveRankingWidgetPosition? y)
     {
-        return x?.player == y?.player;
+        if (x == null || y == null)
+        {
+            return false;
+        }
+        
+        return x.player.AccountId == y.player.AccountId;
     }
 
-    public int GetHashCode(ExpandedLiveRankingPosition obj)
+    public int GetHashCode(LiveRankingWidgetPosition obj)
     {
         return obj.GetHashCode();
     }

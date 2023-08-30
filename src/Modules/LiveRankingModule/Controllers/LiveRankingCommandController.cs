@@ -37,7 +37,7 @@ public class LiveRankingCommandController : EvoScController<ICommandInteractionC
             Time = 12000
         });
         
-        Thread.Sleep(1_000);
+        Thread.Sleep(2_000);
         
         await _liveRankingService.OnPlayerWaypointAsync(new WayPointEventArgs
         {
@@ -56,7 +56,7 @@ public class LiveRankingCommandController : EvoScController<ICommandInteractionC
             Time = 14000
         });
         
-        Thread.Sleep(1_000);
+        Thread.Sleep(2_000);
         
         await _liveRankingService.OnPlayerWaypointAsync(new WayPointEventArgs
         {
@@ -75,7 +75,7 @@ public class LiveRankingCommandController : EvoScController<ICommandInteractionC
             Time = 14888
         });
         
-        Thread.Sleep(100);
+        Thread.Sleep(2_000);
         
         await _liveRankingService.OnPlayerWaypointAsync(new WayPointEventArgs
         {

@@ -42,36 +42,38 @@ public class LiveRankingService : ILiveRankingService
     {
         _logger.LogInformation("LiveRankingModule enabled");
         await CheckIsRoundsModeAsync();
-        if (isRoundsMode)
-        {
-            var map = await _client.Remote.GetCurrentMapInfoAsync();
-            await GetWorldRecordViaTMioAsync(map.UId, map.Name);
-            await _liveRankingStore.ResetLiveRankingsAsync();
-            _liveRankingStore.ResetRoundCounter();
-            _liveRankingStore.IncreaseRoundCounter();
-            _liveRankingStore.IncreaseTrackCounter();
-            var prevRanking = await _liveRankingStore.GetFullPreviousLiveRankingAsync();
-            var curRanking = await _liveRankingStore.GetFullLiveRankingAsync();
-
-            _liveRankingStore.SortLiveRanking();
-            var existingRanking = curRanking.Except(prevRanking, new RankingComparer()).ToList();
-
-            var newRanking = curRanking.Except(existingRanking).ToList();
-            var widgetPrevRanking = GetLiveRankingForWidget(prevRanking);
-
-            var widgetExistingRanking = GetLiveRankingForWidget(existingRanking);
-            var widgetNewRanking = GetLiveRankingForWidget(newRanking);
-
-            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
-                new
-                {
-                    previousRankings = widgetPrevRanking,
-                    rankingsExisting = widgetExistingRanking,
-                    rankingsNew = widgetNewRanking
-                });
-            /*await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.MatchInfo",
-                new { data = _liveRankingStore.GetMatchInfo() });*/
-        }
+        // if (isRoundsMode)
+        // {
+        //     var map = await _client.Remote.GetCurrentMapInfoAsync();
+        //     await GetWorldRecordViaTMioAsync(map.UId, map.Name);
+        //     await _liveRankingStore.ResetLiveRankingsAsync();
+        //     _liveRankingStore.ResetRoundCounter();
+        //     _liveRankingStore.IncreaseRoundCounter();
+        //     _liveRankingStore.IncreaseTrackCounter();
+        //     // var prevRanking = await _liveRankingStore.GetFullPreviousLiveRankingAsync();
+        //     var curRanking = await _liveRankingStore.GetFullLiveRankingAsync();
+        //
+        //     _liveRankingStore.SortLiveRanking();
+        //     
+        //     //Map ranking entries for widget
+        //     // var widgetPreviousRanking = GetLiveRankingForWidget(prevRanking);
+        //     var widgetPreviousRanking = new List<LiveRankingWidgetPosition>();
+        //     var widgetCurrentRanking = GetLiveRankingForWidget(curRanking);
+        //     
+        //     //Split current ranking into previously existing and new players
+        //     var widgetExistingRanking = widgetCurrentRanking.Except(widgetPreviousRanking, new RankingComparer()).ToList();
+        //     var widgetNewRanking = widgetCurrentRanking.Except(widgetExistingRanking, new RankingComparer()).ToList();
+        //
+        //     await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+        //         new
+        //         {
+        //             previousRankings = widgetPreviousRanking,
+        //             rankingsExisting = widgetExistingRanking,
+        //             rankingsNew = widgetNewRanking
+        //         });
+        //     /*await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.MatchInfo",
+        //         new { data = _liveRankingStore.GetMatchInfo() });*/
+        // }
 
         await Task.CompletedTask;
     }
@@ -92,23 +94,29 @@ public class LiveRankingService : ILiveRankingService
             _logger.LogInformation("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
                 args.AccountId, isRoundsMode);
 
+            var previousRanking = await _liveRankingStore.GetFullLiveRankingAsync();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
-            var prevRanking = await _liveRankingStore.GetFullPreviousLiveRankingAsync();
-            var curRanking = await _liveRankingStore.GetFullLiveRankingAsync();
+            var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
 
             _liveRankingStore.SortLiveRanking();
-            var existingRanking = curRanking.Except(prevRanking, new RankingComparer()).ToList();
+            
+            //Map ranking entries for widget
+            var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking);
+            var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
+            
+            //Split current ranking into previously existing and new players
+            var widgetNewRanking = widgetCurrentRanking.Except(widgetPreviousRanking, new RankingComparer()).ToList();
+            var widgetExistingRanking = widgetCurrentRanking.Except(widgetNewRanking, new RankingComparer()).ToList();
 
-            var newRanking = curRanking.Except(existingRanking).ToList();
-            var widgetPrevRanking = GetLiveRankingForWidget(prevRanking);
-
-            var widgetExistingRanking = GetLiveRankingForWidget(existingRanking);
-            var widgetNewRanking = GetLiveRankingForWidget(newRanking);
+            _logger.LogInformation("PREVIOUS: {s}", widgetPreviousRanking.Count);
+            _logger.LogInformation("CURRENT: {s}", widgetCurrentRanking.Count);
+            _logger.LogInformation("EXISTING: {s}", widgetExistingRanking.Count);
+            _logger.LogInformation("NEW: {s}", widgetNewRanking.Count);
 
             await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
                 new
                 {
-                    previousRankings = widgetPrevRanking,
+                    previousRankings = widgetPreviousRanking,
                     rankingsExisting = widgetExistingRanking,
                     rankingsNew = widgetNewRanking
                 });

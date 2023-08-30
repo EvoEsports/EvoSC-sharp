@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models.Enums;
+﻿using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using Microsoft.Extensions.Logging;
 
@@ -35,7 +34,7 @@ internal class LiveRankingStore
 
     internal bool RegisterTime(string accountId, int cpIndex, int cpTime, bool isFinish)
     {
-        _prevLiveRanking = _curLiveRanking;
+        _prevLiveRanking = _curLiveRanking.ToList();
         var index = _curLiveRanking.FindIndex(x => x.accountId == accountId);
         var liveRankingPosition = new LiveRankingPosition(accountId, cpTime, cpIndex, false, isFinish);
         if (index != -1)
@@ -53,7 +52,7 @@ internal class LiveRankingStore
 
     internal bool RegisterPlayerGiveUp(string accountId)
     {
-        _prevLiveRanking = _curLiveRanking;
+        _prevLiveRanking = _curLiveRanking.ToList();
         var index = _curLiveRanking.FindIndex(x => x.accountId == accountId);
         if (index != -1)
         {

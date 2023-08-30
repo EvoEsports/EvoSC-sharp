@@ -25,10 +25,12 @@
                              y="{{ (position.position - 1) * -7 }}"
                              ranking="{{ position }}"
                              newRanking="{{ rankingsExisting.FirstOrDefault(r => r.player.AccountId == position.player.AccountId) }}"
+                             type="existing"
                 />
                 <PlayerScore foreach="LiveRankingWidgetPosition position in rankingsNew"
                              y="{{ (position.position - 1) * -7 }}"
                              ranking="{{ position }}"
+                             type="new     "
                 />
             </frame>
 
@@ -39,6 +41,8 @@
     <script>
         <!--
             main() {
+                log("\nnew scores:");
+                +++ OnInitialization +++
                 +++ Animations +++
             }
         -->
