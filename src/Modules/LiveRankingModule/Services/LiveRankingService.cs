@@ -94,19 +94,20 @@ public class LiveRankingService : ILiveRankingService
             _logger.LogInformation("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
                 args.AccountId, isRoundsMode);
 
-            var previousRanking = await _liveRankingStore.GetFullLiveRankingAsync();
+            var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
             var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
 
             _liveRankingStore.SortLiveRanking();
-            
+
             //Map ranking entries for widget
             var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking);
             var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
-            
+
             //Split current ranking into previously existing and new players
-            var widgetNewRanking = widgetCurrentRanking.Except(widgetPreviousRanking, new RankingComparer()).ToList();
-            var widgetExistingRanking = widgetCurrentRanking.Except(widgetNewRanking, new RankingComparer()).ToList();
+            var widgetExistingRanking = widgetCurrentRanking
+                .Where(cr => widgetPreviousRanking.Contains(cr, new RankingComparer())).ToList();
+            var widgetNewRanking = widgetCurrentRanking.Except(widgetExistingRanking).ToList();
 
             _logger.LogInformation("PREVIOUS: {s}", widgetPreviousRanking.Count);
             _logger.LogInformation("CURRENT: {s}", widgetCurrentRanking.Count);
