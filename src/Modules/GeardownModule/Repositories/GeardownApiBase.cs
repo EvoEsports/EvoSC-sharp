@@ -1,3 +1,4 @@
+using EvoSC.Modules.Evo.GeardownModule.Settings;
 using Hawf.Client;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Repositories;

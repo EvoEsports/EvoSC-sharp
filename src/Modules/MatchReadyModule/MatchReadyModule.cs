@@ -11,7 +11,11 @@ public class MatchReadyModule : EvoScModule, IToggleable
 
     public MatchReadyModule(IManialinkManager manialinks) => _manialinks = manialinks;
 
-    public Task EnableAsync() => _manialinks.SendPersistentManialinkAsync("MatchReadyModule.ReadyWidget");
+    public Task EnableAsync() =>
+        _manialinks.SendPersistentManialinkAsync("MatchReadyModule.ReadyWidget", new
+        {
+            requiredPlayers = 4
+        });
 
     public Task DisableAsync() => Task.CompletedTask;
 }

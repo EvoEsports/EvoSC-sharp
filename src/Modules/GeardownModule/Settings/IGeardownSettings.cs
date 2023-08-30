@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Config.Net;
 using EvoSC.Modules.Attributes;
 
-namespace EvoSC.Modules.Evo.GeardownModule;
+namespace EvoSC.Modules.Evo.GeardownModule.Settings;
 
 [Settings]
 public interface IGeardownSettings
@@ -15,4 +15,7 @@ public interface IGeardownSettings
     
     [Option, Description("The access token for the geardown API.")]
     public string ApiAccessToken { get; set; }
+    
+    [Option, Description("List of player's account IDs which are always whitelisted for matches.")]
+    public string Whitelist { get; }
 }

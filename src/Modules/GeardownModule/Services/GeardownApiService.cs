@@ -4,6 +4,7 @@ using EvoSC.Modules.Evo.GeardownModule.Interfaces;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces.Repositories;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces.Services;
 using EvoSC.Modules.Evo.GeardownModule.Repositories;
+using EvoSC.Modules.Evo.GeardownModule.Settings;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Services;
 

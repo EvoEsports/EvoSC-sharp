@@ -5,16 +5,16 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces.Services;
 using EvoSC.Modules.Evo.GeardownModule.Models;
 using EvoSC.Modules.Evo.GeardownModule.Models.API;
+using EvoSC.Modules.Evo.GeardownModule.Settings;
 using EvoSC.Modules.Evo.GeardownModule.Util;
-using EvoSC.Modules.Official.Maps.Interfaces;
 using GbxRemoteNet;
 using ManiaExchange.ApiClient;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Services;
 
@@ -24,17 +24,17 @@ public class GeardownService : IGeardownService
     private readonly IMapService _maps;
     private readonly IMatchSettingsService _matchSettings;
     private readonly IGeardownApiService _geardownApi;
-    private readonly IMxMapService _mxMapService;
     private readonly IServerClient _server;
+    private readonly IGeardownSettings _settings;
 
     public GeardownService(IGeardownApiService geardownApi, IMapService maps, IMatchSettingsService matchSettings,
-        IMxMapService mxMapService, IServerClient server)
+        IServerClient server, IGeardownSettings settings)
     {
         _geardownApi = geardownApi;
         _maps = maps;
         _matchSettings = matchSettings;
-        _mxMapService = mxMapService;
         _server = server;
+        _settings = settings;
     }
 
     private async Task<IMap> DownloadAndAddMap(GdMapPoolOrder mapPoolMap)
@@ -142,15 +142,44 @@ public class GeardownService : IGeardownService
 
     private async Task WhitelistPlayers(GdMatch match)
     {
+        if (match.participants == null || match.participants.Count == 0)
+        {
+            throw new InvalidOperationException($"The match with ID {match.id} does not have any participants.");
+        }
+
+        var multiCall = new MultiCall();
         foreach (var participant in match.participants)
         {
-            // todo
+            if (participant.user == null)
+            {
+                throw new InvalidOperationException($"The participant with ID {participant.user_id} does not include user info.");
+            }
+
+            if (participant.user.tm_account_id == null)
+            {
+                throw new InvalidOperationException(
+                    $"The participant {participant.user.nickname} with ID {participant.user_id} has no TM Account ID assigned.");
+            }
+            
+            var login = PlayerUtils.ConvertAccountIdToLogin(participant.user.tm_account_id);
+            // await _server.Remote.AddGuestAsync(login);
+            multiCall.Add("AddGuest", login);
         }
+
+        await _server.Remote.MultiCallAsync(multiCall);
     }
 
     private async Task WhitelistSpectators()
     {
-        
+        var multiCall = new MultiCall();
+        foreach (var accountId in _settings.Whitelist.Split(','))
+        {
+            var login = PlayerUtils.ConvertAccountIdToLogin(accountId);
+            // await _server.Remote.AddGuestAsync(login);
+            multiCall.Add("AddGuest", login);
+        }
+
+        await _server.Remote.MultiCallAsync(multiCall);
     }
     
     public async Task SetupServerAsync(string matchToken)
@@ -161,12 +190,6 @@ public class GeardownService : IGeardownService
         {
             throw new InvalidOperationException("Failed to fetch match from geardown API.");
         }
-        
-        // 1. get the maps
-        // 2. create the match settings
-        // 3. whitelist match participant
-        // 4. whitelist admins and spectators
-        // 5. Load new match settings
 
         var maps = (await GetMapsAsync(match)).ToArray();
 
@@ -177,11 +200,11 @@ public class GeardownService : IGeardownService
         
         var matchSettingsName = await CreateMatchSettingsAsync(match, maps);
 
-        // todo: uncomment this
-        /* await _server.Remote.SetMaxPlayersAsync(0);
+        await _server.Remote.CleanGuestListAsync();
         await WhitelistPlayers(match);
-        await WhitelistSpectators(); */
-
+        await WhitelistSpectators();
+        await _server.Remote.SetMaxPlayersAsync(match.participants?.Count ?? 0);
+        
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
     }
 }

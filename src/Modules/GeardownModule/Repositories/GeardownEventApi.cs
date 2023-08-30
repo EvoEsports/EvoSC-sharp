@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces.Repositories;
 using EvoSC.Modules.Evo.GeardownModule.Models;
 using EvoSC.Modules.Evo.GeardownModule.Models.API;
+using EvoSC.Modules.Evo.GeardownModule.Settings;
 using Hawf.Attributes;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Repositories;

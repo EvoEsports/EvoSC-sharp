@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces;
 using EvoSC.Modules.Evo.GeardownModule.Models.API;
+using EvoSC.Modules.Evo.GeardownModule.Settings;
 using Hawf.Attributes;
 using Hawf.Client;
 
