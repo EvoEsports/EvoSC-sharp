@@ -41,8 +41,6 @@
     <script>
         <!--
             main() {
-                log("\nnew scores:");
-                +++ OnInitialization +++
                 +++ Animations +++
             }
         -->

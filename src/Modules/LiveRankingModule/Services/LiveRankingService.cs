@@ -96,10 +96,9 @@ public class LiveRankingService : ILiveRankingService
 
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
-            var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
-
             _liveRankingStore.SortLiveRanking();
-
+            var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
+            
             //Map ranking entries for widget
             var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking);
             var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
@@ -108,11 +107,6 @@ public class LiveRankingService : ILiveRankingService
             var widgetExistingRanking = widgetCurrentRanking
                 .Where(cr => widgetPreviousRanking.Contains(cr, new RankingComparer())).ToList();
             var widgetNewRanking = widgetCurrentRanking.Except(widgetExistingRanking).ToList();
-
-            _logger.LogInformation("PREVIOUS: {s}", widgetPreviousRanking.Count);
-            _logger.LogInformation("CURRENT: {s}", widgetCurrentRanking.Count);
-            _logger.LogInformation("EXISTING: {s}", widgetExistingRanking.Count);
-            _logger.LogInformation("NEW: {s}", widgetNewRanking.Count);
 
             await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
                 new

@@ -2,7 +2,6 @@
     <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
     
     <property type="double" name="y" default="0.0"/>
-    <property type="string" name="type" default="?"/>
     <property type="LiveRankingWidgetPosition?" name="ranking" default="null"/>
     <property type="LiveRankingWidgetPosition?" name="newRanking" default="null"/>
 
@@ -65,11 +64,6 @@
 
     <script>
         <!--
-            *** OnInitialization ***
-            ***
-            log("[{{ type }}] {{ ranking?.player?.NickName }} -> {{ ranking?.position }}: {{ ranking?.time }}");
-            ***
-        
             *** Animations ***
             ***
                 if({{ newRanking != null ? "True" : "False" }}){
