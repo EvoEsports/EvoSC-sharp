@@ -7,3 +7,5 @@ author = "Evo"
 
 [dependencies]
 MapsModule = "1.0.0"
+MatchReadyModule = "1.0.0"
+MatchTrackerModule = "1.0.0"

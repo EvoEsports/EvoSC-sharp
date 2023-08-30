@@ -512,8 +512,17 @@ public class ModuleManager : IModuleManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private IEvoScModule CreateModuleInstance(Type mainClass, Container moduleServices) =>
-        (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, mainClass);
+    private IEvoScModule CreateModuleInstance(Type mainClass, Container moduleServices)
+    {
+        try
+        {
+            return (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, mainClass);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Failed to create module instance.", ex);
+        }
+    }
 
     private Dictionary<PipelineType, IActionPipeline> CreateDefaultPipelines() => 
         new()

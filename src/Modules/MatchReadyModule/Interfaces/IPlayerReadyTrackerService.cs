@@ -7,6 +7,8 @@ public interface IPlayerReadyTrackerService
     public IEnumerable<IPlayer> ReadyPlayers { get; }
     public int RequiredPlayers { get; }
     
-    public void SetIsReady(IPlayer player, bool isReady);
-    public void SetRequiredPlayers(int count);
+    public Task SetIsReadyAsync(IPlayer player, bool isReady);
+    public Task SetRequiredPlayersAsync(int count);
+    
+    public void Reset();
 }

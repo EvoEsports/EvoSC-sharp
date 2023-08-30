@@ -23,7 +23,7 @@ public class PlayerReadyService : IPlayerReadyService
     
     public async Task SetPlayerReadyStatusAsync(IPlayer player, bool isReady)
     {
-        _playerReadyTrackerService.SetIsReady(player, isReady);
+        await _playerReadyTrackerService.SetIsReadyAsync(player, isReady);
 
         if (isReady)
         {
@@ -39,5 +39,11 @@ public class PlayerReadyService : IPlayerReadyService
             PlayerCount = _playerReadyTrackerService.ReadyPlayers.Count(),
             IsReady = isReady
         });
+    }
+
+    public Task ResetReadyWidgetAsync()
+    {
+        _playerReadyTrackerService.Reset();
+        return Task.CompletedTask;
     }
 }

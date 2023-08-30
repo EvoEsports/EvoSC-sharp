@@ -13,6 +13,7 @@ using EvoSC.Modules.Evo.GeardownModule.Models;
 using EvoSC.Modules.Evo.GeardownModule.Models.API;
 using EvoSC.Modules.Evo.GeardownModule.Settings;
 using EvoSC.Modules.Evo.GeardownModule.Util;
+using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using GbxRemoteNet;
 using ManiaExchange.ApiClient;
 
@@ -26,15 +27,48 @@ public class GeardownService : IGeardownService
     private readonly IGeardownApiService _geardownApi;
     private readonly IServerClient _server;
     private readonly IGeardownSettings _settings;
+    private readonly IPlayerReadyService _playerReadyService;
 
     public GeardownService(IGeardownApiService geardownApi, IMapService maps, IMatchSettingsService matchSettings,
-        IServerClient server, IGeardownSettings settings)
+        IServerClient server, IGeardownSettings settings, IPlayerReadyService playerReadyService)
     {
         _geardownApi = geardownApi;
         _maps = maps;
         _matchSettings = matchSettings;
         _server = server;
         _settings = settings;
+        _playerReadyService = playerReadyService;
+    }
+    
+    public async Task SetupServerAsync(string matchToken)
+    {
+        var match = await GetMatchInfoAsync(matchToken);
+        var maps = await GetMatchMapsAsync(match);
+        var matchSettingsName = await CreateMatchSettingsAsync(match, maps);
+
+        await SetupPlayersAndSpectatorsAsync(match);
+        await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
+        await _playerReadyService.ResetReadyWidgetAsync();
+    }
+
+    private async Task SetupPlayersAndSpectatorsAsync(GdMatch match)
+    {
+        await _server.Remote.CleanGuestListAsync();
+        await WhitelistPlayers(match);
+        await WhitelistSpectators();
+        await _server.Remote.SetMaxPlayersAsync(match.participants?.Count ?? 0);
+    }
+
+    private async Task<IMap[]> GetMatchMapsAsync(GdMatch? match)
+    {
+        var maps = (await GetMapsAsync(match)).ToArray();
+
+        if (!maps.Any())
+        {
+            throw new InvalidOperationException("Did not find any maps for this match.");
+        }
+
+        return maps;
     }
 
     private async Task<IMap> DownloadAndAddMap(GdMapPoolOrder mapPoolMap)
@@ -181,8 +215,8 @@ public class GeardownService : IGeardownService
 
         await _server.Remote.MultiCallAsync(multiCall);
     }
-    
-    public async Task SetupServerAsync(string matchToken)
+
+    private async Task<GdMatch?> GetMatchInfoAsync(string matchToken)
     {
         var match = await _geardownApi.Matches.GetMatchDataByTokenAsync(matchToken);
 
@@ -191,20 +225,6 @@ public class GeardownService : IGeardownService
             throw new InvalidOperationException("Failed to fetch match from geardown API.");
         }
 
-        var maps = (await GetMapsAsync(match)).ToArray();
-
-        if (!maps.Any())
-        {
-            throw new InvalidOperationException("Did not find any maps for this match.");
-        }
-        
-        var matchSettingsName = await CreateMatchSettingsAsync(match, maps);
-
-        await _server.Remote.CleanGuestListAsync();
-        await WhitelistPlayers(match);
-        await WhitelistSpectators();
-        await _server.Remote.SetMaxPlayersAsync(match.participants?.Count ?? 0);
-        
-        await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
+        return match;
     }
 }

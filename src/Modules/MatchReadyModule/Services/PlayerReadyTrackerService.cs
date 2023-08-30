@@ -1,6 +1,9 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Modules.Official.MatchReadyModule.Events;
+using EvoSC.Modules.Official.MatchReadyModule.Events.Args;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MatchReadyModule.Services;
@@ -14,6 +17,8 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
     private int _requiredPlayers;
     private readonly object _requiredPlayersLock = new();
 
+    private readonly IEventManager _events;
+    
     public IEnumerable<IPlayer> ReadyPlayers
     {
         get
@@ -36,7 +41,22 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
         }
     }
 
-    public void SetIsReady(IPlayer player, bool isReady)
+    public PlayerReadyTrackerService(IEventManager events) => _events = events;
+
+    private Task FireEventIfAllReadyAsync()
+    {
+        if (RequiredPlayers == ReadyPlayers.Count())
+        {
+            return _events.RaiseAsync(MatchReadyEvents.AllPlayersReady, new AllPlayersReadyEventArgs
+            {
+                ReadyPlayers = ReadyPlayers
+            });
+        }
+
+        return Task.CompletedTask;
+    }
+    
+    public async Task SetIsReadyAsync(IPlayer player, bool isReady)
     {
         lock (_readyPlayersLock)
         {
@@ -49,13 +69,31 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
                 _readyPlayers.Remove(player);
             }
         }
+
+        await _events.RaiseAsync(MatchReadyEvents.PlayerReadyChanged, new PlayerReadyEventArgs
+        {
+            Player = player,
+            IsReady = isReady
+        });
+
+        await FireEventIfAllReadyAsync();
     }
 
-    public void SetRequiredPlayers(int count)
+    public Task SetRequiredPlayersAsync(int count)
     {
         lock (_requiredPlayersLock)
         {
             _requiredPlayers = count;
+        }
+
+        return FireEventIfAllReadyAsync();
+    }
+
+    public void Reset()
+    {
+        lock (_readyPlayersLock)
+        {
+            _readyPlayers.Clear();
         }
     }
 }

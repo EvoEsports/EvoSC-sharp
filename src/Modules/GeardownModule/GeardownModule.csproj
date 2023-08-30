@@ -17,6 +17,8 @@
     <ItemGroup>
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
         <ProjectReference Include="..\MapsModule\MapsModule.csproj" />
+        <ProjectReference Include="..\MatchReadyModule\MatchReadyModule.csproj" />
+        <ProjectReference Include="..\MatchTrackerModule\MatchTrackerModule.csproj" />
     </ItemGroup>
 
     <!-- Project references for dependencies -->
