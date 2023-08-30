@@ -1,7 +1,10 @@
 ﻿using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Models;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -14,8 +17,11 @@ using EvoSC.Modules.Evo.GeardownModule.Models.API;
 using EvoSC.Modules.Evo.GeardownModule.Settings;
 using EvoSC.Modules.Evo.GeardownModule.Util;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
+using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
+using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 using GbxRemoteNet;
 using ManiaExchange.ApiClient;
+using MatchStatus = EvoSC.Modules.Official.MatchTrackerModule.Models.MatchStatus;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Services;
 
@@ -28,9 +34,11 @@ public class GeardownService : IGeardownService
     private readonly IServerClient _server;
     private readonly IGeardownSettings _settings;
     private readonly IPlayerReadyService _playerReadyService;
+    private readonly IMatchTracker _matchTracker;
+    private readonly IAuditService _audits;
 
     public GeardownService(IGeardownApiService geardownApi, IMapService maps, IMatchSettingsService matchSettings,
-        IServerClient server, IGeardownSettings settings, IPlayerReadyService playerReadyService)
+        IServerClient server, IGeardownSettings settings, IPlayerReadyService playerReadyService, IMatchTracker matchTracker, IAuditService audits)
     {
         _geardownApi = geardownApi;
         _maps = maps;
@@ -38,6 +46,8 @@ public class GeardownService : IGeardownService
         _server = server;
         _settings = settings;
         _playerReadyService = playerReadyService;
+        _matchTracker = matchTracker;
+        _audits = audits;
     }
     
     public async Task SetupServerAsync(string matchToken)
@@ -46,9 +56,54 @@ public class GeardownService : IGeardownService
         var maps = await GetMatchMapsAsync(match);
         var matchSettingsName = await CreateMatchSettingsAsync(match, maps);
 
+        _settings.MatchState = JsonSerializer.Serialize(new GeardownMatchState
+        {
+            Match = match,
+            MatchToken = matchToken
+        });
+        
         await SetupPlayersAndSpectatorsAsync(match);
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
         await _playerReadyService.ResetReadyWidgetAsync();
+
+        _audits.NewInfoEvent("Geardown.ServerSetup")
+            .HavingProperties(new { Match = match, MatchToken = matchToken })
+            .Comment("Server was setup through geardown.");
+    }
+
+    public async Task StartMatchAsync()
+    {
+        var matchTrackerId = await _matchTracker.BeginMatchAsync();
+
+        _audits.NewInfoEvent("Geardown.StartMatch")
+            .HavingProperties(new { MatchTrackingId = matchTrackerId })
+            .Comment("Match was started.");
+    }
+
+    public async Task SendResultsAsync(string matchToken, IMatchTimeline argsTimeline)
+    {
+        var matchState = JsonSerializer.Deserialize<GeardownMatchState>(_settings.MatchState);
+
+        if (matchState?.Match?.participants?.FirstOrDefault()?.user?.tm_account_id == null)
+        {
+            throw new InvalidOperationException("The match state is invalid, failed to send results.");
+        }
+        
+        var results = argsTimeline.States.LastOrDefault(s => s.Status == MatchStatus.Running) as IScoresMatchState;
+
+        if (results == null || results.Section != ModeScriptSection.EndMatch)
+        {
+            throw new InvalidOperationException("Did not get a match end result to send to geardown.");
+        }
+
+        foreach (var player in results.Players)
+        {
+            var participant =
+                matchState.Match.participants.FirstOrDefault(p => p.user.tm_account_id == player.Player.AccountId);
+
+            await _geardownApi.Matches.CreateMatchResultAsync((int)matchState.Match.id, true, (int)participant.id,
+                player.MatchPoints.ToString(), true);
+        }
     }
 
     private async Task SetupPlayersAndSpectatorsAsync(GdMatch match)

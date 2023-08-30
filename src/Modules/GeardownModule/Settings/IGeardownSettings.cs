@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Config.Net;
 using EvoSC.Modules.Attributes;
+using LinqToDB.Common;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Settings;
 
@@ -18,4 +19,10 @@ public interface IGeardownSettings
     
     [Option, Description("List of player's account IDs which are always whitelisted for matches.")]
     public string Whitelist { get; }
+    
+    [Option(DefaultValue = false), Description("Whether to start the match automatically when all players are ready.")]
+    public bool AutomaticMatchStart { get; set; }
+    
+    [Option, Description("The current match state object.")]
+    public string MatchState { get; set; }
 }

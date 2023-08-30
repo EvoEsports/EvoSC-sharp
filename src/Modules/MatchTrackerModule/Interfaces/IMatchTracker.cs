@@ -9,6 +9,7 @@ public interface IMatchTracker
     public IMatchTimeline LatestTimeline { get; }
     
     public Task TrackScoresAsync(ScoresEventArgs scoreArgs);
+    
     public Task<Guid> BeginMatchAsync();
     public Task<IMatchTimeline> EndMatchAsync();
 }

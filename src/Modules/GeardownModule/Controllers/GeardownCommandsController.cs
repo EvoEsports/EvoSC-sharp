@@ -33,4 +33,7 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
             await _server.ErrorMessageAsync($"(Geardown) {ex.Message}", Context.Player);
         }
     }
+
+    [ChatCommand("geardown_startmatch", "Start a geardown controller match.")]
+    public Task GeardownStartMatchAsync() => _geardown.StartMatchAsync();
 }
