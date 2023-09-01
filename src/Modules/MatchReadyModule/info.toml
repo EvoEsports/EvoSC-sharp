@@ -1,6 +1,6 @@
 ﻿[info]
 name = "MatchReadyModule"
 title = "Match Ready"
-summary = "Allow players to collectively decide when to start a match."
+summary = "Allow players to collectively decide on when to start a match."
 version = "1.0.0"
 author = "Evo Esports"

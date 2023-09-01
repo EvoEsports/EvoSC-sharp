@@ -182,7 +182,7 @@ public class GeardownMatchApi : GeardownApiBase<GeardownMatchApi>, IGeardownMatc
         string result, bool pending) =>
         WithAccessToken()
             .WithJsonBody(new { matchId, isTotalResult, participantId, result, pending })
-            .PostJsonAsync<GdMatchResult>("/v1/matches/results");
+            .PostJsonAsync<GdMatchResult>("/matches/results");
 
     public Task<GdMatchResult?> CreateTimeResultAsync(int matchId, string result, string nickname, string mapId) =>
         WithAccessToken()
@@ -213,4 +213,8 @@ public class GeardownMatchApi : GeardownApiBase<GeardownMatchApi>, IGeardownMatc
             .WithJsonBody(new { matchToken, join })
             .PostStringAsync("/v1/matches/on_start_match");
 
+    public Task AddResultsAsync(int matchId, IEnumerable<GdResult> results) =>
+        WithAccessToken()
+            .WithJsonBody(new { matchId = matchId, results = results })
+            .PostStringAsync("/console/dedicated_controllers/results");
 }

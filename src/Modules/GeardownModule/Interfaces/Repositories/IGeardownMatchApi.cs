@@ -20,4 +20,5 @@ public interface IGeardownMatchApi
     public Task OnEndRoundAsync(string matchToken, ScoresEventArgs eventData);
     public Task OnEndMatchAsync(string matchToken);
     public Task OnStartMatchAsync(string matchToken, string join);
+    public Task AddResultsAsync(int matchId, IEnumerable<GdResult> results);
 }

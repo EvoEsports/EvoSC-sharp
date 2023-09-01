@@ -21,6 +21,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 using GbxRemoteNet;
 using ManiaExchange.ApiClient;
+using Microsoft.Extensions.Logging;
 using MatchStatus = EvoSC.Modules.Official.MatchTrackerModule.Models.MatchStatus;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Services;
@@ -36,9 +37,12 @@ public class GeardownService : IGeardownService
     private readonly IPlayerReadyService _playerReadyService;
     private readonly IMatchTracker _matchTracker;
     private readonly IAuditService _audits;
+    private readonly IPlayerReadyTrackerService _playerReadyTracker;
+    private readonly ILogger<GeardownService> _logger;
 
     public GeardownService(IGeardownApiService geardownApi, IMapService maps, IMatchSettingsService matchSettings,
-        IServerClient server, IGeardownSettings settings, IPlayerReadyService playerReadyService, IMatchTracker matchTracker, IAuditService audits)
+        IServerClient server, IGeardownSettings settings, IPlayerReadyService playerReadyService,
+        IPlayerReadyTrackerService playerReadyTracker, IMatchTracker matchTracker, IAuditService audits, ILogger<GeardownService> logger)
     {
         _geardownApi = geardownApi;
         _maps = maps;
@@ -48,8 +52,10 @@ public class GeardownService : IGeardownService
         _playerReadyService = playerReadyService;
         _matchTracker = matchTracker;
         _audits = audits;
+        _playerReadyTracker = playerReadyTracker;
+        _logger = logger;
     }
-    
+
     public async Task SetupServerAsync(string matchToken)
     {
         var match = await GetMatchInfoAsync(matchToken);
@@ -64,6 +70,7 @@ public class GeardownService : IGeardownService
         
         await SetupPlayersAndSpectatorsAsync(match);
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
+        await _playerReadyTracker.SetRequiredPlayersAsync(match.participants.Count);
         await _playerReadyService.ResetReadyWidgetAsync();
 
         _audits.NewInfoEvent("Geardown.ServerSetup")
@@ -74,7 +81,8 @@ public class GeardownService : IGeardownService
     public async Task StartMatchAsync()
     {
         var matchTrackerId = await _matchTracker.BeginMatchAsync();
-
+        await _server.Remote.RestartMapAsync();
+        
         _audits.NewInfoEvent("Geardown.StartMatch")
             .HavingProperties(new { MatchTrackingId = matchTrackerId })
             .Comment("Match was started.");
@@ -96,14 +104,30 @@ public class GeardownService : IGeardownService
             throw new InvalidOperationException("Did not get a match end result to send to geardown.");
         }
 
-        foreach (var player in results.Players)
+        await _geardownApi.Matches.AddResultsAsync((int)matchState.Match.id,
+        results.Players.Select(r => new GdResult
+        {
+            nickname = r.Player.UbisoftName, 
+            score = r.MatchPoints
+        }));
+        
+        /* foreach (var player in results.Players)
         {
             var participant =
                 matchState.Match.participants.FirstOrDefault(p => p.user.tm_account_id == player.Player.AccountId);
+            
+            
 
-            await _geardownApi.Matches.CreateMatchResultAsync((int)matchState.Match.id, true, (int)participant.id,
-                player.MatchPoints.ToString(), true);
-        }
+            try
+            {
+                await _geardownApi.Matches.CreateMatchResultAsync((int)matchState.Match.id, true, (int)participant.id,
+                    player.MatchPoints.ToString(), true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send match results to geardown");
+            }
+        } */
     }
 
     private async Task SetupPlayersAndSpectatorsAsync(GdMatch match)
@@ -217,13 +241,16 @@ public class GeardownService : IGeardownService
                     return;
                 }
                 
-                foreach (var setting in format.match_settings)
+                /* foreach (var setting in format.match_settings)
                 {
                     s[setting.key] = MatchSettingsTypeUtils.ConvertToCorrectType(setting.key, setting.value);
-                }
+                } */
+
+                s["S_PointsLimit"] = 10;
             });
 
-            builder.WithMaps(maps);
+            // builder.WithMaps(maps);
+            builder.AddMap("Campaigns/CurrentQuarterly/Spring 2023 - 01.Map.Gbx");
         });
 
         return name;

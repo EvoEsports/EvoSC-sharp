@@ -14,7 +14,6 @@ public class GdMatch
     public string? created_at { get; set; }
     public string? updated_at { get; set; }
     public List<GdParticipant>? participants { get; set; }
-    public List<GdMatchResult>? results { get; set; }
     public List<GdFormat>? formats { get; set; }
     public GdGameServer? selectedGameServer { get; set; }
     public List<GdMapPoolOrder>? map_pool_orders { get; set; }
