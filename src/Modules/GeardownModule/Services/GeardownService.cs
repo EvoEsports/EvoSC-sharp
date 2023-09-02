@@ -233,6 +233,7 @@ public class GeardownService : IGeardownService
                 _ => DefaultModeScriptName.TimeAttack
             };
 
+            builder.WithFilter(f => f.AsRandomMapOrder(true));
             builder.WithMode(mode);
             builder.WithModeSettings(s =>
             {

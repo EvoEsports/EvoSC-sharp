@@ -14,6 +14,7 @@ using EvoSC.Modules.Official.MotdModule;
 using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.SetName;
+using EvoSC.Modules.Official.XPEvoAdminControl;
 using FluentMigrator.Runner.Exceptions;
 
 namespace EvoSC;
@@ -35,7 +36,8 @@ public static class InternalModules
         typeof(OpenPlanetModule),
         typeof(MatchTrackerModule),
         typeof(MatchReadyModule),
-        typeof(GeardownModule)
+        typeof(GeardownModule),
+        typeof(XPEvoAdminControl)
     };
 
     /// <summary>

@@ -37,6 +37,7 @@
         <ProjectReference Include="..\Modules\CurrentMapModule\CurrentMapModule.csproj" />
         <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" />
         <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
+        <ProjectReference Include="..\Modules\XPEvoAdminControl\XPEvoAdminControl.csproj" />
     </ItemGroup>
 
     <ItemGroup>

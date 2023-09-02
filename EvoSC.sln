@@ -90,6 +90,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeardownModule", "src\Modules\GeardownModule\GeardownModule.csproj", "{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPEvoAdminControl", "src\Modules\XPEvoAdminControl\XPEvoAdminControl.csproj", "{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,10 @@ Global
 		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -296,5 +302,6 @@ Global
 		{0538B9AB-B556-45BF-8230-53087BA9D353} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{1EBEC855-5BF7-43D3-BABF-A09343B8693A} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 	EndGlobalSection
 EndGlobal
