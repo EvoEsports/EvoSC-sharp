@@ -241,16 +241,14 @@ public class GeardownService : IGeardownService
                     return;
                 }
                 
-                /* foreach (var setting in format.match_settings)
+                foreach (var setting in format.match_settings)
                 {
-                    s[setting.key] = MatchSettingsTypeUtils.ConvertToCorrectType(setting.key, setting.value);
-                } */
-
-                s["S_PointsLimit"] = 10;
+                    s[setting.key] = MatchSettingsTypeUtils.ConvertToCorrectType(setting.key, setting.value).GetAwaiter().GetResult();
+                }
             });
 
-            // builder.WithMaps(maps);
-            builder.AddMap("Campaigns/CurrentQuarterly/Spring 2023 - 01.Map.Gbx");
+            builder.WithMaps(maps);
+            //builder.AddMap("Campaigns/CurrentQuarterly/Spring 2023 - 01.Map.Gbx");
         });
 
         return name;
