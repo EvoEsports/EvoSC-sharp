@@ -98,7 +98,9 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
             _liveRankingStore.SortLiveRanking();
             var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
-            
+
+            await CalculateDiffs(currentRanking);
+
             //Map ranking entries for widget
             var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking);
             var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
@@ -116,6 +118,22 @@ public class LiveRankingService : ILiveRankingService
                     rankingsNew = widgetNewRanking
                 });
         }
+    }
+
+    public Task CalculateDiffs(List<ExpandedLiveRankingPosition> rankings)
+    {
+        //TODO: calculate diffs correctly over different cp indexes
+        
+        if (rankings.Count > 0)
+        {
+            var firstRanking = rankings.First();
+            foreach (var ranking in rankings)
+            {
+                ranking.diffToFirst = firstRanking.cpTime - ranking.cpTime;
+            }
+        }
+
+        return Task.CompletedTask;
     }
 
     public async Task OnPlayerGiveupAsync(PlayerUpdateEventArgs args)
@@ -210,18 +228,40 @@ public class LiveRankingService : ILiveRankingService
         // await _manialinkManager.HideManialinkAsync("LiveRankingModule.MatchInfo");
     }
 
-    private string FormatTime(int cpTime, bool isDelta)
+    private string FormatTime(int time, bool isDelta)
     {
-        TimeSpan ts = TimeSpan.FromMilliseconds(cpTime);
-        return !isDelta ? $"{ts.ToString(@"mm\:ss\.fff")}" : $"+ {ts.Seconds}.{ts.ToString("fff")}";
+        TimeSpan ts = TimeSpan.FromMilliseconds(time);
+
+        if (isDelta)
+        {
+            return $"+ {Math.Abs(ts.Seconds)}.{ts.ToString("fff")}";
+        }
+
+        if (time > 60_000)
+        {
+            return $"{ts.ToString(@"mm\:ss\.fff")}";
+        }
+        
+        return $"{ts.ToString(@"ss\.fff")}";
     }
 
     private List<LiveRankingWidgetPosition> GetLiveRankingForWidget(List<ExpandedLiveRankingPosition> liveRanking)
     {
-        List<LiveRankingWidgetPosition> widgetLiveRankings = liveRanking.Select((pos, i)
-                => new LiveRankingWidgetPosition(i + 1, pos.player, pos.isDNF ? "DNF" : FormatTime(pos.cpTime, i != 0)))
-            .ToList();
-        return widgetLiveRankings;
+        return liveRanking.Select(RankingToTime).ToList();
+    }
+
+    private LiveRankingWidgetPosition RankingToTime(ExpandedLiveRankingPosition ranking, int i)
+    {
+        var formattedTime = "DNF";
+
+        if (!ranking.isDNF)
+        {
+            var isDeltaTime = i > 0;
+            var timeToFormat = isDeltaTime ? ranking.diffToFirst : ranking.cpTime;
+            formattedTime = FormatTime(timeToFormat, isDeltaTime);
+        }
+
+        return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime);
     }
 
     private async Task<bool> CheckIsRoundsModeAsync()
@@ -238,6 +278,7 @@ public class LiveRankingService : ILiveRankingService
 
     private async Task GetWorldRecordViaTMioAsync(string mapUid, string mapName)
     {
+        //TODO: outsource to own module so we can re-use it
         TMioLeaderboardResponse res = await "https://trackmania.io"
             .AppendPathSegments("api", "leaderboard", "map", mapUid)
             .WithHeaders(new { User_Agent = "EvoSC# / World Record Grabber / Discord: chris92" })

@@ -36,4 +36,5 @@ public interface ILiveRankingService
 
     Task OnEndMatchAsync(EndMatchGbxEventArgs args);
 
+    Task CalculateDiffs(List<ExpandedLiveRankingPosition> rankings);
 }

@@ -62,8 +62,8 @@ public class LiveRankingCommandController : EvoScController<ICommandInteractionC
         {
             AccountId = "085e1d24-7d55-496d-ad7a-1eb1efec09eb",
             Login = "CF4dJH1VSW2teh6x7-wJ6w",
-            RaceTime = 14888,
-            LapTime = 14888,
+            RaceTime = 32000,
+            LapTime = 32000,
             CheckpointInRace = 2,
             CheckpointInLap = 2,
             IsEndRace = false,
@@ -72,7 +72,7 @@ public class LiveRankingCommandController : EvoScController<ICommandInteractionC
             CurrentLapCheckpoints = new List<int> { 1, 2, 3 },
             BlockId = "bl",
             Speed = 100,
-            Time = 14888
+            Time = 32000
         });
         
         Thread.Sleep(2_000);
@@ -81,8 +81,8 @@ public class LiveRankingCommandController : EvoScController<ICommandInteractionC
         {
             AccountId = "39a38ee1-e0a0-49a0-93f5-8024cf1b7f9b",
             Login = "OaOO4eCgSaCT9YAkzxt_mw",
-            RaceTime = 15000,
-            LapTime = 15000,
+            RaceTime = 35000,
+            LapTime = 35000,
             CheckpointInRace = 2,
             CheckpointInLap = 2,
             IsEndRace = false,
@@ -91,7 +91,7 @@ public class LiveRankingCommandController : EvoScController<ICommandInteractionC
             CurrentLapCheckpoints = new List<int> { 1, 2, 3 },
             BlockId = "bl",
             Speed = 100,
-            Time = 15000
+            Time = 35000
         });
     }
 }

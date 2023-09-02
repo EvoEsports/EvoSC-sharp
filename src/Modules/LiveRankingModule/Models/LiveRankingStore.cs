@@ -99,11 +99,14 @@ internal class LiveRankingStore
         foreach (var rank in _curLiveRanking)
         {
             var player = await _playerManager.GetOnlinePlayerAsync(rank.accountId);
-            expandedLiveRanking.Add(new ExpandedLiveRankingPosition(player,
-                rank.cpTime,
-                rank.cpIndex,
-                rank.isDNF,
-                rank.isFinish));
+            expandedLiveRanking.Add(new ExpandedLiveRankingPosition
+            {
+                player = player,
+                cpTime = rank.cpTime,
+                cpIndex = rank.cpIndex,
+                isDNF = rank.isDNF,
+                isFinish = rank.isFinish
+            });
         }
 
         return expandedLiveRanking;
@@ -115,11 +118,14 @@ internal class LiveRankingStore
         foreach (var rank in _prevLiveRanking)
         {
             var player = await _playerManager.GetOnlinePlayerAsync(rank.accountId);
-            expandedLiveRanking.Add(new ExpandedLiveRankingPosition(player,
-                rank.cpTime,
-                rank.cpIndex,
-                rank.isDNF,
-                rank.isFinish));
+            expandedLiveRanking.Add(new ExpandedLiveRankingPosition
+            {
+                player = player,
+                cpTime = rank.cpTime,
+                cpIndex = rank.cpIndex,
+                isDNF = rank.isDNF,
+                isFinish = rank.isFinish
+            });
         }
 
         return expandedLiveRanking;
