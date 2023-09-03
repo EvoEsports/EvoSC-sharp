@@ -1,13 +1,17 @@
 ﻿using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.LiveRankingModule.Services;
 using EvoSC.Modules.Official.MatchRankingModule.Interfaces;
 using EvoSC.Modules.Official.MatchRankingModule.Models;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchRankingModule.Services;
 
+[Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class MatchRankingService : IMatchRankingService
 {
     private readonly IManialinkManager _manialinkManager;
@@ -15,7 +19,7 @@ public class MatchRankingService : IMatchRankingService
     private readonly ILogger _logger;
     private readonly MatchRankingStore _matchRankingStore;
 
-    public MatchRankingService(IManialinkManager manialinkManager, IPlayerManagerService playerManager, ILogger logger)
+    public MatchRankingService(IManialinkManager manialinkManager, IPlayerManagerService playerManager, ILogger<LiveRankingService> logger)
     {
         _manialinkManager = manialinkManager;
         _playerManager = playerManager;
