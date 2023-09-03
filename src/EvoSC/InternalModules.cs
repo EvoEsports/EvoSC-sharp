@@ -8,6 +8,7 @@ using EvoSC.Modules.Official.FastestCp;
 using EvoSC.Modules.Official.LiveRankingModule;
 using EvoSC.Modules.Official.MapsModule;
 using EvoSC.Modules.Official.MatchManagerModule;
+using EvoSC.Modules.Official.MatchRankingModule;
 using EvoSC.Modules.Official.ModuleManagerModule;
 using EvoSC.Modules.Official.MotdModule;
 using EvoSC.Modules.Official.NextMapModule;
@@ -35,6 +36,7 @@ public static class InternalModules
         typeof(OpenPlanetModule),
         typeof(NextMapModule),
         typeof(LiveRankingModule),
+        typeof(MatchRankingModule),
         typeof(ASayModule)
     };
 
