@@ -14,10 +14,13 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
     private readonly List<IPlayer> _readyPlayers = new();
     private readonly object _readyPlayersLock = new();
 
-    private int _requiredPlayers;
+    private readonly List<IPlayer> _requiredPlayers = new();
     private readonly object _requiredPlayersLock = new();
 
     private readonly IEventManager _events;
+
+    private bool _matchStarted;
+    private readonly object _matchStartedLock = new();
     
     public IEnumerable<IPlayer> ReadyPlayers
     {
@@ -30,7 +33,7 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
         }
     }
 
-    public int RequiredPlayers
+    public List<IPlayer> RequiredPlayers
     {
         get
         {
@@ -41,11 +44,22 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
         }
     }
 
+    public bool MatchStarted
+    {
+        get
+        {
+            lock (_matchStartedLock)
+            {
+                return _matchStarted;
+            }
+        }
+    }
+
     public PlayerReadyTrackerService(IEventManager events) => _events = events;
 
     private Task FireEventIfAllReadyAsync()
     {
-        if (RequiredPlayers == ReadyPlayers.Count())
+        if (RequiredPlayers.Count() == ReadyPlayers.Count())
         {
             return _events.RaiseAsync(MatchReadyEvents.AllPlayersReady, new AllPlayersReadyEventArgs
             {
@@ -64,7 +78,7 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
             {
                 _readyPlayers.Add(player);
             }
-            else if (_readyPlayers.Contains(player))
+            else if (_readyPlayers.Any(p => p.AccountId == player.AccountId))
             {
                 _readyPlayers.Remove(player);
             }
@@ -79,21 +93,47 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
         await FireEventIfAllReadyAsync();
     }
 
-    public Task SetRequiredPlayersAsync(int count)
+    public Task AddRequiredPlayerAsync(IPlayer player)
     {
         lock (_requiredPlayersLock)
         {
-            _requiredPlayers = count;
+            _requiredPlayers.Add(player);
         }
 
         return FireEventIfAllReadyAsync();
     }
 
-    public void Reset()
+    public async Task AddRequiredPlayersAsync(IEnumerable<IPlayer> players)
+    {
+        foreach (var player in players)
+        {
+            await AddRequiredPlayerAsync(player);
+        }
+    }
+
+    public void Reset() => Reset(false);
+
+    public void Reset(bool resetRequired)
     {
         lock (_readyPlayersLock)
         {
             _readyPlayers.Clear();
+        }
+
+        if (resetRequired)
+        {
+            lock (_requiredPlayers)
+            {
+                _requiredPlayers.Clear();
+            }
+        }
+    }
+
+    public void SetMatchStarted(bool started)
+    {
+        lock (_matchStartedLock)
+        {
+            _matchStarted = started;
         }
     }
 }

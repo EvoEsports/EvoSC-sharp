@@ -20,7 +20,9 @@ public class PlayerReadyService : IPlayerReadyService
         _manialinks = manialinks;
         _server = server;
     }
-    
+
+    public bool MatchIsStarted => _playerReadyTrackerService.MatchStarted;
+
     public async Task SetPlayerReadyStatusAsync(IPlayer player, bool isReady)
     {
         await _playerReadyTrackerService.SetIsReadyAsync(player, isReady);
@@ -33,17 +35,45 @@ public class PlayerReadyService : IPlayerReadyService
         {
             await _server.InfoMessageAsync($"$<{player.NickName}$> is no longer ready.");
         }
-        
-        await _manialinks.SendManialinkAsync(player, "MatchReadyModule.UpdateWidget", new
-        {
-            PlayerCount = _playerReadyTrackerService.ReadyPlayers.Count(),
-            IsReady = isReady
-        });
+
+        await UpdateWidgetAsync();
     }
 
-    public Task ResetReadyWidgetAsync()
+    public Task ResetReadyWidgetAsync(bool resetRequired)
     {
-        _playerReadyTrackerService.Reset();
+        _playerReadyTrackerService.Reset(resetRequired);
         return Task.CompletedTask;
+    }
+
+    public Task SetMatchStartedAsync()
+    {
+        _playerReadyTrackerService.SetMatchStarted(true);
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> PlayerIsReadyAsync(IPlayer player) =>
+        Task.FromResult(_playerReadyTrackerService.ReadyPlayers.Any(p => p.AccountId == player.AccountId));
+
+    public async Task SendWidgetAsync(IPlayer player)
+    {
+        var isReady = await PlayerIsReadyAsync(player);
+        var requiredPlayers = _playerReadyTrackerService.RequiredPlayers.Count();
+        var playersReady = _playerReadyTrackerService.ReadyPlayers.Count();
+
+        await _manialinks.SendManialinkAsync(player, "MatchReadyModule.ReadyWidget",
+            new { isReady, requiredPlayers, playersReady });
+    }
+
+    public async Task UpdateWidgetAsync()
+    {
+        foreach (var player in _playerReadyTrackerService.RequiredPlayers)
+        {
+            await _manialinks.SendManialinkAsync("MatchReadyModule.UpdateWidget",
+                new
+                {
+                    PlayerCount = _playerReadyTrackerService.ReadyPlayers.Count(),
+                    IsReady = await PlayerIsReadyAsync(player)
+                });
+        }
     }
 }

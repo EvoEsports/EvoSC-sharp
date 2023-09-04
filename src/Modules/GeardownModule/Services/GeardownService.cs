@@ -39,10 +39,12 @@ public class GeardownService : IGeardownService
     private readonly IAuditService _audits;
     private readonly IPlayerReadyTrackerService _playerReadyTracker;
     private readonly ILogger<GeardownService> _logger;
+    private readonly IPlayerManagerService _players;
 
     public GeardownService(IGeardownApiService geardownApi, IMapService maps, IMatchSettingsService matchSettings,
         IServerClient server, IGeardownSettings settings, IPlayerReadyService playerReadyService,
-        IPlayerReadyTrackerService playerReadyTracker, IMatchTracker matchTracker, IAuditService audits, ILogger<GeardownService> logger)
+        IPlayerReadyTrackerService playerReadyTracker, IMatchTracker matchTracker, IAuditService audits,
+        ILogger<GeardownService> logger, IPlayerManagerService players)
     {
         _geardownApi = geardownApi;
         _maps = maps;
@@ -54,6 +56,7 @@ public class GeardownService : IGeardownService
         _audits = audits;
         _playerReadyTracker = playerReadyTracker;
         _logger = logger;
+        _players = players;
     }
 
     public async Task SetupServerAsync(int matchId)
@@ -74,11 +77,18 @@ public class GeardownService : IGeardownService
             Match = match,
             MatchToken = token.EvoScToken
         });
+
+        var players = (await GetParticipantPlayersAsync(match)).ToArray();
+
+        if (!players.Any())
+        {
+            throw new InvalidOperationException($"No participants found for match {match.id} ({match.name}).");
+        }
         
-        await SetupPlayersAndSpectatorsAsync(match);
+        await SetupPlayersAndSpectatorsAsync(players);
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
-        await _playerReadyTracker.SetRequiredPlayersAsync(match.participants.Count);
-        await _playerReadyService.ResetReadyWidgetAsync();
+        await _playerReadyService.ResetReadyWidgetAsync(true);
+        await _playerReadyTracker.AddRequiredPlayersAsync(players);
 
         _audits.NewInfoEvent("Geardown.ServerSetup")
             .HavingProperties(new { Match = match, MatchToken = token.EvoScToken })
@@ -137,12 +147,12 @@ public class GeardownService : IGeardownService
         } */
     }
 
-    private async Task SetupPlayersAndSpectatorsAsync(GdMatch match)
+    private async Task SetupPlayersAndSpectatorsAsync(IEnumerable<IPlayer> players)
     {
         await _server.Remote.CleanGuestListAsync();
-        await WhitelistPlayers(match);
+        await WhitelistPlayers(players);
         await WhitelistSpectators();
-        await _server.Remote.SetMaxPlayersAsync(match.participants?.Count ?? 0);
+        await _server.Remote.SetMaxPlayersAsync(players.Count());
     }
 
     private async Task<IMap[]> GetMatchMapsAsync(GdMatch? match)
@@ -262,30 +272,13 @@ public class GeardownService : IGeardownService
         return name;
     }
 
-    private async Task WhitelistPlayers(GdMatch match)
+    private async Task WhitelistPlayers(IEnumerable<IPlayer> players)
     {
-        if (match.participants == null || match.participants.Count == 0)
-        {
-            throw new InvalidOperationException($"The match with ID {match.id} does not have any participants.");
-        }
-
         var multiCall = new MultiCall();
-        foreach (var participant in match.participants)
+        
+        foreach (var player in players)
         {
-            if (participant.user == null)
-            {
-                throw new InvalidOperationException($"The participant with ID {participant.user_id} does not include user info.");
-            }
-
-            if (participant.user.tm_account_id == null)
-            {
-                throw new InvalidOperationException(
-                    $"The participant {participant.user.nickname} with ID {participant.user_id} has no TM Account ID assigned.");
-            }
-            
-            var login = PlayerUtils.ConvertAccountIdToLogin(participant.user.tm_account_id);
-            // await _server.Remote.AddGuestAsync(login);
-            multiCall.Add("AddGuest", login);
+            multiCall.Add("AddGuest", player.GetLogin());
         }
 
         await _server.Remote.MultiCallAsync(multiCall);
@@ -328,5 +321,35 @@ public class GeardownService : IGeardownService
         }
 
         return await _geardownApi.Matches.AssignServerAsync(matchId, name, mainServerPlayer.Login, password);
+    }
+
+    private async Task<IEnumerable<IPlayer>> GetParticipantPlayersAsync(GdMatch match)
+    {
+        if (match.participants == null)
+        {
+            throw new InvalidOperationException("No participants found for this match.");
+        }
+
+        var players = new List<IPlayer>();
+        
+        foreach (var participant in match.participants)
+        {
+            if (participant.user == null)
+            {
+                throw new InvalidOperationException(
+                    $"Participant with ID {participant.id} has no user account attached. Are they a real geardown user?");
+            }
+
+            if (string.IsNullOrEmpty(participant.user.tm_account_id))
+            {
+                throw new InvalidOperationException(
+                    $"Participant with ID {participant.id} (name: {participant.user.nickname}) has no TM account ID.");
+            }
+            
+            var player = await _players.GetOrCreatePlayerAsync(participant.user.tm_account_id);
+            players.Add(player);
+        }
+
+        return players;
     }
 }
