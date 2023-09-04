@@ -35,7 +35,6 @@
                       halign="center"
                 />
                 <label pos="2 -3.5"
-                       size="20 5"
                        text="Live Ranking"
                        valign="center2"
                        textfont="GameFontExtraBold"

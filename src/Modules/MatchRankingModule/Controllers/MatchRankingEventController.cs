@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Controllers;
+using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
@@ -8,6 +9,7 @@ using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.MatchRankingModule.Controllers;
 
+[Controller]
 public class MatchRankingEventController: EvoScController<IEventControllerContext>
 {
     private readonly IMatchRankingService _matchRankingService;
@@ -18,7 +20,7 @@ public class MatchRankingEventController: EvoScController<IEventControllerContex
     }
     
     [Subscribe(ModeScriptEvent.Scores)]
-    public Task OnScores(object data, ScoresEventArgs scores) => _matchRankingService.OnScores(scores);
+    public Task OnScores(object data, ScoresEventArgs eventArgs) => _matchRankingService.OnScores(eventArgs);
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public Task OnPlayerConnect(object data, PlayerConnectGbxEventArgs eventArgs) => _matchRankingService.SendManialink(eventArgs.Login);

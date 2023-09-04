@@ -2,4 +2,4 @@
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Models;
 
-public record LiveRankingWidgetPosition(int position, IOnlinePlayer player, string time);
+public record LiveRankingWidgetPosition(int position, IPlayer player, string time);
