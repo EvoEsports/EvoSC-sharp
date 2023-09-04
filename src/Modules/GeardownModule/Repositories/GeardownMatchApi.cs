@@ -189,10 +189,10 @@ public class GeardownMatchApi : GeardownApiBase<GeardownMatchApi>, IGeardownMatc
             .WithJsonBody(new { matchId, result, nickname, mapId })
             .PostJsonAsync<GdMatchResult>("/matches/time_results");
 
-    public Task<GdGameServer?> AddGameServerAsync(int matchId, string name, bool pending, string serverLink) =>
+    public Task<GdMatchToken?> AssignServerAsync(int matchId, string name, string serverId, string? serverPassword) =>
         WithAccessToken()
-            .WithJsonBody(new { matchId, name, pending, serverLink })
-            .PostJsonAsync<GdGameServer>("/v1/matches/game_servers");
+            .WithJsonBody(new { serverId, password = serverPassword, name })
+            .PostJsonAsync<GdMatchToken>("/matches/game_server/{matchId}", matchId);
 
     public Task<GdMatch?> GetMatchDataByTokenAsync(string matchToken) =>
         WithAccessToken()

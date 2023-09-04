@@ -56,16 +56,23 @@ public class GeardownService : IGeardownService
         _logger = logger;
     }
 
-    public async Task SetupServerAsync(string matchToken)
+    public async Task SetupServerAsync(int matchId)
     {
-        var match = await GetMatchInfoAsync(matchToken);
+        var token = await AssignServerToMatchAsync(matchId);
+
+        if (token == null)
+        {
+            throw new InvalidOperationException($"Failed to assign server to match {matchId}. Token returned is null.");
+        }
+        
+        var match = await GetMatchInfoAsync(token.EvoScToken);
         var maps = await GetMatchMapsAsync(match);
         var matchSettingsName = await CreateMatchSettingsAsync(match, maps);
 
         _settings.MatchState = JsonSerializer.Serialize(new GeardownMatchState
         {
             Match = match,
-            MatchToken = matchToken
+            MatchToken = token.EvoScToken
         });
         
         await SetupPlayersAndSpectatorsAsync(match);
@@ -74,7 +81,7 @@ public class GeardownService : IGeardownService
         await _playerReadyService.ResetReadyWidgetAsync();
 
         _audits.NewInfoEvent("Geardown.ServerSetup")
-            .HavingProperties(new { Match = match, MatchToken = matchToken })
+            .HavingProperties(new { Match = match, MatchToken = token.EvoScToken })
             .Comment("Server was setup through geardown.");
     }
 
@@ -190,7 +197,7 @@ public class GeardownService : IGeardownService
     {
         if (match.map_pool_orders == null || match.map_pool_orders.Count == 0)
         {
-            throw new InvalidOperationException("No maps found for this match. Did you add them on geardown?");
+            throw new InvalidOperationException("No maps found for this match. Did you add them on geardown or forgot to give them an order?");
         }
         
         var maps = new List<IMap>();
@@ -215,7 +222,7 @@ public class GeardownService : IGeardownService
     {
         if (match.formats == null || match.formats.Count == 0)
         {
-            throw new InvalidOperationException("No formats has been assigned to this match, did you create one at geardown?");
+            throw new InvalidOperationException("No formats has been assigned to this match, did you assign one to the match at geardown?");
         }
         
         var format = match.formats.First();
@@ -307,5 +314,19 @@ public class GeardownService : IGeardownService
         }
 
         return match;
+    }
+
+    private async Task<GdMatchToken?> AssignServerToMatchAsync(int matchId)
+    {
+        var password = await _server.Remote.GetServerPasswordAsync();
+        var name = await _server.Remote.GetServerNameAsync() ?? "Server";
+        var mainServerPlayer = await _server.Remote.GetMainServerPlayerInfoAsync(0);
+
+        if (string.IsNullOrEmpty(password))
+        {
+            password = null;
+        }
+
+        return await _geardownApi.Matches.AssignServerAsync(matchId, name, mainServerPlayer.Login, password);
     }
 }

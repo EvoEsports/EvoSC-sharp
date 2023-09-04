@@ -20,13 +20,13 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
     }
 
     [ChatCommand("geardown_setup", "Setup the server for a match from geardown.")]
-    public async Task GeardownSetupAsync(string matchToken)
+    public async Task GeardownSetupAsync(int matchId)
     {
         try
         {
-            await _server.InfoMessageAsync("Setting up the match, please wait ...");
-            await _geardown.SetupServerAsync(matchToken);
-            await _server.SuccessMessageAsync("Match successfully set up! Reloading match settings ...");
+            await _server.InfoMessageAsync($"Setting up the match for ID {matchId}, please wait ...", Context.Player);
+            await _geardown.SetupServerAsync(matchId);
+            await _server.SuccessMessageAsync("Match successfully set up! Reloading match settings ...", Context.Player);
         }
         catch (InvalidOperationException ex)
         {
