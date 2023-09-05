@@ -6,5 +6,5 @@ public interface IGeardownService
 {
     public Task SetupServerAsync(int matchId);
     public Task StartMatchAsync();
-    public Task SendResultsAsync(string matchToken, IMatchTimeline argsTimeline);
+    public Task EndMatchAsync(IMatchTimeline timeline);
 }

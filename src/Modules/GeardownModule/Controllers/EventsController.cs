@@ -11,7 +11,6 @@ using EvoSC.Modules.Official.MatchTrackerModule.Events;
 using EvoSC.Modules.Official.MatchTrackerModule.Events.EventArgObjects;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Modules.Official.MatchTrackerModule.Models;
-using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Controllers;
 
@@ -21,7 +20,7 @@ public class EventsController : EvoScController<IEventControllerContext>
     private readonly IGeardownService _geardownService;
     private readonly IGeardownSettings _settings;
 
-    public EventsController(IGeardownService geardownService, IGeardownSettings settings, IMatchTracker matchTracker)
+    public EventsController(IGeardownService geardownService, IGeardownSettings settings)
     {
         _geardownService = geardownService;
         _settings = settings;
@@ -43,7 +42,7 @@ public class EventsController : EvoScController<IEventControllerContext>
     {
         if (args.State.Status == MatchStatus.Ended)
         {
-            await _geardownService.SendResultsAsync("match_token", args.Timeline);
+            await _geardownService.EndMatchAsync(args.Timeline);
         }
     }
 }

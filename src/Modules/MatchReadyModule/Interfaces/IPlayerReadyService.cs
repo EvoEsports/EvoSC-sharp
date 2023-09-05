@@ -16,4 +16,6 @@ public interface IPlayerReadyService
     public Task SendWidgetAsync(IPlayer player);
     
     public Task UpdateWidgetAsync();
+
+    public Task SetWidgetEnabled(bool enabled);
 }

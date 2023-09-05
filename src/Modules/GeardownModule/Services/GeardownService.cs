@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -38,13 +37,12 @@ public class GeardownService : IGeardownService
     private readonly IMatchTracker _matchTracker;
     private readonly IAuditService _audits;
     private readonly IPlayerReadyTrackerService _playerReadyTracker;
-    private readonly ILogger<GeardownService> _logger;
     private readonly IPlayerManagerService _players;
 
     public GeardownService(IGeardownApiService geardownApi, IMapService maps, IMatchSettingsService matchSettings,
         IServerClient server, IGeardownSettings settings, IPlayerReadyService playerReadyService,
         IPlayerReadyTrackerService playerReadyTracker, IMatchTracker matchTracker, IAuditService audits,
-        ILogger<GeardownService> logger, IPlayerManagerService players)
+        IPlayerManagerService players)
     {
         _geardownApi = geardownApi;
         _maps = maps;
@@ -55,7 +53,6 @@ public class GeardownService : IGeardownService
         _matchTracker = matchTracker;
         _audits = audits;
         _playerReadyTracker = playerReadyTracker;
-        _logger = logger;
         _players = players;
     }
 
@@ -87,12 +84,28 @@ public class GeardownService : IGeardownService
         
         await SetupPlayersAndSpectatorsAsync(players);
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
-        await _playerReadyService.ResetReadyWidgetAsync(true);
-        await _playerReadyTracker.AddRequiredPlayersAsync(players);
+        await SetupReadyWidgetAsync(players);
 
         _audits.NewInfoEvent("Geardown.ServerSetup")
             .HavingProperties(new { Match = match, MatchToken = token.EvoScToken })
             .Comment("Server was setup through geardown.");
+    }
+
+    private async Task SetupReadyWidgetAsync(IPlayer[] players)
+    {
+        await _playerReadyService.ResetReadyWidgetAsync(true);
+        await _playerReadyTracker.AddRequiredPlayersAsync(players);
+        await _playerReadyService.SetWidgetEnabled(true);
+
+        var onlinePlayers = (await _players.GetOnlinePlayersAsync()).ToArray();
+
+        foreach (var player in players)
+        {
+            if (onlinePlayers.Any(p => p.AccountId == player.AccountId))
+            {
+                await _playerReadyService.SendWidgetAsync(player);
+            }
+        }
     }
 
     public async Task StartMatchAsync()
@@ -100,12 +113,20 @@ public class GeardownService : IGeardownService
         var matchTrackerId = await _matchTracker.BeginMatchAsync();
         await _server.Remote.RestartMapAsync();
         
+        await _playerReadyService.SetWidgetEnabled(false);
+        
         _audits.NewInfoEvent("Geardown.StartMatch")
             .HavingProperties(new { MatchTrackingId = matchTrackerId })
             .Comment("Match was started.");
     }
 
-    public async Task SendResultsAsync(string matchToken, IMatchTimeline argsTimeline)
+    public async Task EndMatchAsync(IMatchTimeline timeline)
+    {
+        await _playerReadyService.SetWidgetEnabled(false);
+        await SendResultsAsync(timeline);
+    }
+
+    private async Task SendResultsAsync(IMatchTimeline timeline)
     {
         var matchState = JsonSerializer.Deserialize<GeardownMatchState>(_settings.MatchState);
 
@@ -114,7 +135,7 @@ public class GeardownService : IGeardownService
             throw new InvalidOperationException("The match state is invalid, failed to send results.");
         }
         
-        var results = argsTimeline.States.LastOrDefault(s => s.Status == MatchStatus.Running) as IScoresMatchState;
+        var results = timeline.States.LastOrDefault(s => s.Status == MatchStatus.Running) as IScoresMatchState;
 
         if (results == null || results.Section != ModeScriptSection.EndMatch)
         {

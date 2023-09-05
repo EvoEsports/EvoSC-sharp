@@ -3,6 +3,8 @@ using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Controllers;
@@ -36,4 +38,11 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
 
     [ChatCommand("geardown_startmatch", "Start a geardown controller match.")]
     public Task GeardownStartMatchAsync() => _geardown.StartMatchAsync();
+
+    [ChatCommand("setpoints", "Set points for a player")]
+    public Task SetPlayerPointsAsync(IOnlinePlayer player, int points)
+    {
+        return _server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.SetPlayerPoints", player.GetLogin(), "", "",
+            points.ToString());
+    }
 }

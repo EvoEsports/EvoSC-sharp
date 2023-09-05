@@ -14,6 +14,9 @@ public class PlayerReadyService : IPlayerReadyService
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
     
+    private bool _widgetEnabled;
+    private readonly object _widgetEnabledLock = new();
+    
     public PlayerReadyService(IPlayerReadyTrackerService playerReadyTrackerService, IManialinkManager manialinks, IServerClient server)
     {
         _playerReadyTrackerService = playerReadyTrackerService;
@@ -56,6 +59,14 @@ public class PlayerReadyService : IPlayerReadyService
 
     public async Task SendWidgetAsync(IPlayer player)
     {
+        lock (_widgetEnabledLock)
+        {
+            if (!_widgetEnabled)
+            {
+                return;
+            }
+        }
+        
         var isReady = await PlayerIsReadyAsync(player);
         var requiredPlayers = _playerReadyTrackerService.RequiredPlayers.Count();
         var playersReady = _playerReadyTrackerService.ReadyPlayers.Count();
@@ -66,6 +77,14 @@ public class PlayerReadyService : IPlayerReadyService
 
     public async Task UpdateWidgetAsync()
     {
+        lock (_widgetEnabledLock)
+        {
+            if (!_widgetEnabled)
+            {
+                return;
+            }
+        }
+        
         foreach (var player in _playerReadyTrackerService.RequiredPlayers)
         {
             await _manialinks.SendManialinkAsync("MatchReadyModule.UpdateWidget",
@@ -74,6 +93,20 @@ public class PlayerReadyService : IPlayerReadyService
                     PlayerCount = _playerReadyTrackerService.ReadyPlayers.Count(),
                     IsReady = await PlayerIsReadyAsync(player)
                 });
+        }
+    }
+
+    public async Task SetWidgetEnabled(bool enabled)
+    {
+        lock (_widgetEnabledLock)
+        {
+            _widgetEnabled = enabled;
+        }
+
+        if (!enabled)
+        {
+            await _manialinks.HideManialinkAsync("MatchReadyModule.ReadyWidget");
+            await _manialinks.HideManialinkAsync("MatchReadyModule.UpdateWidget");
         }
     }
 }
