@@ -450,7 +450,7 @@ public class ModuleManager : IModuleManager
         var dbStore = new DatabaseStore(name, configInterface, _configStoreRepository);
         await dbStore.SetupDefaultSettingsAsync();
 
-        return dbStore;
+        return new EvSCModuleConfigStore(name, dbStore);
     }
     
     private object? CreateConfigInstance(Type configInterface, IConfigStore store)
