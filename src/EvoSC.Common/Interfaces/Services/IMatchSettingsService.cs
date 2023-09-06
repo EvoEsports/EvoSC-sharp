@@ -38,6 +38,16 @@ public interface IMatchSettingsService
     public Task LoadMatchSettingsAsync(string name);
 
     /// <summary>
+    /// Load a MatchSettings file.
+    /// </summary>
+    /// <param name="name">The name of the MatchSettings to load.</param>
+    /// <param name="skipMap">If true, skip to the first map in the loaded matchsettings.</param>
+    /// <exception cref="FileNotFoundException">Thrown when the server failed to find the match settings file.</exception>
+    /// <exception cref="XmlRpcFaultException">Thrown if XMLRPC raised an unknown error.</exception>
+    /// <returns></returns>
+    public Task LoadMatchSettingsAsync(string name, bool skipMap);
+
+    /// <summary>
     /// Create a new match settings file and return the info object for it.
     /// </summary>
     /// <param name="name">The name of the file. Do not include extension. Directory paths allowed. Relative to MatchSettings directory.</param>

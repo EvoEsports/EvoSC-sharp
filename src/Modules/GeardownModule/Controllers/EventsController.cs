@@ -45,4 +45,7 @@ public class EventsController : EvoScController<IEventControllerContext>
             await _geardownService.EndMatchAsync(args.Timeline);
         }
     }
+
+    [Subscribe(ModeScriptEvent.WarmUpStart)]
+    public Task OnWarmupStart(object sender, EventArgs args) => _geardownService.FinishServerSetupAsync();
 }
