@@ -146,19 +146,40 @@
 
     <script once="true">
         <!--
-        Void TogglePlayerActions(CMlFrame playerRow) {
+        Void ShowPlayerActions(CMlFrame playerRow) {
             declare playerActions = (playerRow.GetFirstChild("player_actions") as CMlFrame);
             declare detailsWrapper = (playerRow.GetFirstChild("details_wrapper") as CMlFrame);
+            playerActions.Show();
+            detailsWrapper.Hide();
+        }
+        
+        Void HidePlayerActions(CMlFrame playerRow) {
+            declare playerActions = (playerRow.GetFirstChild("player_actions") as CMlFrame);
+            declare detailsWrapper = (playerRow.GetFirstChild("details_wrapper") as CMlFrame);
+            playerActions.Hide();
+            detailsWrapper.Show();
+        }
+        
+        Void ResetPlayerActions() {
+            declare playerRows <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
+            foreach(playerRowControl in playerRows.Controls){
+                declare playerRow = (playerRowControl as CMlFrame);
+                HidePlayerActions(playerRow);
+                declare Boolean RowIsLocked for playerRow = False;
+                RowIsLocked = False;
+            }
+        }
+        
+        Void TogglePlayerActions(CMlFrame playerRow) {
             declare Boolean RowIsLocked for playerRow = False;
             
-            if(!RowIsLocked){
-                playerActions.Show();
-                detailsWrapper.Hide();
-                RowIsLocked = True;
-            }else{
-                playerActions.Hide();
-                detailsWrapper.Show();
+            if(RowIsLocked){
                 RowIsLocked = False;
+                HidePlayerActions(playerRow);
+            }else{
+                ResetPlayerActions();
+                RowIsLocked = True;
+                ShowPlayerActions(playerRow);
             }
         }
         
