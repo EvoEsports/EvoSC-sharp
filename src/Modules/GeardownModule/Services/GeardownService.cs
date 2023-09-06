@@ -99,12 +99,9 @@ public class GeardownService : IGeardownService
 
         var onlinePlayers = (await _players.GetOnlinePlayersAsync()).ToArray();
 
-        foreach (var player in players)
+        foreach (var player in onlinePlayers)
         {
-            if (onlinePlayers.Any(p => p.AccountId == player.AccountId))
-            {
-                await _playerReadyService.SendWidgetAsync(player);
-            }
+            await _playerReadyService.SendWidgetAsync(player);
         }
     }
 

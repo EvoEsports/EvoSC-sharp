@@ -5,151 +5,100 @@
     <property type="bool" name="isReady" default="false" />
     <property type="int" name="requiredPlayers" default="0" />
     <property type="int" name="playersReady" default="0" />
+    <property type="bool" name="showButton" default="true" />
     
     <template>
         <Theme />
 
         
         <frame pos="-20 60">
-            <!-- <framemodel id="EvoSC_Model_ReadyWidget_Corner">
-                <quad
-                        size="4 4"
-                        image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
-                        modulatecolor='{{ isReady ? "00ff00" : "ff0000" }}'
-                />
-            </framemodel>
-            
-            <frame size="2 2">
-                <frameinstance modelid="EvoSC_Model_ReadyWidget_Corner" />
-            </frame>
-
-            <frame size="2 2" pos="23 0" rot="90">
-                <frameinstance modelid="EvoSC_Model_ReadyWidget_Corner" />
-            </frame>
-
-            <frame size="2 2" pos="23 -7" rot="180">
-                <frameinstance modelid="EvoSC_Model_ReadyWidget_Corner" />
-            </frame>
-
-            <frame size="2 2" pos="0 -7" rot="-90">
-                <frameinstance modelid="EvoSC_Model_ReadyWidget_Corner" />
-            </frame>
-            
-            <quad bgcolor='{{ isReady ? "00ff00" : "ff0000" }}' size="23 3" pos="0 -2" />
-            <quad bgcolor='{{ isReady ? "00ff00" : "ff0000" }}' size="19 2" pos="2 0" />
-            <quad bgcolor='{{ isReady ? "00ff00" : "ff0000" }}' size="19 2" pos="2 -5" /> -->
-            
-            <!-- <label
-                    text='$s{{ isReady ? " READY" : " NOT READY" }}'
-                    class="text"
-                    valign="center"
-                    halign="center"
-                    textsize="4"
-                    pos="15 6"
-                    textcolor='{{ isReady ? "00ff00" : "ff0000" }}'
-            />
-            
-            <quad
-                    bgcolor="47495A"
-                    size="30 8"
-            />
-            
-            <frame size="30 8">
-                <quad
-                        rot="167"
-                        modulatecolor="6b6f88"
-                        size="32 20"
-                        pos="33 -12"
-                        image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
-                />
-            </frame>
-            
-            <label
-                    class="text"
-                    text='{{ isReady ? "UNREADY" : "I AM READY" }}'
-                    halign="center"
-                    valign="center"
-                    pos="15 -3.8"
-            />
-            
-            <label 
-                    text="$i0/4 players ready"
-                    textsize="1"
-                    class="text"
-                    textcolor="000000"
-                    opacity="0.5"
-                    halign="center"
-                    pos="15 -10"
-            /> -->
-
-            <quad
-                    bgcolor="000000cc"
-                    size="40 18"
-            />
-            <frame size="40 18">
+            <frame if="showButton">
                 <quad
                         bgcolor="000000cc"
-                        size="18 60"
-                        pos="-18 -18"
-                        image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
-                        modulatecolor="F43A3A"
-                        rot="-90"
-                        id="readywidget-bg"
+                        size="40 18"
                 />
-            </frame>
-            
-            <label 
-                    class="text" 
-                    textfont="GameFontSemiBold" 
-                    textsize="2" 
-                    textcolor="ffffff"
-                    text="$iNOT READY"
-                    halign="center"
-                    pos="20 -2"
-                    id="readywidget-statustext"
-            />
-
-            <frame pos="5 -8">
-                <quad bgcolor="CE3535" size="30 8" id="readybtn-background" />
-                
-                <frame size="30 8">
+                <frame size="40 18">
                     <quad
-                            rot="167"
-                            modulatecolor="F43A3A"
-                            size="32 20"
-                            pos="33 -12"
+                            bgcolor="000000cc"
+                            size="18 60"
+                            pos="-18 -18"
                             image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
-                            id="readybtn-background-gradient"
+                            modulatecolor="F43A3A"
+                            rot="-90"
+                            id="readywidget-bg"
                     />
                 </frame>
 
                 <label
-                        textfont="GameFontRegular"
-                        textsize="3"
-                        textcolor="000000"
-                        text='{{ isReady ? "UN-READY" : "I AM READY" }}'
-                        id="readybtn-text"
+                        class="text"
+                        textfont="GameFontSemiBold"
+                        textsize="2"
+                        textcolor="ffffff"
+                        text="$iNOT READY"
                         halign="center"
-                        valign="center"
-                        pos="15 -3.8"
+                        pos="20 -2"
+                        id="readywidget-statustext"
                 />
+
+                <frame pos="5 -8">
+                    <quad bgcolor="CE3535" size="30 8" id="readybtn-background" />
+
+                    <frame size="30 8">
+                        <quad
+                                rot="167"
+                                modulatecolor="F43A3A"
+                                size="32 20"
+                                pos="33 -12"
+                                image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
+                                id="readybtn-background-gradient"
+                        />
+                    </frame>
+
+                    <label
+                            textfont="GameFontRegular"
+                            textsize="3"
+                            textcolor="000000"
+                            text='{{ isReady ? "UN-READY" : "I AM READY" }}'
+                            id="readybtn-text"
+                            halign="center"
+                            valign="center"
+                            pos="15 -3.8"
+                    />
+                </frame>
+
+                <quad bgcolor="ff0000" size="20 1" pos="0 0.5" id="readywidget-line-top" />
+                <quad bgcolor="ff0000" size="1 9.5" pos="-0.5 0.5" id="readywidget-line-left" />
+
+                <quad bgcolor="ff0000" size="20 1" pos="20 -17.5" id="readywidget-line-right" />
+                <quad bgcolor="ff0000" size="1 9.5" pos="39.5 -9" id="readywidget-line-bottom" />
             </frame>
             
-            <quad bgcolor="ff0000" size="20 1" pos="0 0.5" id="readywidget-line-top" />
-            <quad bgcolor="ff0000" size="1 9.5" pos="-0.5 0.5" id="readywidget-line-left" />
+            <frame pos="0 10">
+                <quad
+                        image="file:///Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
+                        size="30 7"
+                        pos="20 2"
+                        modulatecolor="3759f4"
+                />
+                <quad
+                        rot="180"
+                        image="file:///Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
+                        size="30 7"
+                        pos="20 -5"
+                        modulatecolor="3759f4"
+                />
 
-            <quad bgcolor="ff0000" size="20 1" pos="20 -17.5" id="readywidget-line-right" />
-            <quad bgcolor="ff0000" size="1 9.5" pos="39.5 -9" id="readywidget-line-bottom" />
-            
-            <label 
-                    text="$i$s{{ playersReady }}/{{ requiredPlayers }} PLAYERS READY"
-                    class="text" 
-                    textcolor="000000" 
-                    pos="20 5"
-                    halign="center" 
-                    if="requiredPlayers > 0"
-                    id="readywidget-readyplayers-text"
-            />
+                <label
+                        text="$i$s{{ playersReady }}/{{ requiredPlayers }} PLAYERS READY"
+                        class="text"
+                        textsize="3"
+                        textcolor="ffffff"
+                        pos="20 0.5"
+                        halign="center"
+                        if="requiredPlayers > 0"
+                        id="readywidget-readyplayers-text"
+                />
+            </frame>
         </frame>
     </template>
 
@@ -227,22 +176,28 @@
             return;
         }
         
-        log("update: " ^ EvoSC_ReadyWidget_HasUpdate);
-        log("player count: " ^ EvoSC_ReadyWidget_PlayerCount);
-        
         declare readyplayersText = Page.MainFrame.GetFirstChild("readywidget-readyplayers-text") as CMlLabel;
         readyplayersText.SetText("$i$s" ^ EvoSC_ReadyWidget_PlayerCount ^ "/{{ requiredPlayers }} PLAYERS READY");
         
         isReady = EvoSC_ReadyWidget_IsReady;
         EvoSC_ReadyWidget_HasUpdate = False;
         
+        if (!{{ showButton }}) {
+            return;
+        }
+        
         UpdateWidget(EvoSC_ReadyWidget_IsReady);
     }
     
     *** OnInitialization ***
     ***
-    declare readyBtnBg <=> Page.MainFrame.GetFirstChild("readybtn-background") as CMlQuad;
-    declare readyBtnBgG <=> Page.MainFrame.GetFirstChild("readybtn-background-gradient") as CMlQuad;
+    declare CMlQuad readyBtnBg;
+    declare CMlQuad readyBtnBgG;
+    
+    if ({{ showButton }}) {
+        readyBtnBg <=> Page.MainFrame.GetFirstChild("readybtn-background") as CMlQuad;
+        readyBtnBgG <=> Page.MainFrame.GetFirstChild("readybtn-background-gradient") as CMlQuad;
+    }
     
     isReady = {{ isReady }};
 
@@ -254,26 +209,28 @@
     
     *** OnMouseMove ***
     ***
-        declare c1 = c1NotReady;
-        declare c2 = c2NotReady;
+        if ({{ showButton }}) {
+            declare c1 = c1NotReady;
+            declare c2 = c2NotReady;
+            
+            if (isReady) {
+                c1 = c1Ready;
+                c2 = c2Ready;
+            }
         
-        if (isReady) {
-            c1 = c1Ready;
-            c2 = c2Ready;
-        }
-    
-        if (IsMouseOver(readyBtnBg)) {
-            readyBtnBgG.ModulateColor = c2;
-            readyBtnBg.BgColor = c1;
-        } else {
-            readyBtnBgG.ModulateColor = c1;
-            readyBtnBg.BgColor = c2;
+            if (IsMouseOver(readyBtnBg)) {
+                readyBtnBgG.ModulateColor = c2;
+                readyBtnBg.BgColor = c1;
+            } else {
+                readyBtnBgG.ModulateColor = c1;
+                readyBtnBg.BgColor = c2;
+            }
         }
     ***
     
     *** OnMouseUp ***
     ***
-        if (IsMouseOver(readyBtnBg)) {
+        if ({{ showButton }} && IsMouseOver(readyBtnBg)) {
             // pre-update widget for better UI experience
             UpdateWidget(!isReady);
             TriggerPageAction("ReadyManialinkController/ReadyButton/" ^ (!isReady));
