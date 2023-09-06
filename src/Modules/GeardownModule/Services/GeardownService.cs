@@ -57,6 +57,8 @@ public class GeardownService : IGeardownService
         await _server.Remote.RestartMapAsync();
         
         await _playerReadyService.SetWidgetEnabled(false);
+
+        await _server.InfoMessageAsync("Match is about to begin ...");
         
         _audits.NewInfoEvent("Geardown.StartMatch")
             .HavingProperties(new { MatchTrackingId = matchTrackerId })
@@ -67,6 +69,8 @@ public class GeardownService : IGeardownService
     {
         await _playerReadyService.SetWidgetEnabled(false);
         await SendResultsAsync(timeline);
+
+        await _server.SuccessMessageAsync("Match finished, thanks for playing!");
     }
 
     private async Task SendResultsAsync(IMatchTimeline timeline)

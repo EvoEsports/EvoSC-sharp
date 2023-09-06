@@ -89,7 +89,7 @@
                 />
 
                 <label
-                        text="$i$s{{ playersReady }}/{{ requiredPlayers }} PLAYERS READY"
+                        text="$s{{ playersReady }}/{{ requiredPlayers }} PLAYERS READY"
                         class="text"
                         textsize="3"
                         textcolor="ffffff"
