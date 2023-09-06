@@ -32,8 +32,6 @@ public class MatchRankingService : IMatchRankingService
 
     public async Task OnScores(ScoresEventArgs scores)
     {
-        _logger.LogWarning("scores received");
-
         await _matchRankingStore.ConsumeScores(scores);
         await SendManialink();
     }
@@ -56,8 +54,8 @@ public class MatchRankingService : IMatchRankingService
         var mappedScoresPrevious = MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores()).ToList();
         var mappedScoresLatest = MapScoresForWidget(_matchRankingStore.GetLatestMatchScores()).ToList();
 
-        var mappedScoresNew = mappedScoresLatest.Except(mappedScoresPrevious, new RankingComparer()).ToList();
-        var mappedScoresExisting = mappedScoresLatest.Except(mappedScoresNew).ToList();
+        var mappedScoresExisting = mappedScoresLatest.Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
+        var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
 
         return new
         {
