@@ -1,13 +1,12 @@
-﻿using System.IO;
-using EvoSC.Common.Interfaces.Database;
+﻿using EvoSC.Common.Interfaces.Database;
+using LinqToDB;
 using LinqToDB.Configuration;
-using LinqToDB.Data;
 
-namespace EvoSC.Common.Tests.Database;
+namespace EvoSC.Testing.Database;
 
 public class TestDbConnectionFactory : IDbConnectionFactory
 {
-    private DataConnection? _dbConnection;
+    private DataContext? _dbConnection;
     private readonly string _connectionString;
 
     public string ConnectionString => _connectionString;
@@ -23,7 +22,7 @@ public class TestDbConnectionFactory : IDbConnectionFactory
         _connectionString = $"Data Source={identifier};";
     }
     
-    public DataConnection GetConnection()
+    public DataContext GetConnection()
     {
         if (_dbConnection == null)
         {
@@ -31,7 +30,7 @@ public class TestDbConnectionFactory : IDbConnectionFactory
                 .UseSQLite(ConnectionString)
                 .Build();
 
-            _dbConnection = new DataConnection(dbOptions);
+            _dbConnection = new DataContext(dbOptions);
         }
 
         return _dbConnection;

@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Interfaces.Database;
-using EvoSC.Common.Tests.Database;
 using FluentMigrator.Expressions;
 
 namespace EvoSC.Testing.Database;

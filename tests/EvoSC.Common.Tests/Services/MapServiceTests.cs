@@ -148,7 +148,7 @@ public class MapServiceTests
 
         var createdMap = await _mapService.AddMapAsync(mapStream);
 
-        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapName + ".Map.Gbx"));
+        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapUid + ".Map.Gbx"));
 
         Assert.Equal(MapProviders.ManiaExchange, createdMap.ExternalMapProvider);
         Assert.Equal(map.ExternalId, createdMap.ExternalId);
@@ -206,7 +206,7 @@ public class MapServiceTests
 
         var updatedMap = await _mapService.AddMapAsync(mapStream);
 
-        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapName + ".Map.Gbx"));
+        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapUid + ".Map.Gbx"));
 
         Assert.NotEqual(mapMetadata.ExternalVersion, updatedMap.ExternalVersion);
         Assert.Equal(MapProviders.ManiaExchange, updatedMap.ExternalMapProvider);
