@@ -23,13 +23,9 @@ public class DbConnectionFactory : IDbConnectionFactory
         _logger = logger;
     }
     
-    public DataConnection GetConnection()
+    public DataContext GetConnection()
     {
-        lock (_mutex)
-        {
-            _connection ??= CreateConnection();
-            return _connection;
-        }
+        return CreateConnection();
     }
     
     /// <summary>
@@ -37,7 +33,7 @@ public class DbConnectionFactory : IDbConnectionFactory
     /// </summary>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">Thrown when an invalid database type was specified in the config.</exception>
-    private DataConnection CreateConnection()
+    private DataContext CreateConnection()
     {
         var configBuilder = CreateConfigBuilder();
 
@@ -48,7 +44,8 @@ public class DbConnectionFactory : IDbConnectionFactory
             IDatabaseConfig.DatabaseType.PostgreSql => ProviderName.PostgreSQL,
             _ => throw new InvalidOperationException("Invalid database type requested.")
         }, _config.Database.GetConnectionString());
-        return new DataConnection(configBuilder.Build());
+
+        return new DataContext(configBuilder.Build());
     }
 
     /// <summary>
