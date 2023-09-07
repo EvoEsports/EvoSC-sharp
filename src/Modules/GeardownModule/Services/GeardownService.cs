@@ -60,6 +60,15 @@ public class GeardownService : IGeardownService
 
         await _server.InfoMessageAsync("Match is about to begin ...");
         
+        var matchState = JsonSerializer.Deserialize<GeardownMatchState>(_settings.MatchState);
+
+        if (matchState == null)
+        {
+            throw new InvalidOperationException("Failed to obtain current match state from settings.");
+        }
+        
+        await _geardownApi.Matches.OnStartMatchAsync(matchState.MatchToken);
+        
         _audits.NewInfoEvent("Geardown.StartMatch")
             .HavingProperties(new { MatchTrackingId = matchTrackerId })
             .Comment("Match was started.");
@@ -95,5 +104,7 @@ public class GeardownService : IGeardownService
             nickname = r.Player.UbisoftName, 
             score = r.MatchPoints
         }));
+
+        await _geardownApi.Matches.OnEndMatchAsync(matchState.MatchToken);
     }
 }

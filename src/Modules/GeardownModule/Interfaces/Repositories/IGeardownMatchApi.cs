@@ -17,8 +17,7 @@ public interface IGeardownMatchApi
     public Task<GdMatchResult?> CreateTimeResultAsync(int matchId, string result, string nickname, string mapId);
     public Task<GdMatchToken?> AssignServerAsync(int matchId, string name, string serverId, string? serverPassword);
     public Task<GdMatch?> GetMatchDataByTokenAsync(string matchToken);
-    public Task OnEndRoundAsync(string matchToken, ScoresEventArgs eventData);
     public Task OnEndMatchAsync(string matchToken);
-    public Task OnStartMatchAsync(string matchToken, string join);
+    public Task OnStartMatchAsync(string matchToken);
     public Task AddResultsAsync(int matchId, IEnumerable<GdResult> results);
 }

@@ -198,19 +198,14 @@ public class GeardownMatchApi : GeardownApiBase<GeardownMatchApi>, IGeardownMatc
         WithAccessToken()
             .GetJsonAsync<GdMatch>("/matches/evo_token/{matchToken}", matchToken);
 
-    public Task OnEndRoundAsync(string matchToken, ScoresEventArgs eventData) =>
-        WithAccessToken()
-            .WithJsonBody(new { matchToken, eventData })
-            .PostStringAsync("/v1/matches/on_end_round");
-
     public Task OnEndMatchAsync(string matchToken) =>
         WithAccessToken()
             .WithJsonBody(new { matchToken })
             .PostStringAsync("/v1/matches/on_end_map");
 
-    public Task OnStartMatchAsync(string matchToken, string join) =>
+    public Task OnStartMatchAsync(string matchToken) =>
         WithAccessToken()
-            .WithJsonBody(new { matchToken, join })
+            .WithJsonBody(new { matchToken })
             .PostStringAsync("/v1/matches/on_start_match");
 
     public Task AddResultsAsync(int matchId, IEnumerable<GdResult> results) =>
