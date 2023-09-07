@@ -76,7 +76,11 @@ public class GeardownSetupService : IGeardownSetupService
         
         await SetupPlayersAndSpectatorsAsync(players);
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
-        await SetupReadyWidgetAsync(players);
+
+        if (players.Length <= 4)
+        {
+            await SetupReadyWidgetAsync(players);
+        }
 
         _setupState.SetInitialSetup(matchSettingsName);
 
