@@ -14,11 +14,13 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
 {
     private readonly IGeardownService _geardown;
     private readonly IServerClient _server;
+    private readonly IMatchManagementService _matchManagement;
 
-    public GeardownCommandsController(IGeardownService geardown, IServerClient server)
+    public GeardownCommandsController(IGeardownService geardown, IServerClient server, IMatchManagementService matchManagement)
     {
         _geardown = geardown;
         _server = server;
+        _matchManagement = matchManagement;
     }
 
     [ChatCommand("geardown_setup", "Setup the server for a match from geardown.")]
@@ -42,12 +44,28 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
     }
 
     [ChatCommand("geardown_startmatch", "Start a geardown controller match.")]
-    public Task GeardownStartMatchAsync() => _geardown.StartMatchAsync();
-
-    [ChatCommand("setpoints", "Set points for a player")]
-    public Task SetPlayerPointsAsync(IOnlinePlayer player, int points)
+    public async Task GeardownStartMatchAsync()
     {
-        return _server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.SetPlayerPoints", player.GetLogin(), "", "",
-            points.ToString());
+        try
+        {
+            await _geardown.StartMatchAsync();
+        }
+        catch (Exception ex)
+        {
+            await _server.ErrorMessageAsync($"Failed to start match: {ex.Message}");
+            throw;
+        }
     }
+
+    [ChatCommand("setpoints", "Set points for a player.")]
+    public Task SetPlayerPointsAsync(IOnlinePlayer player, int points) =>
+        _matchManagement.SetPlayerPointsAsync(player, points);
+
+    [ChatCommand("pausematch", "Pause the current match.")]
+    [CommandAlias("/pause")]
+    public Task PauseMatchAsync() => _matchManagement.PauseMatchAsync();
+    
+    [ChatCommand("unpausematch", "Pause the current match.")]
+    [CommandAlias("/unpause")]
+    public Task UnpauseMatchAsync() => _matchManagement.UnpauseMatchAsync();
 }
