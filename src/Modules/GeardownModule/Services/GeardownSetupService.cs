@@ -115,7 +115,7 @@ public class GeardownSetupService : IGeardownSetupService
         await _server.Remote.CleanGuestListAsync();
         await WhitelistPlayers(players);
         await WhitelistSpectators();
-        await _server.Remote.SetMaxPlayersAsync(players.Count());
+        await _server.Remote.SetMaxPlayersAsync(0);
     }
     
     private async Task WhitelistPlayers(IEnumerable<IPlayer> players)

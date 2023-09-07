@@ -28,11 +28,16 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
         {
             await _server.InfoMessageAsync($"Setting up the match for ID {matchId}, please wait ...", Context.Player);
             await _geardown.SetupServerAsync(matchId);
-            await _server.SuccessMessageAsync("Match successfully set up! Reloading match settings ...", Context.Player);
+            await _server.SuccessMessageAsync("Match successfully set up! Reloading match settings ...",
+                Context.Player);
         }
         catch (InvalidOperationException ex)
         {
             await _server.ErrorMessageAsync($"(Geardown) {ex.Message}", Context.Player);
+        }
+        catch (Exception)
+        {
+            await _server.ErrorMessageAsync($"(Geardown) An unknown error occured, check console.");
         }
     }
 
