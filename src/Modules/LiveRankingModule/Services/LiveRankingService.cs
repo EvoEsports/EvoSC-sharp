@@ -10,7 +10,6 @@ using EvoSC.Modules.Official.LiveRankingModule.Utils;
 using Flurl;
 using Flurl.Http;
 using GbxRemoteNet.Events;
-using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Services;
@@ -19,7 +18,6 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Services;
 public class LiveRankingService : ILiveRankingService
 {
     private readonly ILogger<LiveRankingService> _logger;
-    private readonly ILoggerFactory _loggerFactory;
     private readonly IManialinkManager _manialinkManager;
     private readonly LiveRankingStore _liveRankingStore;
     private readonly IServerClient _client;
@@ -30,12 +28,11 @@ public class LiveRankingService : ILiveRankingService
         IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager)
     {
         _logger = logger;
-        _loggerFactory = loggerFactory;
         _manialinkManager = manialinkManager;
         _client = client;
         _playerManager = playerManager;
         _liveRankingStore =
-            new LiveRankingStore(_loggerFactory.CreateLogger<LiveRankingStore>(), _playerManager);
+            new LiveRankingStore(loggerFactory.CreateLogger<LiveRankingStore>(), _playerManager);
     }
 
     public async Task OnEnableAsync()
@@ -77,13 +74,15 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
             _liveRankingStore.SortLiveRanking();
 
-            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData(previousRanking));
+            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
+                await GetWidgetData(previousRanking));
         }
     }
 
     private async Task<dynamic> GetWidgetData(List<ExpandedLiveRankingPosition>? previousRanking = null)
     {
         var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
+        await CalculateDiffs(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
 
         if (previousRanking == null)
@@ -95,8 +94,6 @@ public class LiveRankingService : ILiveRankingService
                 rankingsNew = new List<LiveRankingWidgetPosition>()
             };
         }
-
-        await CalculateDiffs(currentRanking);
 
         //Map ranking entries for widget
         var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking);
@@ -142,7 +139,8 @@ public class LiveRankingService : ILiveRankingService
             var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
             var widgetLiveRanking = GetLiveRankingForWidget(liveRanking);
 
-            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData(previousRanking));
+            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
+                await GetWidgetData(previousRanking));
         }
     }
 
@@ -179,20 +177,21 @@ public class LiveRankingService : ILiveRankingService
         }
     }
 
+    public async Task ResetLiveRanking()
+    {
+        await _liveRankingStore.ResetLiveRankingsAsync();
+    }
+
     public async Task OnStartRoundAsync(RoundEventArgs args)
     {
-        await CheckIsRoundsModeAsync();
         _logger.LogInformation("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, isRoundsMode);
         await _liveRankingStore.ResetLiveRankingsAsync();
-        // var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
-        // var widgetLiveRanking = GetLiveRankingForWidget(liveRanking);
         await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
 
     public async Task OnEndRoundAsync(RoundEventArgs args)
     {
         _logger.LogInformation("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, isRoundsMode);
-        await CheckIsRoundsModeAsync();
         var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
         var nbFinished = liveRanking.FindAll(x => x.isFinish);
         if (nbFinished.Count > 0)
@@ -275,6 +274,7 @@ public class LiveRankingService : ILiveRankingService
             .AppendPathSegments("api", "leaderboard", "map", mapUid)
             .WithHeaders(new { User_Agent = "EvoSC# / World Record Grabber / Discord: chris92" })
             .GetJsonAsync<TMioLeaderboardResponse>();
+        
         _liveRankingStore.SetCurrentMap(mapName);
         _liveRankingStore.SetWorldRecord(res.tops[0].player.name, FormatTime(res.tops[0].time, false));
     }

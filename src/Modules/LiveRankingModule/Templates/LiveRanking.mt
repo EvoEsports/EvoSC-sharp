@@ -31,7 +31,7 @@
                 <quad pos="31 0"
                       size="63 6.8"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="161a35"
+                      modulatecolor="c21d62"
                       halign="center"
                 />
                 <label pos="2 -3.5"
