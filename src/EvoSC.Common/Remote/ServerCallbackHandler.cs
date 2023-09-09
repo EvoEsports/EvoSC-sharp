@@ -200,6 +200,5 @@ public class ServerCallbackHandler : IServerCallbackHandler
         }
         
         await _events.RaiseAsync(ModeScriptEvent.Any, new ModeScriptEventArgs {Method = method, Args = data});
-        
     }
 }

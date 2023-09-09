@@ -19,6 +19,12 @@
     <!-- Text to display alongside the checkbox. -->
     <property type="string" name="text" default="" />
     
+    <!-- The font for the text. -->
+    <property type="string" name="textFont" default="" />
+    
+    <!-- The size of the text. -->
+    <property type="string" name="textSize" default="1.0" />
+    
     <template>
         <frame pos="{{ x }} {{ y }}" class="evosc-checkbox-frame" id="{{ id }}" data-value="{{ isChecked }}">
             <quad scriptevents="1" class="checkbox-outline-default evosc-checkbox" data-id="{{ id }}" size="0.1 3" pos="0 0" />
@@ -37,6 +43,8 @@
             <label 
                     class="checkbox-default evosc-checkbox"
                     data-id="{{ id }}"
+                    textfont="{{ textFont }}"
+                    textsize="{{ textSize }}"
                     text="{{ text }}"
                     height="3"
                     valign="center"

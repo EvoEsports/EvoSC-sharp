@@ -94,6 +94,12 @@ public enum ModeScriptEvent
     [Identifier(Name = "ModeScript.EndMap_End")]
     EndMapEnd,
     /// <summary>
+    /// When a new round starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.RoundStart")]
+    RoundStart,
+    
+    /// <summary>
     /// When any Mode Script callback was called.
     /// </summary>
     [Identifier(Name = "ModeScript.Any")]
