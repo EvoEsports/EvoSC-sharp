@@ -58,7 +58,6 @@ public class LiveRankingService : ILiveRankingService
     {
         _logger.LogInformation("LiveRankingModule disabled");
         await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
-        // await _manialinkManager.HideManialinkAsync("LiveRankingModule.MatchInfo");
         await Task.CompletedTask;
     }
 
@@ -84,6 +83,12 @@ public class LiveRankingService : ILiveRankingService
         var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
         await CalculateDiffs(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
+
+        // foreach (var ranking in currentRanking)
+        // {
+        //     _logger.LogInformation("[{pos}] {name} -> {score}", ranking.cpIndex, ranking.player.NickName,
+        //         ranking.cpTime);
+        // }
 
         if (previousRanking == null)
         {
@@ -134,10 +139,9 @@ public class LiveRankingService : ILiveRankingService
         {
             _logger.LogInformation("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
                 isRoundsMode);
+            
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
-            var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
-            var widgetLiveRanking = GetLiveRankingForWidget(liveRanking);
 
             await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
                 await GetWidgetData(previousRanking));
@@ -274,7 +278,7 @@ public class LiveRankingService : ILiveRankingService
             .AppendPathSegments("api", "leaderboard", "map", mapUid)
             .WithHeaders(new { User_Agent = "EvoSC# / World Record Grabber / Discord: chris92" })
             .GetJsonAsync<TMioLeaderboardResponse>();
-        
+
         _liveRankingStore.SetCurrentMap(mapName);
         _liveRankingStore.SetWorldRecord(res.tops[0].player.name, FormatTime(res.tops[0].time, false));
     }
