@@ -22,14 +22,14 @@ internal class LiveRankingStore
     internal async Task ResetLiveRankingsAsync()
     {
         _curLiveRanking = new();
-        var onlinePlayers = await _playerManager.GetOnlinePlayersAsync();
-        foreach (var player in onlinePlayers)
-        {
-            if (player.State == PlayerState.Playing)
-            {
-                _curLiveRanking.Add(new LiveRankingPosition(player.AccountId, 0, -1, false, false));
-            }
-        }
+        // var onlinePlayers = await _playerManager.GetOnlinePlayersAsync();
+        // foreach (var player in onlinePlayers)
+        // {
+        //     if (player.State == PlayerState.Playing)
+        //     {
+        //         _curLiveRanking.Add(new LiveRankingPosition(player.AccountId, 0, -1, false, false));
+        //     }
+        // }
     }
 
     internal bool RegisterTime(string accountId, int cpIndex, int cpTime, bool isFinish)
