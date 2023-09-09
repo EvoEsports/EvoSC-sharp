@@ -143,8 +143,8 @@
         }
         
         Void UpdateScoreboardLayout() {
-            declare persistent Boolean TSB_ShowClubTags for LocalUser = True;
-            declare persistent Boolean TSB_ShowFlags for LocalUser = True;
+            declare persistent Boolean SB_ShowClubTags for LocalUser = True;
+            declare persistent Boolean SB_ShowFlags for LocalUser = True;
             declare shouldShowPoints = ShouldShowPointsBox();
             declare Real flagWidth = {{ rowInnerHeight }} * 2.0;
             declare Real innerSpacing = {{ innerSpacing }} * 1.0;
@@ -162,7 +162,7 @@
                 pointsBoxFrame.Visible = shouldShowPoints;
                 pointsLabel.Visible = shouldShowPoints;
                 
-                if(TSB_ShowFlags){
+                if(SB_ShowFlags){
                     flagQuad.RelativePosition_V3.X = offset;
                     flagQuad.Show();
                     offset += flagWidth;
@@ -170,7 +170,7 @@
                     flagQuad.Hide();
                 }
                 
-                if(TSB_ShowClubTags){
+                if(SB_ShowClubTags){
                     clubQuad.RelativePosition_V3.X = offset;
                     clubLabel.RelativePosition_V3.X = offset + (flagWidth / 2.0);
                     clubQuad.Show();
@@ -487,6 +487,23 @@
                 if(cursor < startFill || cursor > endFill){
                     cursor += 1;
                     continue;
+                }
+                
+                declare persistent Boolean SB_ShowSpectators for LocalUser = True;
+                declare persistent Boolean SB_ShowDisconnected for LocalUser = True;
+                
+                if(!SB_ShowSpectators){
+                    declare Boolean Race_ScoresTable_IsSpectator for Score = False;
+                    if(Race_ScoresTable_IsSpectator){
+                        continue;
+                    }
+                }
+                if(!SB_ShowDisconnected){
+                    declare ScoresTable_PlayerLastUpdate for Score = -1;
+                    declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
+                    if(!PlayerIsConnected){
+                        continue;
+                    }
                 }
             
                 declare CUser User <=> Score.User;

@@ -10,7 +10,8 @@
             <label text="Player Settings" textsize="2" textfont="GameFontSemiBold" />
             <Checkbox id="show_flags" y="-6" text="Show country flags" textFont="GameFontRegular" isChecked="{{ true }}" />
             <Checkbox id="show_club_tags" y="-11" text="Show club tags" textFont="GameFontRegular" isChecked="{{ true }}" />
-<!--            <Checkbox id="show_echolon" y="-16" text="Show echolon" textFont="GameFontRegular" isChecked="{{ false }}" />-->
+            <Checkbox id="show_spectators" y="-16" text="Show spectators" textFont="GameFontRegular" isChecked="{{ true }}" />
+            <Checkbox id="show_disconnected" y="-21" text="Show disconnected" textFont="GameFontRegular" isChecked="{{ true }}" />
         </frame>
     </template>
     
@@ -19,32 +20,33 @@
         *** OnCheckboxToggle ***
         ***
             if(ControlId == "show_flags"){
-                declare persistent Boolean TSB_ShowFlags for LocalUser = True;
-                TSB_ShowFlags = IsChecked;
+                declare persistent Boolean SB_ShowFlags for LocalUser = True;
+                SB_ShowFlags = IsChecked;
                 UpdateScoreboardLayout();
             }else if(ControlId == "show_club_tags"){
-                declare persistent Boolean TSB_ShowClubTags for LocalUser = True;
-                TSB_ShowClubTags = IsChecked;
+                declare persistent Boolean SB_ShowClubTags for LocalUser = True;
+                SB_ShowClubTags = IsChecked;
                 UpdateScoreboardLayout();
+            }else if(ControlId == "show_spectators"){
+                declare persistent Boolean SB_ShowSpectators for LocalUser = True;
+                SB_ShowSpectators = IsChecked;
+            }else if(ControlId == "show_disconnected"){
+                declare persistent Boolean SB_ShowDisconnected for LocalUser = True;
+                SB_ShowDisconnected = IsChecked;
             }
         ***
         
         *** OnInitialization ***
         ***
-            declare persistent Boolean TSB_ShowFlags for LocalUser = True;
-            declare persistent Boolean TSB_ShowClubTags for LocalUser = True;
+            declare persistent Boolean SB_ShowFlags for LocalUser;
+            declare persistent Boolean SB_ShowClubTags for LocalUser;
+            declare persistent Boolean SB_ShowSpectators for LocalUser;
+            declare persistent Boolean SB_ShowDisconnected for LocalUser;
             
-            if(TSB_ShowFlags){
-                SetCheckboxState("show_flags", True);
-            }else{
-                SetCheckboxState("show_flags", False);
-            }
-            
-            if(TSB_ShowClubTags){
-                SetCheckboxState("show_club_tags", True);
-            }else{
-                SetCheckboxState("show_club_tags", False);
-            }
+            SetCheckboxState("show_flags", SB_ShowFlags);
+            SetCheckboxState("show_club_tags", SB_ShowClubTags);
+            SetCheckboxState("show_spectators", SB_ShowSpectators);
+            SetCheckboxState("show_disconnected", SB_ShowDisconnected);
         ***
         -->
     </script>
