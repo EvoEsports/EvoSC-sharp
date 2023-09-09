@@ -7,51 +7,81 @@
     <property type="List<LiveRankingWidgetPosition>" name="previousRankings"/>
     <property type="List<LiveRankingWidgetPosition>" name="rankingsExisting"/>
     <property type="List<LiveRankingWidgetPosition>" name="rankingsNew"/>
+
+    <property type="double" name="w" default="68.0"/>
+    <property type="double" name="headerHeight" default="8.0"/>
+    <property type="double" name="rowHeight" default="6.0"/>
+    <property type="double" name="rowSpacing" default="1.0"/>
+    <property type="int" name="rowsVisible" default="4"/>
     
+    <property type="string" name="headerColor" default="c21d62"/>
+    <property type="string" name="primaryColor" default="4357ea"/>
+    <property type="string" name="logoUrl" default=""/>
+
     <template>
         <frame id="live_rankings" pos="-160 82">
             <frame>
+                <frame size="{{ w }} {{ headerHeight }}">
+                    <!-- HEADER -->
+                    <quad pos="{{ w * 0.5 - 10.0 }} 0.15"
+                          size="{{ headerHeight + 0.3 }} {{ w + 20 }}"
+                          valign="center"
+                          style="UICommon64_1"
+                          substyle="BgFrame1"
+                          colorize="{{ primaryColor }}"
+                          rot="90"
+                    />
+
+                    <!-- GRADIENT -->
+                    <quad size="{{ w }} {{ headerHeight }}"
+                          image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
+                          modulatecolor="{{ headerColor }}"
+                    />
+
+                    <!-- LABEL -->
+                    <label pos="2 {{ headerHeight / -2.0 }}"
+                           text="Live Ranking"
+                           valign="center2"
+                           textfont="GameFontExtraBold"
+                           textprefix="$i$t"
+                           textsize="2"
+                    />
+
+                    <!-- LOGO -->
+                    <quad if='logoUrl != ""'
+                          pos="{{ w - 3.0 }} {{ headerHeight / -2.0 }}"
+                          size="20 3.2"
+                          valign="center"
+                          halign="right"
+                          keepratio="Fit"
+                          image="{{ logoUrl }}"
+                          opacity="0.5"
+                    />
+                </frame>
+                
                 <!-- BACKGROUND -->
-                <quad pos="-0.2 -6.8"
-                      size="74.6 29"
+                <quad pos="0 {{ -headerHeight + 0.15 }}"
+                      size="{{ w - 0.15 }} {{ rowsVisible * (rowSpacing + rowHeight) + rowSpacing * 4.0 }}"
                       bgcolor="24262f"
                       opacity="0.9"
-                />
-                
-                <!-- HEADER -->
-                <quad pos="32 -3.5"
-                      size="7 85"
-                      valign="center"
-                      halign="center"
-                      style="UICommon64_1"
-                      substyle="BgFrame1"
-                      colorize="4357ea"
-                      rot="90"
-                />
-                <quad pos="31 0"
-                      size="63 6.8"
-                      image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="c21d62"
-                      halign="center"
-                />
-                <label pos="2 -3.5"
-                       text="Live Ranking"
-                       valign="center2"
-                       textfont="GameFontExtraBold"
-                       textprefix="$i$t"
-                       textsize="2"
                 />
             </frame>
 
             <!-- CONTENT -->
-            <frame id="players" pos="0 -8.5" size="80 27" z-index="10">
+            <frame id="players" pos="0 {{ -headerHeight - rowSpacing * 2.0 }}" z-index="10">
                 <PlayerScore foreach="LiveRankingWidgetPosition position in previousRankings"
-                             y="{{ (position.position - 1) * -7.5 }}"
+                             y="{{ (position.position - 1) * (rowHeight + rowSpacing) * -1.0 }}"
+                             w="{{ w - 8.0 }}"
+                             h="{{ rowHeight }}"
+                             rowSpacing="{{ rowSpacing }}"
                              ranking="{{ position }}"
                              newRanking="{{ rankingsExisting.FirstOrDefault(r => r.player.AccountId == position.player.AccountId) }}"
                 />
                 <PlayerScore foreach="LiveRankingWidgetPosition position in rankingsNew"
-                             y="{{ (position.position - 1) * -7.5 }}"
+                             y="{{ (position.position - 1) * (rowHeight + rowSpacing) * -1.0 }}"
+                             w="{{ w - 8.0 }}"
+                             h="{{ rowHeight }}"
+                             rowSpacing="{{ rowSpacing }}"
                              ranking="{{ position }}"
                 />
             </frame>

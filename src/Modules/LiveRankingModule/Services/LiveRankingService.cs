@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
@@ -22,15 +23,18 @@ public class LiveRankingService : ILiveRankingService
     private readonly LiveRankingStore _liveRankingStore;
     private readonly IServerClient _client;
     private readonly IPlayerManagerService _playerManager;
+    private readonly IEvoScBaseConfig _config;
     private bool isRoundsMode = false;
 
     public LiveRankingService(ILogger<LiveRankingService> logger, ILoggerFactory loggerFactory,
-        IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager)
+        IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager,
+        IEvoScBaseConfig config)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
         _client = client;
         _playerManager = playerManager;
+        _config = config;
         _liveRankingStore =
             new LiveRankingStore(loggerFactory.CreateLogger<LiveRankingStore>(), _playerManager);
     }
@@ -84,19 +88,16 @@ public class LiveRankingService : ILiveRankingService
         await CalculateDiffs(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
 
-        // foreach (var ranking in currentRanking)
-        // {
-        //     _logger.LogInformation("[{pos}] {name} -> {score}", ranking.cpIndex, ranking.player.NickName,
-        //         ranking.cpTime);
-        // }
-
         if (previousRanking == null)
         {
             return new
             {
                 previousRankings = widgetCurrentRanking,
                 rankingsExisting = new List<LiveRankingWidgetPosition>(),
-                rankingsNew = new List<LiveRankingWidgetPosition>()
+                rankingsNew = new List<LiveRankingWidgetPosition>(),
+                headerColor = _config.Theme.UI.HeaderBackgroundColor,
+                primaryColor = _config.Theme.UI.PrimaryColor,
+                logoUrl = _config.Theme.UI.LogoWhiteUrl
             };
         }
 
@@ -112,7 +113,10 @@ public class LiveRankingService : ILiveRankingService
         {
             previousRankings = widgetPreviousRanking,
             rankingsExisting = widgetExistingRanking,
-            rankingsNew = widgetNewRanking
+            rankingsNew = widgetNewRanking,
+            headerColor = _config.Theme.UI.HeaderBackgroundColor,
+            primaryColor = _config.Theme.UI.PrimaryColor,
+            logoUrl = _config.Theme.UI.LogoWhiteUrl
         };
     }
 
@@ -139,7 +143,7 @@ public class LiveRankingService : ILiveRankingService
         {
             _logger.LogInformation("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
                 isRoundsMode);
-            
+
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
 

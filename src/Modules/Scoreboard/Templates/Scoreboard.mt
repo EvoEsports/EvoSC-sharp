@@ -27,7 +27,7 @@
     <property type="string" name="logoUrl" default=""/>
     <property type="string" name="headerColor" default="d41e67"/>
     <property type="string" name="primaryColor" default="1253a3"/>
-    <property type="string" name="positionBackgroundColor" default="313440"/>
+    <property type="string" name="positionBackgroundColor" default="313442"/>
     <property type="string" name="backgroundColor" default="111111"/>
     <property type="string" name="playerRowHighlightColor" default="1253a3"/>
 
@@ -59,7 +59,7 @@
                     
                     
                     <!-- Player Rows -->
-                    <PlayerRowFramemodel backgroundColor="{{ positionBackgroundColor }}"
+                    <PlayerRowFramemodel backgroundColor="fff"
                                          primaryColor="{{ primaryColor }}"
                                          playerRowHighlightColor="{{ playerRowHighlightColor }}"
                                          positionBackgroundColor="{{ positionBackgroundColor }}"

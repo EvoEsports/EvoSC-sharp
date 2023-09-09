@@ -36,6 +36,8 @@ public class MatchRankingService : IMatchRankingService
         await SendManialink();
     }
 
+    public Task OnPodiumStartAsync(PodiumEventArgs scores) => HideManialink();
+
     public async Task SendManialink()
     {
         _logger.LogInformation("Sending manialink");
@@ -54,7 +56,8 @@ public class MatchRankingService : IMatchRankingService
         var mappedScoresPrevious = MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores()).ToList();
         var mappedScoresLatest = MapScoresForWidget(_matchRankingStore.GetLatestMatchScores()).ToList();
 
-        var mappedScoresExisting = mappedScoresLatest.Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
+        var mappedScoresExisting = mappedScoresLatest
+            .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
         var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
 
         return new

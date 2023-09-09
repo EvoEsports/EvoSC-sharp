@@ -199,7 +199,7 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ primaryColor }}"));
+                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ playerRowHighlightColor }}"));
                 continue;
             }
         ***

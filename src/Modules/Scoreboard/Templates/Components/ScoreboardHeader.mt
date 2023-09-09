@@ -53,7 +53,7 @@
               image="{{ logoUrl }}"
               valign="center"
               halign="center"
-              size="46 46"
+              size="32 32"
               keepratio="Fit"
               z-index="50"
         />

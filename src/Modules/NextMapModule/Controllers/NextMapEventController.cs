@@ -36,4 +36,10 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     {
         await _manialinkManager.HideManialinkAsync(Template);
     }
+
+    [Subscribe(ModeScriptEvent.EndMapEnd)]
+    public async Task HideNextMapOnMapStart(object sender, MapEventArgs args)
+    {
+        await _manialinkManager.HideManialinkAsync(Template);
+    }
 }

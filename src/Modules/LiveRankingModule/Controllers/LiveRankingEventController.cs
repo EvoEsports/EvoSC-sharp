@@ -57,7 +57,6 @@ public class LiveRankingEventController : EvoScController<IEventControllerContex
     public async Task OnPodiumStart(object sender, PodiumEventArgs args)
     {
         await _service.OnPodiumStartAsync(args);
-        
     }
 
     [Subscribe(ModeScriptEvent.EndRoundStart)]

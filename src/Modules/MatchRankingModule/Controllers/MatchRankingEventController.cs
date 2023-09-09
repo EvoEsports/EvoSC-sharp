@@ -27,4 +27,10 @@ public class MatchRankingEventController: EvoScController<IEventControllerContex
 
     [Subscribe(GbxRemoteEvent.EndMatch)]
     public Task OnMatchEnd(object data, EndMatchGbxEventArgs eventArgs) => _matchRankingService.Reset();
+
+    [Subscribe(ModeScriptEvent.PodiumStart)]
+    public async Task OnPodiumStart(object sender, PodiumEventArgs args)
+    {
+        await _matchRankingService.OnPodiumStartAsync(args);
+    }
 }
