@@ -25,14 +25,6 @@
             <!-- Scroll activation -->
             <quad id="player_row_trigger" size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
 
-            <!-- Position Box -->
-            <Position id="position_box"
-                      w="{{ positionBoxWidth }}"
-                      h="{{ rowHeight }}"
-                      z-index="5"
-                      positionBackgroundColor="{{ positionBackgroundColor }}"
-            />
-
             <!-- Player Row Background -->
             <PlayerRowBackground id="player_row_bg"
                                  rowHeight="{{ rowHeight }}"
@@ -40,6 +32,14 @@
                                  padding="{{ padding }}"
                                  w="{{ w - scrollBarWidth - rowSpacing - positionBoxWidth - rowSpacing }}"
                                  x="{{ positionBoxWidth + rowSpacing }}"
+            />
+
+            <!-- Position Box -->
+            <Position id="position_box"
+                      w="{{ positionBoxWidth }}"
+                      h="{{ rowHeight }}"
+                      z-index="5"
+                      positionBackgroundColor="{{ positionBackgroundColor }}"
             />
 
             <!-- Custom Label Background -->
@@ -82,9 +82,11 @@
                 <!-- Player Name -->
                 <label id="name"
                        pos="{{ rowInnerHeight * 4 + innerSpacing }} 0.4"
+                       size="{{ w / 3.0 }} {{ rowHeight }}"
                        valign="center"
                        textsize="2.6"
-                       textfont="GameFontSemiBold"/>
+                       textfont="GameFontSemiBold"
+                />
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
@@ -187,6 +189,27 @@
         ***
             if(Event.Control.ControlId == "player_row_trigger"){
                 TogglePlayerActions(Event.Control.Parent as CMlFrame);
+                continue;
+            }
+        ***
+        
+        *** OnMouseOver ***
+        ***
+            if(Event.Control.ControlId == "player_row_trigger"){
+                declare parentFrame = (Event.Control.Parent as CMlFrame);
+                declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
+                SetPlayerBackgroundColor(backgroundFrame, <0.5, 0.5, 0.5>);
+                continue;
+            }
+        ***
+        
+        *** OnMouseOut ***
+        ***
+            if(Event.Control.ControlId == "player_row_trigger"){
+                declare parentFrame = (Event.Control.Parent as CMlFrame);
+                declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
+                ResetPlayerBackgroundColor(backgroundFrame);
+                continue;
             }
         ***
         -->

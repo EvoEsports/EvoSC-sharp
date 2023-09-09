@@ -8,7 +8,7 @@
     
     <template>
         <frame id="{{ id }}" pos="{{ x }}">
-            <!-- START BG 1 -->
+            <!-- START BG 1 (Default) -->
             <frame>
                 <!-- center -->
                 <quad size="{{ w - 1.0 }} {{ rowHeight }}"
@@ -16,6 +16,19 @@
                       bgcolor="{{ backgroundColor }}"
                       opacity="0.25"/>
 
+                <!-- bar left -->
+                <quad pos="0 -0.53"
+                      size="0.5 {{ rowHeight - 1.06 }}"
+                      bgcolor="{{ backgroundColor }}"
+                      opacity="0.25"/>
+
+                <!-- bar right -->
+                <quad pos="{{ w - 0.5 }} -0.53"
+                      size="0.5 {{ rowHeight - 1.06 }}"
+                      bgcolor="{{ backgroundColor }}"
+                      opacity="0.25"
+                />
+                
                 <!-- corner top left -->
                 <frame size="0.5 0.5">
                     <quad size="1 1"
@@ -47,23 +60,10 @@
                           opacity="0.25"
                           image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"/>
                 </frame>
-
-                <!-- bar left -->
-                <quad pos="0 -0.53"
-                      size="0.5 {{ rowHeight - 1.06 }}"
-                      bgcolor="{{ backgroundColor }}"
-                      opacity="0.25"/>
-
-                <!-- bar right -->
-                <quad pos="{{ w - 0.5 }} -0.53"
-                      size="0.5 {{ rowHeight - 1.06 }}"
-                      bgcolor="{{ backgroundColor }}"
-                      opacity="0.25"
-                />
             </frame>
             <!-- END BG 1 -->
             
-            <!-- START BG 2 -->
+            <!-- START BG 2 (Highlight) -->
             <frame>
                 <!-- 0: bar left -->
                 <quad pos="0 -0.54"
@@ -111,6 +111,22 @@
     <script once="true">
         <!--
         Void SetPlayerBackgroundColor(CMlFrame backgroundFrame, Vec3 color) {
+            declare targetFrame = (backgroundFrame.Controls[0] as CMlFrame);
+            (targetFrame.Controls[0] as CMlQuad).BgColor = color;
+            (targetFrame.Controls[1] as CMlQuad).BgColor = color;
+            (targetFrame.Controls[2] as CMlQuad).BgColor = color;
+            
+            Page.GetClassChildren("modulate", targetFrame, True);
+            foreach(Control in Page.GetClassChildren_Result){
+                (Control as CMlQuad).ModulateColor = color;
+            }
+        }
+        
+        Void ResetPlayerBackgroundColor(CMlFrame backgroundFrame){
+            SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ backgroundColor }}"));
+        }
+        
+        Void SetPlayerHighlightColor(CMlFrame backgroundFrame, Vec3 color) {
             declare targetFrame = (backgroundFrame.Controls[1] as CMlFrame);
             (targetFrame.Controls[0] as CMlQuad).BgColor = color;
             

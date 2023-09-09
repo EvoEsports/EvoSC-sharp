@@ -23,7 +23,7 @@
 
             <!-- PROFILE -->
             <label id="show_player_profile"
-                   pos="{{ rowHeight * -1.5 - innerSpacing * 2.0 }}"
+                   pos="{{ rowHeight * -1.5 - innerSpacing }}"
                    size="{{ rowHeight }} {{ rowHeight }}"
                    valign="center"
                    halign="center"

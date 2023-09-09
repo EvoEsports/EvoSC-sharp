@@ -24,10 +24,10 @@
     <property type="double" name="innerSpacing" default="1.6"/>
     <property type="double" name="scrollBarWidth" default="1.5"/>
 
-    <property type="string" name="headerColor" default="0b1231"/>
+    <property type="string" name="headerColor" default="d41e67"/>
     <property type="string" name="positionBackgroundColor" default="313440"/>
     <property type="string" name="backgroundColor" default="111111"/>
-    <property type="string" name="primaryColor" default="3759f4"/>
+    <property type="string" name="primaryColor" default="1253a3"/>
 
     <property type="string" name="logoUrl" default="https://maptesting.evotm.com/images/xpevo_logo.png"/>
 
@@ -127,6 +127,7 @@
         declare Integer CurrentScoreMode;
         declare Integer PlayerRowsVisible;
         declare Integer PlayerRowsFilled;
+        declare Integer ScrollIndex;
         declare Integer MaxPlayers;
         declare CMlFrame RowsFrame;
         declare Boolean SettingsVisible;
@@ -217,8 +218,8 @@
                 flagQuad.Opacity = 1.0;
             }else{
                 flagQuad.ImageUrl = "file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds";
-                flagQuad.ModulateColor = CL::HexToRgb("{{ headerColor }}");
-                flagQuad.Opacity = 0.5;
+                flagQuad.ModulateColor = <0.0, 0.0, 0.0>;
+                flagQuad.Opacity = 0.25;
             }
         }
         
@@ -259,6 +260,10 @@
             declare Boolean colorizePosition = False;
             declare CSmScore playerScore for playerRow;
             playerScore <=> Score;
+            
+            if(playerScore == Null || Driver == Null || playerRow == Null){
+                return;
+            }
                 
             declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
             declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
@@ -364,10 +369,10 @@
             if(PositionColors.existskey(position) && colorizePosition){
                 declare positionColor = PositionColors[position];
                 SetPositionBackgroundColor(positionBox, CL::HexToRgb(positionColor));
-                SetPlayerBackgroundColor(playerRowBg, CL::HexToRgb(positionColor));
+                SetPlayerHighlightColor(playerRowBg, CL::HexToRgb(positionColor));
             }else{
                 SetPositionBackgroundColor(positionBox, CL::HexToRgb("{{ positionBackgroundColor }}"));
-                SetPlayerBackgroundColor(playerRowBg, CL::HexToRgb("{{ positionBackgroundColor }}"));
+                SetPlayerHighlightColor(playerRowBg, CL::HexToRgb("{{ positionBackgroundColor }}"));
             }
             
             if (PlayerIsConnected) {
@@ -472,8 +477,15 @@
             }
         
             declare cursor = 0;
+            declare startFill = ML::Max(ScrollIndex - PlayerRowsVisible * 2, 0);
+            declare endFill = ML::Min(ScrollIndex + PlayerRowsVisible * 2, MaxPlayers - 1);
            
             foreach(Score => Weight in GetSortedScores()){
+                if(cursor < startFill || cursor > endFill){
+                    cursor += 1;
+                    continue;
+                }
+            
                 declare CUser User <=> Score.User;
                 declare playerRow = (RowsFrame.Controls[cursor] as CMlFrame);
                 declare positionLabel = (playerRow.GetFirstChild("position") as CMlLabel);
@@ -491,7 +503,7 @@
                 if(clubLabel.Value != ""){
                     clubBg.Opacity = 1.0;
                 }else{
-                    clubBg.Opacity = 0.5;
+                    clubBg.Opacity = 0.25;
                 }
                 
                 declare Boolean CustomLabelVisible for playerRow = False;
@@ -550,6 +562,7 @@
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
             
             RowsFrame.ScrollActive = True;
+            RowsFrame.DisablePreload = True;
             RowsFrame.ScrollGridSnap = True;
             RowsFrame.ScrollMin = <0.0, 0.0>;
             RowsFrame.ScrollMax = <0.0, {{ MaxPlayers * (rowHeight + rowSpacing) - h }} * 1.0>;
@@ -567,6 +580,9 @@
         *** OnLoop *** 
         ***
             if(lastScoreboardUpdate + scoreboardUpdateInterval < Now){
+                ScrollIndex = ML::NearestInteger(RowsFrame.ScrollOffset.Y / {{ rowHeight + rowSpacing }});
+                log(ScrollIndex);
+            
                 UpdateScoreTable();
                 lastScoreboardUpdate = Now;
             }
