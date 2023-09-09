@@ -24,12 +24,12 @@
     <property type="double" name="innerSpacing" default="1.6"/>
     <property type="double" name="scrollBarWidth" default="1.5"/>
 
+    <property type="string" name="logoUrl" default=""/>
     <property type="string" name="headerColor" default="d41e67"/>
+    <property type="string" name="primaryColor" default="1253a3"/>
     <property type="string" name="positionBackgroundColor" default="313440"/>
     <property type="string" name="backgroundColor" default="111111"/>
-    <property type="string" name="primaryColor" default="1253a3"/>
-
-    <property type="string" name="logoUrl" default="https://maptesting.evotm.com/images/xpevo_logo.png"/>
+    <property type="string" name="playerRowHighlightColor" default="1253a3"/>
 
     <template layer="ScoresTable">
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
@@ -43,7 +43,11 @@
                                   gradientColor="{{ primaryColor }}"
             />
 
-            <ScoreboardHeader w="{{ w }}" primaryColor="{{ primaryColor }}" headerHeight="{{ headerHeight }}"/>
+            <ScoreboardHeader w="{{ w }}" 
+                              primaryColor="{{ primaryColor }}" 
+                              headerHeight="{{ headerHeight }}"
+                              logoUrl="{{ logoUrl }}"
+            />
 
             <!-- Player Rows -->
             <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
@@ -57,6 +61,7 @@
                     <!-- Player Rows -->
                     <PlayerRowFramemodel backgroundColor="{{ positionBackgroundColor }}"
                                          primaryColor="{{ primaryColor }}"
+                                         playerRowHighlightColor="{{ playerRowHighlightColor }}"
                                          positionBackgroundColor="{{ positionBackgroundColor }}"
                                          w="{{ w }}"
                                          padding="{{ padding }}"
@@ -95,8 +100,6 @@
                 </frame>
             </frame>
         </frame>
-        
-        <quad pos="0 {{ h / 2.0 + headerHeight / 2.0 }}" image="{{ logoUrl }}" valign="center" halign="center" size="46 16" fit="contain" z-index="50" />
     </template>
 
     <script>
@@ -477,7 +480,7 @@
             }
         
             declare cursor = 0;
-            declare startFill = ML::Max(ScrollIndex - PlayerRowsVisible * 2, 0);
+            declare startFill = ML::Max(ScrollIndex - PlayerRowsVisible, 0);
             declare endFill = ML::Min(ScrollIndex + PlayerRowsVisible * 2, MaxPlayers - 1);
            
             foreach(Score => Weight in GetSortedScores()){

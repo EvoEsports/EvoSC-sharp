@@ -8,6 +8,7 @@
     <property type="string" name="positionBackgroundColor"/>
     <property type="string" name="backgroundColor"/>
     <property type="string" name="primaryColor"/>
+    <property type="string" name="playerRowHighlightColor"/>
     <property type="double" name="w"/>
     <property type="double" name="padding"/>
     <property type="double" name="rowHeight"/>
@@ -198,7 +199,7 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                SetPlayerBackgroundColor(backgroundFrame, <0.5, 0.5, 0.5>);
+                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ primaryColor }}"));
                 continue;
             }
         ***

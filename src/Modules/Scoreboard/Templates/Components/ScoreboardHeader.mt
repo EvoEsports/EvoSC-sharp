@@ -1,5 +1,6 @@
 ﻿<component>
     <property type="string" name="primaryColor" />
+    <property type="string" name="logoUrl" />
     <property type="double" name="w" />
     <property type="double" name="headerHeight" />
     
@@ -46,5 +47,15 @@
                    opacity="0.65"
             />
         </frame>
+
+        <quad if='logoUrl != ""'
+              pos="{{ w / 2.0 }} 0"
+              image="{{ logoUrl }}"
+              valign="center"
+              halign="center"
+              size="46 46"
+              keepratio="Fit"
+              z-index="50"
+        />
     </template>
 </component>
