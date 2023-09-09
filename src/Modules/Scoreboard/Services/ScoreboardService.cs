@@ -6,7 +6,6 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.Scoreboard.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Scoreboard.Services;
 
@@ -17,15 +16,13 @@ public class ScoreboardService : IScoreboardService
     private readonly IPlayerManagerService _playerManager;
     private readonly IServerClient _server;
     private readonly IEvoScBaseConfig _config;
-    private readonly ILogger<ScoreboardService> _logger;
 
     private int _roundsPerMap = -1;
     private int _currentRound = 0;
 
-    public ScoreboardService(ILogger<ScoreboardService> logger, IManialinkManager manialinks,
+    public ScoreboardService(IManialinkManager manialinks,
         IPlayerManagerService playerManager, IServerClient server, IEvoScBaseConfig config)
     {
-        _logger = logger;
         _manialinks = manialinks;
         _playerManager = playerManager;
         _server = server;
@@ -49,9 +46,6 @@ public class ScoreboardService : IScoreboardService
 
     private async Task<dynamic> GetData()
     {
-        _logger.LogInformation("HEADER COLOR: {bg}", _config.Theme.UI.HeaderBackgroundColor.ToString());
-        _logger.LogInformation("BG COLOR: {bg}", _config.Theme.UI.BackgroundColor.ToString());
-
         return new
         {
             MaxPlayers = await GetMaxPlayersAsync(),
@@ -124,7 +118,6 @@ public class ScoreboardService : IScoreboardService
     public async void LoadAndUpdateRoundsPerMap()
     {
         _roundsPerMap = await GetRoundsPerMapAsync();
-        _logger.LogInformation("Rounds per Map: {mode}", _roundsPerMap);
         await SendRoundsInfo();
     }
 
