@@ -65,6 +65,4 @@ public enum GbxRemoteEvent
     /// </summary>
     [Identifier(Name = "GbxRemote.StatusChanged")]
     StatusChanged,
-    
-    //TODO: add event to catch round number
 }
