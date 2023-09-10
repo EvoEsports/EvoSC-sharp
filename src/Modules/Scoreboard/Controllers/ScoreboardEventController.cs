@@ -33,7 +33,7 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
     public async Task OnMatchSettingsLoaded(object sender, MatchSettingsLoadedEventArgs args) =>
         await _scoreboardService.LoadAndUpdateRoundsPerMap();
 
-    [Subscribe(ModeScriptEvent.RoundStart)]
+    [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnRoundStart(object sender, RoundEventArgs args)
     {
         _scoreboardService.SetCurrentRound(args.Count);
