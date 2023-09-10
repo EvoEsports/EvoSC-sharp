@@ -10,7 +10,7 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.MatchRankingModule.Controllers;
 
 [Controller]
-public class MatchRankingEventController: EvoScController<IEventControllerContext>
+public class MatchRankingEventController : EvoScController<IEventControllerContext>
 {
     private readonly IMatchRankingService _matchRankingService;
 
@@ -18,19 +18,31 @@ public class MatchRankingEventController: EvoScController<IEventControllerContex
     {
         _matchRankingService = matchRankingService;
     }
-    
+
     [Subscribe(ModeScriptEvent.Scores)]
     public Task OnScores(object data, ScoresEventArgs eventArgs) => _matchRankingService.OnScores(eventArgs);
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnect(object data, PlayerConnectGbxEventArgs eventArgs) => _matchRankingService.SendManialink(eventArgs.Login);
+    public Task OnPlayerConnect(object data, PlayerConnectGbxEventArgs eventArgs) =>
+        _matchRankingService.SendManialink(eventArgs.Login);
+
+    [Subscribe(GbxRemoteEvent.BeginMatch)]
+    public async Task OnBeginMatch(object sender, EndMatchGbxEventArgs args) =>
+        await _matchRankingService.SendManialink();
+
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public async Task OnBeginMap(object sender, MapEventArgs args) =>
+        await _matchRankingService.SendManialink();
 
     [Subscribe(GbxRemoteEvent.EndMatch)]
-    public Task OnMatchEnd(object data, EndMatchGbxEventArgs eventArgs) => _matchRankingService.Reset();
+    public Task OnMatchEnd(object data, EndMatchGbxEventArgs eventArgs)
+    {
+        _matchRankingService.Reset();
+
+        return _matchRankingService.HideManialink();
+    }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public async Task OnPodiumStart(object sender, PodiumEventArgs args)
-    {
-        await _matchRankingService.OnPodiumStartAsync(args);
-    }
+    public async Task OnPodiumStart(object sender, PodiumEventArgs args) =>
+        await _matchRankingService.HideManialink();
 }

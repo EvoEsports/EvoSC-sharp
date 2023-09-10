@@ -46,7 +46,7 @@
                 </frame>
 
                 <!-- GRADIENT -->
-                <quad pos="1.1 0"
+                <quad pos="1 0"
                       size="{{ w - 1 }} {{ h }}"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
                       modulatecolor="{{ playerRowBackgroundColor }}"

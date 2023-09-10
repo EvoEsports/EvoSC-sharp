@@ -18,6 +18,8 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class LiveRankingService : ILiveRankingService
 {
+    private const int ShowRows = 4;
+    
     private readonly ILogger<LiveRankingService> _logger;
     private readonly IManialinkManager _manialinkManager;
     private readonly LiveRankingStore _liveRankingStore;
@@ -84,7 +86,7 @@ public class LiveRankingService : ILiveRankingService
 
     private async Task<dynamic> GetWidgetData(List<ExpandedLiveRankingPosition>? previousRanking = null)
     {
-        var currentRanking = await _liveRankingStore.GetFullLiveRankingAsync();
+        var currentRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).Take(ShowRows).ToList();
         await CalculateDiffs(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
 
@@ -103,7 +105,7 @@ public class LiveRankingService : ILiveRankingService
         }
 
         //Map ranking entries for widget
-        var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking);
+        var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking.Take(ShowRows).ToList());
 
         //Split current ranking into previously existing and new players
         var widgetExistingRanking = widgetCurrentRanking

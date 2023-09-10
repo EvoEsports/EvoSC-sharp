@@ -12,7 +12,7 @@
     <property type="double" name="smallBoxWidth" default="19.0"/>
 
     <template>
-        <frame id="main_frame" pos="0 {{ y }}">
+        <frame id="main_frame" pos="0 {{ y }}" hidden="1">
             <frame id="rounded_box_left" pos="{{ centerBoxWidth / -2.0 - smallBoxWidth }}">
                 <frame size="{{ smallBoxWidth }} {{ h }}">
                     <quad pos="0 0.2"
@@ -182,7 +182,7 @@
             yield;
             
             if(GUIPlayer == Null || GUIPlayer.User == LocalUser){
-                sleep(200);
+                sleep(100);
                 if(mainFrame.Visible){
                     mainFrame.Hide();
                 }

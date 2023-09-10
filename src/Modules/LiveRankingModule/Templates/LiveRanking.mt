@@ -20,7 +20,7 @@
     <property type="string" name="logoUrl" default=""/>
 
     <template>
-        <frame id="live_rankings" pos="-160 82">
+        <frame id="live_rankings" pos="-160 82" z-index="100">
             <frame>
                 <frame size="{{ w }} {{ headerHeight }}">
                     <!-- HEADER -->

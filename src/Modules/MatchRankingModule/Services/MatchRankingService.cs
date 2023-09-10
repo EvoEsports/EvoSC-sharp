@@ -17,6 +17,8 @@ namespace EvoSC.Modules.Official.MatchRankingModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class MatchRankingService : IMatchRankingService
 {
+    private const int ShowRows = 4;
+
     private readonly IManialinkManager _manialinkManager;
     private readonly IPlayerManagerService _playerManager;
     private readonly ILogger _logger;
@@ -38,8 +40,6 @@ public class MatchRankingService : IMatchRankingService
         await _matchRankingStore.ConsumeScores(scores);
         await SendManialink();
     }
-
-    public Task OnPodiumStartAsync(PodiumEventArgs scores) => HideManialink();
 
     public async Task SendManialink()
     {
@@ -82,9 +82,14 @@ public class MatchRankingService : IMatchRankingService
             return new List<LiveRankingWidgetPosition>();
         }
 
-        return scores.Players.Select(score =>
-                new LiveRankingWidgetPosition(score.Rank, _playerManager.GetPlayerAsync(score.AccountId).Result,
-                    score.MatchPoints.ToString()))
+        return scores.Players.ToList()
+            .GetRange(0, ShowRows)
+            .Select(score => new LiveRankingWidgetPosition(
+                    score.Rank,
+                    _playerManager.GetPlayerAsync(score.AccountId).Result,
+                    score.MatchPoints.ToString()
+                )
+            )
             .ToList();
     }
 
