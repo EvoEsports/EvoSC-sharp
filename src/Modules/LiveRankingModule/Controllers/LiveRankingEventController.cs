@@ -66,7 +66,7 @@ public class LiveRankingEventController : EvoScController<IEventControllerContex
     }
 
     [Subscribe(GbxRemoteEvent.BeginMatch)]
-    public async Task OnBeginMatch(object sender)
+    public async Task OnBeginMatch(object sender, EventArgs args)
     {
         await _service.OnBeginMatchAsync();
     }

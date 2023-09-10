@@ -10,6 +10,7 @@
     <property type="List<LiveRankingWidgetPosition>" name="ExistingScores"/>
 
     <property type="double" name="w" default="68.0"/>
+    <property type="double" name="y" default="60.0"/>
     <property type="double" name="headerHeight" default="8.0"/>
     <property type="double" name="rowHeight" default="6.0"/>
     <property type="double" name="rowSpacing" default="1.0"/>
@@ -21,7 +22,7 @@
     <property type="string" name="logoUrl" default=""/>
 
     <template>
-        <frame pos="{{ 160.0 - w }} 82">
+        <frame pos="{{ 160.0 - w }} {{ y }}" z-index="100">
             <frame>
                 <frame size="{{ w }} {{ headerHeight }}">
                     <!-- HEADER -->

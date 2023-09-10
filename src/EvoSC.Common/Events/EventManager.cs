@@ -164,12 +164,21 @@ public class EventManager : IEventManager
             Task? task = null;
             var target = GetTarget(subscription);
 
-            task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+            try
+            {
+                task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+            }
+            catch (TargetParameterCountException e)
+            {
+                throw new TargetParameterCountException($"Parameter count mismatch while invoking subscription '{subscription.Name}' on {subscription.InstanceClass.Name}.{subscription.HandlerMethod.Name}.", e);
+            }
 
             if (task == null)
             {
-                _logger.LogError("An error occured while calling event, task is null for event: {Name}",
-                    subscription.Name);
+                _logger.LogError("An error occured while calling event, task is null for event: {Name} -> {Class}.{Method}",
+                    subscription.Name,
+                    subscription.InstanceClass.Name,
+                    subscription.HandlerMethod.Name);
                 return Task.CompletedTask;
             }
 

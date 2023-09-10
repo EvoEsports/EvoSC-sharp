@@ -8,6 +8,6 @@ public interface IScoreboardService
     public Task ShowNadeoScoreboard();
     public Task SendRoundsInfo();
     public Task SendRoundsInfo(string playerLogin);
-    public void LoadAndUpdateRoundsPerMap();
+    public Task LoadAndUpdateRoundsPerMap();
     public void SetCurrentRound(int round);
 }

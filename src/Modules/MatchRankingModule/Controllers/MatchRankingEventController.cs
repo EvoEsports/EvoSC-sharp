@@ -20,29 +20,30 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     }
 
     [Subscribe(ModeScriptEvent.Scores)]
-    public Task OnScores(object data, ScoresEventArgs eventArgs) => _matchRankingService.OnScores(eventArgs);
+    public async Task OnScores(object data, ScoresEventArgs eventArgs) =>
+        await _matchRankingService.OnScores(eventArgs);
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnect(object data, PlayerConnectGbxEventArgs eventArgs) =>
-        _matchRankingService.SendManialink(eventArgs.Login);
+    public async Task OnPlayerConnect(object data, PlayerConnectGbxEventArgs eventArgs) =>
+        await _matchRankingService.SendManialink(eventArgs.Login);
 
-    [Subscribe(GbxRemoteEvent.BeginMatch)]
-    public async Task OnBeginMatch(object sender, EndMatchGbxEventArgs args) =>
-        await _matchRankingService.SendManialink();
+    // [Subscribe(GbxRemoteEvent.BeginMatch)]
+    // public async Task OnBeginMatch(object sender, EventArgs args) =>
+    //     await _matchRankingService.SendManialink();
 
-    [Subscribe(GbxRemoteEvent.BeginMap)]
-    public async Task OnBeginMap(object sender, MapEventArgs args) =>
-        await _matchRankingService.SendManialink();
+    [Subscribe(ModeScriptEvent.PodiumStart)]
+    public async Task OnPodiumStart(object sender, PodiumEventArgs args) =>
+        await _matchRankingService.HideManialink();
+
+    // [Subscribe(GbxRemoteEvent.BeginMap)]
+    // public async Task OnBeginMap(object sender, MapEventArgs args) =>
+    //     await _matchRankingService.SendManialink();
 
     [Subscribe(GbxRemoteEvent.EndMatch)]
-    public Task OnMatchEnd(object data, EndMatchGbxEventArgs eventArgs)
+    public Task OnMatchEnd(object sender, EndMatchGbxEventArgs eventArgs)
     {
         _matchRankingService.Reset();
 
         return _matchRankingService.HideManialink();
     }
-
-    [Subscribe(ModeScriptEvent.PodiumStart)]
-    public async Task OnPodiumStart(object sender, PodiumEventArgs args) =>
-        await _matchRankingService.HideManialink();
 }

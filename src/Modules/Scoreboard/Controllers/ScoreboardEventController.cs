@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
+using EvoSC.Modules.Official.MatchManagerModule.Events.EventArgObjects;
 using EvoSC.Modules.Official.Scoreboard.Interfaces;
 using GbxRemoteNet.Events;
 
@@ -25,10 +26,12 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
         => await _scoreboardService.ShowScoreboard(args.Login);
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public void OnBeginMap() => _scoreboardService.LoadAndUpdateRoundsPerMap();
+    public async Task OnBeginMap(object sender, MapGbxEventArgs args) =>
+        await _scoreboardService.LoadAndUpdateRoundsPerMap();
 
     [Subscribe(MatchSettingsEvent.MatchSettingsLoaded)]
-    public void OnMatchSettingsLoaded() => _scoreboardService.LoadAndUpdateRoundsPerMap();
+    public async Task OnMatchSettingsLoaded(object sender, MatchSettingsLoadedEventArgs args) =>
+        await _scoreboardService.LoadAndUpdateRoundsPerMap();
 
     [Subscribe(ModeScriptEvent.RoundStart)]
     public async Task OnRoundStart(object sender, RoundEventArgs args)

@@ -116,7 +116,7 @@ public class ScoreboardService : IScoreboardService
         );
     }
 
-    public async void LoadAndUpdateRoundsPerMap()
+    public async Task LoadAndUpdateRoundsPerMap()
     {
         _roundsPerMap = await GetRoundsPerMapAsync();
         await SendRoundsInfo();
