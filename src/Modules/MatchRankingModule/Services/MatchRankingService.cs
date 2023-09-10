@@ -56,8 +56,9 @@ public class MatchRankingService : IMatchRankingService
 
     private dynamic GetWidgetData()
     {
-        var mappedScoresPrevious = MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores()).ToList();
-        var mappedScoresLatest = MapScoresForWidget(_matchRankingStore.GetLatestMatchScores()).ToList();
+        //TODO: improve so only relevant scores are mapped to save resources
+        var mappedScoresPrevious = MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores()).ToList().Take(ShowRows).ToList();
+        var mappedScoresLatest = MapScoresForWidget(_matchRankingStore.GetLatestMatchScores()).ToList().Take(ShowRows).ToList();
 
         var mappedScoresExisting = mappedScoresLatest
             .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
@@ -83,7 +84,7 @@ public class MatchRankingService : IMatchRankingService
         }
 
         return scores.Players.ToList()
-            .GetRange(0, ShowRows)
+            // .GetRange(0, ShowRows)
             .Select(score => new LiveRankingWidgetPosition(
                     score.Rank,
                     _playerManager.GetPlayerAsync(score.AccountId).Result,

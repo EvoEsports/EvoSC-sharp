@@ -41,11 +41,11 @@ public class LiveRankingEventController : EvoScController<IEventControllerContex
         await _service.OnStartRoundAsync(args);
     }
 
-    [Subscribe(ModeScriptEvent.StartMapStart)]
-    public async Task OnBeginMapAsync(object sender, MapEventArgs args)
-    {
-        await _service.OnBeginMapAsync(args);
-    }
+    // [Subscribe(ModeScriptEvent.StartMapStart)]
+    // public async Task OnBeginMapAsync(object sender, MapEventArgs args)
+    // {
+    //     await _service.OnBeginMapAsync(args);
+    // }
 
     [Subscribe(ModeScriptEvent.EndMapStart)]
     public async Task OnEndMapAsync(object sender, MapEventArgs args)

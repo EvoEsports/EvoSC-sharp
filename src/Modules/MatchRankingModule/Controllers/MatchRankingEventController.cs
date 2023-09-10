@@ -27,9 +27,9 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     public async Task OnPlayerConnect(object data, PlayerConnectGbxEventArgs eventArgs) =>
         await _matchRankingService.SendManialink(eventArgs.Login);
 
-    // [Subscribe(GbxRemoteEvent.BeginMatch)]
-    // public async Task OnBeginMatch(object sender, EventArgs args) =>
-    //     await _matchRankingService.SendManialink();
+    [Subscribe(GbxRemoteEvent.BeginMatch)]
+    public async Task OnBeginMatch(object sender, EventArgs args) =>
+        await _matchRankingService.SendManialink();
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args) =>
