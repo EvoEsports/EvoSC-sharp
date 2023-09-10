@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Services.Attributes;
@@ -18,15 +19,17 @@ public class CurrentMapService : ICurrentMapService
     private readonly IManialinkManager _manialinkManager;
     private readonly IMapRepository _mapRepository;
     private readonly IServerClient _client;
+    private readonly IEvoScBaseConfig _config;
 
     public CurrentMapService(IManialinkManager manialinkManager,
         ILogger<CurrentMapService> logger,
-        IMapRepository mapRepository, IServerClient client)
+        IMapRepository mapRepository, IServerClient client, IEvoScBaseConfig config)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
         _mapRepository = mapRepository;
         _client = client;
+        _config = config;
     }
 
     [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]
@@ -65,7 +68,15 @@ public class CurrentMapService : ICurrentMapService
         var country = countries.Find(country => country.Name == GetCountry(dbMap?.Author?.Zone ?? ""));
 
         await _manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
-            new { map = dbMap, country = country?.ThreeLetterCode ?? "WOR" });
+            new
+            {
+                map = dbMap,
+                country = country?.ThreeLetterCode ?? "WOR",
+                headerColor = _config.Theme.UI.HeaderBackgroundColor,
+                primaryColor = _config.Theme.UI.PrimaryColor,
+                logoUrl = _config.Theme.UI.LogoWhiteUrl,
+                playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+            });
         _logger.LogDebug("Showing current map widget");
     }
 }
