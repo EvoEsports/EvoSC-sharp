@@ -43,6 +43,7 @@
             if (Event.Control.ControlId == "spectate_player") {
                 declare playerRow = (Event.Control.Parent.Parent as CMlFrame);
                 declare CSmScore playerScore for playerRow;
+                if(!IsSpectatorClient) RequestSpectatorClient(True);
                 SetSpectateTarget(playerScore.User.Login);
                 TogglePlayerActions(playerRow);
             }else if (Event.Control.ControlId == "show_player_profile") {
