@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Controllers;
+﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
@@ -16,11 +17,13 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     
     private readonly INextMapService _nextMapService;
     private readonly IManialinkManager _manialinkManager;
-    
-    public NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager)
+    private readonly IEvoScBaseConfig _config;
+
+    public NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager, IEvoScBaseConfig config)
     {
         _nextMapService = nextMapService;
         _manialinkManager = manialinkManager;
+        _config = config;
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
@@ -28,7 +31,15 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     {
         var nextMap = await _nextMapService.GetNextMapAsync();
         await _manialinkManager.SendManialinkAsync(Template,
-            new { mapName = nextMap.Name, author = nextMap.Author?.NickName });
+            new
+            {
+                mapName = nextMap.Name, 
+                author = nextMap.Author?.NickName,
+                headerColor = _config.Theme.UI.HeaderBackgroundColor,
+                primaryColor = _config.Theme.UI.PrimaryColor,
+                logoUrl = _config.Theme.UI.LogoWhiteUrl,
+                playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+            });
     }
 
     [Subscribe(ModeScriptEvent.PodiumEnd)]
@@ -37,8 +48,14 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
         await _manialinkManager.HideManialinkAsync(Template);
     }
 
-    [Subscribe(ModeScriptEvent.EndMapEnd)]
+    [Subscribe(ModeScriptEvent.StartMapStart)]
     public async Task HideNextMapOnMapStart(object sender, MapEventArgs args)
+    {
+        await _manialinkManager.HideManialinkAsync(Template);
+    }
+
+    [Subscribe(ModeScriptEvent.EndMapEnd)]
+    public async Task HideNextMapOnMapEnd(object sender, MapEventArgs args)
     {
         await _manialinkManager.HideManialinkAsync(Template);
     }
