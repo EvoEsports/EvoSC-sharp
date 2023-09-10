@@ -97,7 +97,8 @@ public class LiveRankingService : ILiveRankingService
                 rankingsNew = new List<LiveRankingWidgetPosition>(),
                 headerColor = _config.Theme.UI.HeaderBackgroundColor,
                 primaryColor = _config.Theme.UI.PrimaryColor,
-                logoUrl = _config.Theme.UI.LogoWhiteUrl
+                logoUrl = _config.Theme.UI.LogoWhiteUrl,
+                playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
             };
         }
 
@@ -116,7 +117,8 @@ public class LiveRankingService : ILiveRankingService
             rankingsNew = widgetNewRanking,
             headerColor = _config.Theme.UI.HeaderBackgroundColor,
             primaryColor = _config.Theme.UI.PrimaryColor,
-            logoUrl = _config.Theme.UI.LogoWhiteUrl
+            logoUrl = _config.Theme.UI.LogoWhiteUrl,
+            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
         };
     }
 

@@ -18,6 +18,10 @@ public interface IUIThemeConfig
     [Option(Alias = "headerBackgroundColor", DefaultValue = "d41e67")]
     public string HeaderBackgroundColor { get; }
     
+    [Description("Player row background color")]
+    [Option(Alias = "playerRowBackgroundColor", DefaultValue = "626573")]
+    public string PlayerRowBackgroundColor { get; }
+    
     [Description("Colored logo to be displayed on UI elements like headers.")]
     [Option(Alias = "logoUrl", DefaultValue = "https://liquipedia.net/commons/images/thumb/c/cb/XPEvo_allmode.png/600px-XPEvo_allmode.png")]
     public string LogoUrl { get; }

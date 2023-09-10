@@ -16,6 +16,7 @@
     
     <property type="string" name="headerColor" default="c21d62"/>
     <property type="string" name="primaryColor" default="4357ea"/>
+    <property type="string" name="playerRowBackgroundColor" default="999999"/>
     <property type="string" name="logoUrl" default=""/>
 
     <template>
@@ -39,7 +40,7 @@
                     />
 
                     <!-- LABEL -->
-                    <label pos="2 {{ headerHeight / -2.0 }}"
+                    <label pos="2 {{ headerHeight / -2.0 - 0.4 }}"
                            text="Live Ranking"
                            valign="center2"
                            textfont="GameFontExtraBold"
@@ -55,7 +56,7 @@
                           halign="right"
                           keepratio="Fit"
                           image="{{ logoUrl }}"
-                          opacity="0.5"
+                          opacity="0.75"
                     />
                 </frame>
                 
@@ -74,6 +75,7 @@
                              w="{{ w - 8.0 }}"
                              h="{{ rowHeight }}"
                              rowSpacing="{{ rowSpacing }}"
+                             playerRowBackgroundColor="{{ playerRowBackgroundColor }}"
                              ranking="{{ position }}"
                              newRanking="{{ rankingsExisting.FirstOrDefault(r => r.player.AccountId == position.player.AccountId) }}"
                 />
@@ -82,6 +84,7 @@
                              w="{{ w - 8.0 }}"
                              h="{{ rowHeight }}"
                              rowSpacing="{{ rowSpacing }}"
+                             playerRowBackgroundColor="{{ playerRowBackgroundColor }}"
                              ranking="{{ position }}"
                 />
             </frame>

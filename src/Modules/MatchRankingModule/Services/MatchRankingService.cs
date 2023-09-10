@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -19,14 +20,16 @@ public class MatchRankingService : IMatchRankingService
     private readonly IManialinkManager _manialinkManager;
     private readonly IPlayerManagerService _playerManager;
     private readonly ILogger _logger;
+    private readonly IEvoScBaseConfig _config;
     private readonly MatchRankingStore _matchRankingStore;
 
     public MatchRankingService(IManialinkManager manialinkManager, IPlayerManagerService playerManager,
-        ILogger<LiveRankingService> logger)
+        ILogger<LiveRankingService> logger, IEvoScBaseConfig config)
     {
         _manialinkManager = manialinkManager;
         _playerManager = playerManager;
         _logger = logger;
+        _config = config;
         _matchRankingStore = new MatchRankingStore();
     }
 
@@ -64,7 +67,11 @@ public class MatchRankingService : IMatchRankingService
         {
             NewScores = mappedScoresNew,
             ExistingScores = mappedScoresExisting,
-            PreviousScores = mappedScoresPrevious
+            PreviousScores = mappedScoresPrevious,
+            headerColor = _config.Theme.UI.HeaderBackgroundColor,
+            primaryColor = _config.Theme.UI.PrimaryColor,
+            logoUrl = _config.Theme.UI.LogoWhiteUrl,
+            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
         };
     }
 

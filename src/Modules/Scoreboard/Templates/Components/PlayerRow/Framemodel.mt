@@ -8,6 +8,7 @@
     <property type="string" name="positionBackgroundColor"/>
     <property type="string" name="backgroundColor"/>
     <property type="string" name="primaryColor"/>
+    <property type="string" name="playerRowBackgroundColor"/>
     <property type="string" name="playerRowHighlightColor"/>
     <property type="double" name="w"/>
     <property type="double" name="padding"/>
@@ -29,7 +30,7 @@
             <!-- Player Row Background -->
             <PlayerRowBackground id="player_row_bg"
                                  rowHeight="{{ rowHeight }}"
-                                 backgroundColor="{{ backgroundColor }}"
+                                 backgroundColor="{{ playerRowBackgroundColor }}"
                                  padding="{{ padding }}"
                                  w="{{ w - scrollBarWidth - rowSpacing - positionBoxWidth - rowSpacing }}"
                                  x="{{ positionBoxWidth + rowSpacing }}"

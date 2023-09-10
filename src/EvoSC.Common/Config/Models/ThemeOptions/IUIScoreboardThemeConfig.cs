@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Config.Net;
-using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Common.Config.Models.ThemeOptions;
 
@@ -10,7 +9,7 @@ public interface IUIScoreboardThemeConfig
     [Option(Alias = "positionBackgroundColor", DefaultValue = "383b4a")]
     public string PositionBackgroundColor { get; }
     
-    [Description("Player row background color on hover")]
-    [Option(Alias = "playerRowHighlightColor", DefaultValue = "54596e")]
+    [Description("Player row background color on hover.")]
+    [Option(Alias = "playerRowHighlightColor", DefaultValue = "767987")]
     public string PlayerRowHighlightColor { get; }
 }

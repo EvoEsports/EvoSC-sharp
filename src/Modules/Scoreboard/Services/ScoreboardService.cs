@@ -56,6 +56,7 @@ public class ScoreboardService : IScoreboardService
             positionBackgroundColor = _config.Theme.UI.Scoreboard.PositionBackgroundColor,
             backgroundColor = _config.Theme.UI.BackgroundColor,
             playerRowHighlightColor = _config.Theme.UI.Scoreboard.PlayerRowHighlightColor,
+            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor,
             logoUrl = _config.Theme.UI.LogoUrl
         };
     }

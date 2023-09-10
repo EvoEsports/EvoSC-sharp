@@ -29,6 +29,7 @@
     <property type="string" name="primaryColor" default="1253a3"/>
     <property type="string" name="positionBackgroundColor" default="313442"/>
     <property type="string" name="backgroundColor" default="111111"/>
+    <property type="string" name="playerRowBackgroundColor" default="999999"/>
     <property type="string" name="playerRowHighlightColor" default="1253a3"/>
 
     <template layer="ScoresTable">
@@ -61,6 +62,7 @@
                     <!-- Player Rows -->
                     <PlayerRowFramemodel backgroundColor="fff"
                                          primaryColor="{{ primaryColor }}"
+                                         playerRowBackgroundColor="{{ playerRowBackgroundColor }}"
                                          playerRowHighlightColor="{{ playerRowHighlightColor }}"
                                          positionBackgroundColor="{{ positionBackgroundColor }}"
                                          w="{{ w }}"

@@ -9,7 +9,7 @@
     <property type="double" name="h" default="6.0"/>
     <property type="double" name="rowSpacing" default="1.0"/>
     <property type="string" name="positionColor" default="ddcc00"/>
-    <property type="string" name="gradientColor" default="484a5a"/>
+    <property type="string" name="playerRowBackgroundColor" default="999999"/>
 
     <template>
         <frame id="player_row_{{ ranking.player.AccountId }}" pos="0 {{ y }}">
@@ -40,15 +40,17 @@
                           size="2 {{ h + 0.25 }}"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          colorize="{{ gradientColor }}"
+                          colorize="{{ playerRowBackgroundColor }}"
+                          opacity="0.75"
                     />
                 </frame>
 
                 <!-- GRADIENT -->
-                <quad pos="1 0"
-                      size="{{ w }} {{ h }}"
+                <quad pos="1.1 0"
+                      size="{{ w - 1 }} {{ h }}"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ gradientColor }}"
+                      modulatecolor="{{ playerRowBackgroundColor }}"
+                      opacity="0.75"
                 />
 
                 <!-- NAME -->
