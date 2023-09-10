@@ -1,0 +1,6 @@
+﻿[info]
+name = "SpectatorTargetInfo"
+title = "Spectator Target Info"
+summary = "Shows info about currently speecced player."
+version = "1.0.0"
+author = "Evo"

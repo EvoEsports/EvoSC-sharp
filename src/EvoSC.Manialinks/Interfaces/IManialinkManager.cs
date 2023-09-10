@@ -101,30 +101,39 @@ public interface IManialinkManager
     /// <param name="name">Name of the template to show.</param>
     /// <returns></returns>
     public Task SendPersistentManialinkAsync(string name);
-    
+
     /// <summary>
     /// Render a template and send it to a specific player.
     /// </summary>
+    /// <param name="player">The player to send to.</param>
     /// <param name="name">The name of the template.</param>
     /// <param name="data">Data which the template uses.</param>
-    /// <param name="player">The player to send to.</param>
     /// <returns></returns>
     public Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data);
-    
+
     /// <summary>
     /// Render a template and send it to a specific player.
     /// </summary>
+    /// <param name="player">The player to send to.</param>
     /// <param name="name">The name of the template.</param>
     /// <param name="data">Data which the template uses</param>
-    /// <param name="player">The player to send to</param>
     /// <returns></returns>
     public Task SendManialinkAsync(IPlayer player, string name, dynamic data);
-    
+
+    /// <summary>
+    /// Render a template and send it to a specific player.
+    /// </summary>
+    /// <param name="playerLogin">The login to send to.</param>
+    /// <param name="name">The name of the template.</param>
+    /// <param name="data">Data which the template uses</param>
+    /// <returns></returns>
+    public Task SendManialinkAsync(string playerLogin, string name, dynamic data);
+
     /// <summary>
     /// Render a template and send it to a specific player without data.
     /// </summary>
+    /// <param name="player">The player to send to.</param>
     /// <param name="name">The name of the template.</param>
-    /// <param name="player">The player to send to</param>
     /// <returns></returns>
     public Task SendManialinkAsync(IPlayer player, string name) => SendManialinkAsync(player, name, new { });
     

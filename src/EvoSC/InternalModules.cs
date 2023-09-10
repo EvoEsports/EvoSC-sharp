@@ -17,6 +17,7 @@ using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;
 using EvoSC.Modules.Official.SetName;
 using FluentMigrator.Runner.Exceptions;
+using SpectatorTargetInfo;
 
 namespace EvoSC;
 
@@ -39,7 +40,8 @@ public static class InternalModules
         typeof(NextMapModule),
         typeof(LiveRankingModule),
         typeof(MatchRankingModule),
-        typeof(ASayModule)
+        typeof(ASayModule),
+        typeof(SpectatorTargetInfoModule)
     };
 
     /// <summary>

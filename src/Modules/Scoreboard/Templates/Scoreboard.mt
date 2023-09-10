@@ -603,8 +603,6 @@
         ***
             if(lastScoreboardUpdate + scoreboardUpdateInterval < Now){
                 ScrollIndex = ML::NearestInteger(RowsFrame.ScrollOffset.Y / {{ rowHeight + rowSpacing }});
-                log(ScrollIndex);
-            
                 UpdateScoreTable();
                 lastScoreboardUpdate = Now;
             }

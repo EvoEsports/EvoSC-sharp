@@ -39,6 +39,7 @@
         <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" />
         <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
+        <ProjectReference Include="..\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj" />
     </ItemGroup>
 
     <ItemGroup>

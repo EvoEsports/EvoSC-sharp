@@ -30,6 +30,8 @@ public interface ILiveRankingService
 
     Task OnPodiumStartAsync(PodiumEventArgs args);
 
+    Task SendManialink();
+
     Task OnEndRoundAsync(RoundEventArgs args);
 
     Task OnBeginMatchAsync();

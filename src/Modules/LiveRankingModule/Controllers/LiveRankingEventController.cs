@@ -76,4 +76,10 @@ public class LiveRankingEventController : EvoScController<IEventControllerContex
     {
         await _service.OnEndMatchAsync(args);
     }
+
+    [Subscribe(GbxRemoteEvent.PlayerConnect)]
+    public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
+    {
+        await _service.SendManialink();
+    }
 }

@@ -199,6 +199,11 @@ public class LiveRankingService : ILiveRankingService
         await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
 
+    public async Task SendManialink()
+    {
+        await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
+    }
+
     public async Task OnEndRoundAsync(RoundEventArgs args)
     {
         _logger.LogInformation("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, isRoundsMode);

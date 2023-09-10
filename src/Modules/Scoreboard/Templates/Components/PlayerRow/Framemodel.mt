@@ -4,6 +4,7 @@
     <import component="Scoreboard.Components.PlayerRow.PointsBox" as="PointsBox"/>
     <import component="Scoreboard.Components.PlayerRow.PositionBox" as="Position"/>
     <import component="Scoreboard.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
+    <import component="Scoreboard.Components.PlayerRow.ClubTag" as="ClubTag"/>
 
     <property type="string" name="positionBackgroundColor"/>
     <property type="string" name="backgroundColor"/>
@@ -61,25 +62,7 @@
                       alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
                 />
 
-                <!-- Club Tag Background -->
-                <quad id="club_bg"
-                      size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
-                      pos="{{ rowInnerHeight * 2 }}"
-                      valign="center"
-                      modulatecolor="000"
-                      image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
-                      alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
-                />
-
-                <!-- Club Tag Text -->
-                <label id="club"
-                       pos="{{ rowInnerHeight * 3 }} 0.2"
-                       size="5 3"
-                       valign="center"
-                       halign="center"
-                       textsize="0.9"
-                       textfont="GameFontSemiBold"
-                />
+               <ClubTag h="{{ rowInnerHeight }}" />
 
                 <!-- Player Name -->
                 <label id="name"

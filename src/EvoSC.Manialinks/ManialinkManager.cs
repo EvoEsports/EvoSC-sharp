@@ -280,6 +280,12 @@ public class ManialinkManager : IManialinkManager
         await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
     }
 
+    public async Task SendManialinkAsync(string playerLogin, string name, dynamic data)
+    {
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 0, false);
+    }
+
     public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, IDictionary<string, object?> data)
     {
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
