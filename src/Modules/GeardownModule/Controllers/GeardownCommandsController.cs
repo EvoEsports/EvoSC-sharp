@@ -40,6 +40,7 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
         catch (Exception)
         {
             await _server.ErrorMessageAsync($"(Geardown) An unknown error occured, check console.");
+            throw;
         }
     }
 
