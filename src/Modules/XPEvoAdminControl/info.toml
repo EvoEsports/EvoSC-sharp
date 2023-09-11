@@ -4,3 +4,6 @@ title = "MyModule"
 summary = "This is my awesome module."
 version = "1.0.0"
 author = "Me"
+
+[dependencies]
+GeardownModule = "1.0.0"
