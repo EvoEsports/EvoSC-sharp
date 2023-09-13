@@ -41,6 +41,8 @@ public class MatchTracker : IMatchTracker
         : throw new InvalidOperationException(
             "A match is currently not being tracked or is in an unknown state. Cannot return the timeline.");
 
+    public MatchStatus Status => _status;
+
     public async Task TrackScoresAsync(ScoresEventArgs scoreArgs)
     {
         await VerifyTracker();

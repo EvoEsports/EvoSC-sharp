@@ -26,10 +26,11 @@ public class GeardownService : IGeardownService
     private readonly IServerClient _server;
     private readonly IPlayerReadyService _playerReadyService;
     private readonly IGeardownSettings _settings;
+    private readonly IGeardownSetupStateService _setupState;
 
     public GeardownService(IMatchTracker matchTracker, IGeardownSetupService setupService,
         IGeardownApiService geardownApi, IAuditService auditService, IServerClient server,
-        IPlayerReadyService playerReadyService, IGeardownSettings settings)
+        IPlayerReadyService playerReadyService, IGeardownSettings settings, IGeardownSetupStateService setupState)
     {
         _matchTracker = matchTracker;
         _setupService = setupService;
@@ -38,6 +39,8 @@ public class GeardownService : IGeardownService
         _server = server;
         _playerReadyService = playerReadyService;
         _settings = settings;
+        _setupService = setupService;
+        _setupState = setupState;
     }
 
     public async Task SetupServerAsync(int matchId)
@@ -67,6 +70,7 @@ public class GeardownService : IGeardownService
             throw new InvalidOperationException("Failed to obtain current match state from settings.");
         }
         
+        _setupState.SetMatchStarted();
         await _geardownApi.Matches.OnStartMatchAsync(matchState.MatchToken);
         
         _audits.NewInfoEvent("Geardown.StartMatch")
@@ -80,6 +84,11 @@ public class GeardownService : IGeardownService
         await SendResultsAsync(timeline);
 
         await _server.SuccessMessageAsync("Match finished, thanks for playing!");
+    }
+
+    public MatchStatus GetMatchStatus()
+    {
+        return _matchTracker.Status;
     }
 
     private async Task SendResultsAsync(IMatchTimeline timeline)

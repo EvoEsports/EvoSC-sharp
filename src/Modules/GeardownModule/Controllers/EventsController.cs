@@ -12,6 +12,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Events;
 using EvoSC.Modules.Official.MatchTrackerModule.Events.EventArgObjects;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Modules.Official.MatchTrackerModule.Models;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Controllers;
 
@@ -21,12 +22,14 @@ public class EventsController : EvoScController<IEventControllerContext>
     private readonly IGeardownService _geardownService;
     private readonly IGeardownSettings _settings;
     private readonly IServerClient _server;
+    private readonly ILogger<EventsController> _logger;
 
-    public EventsController(IGeardownService geardownService, IGeardownSettings settings, IServerClient server)
+    public EventsController(IGeardownService geardownService, IGeardownSettings settings, IServerClient server, ILogger<EventsController> logger)
     {
         _geardownService = geardownService;
         _settings = settings;
-        _server = _server;
+        _server = server;
+        _logger = logger;
     }
 
     [Subscribe(MatchReadyEvents.AllPlayersReady)]
@@ -41,11 +44,11 @@ public class EventsController : EvoScController<IEventControllerContext>
         {
             await _geardownService.StartMatchAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             await _server.ErrorMessageAsync(
                 "An error occured while trying to start the match. Contact match admin immediately.");
-            throw;
+            _logger.LogError(ex, "Failed to start match on all players ready.");
         }
     }
 
@@ -58,11 +61,11 @@ public class EventsController : EvoScController<IEventControllerContext>
             {
                 await _geardownService.EndMatchAsync(args.Timeline);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await _server.ErrorMessageAsync(
                     "Failed to send match results. Take screenshots and contact a match admin.");
-                throw;
+                _logger.LogError(ex, "Failed to send match results.");
             }
         }
     }

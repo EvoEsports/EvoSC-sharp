@@ -9,27 +9,14 @@ using Hawf.Client;
 namespace EvoSC.Modules.Evo.GeardownModule.Repositories;
 
 [ApiClient]
-public class GeardownGroupApi : ApiBase<GeardownGroupApi>, IGeardownGroupApi
+public class GeardownGroupApi : GeardownApiBase<GeardownGroupApi>, IGeardownGroupApi
 {
     private readonly IGeardownSettings _settings;
     
-    public GeardownGroupApi(IGeardownSettings settings)
+    public GeardownGroupApi(IGeardownSettings settings) : base(settings)
     {
-        _settings = settings;
-        
-        Configure(c =>
-        {
-            c.BaseUrl = _settings.ApiBaseUrl;
-            c.CacheResponse = false;
-        });
     }
-
-    private GeardownGroupApi WithAccessToken()
-    {
-        WithQueryParam("token", _settings.ApiAccessToken);
-        return this;
-    }
-
+    
     public Task<IEnumerable<GdParticipant>?> GetParticipantsAsync(int groupId) =>
         WithAccessToken()
             .WithJsonBody(new { groupId })

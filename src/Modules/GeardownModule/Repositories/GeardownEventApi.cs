@@ -18,54 +18,10 @@ public class GeardownEventApi : GeardownApiBase<GeardownEventApi>, IGeardownEven
     public Task UpdateStatus(int eventId, EventStatus statusId) =>
         WithAccessToken()
             .WithJsonBody(new { eventId, statusId })
-            .PutStringAsync("/v1/events/status");
+            .PutStringAsync("/api/v1/events/status");
 
     public Task<IEnumerable<GdParticipant>?> GetParticipants(int eventId) =>
         WithAccessToken()
             .WithJsonBody(new { eventId })
-            .GetJsonAsync<IEnumerable<GdParticipant>>("/v1/events/participants");
-
-    /* private GeardownHttpClient _client;
-
-    public GeardownEventApi(GeardownHttpClient geardownHttpClient)
-    {
-        _client = geardownHttpClient;
-    }
-
-    public async Task<bool> UpdateStatus(int eventId, EventStatus statusId)
-    {
-        String response = "";
-
-        try
-        {
-            response = await _client.Put("/v1/events/status", new[]
-            {
-                new KeyValuePair<string, int>("eventId", eventId),
-                new KeyValuePair<string, int>("statusId", ((int)statusId))
-            });
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-
-        dynamic data = JObject.Parse(response);
-
-        if (data.message)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public async Task<List<GdParticipant>> GetParticipants(int eventId)
-    {
-        var response = await _client.Get("/v1/events/participants", new[]
-        {
-            new KeyValuePair<string, string>("eventId", eventId.ToString())
-        });
-
-        return JsonConvert.DeserializeObject<List<GdParticipant>>(response);
-    } */
+            .GetJsonAsync<IEnumerable<GdParticipant>>("/api/v1/events/participants");
 }

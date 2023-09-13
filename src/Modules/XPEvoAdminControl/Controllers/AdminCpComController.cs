@@ -4,13 +4,12 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Remote;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces;
+using EvoSC.Modules.Official.XPEvoAdminControl.Events;
+using EvoSC.Modules.Official.XPEvoAdminControl.Events.EventArgs;
+using EvoSC.Modules.Official.XPEvoAdminControl.Interfaces;
 using EvoSC.Modules.Official.XPEvoAdminControl.Interfaces.CpCom;
-using EvoSC.Modules.Official.XPEvoAdminControl.Models.CpCom;
 using EvoSC.Modules.Official.XPEvoAdminControl.Models.Dto;
-using EvoSC.Modules.Official.XPEvoAdminControl.Settings;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.XPEvoAdminControl.Controllers;
@@ -18,68 +17,78 @@ namespace EvoSC.Modules.Official.XPEvoAdminControl.Controllers;
 [Controller]
 public class AdminCpComController : EvoScController<IEventControllerContext>
 {
-    public const string ActionPrefix = "XPEvoAdminAction";
-
-    private readonly IXPEvoAdminSettings _settings;
     private readonly IServerClient _server;
     private readonly ILogger<AdminCpComController> _logger;
     private readonly IGeardownService _geardown;
+    private readonly ICpComService _cpCom;
 
-    public AdminCpComController(IXPEvoAdminSettings settings, IServerClient server,
-        ILogger<AdminCpComController> logger, IGeardownService geardown)
+    public AdminCpComController(IServerClient server, ILogger<AdminCpComController> logger, IGeardownService geardown,
+        ICpComService cpCom)
     {
-        _settings = settings;
         _server = server;
         _logger = logger;
         _geardown = geardown;
+        _cpCom = cpCom;
     }
 
-    [Subscribe(GbxRemoteEvent.Echo)]
-    public async Task OnEcho(object sender, EchoGbxEventArgs args)
+    [Subscribe(AdminCpEvents.Action)]
+    public Task OnAction(object sender, CpComActionEventArgs args)
     {
-        if (!args.PublicParam.StartsWith(ActionPrefix) || args.PublicParam.Length <= ActionPrefix.Length)
-        {
-            return;
-        }
-
-        var action = args.PublicParam.Substring(ActionPrefix.Length + 1);
-
-        if (action == "Response")
-        {
-            return;
-        }
-        
-        var actionInfo = JsonSerializer.Deserialize<CpAction>(args.InternalParam);
-
-        if (!_settings.AccessToken.Equals(actionInfo.AccessToken, StringComparison.Ordinal))
-        {
-            await RespondErrorAsync("Authorization failed.", actionInfo.ActionId);
-            _logger.LogError("Authorization failed");
-            return;
-        }
-
-        switch (action)
+        switch (args.Action.Action)
         {
             case "AssignServer":
-                await AssignServerActionAsync(actionInfo);
-                break;
+                return AssignServerActionAsync(args.Action);
+            case "RestartMatch":
+                return RestartMatchAsync(args.Action);
+            case "StartMatch":
+                return StartMatchAsync(args.Action);
+            default:
+                return Task.CompletedTask;
         }
     }
 
-    public async Task AssignServerActionAsync(ICpAction action)
+    private async Task StartMatchAsync(ICpAction action)
+    {
+        try
+        {
+            await _geardown.StartMatchAsync();
+            await _cpCom.RespondSuccessAsync(action.ActionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to start match.");
+            await _cpCom.RespondErrorAsync(ex.Message, action.ActionId);
+        }
+    }
+
+    private async Task RestartMatchAsync(ICpAction action)
+    {
+        try
+        {
+            await _server.Remote.RestartMapAsync();
+            await _cpCom.RespondSuccessAsync(action.ActionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to restart match.");
+            await _cpCom.RespondErrorAsync(ex.Message, action.ActionId);
+        }
+    }
+
+    private async Task AssignServerActionAsync(ICpAction action)
     {
         var data = ((JsonElement)action.Data).Deserialize<CpActionAssignServerDto>();
 
         if (data == null)
         {
-            await RespondErrorAsync("Invalid action data.", action.ActionId);
+            await _cpCom.RespondErrorAsync("Invalid action data.", action.ActionId);
             _logger.LogError("Invalid action data for assign server.");
             return;
         }
         
         if (data.MatchId <= 0)
         {
-            await RespondErrorAsync($"Invalid match ID: ${data.MatchId}", action.ActionId);
+            await _cpCom.RespondErrorAsync($"Invalid match ID: ${data.MatchId}", action.ActionId);
             _logger.LogError("Invalid match id for assign server: {MatchId}", data.MatchId);
             return;
         }
@@ -87,39 +96,12 @@ public class AdminCpComController : EvoScController<IEventControllerContext>
         try
         {
             await _geardown.SetupServerAsync(data.MatchId);
-            await RespondSuccessAsync(action.ActionId);
+            await _cpCom.RespondSuccessAsync(action.ActionId);
         }
         catch (Exception ex)
         {
-            await RespondErrorAsync($"Failed to setup match (ID: {data.MatchId}): " + ex.Message, action.ActionId);
+            await _cpCom.RespondErrorAsync($"Failed to setup match (ID: {data.MatchId}): " + ex.Message, action.ActionId);
             _logger.LogError(ex, "Failed to setup server for match ID: {MatchId}", data.MatchId);
         }
     }
-    
-    private Task RespondAsync(ICpAction action, Guid actionId)
-    {
-        action.ActionId = actionId;
-        var packet = JsonSerializer.Serialize((object)action);
-        return _server.Remote.EchoAsync($"XPEvoAdminAction.Response", packet);
-    }
-
-    private Task RespondErrorAsync(string message, Guid actionId) =>
-        RespondAsync(new CpAction
-        {
-            AccessToken = null, 
-            Action = $"{ActionPrefix}.Response", 
-            Data = new
-            {
-                Success = false,
-                ErrorMessage = message
-            }
-        }, actionId);
-
-    private Task RespondSuccessAsync(Guid actionId) =>
-        RespondAsync(new CpAction
-        {
-            AccessToken = null,
-            Action = $"{ActionPrefix}.Response", 
-            Data = new { Success = true }
-        }, actionId);
 }
