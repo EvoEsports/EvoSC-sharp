@@ -41,7 +41,7 @@ public class ScoreboardService : IScoreboardService
 
     public async Task ShowScoreboard()
     {
-        await _manialinks.SendManialinkAsync("Scoreboard.Scoreboard", await GetData());
+        await _manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetData());
     }
 
     private async Task<dynamic> GetData()

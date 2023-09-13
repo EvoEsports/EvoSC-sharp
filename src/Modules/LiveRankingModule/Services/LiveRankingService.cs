@@ -11,6 +11,7 @@ using EvoSC.Modules.Official.LiveRankingModule.Utils;
 using Flurl;
 using Flurl.Http;
 using GbxRemoteNet.Events;
+using LinqToDB.Common;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Services;
@@ -77,7 +78,6 @@ public class LiveRankingService : ILiveRankingService
 
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
-            _liveRankingStore.SortLiveRanking();
 
             await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
                 await GetWidgetData(previousRanking));
@@ -90,7 +90,7 @@ public class LiveRankingService : ILiveRankingService
         await CalculateDiffs(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
 
-        if (previousRanking == null)
+        if (previousRanking.IsNullOrEmpty())
         {
             return new
             {
@@ -262,12 +262,14 @@ public class LiveRankingService : ILiveRankingService
     {
         var formattedTime = "DNF";
 
-        if (!ranking.isDNF)
+        if (ranking.isDNF)
         {
-            var isDeltaTime = i > 0;
-            var timeToFormat = isDeltaTime ? ranking.diffToFirst : ranking.cpTime;
-            formattedTime = FormatTime(timeToFormat, isDeltaTime);
+            return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime);
         }
+
+        var isDeltaTime = i > 0;
+        var timeToFormat = isDeltaTime ? ranking.diffToFirst : ranking.cpTime;
+        formattedTime = FormatTime(timeToFormat, isDeltaTime);
 
         return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime);
     }

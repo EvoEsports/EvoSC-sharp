@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Models.Enums;
+﻿using System.Collections.Concurrent;
 using EvoSC.Common.Interfaces.Services;
 using Microsoft.Extensions.Logging;
 
@@ -6,8 +6,8 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Models;
 
 internal class LiveRankingStore
 {
-    private List<LiveRankingPosition> _curLiveRanking = new();
-    private List<LiveRankingPosition> _prevLiveRanking = new();
+    private ConcurrentDictionary<string, LiveRankingPosition> _curLiveRanking = new();
+    private ConcurrentDictionary<string, LiveRankingPosition> _prevLiveRanking = new();
     private readonly ILogger<LiveRankingStore> _logger;
     private readonly IPlayerManagerService _playerManager;
     private MatchInfo _matchInfo = new();
@@ -21,7 +21,7 @@ internal class LiveRankingStore
 
     internal async Task ResetLiveRankingsAsync()
     {
-        _curLiveRanking = new();
+        _curLiveRanking.Clear();
         // var onlinePlayers = await _playerManager.GetOnlinePlayersAsync();
         // foreach (var player in onlinePlayers)
         // {
@@ -32,48 +32,28 @@ internal class LiveRankingStore
         // }
     }
 
-    internal bool RegisterTime(string accountId, int cpIndex, int cpTime, bool isFinish)
+    internal void RegisterTime(string accountId, int cpIndex, int cpTime, bool isFinish)
     {
-        _prevLiveRanking = _curLiveRanking.ToList();
-        var index = _curLiveRanking.FindIndex(x => x.accountId == accountId);
+        _prevLiveRanking = new ConcurrentDictionary<string, LiveRankingPosition>(_curLiveRanking);
         var liveRankingPosition = new LiveRankingPosition(accountId, cpTime, cpIndex, false, isFinish);
-        if (index != -1)
-        {
-            _curLiveRanking[index] = liveRankingPosition;
-        }
-        // This case should never happen, but trying to avoid IndexOutOfRangeException
-        else
-        {
-            _curLiveRanking.Add(liveRankingPosition);
-        }
 
-        return true;
+        _curLiveRanking.AddOrUpdate(accountId, _ => liveRankingPosition, (_, _) => liveRankingPosition);
     }
 
-    internal bool RegisterPlayerGiveUp(string accountId)
+    internal void RegisterPlayerGiveUp(string accountId)
     {
-        _prevLiveRanking = _curLiveRanking.ToList();
-        var index = _curLiveRanking.FindIndex(x => x.accountId == accountId);
-        if (index != -1)
-        {
-            var liveRanking = _curLiveRanking[index];
-            _curLiveRanking[index] =
-                new LiveRankingPosition(accountId, liveRanking.cpTime, liveRanking.cpIndex, true, false);
-            return true;
-        }
-        else
-        {
-            _curLiveRanking.Add(new LiveRankingPosition(accountId, 0, 0, true, false));
-            return true;
-        }
+        _prevLiveRanking = new ConcurrentDictionary<string, LiveRankingPosition>(_curLiveRanking);
+
+        _curLiveRanking.AddOrUpdate(accountId, _ => new LiveRankingPosition(accountId, 0, 0, true, false),
+            (_, arg) => new LiveRankingPosition(accountId, arg.cpTime, arg.cpIndex, true, false));
     }
 
-    internal List<LiveRankingPosition> GetCurrentLiveRanking()
+    internal ConcurrentDictionary<string, LiveRankingPosition> GetCurrentLiveRanking()
     {
         return _curLiveRanking;
     }
 
-    internal List<LiveRankingPosition> GetPreviousLiveRanking()
+    internal ConcurrentDictionary<string, LiveRankingPosition> GetPreviousLiveRanking()
     {
         return _prevLiveRanking;
     }
@@ -84,13 +64,12 @@ internal class LiveRankingStore
     /// - Players with a higher cpIndex should always be at the top
     /// - Players with the faster CP time at the same CP index should be in a higher position
     /// </summary>
-    internal void SortLiveRanking()
+    internal static List<ExpandedLiveRankingPosition> SortLiveRanking(IEnumerable<ExpandedLiveRankingPosition> positions)
     {
-        _curLiveRanking = _curLiveRanking
+        return positions
             .OrderBy(a => a.isDNF)
             .ThenByDescending(a => a.cpIndex)
-            .ThenBy(a => a.cpTime)
-            .ToList();
+            .ThenBy(a => a.cpTime).ToList();
     }
 
     internal async Task<List<ExpandedLiveRankingPosition>> GetFullLiveRankingAsync()
@@ -98,18 +77,20 @@ internal class LiveRankingStore
         List<ExpandedLiveRankingPosition> expandedLiveRanking = new();
         foreach (var rank in _curLiveRanking)
         {
-            var player = await _playerManager.GetOnlinePlayerAsync(rank.accountId);
+            var player = await _playerManager.GetOnlinePlayerAsync(rank.Value.accountId);
             expandedLiveRanking.Add(new ExpandedLiveRankingPosition
             {
                 player = player,
-                cpTime = rank.cpTime,
-                cpIndex = rank.cpIndex,
-                isDNF = rank.isDNF,
-                isFinish = rank.isFinish
+                cpTime = rank.Value.cpTime,
+                cpIndex = rank.Value.cpIndex,
+                isDNF = rank.Value.isDNF,
+                isFinish = rank.Value.isFinish
             });
         }
 
-        return expandedLiveRanking;
+        var sortedExpandedLiveRanking = SortLiveRanking(expandedLiveRanking);
+
+        return sortedExpandedLiveRanking;
     }
 
     internal async Task<List<ExpandedLiveRankingPosition>> GetFullPreviousLiveRankingAsync()
@@ -117,14 +98,14 @@ internal class LiveRankingStore
         List<ExpandedLiveRankingPosition> expandedLiveRanking = new();
         foreach (var rank in _prevLiveRanking)
         {
-            var player = await _playerManager.GetOnlinePlayerAsync(rank.accountId);
+            var player = await _playerManager.GetOnlinePlayerAsync(rank.Value.accountId);
             expandedLiveRanking.Add(new ExpandedLiveRankingPosition
             {
                 player = player,
-                cpTime = rank.cpTime,
-                cpIndex = rank.cpIndex,
-                isDNF = rank.isDNF,
-                isFinish = rank.isFinish
+                cpTime = rank.Value.cpTime,
+                cpIndex = rank.Value.cpIndex,
+                isDNF = rank.Value.isDNF,
+                isFinish = rank.Value.isFinish
             });
         }
 
