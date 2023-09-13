@@ -88,6 +88,18 @@ public enum ModeScriptEvent
     [Identifier(Name = "ModeScript.StartMap_End")]
     StartMapEnd,
     
+    [Identifier(Name = "ModeScript.StartMatch_Start")]
+    StartMatchStart,
+    
+    [Identifier(Name = "ModeScript.StartMatch_End")]
+    StartMatchEnd,
+    
+    [Identifier(Name = "ModeScript.EndMatch_Start")]
+    EndMatchStart,
+    
+    [Identifier(Name = "ModeScript.EndMatch_End")]
+    EndMatchEnd,
+    
     [Identifier(Name = "ModeScript.EndMap_Start")]
     EndMapStart,
     

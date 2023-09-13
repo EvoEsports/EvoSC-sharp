@@ -35,7 +35,7 @@ public class MatchRankingService : IMatchRankingService
         _matchRankingStore = new MatchRankingStore();
     }
 
-    public async Task OnScores(ScoresEventArgs scores)
+    public async Task UpdateAndShowScores(ScoresEventArgs scores)
     {
         await _matchRankingStore.ConsumeScores(scores);
         await SendManialink();
@@ -45,13 +45,7 @@ public class MatchRankingService : IMatchRankingService
     {
         _logger.LogInformation("Sending manialink");
 
-        await _manialinkManager.SendManialinkAsync("MatchRankingModule.MatchRanking", GetWidgetData());
-    }
-
-    public async Task SendManialink(string playerLogin)
-    {
-        var player = await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin));
-        await _manialinkManager.SendManialinkAsync(player, "MatchRankingModule.MatchRanking", GetWidgetData());
+        await _manialinkManager.SendPersistentManialinkAsync("MatchRankingModule.MatchRanking", GetWidgetData());
     }
 
     private dynamic GetWidgetData()
@@ -99,8 +93,10 @@ public class MatchRankingService : IMatchRankingService
         await _manialinkManager.HideManialinkAsync("MatchRankingModule.MatchRanking");
     }
 
-    public Task Reset()
+    public Task ResetMatchDataAndShow()
     {
-        return _matchRankingStore.ResetScores();
+        _matchRankingStore.ResetScores();
+
+        return SendManialink();
     }
 }

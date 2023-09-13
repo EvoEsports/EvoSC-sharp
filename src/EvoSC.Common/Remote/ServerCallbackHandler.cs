@@ -171,13 +171,25 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Maniaplanet.StartMap_End":
-                await _events.RaiseAsync(ModeScriptEvent.StartMapStart,
+                await _events.RaiseAsync(ModeScriptEvent.StartMapEnd,
                     new MapEventArgs
                     {
                         Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
                         Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
                         Map = data.GetValue("map", StringComparison.Ordinal).ToObject<TmSMapInfo>(),
                     });
+                break;
+            case "Maniaplanet.StartMatch_Start":
+                await _events.RaiseAsync(ModeScriptEvent.StartMatchStart, EventArgs.Empty);
+                break;
+            case "Maniaplanet.StartMatch_End":
+                await _events.RaiseAsync(ModeScriptEvent.StartMatchEnd, EventArgs.Empty);
+                break;
+            case "Maniaplanet.EndMatch_Start":
+                await _events.RaiseAsync(ModeScriptEvent.EndMatchStart, EventArgs.Empty);
+                break;
+            case "Maniaplanet.EndMatch_End":
+                await _events.RaiseAsync(ModeScriptEvent.EndMatchEnd, EventArgs.Empty);
                 break;
             case "Maniaplanet.EndMap_Start":
                 await _events.RaiseAsync(ModeScriptEvent.StartMapStart,
@@ -189,7 +201,7 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Maniaplanet.EndMap_End":
-                await _events.RaiseAsync(ModeScriptEvent.StartMapStart,
+                await _events.RaiseAsync(ModeScriptEvent.StartMapEnd,
                     new MapEventArgs
                     {
                         Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
