@@ -8,8 +8,9 @@ public class StartupDependencyCycleException : StartupPipelineException
     /// <summary>
     /// </summary>
     /// <param name="dependencyPath">The path which the cycle occurs in.</param>
-    public StartupDependencyCycleException(IEnumerable<string> dependencyPath) : 
-        base($"Startup dependency cycle detected: {string.Join(" -> ", dependencyPath)}")
+    /// <param name="cycleName">Name of the component that created the cycle.</param>
+    public StartupDependencyCycleException(IEnumerable<string> dependencyPath, string cycleName) : 
+        base($"Startup dependency cycle detected: {string.Join(" -> ", dependencyPath)} -> {cycleName}")
     {
     }
 }

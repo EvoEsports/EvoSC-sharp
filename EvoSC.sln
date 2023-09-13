@@ -52,6 +52,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{6D75
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastestCp.Tests", "tests\Modules\FastestCp.Tests\FastestCp.Tests.csproj", "{65E0FCC8-1908-409E-8214-9A9F5EC29402}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule", "src\Modules\ModuleManagerModule\ModuleManagerModule.csproj", "{44DF85F6-28C7-4DE0-B1EE-29885979DC35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule.Tests", "tests\Modules\ModuleManagerModule.Tests\ModuleManagerModule.Tests.csproj", "{5263B4FD-E1EB-4286-90E8-C02107C195D8}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule", "src\Modules\CurrentMapModule\CurrentMapModule.csproj", "{75867550-1DE2-4FBB-9FC1-BA840984AF49}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule.Tests", "tests\Modules\CurrentMapModule.Tests\CurrentMapModule.Tests.csproj", "{B684B864-31BF-407E-9ED9-A95D32BC4FE2}"
@@ -70,19 +74,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotdModule", "src\Modules\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotdModule.Tests", "tests\Modules\MotdModule.Tests\MotdModule.Tests.csproj", "{05630598-5446-4940-B2AA-FC6C0DD94A10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASayModule", "src\Modules\ASayModule\ASayModule.csproj", "{9DC9439C-BAD0-40CC-A176-C509D2022C96}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRankingModule", "src\Modules\LiveRankingModule\LiveRankingModule.csproj", "{00B0132F-E0B0-46BB-844E-7B4F27A0E6C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule", "src\Modules\ModuleManagerModule\ModuleManagerModule.csproj", "{9953BD43-DA7D-4BBF-B6B5-4A9C29528BEA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASayModule.Tests", "tests\Modules\ASayModule.Tests\ASayModule.Tests.csproj", "{6C926D82-E1E6-45CA-B92D-2C4F5D664CD0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule.Tests", "tests\Modules\ModuleManagerModule.Tests\ModuleManagerModule.Tests.csproj", "{4ACB98AB-F0A7-4D1E-8850-CE5849F8488C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanetModule", "src\Modules\OpenPlanetModule\OpenPlanetModule.csproj", "{B3B78CE6-2EE5-4175-911B-C33792F5745A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanetModule.Tests", "tests\Modules\OpenPlanetModule.Tests\OpenPlanetModule.Tests.csproj", "{E71BF902-1508-418A-8A01-8ECC26C10F79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchManagerModule.Tests", "tests\Modules\MatchManagerModule.Tests\MatchManagerModule.Tests.csproj", "{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule", "src\Modules\MatchTrackerModule\MatchTrackerModule.csproj", "{CBE9F195-758F-470D-B3BF-6B012C8216CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchReadyModule", "src\Modules\MatchReadyModule\MatchReadyModule.csproj", "{0538B9AB-B556-45BF-8230-53087BA9D353}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule.Tests", "MatchTrackerModule.Tests\MatchTrackerModule.Tests.csproj", "{1EBEC855-5BF7-43D3-BABF-A09343B8693A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeardownModule", "src\Modules\GeardownModule\GeardownModule.csproj", "{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPEvoAdminControl", "src\Modules\XPEvoAdminControl\XPEvoAdminControl.csproj", "{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scoreboard", "src\Modules\Scoreboard\Scoreboard.csproj", "{CD032D37-3BC8-4DE8-8C5B-45A0DE36932E}"
 EndProject
@@ -93,6 +103,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchRankingModule", "src\Modules\MatchRankingModule\MatchRankingModule.csproj", "{A3D8F2EB-59E4-44AB-B036-4BC0DB7D2774}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectatorTargetInfo", "src\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj", "{FCC3C10E-9CA8-4DF1-A508-339678846032}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASayModule", "src\Modules\ASayModule\ASayModule.csproj", "{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -270,6 +282,38 @@ Global
 		{FCC3C10E-9CA8-4DF1-A508-339678846032}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCC3C10E-9CA8-4DF1-A508-339678846032}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCC3C10E-9CA8-4DF1-A508-339678846032}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE9F195-758F-470D-B3BF-6B012C8216CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE9F195-758F-470D-B3BF-6B012C8216CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE9F195-758F-470D-B3BF-6B012C8216CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE9F195-758F-470D-B3BF-6B012C8216CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D857B9D4-D205-4C3C-A098-43A9603C50A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D857B9D4-D205-4C3C-A098-43A9603C50A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D857B9D4-D205-4C3C-A098-43A9603C50A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D857B9D4-D205-4C3C-A098-43A9603C50A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0538B9AB-B556-45BF-8230-53087BA9D353}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0538B9AB-B556-45BF-8230-53087BA9D353}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0538B9AB-B556-45BF-8230-53087BA9D353}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0538B9AB-B556-45BF-8230-53087BA9D353}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EBEC855-5BF7-43D3-BABF-A09343B8693A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -313,5 +357,13 @@ Global
 		{A3D8F2EB-59E4-44AB-B036-4BC0DB7D2774} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{CD032D37-3BC8-4DE8-8C5B-45A0DE36932E} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{FCC3C10E-9CA8-4DF1-A508-339678846032} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{A533CF48-1BE5-4F0E-A636-941ED63DF9ED} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
+		{CBE9F195-758F-470D-B3BF-6B012C8216CC} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{D857B9D4-D205-4C3C-A098-43A9603C50A2} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{0538B9AB-B556-45BF-8230-53087BA9D353} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{1EBEC855-5BF7-43D3-BABF-A09343B8693A} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
+		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 	EndGlobalSection
 EndGlobal

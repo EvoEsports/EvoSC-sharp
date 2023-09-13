@@ -27,6 +27,10 @@ public class MapRepository : DbRepository, IMapRepository
         .LoadWith(t => t.DbAuthor)
         .SingleOrDefaultAsync(m => m.Uid == uid);
 
+    public async Task<IMap?> GetMapByExternalIdAsync(string id) => await Table<DbMap>()
+        .LoadWith(t => t.DbAuthor)
+        .SingleOrDefaultAsync(m => m.ExternalId == id);
+    
     public async Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath)
     {
         var dbMap = new DbMap
@@ -48,13 +52,13 @@ public class MapRepository : DbRepository, IMapRepository
         try
         {
             var id = await Database.InsertWithIdentityAsync(dbMap);
-            await transaction.CommitAsync();
+            await transaction.CommitTransactionAsync();
             dbMap.Id = Convert.ToInt64(id);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Failed adding map with UID {MapMapUid} to the database", map.MapUid);
-            await transaction.RollbackAsync();
+            await transaction.RollbackTransactionAsync();
             throw new EvoScDatabaseException($"Failed adding map with UID {map.MapUid} to the database", e);
         }
 
@@ -88,12 +92,12 @@ public class MapRepository : DbRepository, IMapRepository
                 .Set(m => m.ExternalMapProvider, updatedMap.ExternalMapProvider)
                 .Set(m => m.UpdatedAt, updatedMap.UpdatedAt)
                 .UpdateAsync();
-            await transaction.CommitAsync();
+            await transaction.CommitTransactionAsync();
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Failed to update map with UID {MapMapUid}", map.MapUid);
-            await transaction.RollbackAsync();
+            await transaction.RollbackTransactionAsync();
             throw new EvoScDatabaseException($"Failed to update map with UID {map.MapUid}", e);
         }
 
@@ -102,6 +106,5 @@ public class MapRepository : DbRepository, IMapRepository
 
     public Task RemoveMapAsync(long id) => 
         Table<DbMap>().DeleteAsync(m => m.Id == id);
-
 }
 

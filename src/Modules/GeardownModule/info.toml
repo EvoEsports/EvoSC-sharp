@@ -1,0 +1,11 @@
+﻿[info]
+name = "GeardownModule"
+title = "Geardown"
+summary = "Geardown integration."
+version = "1.0.0"
+author = "Evo"
+
+[dependencies]
+MapsModule = "1.0.0"
+MatchReadyModule = "1.0.0"
+MatchTrackerModule = "1.0.0"

@@ -184,7 +184,7 @@ public class ServiceContainerManager : IServiceContainerManager
                 }
                 catch (ActivationException ex)
                 {
-                    _logger.LogError(ex, "Failed to get EvoSC core service");
+                    // _logger.LogError(ex, "Failed to get EvoSC core service");
                     throw;
                 }
             });

@@ -83,6 +83,16 @@ namespace EvoSC.Modules.SourceGeneration
                 source.AppendLine($"[assembly: ModuleVersion(\"{moduleVersion}\")]");
                 source.AppendLine($"[assembly: ModuleAuthor(\"{moduleAuthor}\")]");
 
+                if (document.ContainsKey("dependencies"))
+                {
+                    var dependencies = document.GetSubTable("dependencies");
+                    foreach (var dependency in dependencies.Entries)
+                    {
+                        var value = dependencies.GetValue(dependency.Key);
+                        source.AppendLine($"[assembly: ModuleDependency(\"{dependency.Key}\", \"{value.StringValue}\")]");
+                    }
+                }
+                
                 context.AddSource("Info.g.cs", source.ToString());
             }
             catch (Exception ex)

@@ -1,0 +1,9 @@
+﻿[info]
+name = "MatchTrackerModule"
+title = "Match Tracker"
+summary = "Extensive live tracking and recording of match timelines."
+version = "1.0.0"
+author = "Evo Esports"
+
+[dependencies]
+MatchManagerModule = "1.0.0"

@@ -31,7 +31,7 @@ public class StartupPipeline : IStartupPipeline, IDisposable
         {
             if (previousComponents.Contains(name))
             {
-                throw new StartupDependencyCycleException(previousComponents);
+                throw new StartupDependencyCycleException(previousComponents, name);
             }
             
             if (!_components.ContainsKey(name))

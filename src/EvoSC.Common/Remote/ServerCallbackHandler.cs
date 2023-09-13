@@ -1,7 +1,9 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Models;
 using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
 using GbxRemoteNet.Structs;
+using EvoSC.Common.Util.EnumIdentifier;
 using Newtonsoft.Json.Linq;
 
 namespace EvoSC.Common.Remote;
@@ -41,16 +43,19 @@ public class ServerCallbackHandler : IServerCallbackHandler
         switch (method)
         {
             case "Trackmania.Scores":
-                await _events.RaiseAsync(ModeScriptEvent.Scores,
-                    new ScoresEventArgs
-                    {
-                        Section = data.GetValue("section", StringComparison.Ordinal).ToObject<string>(),
-                        UseTeams = data.GetValue("useteams", StringComparison.Ordinal).ToObject<bool>(),
-                        WinnerTeam = data.GetValue("winnerteam", StringComparison.Ordinal).ToObject<int>(),
-                        WinnerPlayer = data.GetValue("winnerplayer", StringComparison.Ordinal).ToObject<string>(),
-                        Teams = data.GetValue("teams", StringComparison.Ordinal).ToObject<TeamScore[]>(),
-                        Players = data.GetValue("players", StringComparison.Ordinal).ToObject<PlayerScore[]>()
-                    });
+                {
+                    var section = data.GetValue("section", StringComparison.Ordinal)?.ToObject<string>() ?? "";
+                     await _events.RaiseAsync(ModeScriptEvent.Scores,
+                        new ScoresEventArgs
+                        {
+                            Section = section.ToEnumValue<ModeScriptSection>() ?? ModeScriptSection.Undefined,
+                            UseTeams = data.GetValue("useteams", StringComparison.Ordinal).ToObject<bool>(),
+                            WinnerTeam = data.GetValue("winnerteam", StringComparison.Ordinal).ToObject<int>(),
+                            WinnerPlayer = data.GetValue("winnerplayer", StringComparison.Ordinal).ToObject<string>(),
+                            Teams = data.GetValue("teams", StringComparison.Ordinal).ToObject<TeamScore[]>(),
+                            Players = data.GetValue("players", StringComparison.Ordinal).ToObject<PlayerScore[]>()
+                        });
+                }
                 break;
             case "Trackmania.Event.GiveUp":
                 await _events.RaiseAsync(ModeScriptEvent.GiveUp,

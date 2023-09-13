@@ -1,6 +1,6 @@
 ﻿namespace EvoSC.Modules.Attributes;
 
-[AttributeUsage(AttributeTargets.Assembly)]
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
 public class ModuleDependencyAttribute : Attribute
 {
     /// <summary>

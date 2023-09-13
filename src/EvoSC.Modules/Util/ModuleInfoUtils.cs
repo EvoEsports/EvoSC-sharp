@@ -31,7 +31,11 @@ public static class ModuleInfoUtils
         var summary = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleSummaryAttribute>()?.Summary, "Summary");
         var version = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleVersionAttribute>()?.Version, "Version");
         var author = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleAuthorAttribute>()?.Author, "Author");
-        var dependencies = Array.Empty<IModuleDependency>();
+
+        var dependencies = assembly.GetCustomAttributes<ModuleDependencyAttribute>().Select(d => new ModuleDependency
+        {
+            Name = d.Name, Version = Version.Parse(d.RequiredVersion)
+        });
 
         return new InternalModuleInfo
         {

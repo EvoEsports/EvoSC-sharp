@@ -51,13 +51,19 @@ public class MatchSettingsService : IMatchSettingsService
     public async Task<Dictionary<string, object>?> GetCurrentScriptSettingsAsync() =>
         await _server.Remote.GetModeScriptSettingsAsync();
 
-    public async Task LoadMatchSettingsAsync(string name)
+    public Task LoadMatchSettingsAsync(string name) => LoadMatchSettingsAsync(name, true);
+    
+    public async Task LoadMatchSettingsAsync(string name, bool skipMap)
     {
         try
         {
             var file = Path.GetFileName($"{name}.txt");
             await _server.Remote.LoadMatchSettingsAsync($"MatchSettings/{file}");
-            await _server.Remote.RestartMapAsync();
+
+            if (skipMap)
+            {
+                await _server.Remote.NextMapAsync();
+            }
         }
         catch (XmlRpcFaultException ex)
         {

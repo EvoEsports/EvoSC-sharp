@@ -4,11 +4,22 @@
 <component>
     <template>
         <stylesheet>
+            <!-- General -->
             <style 
                     class="text"
                     textfont="RajdhaniMono" 
                     textcolor="ffffff"
                     textsize="1.5"
+            />
+            
+            <style 
+                    class="bg-primary"
+                    bgcolor="ff0058"
+            />
+
+            <style
+                    class="bg-secondary"
+                    bgcolor="47495A"
             />
             
             <!-- Buttons -->

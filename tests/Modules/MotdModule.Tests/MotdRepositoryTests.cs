@@ -4,6 +4,7 @@ using EvoSC.Common.Models.Players;
 using EvoSC.Common.Tests.Database;
 using EvoSC.Modules.Official.MotdModule.Database.Migrations;
 using EvoSC.Modules.Official.MotdModule.Database.Repositories;
+using EvoSC.Testing.Database;
 
 namespace MotdModule.Tests;
 
