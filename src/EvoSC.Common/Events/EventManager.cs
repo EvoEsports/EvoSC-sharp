@@ -139,17 +139,24 @@ public class EventManager : IEventManager
 
         foreach (var subscription in _subscriptions[name])
         {
-            if (subscription.RunAsync)
+            try
             {
-                Task.Run(() =>
+                if (subscription.RunAsync)
                 {
-                    _logger.LogTrace("run async");
+                    Task.Run(() =>
+                    {
+                        _logger.LogTrace("run async");
+                        InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                    });
+                }
+                else
+                {
                     InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
-                });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                _logger.LogError(ex, "Failed to execute subscription.");
             }
         }
 

@@ -19,8 +19,10 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     }
 
     [Subscribe(ModeScriptEvent.Scores)]
-    public async Task OnScores(object data, ScoresEventArgs eventArgs) =>
+    public async Task OnScores(object data, ScoresEventArgs eventArgs)
+    {
         await _matchRankingService.UpdateAndShowScores(eventArgs);
+    }
 
     [Subscribe(ModeScriptEvent.StartMapStart)]
     public async Task OnBeginMap(object sender, MapEventArgs args) =>

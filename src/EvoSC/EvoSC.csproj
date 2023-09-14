@@ -43,11 +43,14 @@
         <ProjectReference Include="..\Modules\FastestCp\FastestCp.csproj" />
         <ProjectReference Include="..\Modules\CurrentMapModule\CurrentMapModule.csproj" />
         <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" />
-        <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="bin\Debug\net7.0\config\main.toml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\net7.0\config\" />
     </ItemGroup>
     
 </Project>

@@ -12,7 +12,6 @@ using EvoSC.Modules.Official.MatchManagerModule;
 using EvoSC.Modules.Official.MatchRankingModule;
 using EvoSC.Modules.Official.MatchReadyModule;
 using EvoSC.Modules.Official.MatchTrackerModule;
-using EvoSC.Modules.Official.ModuleManagerModule;
 using EvoSC.Modules.Official.MotdModule;
 using EvoSC.Modules.Official.NextMapModule;
 using EvoSC.Modules.Official.Player;
@@ -37,7 +36,6 @@ public static class InternalModules
         typeof(SetNameModule),
         typeof(ScoreboardModule),
         typeof(FastestCpModule),
-        typeof(ModuleManagerModule),
         typeof(CurrentMapModule),
         typeof(MotdModule),
         typeof(OpenPlanetModule),
