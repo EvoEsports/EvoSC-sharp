@@ -7,5 +7,5 @@ public interface IMatchRankingService
     Task UpdateAndShowScores(ScoresEventArgs scores);
     Task SendManialink();
     Task HideManialink();
-    Task ResetMatchDataAndShow();
+    Task ResetMatchData();
 }

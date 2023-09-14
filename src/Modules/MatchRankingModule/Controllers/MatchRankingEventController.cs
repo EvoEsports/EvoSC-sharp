@@ -30,7 +30,7 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
 
     [Subscribe(ModeScriptEvent.EndMatchEnd)]
     public async Task OnMatchEnd(object sender, EventArgs eventArgs)
-        => await _matchRankingService.ResetMatchDataAndShow();
+        => await _matchRankingService.ResetMatchData();
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args) =>

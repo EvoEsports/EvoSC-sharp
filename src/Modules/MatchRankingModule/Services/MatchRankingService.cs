@@ -93,10 +93,8 @@ public class MatchRankingService : IMatchRankingService
         await _manialinkManager.HideManialinkAsync("MatchRankingModule.MatchRanking");
     }
 
-    public Task ResetMatchDataAndShow()
+    public Task ResetMatchData()
     {
-        _matchRankingStore.ResetScores();
-
-        return SendManialink();
+        return _matchRankingStore.ResetScores();
     }
 }
