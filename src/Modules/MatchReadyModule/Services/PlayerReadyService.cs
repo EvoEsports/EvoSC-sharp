@@ -32,6 +32,11 @@ public class PlayerReadyService : IPlayerReadyService
 
     public async Task SetPlayerReadyStatusAsync(IPlayer player, bool isReady)
     {
+        if (!_playerReadyTrackerService.RequiredPlayers.Contains(player))
+        {
+            return;
+        }
+        
         await _playerReadyTrackerService.SetIsReadyAsync(player, isReady);
 
         if (isReady)
@@ -71,7 +76,8 @@ public class PlayerReadyService : IPlayerReadyService
             }
         }
         
-        var isReady = await PlayerIsReadyAsync(player);
+        // var isReady = await PlayerIsReadyAsync(player);
+        var isReady = _playerReadyTrackerService.ReadyPlayers.Contains(player);
         var requiredPlayers = _playerReadyTrackerService.RequiredPlayers.Count();
         var playersReady = _playerReadyTrackerService.ReadyPlayers.Count();
         var showButton = _playerReadyTrackerService.RequiredPlayers.Any(p => p.AccountId == player.AccountId);
@@ -92,11 +98,11 @@ public class PlayerReadyService : IPlayerReadyService
         
         foreach (var player in await _players.GetOnlinePlayersAsync())
         {
-            await _manialinks.SendManialinkAsync("MatchReadyModule.UpdateWidget",
+            await _manialinks.SendManialinkAsync(player, "MatchReadyModule.UpdateWidget",
                 new
                 {
                     PlayerCount = _playerReadyTrackerService.ReadyPlayers.Count(),
-                    IsReady = await PlayerIsReadyAsync(player)
+                    IsReady = _playerReadyTrackerService.ReadyPlayers.Contains(player)
                 });
         }
     }
@@ -112,6 +118,14 @@ public class PlayerReadyService : IPlayerReadyService
         {
             await _manialinks.HideManialinkAsync("MatchReadyModule.ReadyWidget");
             await _manialinks.HideManialinkAsync("MatchReadyModule.UpdateWidget");
+        }
+    }
+
+    public async Task AddRequiredPlayers(params IPlayer[] players)
+    {
+        foreach (var player in players)
+        {
+            await _playerReadyTrackerService.AddRequiredPlayerAsync(player);
         }
     }
 }

@@ -65,4 +65,6 @@ public class DbPlayer : IPlayer
         UbisoftName = player.UbisoftName;
         Zone = player.Zone;
     }
+    
+    public bool Equals(IPlayer? other) => other != null && AccountId.Equals(other.AccountId, StringComparison.Ordinal);
 }

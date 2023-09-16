@@ -25,4 +25,6 @@ public class OnlinePlayer : IOnlinePlayer
         Zone = player.Zone;
         Settings = player.Settings;
     }
+    
+    public bool Equals(IPlayer? other) => other != null && AccountId.Equals(other.AccountId, StringComparison.Ordinal);
 }
