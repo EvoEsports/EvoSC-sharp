@@ -92,8 +92,9 @@
                        text='{{ ranking != null ? (ranking.isFinish ? "" : ranking.cpIndex) : "" }}'
                        valign="center2"
                        halign="center"
-                       textfont="GameFontSemiBold"
-                       textsize="1"
+                       textfont="GameFontBlack"
+                       textsize="0.9"
+                       opacity="0.9"
                        textprefix="$i$t"
                 />
             </frame>
@@ -108,7 +109,7 @@
                     declare scoreFrame <=> (Page.MainFrame.GetFirstChild("player_row_{{ ranking?.player.AccountId }}") as CMlFrame);
                     (scoreFrame.GetFirstChild("position") as CMlLabel).Value = "{{ newRanking?.position }}";
                     (scoreFrame.GetFirstChild("score") as CMlLabel).Value = "{{ newRanking?.time }}";
-                    (scoreFrame.GetFirstChild("cp_index") as CMlLabel).Value = "{{ ranking != null ? (ranking.isFinish ? "" : ranking.cpIndex) : "" }}";
+                    (scoreFrame.GetFirstChild("cp_index") as CMlLabel).Value = "{{ newRanking != null ? (newRanking.isFinish ? "" : newRanking.cpIndex) : "" }}";
                     AnimMgr.Add(scoreFrame, "<frame pos='0 {{ (newRanking?.position - 1) * (rowSpacing + h) * -1.0 }}' />", 320, CAnimManager::EAnimManagerEasing::ExpOut);
                 }
             ***

@@ -25,10 +25,10 @@
     <template>
         <frame pos="{{ 160.0 - w * scale }} {{ y }}" scale="{{ scale }}" z-index="100">
             <frame>
-                <frame size="{{ w }} {{ headerHeight }}">
+                <frame size="{{ w }} {{ headerHeight - 0.1 }}">
                     <!-- HEADER -->
                     <quad pos="-0.15 0"
-                          size="{{ w + 20 }} {{ headerHeight + 0.3 }}"
+                          size="{{ w + 20.1 }} {{ headerHeight + 0.3 }}"
                           style="UICommon64_1"
                           substyle="BgFrame1"
                           colorize="{{ headerColor }}"
@@ -36,7 +36,7 @@
 
                     <!-- GRADIENT -->
                     <quad pos="{{ w }} {{ -headerHeight }}"
-                          size="{{ w }} {{ headerHeight }}"
+                          size="{{ w }} {{ headerHeight - 0.1 }}"
                           image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
                           modulatecolor="{{ primaryColor }}"
                           rot="180"
@@ -64,7 +64,7 @@
                 </frame>
 
                 <!-- BACKGROUND -->
-                <quad pos="0 {{ -headerHeight + 0.15 }}"
+                <quad pos="0 {{ -headerHeight + 0.1 }}"
                       size="{{ w }} {{ rowsVisible * (rowSpacing + rowHeight) + rowSpacing * 4.0 }}"
                       bgcolor="24262f"
                       opacity="0.9"

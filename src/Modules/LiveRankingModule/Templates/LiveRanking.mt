@@ -25,10 +25,10 @@
     <template>
         <frame id="live_rankings" pos="{{ x }} {{ y }}" scale="{{ scale }}" z-index="100">
             <frame>
-                <frame size="{{ w }} {{ headerHeight }}">
+                <frame size="{{ w }} {{ headerHeight - 0.1 }}">
                     <!-- HEADER -->
                     <quad pos="{{ w * 0.5 - 10.0 }} 0.15"
-                          size="{{ headerHeight + 0.3 }} {{ w + 20 }}"
+                          size="{{ headerHeight + 0.3 }} {{ w + 20.1 }}"
                           valign="center"
                           style="UICommon64_1"
                           substyle="BgFrame1"
@@ -37,7 +37,7 @@
                     />
 
                     <!-- GRADIENT -->
-                    <quad size="{{ w }} {{ headerHeight }}"
+                    <quad size="{{ w }} {{ headerHeight + 0.1 }}"
                           image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
                           modulatecolor="{{ headerColor }}"
                     />
@@ -64,7 +64,7 @@
                 </frame>
                 
                 <!-- BACKGROUND -->
-                <quad pos="0 {{ -headerHeight + 0.15 }}"
+                <quad pos="0 {{ -headerHeight + 0.1 }}"
                       size="{{ w - 0.15 }} {{ rowsVisible * (rowSpacing + rowHeight) + rowSpacing * 4.0 }}"
                       bgcolor="24262f"
                       opacity="0.9"
