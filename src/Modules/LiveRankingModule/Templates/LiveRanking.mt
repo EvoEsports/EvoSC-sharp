@@ -23,7 +23,7 @@
     <property type="string" name="logoUrl" default=""/>
 
     <template>
-        <frame id="live_rankings" pos="{{ x }} {{ y }}" scale="{{ scale }}" z-index="100">
+        <frame id="live_rankings" pos="{{ x }} {{ y }}" size="{{ w }} 999" scale="{{ scale }}" z-index="100">
             <frame>
                 <frame size="{{ w }} {{ headerHeight - 0.1 }}">
                     <!-- HEADER -->
@@ -98,6 +98,16 @@
         <!--
             main() {
                 +++ Animations +++
+                
+                while(True){
+                    yield;
+                    
+                    foreach(Event in PendingEvents){
+                        if(Event.Type == CMlScriptEvent::Type::MouseClick){
+                            +++ OnMouseClick +++
+                        }
+                    }
+                }
             }
         -->
     </script>
