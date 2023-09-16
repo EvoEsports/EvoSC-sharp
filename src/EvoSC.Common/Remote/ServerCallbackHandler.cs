@@ -185,16 +185,32 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     });
                 break;
             case "Maniaplanet.StartMatch_Start":
-                await _events.RaiseAsync(ModeScriptEvent.StartMatchStart, EventArgs.Empty);
+                await _events.RaiseAsync(ModeScriptEvent.StartMatchStart, new MatchEventArgs
+                {
+                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
+                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
+                });
                 break;
             case "Maniaplanet.StartMatch_End":
-                await _events.RaiseAsync(ModeScriptEvent.StartMatchEnd, EventArgs.Empty);
+                await _events.RaiseAsync(ModeScriptEvent.StartMatchEnd, new MatchEventArgs
+                {
+                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
+                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
+                });
                 break;
             case "Maniaplanet.EndMatch_Start":
-                await _events.RaiseAsync(ModeScriptEvent.EndMatchStart, EventArgs.Empty);
+                await _events.RaiseAsync(ModeScriptEvent.EndMatchStart, new MatchEventArgs
+                {
+                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
+                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
+                });
                 break;
             case "Maniaplanet.EndMatch_End":
-                await _events.RaiseAsync(ModeScriptEvent.EndMatchEnd, EventArgs.Empty);
+                await _events.RaiseAsync(ModeScriptEvent.EndMatchEnd, new MatchEventArgs
+                {
+                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
+                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
+                });
                 break;
             case "Maniaplanet.EndMap_Start":
                 await _events.RaiseAsync(ModeScriptEvent.StartMapStart,

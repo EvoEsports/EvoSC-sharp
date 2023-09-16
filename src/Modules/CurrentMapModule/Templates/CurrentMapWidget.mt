@@ -1,7 +1,7 @@
 ﻿<component>
     <using namespace="EvoSC.Common.Interfaces.Models"/>
 
-    <property type="IMap" name="map"/>
+    <property type="IMap?" name="map" default="null"/>
 
     <property type="double" name="w" default="68.0"/>
     <property type="double" name="y" default="88.0"/>
@@ -87,12 +87,12 @@
                 <frameinstance modelid="gradient_box" />
                 <frame pos="-0.2 -1">
                     <label pos="2 0"
-                           text="{{ map.Name }}"
+                           text="{{ map?.Name }}"
                            textsize="1.4"
                            textfont="GameFontSemiBold"
                     />
                     <label pos="2 -3.2"
-                           text="by {{ map.Author.NickName }}"
+                           text="by {{ map?.Author?.NickName }}"
                            textsize="1.1"
                            textfont="GameFontRegular"
                     />

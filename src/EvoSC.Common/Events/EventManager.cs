@@ -219,7 +219,7 @@ public class EventManager : IEventManager
 
             if (!task.IsCompletedSuccessfully)
             {
-                _logger.LogError("Event execution failed for {Name}, status: {Status}", sub.Name, task.Status);
+                _logger.LogError("Event execution failed for {Name}, status: {Status}, handler: {Class}.{Method}", sub.Name, task.Status, sub.InstanceClass.Name, sub.HandlerMethod.Name);
 
                 if (task.IsFaulted)
                 {

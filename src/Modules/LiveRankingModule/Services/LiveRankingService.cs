@@ -219,21 +219,26 @@ public class LiveRankingService : ILiveRankingService
         }
     }
 
-    public Task OnBeginMatchAsync()
+    public async Task OnBeginMatchAsync()
     {
-        throw new NotImplementedException();
+        await SendManialink();
     }
 
-    public Task OnEndMatchAsync(EndMatchGbxEventArgs args)
+    public async Task OnEndMatchAsync(EndMatchGbxEventArgs args)
     {
-        throw new NotImplementedException();
+        await HideManialink();
     }
 
     public async Task OnPodiumStartAsync(PodiumEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
+        await HideManialink();
         // await _manialinkManager.HideManialinkAsync("LiveRankingModule.MatchInfo");
+    }
+
+    private async Task HideManialink()
+    {
+        await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
     }
 
     private string FormatTime(int time, bool isDelta)
