@@ -9,6 +9,7 @@
     <property type="string" name="positionBackgroundColor"/>
     <property type="string" name="backgroundColor"/>
     <property type="string" name="primaryColor"/>
+    <property type="string" name="headerColor"/>
     <property type="string" name="playerRowBackgroundColor"/>
     <property type="string" name="playerRowHighlightColor"/>
     <property type="double" name="w"/>
@@ -88,7 +89,7 @@
                        valign="center"
                        halign="right"
                        textsize="{{ textSize }}"
-                       textcolor="{{ primaryColor }}"
+                       textcolor="{{ headerColor }}"
                        textfont="GameFontSemiBold"/>
 
                 <!-- Custom Label (FINALIST, etc) -->

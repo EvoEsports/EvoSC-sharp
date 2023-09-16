@@ -56,9 +56,6 @@ public class MatchRankingService : IMatchRankingService
             .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
         var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
         
-        _logger.LogInformation("Previous count: {c}", mappedScoresPrevious.Count);
-        _logger.LogInformation("Latest count: {c}", mappedScoresLatest.Count);
-
         return new
         {
             NewScores = mappedScoresNew,
@@ -83,7 +80,7 @@ public class MatchRankingService : IMatchRankingService
             .Select(score => new LiveRankingWidgetPosition(
                     score.Rank,
                     _playerManager.GetPlayerAsync(score.AccountId).Result,
-                    score.MatchPoints.ToString()
+                    (score.MatchPoints + score.RoundPoints).ToString()
                 )
             )
             .ToList();

@@ -87,12 +87,12 @@
                 <frameinstance modelid="gradient_box" />
                 <frame pos="-0.2 -1">
                     <label pos="2 0"
-                           text="{{ map?.Name }}"
+                           text='{{ map?.Name ?? "loading..." }}'
                            textsize="1.4"
                            textfont="GameFontSemiBold"
                     />
                     <label pos="2 -3.2"
-                           text="by {{ map?.Author?.NickName }}"
+                           text='by {{ map?.Author?.NickName ?? "loading..." }}'
                            textsize="1.1"
                            textfont="GameFontRegular"
                     />

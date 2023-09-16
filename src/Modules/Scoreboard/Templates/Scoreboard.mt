@@ -62,6 +62,7 @@
                     <!-- Player Rows -->
                     <PlayerRowFramemodel backgroundColor="fff"
                                          primaryColor="{{ primaryColor }}"
+                                         headerColor="{{ headerColor }}"
                                          playerRowBackgroundColor="{{ playerRowBackgroundColor }}"
                                          playerRowHighlightColor="{{ playerRowHighlightColor }}"
                                          positionBackgroundColor="{{ positionBackgroundColor }}"

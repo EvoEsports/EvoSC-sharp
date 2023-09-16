@@ -6,7 +6,6 @@ using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.MatchRankingModule.Interfaces;
-using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchRankingModule.Controllers;
@@ -26,7 +25,7 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     [Subscribe(ModeScriptEvent.Scores)]
     public async Task OnScores(object data, ScoresEventArgs eventArgs)
     {
-        if (eventArgs.Section == ModeScriptSection.EndMatch)
+        if (eventArgs.Section is ModeScriptSection.EndMatch or ModeScriptSection.EndMatchEarly)
         {
             _logger.LogInformation("End match.");
             await _matchRankingService.ResetMatchData();
@@ -38,10 +37,17 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
         await _matchRankingService.UpdateAndShowScores(eventArgs);
     }
 
-    [Subscribe(GbxRemoteEvent.BeginMap)]
-    public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
+    // [Subscribe(GbxRemoteEvent.BeginMap)]
+    // public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
+    // {
+    //     _logger.LogInformation("Begin map.");
+    //     await _matchRankingService.SendManialink();
+    // }
+
+    [Subscribe(ModeScriptEvent.StartRoundStart)]
+    public async Task OnBeginMapAsync(object sender, RoundEventArgs args)
     {
-        _logger.LogInformation("Begin map.");
+        _logger.LogInformation("Start round.");
         await _matchRankingService.SendManialink();
     }
 
@@ -56,7 +62,7 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     public async Task OnStartMatch(object sender, MatchEventArgs eventArgs)
     {
         _logger.LogInformation("Start match start.");
-        // await _matchRankingService.ResetMatchData();
+        await _matchRankingService.ResetMatchData();
         await _matchRankingService.SendManialink();
     }
 
