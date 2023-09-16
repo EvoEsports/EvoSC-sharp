@@ -35,7 +35,7 @@
             />
 
             <frame pos="8 0">
-                <frame size="0.95 999">
+                <frame size="0.92 999">
                     <quad pos="0 0.1"
                           size="2 {{ h + 0.25 }}"
                           style="UICommon64_1"

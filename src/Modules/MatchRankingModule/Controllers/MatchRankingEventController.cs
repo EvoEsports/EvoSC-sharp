@@ -25,24 +25,17 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     [Subscribe(ModeScriptEvent.Scores)]
     public async Task OnScores(object data, ScoresEventArgs eventArgs)
     {
-        if (eventArgs.Section is ModeScriptSection.EndMatch or ModeScriptSection.EndMatchEarly)
+        _logger.LogInformation("Scores, section: {Section}.", eventArgs.Section);
+        
+        if (eventArgs.Section is ModeScriptSection.EndMatch)
         {
-            _logger.LogInformation("End match.");
             await _matchRankingService.ResetMatchData();
             await _matchRankingService.HideManialink();
             return;
         }
         
-        _logger.LogInformation("Scores, section: {Section}.", eventArgs.Section);
         await _matchRankingService.UpdateAndShowScores(eventArgs);
     }
-
-    // [Subscribe(GbxRemoteEvent.BeginMap)]
-    // public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
-    // {
-    //     _logger.LogInformation("Begin map.");
-    //     await _matchRankingService.SendManialink();
-    // }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnBeginMapAsync(object sender, RoundEventArgs args)
@@ -50,13 +43,6 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
         _logger.LogInformation("Start round.");
         await _matchRankingService.SendManialink();
     }
-
-    // [Subscribe(ModeScriptEvent.EndMapStart)]
-    // public async Task OnEndMap(object sender, MapEventArgs args)
-    // {
-    //     _logger.LogInformation("End map start.");
-    //     await _matchRankingService.HideManialink();
-    // }
 
     [Subscribe(ModeScriptEvent.StartMatchStart)]
     public async Task OnStartMatch(object sender, MatchEventArgs eventArgs)

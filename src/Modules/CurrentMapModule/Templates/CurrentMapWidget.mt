@@ -3,6 +3,7 @@
 
     <property type="IMap?" name="map" default="null"/>
 
+    <property type="double" name="scale" default="0.9"/>
     <property type="double" name="w" default="68.0"/>
     <property type="double" name="y" default="88.0"/>
     <property type="double" name="headerHeight" default="8.0"/>
@@ -14,7 +15,7 @@
     <property type="string" name="logoUrl" default=""/>
 
     <template>
-        <frame pos="{{ 160.0 - w }} {{ y }}" z-index="100">
+        <frame pos="{{ 160.0 - w * scale }} {{ y }}" scale="{{ scale }}" z-index="100">
             <frame>
                 <frame size="{{ w }} {{ headerHeight }}">
                     <!-- HEADER -->
@@ -63,7 +64,7 @@
             </frame>
 
             <framemodel id="gradient_box">
-                <frame size="1 8">
+                <frame size="0.95 8">
                     <quad pos="0 0.2"
                           size="2 8.4"
                           style="UICommon64_1"

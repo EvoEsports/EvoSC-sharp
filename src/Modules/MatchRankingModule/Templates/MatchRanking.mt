@@ -3,12 +3,13 @@
     <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
     <using namespace="System.Linq"/>
     
-    <import component="LiveRankingModule.Components.PlayerScore" as="PlayerScore"/>
+    <import component="MatchRankingModule.Components.PlayerScore" as="PlayerScore"/>
 
     <property type="List<LiveRankingWidgetPosition>" name="PreviousScores"/>
     <property type="List<LiveRankingWidgetPosition>" name="NewScores"/>
     <property type="List<LiveRankingWidgetPosition>" name="ExistingScores"/>
 
+    <property type="double" name="scale" default="0.9"/>
     <property type="double" name="w" default="68.0"/>
     <property type="double" name="y" default="57.0"/>
     <property type="double" name="headerHeight" default="8.0"/>
@@ -22,7 +23,7 @@
     <property type="string" name="logoUrl" default=""/>
 
     <template>
-        <frame pos="{{ 160.0 - w }} {{ y }}" z-index="100">
+        <frame pos="{{ 160.0 - w * scale }} {{ y }}" scale="{{ scale }}" z-index="100">
             <frame>
                 <frame size="{{ w }} {{ headerHeight }}">
                     <!-- HEADER -->
