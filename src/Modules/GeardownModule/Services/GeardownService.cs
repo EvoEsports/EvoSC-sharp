@@ -5,6 +5,7 @@ using EvoSC.Common.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces;
+using EvoSC.Modules.Evo.GeardownModule.Interfaces.Repositories;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces.Services;
 using EvoSC.Modules.Evo.GeardownModule.Models;
 using EvoSC.Modules.Evo.GeardownModule.Models.API;
@@ -27,10 +28,11 @@ public class GeardownService : IGeardownService
     private readonly IPlayerReadyService _playerReadyService;
     private readonly IGeardownSettings _settings;
     private readonly IGeardownSetupStateService _setupState;
+    private readonly ITourneyTimelineRepository _tourneyTimelineRepository;
 
     public GeardownService(IMatchTracker matchTracker, IGeardownSetupService setupService,
         IGeardownApiService geardownApi, IAuditService auditService, IServerClient server,
-        IPlayerReadyService playerReadyService, IGeardownSettings settings, IGeardownSetupStateService setupState)
+        IPlayerReadyService playerReadyService, IGeardownSettings settings, IGeardownSetupStateService setupState, ITourneyTimelineRepository tourneyTimelineRepository)
     {
         _matchTracker = matchTracker;
         _setupService = setupService;
@@ -41,6 +43,7 @@ public class GeardownService : IGeardownService
         _settings = settings;
         _setupService = setupService;
         _setupState = setupState;
+        _tourneyTimelineRepository = tourneyTimelineRepository;
     }
 
     public async Task SetupServerAsync(int matchId)
@@ -71,6 +74,12 @@ public class GeardownService : IGeardownService
         }
         
         _setupState.SetMatchStarted();
+
+        if (matchState.Match.id != null)
+        {
+            await _tourneyTimelineRepository.AddTimeline((int)matchState.Match.id, matchTrackerId);
+        }
+        
         await _geardownApi.Matches.OnStartMatchAsync(matchState.MatchToken);
         
         _audits.NewInfoEvent("Geardown.StartMatch")
@@ -107,6 +116,11 @@ public class GeardownService : IGeardownService
             throw new InvalidOperationException("Did not get a match end result to send to geardown.");
         }
 
+        if (matchState.Match.id == null)
+        {
+            throw new InvalidOperationException("Match Id is null, cannot send results to geardown.");
+        }
+        
         await _geardownApi.Matches.AddResultsAsync((int)matchState.Match.id,
         results.Players.Select(r => new GdResult
         {
