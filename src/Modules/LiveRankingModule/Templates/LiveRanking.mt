@@ -8,6 +8,7 @@
     <property type="List<LiveRankingWidgetPosition>" name="rankingsExisting"/>
     <property type="List<LiveRankingWidgetPosition>" name="rankingsNew"/>
 
+    <property type="double" name="scale" default="0.9"/>
     <property type="double" name="w" default="68.0"/>
     <property type="double" name="x" default="-160.0"/>
     <property type="double" name="y" default="78.0"/>
@@ -22,7 +23,7 @@
     <property type="string" name="logoUrl" default=""/>
 
     <template>
-        <frame id="live_rankings" pos="{{ x }} {{ y }}" z-index="100">
+        <frame id="live_rankings" pos="{{ x }} {{ y }}" scale="{{ scale }}" z-index="100">
             <frame>
                 <frame size="{{ w }} {{ headerHeight }}">
                     <!-- HEADER -->

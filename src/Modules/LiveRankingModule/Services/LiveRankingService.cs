@@ -55,7 +55,7 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.IncreaseRoundCounter();
             _liveRankingStore.IncreaseTrackCounter();
 
-            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
+            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
         }
 
         await Task.CompletedTask;
@@ -79,7 +79,7 @@ public class LiveRankingService : ILiveRankingService
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
 
-            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
+            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
                 await GetWidgetData(previousRanking));
         }
     }
@@ -151,7 +151,7 @@ public class LiveRankingService : ILiveRankingService
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
 
-            await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking",
+            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
                 await GetWidgetData(previousRanking));
         }
     }
@@ -171,7 +171,7 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.ResetRoundCounter();
             _liveRankingStore.IncreaseRoundCounter();
             _liveRankingStore.IncreaseTrackCounter();
-            /*await _manialinkManager.SendManialinkAsync("LiveRankingModule.MatchInfo",
+            /*await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.MatchInfo",
                 new { data = _liveRankingStore.GetMatchInfo() });*/
             await _liveRankingStore.ResetLiveRankingsAsync();
         }
@@ -198,12 +198,12 @@ public class LiveRankingService : ILiveRankingService
     {
         _logger.LogInformation("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, isRoundsMode);
         await _liveRankingStore.ResetLiveRankingsAsync();
-        await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
+        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
 
     public async Task SendManialink()
     {
-        await _manialinkManager.SendManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
+        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
 
     public async Task OnEndRoundAsync(RoundEventArgs args)
