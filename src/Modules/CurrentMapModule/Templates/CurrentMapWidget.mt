@@ -5,7 +5,7 @@
 
     <property type="double" name="scale" default="0.9"/>
     <property type="double" name="w" default="68.0"/>
-    <property type="double" name="y" default="88.0"/>
+    <property type="double" name="y" default="85.0"/>
     <property type="double" name="headerHeight" default="8.0"/>
     <property type="double" name="bodyHeight" default="22.0"/>
 

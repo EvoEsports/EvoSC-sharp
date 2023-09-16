@@ -8,7 +8,7 @@
     <property type="double" name="w" default="66.0"/>
     <property type="double" name="h" default="6.0"/>
     <property type="double" name="rowSpacing" default="1.0"/>
-    <property type="string" name="positionColor" default="ddcc00"/>
+    <property type="string" name="positionColor" default="ffd12d"/>
     <property type="string" name="playerRowBackgroundColor" default="999999"/>
 
     <template>
@@ -65,13 +65,35 @@
 
                 <!-- TIME -->
                 <label id="score"
-                       pos="{{ w - 2.0 }} {{ h / -2.0 }}"
+                       pos="{{ w - 9.0 }} {{ h / -2.0 }}"
                        size="15 5"
                        text="{{ ranking?.time }}"
                        valign="center2"
                        halign="right"
                        textfont="GameFontSemiBold"
                        textsize="1.15"
+                       textprefix="$i$t"
+                />
+
+                <!-- CP-ID BOX -->
+                <quad pos="{{ w - 2.0 }} {{ h / -2.0 + 0.15 }}"
+                      size="6 {{ h - 2.0 }}"
+                      style="UICommon64_1"
+                      substyle="BgFrame2"
+                      colorize="{{ playerRowBackgroundColor }}"
+                      halign="right"
+                      valign="center"
+                      opacity="0.75"
+                />
+                
+                <label id="cp_index"
+                       pos="{{ w - 5.0 }} {{ h / -2.0 }}"
+                       size="5 5"
+                       text='{{ ranking != null ? (ranking.isFinish ? "" : ranking.cpIndex) : "" }}'
+                       valign="center2"
+                       halign="center"
+                       textfont="GameFontSemiBold"
+                       textsize="1"
                        textprefix="$i$t"
                 />
             </frame>
@@ -86,6 +108,7 @@
                     declare scoreFrame <=> (Page.MainFrame.GetFirstChild("player_row_{{ ranking?.player.AccountId }}") as CMlFrame);
                     (scoreFrame.GetFirstChild("position") as CMlLabel).Value = "{{ newRanking?.position }}";
                     (scoreFrame.GetFirstChild("score") as CMlLabel).Value = "{{ newRanking?.time }}";
+                    (scoreFrame.GetFirstChild("cp_index") as CMlLabel).Value = "{{ ranking != null ? (ranking.isFinish ? "" : ranking.cpIndex) : "" }}";
                     AnimMgr.Add(scoreFrame, "<frame pos='0 {{ (newRanking?.position - 1) * (rowSpacing + h) * -1.0 }}' />", 320, CAnimManager::EAnimManagerEasing::ExpOut);
                 }
             ***

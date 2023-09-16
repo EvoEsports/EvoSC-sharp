@@ -8,7 +8,7 @@
     <property type="double" name="w" default="66.0"/>
     <property type="double" name="h" default="6.0"/>
     <property type="double" name="rowSpacing" default="1.0"/>
-    <property type="string" name="positionColor" default="ddcc00"/>
+    <property type="string" name="positionColor" default="ffd12d"/>
     <property type="string" name="playerRowBackgroundColor" default="999999"/>
 
     <template>

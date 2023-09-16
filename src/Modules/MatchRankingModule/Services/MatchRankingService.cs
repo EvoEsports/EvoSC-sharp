@@ -80,7 +80,9 @@ public class MatchRankingService : IMatchRankingService
             .Select(score => new LiveRankingWidgetPosition(
                     score.Rank,
                     _playerManager.GetPlayerAsync(score.AccountId).Result,
-                    (score.MatchPoints + score.RoundPoints).ToString()
+                    (score.MatchPoints + score.RoundPoints).ToString(),
+                    -1,
+                    false
                 )
             )
             .ToList();

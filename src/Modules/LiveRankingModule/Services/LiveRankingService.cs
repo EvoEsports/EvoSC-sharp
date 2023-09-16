@@ -269,14 +269,14 @@ public class LiveRankingService : ILiveRankingService
 
         if (ranking.isDNF)
         {
-            return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime);
+            return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime, ranking.cpIndex, ranking.isFinish);
         }
 
         var isDeltaTime = i > 0;
         var timeToFormat = isDeltaTime ? ranking.diffToFirst : ranking.cpTime;
         formattedTime = FormatTime(timeToFormat, isDeltaTime);
 
-        return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime);
+        return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime, ranking.cpIndex, ranking.isFinish);
     }
 
     private async Task<bool> CheckIsRoundsModeAsync()
