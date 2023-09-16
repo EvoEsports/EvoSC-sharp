@@ -98,6 +98,16 @@
         <!--
             main() {
                 +++ Animations +++
+                
+                while(True){
+                    yield;
+                    
+                    foreach(Event in PendingEvents){
+                        if(Event.Type == CMlScriptEvent::Type::MouseClick){
+                            +++ OnMouseClick +++
+                        }
+                    }
+                }
             }
         -->
     </script>

@@ -13,6 +13,11 @@
 
     <template>
         <frame id="player_row_{{ ranking.player.AccountId }}" pos="0 {{ y }}">
+            <quad id="player_row_trigger"
+                  size="{{ w + 10.0 }} {{ h }}"
+                  ScriptEvents="1"
+            />
+            
             <!-- POSITION BOX -->
             <quad pos="-1 0"
                   size="8 {{ h }}"
@@ -80,6 +85,19 @@
 
     <script>
         <!--
+            *** OnMouseClick ***
+            ***
+            if(Event.Control.ControlId == "player_row_trigger"){
+                foreach(Player in Players){
+                    if(Player.User.WebServicesUserId == "{{ ranking?.player?.AccountId }}"){
+                        if(!IsSpectatorClient) RequestSpectatorClient(True);
+                        SetSpectateTarget(Player.User.Login);
+                    }
+                }
+                continue;
+            }
+            ***
+            
             *** Animations ***
             ***
                 if({{ newRanking != null ? "True" : "False" }}){

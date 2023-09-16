@@ -111,10 +111,9 @@
             *** OnMouseClick ***
             ***
             if(Event.Control.ControlId == "player_row_trigger"){
-                log("spec: {{ ranking?.player?.AccountId }}");
-                if(!IsSpectatorClient) RequestSpectatorClient(True);
                 foreach(Player in Players){
                     if(Player.User.WebServicesUserId == "{{ ranking?.player?.AccountId }}"){
+                        if(!IsSpectatorClient) RequestSpectatorClient(True);
                         SetSpectateTarget(Player.User.Login);
                     }
                 }
