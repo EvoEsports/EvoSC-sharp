@@ -1,9 +1,7 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.Scoreboard.Interfaces;
 
@@ -13,30 +11,17 @@ namespace EvoSC.Modules.Official.Scoreboard.Services;
 public class ScoreboardService : IScoreboardService
 {
     private readonly IManialinkManager _manialinks;
-    private readonly IPlayerManagerService _playerManager;
     private readonly IServerClient _server;
     private readonly IEvoScBaseConfig _config;
 
     private int _roundsPerMap = -1;
     private int _currentRound = 0;
 
-    public ScoreboardService(IManialinkManager manialinks,
-        IPlayerManagerService playerManager, IServerClient server, IEvoScBaseConfig config)
+    public ScoreboardService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config)
     {
         _manialinks = manialinks;
-        _playerManager = playerManager;
         _server = server;
         _config = config;
-    }
-
-    public async Task ShowScoreboard(string playerLogin)
-    {
-        await _manialinks.SendManialinkAsync(
-            await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin)),
-            "Scoreboard.Scoreboard",
-            await GetData()
-        );
-        await SendRoundsInfo(playerLogin);
     }
 
     public async Task ShowScoreboard()
@@ -103,17 +88,8 @@ public class ScoreboardService : IScoreboardService
 
     public async Task SendRoundsInfo()
     {
-        await _manialinks.SendManialinkAsync("Scoreboard.RoundsInfo",
+        await _manialinks.SendPersistentManialinkAsync("Scoreboard.RoundsInfo",
             new { RoundsPerMap = _roundsPerMap, CurrentRound = _currentRound });
-    }
-
-    public async Task SendRoundsInfo(string playerLogin)
-    {
-        await _manialinks.SendManialinkAsync(
-            await _playerManager.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin)),
-            "Scoreboard.RoundsInfo",
-            new { RoundsPerMap = _roundsPerMap, CurrentRound = _currentRound }
-        );
     }
 
     public async Task LoadAndUpdateRoundsPerMap()

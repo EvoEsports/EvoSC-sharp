@@ -2,12 +2,10 @@
 
 public interface IScoreboardService
 {
-    public Task ShowScoreboard(string playerLogin);
     public Task ShowScoreboard();
     public Task HideNadeoScoreboard();
     public Task ShowNadeoScoreboard();
     public Task SendRoundsInfo();
-    public Task SendRoundsInfo(string playerLogin);
     public Task LoadAndUpdateRoundsPerMap();
     public void SetCurrentRound(int round);
 }
