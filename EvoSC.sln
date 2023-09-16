@@ -102,6 +102,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectatorTargetInfo", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASayModule", "src\Modules\ASayModule\ASayModule.csproj", "{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldRecordModule", "src\Modules\WorldRecordModule\WorldRecordModule.csproj", "{1D3B25FA-F807-4428-A520-878A582DCF28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -310,6 +312,10 @@ Global
 		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D3B25FA-F807-4428-A520-878A582DCF28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D3B25FA-F807-4428-A520-878A582DCF28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D3B25FA-F807-4428-A520-878A582DCF28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D3B25FA-F807-4428-A520-878A582DCF28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -361,5 +367,6 @@ Global
 		{D7916D8A-57D2-4CDC-ABA6-03C7FA5BB3D0} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{D0E37AF5-BBF2-4D8B-AEDB-43265DB37AD9} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{1D3B25FA-F807-4428-A520-878A582DCF28} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 	EndGlobalSection
 EndGlobal

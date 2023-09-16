@@ -8,8 +8,6 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
 using EvoSC.Modules.Official.LiveRankingModule.Utils;
-using Flurl;
-using Flurl.Http;
 using GbxRemoteNet.Events;
 using LinqToDB.Common;
 using Microsoft.Extensions.Logging;
@@ -25,9 +23,8 @@ public class LiveRankingService : ILiveRankingService
     private readonly IManialinkManager _manialinkManager;
     private readonly LiveRankingStore _liveRankingStore;
     private readonly IServerClient _client;
-    private readonly IPlayerManagerService _playerManager;
     private readonly IEvoScBaseConfig _config;
-    private bool isRoundsMode = false;
+    private bool _isRoundsMode;
 
     public LiveRankingService(ILogger<LiveRankingService> logger, ILoggerFactory loggerFactory,
         IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager,
@@ -36,20 +33,17 @@ public class LiveRankingService : ILiveRankingService
         _logger = logger;
         _manialinkManager = manialinkManager;
         _client = client;
-        _playerManager = playerManager;
         _config = config;
         _liveRankingStore =
-            new LiveRankingStore(loggerFactory.CreateLogger<LiveRankingStore>(), _playerManager);
+            new LiveRankingStore(loggerFactory.CreateLogger<LiveRankingStore>(), playerManager);
     }
 
     public async Task OnEnableAsync()
     {
         _logger.LogInformation("LiveRankingModule enabled");
         await CheckIsRoundsModeAsync();
-        if (isRoundsMode)
+        if (_isRoundsMode)
         {
-            var map = await _client.Remote.GetCurrentMapInfoAsync();
-            await GetWorldRecordViaTMioAsync(map.UId, map.Name);
             await _liveRankingStore.ResetLiveRankingsAsync();
             _liveRankingStore.ResetRoundCounter();
             _liveRankingStore.IncreaseRoundCounter();
@@ -71,10 +65,10 @@ public class LiveRankingService : ILiveRankingService
     public async Task OnPlayerWaypointAsync(WayPointEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        if (isRoundsMode)
+        if (_isRoundsMode)
         {
             _logger.LogInformation("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
-                args.AccountId, isRoundsMode);
+                args.AccountId, _isRoundsMode);
 
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
@@ -143,10 +137,10 @@ public class LiveRankingService : ILiveRankingService
     public async Task OnPlayerGiveupAsync(PlayerUpdateEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        if (isRoundsMode)
+        if (_isRoundsMode)
         {
             _logger.LogInformation("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
-                isRoundsMode);
+                _isRoundsMode);
 
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
@@ -160,14 +154,13 @@ public class LiveRankingService : ILiveRankingService
     {
         _logger.LogInformation("Map starts: {MapName}", args.Map.Name);
         await CheckIsRoundsModeAsync();
-        _logger.LogInformation("Is rounds mode on map start? {IsRoundsMode}", isRoundsMode);
-        if (!isRoundsMode)
+        _logger.LogInformation("Is rounds mode on map start? {IsRoundsMode}", _isRoundsMode);
+        if (!_isRoundsMode)
         {
             await Task.CompletedTask;
         }
         else
         {
-            await GetWorldRecordViaTMioAsync(args.Map.Uid, args.Map.Name);
             _liveRankingStore.ResetRoundCounter();
             _liveRankingStore.IncreaseRoundCounter();
             _liveRankingStore.IncreaseTrackCounter();
@@ -180,8 +173,8 @@ public class LiveRankingService : ILiveRankingService
     public async Task OnEndMapAsync(MapEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        _logger.LogInformation("Map ends: {MapName} - RoundsMode: {IsRoundsMode}", args.Map.Name, isRoundsMode);
-        if (isRoundsMode)
+        _logger.LogInformation("Map ends: {MapName} - RoundsMode: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
+        if (_isRoundsMode)
         {
             await _liveRankingStore.ResetLiveRankingsAsync();
             await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
@@ -196,7 +189,7 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnStartRoundAsync(RoundEventArgs args)
     {
-        _logger.LogInformation("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, isRoundsMode);
+        _logger.LogInformation("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
         await _liveRankingStore.ResetLiveRankingsAsync();
         await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
@@ -208,7 +201,7 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnEndRoundAsync(RoundEventArgs args)
     {
-        _logger.LogInformation("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, isRoundsMode);
+        _logger.LogInformation("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
         var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
         var nbFinished = liveRanking.FindAll(x => x.isFinish);
         if (nbFinished.Count > 0)
@@ -287,20 +280,8 @@ public class LiveRankingService : ILiveRankingService
         };
         var modeScriptInfo = await _client.Remote.GetModeScriptInfoAsync();
         // isRoundsMode = validModes.Contains(modeScriptInfo.Name);
-        isRoundsMode = true;
-        return isRoundsMode;
-    }
-
-    private async Task GetWorldRecordViaTMioAsync(string mapUid, string mapName)
-    {
-        //TODO: outsource to own module so we can re-use it
-        TMioLeaderboardResponse res = await "https://trackmania.io"
-            .AppendPathSegments("api", "leaderboard", "map", mapUid)
-            .WithHeaders(new { User_Agent = "EvoSC# / World Record Grabber / Discord: chris92" })
-            .GetJsonAsync<TMioLeaderboardResponse>();
-
-        _liveRankingStore.SetCurrentMap(mapName);
-        _liveRankingStore.SetWorldRecord(res.tops[0].player.name, FormatTime(res.tops[0].time, false));
+        _isRoundsMode = true;
+        return _isRoundsMode;
     }
 
     public MatchInfo GetMatchInfo()

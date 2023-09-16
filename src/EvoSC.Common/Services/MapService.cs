@@ -176,6 +176,20 @@ public class MapService : IMapService
         return map;
     }
 
+    public async Task<IMap?> GetCurrentMapAsync()
+    {
+        var currentMap = await _serverClient.Remote.GetCurrentMapInfoAsync();
+
+        if (currentMap == null)
+        {
+            return null;
+        }
+        
+        var map = await GetMapByUidAsync(currentMap.UId);
+
+        return map;
+    }
+
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
     {
         return map.ExternalVersion == mapMetadata.ExternalVersion;
