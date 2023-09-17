@@ -22,7 +22,7 @@ public class WorldRecordModule : EvoScModule, IToggleable
         var currentMap = await _mapService.GetCurrentMapAsync();
         if (currentMap != null)
         {
-            await _worldRecordService.FetchRecord(currentMap);
+            await _worldRecordService.FetchRecord(currentMap.Uid);
         }
     }
 

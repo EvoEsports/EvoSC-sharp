@@ -25,10 +25,10 @@ public class WorldRecordService : IWorldRecordService
         _mapService = mapService;
     }
 
-    public async Task FetchRecord(IMap map)
+    public async Task FetchRecord(string mapUid)
     {
         TMioLeaderboardResponse res = await "https://trackmania.io"
-            .AppendPathSegments("api", "leaderboard", "map", map.Uid)
+            .AppendPathSegments("api", "leaderboard", "map", mapUid)
             .WithHeaders(new { User_Agent = "EvoSC# / World Record Grabber / Discord: chris92" })
             .GetJsonAsync<TMioLeaderboardResponse>();
 
@@ -53,6 +53,13 @@ public class WorldRecordService : IWorldRecordService
         _currentWorldRecord = newRecord;
 
         //TODO: send NewWorldRecordLoaded event
+
+        return Task.CompletedTask;
+    }
+
+    public Task ClearRecord()
+    {
+        _currentWorldRecord = null;
 
         return Task.CompletedTask;
     }

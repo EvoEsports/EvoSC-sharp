@@ -21,4 +21,12 @@ public class WorldRecordEventController : EvoScController<IEventControllerContex
     [Subscribe(ModeScriptEvent.Scores)]
     public async Task OnScores(object sender, ScoresEventArgs scoresEventArgs)
         => await _worldRecordService.DetectNewWorldRecordThroughScores(scoresEventArgs);
+
+    [Subscribe(ModeScriptEvent.EndMapEnd)]
+    public async Task OnMapEnd(object sender, MapEventArgs mapEventArgs)
+        => await _worldRecordService.ClearRecord();
+
+    [Subscribe(ModeScriptEvent.StartMapStart)]
+    public async Task OnMapStart(object sender, MapEventArgs mapEventArgs)
+        => await _worldRecordService.FetchRecord(mapEventArgs.Map.Uid);
 }
