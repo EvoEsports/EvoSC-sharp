@@ -68,18 +68,15 @@ public class CurrentMapService : ICurrentMapService
     private async Task ShowManialinkAsync(string mapUId)
     {
         var dbMap = await _mapRepository.GetMapByUidAsync(mapUId);
-        List<Country> countries = Country.List.ToList();
-        var country = countries.Find(country => country.Name == GetCountry(dbMap?.Author?.Zone ?? ""));
-
         var worldRecord = await _worldRecordService.GetRecord();
-        _logger.LogInformation("current record map: {user} ==> {time}", worldRecord.Name, worldRecord.Time);
+        
+        _logger.LogInformation("current record map: {user} ==> {time}", worldRecord?.Name, worldRecord?.Time);
 
         await _manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
             new
             {
                 map = dbMap,
-                country = country?.ThreeLetterCode ?? "WOR",
-                worldRecord = worldRecord,
+                record = worldRecord,
                 headerColor = _config.Theme.UI.HeaderBackgroundColor,
                 primaryColor = _config.Theme.UI.PrimaryColor,
                 logoUrl = _config.Theme.UI.LogoWhiteUrl,
