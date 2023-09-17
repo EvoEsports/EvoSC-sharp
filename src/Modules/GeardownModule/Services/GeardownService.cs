@@ -59,13 +59,16 @@ public class GeardownService : IGeardownService
 
     public async Task StartMatchAsync()
     {
+        // create a new timeline and get the tracking ID
         var matchTrackerId = await _matchTracker.BeginMatchAsync();
         await _server.Remote.RestartMapAsync();
         
+        // disable the ready widget
         await _playerReadyService.SetWidgetEnabled(false);
 
         await _server.InfoMessageAsync("Match is about to begin ...");
         
+        // obtain the current match details
         var matchState = JsonSerializer.Deserialize<GeardownMatchState>(_settings.MatchState);
 
         if (matchState == null)
@@ -75,11 +78,13 @@ public class GeardownService : IGeardownService
         
         _setupState.SetMatchStarted();
 
+        // create a relation for the match and the timeline
         if (matchState.Match.id != null)
         {
             await _tourneyTimelineRepository.AddTimelineAsync((int)matchState.Match.id, matchTrackerId);
         }
         
+        // notify geardown that the match has started
         await _geardownApi.Matches.OnStartMatchAsync(matchState.MatchToken);
         
         _audits.NewInfoEvent("Geardown.StartMatch")
@@ -102,6 +107,7 @@ public class GeardownService : IGeardownService
 
     private async Task SendResultsAsync(IMatchTimeline timeline)
     {
+        // get the current match details
         var matchState = JsonSerializer.Deserialize<GeardownMatchState>(_settings.MatchState);
 
         if (matchState?.Match?.participants?.FirstOrDefault()?.user?.tm_account_id == null)
@@ -109,6 +115,7 @@ public class GeardownService : IGeardownService
             throw new InvalidOperationException("The match state is invalid, failed to send results.");
         }
         
+        // obtain match results
         var results = timeline.States.LastOrDefault(s => s.Status == MatchStatus.Running) as IScoresMatchState;
 
         if (results == null || results.Section != ModeScriptSection.EndMatch)
@@ -121,6 +128,7 @@ public class GeardownService : IGeardownService
             throw new InvalidOperationException("Match Id is null, cannot send results to geardown.");
         }
         
+        // send match results to geardown
         await _geardownApi.Matches.AddResultsAsync((int)matchState.Match.id,
         results.Players.Select(r => new GdResult
         {
@@ -128,6 +136,7 @@ public class GeardownService : IGeardownService
             score = r.MatchPoints
         }));
 
+        // notify geardown that the match has ended
         await _geardownApi.Matches.OnEndMatchAsync(matchState.MatchToken);
     }
 }

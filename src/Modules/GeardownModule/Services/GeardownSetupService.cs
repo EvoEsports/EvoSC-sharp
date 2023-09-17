@@ -54,6 +54,7 @@ public class GeardownSetupService : IGeardownSetupService
 
     public async Task<(GdMatch match, string token)> InitialSetupAsync(int matchId)
     {
+        // generate a match token and assign this server to the provided match
         var token = await AssignServerToMatchAsync(matchId);
 
         if (token == null)
@@ -61,6 +62,7 @@ public class GeardownSetupService : IGeardownSetupService
             throw new InvalidOperationException($"Failed to assign server to match {matchId}. Token returned is null.");
         }
         
+        // get match information such as format, maps, participants etc.
         var match = await GetMatchInfoAsync(token.EvoScToken);
         var maps = await GetMatchMapsAsync(match);
         var matchSettingsName = await CreateMatchSettingsAsync(match, maps);
@@ -78,7 +80,10 @@ public class GeardownSetupService : IGeardownSetupService
             throw new InvalidOperationException($"No participants found for match {match.id} ({match.name}).");
         }
         
+        // whitelist players and spectators
         await SetupPlayersAndSpectatorsAsync(players);
+        
+        // load the match settings and skip to the first map
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
 
         if (players.Length <= 4)
@@ -100,6 +105,7 @@ public class GeardownSetupService : IGeardownSetupService
         
         _setupState.SetSetupFinished();
 
+        // load match settings again to make sure its properly loaded
         await _matchSettings.LoadMatchSettingsAsync(_setupState.MatchSettingsName, false);
         await _server.Remote.RestartMapAsync();
     }
@@ -246,7 +252,6 @@ public class GeardownSetupService : IGeardownSetupService
                 _ => DefaultModeScriptName.TimeAttack
             };
 
-            builder.WithFilter(f => f.AsRandomMapOrder(true));
             builder.WithMode(mode);
             builder.WithModeSettings(s =>
             {
@@ -262,7 +267,7 @@ public class GeardownSetupService : IGeardownSetupService
             });
 
             builder.WithMaps(maps);
-            //builder.AddMap("Campaigns/CurrentQuarterly/Spring 2023 - 01.Map.Gbx");
+            builder.WithFilter(f => f.AsRandomMapOrder(true));
         });
 
         return name;
