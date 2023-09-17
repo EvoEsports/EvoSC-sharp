@@ -256,20 +256,23 @@
         }
         
         Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow, Integer position){
+            if(Score == Null || Score.User == Null || playerRow == Null){
+                return;
+            }
+            //declare CSmPlayer Driver for Score;
+            //if(Driver == Null){
+            //    return;
+            //}
+            
             declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
             declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
             declare Boolean CustomPointsEnabled = Net_TMxSM_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
-            declare CSmPlayer Driver for Score;
             declare Boolean Race_ScoresTable_IsSpectator for Score = False;
             declare ScoresTable_PlayerLastUpdate for Score = -1;
             declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
             declare Boolean colorizePosition = False;
             declare CSmScore playerScore for playerRow;
             playerScore <=> Score;
-            
-            if(playerScore == Null || Driver == Null || playerRow == Null){
-                return;
-            }
                 
             declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
             declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
@@ -308,7 +311,8 @@
                 if(Score.PrevRaceTimes.count > 0 && Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1] > 0){
                     scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
                 }else{
-                    if(Driver.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned && PlayerIsConnected && !Race_ScoresTable_IsSpectator){
+                    declare CSmPlayer::ESpawnStatus Race_ScoresTable_SpawnStatus for Score = CSmPlayer::ESpawnStatus::NotSpawned;
+                    if(Race_ScoresTable_SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned && PlayerIsConnected && !Race_ScoresTable_IsSpectator){
                         scoreLabel.Value = "DNF";
                     }else{
                         scoreLabel.Value = "";
@@ -488,8 +492,8 @@
                 declare Boolean Race_ScoresTable_IsSpectator for Player.Score = False;
                 Race_ScoresTable_IsSpectator = Player.RequestsSpectate;
                 
-                declare CSmPlayer Driver for Player.Score;
-                Driver <=> Player;
+                declare CSmPlayer::ESpawnStatus Race_ScoresTable_SpawnStatus for Player.Score = CSmPlayer::ESpawnStatus::NotSpawned;
+                Race_ScoresTable_SpawnStatus = Player.SpawnStatus;
             }
         
             declare cursor = 0;
@@ -501,6 +505,11 @@
                     cursor += 1;
                     continue;
                 }
+                
+                //declare CSmPlayer Driver for Score;
+                //if(Score.User == Null || Driver == Null){
+                //    continue;
+                //}
                 
                 declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
                 declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
@@ -519,7 +528,6 @@
                     }
                 }
             
-                declare CUser User <=> Score.User;
                 declare playerRow = (RowsFrame.Controls[cursor] as CMlFrame);
                 declare positionLabel = (playerRow.GetFirstChild("position") as CMlLabel);
                 declare clubBg = (playerRow.GetFirstChild("club_bg") as CMlQuad);
@@ -530,8 +538,8 @@
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 
                 positionLabel.Value = (cursor + 1) ^ "";
-                clubLabel.Value = User.ClubTag;
-                nameLabel.Value = User.Name;
+                clubLabel.Value = Score.User.ClubTag;
+                nameLabel.Value = Score.User.Name;
                 
                 if(clubLabel.Value != ""){
                     clubBg.Opacity = 0.95;
@@ -544,7 +552,7 @@
                 
                 if(!RowIsLocked){
                     UpdateScoreAndPoints(Score, playerRow, cursor + 1);
-                    SetCountryFlag(flagQuad, User.Login);
+                    SetCountryFlag(flagQuad, Score.User.Login);
                 }
                 
                 if(ShouldShowPointsBox()){
