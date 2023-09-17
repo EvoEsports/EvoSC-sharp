@@ -46,6 +46,8 @@ public class WorldRecordService : IWorldRecordService
     public Task OverwriteRecord(WorldRecord newRecord)
     {
         _currentWorldRecord = newRecord;
+        
+        //TODO: send NewWorldRecordLoaded event
 
         return Task.CompletedTask;
     }

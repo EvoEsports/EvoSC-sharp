@@ -1,7 +1,9 @@
 ﻿<component>
     <using namespace="EvoSC.Common.Interfaces.Models"/>
+    <using namespace="EvoSC.Modules.Official.WorldRecordModule.Models"/>
 
     <property type="IMap?" name="map" default="null"/>
+    <property type="WorldRecord?" name="record" default="null"/>
 
     <property type="double" name="scale" default="0.9"/>
     <property type="double" name="w" default="68.0"/>
@@ -99,18 +101,20 @@
                     />
                 </frame>
 
-                <frameinstance modelid="gradient_box" pos="0 -9" />
-                <frame pos="-0.2 -10">
-                    <label pos="2 0"
-                           text="Record: n/a"
-                           textsize="1.4"
-                           textfont="GameFontSemiBold"
-                    />
-                    <label pos="2 -3.2"
-                           text="by n/a"
-                           textsize="1.1"
-                           textfont="GameFontRegular"
-                    />
+                <frame v-if="record != null">
+                    <frameinstance modelid="gradient_box" pos="0 -9" />
+                    <frame pos="-0.2 -10">
+                        <label pos="2 0"
+                               text="Record: {{ record.Time }}"
+                               textsize="1.4"
+                               textfont="GameFontSemiBold"
+                        />
+                        <label pos="2 -3.2"
+                               text="by {{ record.Name }}"
+                               textsize="1.1"
+                               textfont="GameFontRegular"
+                        />
+                    </frame>
                 </frame>
             </frame>
         </frame>

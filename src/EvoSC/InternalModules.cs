@@ -32,6 +32,7 @@ public static class InternalModules
         typeof(PlayerModule),
         typeof(ExampleModule),
         typeof(MapsModule),
+        typeof(WorldRecordModule),
         typeof(PlayerRecordsModule),
         typeof(MatchManagerModule),
         typeof(SetNameModule),
@@ -48,7 +49,6 @@ public static class InternalModules
         typeof(LiveRankingModule),
         typeof(MatchRankingModule),
         typeof(ASayModule),
-        typeof(WorldRecordModule),
         typeof(SpectatorTargetInfoModule)
     };
 
