@@ -124,7 +124,7 @@ public class GeardownService : IGeardownService
         await _geardownApi.Matches.AddResultsAsync((int)matchState.Match.id,
         results.Players.Select(r => new GdResult
         {
-            nickname = r.Player.AccountId, 
+            account_id = r.Player.AccountId, 
             score = r.MatchPoints
         }));
 
