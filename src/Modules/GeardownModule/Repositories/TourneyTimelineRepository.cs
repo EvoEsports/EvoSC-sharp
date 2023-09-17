@@ -11,7 +11,7 @@ namespace EvoSC.Modules.Evo.GeardownModule.Repositories;
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class TourneyTimelineRepository : DbRepository, ITourneyTimelineRepository
 {
-    protected TourneyTimelineRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
+    public TourneyTimelineRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
     {
     }
 
