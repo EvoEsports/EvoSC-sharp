@@ -20,7 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\WorldRecordModule\WorldRecordModule.csproj" />
         <ProjectReference Include="..\EvoSC.CLI\EvoSC.CLI.csproj" />
         <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
         <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
