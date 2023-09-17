@@ -146,8 +146,8 @@
         }
         
         Void UpdateScoreboardLayout() {
-            declare persistent Boolean SB_ShowClubTags for LocalUser = True;
-            declare persistent Boolean SB_ShowFlags for LocalUser = True;
+            declare persistent Boolean SB_Setting_ShowClubTags for LocalUser = True;
+            declare persistent Boolean SB_Setting_ShowFlags for LocalUser = True;
             declare shouldShowPoints = ShouldShowPointsBox();
             declare Real flagWidth = {{ rowInnerHeight }} * 2.0;
             declare Real innerSpacing = {{ innerSpacing }} * 1.0;
@@ -165,7 +165,7 @@
                 pointsBoxFrame.Visible = shouldShowPoints;
                 pointsLabel.Visible = shouldShowPoints;
                 
-                if(SB_ShowFlags){
+                if(SB_Setting_ShowFlags){
                     flagQuad.RelativePosition_V3.X = offset;
                     flagQuad.Show();
                     offset += flagWidth;
@@ -173,7 +173,7 @@
                     flagQuad.Hide();
                 }
                 
-                if(SB_ShowClubTags){
+                if(SB_Setting_ShowClubTags){
                     clubQuad.RelativePosition_V3.X = offset;
                     clubLabel.RelativePosition_V3.X = offset + (flagWidth / 2.0);
                     clubQuad.Show();
@@ -420,6 +420,16 @@
         }
         
         Text GetRecordText() {
+            declare Integer SB_PointsLimit for UI = -2;
+            
+            if(SB_PointsLimit >= 0){
+                if(SB_PointsLimit == 0){
+                    return "POINTS LIMIT: UNLIMITED";
+                }
+                
+                return "POINTS LIMIT: " ^ SB_PointsLimit;
+            }
+        
             return "AUTHOR TIME | " ^ TL::TimeToText(Map.TMObjective_AuthorTime, True, True);
         }
         
@@ -492,16 +502,16 @@
                     continue;
                 }
                 
-                declare persistent Boolean SB_ShowSpectators for LocalUser = True;
-                declare persistent Boolean SB_ShowDisconnected for LocalUser = True;
+                declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
+                declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
                 
-                if(!SB_ShowSpectators){
+                if(!SB_Setting_ShowSpectators){
                     declare Boolean Race_ScoresTable_IsSpectator for Score = False;
                     if(Race_ScoresTable_IsSpectator){
                         continue;
                     }
                 }
-                if(!SB_ShowDisconnected){
+                if(!SB_Setting_ShowDisconnected){
                     declare ScoresTable_PlayerLastUpdate for Score = -1;
                     declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
                     if(!PlayerIsConnected){
@@ -524,7 +534,7 @@
                 nameLabel.Value = User.Name;
                 
                 if(clubLabel.Value != ""){
-                    clubBg.Opacity = 1.0;
+                    clubBg.Opacity = 0.95;
                 }else{
                     clubBg.Opacity = 0.25;
                 }

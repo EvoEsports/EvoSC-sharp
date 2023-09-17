@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -13,15 +14,19 @@ public class ScoreboardService : IScoreboardService
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
     private readonly IEvoScBaseConfig _config;
+    private readonly IMatchSettingsService _matchSettingsService;
 
     private int _roundsPerMap = -1;
-    private int _currentRound = 0;
+    private int _pointsLimit = -1;
+    private int _currentRound = -1;
+    private int _maxPlayers = -1;
 
-    public ScoreboardService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config)
+    public ScoreboardService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config, IMatchSettingsService matchSettingsService)
     {
         _manialinks = manialinks;
         _server = server;
         _config = config;
+        _matchSettingsService = matchSettingsService;
     }
 
     public async Task ShowScoreboard()
@@ -33,7 +38,7 @@ public class ScoreboardService : IScoreboardService
     {
         return new
         {
-            MaxPlayers = await GetMaxPlayersAsync(),
+            MaxPlayers = _maxPlayers,
             RoundsPerMap = _roundsPerMap,
             PositionColors = new Dictionary<int, string> { { 1, "d1b104" }, { 2, "9e9e9e" }, { 3, "915d29" } },
             headerColor = _config.Theme.UI.HeaderBackgroundColor,
@@ -86,36 +91,42 @@ public class ScoreboardService : IScoreboardService
         await _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
-    public async Task SendRoundsInfo()
+    public async Task SendRequiredAdditionalInfos()
     {
         await _manialinks.SendPersistentManialinkAsync("Scoreboard.RoundsInfo",
-            new { RoundsPerMap = _roundsPerMap, CurrentRound = _currentRound });
+            new { RoundsPerMap = _roundsPerMap, CurrentRound = _currentRound, PointsLimit = _pointsLimit });
     }
 
-    public async Task LoadAndUpdateRoundsPerMap()
+    public async Task LoadAndSendRequiredAdditionalInfos()
     {
-        _roundsPerMap = await GetRoundsPerMapAsync();
-        await SendRoundsInfo();
+        var settings = await _matchSettingsService.GetCurrentScriptSettingsAsync();
+
+        if (settings == null)
+        {
+            return;
+        }
+        
+        var roundsPerMap = -1;
+        var pointsLimit = -1;
+        
+        if (settings.TryGetValue("S_RoundsPerMap", out var rounds))
+        {
+            roundsPerMap = (int)rounds;
+        }
+        if (settings.TryGetValue("S_PointsLimit", out var pointsLimitValue))
+        {
+            pointsLimit = (int)pointsLimitValue;
+        }
+
+        _maxPlayers = (await _server.Remote.GetMaxPlayersAsync()).CurrentValue;
+        _roundsPerMap = roundsPerMap;
+        _pointsLimit = pointsLimit;
+        
+        await SendRequiredAdditionalInfos();
     }
 
     public void SetCurrentRound(int round)
     {
         _currentRound = round;
-    }
-
-    private async Task<int> GetRoundsPerMapAsync()
-    {
-        var variables = await _server.Remote.GetModeScriptSettingsAsync();
-        if (!variables.TryGetValue("S_RoundsPerMap", out var rounds))
-        {
-            return -1;
-        }
-
-        return (int)rounds;
-    }
-
-    private async Task<int> GetMaxPlayersAsync()
-    {
-        return (await _server.Remote.GetMaxPlayersAsync()).CurrentValue;
     }
 }

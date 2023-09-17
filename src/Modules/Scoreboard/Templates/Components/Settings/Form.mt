@@ -20,33 +20,33 @@
         *** OnCheckboxToggle ***
         ***
             if(ControlId == "show_flags"){
-                declare persistent Boolean SB_ShowFlags for LocalUser = True;
-                SB_ShowFlags = IsChecked;
+                declare persistent Boolean SB_Setting_ShowFlags for LocalUser = True;
+                SB_Setting_ShowFlags = IsChecked;
                 UpdateScoreboardLayout();
             }else if(ControlId == "show_club_tags"){
-                declare persistent Boolean SB_ShowClubTags for LocalUser = True;
-                SB_ShowClubTags = IsChecked;
+                declare persistent Boolean SB_Setting_ShowClubTags for LocalUser = True;
+                SB_Setting_ShowClubTags = IsChecked;
                 UpdateScoreboardLayout();
             }else if(ControlId == "show_spectators"){
-                declare persistent Boolean SB_ShowSpectators for LocalUser = True;
-                SB_ShowSpectators = IsChecked;
+                declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
+                SB_Setting_ShowSpectators = IsChecked;
             }else if(ControlId == "show_disconnected"){
-                declare persistent Boolean SB_ShowDisconnected for LocalUser = True;
-                SB_ShowDisconnected = IsChecked;
+                declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
+                SB_Setting_ShowDisconnected = IsChecked;
             }
         ***
         
         *** OnInitialization ***
         ***
-            declare persistent Boolean SB_ShowFlags for LocalUser;
-            declare persistent Boolean SB_ShowClubTags for LocalUser;
-            declare persistent Boolean SB_ShowSpectators for LocalUser;
-            declare persistent Boolean SB_ShowDisconnected for LocalUser;
+            declare persistent Boolean SB_Setting_ShowFlags for LocalUser = True;
+            declare persistent Boolean SB_Setting_ShowClubTags for LocalUser = True;
+            declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
+            declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
             
-            SetCheckboxState("show_flags", SB_ShowFlags);
-            SetCheckboxState("show_club_tags", SB_ShowClubTags);
-            SetCheckboxState("show_spectators", SB_ShowSpectators);
-            SetCheckboxState("show_disconnected", SB_ShowDisconnected);
+            SetCheckboxState("show_flags", SB_Setting_ShowFlags);
+            SetCheckboxState("show_club_tags", SB_Setting_ShowClubTags);
+            SetCheckboxState("show_spectators", SB_Setting_ShowSpectators);
+            SetCheckboxState("show_disconnected", SB_Setting_ShowDisconnected);
         ***
         -->
     </script>
