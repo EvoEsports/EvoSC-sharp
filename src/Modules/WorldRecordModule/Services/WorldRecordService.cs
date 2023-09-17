@@ -1,4 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
@@ -14,11 +16,13 @@ namespace EvoSC.Modules.Official.WorldRecordModule.Services;
 public class WorldRecordService : IWorldRecordService
 {
     private readonly ILogger<WorldRecordService> _logger;
+    private readonly IMapService _mapService;
     private WorldRecord? _currentWorldRecord;
 
-    public WorldRecordService(ILogger<WorldRecordService> logger)
+    public WorldRecordService(ILogger<WorldRecordService> logger, IMapService mapService)
     {
         _logger = logger;
+        _mapService = mapService;
     }
 
     public async Task FetchRecord(IMap map)
@@ -38,7 +42,8 @@ public class WorldRecordService : IWorldRecordService
                 Name = bestRecord.player.name, Time = bestRecord.time, Source = "tm.io"
             };
 
-            _logger.LogInformation("New best loaded from tm.io: {name} -> {time}", newWorldRecord.Name, newWorldRecord.Time);
+            _logger.LogInformation("New best loaded from tm.io: {name} -> {time}", newWorldRecord.Name,
+                newWorldRecord.Time);
             await OverwriteRecord(newWorldRecord);
         }
     }
@@ -46,14 +51,46 @@ public class WorldRecordService : IWorldRecordService
     public Task OverwriteRecord(WorldRecord newRecord)
     {
         _currentWorldRecord = newRecord;
-        
+
         //TODO: send NewWorldRecordLoaded event
 
         return Task.CompletedTask;
     }
 
-    public Task<WorldRecord?> GetRecord()
+    public async Task<WorldRecord?> GetRecord()
     {
-        return Task.FromResult(_currentWorldRecord);
+        if (_currentWorldRecord == null)
+        {
+            //TODO: get author time as fallback
+            // var currentMap = await _mapService.GetCurrentMapAsync();
+            // return new WorldRecord
+            // {
+            //     Name = currentMap.Author.NickName,
+            //     Time = currentMap.Gbx,
+            //     Source = "author"
+            // };
+
+            return null;
+        }
+
+        return _currentWorldRecord;
+    }
+
+    public Task DetectNewWorldRecordThroughScores(ScoresEventArgs scoresEventArgs)
+    {
+        if (_currentWorldRecord == null)
+        {
+            return Task.CompletedTask;
+        }
+
+        foreach (var score in scoresEventArgs.Players)
+        {
+            if (score != null && score.BestRaceTime < _currentWorldRecord.Time)
+            {
+                OverwriteRecord(new WorldRecord { Name = score.Name, Time = score.BestRaceTime, Source = "local" });
+            }
+        }
+
+        return Task.CompletedTask;
     }
 }

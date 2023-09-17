@@ -9,7 +9,6 @@ using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 using Microsoft.Extensions.Logging;
 using GbxRemoteNet.Events;
-using ISO3166;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Services;
 
@@ -52,17 +51,6 @@ public class CurrentMapService : ICurrentMapService
     {
         await _manialinkManager.HideManialinkAsync("CurrentMapModule.CurrentMapWidget");
         _logger.LogDebug("Hiding current map widget");
-    }
-
-    private static string GetCountry(string Zone)
-    {
-        var zones = Zone.Split("|");
-        if (zones.Length > 2)
-        {
-            return zones[2];
-        }
-
-        return "Other";
     }
 
     private async Task ShowManialinkAsync(string mapUId)

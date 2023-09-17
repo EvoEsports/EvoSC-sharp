@@ -36,4 +36,10 @@ public class CurrentMapController : EvoScController<IEventControllerContext>
     {
         return _service.HideWidgetAsync();
     }
+
+    [Subscribe(ModeScriptEvent.Scores)]
+    public Task OnPodiumStartAsync(object sender, ScoresEventArgs args)
+    {
+        return _service.HideWidgetAsync();
+    }
 }

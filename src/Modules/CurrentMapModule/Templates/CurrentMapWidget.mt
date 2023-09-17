@@ -101,11 +101,11 @@
                     />
                 </frame>
 
-                <frame>
+                <frame v-if="record != null">
                     <frameinstance modelid="gradient_box" pos="0 -9" />
                     <frame pos="-0.2 -10">
                         <label pos="2 0"
-                               text="Record: {{ record?.Time }}"
+                               text="Record: {{ record?.FormattedTime() }} [{{ record?.Source }}]"
                                textsize="1.4"
                                textfont="GameFontSemiBold"
                         />
