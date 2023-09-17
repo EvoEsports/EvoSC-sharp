@@ -55,7 +55,7 @@ public class GeardownService : IGeardownService
             .Comment("Server was setup through geardown.");
     }
 
-    public Task FinishServerSetupAsync() => _setupService.FinishSetupAsync();
+    public Task FinishServerSetupAsync() => _setupService.FinalizeSetupAsync();
 
     public async Task StartMatchAsync()
     {
@@ -77,7 +77,7 @@ public class GeardownService : IGeardownService
 
         if (matchState.Match.id != null)
         {
-            await _tourneyTimelineRepository.AddTimeline((int)matchState.Match.id, matchTrackerId);
+            await _tourneyTimelineRepository.AddTimelineAsync((int)matchState.Match.id, matchTrackerId);
         }
         
         await _geardownApi.Matches.OnStartMatchAsync(matchState.MatchToken);

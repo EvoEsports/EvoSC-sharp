@@ -15,6 +15,6 @@ public class TourneyTimelineRepository : DbRepository, ITourneyTimelineRepositor
     {
     }
 
-    public Task AddTimeline(int matchId, Guid timelineId) =>
+    public Task AddTimelineAsync(int matchId, Guid timelineId) =>
         Database.InsertAsync(new DbTourneyTimeline { MatchId = matchId, TimelineId = timelineId });
 }

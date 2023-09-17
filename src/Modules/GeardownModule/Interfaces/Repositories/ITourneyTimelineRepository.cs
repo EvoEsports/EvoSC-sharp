@@ -2,5 +2,11 @@
 
 public interface ITourneyTimelineRepository
 {
-    public Task AddTimeline(int matchId, Guid timelineId);
+    /// <summary>
+    /// Add a match ID to a timeline.
+    /// </summary>
+    /// <param name="matchId">ID of the match.</param>
+    /// <param name="timelineId">Tracking ID of the timeline.</param>
+    /// <returns></returns>
+    public Task AddTimelineAsync(int matchId, Guid timelineId);
 }

@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces;
+using EvoSC.Modules.Evo.GeardownModule.Permissions;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Controllers;
 
@@ -23,7 +24,7 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
         _matchManagement = matchManagement;
     }
 
-    [ChatCommand("geardown_setup", "Setup the server for a match from geardown.")]
+    [ChatCommand("geardown_setup", "Setup the server for a match from geardown.", GeardownPermissions.SetupMatch)]
     public async Task GeardownSetupAsync(int matchId)
     {
         try
@@ -44,7 +45,7 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
         }
     }
 
-    [ChatCommand("geardown_startmatch", "Start a geardown controller match.")]
+    [ChatCommand("geardown_startmatch", "Start a geardown controller match.", GeardownPermissions.StartMatch)]
     public async Task GeardownStartMatchAsync()
     {
         try
@@ -58,15 +59,15 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
         }
     }
 
-    [ChatCommand("setpoints", "Set points for a player.")]
+    [ChatCommand("setpoints", "Set points for a player.", GeardownPermissions.SetPoints)]
     public Task SetPlayerPointsAsync(IOnlinePlayer player, int points) =>
         _matchManagement.SetPlayerPointsAsync(player, points);
 
-    [ChatCommand("pausematch", "Pause the current match.")]
+    [ChatCommand("pausematch", "Pause the current match.", GeardownPermissions.PauseMatch)]
     [CommandAlias("/pause")]
     public Task PauseMatchAsync() => _matchManagement.PauseMatchAsync();
     
-    [ChatCommand("unpausematch", "Pause the current match.")]
+    [ChatCommand("unpausematch", "Pause the current match.", GeardownPermissions.PauseMatch)]
     [CommandAlias("/unpause")]
     public Task UnpauseMatchAsync() => _matchManagement.UnpauseMatchAsync();
 }

@@ -91,7 +91,7 @@ public class GeardownSetupService : IGeardownSetupService
         return (match, token.EvoScToken);
     }
 
-    public async Task FinishSetupAsync()
+    public async Task FinalizeSetupAsync()
     {
         if (!_setupState.IsInitialSetup)
         {

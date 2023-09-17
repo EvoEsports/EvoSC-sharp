@@ -7,5 +7,14 @@ namespace EvoSC.Modules.Evo.GeardownModule.Permissions;
 public enum GeardownPermissions
 {
     [Description("Can start a match through geardown.")]
-    StartMatch
+    StartMatch,
+    
+    [Description("Can set up the server for a match.")]
+    SetupMatch,
+    
+    [Description("Can set custom points for a player.")]
+    SetPoints,
+    
+    [Description("Can pause/unpause a match.")]
+    PauseMatch
 }
