@@ -4,7 +4,8 @@ namespace EvoSC.Modules.Evo.GeardownModule.Interfaces.Services;
 
 public interface IGeardownApiService
 {
-    public IGeardownEventApi Events { get; }
-    public IGeardownGroupApi Groups { get; }
+    /// <summary>
+    /// Manage Tourney matches.
+    /// </summary>
     public IGeardownMatchApi Matches { get; }
 }

@@ -74,16 +74,21 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
     {
         lock (_readyPlayersLock)
         {
+            if (isReady && _readyPlayers.Contains(player))
+            {
+                return;
+            } 
+            
             if (isReady)
             {
                 _readyPlayers.Add(player);
             }
-            else if (_readyPlayers.Any(p => p.AccountId == player.AccountId))
+            else if (_readyPlayers.Contains(player))
             {
                 _readyPlayers.Remove(player);
             }
         }
-
+        
         await _events.RaiseAsync(MatchReadyEvents.PlayerReadyChanged, new PlayerReadyEventArgs
         {
             Player = player,

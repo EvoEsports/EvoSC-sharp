@@ -5,7 +5,7 @@ namespace EvoSC.Common.Interfaces.Models;
 /// <summary>
 /// Represents an online or offline player.
 /// </summary>
-public interface IPlayer
+public interface IPlayer : IEquatable<IPlayer>
 {
     /// <summary>
     /// The ID of the player.
@@ -38,10 +38,4 @@ public interface IPlayer
     public string? Zone { get; }
     
     public IPlayerSettings Settings { get; }
-
-    public bool Equals(object? other)
-    {
-        var otherPlayer = other as IPlayer;
-        return otherPlayer != null && AccountId.Equals(otherPlayer.AccountId, StringComparison.Ordinal);
-    }
 }

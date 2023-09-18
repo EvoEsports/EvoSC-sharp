@@ -2,6 +2,6 @@
 
 public class GdResult
 {
-    public string nickname { get; set; }
+    public string account_id { get; set; }
     public int score { get; set; }
 }
