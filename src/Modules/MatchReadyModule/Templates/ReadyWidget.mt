@@ -108,7 +108,6 @@
     declare Vec3 c1Ready;
     declare Vec3 c2Ready;
     declare Integer playerCount;
-    declare Boolean isReady;
     
     Boolean IsMouseOver(CMlQuad bg) {
         declare rPos = bg.AbsolutePosition_V3;
@@ -130,7 +129,9 @@
         declare lineRight <=> Page.MainFrame.GetFirstChild("readywidget-line-right") as CMlQuad;
         declare lineBottom <=> Page.MainFrame.GetFirstChild("readywidget-line-bottom") as CMlQuad;
         
-        if (isReady) {
+        declare Boolean EvoSC_ReadyWidget_IsReady for This = {{ isReady }};
+        
+        if (EvoSC_ReadyWidget_IsReady) {
             readyWidgetBg.ModulateColor = TextLib::ToColor("60F437");
             readyBtnBg.ModulateColor = c2Ready;
             readyBtnBgG.BgColor = c1Ready;
@@ -170,7 +171,7 @@
     Void CheckForUpdate() {
         declare Integer EvoSC_ReadyWidget_PlayerCount for This = 0;
         declare Boolean EvoSC_ReadyWidget_HasUpdate for This = False;
-        declare Boolean EvoSC_ReadyWidget_IsReady for This = False;
+        declare Boolean EvoSC_ReadyWidget_IsReady for This = {{ isReady }};
 
         if (!EvoSC_ReadyWidget_HasUpdate) {
             return;
@@ -179,7 +180,6 @@
         declare readyplayersText = Page.MainFrame.GetFirstChild("readywidget-readyplayers-text") as CMlLabel;
         readyplayersText.SetText("$i$s" ^ EvoSC_ReadyWidget_PlayerCount ^ "/{{ requiredPlayers }} PLAYERS READY");
         
-        isReady = EvoSC_ReadyWidget_IsReady;
         EvoSC_ReadyWidget_HasUpdate = False;
         
         if (!{{ showButton }}) {
@@ -199,7 +199,7 @@
         readyBtnBgG <=> Page.MainFrame.GetFirstChild("readybtn-background-gradient") as CMlQuad;
     }
     
-    isReady = {{ isReady }};
+    declare Boolean EvoSC_ReadyWidget_IsReady for This = {{ isReady }};
 
     c1NotReady = TextLib::ToColor("F43A3A");
     c2NotReady = TextLib::ToColor("CE3535");
@@ -212,8 +212,9 @@
         if ({{ showButton }}) {
             declare c1 = c1NotReady;
             declare c2 = c2NotReady;
+            declare Boolean EvoSC_ReadyWidget_IsReady for This = {{ isReady }};
             
-            if (isReady) {
+            if (EvoSC_ReadyWidget_IsReady) {
                 c1 = c1Ready;
                 c2 = c2Ready;
             }
@@ -232,8 +233,9 @@
     ***
         if ({{ showButton }} && IsMouseOver(readyBtnBg)) {
             // pre-update widget for better UI experience
-            UpdateWidget(!isReady);
-            TriggerPageAction("ReadyManialinkController/ReadyButton/" ^ (!isReady));
+            declare Boolean EvoSC_ReadyWidget_IsReady for This = {{ isReady }};
+            UpdateWidget(!EvoSC_ReadyWidget_IsReady);
+            TriggerPageAction("ReadyManialinkController/ReadyButton/" ^ (!EvoSC_ReadyWidget_IsReady));
         }
     ***
     
