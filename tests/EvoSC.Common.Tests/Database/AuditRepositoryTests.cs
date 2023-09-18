@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.AuditLog;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository.Audit;
-using EvoSC.Common.Database.Repository.Stores;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Models.Audit;
-using EvoSC.Common.Tests.Database.Setup;
+using EvoSC.Testing.Database;
 using LinqToDB;
 using Xunit;
 
@@ -16,7 +15,7 @@ public class AuditRepositoryTests
 {
     private static (AuditRepository, IDbConnectionFactory) CreateNewRepository()
     {
-        var factory = TestDbSetup.CreateFullDb();
+        var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         return (new AuditRepository(factory), factory);
     }
 
@@ -24,7 +23,7 @@ public class AuditRepositoryTests
     public async Task Audit_Record_Added()
     {
         var (repo, dbFactory) = CreateNewRepository();
-        var player = await TestHelper.AddTestPlayer(dbFactory);
+        var player = await DbTestHelper.AddTestPlayer(dbFactory);
 
         await repo.AddRecordAsync(new DbAuditRecord
         {

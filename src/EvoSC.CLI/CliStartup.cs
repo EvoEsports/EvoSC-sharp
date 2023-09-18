@@ -39,11 +39,11 @@ public static class CliStartup
 
             .Services(AppFeature.Events, s => s
                     .AddEvoScEvents()
-                , "Logging", "ControllerManager", "ActionInitializeEventManager")
+                , "Logging", "ControllerManager", "ActionInitializeEventManager", "Application")
 
             .Services(AppFeature.GbxRemoteClient, s => s
                     .AddGbxRemoteClient()
-                , "Logging", "Config", "Events", "PlayerManager", "ActionPipelines", "InitializeGbxRemoteConnection")
+                , "Logging", "Config", "Events", "ActionPipelines", "InitializeGbxRemoteConnection")
 
             .Services(AppFeature.Modules, s => s
                     .AddEvoScModules()
@@ -92,7 +92,7 @@ public static class CliStartup
 
             .Services(AppFeature.Manialinks, s => s
                     .AddEvoScManialinks()
-                , "Logging", "Events", "PlayerManager", "ControllerManager", "PipelineManager", "GbxRemoteClient", "ActionInitializeTemplates")
+                , "Logging", "Events", "PlayerManager", "ControllerManager", "ActionPipelines", "GbxRemoteClient", "ActionInitializeTemplates")
 
                 // initialization of features
             .Action("ActionMigrateDatabase", MigrateDatabase)
@@ -149,4 +149,5 @@ public static class CliStartup
         s.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(CancellationToken.None);
     }
+    
 }

@@ -7,13 +7,13 @@ namespace EvoSC.Common.Database.Repository;
 
 public class DbRepository
 {
-    private readonly DataConnection _db;
+    private readonly IDbConnectionFactory _dbConnFactory;
 
-    protected DataConnection Database => _db;
+    protected DataContext Database => _dbConnFactory.GetConnection();
     
     protected DbRepository(IDbConnectionFactory dbConnFactory)
     {
-        _db = dbConnFactory.GetConnection();
+        _dbConnFactory = dbConnFactory;
     }
     
     /// <summary>

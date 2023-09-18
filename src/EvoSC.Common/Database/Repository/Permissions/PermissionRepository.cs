@@ -49,12 +49,12 @@ public class PermissionRepository : DbRepository, IPermissionRepository
             await Table<DbGroupPermission>()
                 .Where(gp => gp.PermissionId == permission.Id)
                 .DeleteAsync();
-            await transaction.CommitAsync();
+            await transaction.CommitTransactionAsync();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to remove permission");
-            await transaction.RollbackAsync();
+            await transaction.RollbackTransactionAsync();
             throw;
         }
     }
@@ -86,12 +86,12 @@ public class PermissionRepository : DbRepository, IPermissionRepository
             await Table<DbGroupPermission>().DeleteAsync(t => t.GroupId == group.Id);
             await Table<DbUserGroup>().DeleteAsync(t => t.GroupId == group.Id);
             await Table<DbGroup>().DeleteAsync(t => t.Id == group.Id); 
-            await transaction.CommitAsync();
+            await transaction.CommitTransactionAsync();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to remove group");
-            await transaction.RollbackAsync();
+            await transaction.RollbackTransactionAsync();
             throw;
         }
     }

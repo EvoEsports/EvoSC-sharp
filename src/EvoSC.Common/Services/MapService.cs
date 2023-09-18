@@ -31,6 +31,7 @@ public class MapService : IMapService
     public async Task<IMap?> GetMapByIdAsync(long id) => await _mapRepository.GetMapByIdAsync(id);
 
     public async Task<IMap?> GetMapByUidAsync(string uid) => await _mapRepository.GetMapByUidAsync(uid);
+    public async Task<IMap?> GetMapByExternalIdAsync(string id) => await _mapRepository.GetMapByExternalIdAsync(id);
 
     public async Task<IMap> AddMapAsync(MapStream mapStream)
     {
@@ -44,10 +45,11 @@ public class MapService : IMapService
             throw new DuplicateMapException($"Map with UID {mapMetadata.MapUid} already exists in database");
         }
 
-        var fileName = $"{mapMetadata.MapName}.Map.Gbx";
-        var filePath = Path.Combine(_config.Path.Maps, "EvoSC");
+        var fileName = $"{mapMetadata.MapUid}.Map.Gbx";
+        var filePath = Path.Combine(_config.Path.Maps, "EvoSC", fileName);
+        var relativePath = Path.Combine("EvoSC", fileName);
 
-        await SaveMapFileAsync(mapFile, filePath, fileName);
+        await SaveMapFileAsync(mapFile, filePath);
 
         var playerId = PlayerUtils.IsAccountId(mapMetadata.AuthorId)
             ? mapMetadata.AuthorId
@@ -65,7 +67,7 @@ public class MapService : IMapService
         else
         {
             _logger.LogDebug("Adding map {Name} ({Uid}) to the database", mapMetadata.MapName, mapMetadata.MapUid);
-            map = await _mapRepository.AddMapAsync(mapMetadata, author, filePath);
+            map = await _mapRepository.AddMapAsync(mapMetadata, author, relativePath);
         }
 
         await _serverClient.Remote.InsertMapAsync($"EvoSC/{fileName}");
@@ -174,23 +176,48 @@ public class MapService : IMapService
         return map;
     }
 
+    public async Task<IMap?> GetCurrentMapAsync()
+    {
+        var currentMap = await _serverClient.Remote.GetCurrentMapInfoAsync();
+
+        if (currentMap == null)
+        {
+            return null;
+        }
+        
+        var map = await GetMapByUidAsync(currentMap.UId);
+
+        return map;
+    }
+
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
     {
         return map.ExternalVersion == mapMetadata.ExternalVersion;
     }
 
-    private async Task SaveMapFileAsync(Stream mapStream, string filePath, string fileName)
+    private async Task SaveMapFileAsync(Stream mapStream, string filePath)
     {
         try
         {
-            if (!Directory.Exists(filePath))
+            var directory = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directory))
             {
-                Directory.CreateDirectory(filePath);
+                Directory.CreateDirectory(directory);
             }
 
-            var fileStream = File.Create(Path.Combine(filePath, $"{fileName}"));
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            
+            var fileStream = File.Create(filePath);
             await mapStream.CopyToAsync(fileStream);
             fileStream.Close();
+
+            if (!File.Exists(filePath))
+            {
+                throw new InvalidOperationException("Map file creation failed. Got right permissions?");
+            }
         }
         catch (Exception e)
         {

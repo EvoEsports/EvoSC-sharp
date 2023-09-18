@@ -450,7 +450,7 @@ public class ModuleManager : IModuleManager
         var dbStore = new DatabaseStore(name, configInterface, _configStoreRepository);
         await dbStore.SetupDefaultSettingsAsync();
 
-        return dbStore;
+        return new EvSCModuleConfigStore(name, dbStore);
     }
     
     private object? CreateConfigInstance(Type configInterface, IConfigStore store)
@@ -512,8 +512,17 @@ public class ModuleManager : IModuleManager
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private IEvoScModule CreateModuleInstance(Type mainClass, Container moduleServices) =>
-        (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, mainClass);
+    private IEvoScModule CreateModuleInstance(Type mainClass, Container moduleServices)
+    {
+        try
+        {
+            return (IEvoScModule)ActivatorUtilities.CreateInstance(moduleServices, mainClass);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Failed to create module instance.", ex);
+        }
+    }
 
     private Dictionary<PipelineType, IActionPipeline> CreateDefaultPipelines() => 
         new()

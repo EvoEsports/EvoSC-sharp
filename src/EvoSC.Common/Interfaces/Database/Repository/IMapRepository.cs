@@ -45,4 +45,10 @@ public interface IMapRepository
     /// <param name="id">The maps database ID.</param>
     /// <returns></returns>
     public Task RemoveMapAsync(long id);
+
+    /// <summary>
+    /// Gets a map from the database based on the external provider ID.
+    /// </summary>
+    /// <returns></returns>
+    Task<IMap?> GetMapByExternalIdAsync(string id);
 }

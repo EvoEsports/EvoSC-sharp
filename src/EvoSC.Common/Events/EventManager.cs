@@ -139,17 +139,24 @@ public class EventManager : IEventManager
 
         foreach (var subscription in _subscriptions[name])
         {
-            if (subscription.RunAsync)
+            try
             {
-                Task.Run(() =>
+                if (subscription.RunAsync)
                 {
-                    _logger.LogTrace("run async");
+                    Task.Run(() =>
+                    {
+                        _logger.LogTrace("run async");
+                        InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                    });
+                }
+                else
+                {
                     InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
-                });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
+                _logger.LogError(ex, "Failed to execute subscription.");
             }
         }
 
@@ -164,12 +171,21 @@ public class EventManager : IEventManager
             Task? task = null;
             var target = GetTarget(subscription);
 
-            task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+            try
+            {
+                task = (Task?)subscription.HandlerMethod.Invoke(target, new[] {sender, args});
+            }
+            catch (TargetParameterCountException e)
+            {
+                throw new TargetParameterCountException($"Parameter count mismatch while invoking subscription '{subscription.Name}' on {subscription.InstanceClass.Name}.{subscription.HandlerMethod.Name}.", e);
+            }
 
             if (task == null)
             {
-                _logger.LogError("An error occured while calling event, task is null for event: {Name}",
-                    subscription.Name);
+                _logger.LogError("An error occured while calling event, task is null for event: {Name} -> {Class}.{Method}",
+                    subscription.Name,
+                    subscription.InstanceClass.Name,
+                    subscription.HandlerMethod.Name);
                 return Task.CompletedTask;
             }
 
@@ -203,7 +219,7 @@ public class EventManager : IEventManager
 
             if (!task.IsCompletedSuccessfully)
             {
-                _logger.LogError("Event execution failed for {Name}, status: {Status}", sub.Name, task.Status);
+                _logger.LogError("Event execution failed for {Name}, status: {Status}, handler: {Class}.{Method}", sub.Name, task.Status, sub.InstanceClass.Name, sub.HandlerMethod.Name);
 
                 if (task.IsFaulted)
                 {

@@ -18,6 +18,13 @@ public interface IMapService
     /// <param name="uid">The maps unique identifier.</param>
     /// <returns></returns>
     public Task<IMap?> GetMapByUidAsync(string uid);
+
+    /// <summary>
+    /// Gets a map by it's external provider ID.
+    /// </summary>
+    /// <param name="id">The external ID of the map.</param>
+    /// <returns></returns>
+    public Task<IMap?> GetMapByExternalIdAsync(string id);
     
     /// <summary>
     /// Adds a map to the server. If the map already exists and the passed map is newer than the
@@ -59,4 +66,10 @@ public interface IMapService
     /// </summary>
     /// <returns></returns>
     public Task<IMap?> GetNextMapAsync();
+
+    /// <summary>
+    /// Get the current map on the server
+    /// </summary>
+    /// <returns></returns>
+    public Task<IMap?> GetCurrentMapAsync();
 }

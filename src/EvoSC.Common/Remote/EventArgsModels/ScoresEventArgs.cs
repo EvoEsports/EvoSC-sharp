@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Models.Callbacks;
+﻿using EvoSC.Common.Models;
+using EvoSC.Common.Models.Callbacks;
 
 namespace EvoSC.Common.Remote.EventArgsModels;
 
@@ -6,9 +7,8 @@ public class ScoresEventArgs : EventArgs
 {
     /// <summary>
     /// Section when the event happened.
-    /// Known values are: "" | "EndRound" | "EndMap" | "EndMatch"
     /// </summary>
-    public required string? Section { get; init; }
+    public required ModeScriptSection Section { get; init; }
     /// <summary>
     /// Does the Game mode use teams
     /// </summary>

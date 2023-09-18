@@ -65,6 +65,83 @@ public enum ModeScriptEvent
     PodiumEnd,
     
     /// <summary>
+    /// Sent when the "StartRound" section in a gamemode starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartRound_Start")]
+    StartRoundStart,
+    
+    /// <summary>
+    /// Sent when the "StartRound" section in a gamemode ends.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartRound_End")]
+    StartRoundEnd,
+    
+    /// <summary>
+    /// Sent when the "EndRound" section in a gamemode starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.EndRound_Start")]
+    EndRoundStart,
+    
+    /// <summary>
+    /// Sent when the "EndRound" section in a gamemode ends.
+    /// </summary>
+    [Identifier(Name = "ModeScript.EndRound_End")]
+    EndRoundEnd,
+    
+    /// <summary>
+    /// Sent when the "StartMap" section in a gamemode starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartMap_Start")]
+    StartMapStart,
+    
+    /// <summary>
+    /// Sent when the "StartMap" section in a gamemode ends.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartMap_End")]
+    StartMapEnd,
+    
+    /// <summary>
+    /// Sent when the "StartMatch" section in a gamemode starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartMatch_Start")]
+    StartMatchStart,
+    
+    /// <summary>
+    /// Sent when the "StartMatch" section in a gamemode ends.
+    /// </summary>
+    [Identifier(Name = "ModeScript.StartMatch_End")]
+    StartMatchEnd,
+    
+    /// <summary>
+    /// Sent when the "EndMatch" section in a gamemode starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.EndMatch_Start")]
+    EndMatchStart,
+    
+    /// <summary>
+    /// Sent when the "EndMatch" section in a gamemode ends.
+    /// </summary>
+    [Identifier(Name = "ModeScript.EndMatch_End")]
+    EndMatchEnd,
+    
+    /// <summary>
+    /// Sent when the "EdnMap" section in a gamemode starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.EndMap_Start")]
+    EndMapStart,
+    
+    /// <summary>
+    /// Sent when the "EdnMap" section in a gamemode ends.
+    /// </summary>
+    [Identifier(Name = "ModeScript.EndMap_End")]
+    EndMapEnd,
+    /// <summary>
+    /// When a new round starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.RoundStart")]
+    RoundStart,
+    
+    /// <summary>
     /// When any Mode Script callback was called.
     /// </summary>
     [Identifier(Name = "ModeScript.Any")]

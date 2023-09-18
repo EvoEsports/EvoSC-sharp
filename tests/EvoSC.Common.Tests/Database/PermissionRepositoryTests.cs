@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.Permissions;
 using EvoSC.Common.Database.Repository.Permissions;
 using EvoSC.Common.Database.Repository.Players;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Permissions.Models;
-using EvoSC.Common.Tests.Database.Setup;
+using EvoSC.Testing.Database;
 using GbxRemoteNet.Structs;
 using LinqToDB;
 using Xunit;
@@ -17,7 +18,7 @@ public class PermissionRepositoryTests
 {
     private static (PermissionRepository, IDbConnectionFactory) CreateNewRepository()
     {
-        var factory = TestDbSetup.CreateFullDb();
+        var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         return (new PermissionRepository(factory, LoggerSetup.CreateLogger<PermissionRepository>()), factory);
     }
 
@@ -70,7 +71,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = await TestHelper.AddTestPlayer(dbFactory);
+        var player = await DbTestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group {Title = "My Group", Description = "My group description."});
 
         var permsToAdd = new IPermission[]
@@ -132,7 +133,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
         
-        var player = await TestHelper.AddTestPlayer(dbFactory);
+        var player = await DbTestHelper.AddTestPlayer(dbFactory);
         var group1 = await repo.AddGroupAsync(new Group {Title = "MyGroup 1", Description = "MyGroup 1 description."});
         var group2 = await repo.AddGroupAsync(new Group {Title = "MyGroup 2", Description = "MyGroup 2 description."});
         var group3 = await repo.AddGroupAsync(new Group {Title = "MyGroup 3", Description = "MyGroup 3 description."});
@@ -221,7 +222,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = TestHelper.AddTestPlayer(dbFactory);
+        var player = DbTestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group
         {
             Title = "MyGroup",
@@ -286,7 +287,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = await TestHelper.AddTestPlayer(dbFactory);
+        var player = await DbTestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
 
         await repo.AddPlayerToGroupAsync(player.Id, group.Id);
@@ -302,7 +303,7 @@ public class PermissionRepositoryTests
     {
         var (repo, dbFactory) = CreateNewRepository();
 
-        var player = await TestHelper.AddTestPlayer(dbFactory);
+        var player = await DbTestHelper.AddTestPlayer(dbFactory);
         var group = await repo.AddGroupAsync(new Group {Title = "MyGroup", Description = "MyGroup description."});
 
         await repo.AddPlayerToGroupAsync(player.Id, group.Id);

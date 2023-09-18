@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Database.Repository.Players;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
-using EvoSC.Common.Tests.Database.Setup;
+using EvoSC.Testing.Database;
 using GbxRemoteNet.Structs;
 using LinqToDB;
 using Xunit;
@@ -17,13 +18,13 @@ public class MapRepositoryTests
 {
     private static (MapRepository, IDbConnectionFactory) CreateNewRepository()
     {
-        var factory = TestDbSetup.CreateFullDb();
+        var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         return (new MapRepository(factory, LoggerSetup.CreateLogger<MapRepository>()), factory);
     }
 
     private static async Task<IMap> AddTestMap(IDbConnectionFactory dbFactory)
     {
-        var player = await TestHelper.AddTestPlayer(dbFactory);
+        var player = await DbTestHelper.AddTestPlayer(dbFactory);
         var mapRepo = new MapRepository(dbFactory, LoggerSetup.CreateLogger<MapRepository>());
         return await mapRepo.AddMapAsync(
             new MapMetadata

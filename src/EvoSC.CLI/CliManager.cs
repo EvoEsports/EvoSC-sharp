@@ -10,14 +10,16 @@ using EvoSC.CLI.Interfaces;
 using EvoSC.CLI.Models;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Services;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using Microsoft.Extensions.DependencyInjection;
+using Container = SimpleInjector.Container;
 
 namespace EvoSC.CLI;
 
-public class CliManager : ICliManager
+public class CliManager : ICliManager, IEvoSCApplication
 {
     private readonly RootCommand _rootCommand;
     private readonly Parser _cliParser;
@@ -92,6 +94,7 @@ public class CliManager : ICliManager
         var startupPipeline = new StartupPipeline(config);
         startupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();
         startupPipeline.SetupBasePipeline(config);
+        startupPipeline.Services("Application", s => s.RegisterInstance<IEvoSCApplication>(this));
 
         await startupPipeline.ExecuteAsync(command.RequiredFeatures
             .Select(feature => feature.ToString())
@@ -198,5 +201,19 @@ public class CliManager : ICliManager
     public Task<int> ExecuteAsync(string[] args)
     {
         return _cliParser.InvokeAsync(args);
+    }
+
+    public IStartupPipeline StartupPipeline { get; }
+    public CancellationToken MainCancellationToken { get; }
+    public Container Services => StartupPipeline.ServiceContainer;
+    
+    public Task RunAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task ShutdownAsync()
+    {
+        throw new NotImplementedException();
     }
 }
