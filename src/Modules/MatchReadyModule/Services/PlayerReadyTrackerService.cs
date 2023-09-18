@@ -74,9 +74,12 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
     {
         lock (_readyPlayersLock)
         {
-            if (isReady && !_readyPlayers.Contains(player))
+            if (isReady)
             {
-                _readyPlayers.Add(player);
+                if (_readyPlayers.Contains(player))
+                {
+                    _readyPlayers.Add(player);
+                }
             }
             else if (_readyPlayers.Any(p => p.AccountId == player.AccountId))
             {
