@@ -1,8 +1,9 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
+using EvoSC.Modules.Official.WorldRecordModule.Events;
 using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 using EvoSC.Modules.Official.WorldRecordModule.Models;
 using Flurl;
@@ -15,13 +16,13 @@ namespace EvoSC.Modules.Official.WorldRecordModule.Services;
 public class WorldRecordService : IWorldRecordService
 {
     private readonly ILogger<WorldRecordService> _logger;
-    private readonly IMapService _mapService;
+    private readonly IEventManager _events;
     private WorldRecord? _currentWorldRecord;
 
-    public WorldRecordService(ILogger<WorldRecordService> logger, IMapService mapService)
+    public WorldRecordService(ILogger<WorldRecordService> logger, IEventManager events)
     {
         _logger = logger;
-        _mapService = mapService;
+        _events = events;
     }
 
     public async Task FetchRecord(string mapUid)
@@ -31,7 +32,7 @@ public class WorldRecordService : IWorldRecordService
             .WithHeaders(new { User_Agent = "EvoSC# / World Record Grabber / Discord: chris92" })
             .GetJsonAsync<TMioLeaderboardResponse>();
 
-        _logger.LogInformation("Loaded records for map.");
+        _logger.LogDebug("Loaded records for map.");
 
         if (res.tops.Count > 0)
         {
@@ -47,13 +48,14 @@ public class WorldRecordService : IWorldRecordService
         }
     }
 
-    public Task OverwriteRecord(WorldRecord newRecord)
+    public async Task OverwriteRecord(WorldRecord newRecord)
     {
         _currentWorldRecord = newRecord;
 
-        //TODO: send NewWorldRecordLoaded event
-
-        return Task.CompletedTask;
+        await _events.RaiseAsync(WorldRecordEvents.NewRecord, new WorldRecordLoaded
+        {
+            Record = newRecord
+        });
     }
 
     public Task ClearRecord()
@@ -68,21 +70,19 @@ public class WorldRecordService : IWorldRecordService
         return Task.FromResult(_currentWorldRecord);
     }
 
-    public Task DetectNewWorldRecordThroughScores(ScoresEventArgs scoresEventArgs)
+    public async Task DetectNewWorldRecordThroughScores(ScoresEventArgs scoresEventArgs)
     {
         if (_currentWorldRecord == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         foreach (var score in scoresEventArgs.Players)
         {
             if (score != null && score.BestRaceTime < _currentWorldRecord.Time)
             {
-                OverwriteRecord(new WorldRecord { Name = score.Name, Time = score.BestRaceTime, Source = "local" });
+                await OverwriteRecord(new WorldRecord { Name = score.Name, Time = score.BestRaceTime, Source = "local" });
             }
         }
-
-        return Task.CompletedTask;
     }
 }
