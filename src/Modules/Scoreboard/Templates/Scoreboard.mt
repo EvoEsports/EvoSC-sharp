@@ -259,10 +259,6 @@
             if(Score == Null || Score.User == Null || playerRow == Null){
                 return;
             }
-            //declare CSmPlayer Driver for Score;
-            //if(Driver == Null){
-            //    return;
-            //}
             
             declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
             declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
@@ -303,7 +299,6 @@
                     HideCustomLabel(playerRow);
                 }
             } else if (CurrentScoreMode == C_Mode_Points) {
-                //SetRacePoints(Frame_RoundPoints, Score.RoundPoints, IsLocalPlayer);
                 customLabel.Value = "";
                 pointsLabel.Value = TL::ToText(Score.Points);
                 colorizePosition = Score.Points > 0;
@@ -375,7 +370,6 @@
             
             declare positionBox = (playerRow.GetFirstChild("position_box") as CMlFrame);
             declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
-            //colorizePosition = True;
             if(PositionColors.existskey(position) && colorizePosition){
                 declare positionColor = PositionColors[position];
                 SetPositionBackgroundColor(positionBox, CL::HexToRgb(positionColor));
@@ -439,7 +433,6 @@
         
         Void UpdateHeaderInfo() {
             declare subTextLabel <=> (Page.MainFrame.GetFirstChild("sub_text") as CMlLabel);
-            // declare gradientSmallLabel <=> (Page.MainFrame.GetFirstChild("gradient_label_small") as CMlLabel);
             declare roundLabel <=> (Page.MainFrame.GetFirstChild("round_label") as CMlLabel);
             
             subTextLabel.Value = GetRecordText();
@@ -469,7 +462,6 @@
                 roundLabel.Value = "";
             }
             
-            // gradientSmallLabel.Value = CurrentServerModeName;
             SetMapAndAuthorName();
         }
         
@@ -505,11 +497,6 @@
                     cursor += 1;
                     continue;
                 }
-                
-                //declare CSmPlayer Driver for Score;
-                //if(Score.User == Null || Driver == Null){
-                //    continue;
-                //}
                 
                 declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
                 declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;

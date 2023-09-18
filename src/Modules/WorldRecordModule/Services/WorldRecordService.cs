@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -64,23 +63,9 @@ public class WorldRecordService : IWorldRecordService
         return Task.CompletedTask;
     }
 
-    public async Task<WorldRecord?> GetRecord()
+    public Task<WorldRecord?> GetRecord()
     {
-        if (_currentWorldRecord == null)
-        {
-            //TODO: get author time as fallback
-            // var currentMap = await _mapService.GetCurrentMapAsync();
-            // return new WorldRecord
-            // {
-            //     Name = currentMap.Author.NickName,
-            //     Time = currentMap.Gbx,
-            //     Source = "author"
-            // };
-
-            return null;
-        }
-
-        return _currentWorldRecord;
+        return Task.FromResult(_currentWorldRecord);
     }
 
     public Task DetectNewWorldRecordThroughScores(ScoresEventArgs scoresEventArgs)
