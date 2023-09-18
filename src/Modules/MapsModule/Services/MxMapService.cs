@@ -4,11 +4,11 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.MapsModule.Interfaces;
 using ManiaExchange.ApiClient;
 using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Modules.Official.Maps.Services;
+namespace EvoSC.Modules.Official.MapsModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MxMapService : IMxMapService

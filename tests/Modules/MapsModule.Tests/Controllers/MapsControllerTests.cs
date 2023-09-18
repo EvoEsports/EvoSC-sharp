@@ -3,16 +3,16 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Modules.Official.Maps.Controllers;
-using EvoSC.Modules.Official.Maps.Events;
-using EvoSC.Modules.Official.Maps.Interfaces;
+using EvoSC.Modules.Official.MapsModule.Controllers;
+using EvoSC.Modules.Official.MapsModule.Events;
+using EvoSC.Modules.Official.MapsModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace EvoSC.Modules.Official.MapsModule.Tests;
+namespace EvoSC.Modules.Official.MapsModule.Tests.Controllers;
 
 public class MapsControllerTests : CommandInteractionControllerTestBase<MapsController>
 {

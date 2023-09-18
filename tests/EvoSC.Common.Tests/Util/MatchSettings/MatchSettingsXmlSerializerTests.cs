@@ -17,7 +17,7 @@ public class MatchSettingsXmlSerializerTests
 
         var xml = ms.ToXmlDocument().GetFullXmlString();
         
-        Assert.Equal(expected, xml);
+        Assert.Equal(expected, xml, ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class MatchSettingsXmlSerializerTests
         
         var xml = ms.ToXmlDocument().GetFullXmlString();
         
-        Assert.Equal(expected, xml);
+        Assert.Equal(expected, xml, ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -45,6 +45,6 @@ public class MatchSettingsXmlSerializerTests
         
         var xml = ms.ToXmlDocument().GetFullXmlString();
         
-        Assert.Equal(expected, xml);
+        Assert.Equal(expected, xml, ignoreLineEndingDifferences: true);
     }
 }

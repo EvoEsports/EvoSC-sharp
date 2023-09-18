@@ -4,6 +4,7 @@ public interface IModuleInfo
 {
     /// <summary>
     /// The unique identifier name for the module.
+    /// 
     /// </summary>
     public string Name { get; }
     

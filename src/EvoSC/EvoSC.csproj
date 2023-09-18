@@ -25,10 +25,31 @@
         <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
         <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" />
         <ProjectReference Include="..\Modules\GeardownModule\GeardownModule.csproj" />
+        <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchRankingModule\MatchRankingModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
+        <ProjectReference Include="..\Modules\NextMapModule\NextMapModule.csproj" />
+        <ProjectReference Include="..\Modules\Scoreboard\Scoreboard.csproj" />
+        <ProjectReference Include="..\Modules\GeardownModule\GeardownModule.csproj" />
+<<<<<<< HEAD
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
         <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
         <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
+=======
+        <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchRankingModule\MatchRankingModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
+        <ProjectReference Include="..\Modules\NextMapModule\NextMapModule.csproj" />
+        <ProjectReference Include="..\Modules\Scoreboard\Scoreboard.csproj" />
+        <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
+        <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
+        <ProjectReference Include="..\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj" />
+        <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
+>>>>>>> master
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
         <ProjectReference Include="..\Modules\Player\Player.csproj" />
         <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />
@@ -36,12 +57,24 @@
         <ProjectReference Include="..\Modules\FastestCp\FastestCp.csproj" />
         <ProjectReference Include="..\Modules\CurrentMapModule\CurrentMapModule.csproj" />
         <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" />
+<<<<<<< HEAD
         <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
         <ProjectReference Include="..\Modules\XPEvoAdminControl\XPEvoAdminControl.csproj" />
+=======
+>>>>>>> master
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="bin\Debug\net7.0\config\main.toml" />
+      <Content Include="bin\Debug\net7.0\config\main.toml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\net7.0\config\" />
+        <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
+        <ProjectReference Include="..\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj" />
+        <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
+        <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
+        <ProjectReference Include="..\Modules\XPEvoAdminControl\XPEvoAdminControl.csproj" />
     </ItemGroup>
     
 </Project>

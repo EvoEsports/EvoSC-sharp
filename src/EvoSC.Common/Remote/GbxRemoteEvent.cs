@@ -65,5 +65,4 @@ public enum GbxRemoteEvent
     /// </summary>
     [Identifier(Name = "GbxRemote.StatusChanged")]
     StatusChanged,
-    
 }

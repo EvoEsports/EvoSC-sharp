@@ -24,13 +24,15 @@ namespace EvoSC.Common.Tests.Services;
 
 public class MapServiceTests
 {
-    private Mock<IMapRepository> _mapRepository = new();
-    private Mock<ILogger<MapService>> _logger = new();
-    private Mock<IEvoScBaseConfig> _config = new();
-    private Mock<IPlayerManagerService> _playerService = new();
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
+    private readonly Mock<IMapRepository> _mapRepository = new();
+    private readonly Mock<ILogger<MapService>> _logger = new();
+    private readonly Mock<IEvoScBaseConfig> _config = new();
+    private readonly Mock<IPlayerManagerService> _playerService = new();
 
-    private MapService _mapService;
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+        _server = Mocking.NewServerClientMock();
+
+    private readonly MapService _mapService;
 
     public MapServiceTests()
     {
@@ -47,7 +49,7 @@ public class MapServiceTests
             Enabled = true,
             Id = 123,
             ExternalId = "1337",
-            Name = "Snippens dream",
+            Name = "snippens dream",
             Uid = "Uid"
         };
         _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
@@ -79,7 +81,7 @@ public class MapServiceTests
             Enabled = true,
             Id = 123,
             ExternalId = "1337",
-            Name = "Snippens dream",
+            Name = "snippens dream",
             Uid = "Uid"
         };
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
@@ -133,7 +135,7 @@ public class MapServiceTests
             Enabled = true,
             Id = 123,
             ExternalId = "1337",
-            Name = "Snippens dream",
+            Name = "snippens dream",
             Uid = "Uid",
             ExternalMapProvider = MapProviders.ManiaExchange,
             DbAuthor = player
@@ -190,7 +192,7 @@ public class MapServiceTests
             Enabled = true,
             Id = 123,
             ExternalId = "1337",
-            Name = "Snippens dream",
+            Name = "snippens dream",
             Uid = "Uid",
             ExternalMapProvider = MapProviders.ManiaExchange,
             ExternalVersion = version,
@@ -334,7 +336,7 @@ public class MapServiceTests
             Enabled = true,
             Id = 123,
             ExternalId = "1337",
-            Name = "Snippens dream",
+            Name = "snippens dream",
             Uid = "Uid"
         };
         _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
@@ -350,7 +352,7 @@ public class MapServiceTests
     {
         var tmMapInfo = new TmMapInfo
         {
-            Name = "Snippens dream",
+            Name = "snippens dream",
             Author = "0efeba8a-9cda-49fa-ab25-35f1d9218c95",
             AuthorTime = 1337,
             BronzeTime = 1337,
@@ -370,10 +372,11 @@ public class MapServiceTests
             UpdatedAt = new DateTime(),
             LastVisit = new DateTime()
         };
-        
+
         _server.Remote.Setup(r => r.GetMapListAsync(It.IsAny<int>(), It.IsAny<int>()))
-            .Returns(Task.FromResult(new [] { tmMapInfo }));
-        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));
+            .Returns(Task.FromResult(new[] { tmMapInfo }));
+        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>()))
+            .Returns(Task.FromResult((IPlayer)player));
 
         await _mapService.AddCurrentMapListAsync();
 
@@ -426,18 +429,68 @@ public class MapServiceTests
             Name = "snippens track",
             Uid = "MapUid"
         };
-        
+
         _server.Remote.Setup(r => r.GetCurrentMapInfoAsync())
             .Returns(Task.FromResult(tmMapInfo));
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
             .Returns(Task.FromResult((IMap?)null));
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
-        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer)player));
+        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>()))
+            .Returns(Task.FromResult((IPlayer)player));
 
         var retrievedMap = await _mapService.GetOrAddCurrentMapAsync();
 
         Assert.Equal(mapMetadata.MapUid, retrievedMap.Uid);
         Assert.Equal(mapMetadata.MapName, retrievedMap.Name);
+    }
+
+    [Fact]
+    public async Task Get_Next_Map_Returns_Next_Map()
+    {
+        var map = new DbMap
+        {
+            AuthorId = 1,
+            Enabled = true,
+            Id = 123,
+            ExternalId = "1337",
+            Name = "snippens track",
+            Uid = "MapUid"
+        };
+
+        var tmMapInfo = new TmMapInfo
+        {
+            Name = "snippens track",
+            Author = "0efeba8a-9cda-49fa-ab25-35f1d9218c95",
+            AuthorTime = 1337,
+            BronzeTime = 1337,
+            CopperPrice = 1337,
+            Environnement = "Stadium",
+            GoldTime = 1337,
+            LapRace = false,
+            NbCheckpoints = 10,
+            UId = "MapUid"
+        };
+
+        _server.Remote.Setup(r => r.GetNextMapInfoAsync())
+            .Returns(Task.FromResult(tmMapInfo));
+        _mapRepository.Setup(r => r.GetMapByUidAsync(It.IsAny<string>())).Returns(Task.FromResult((IMap?)map));
+        
+        var retrievedMap = await _mapService.GetNextMapAsync();
+        
+        Assert.NotNull(retrievedMap);
+        Assert.Equal(map.Id, retrievedMap.Id);
+        Assert.Equal(map.Name, retrievedMap.Name);
+    }
+    
+    [Fact]
+    public async Task Get_Next_Map_Returns_Null_If_No_Next_Map()
+    {
+        _server.Remote.Setup(r => r.GetNextMapInfoAsync())
+            .Returns(Task.FromResult((TmMapInfo?)null));
+        
+        var retrievedMap = await _mapService.GetNextMapAsync();
+        
+        Assert.Null(retrievedMap);
     }
 }
