@@ -18,6 +18,11 @@ public static class FormattingUtils
     public static string CleanTmFormatting(string text) =>
         TmTextFormatPattern.Replace(text, "");
 
+    /// <summary>
+    /// Formats the given milliseconds into human readable time.
+    /// </summary>
+    /// <param name="milliseconds">The time in milliseconds.</param>
+    /// <returns></returns>
     public static string FormatTime(int milliseconds)
     {
         var ms = milliseconds % 1000;
@@ -27,6 +32,11 @@ public static class FormattingUtils
         return $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
     }
 
+    /// <summary>
+    /// Formats the given milliseconds into human readable time difference.
+    /// </summary>
+    /// <param name="milliseconds">The time in milliseconds.</param>
+    /// <returns></returns>
     public static string FormatTimeAsDelta(int milliseconds)
     {
         var ms = milliseconds % 1000;
