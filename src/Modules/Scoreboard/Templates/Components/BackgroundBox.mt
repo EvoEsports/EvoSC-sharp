@@ -55,9 +55,5 @@
 
         <!-- Middle part -->
         <quad pos="0 {{ -headerHeight }}" size="{{ w }} {{ h + radius }}" bgcolor="{{ color }}" opacity="0.85"/>
-
-        <!-- Bottom bar -->
-        <!--        <quad pos="0 {{ -h - headerHeight }}" size="{{ w - radius }} {{ radius + 0.05 }}" bgcolor="{{ color }}" opacity="0.85"/>-->
-        <!--        <frameinstance modelid="Scoreboard_RoundedCorner" pos="{{ w }} {{ -h - headerHeight - radius - 0.05 }}" rot="180"/>-->
     </template>
 </component>

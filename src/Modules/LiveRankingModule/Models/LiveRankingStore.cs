@@ -6,8 +6,8 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Models;
 
 internal class LiveRankingStore
 {
-    private ConcurrentDictionary<string, LiveRankingPosition> _curLiveRanking = new();
-    private ConcurrentDictionary<string, LiveRankingPosition> _prevLiveRanking = new();
+    private ConcurrentDictionary<string, LiveRankingPosition> _curLiveRanking { get; set; } = new();
+    private ConcurrentDictionary<string, LiveRankingPosition> _prevLiveRanking { get; set; } = new();
     private readonly ILogger<LiveRankingStore> _logger;
     private readonly IPlayerManagerService _playerManager;
     private MatchInfo _matchInfo = new();
@@ -19,17 +19,11 @@ internal class LiveRankingStore
         _logger.LogDebug("Instantiated LiveRankingStore");
     }
 
-    internal async Task ResetLiveRankingsAsync()
+    internal Task ResetLiveRankingsAsync()
     {
         _curLiveRanking.Clear();
-        // var onlinePlayers = await _playerManager.GetOnlinePlayersAsync();
-        // foreach (var player in onlinePlayers)
-        // {
-        //     if (player.State == PlayerState.Playing)
-        //     {
-        //         _curLiveRanking.Add(new LiveRankingPosition(player.AccountId, 0, -1, false, false));
-        //     }
-        // }
+
+        return Task.CompletedTask;
     }
 
     internal void RegisterTime(string accountId, int cpIndex, int cpTime, bool isFinish)
@@ -48,28 +42,19 @@ internal class LiveRankingStore
             (_, arg) => new LiveRankingPosition(accountId, arg.cpTime, arg.cpIndex, true, false));
     }
 
-    internal ConcurrentDictionary<string, LiveRankingPosition> GetCurrentLiveRanking()
-    {
-        return _curLiveRanking;
-    }
-
-    internal ConcurrentDictionary<string, LiveRankingPosition> GetPreviousLiveRanking()
-    {
-        return _prevLiveRanking;
-    }
-
     /// <summary>
     /// This sorts the live ranking based on the following criteria:
     /// - DNFd players should always be at the bottom
     /// - Players with a higher cpIndex should always be at the top
     /// - Players with the faster CP time at the same CP index should be in a higher position
     /// </summary>
-    internal static List<ExpandedLiveRankingPosition> SortLiveRanking(IEnumerable<ExpandedLiveRankingPosition> positions)
+    internal static List<ExpandedLiveRankingPosition> SortLiveRanking(
+        IEnumerable<ExpandedLiveRankingPosition> positions)
     {
         return positions
-            .OrderBy(a => a.isDNF)
-            .ThenByDescending(a => a.cpIndex)
-            .ThenBy(a => a.cpTime).ToList();
+            .OrderBy(a => a.IsDnf)
+            .ThenByDescending(a => a.CheckpointIndex)
+            .ThenBy(a => a.CheckpointTime).ToList();
     }
 
     internal async Task<List<ExpandedLiveRankingPosition>> GetFullLiveRankingAsync()
@@ -80,11 +65,11 @@ internal class LiveRankingStore
             var player = await _playerManager.GetOnlinePlayerAsync(rank.Value.accountId);
             expandedLiveRanking.Add(new ExpandedLiveRankingPosition
             {
-                player = player,
-                cpTime = rank.Value.cpTime,
-                cpIndex = rank.Value.cpIndex,
-                isDNF = rank.Value.isDNF,
-                isFinish = rank.Value.isFinish
+                Player = player,
+                CheckpointTime = rank.Value.cpTime,
+                CheckpointIndex = rank.Value.cpIndex,
+                IsDnf = rank.Value.isDNF,
+                IsFinish = rank.Value.isFinish
             });
         }
 
@@ -101,11 +86,11 @@ internal class LiveRankingStore
             var player = await _playerManager.GetOnlinePlayerAsync(rank.Value.accountId);
             expandedLiveRanking.Add(new ExpandedLiveRankingPosition
             {
-                player = player,
-                cpTime = rank.Value.cpTime,
-                cpIndex = rank.Value.cpIndex,
-                isDNF = rank.Value.isDNF,
-                isFinish = rank.Value.isFinish
+                Player = player,
+                CheckpointTime = rank.Value.cpTime,
+                CheckpointIndex = rank.Value.cpIndex,
+                IsDnf = rank.Value.isDNF,
+                IsFinish = rank.Value.isFinish
             });
         }
 

@@ -40,7 +40,7 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnEnableAsync()
     {
-        _logger.LogInformation("LiveRankingModule enabled");
+        _logger.LogTrace("LiveRankingModule enabled");
         await CheckIsRoundsModeAsync();
         if (_isRoundsMode)
         {
@@ -57,7 +57,7 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnDisableAsync()
     {
-        _logger.LogInformation("LiveRankingModule disabled");
+        _logger.LogTrace("LiveRankingModule disabled");
         await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
         await Task.CompletedTask;
     }
@@ -67,7 +67,7 @@ public class LiveRankingService : ILiveRankingService
         await CheckIsRoundsModeAsync();
         if (_isRoundsMode)
         {
-            _logger.LogInformation("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
+            _logger.LogTrace("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
                 args.AccountId, _isRoundsMode);
 
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
@@ -120,14 +120,12 @@ public class LiveRankingService : ILiveRankingService
 
     public Task CalculateDiffs(List<ExpandedLiveRankingPosition> rankings)
     {
-        //TODO: calculate diffs correctly over different cp indexes
-
         if (rankings.Count > 0)
         {
             var firstRanking = rankings.First();
             foreach (var ranking in rankings)
             {
-                ranking.diffToFirst = firstRanking.cpTime - ranking.cpTime;
+                ranking.DiffToFirstPosition = firstRanking.CheckpointTime - ranking.CheckpointTime;
             }
         }
 
@@ -139,7 +137,7 @@ public class LiveRankingService : ILiveRankingService
         await CheckIsRoundsModeAsync();
         if (_isRoundsMode)
         {
-            _logger.LogInformation("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
+            _logger.LogTrace("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
                 _isRoundsMode);
 
             var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
@@ -152,9 +150,8 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnBeginMapAsync(MapEventArgs args)
     {
-        _logger.LogInformation("Map starts: {MapName}", args.Map.Name);
+        _logger.LogTrace("Map starts: {MapName}, IsRounds: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
         await CheckIsRoundsModeAsync();
-        _logger.LogInformation("Is rounds mode on map start? {IsRoundsMode}", _isRoundsMode);
         if (!_isRoundsMode)
         {
             await Task.CompletedTask;
@@ -164,8 +161,6 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.ResetRoundCounter();
             _liveRankingStore.IncreaseRoundCounter();
             _liveRankingStore.IncreaseTrackCounter();
-            /*await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.MatchInfo",
-                new { data = _liveRankingStore.GetMatchInfo() });*/
             await _liveRankingStore.ResetLiveRankingsAsync();
         }
     }
@@ -173,7 +168,7 @@ public class LiveRankingService : ILiveRankingService
     public async Task OnEndMapAsync(MapEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        _logger.LogInformation("Map ends: {MapName} - RoundsMode: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
+        _logger.LogTrace("Map ends: {MapName} - RoundsMode: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
         if (_isRoundsMode)
         {
             await _liveRankingStore.ResetLiveRankingsAsync();
@@ -189,7 +184,7 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnStartRoundAsync(RoundEventArgs args)
     {
-        _logger.LogInformation("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
+        _logger.LogTrace("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
         await _liveRankingStore.ResetLiveRankingsAsync();
         await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
@@ -201,14 +196,14 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnEndRoundAsync(RoundEventArgs args)
     {
-        _logger.LogInformation("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
+        _logger.LogTrace("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
         var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
-        var nbFinished = liveRanking.FindAll(x => x.isFinish);
+        var nbFinished = liveRanking.FindAll(x => x.IsFinish);
         if (nbFinished.Count > 0)
         {
-            _logger.LogInformation("MatchInfo Rounds before: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
+            _logger.LogTrace("MatchInfo Rounds before: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
             _liveRankingStore.IncreaseRoundCounter();
-            _logger.LogInformation("MatchInfo Rounds after: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
+            _logger.LogTrace("MatchInfo Rounds after: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
         }
     }
 
@@ -226,7 +221,6 @@ public class LiveRankingService : ILiveRankingService
     {
         await CheckIsRoundsModeAsync();
         await HideManialink();
-        // await _manialinkManager.HideManialinkAsync("LiveRankingModule.MatchInfo");
     }
 
     private async Task HideManialink()
@@ -260,28 +254,27 @@ public class LiveRankingService : ILiveRankingService
     {
         var formattedTime = "DNF";
 
-        if (ranking.isDNF)
+        if (ranking.IsDnf)
         {
-            return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime, ranking.cpIndex + 1, ranking.isFinish);
+            return new LiveRankingWidgetPosition(i + 1, ranking.Player, formattedTime, ranking.CheckpointIndex + 1, ranking.IsFinish);
         }
 
         var isDeltaTime = i > 0;
-        var timeToFormat = isDeltaTime ? ranking.diffToFirst : ranking.cpTime;
+        var timeToFormat = isDeltaTime ? ranking.DiffToFirstPosition : ranking.CheckpointTime;
         formattedTime = FormatTime(timeToFormat, isDeltaTime);
 
-        return new LiveRankingWidgetPosition(i + 1, ranking.player, formattedTime, ranking.cpIndex + 1, ranking.isFinish);
+        return new LiveRankingWidgetPosition(i + 1, ranking.Player, formattedTime, ranking.CheckpointIndex + 1, ranking.IsFinish);
     }
 
-    private async Task<bool> CheckIsRoundsModeAsync()
+    private Task<bool> CheckIsRoundsModeAsync()
     {
         List<string> validModes = new List<string>
         {
             "Trackmania/TM_Rounds_Online.Script.txt", "Trackmania/TM_Cup_Online.Script.txt"
         };
-        var modeScriptInfo = await _client.Remote.GetModeScriptInfoAsync();
-        // isRoundsMode = validModes.Contains(modeScriptInfo.Name);
+        //TODO: implement
         _isRoundsMode = true;
-        return _isRoundsMode;
+        return Task.FromResult(_isRoundsMode);
     }
 
     public MatchInfo GetMatchInfo()

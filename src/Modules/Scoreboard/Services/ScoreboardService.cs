@@ -34,9 +34,9 @@ public class ScoreboardService : IScoreboardService
         await _manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetData());
     }
 
-    private async Task<dynamic> GetData()
+    private Task<dynamic> GetData()
     {
-        return new
+        return Task.FromResult<dynamic>(new
         {
             MaxPlayers = _maxPlayers,
             RoundsPerMap = _roundsPerMap,
@@ -48,7 +48,7 @@ public class ScoreboardService : IScoreboardService
             playerRowHighlightColor = _config.Theme.UI.Scoreboard.PlayerRowHighlightColor,
             playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor,
             logoUrl = _config.Theme.UI.LogoUrl
-        };
+        });
     }
 
     public async Task HideNadeoScoreboard()

@@ -4,7 +4,7 @@ name = "LiveRankingModule"
 # The title of the module
 title = "LiveRanking Module"
 # A short description of what the module is and does
-summary = "A module for ..."
+summary = "Shows chekpoint positions and times of leading players, for the ongoing round."
 # The current version of this module, using SEMVER
 version = "1.0.0"
 # The name of the author that created this module

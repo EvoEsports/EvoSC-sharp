@@ -41,14 +41,11 @@ public class MatchRankingService : IMatchRankingService
 
     public async Task SendManialink()
     {
-        _logger.LogInformation("Sending manialink.");
-
         await _manialinkManager.SendPersistentManialinkAsync("MatchRankingModule.MatchRanking", GetWidgetData());
     }
 
     private dynamic GetWidgetData()
     {
-        //TODO: improve so only relevant scores are mapped to save resources
         var mappedScoresPrevious = MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores()).ToList().Take(ShowRows).ToList();
         var mappedScoresLatest = MapScoresForWidget(_matchRankingStore.GetLatestMatchScores()).ToList().Take(ShowRows).ToList();
 
@@ -84,20 +81,17 @@ public class MatchRankingService : IMatchRankingService
                     -1,
                     false
                 )
-            )
-            .ToList();
+            );
     }
 
     public async Task HideManialink()
     {
-        _logger.LogInformation("Hiding manialink.");
-        
         await _manialinkManager.HideManialinkAsync("MatchRankingModule.MatchRanking");
     }
 
     public Task ResetMatchData()
     {
-        _logger.LogInformation("Clearing match ranking data.");
+        _logger.LogTrace("Clearing match ranking data.");
         _matchRankingStore = new MatchRankingStore();
 
         return Task.CompletedTask;

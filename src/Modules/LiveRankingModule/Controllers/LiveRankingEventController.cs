@@ -5,7 +5,6 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 using GbxRemoteNet.Events;
-using Microsoft.Extensions.Logging;
 using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Controllers;
@@ -13,13 +12,11 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Controllers;
 [Controller]
 public class LiveRankingEventController : EvoScController<IEventControllerContext>
 {
-    private readonly ILogger<LiveRankingEventController> _logger;
     private readonly ILiveRankingService _service;
 
     // You want to dependency inject the needed services here at the constructor
-    public LiveRankingEventController(ILogger<LiveRankingEventController> logger, ILiveRankingService service)
+    public LiveRankingEventController(ILiveRankingService service)
     {
-        _logger = logger;
         _service = service;
     }
 
@@ -40,12 +37,6 @@ public class LiveRankingEventController : EvoScController<IEventControllerContex
     {
         await _service.OnStartRoundAsync(args);
     }
-
-    // [Subscribe(ModeScriptEvent.StartMapStart)]
-    // public async Task OnBeginMapAsync(object sender, MapEventArgs args)
-    // {
-    //     await _service.OnBeginMapAsync(args);
-    // }
 
     [Subscribe(ModeScriptEvent.EndMapStart)]
     public async Task OnEndMapAsync(object sender, MapEventArgs args)
