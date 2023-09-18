@@ -58,8 +58,6 @@ public class CurrentMapService : ICurrentMapService
         var dbMap = await _mapRepository.GetMapByUidAsync(mapUId);
         var worldRecord = await _worldRecordService.GetRecord();
         
-        _logger.LogInformation("current record map: {user} ==> {time}", worldRecord?.Name, worldRecord?.Time);
-
         await _manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
             new
             {
