@@ -13,6 +13,10 @@ public class OpenPlanetTrackerServiceTests
         var service = new OpenPlanetTrackerService();
         var player = new Mock<IPlayer>();
         var opInfo = new Mock<IOpenPlanetInfo>();
+
+        player.Setup(p => p.AccountId).Returns("something");
+        player.Setup(p => p.Equals(It.IsAny<IPlayer>()))
+            .Returns((IPlayer a) => player.Object.AccountId.Equals(a.AccountId));
         
         service.AddOrUpdatePlayer(player.Object, opInfo.Object);
 
@@ -30,6 +34,10 @@ public class OpenPlanetTrackerServiceTests
         var player = new Mock<IPlayer>();
         var opInfo = new Mock<IOpenPlanetInfo>();
         
+        player.Setup(p => p.AccountId).Returns("something");
+        player.Setup(p => p.Equals(It.IsAny<IPlayer>()))
+            .Returns((IPlayer a) => player.Object.AccountId.Equals(a.AccountId));
+        
         service.AddOrUpdatePlayer(player.Object, opInfo.Object);
         service.RemovePlayer(player.Object);
 
@@ -45,6 +53,10 @@ public class OpenPlanetTrackerServiceTests
         var player = new Mock<IPlayer>();
         var opInfo1 = new Mock<IOpenPlanetInfo>();
         var opInfo2 = new Mock<IOpenPlanetInfo>();
+        
+        player.Setup(p => p.AccountId).Returns("something");
+        player.Setup(p => p.Equals(It.IsAny<IPlayer>()))
+            .Returns((IPlayer a) => player.Object.AccountId.Equals(a.AccountId));
         
         service.AddOrUpdatePlayer(player.Object, opInfo1.Object);
         service.AddOrUpdatePlayer(player.Object, opInfo2.Object);

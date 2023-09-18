@@ -14,6 +14,11 @@ public class OpenPlanetSchedulerWorkerTests
     private readonly Mock<IEventManager> _events = new();
     private readonly Mock<IPlayer> _player = new();
     private readonly Mock<IOpenPlanetControlSettings> _settings = new();
+
+    public OpenPlanetSchedulerWorkerTests()
+    {
+        _player.Setup(p => p.AccountId).Returns("something");
+    }
     
     [Fact]
     public async Task Player_Due_Is_Triggered_From_Loop()
