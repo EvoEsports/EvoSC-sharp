@@ -1,6 +1,9 @@
-﻿using EvoSC.Common.Database.Models.Maps;
+﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Config.Models.ThemeOptions;
+using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
@@ -16,10 +19,22 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
 
     private readonly Mock<INextMapService> _nextMapService = new();
     private readonly Mock<IManialinkManager> _manialinkManager = new();
+    private readonly Mock<IEvoScBaseConfig> _config = new();
 
     public NextMapEventControllerTests()
     {
-        InitMock(_nextMapService, _manialinkManager);
+        var uiTheme = new Mock<IUIThemeConfig>();
+        uiTheme.Setup(p => p.HeaderBackgroundColor).Returns("");
+        uiTheme.Setup(p => p.PrimaryColor).Returns("fff");
+        uiTheme.Setup(p => p.LogoWhiteUrl).Returns("");
+        uiTheme.Setup(p => p.PlayerRowBackgroundColor).Returns("111");
+
+        var theme = new Mock<IThemeConfig>();
+        theme.Setup(p => p.UI).Returns(uiTheme.Object);
+        
+        _config.Setup(p => p.Theme).Returns(theme.Object);
+        
+        InitMock(_nextMapService, _manialinkManager, _config);
     }
 
 
@@ -37,7 +52,11 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
         };
         _nextMapService.Setup(r => r.GetNextMapAsync()).Returns(Task.FromResult((IMap) map));
 
-        await Controller.ShowNextMapOnPodiumStartAsync(new(), null);
+        await Controller.ShowNextMapOnPodiumStartAsync(new(), new PodiumEventArgs
+        {
+            Time = 0
+        });
+        
         _manialinkManager.Verify(m => m.SendManialinkAsync(Template, It.IsAny<object>()), Times.Once());
     }
 
