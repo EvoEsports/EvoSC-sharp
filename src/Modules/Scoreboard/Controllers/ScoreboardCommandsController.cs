@@ -24,16 +24,4 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
     {
         await _scoreboardService.ShowScoreboard();
     }
-
-    // [ChatCommand("fake", "[Command.FakePlayer]")]
-    // public async Task FakePlayer()
-    // {
-    //     await _server.Remote.ConnectFakePlayerAsync();
-    //     await _server.Remote.ConnectFakePlayerAsync();
-    //     await _server.Remote.ConnectFakePlayerAsync();
-    //     await _server.Remote.ConnectFakePlayerAsync();
-    //     await _server.Remote.ConnectFakePlayerAsync();
-    //     await _server.Remote.ConnectFakePlayerAsync();
-    //     await _server.Remote.ConnectFakePlayerAsync();
-    // }
 }
