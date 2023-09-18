@@ -81,7 +81,7 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
                     _readyPlayers.Add(player);
                 }
             }
-            else if (_readyPlayers.Any(p => p.AccountId == player.AccountId))
+            else if (_readyPlayers.Contains(player))
             {
                 _readyPlayers.Remove(player);
             }
