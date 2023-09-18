@@ -2,37 +2,37 @@
 
 public class Parent
 {
-    public string Name { get; set; }
-    public string Flag { get; set; }
-    public Parent ParentObject { get; set; }
+    public string name { get; set; }
+    public string flag { get; set; }
+    public Parent parent { get; set; }
 }
 
 public class Player
 {
-    public string Name { get; set; }
-    public string Id { get; set; }
-    public Zone Zone { get; set; }
+    public string name { get; set; }
+    public string id { get; set; }
+    public Zone zone { get; set; }
 }
 
 public class TMioLeaderboardResponse
 {
-    public List<Top> BestTimes { get; set; }
-    public int PlayerCount { get; set; }
+    public List<Top> tops { get; set; }
+    public int playercount { get; set; }
 }
 
 public class Top
 {
-    public Player Player { get; set; }
-    public int Position { get; set; }
-    public int Time { get; set; }
-    public string Filename { get; set; }
-    public DateTime Timestamp { get; set; }
-    public string URL { get; set; }
+    public Player player { get; set; }
+    public int position { get; set; }
+    public int time { get; set; }
+    public string filename { get; set; }
+    public DateTime timestamp { get; set; }
+    public string url { get; set; }
 }
 
 public class Zone
 {
-    public string Name { get; set; }
-    public string Flag { get; set; }
-    public Parent ParentObject { get; set; }
+    public string name { get; set; }
+    public string flag { get; set; }
+    public Parent parent { get; set; }
 }

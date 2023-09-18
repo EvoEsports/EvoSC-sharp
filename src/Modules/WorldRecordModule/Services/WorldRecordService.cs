@@ -35,12 +35,12 @@ public class WorldRecordService : IWorldRecordService
 
         _logger.LogDebug("Loaded records for map.");
 
-        if (res.BestTimes.Count > 0)
+        if (res.tops.Count > 0)
         {
-            var bestRecord = res.BestTimes.First();
+            var bestRecord = res.tops.First();
             var newWorldRecord = new WorldRecord
             {
-                Name = bestRecord.Player.Name, Time = bestRecord.Time, Source = "tm.io"
+                Name = bestRecord.player.name, Time = bestRecord.time, Source = "tm.io"
             };
 
             _logger.LogTrace("New world record loaded from tm.io: {name} -> {time}", newWorldRecord.Name,
