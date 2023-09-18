@@ -23,4 +23,11 @@ public interface IMatchManagementService
     /// </summary>
     /// <returns></returns>
     public Task UnpauseMatchAsync();
+
+    /// <summary>
+    /// Set the name of the server.
+    /// </summary>
+    /// <param name="name">Texts to set the server name to.</param>
+    /// <returns></returns>
+    Task SetServerNameAsync(string name);
 }

@@ -70,4 +70,7 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
     [ChatCommand("unpausematch", "Pause the current match.", GeardownPermissions.PauseMatch)]
     [CommandAlias("/unpause")]
     public Task UnpauseMatchAsync() => _matchManagement.UnpauseMatchAsync();
+
+    [ChatCommand("servername", "Set the current server name.", GeardownPermissions.ServerName)]
+    public Task SetServerNameAsync(string name) => _matchManagement.SetServerNameAsync(name);
 }

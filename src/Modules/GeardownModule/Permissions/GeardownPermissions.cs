@@ -16,5 +16,8 @@ public enum GeardownPermissions
     SetPoints,
     
     [Description("Can pause/unpause a match.")]
-    PauseMatch
+    PauseMatch,
+    
+    [Description("Allows to manage the server name.")]
+    ServerName
 }
