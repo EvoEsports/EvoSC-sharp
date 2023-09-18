@@ -18,6 +18,7 @@ public class WorldRecordService : IWorldRecordService
     private readonly ILogger<WorldRecordService> _logger;
     private readonly IEventManager _events;
     private WorldRecord? _currentWorldRecord;
+    private readonly object _currentWorldRecordLock = new();
 
     public WorldRecordService(ILogger<WorldRecordService> logger, IEventManager events)
     {
@@ -50,7 +51,10 @@ public class WorldRecordService : IWorldRecordService
 
     public async Task OverwriteRecord(WorldRecord newRecord)
     {
-        _currentWorldRecord = newRecord;
+        lock (_currentWorldRecordLock)
+        {
+            _currentWorldRecord = newRecord;
+        }
 
         await _events.RaiseAsync(WorldRecordEvents.NewRecord, new WorldRecordLoaded
         {
@@ -60,7 +64,10 @@ public class WorldRecordService : IWorldRecordService
 
     public Task ClearRecord()
     {
-        _currentWorldRecord = null;
+        lock (_currentWorldRecordLock)
+        {
+            _currentWorldRecord = null;
+        }
 
         return Task.CompletedTask;
     }
