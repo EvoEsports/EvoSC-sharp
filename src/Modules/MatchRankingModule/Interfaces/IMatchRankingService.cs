@@ -13,7 +13,12 @@ public interface IMatchRankingService
     /// Send the manialink to spectating players.
     /// </summary>
     /// <returns></returns>
-    Task SendManialink();
+    Task SendManialinkToPlayers();
+    /// <summary>
+    /// Send the manialink to spectating player.
+    /// </summary>
+    /// <returns></returns>
+    Task SendManialinkToPlayer(string accountId);
     /// <summary>
     /// Hide the manialink for all players.
     /// </summary>
