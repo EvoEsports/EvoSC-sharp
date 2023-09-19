@@ -92,7 +92,7 @@ public class PlayerReadyService : IPlayerReadyService
         
         foreach (var player in await _players.GetOnlinePlayersAsync())
         {
-            await _manialinks.SendManialinkAsync("MatchReadyModule.UpdateWidget",
+            await _manialinks.SendManialinkAsync(player, "MatchReadyModule.UpdateWidget",
                 new
                 {
                     PlayerCount = _playerReadyTrackerService.ReadyPlayers.Count(),

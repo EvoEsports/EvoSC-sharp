@@ -132,8 +132,8 @@
         
         if (EvoSC_ReadyWidget_IsReady) {
             readyWidgetBg.ModulateColor = TextLib::ToColor("60F437");
-            readyBtnBg.ModulateColor = c2Ready;
-            readyBtnBgG.BgColor = c1Ready;
+            readyBtnBg.BgColor = c2Ready;
+            readyBtnBgG.ModulateColor = c1Ready;
             
             readyWidgetStatusText.SetText("$iREADY");
             readyBtnText.SetText("$iUN-READY");
@@ -149,8 +149,8 @@
             AnimMgr.Add(lineBottom, """<quad size='1 19' pos='39.5 0.5'/>""", 400, CAnimManager::EAnimManagerEasing::ExpOut);
         } else {
             readyWidgetBg.ModulateColor = TextLib::ToColor("F43A3A");
-            readyBtnBg.ModulateColor = c2NotReady;
-            readyBtnBgG.BgColor = c1NotReady;
+            readyBtnBg.BgColor = c2NotReady;
+            readyBtnBgG.ModulateColor = c1NotReady;
             
             readyWidgetStatusText.SetText("$iNOT READY");
             readyBtnText.SetText("$iI AM READY");
