@@ -5,14 +5,12 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.Scoreboard.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Scoreboard.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class ScoreboardService : IScoreboardService
 {
-    private readonly ILogger<ScoreboardService> _logger;
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
     private readonly IEvoScBaseConfig _config;
@@ -23,13 +21,12 @@ public class ScoreboardService : IScoreboardService
     private int _currentRound = -1;
     private int _maxPlayers = -1;
 
-    public ScoreboardService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config, IMatchSettingsService matchSettingsService, ILogger<ScoreboardService> logger)
+    public ScoreboardService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config, IMatchSettingsService matchSettingsService)
     {
         _manialinks = manialinks;
         _server = server;
         _config = config;
         _matchSettingsService = matchSettingsService;
-        _logger = logger;
     }
 
     public async Task ShowScoreboard()
