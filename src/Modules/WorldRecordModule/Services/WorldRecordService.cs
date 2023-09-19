@@ -68,7 +68,7 @@ public class WorldRecordService : IWorldRecordService
             var author = mapInfo.AuthorNickname.Length > 0 ? mapInfo.AuthorNickname : mapInfo.Author;
             var newWorldRecord = new WorldRecord
             {
-                Name = mapInfo.Author, Time = mapInfo.AuthorTime, Source = "AT"
+                Name = author, Time = mapInfo.AuthorTime, Source = "AT"
             };
             
             _logger.LogDebug("Couldn't load World Record, using Author Time instead.");
