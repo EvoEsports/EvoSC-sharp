@@ -10,7 +10,7 @@ public interface IMatchRankingService
     /// <returns></returns>
     Task UpdateAndShowScores(ScoresEventArgs scores);
     /// <summary>
-    /// Send the manialink to all players.
+    /// Send the manialink to spectating players.
     /// </summary>
     /// <returns></returns>
     Task SendManialink();

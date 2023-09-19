@@ -5,7 +5,9 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Official.MatchRankingModule.Interfaces;
+using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.MatchRankingModule.Controllers;
 
@@ -35,19 +37,25 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnBeginMapAsync(object sender, RoundEventArgs args)
     {
-        await _matchRankingService.SendManialink();
+        await _matchRankingService.SendManialink(args);
     }
 
     [Subscribe(ModeScriptEvent.StartMatchStart)]
-    public async Task OnStartMatch(object sender, MatchEventArgs eventArgs)
+    public async Task OnStartMatch(object sender, MatchEventArgs args)
     {
         await _matchRankingService.ResetMatchData();
-        await _matchRankingService.SendManialink();
+        await _matchRankingService.SendManialink(args);
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args)
     {
         await _matchRankingService.HideManialink();
+    }
+
+    [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
+    public void OnPlayerInfoChanged(object sender, PlayerInfoChangedGbxEventArgs args)
+    {
+        args.PlayerInfo.GetSpectatorStatus();
     }
 }

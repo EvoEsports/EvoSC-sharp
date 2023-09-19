@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
@@ -41,7 +42,15 @@ public class MatchRankingService : IMatchRankingService
 
     public async Task SendManialink()
     {
-        await _manialinkManager.SendPersistentManialinkAsync("MatchRankingModule.MatchRanking", GetWidgetData());
+        var players = await _playerManager.GetOnlinePlayersAsync();
+
+        foreach (var player in players)
+        {
+            if (player.State == PlayerState.Spectating)
+            {
+                await _manialinkManager.SendManialinkAsync(player, "MatchRankingModule.MatchRanking", GetWidgetData());
+            }
+        }
     }
 
     private dynamic GetWidgetData()

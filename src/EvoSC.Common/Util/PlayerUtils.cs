@@ -201,4 +201,18 @@ public static class PlayerUtils
     /// <returns></returns>
     public static string GetLogin(this IPlayer player) =>
         ConvertAccountIdToLogin(player.AccountId);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    public static IPlayerSpectatorStatus GetSpectatorStatus(this TmSPlayerInfo playerInfo)
+    {
+        Console.WriteLine(playerInfo.SpectatorStatus);
+        /*return new PlayerSpectatorStatus
+        {
+            AutoTarget = playerInfo.SpectatorStatus
+        }*/
+    }
 }
