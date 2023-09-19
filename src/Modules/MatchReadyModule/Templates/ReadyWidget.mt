@@ -9,7 +9,6 @@
     
     <template>
         <Theme />
-
         
         <frame pos="-20 60">
             <frame if="showButton">
@@ -234,7 +233,7 @@
         if ({{ showButton }} && IsMouseOver(readyBtnBg)) {
             // pre-update widget for better UI experience
             declare Boolean EvoSC_ReadyWidget_IsReady for This = {{ isReady }};
-            UpdateWidget(!EvoSC_ReadyWidget_IsReady);
+            // UpdateWidget(!EvoSC_ReadyWidget_IsReady);
             TriggerPageAction("ReadyManialinkController/ReadyButton/" ^ (!EvoSC_ReadyWidget_IsReady));
         }
     ***
