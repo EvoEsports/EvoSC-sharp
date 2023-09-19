@@ -11,7 +11,6 @@ using EvoSC.Modules.Official.MatchTrackerModule.Events.EventArgObjects;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Models;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Services;
 
@@ -25,16 +24,14 @@ public class MatchTracker : IMatchTracker
     private readonly IPlayerManagerService _players;
     private readonly ITrackerStoreService _trackerStore;
     private readonly IEventManager _events;
-    private readonly ILogger<MatchTracker> _logger;
 
     public MatchTracker(ITrackerSettings settings, IPlayerManagerService players, ITrackerStoreService trackerStore,
-        IEventManager events, ILogger<MatchTracker> logger)
+        IEventManager events)
     {
         _settings = settings;
         _players = players;
         _trackerStore = trackerStore;
         _events = events;
-        _logger = logger;
     }
 
     public bool IsTracking { get; private set; }
@@ -48,12 +45,6 @@ public class MatchTracker : IMatchTracker
 
     public async Task TrackScoresAsync(ScoresEventArgs scoreArgs)
     {
-        if (!_settings.AutomaticTracking && !IsTracking)
-        {
-            _logger.LogWarning("Trying to track a un-started match with automatic tracking disabled.");
-            return;
-        }
-
         await VerifyTracker();
 
         if (!IsTracking)
@@ -194,7 +185,7 @@ public class MatchTracker : IMatchTracker
         return _currentTimeline;
     }
 
-    private async Task VerifyTracker()
+    private async Task  VerifyTracker()
     {
         if (!_settings.AutomaticTracking && !IsTracking)
         {

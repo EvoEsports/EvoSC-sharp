@@ -2,7 +2,6 @@
 using EvoSC.Common.Models;
 using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
-using GbxRemoteNet.Structs;
 using EvoSC.Common.Util.EnumIdentifier;
 using Newtonsoft.Json.Linq;
 
@@ -131,104 +130,6 @@ public class ServerCallbackHandler : IServerCallbackHandler
             case "Maniaplanet.Podium_End":
                 await _events.RaiseAsync(ModeScriptEvent.PodiumEnd,
                     new PodiumEventArgs { Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>() });
-                break;
-            case "Maniaplanet.StartRound_Start":
-                await _events.RaiseAsync(ModeScriptEvent.StartRoundStart,
-                    new RoundEventArgs
-                    {
-                        
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                    });
-                break;
-            case "Maniaplanet.StartRound_End":
-                await _events.RaiseAsync(ModeScriptEvent.StartRoundEnd,
-                    new RoundEventArgs
-                    {
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                    });
-                break;
-            case "Maniaplanet.EndRound_Start":
-                await _events.RaiseAsync(ModeScriptEvent.EndRoundStart,
-                    new RoundEventArgs
-                    {
-                        
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                    });
-                break;
-            case "Maniaplanet.EndRound_End":
-                await _events.RaiseAsync(ModeScriptEvent.EndRoundEnd,
-                    new RoundEventArgs
-                    {
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                    });
-                break;
-            case "Maniaplanet.StartMap_Start":
-                await _events.RaiseAsync(ModeScriptEvent.StartMapStart,
-                    new MapEventArgs
-                    {
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
-                        Map = data.GetValue("map", StringComparison.Ordinal).ToObject<TmSMapInfo>(),
-                    });
-                break;
-            case "Maniaplanet.StartMap_End":
-                await _events.RaiseAsync(ModeScriptEvent.StartMapEnd,
-                    new MapEventArgs
-                    {
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
-                        Map = data.GetValue("map", StringComparison.Ordinal).ToObject<TmSMapInfo>(),
-                    });
-                break;
-            case "Maniaplanet.StartMatch_Start":
-                await _events.RaiseAsync(ModeScriptEvent.StartMatchStart, new MatchEventArgs
-                {
-                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                });
-                break;
-            case "Maniaplanet.StartMatch_End":
-                await _events.RaiseAsync(ModeScriptEvent.StartMatchEnd, new MatchEventArgs
-                {
-                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                });
-                break;
-            case "Maniaplanet.EndMatch_Start":
-                await _events.RaiseAsync(ModeScriptEvent.EndMatchStart, new MatchEventArgs
-                {
-                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                });
-                break;
-            case "Maniaplanet.EndMatch_End":
-                await _events.RaiseAsync(ModeScriptEvent.EndMatchEnd, new MatchEventArgs
-                {
-                    Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                    Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
-                });
-                break;
-            case "Maniaplanet.EndMap_Start":
-                await _events.RaiseAsync(ModeScriptEvent.StartMapStart,
-                    new MapEventArgs
-                    {
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
-                        Map = data.GetValue("map", StringComparison.Ordinal).ToObject<TmSMapInfo>(),
-                    });
-                break;
-            case "Maniaplanet.EndMap_End":
-                await _events.RaiseAsync(ModeScriptEvent.StartMapEnd,
-                    new MapEventArgs
-                    {
-                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>(),
-                        Map = data.GetValue("map", StringComparison.Ordinal).ToObject<TmSMapInfo>(),
-                    });
                 break;
         }
         

@@ -15,6 +15,11 @@ public class OpenPlanetSchedulerTests
     private readonly Mock<IPlayer> _player = new();
     private readonly Mock<IOpenPlanetControlSettings> _settings = new();
 
+    public OpenPlanetSchedulerTests()
+    {
+        _player.Setup(p => p.AccountId).Returns("something");
+    }
+
     [Fact]
     public void Player_Is_Scheduled()
     {

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Util;
+﻿using System.Runtime.Serialization;
+using EvoSC.Common.Interfaces.Util;
 
 namespace EvoSC.Common.Util;
 

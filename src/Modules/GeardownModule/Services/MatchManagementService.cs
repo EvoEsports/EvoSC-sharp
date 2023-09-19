@@ -32,4 +32,9 @@ public class MatchManagementService : IMatchManagementService
     {
         return _server.Remote.TriggerModeScriptEventArrayAsync("Maniaplanet.Pause.SetActive", "false");
     }
+
+    public Task SetServerNameAsync(string name)
+    {
+        return _server.Remote.SetServerNameAsync(name);
+    }
 }

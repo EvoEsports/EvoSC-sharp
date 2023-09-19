@@ -13,7 +13,7 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
 {
     private readonly IOpenPlanetControlSettings _opSettings;
     
-    private readonly Dictionary<IPlayer, DateTime> _scheduledKicks = new();
+    private readonly Dictionary<string, (DateTime, IPlayer)> _scheduledKicks = new();
     private readonly IEventManager _events;
     private readonly object _scheduledKicksLock = new();
 
@@ -27,9 +27,9 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
     {
         lock (_scheduledKicksLock)
         {
-            if (!_scheduledKicks.ContainsKey(player) || renew)
+            if (!_scheduledKicks.ContainsKey(player.AccountId) || renew)
             {
-                _scheduledKicks[player] = DateTime.Now;
+                _scheduledKicks[player.AccountId] = (DateTime.Now, player);
             }
         }
     }
@@ -38,7 +38,7 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
     {
         lock (_scheduledKicksLock)
         {
-            return _scheduledKicks.Remove(player, out _);
+            return _scheduledKicks.Remove(player.AccountId, out _);
         }
     }
 
@@ -47,14 +47,14 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
         var duePlayers = new List<IPlayer>();
         lock (_scheduledKicksLock)
         {
-            foreach (var (player, time) in _scheduledKicks)
+            foreach (var (accountId, (time, player)) in _scheduledKicks)
             {
                 if (time + TimeSpan.FromSeconds(_opSettings.KickTimeout) > DateTime.Now)
                 {
                     continue;
                 }
 
-                _scheduledKicks.Remove(player, out _);
+                _scheduledKicks.Remove(accountId, out _);
                 duePlayers.Add(player);
             }
         }
@@ -72,7 +72,7 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
     {
         lock (_scheduledKicksLock)
         {
-            return _scheduledKicks.ContainsKey(player);
+            return _scheduledKicks.ContainsKey(player.AccountId);
         }
     }
 }

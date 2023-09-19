@@ -18,4 +18,6 @@ public interface IPlayerReadyService
     public Task UpdateWidgetAsync();
 
     public Task SetWidgetEnabled(bool enabled);
+
+    public Task AddRequiredPlayers(params IPlayer[] players);
 }

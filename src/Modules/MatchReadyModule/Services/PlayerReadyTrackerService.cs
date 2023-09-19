@@ -74,6 +74,11 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
     {
         lock (_readyPlayersLock)
         {
+            if (isReady && _readyPlayers.Contains(player))
+            {
+                return;
+            } 
+            
             if (isReady)
             {
                 if (!_readyPlayers.Contains(player))
@@ -86,7 +91,7 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
                 _readyPlayers.Remove(player);
             }
         }
-
+        
         await _events.RaiseAsync(MatchReadyEvents.PlayerReadyChanged, new PlayerReadyEventArgs
         {
             Player = player,

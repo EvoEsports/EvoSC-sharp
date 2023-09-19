@@ -25,4 +25,6 @@ public class Player : IPlayer
         Zone = dbPlayer.Zone;
         Settings = dbPlayer.Settings;
     }
+    
+    public bool Equals(IPlayer? other) => other != null && AccountId.Equals(other.AccountId, StringComparison.Ordinal);
 }
