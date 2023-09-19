@@ -8,6 +8,7 @@ using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 using EvoSC.Modules.Official.WorldRecordModule.Models;
 using Flurl;
 using Flurl.Http;
+using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.WorldRecordModule.Services;
@@ -17,25 +18,39 @@ public class WorldRecordService : IWorldRecordService
 {
     private readonly ILogger<WorldRecordService> _logger;
     private readonly IEventManager _events;
+    private readonly IServerClient _client;
     private WorldRecord? _currentWorldRecord;
     private readonly object _currentWorldRecordLock = new();
 
-    public WorldRecordService(ILogger<WorldRecordService> logger, IEventManager events)
+    public WorldRecordService(ILogger<WorldRecordService> logger, IEventManager events, IServerClient client)
     {
         _logger = logger;
         _events = events;
+        _client = client;
     }
 
     public async Task FetchRecord(string mapUid)
     {
-        TMioLeaderboardResponse res = await "https://trackmania.io"
-            .AppendPathSegments("api", "leaderboard", "map", mapUid)
-            .WithHeaders(new { User_Agent = "EvoSC# / World Record Grabber / Discord: chris92" })
-            .GetJsonAsync<TMioLeaderboardResponse>();
+        TMioLeaderboardResponse? res = null;
+        try
+        {
+            res = await "https://trackmania.io"
+                .AppendPathSegments("api", "leaderboard", "map", mapUid)
+                .WithHeaders(new
+                {
+                    User_Agent = "EvoSC# / World Record Grabber / Discord: chris92"
+                })
+                .GetJsonAsync<TMioLeaderboardResponse>();
 
+        }
+        catch (FlurlHttpException ex)
+        {
+            _logger.LogError(ex, "Invalid response from Openplanet. Maybe API issues?");
+        }
         _logger.LogDebug("Loaded records for map.");
 
-        if (res.tops.Count > 0)
+
+        if (res is {tops.Count: > 0})
         {
             var bestRecord = res.tops.First();
             var newWorldRecord = new WorldRecord
@@ -47,6 +62,19 @@ public class WorldRecordService : IWorldRecordService
                 newWorldRecord.FormattedTime());
             await OverwriteRecord(newWorldRecord);
         }
+        else
+        {
+            var mapInfo = await _client.Remote.GetCurrentMapInfoAsync();
+            var author = mapInfo.AuthorNickname.Length > 0 ? mapInfo.AuthorNickname : mapInfo.Author;
+            var newWorldRecord = new WorldRecord
+            {
+                Name = author, Time = mapInfo.AuthorTime, Source = "AT"
+            };
+            
+            _logger.LogDebug("Couldn't load World Record, using Author Time instead.");
+            await OverwriteRecord(newWorldRecord);
+        }
+        
     }
 
     public async Task OverwriteRecord(WorldRecord newRecord)
