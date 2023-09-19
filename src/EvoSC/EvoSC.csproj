@@ -67,7 +67,6 @@
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
         <ProjectReference Include="..\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj" />
         <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
-        <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
         <ProjectReference Include="..\Modules\XPEvoAdminControl\XPEvoAdminControl.csproj" />
     </ItemGroup>
     

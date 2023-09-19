@@ -25,6 +25,7 @@ public class OpenPlanetEventControllerTests : EventControllerTestBase<OpenPlanet
     public OpenPlanetEventControllerTests()
     {
         _player.Setup(p => p.AccountId).Returns(PlayerAccountId);
+        
         InitMock(_server.Server, _trackerService, _playerService);
     }
 
@@ -40,7 +41,7 @@ public class OpenPlanetEventControllerTests : EventControllerTestBase<OpenPlanet
     public async Task Player_Disconnected_Is_Removed_From_Tracker()
     {
         _playerService
-            .Setup(s => s.GetPlayerAsync(PlayerLogin))
+            .Setup(s => s.GetPlayerAsync(PlayerAccountId))
             .Returns(Task.FromResult((IPlayer?)_player.Object));
 
         await Controller.OnPlayerDisconnectAsync(null,

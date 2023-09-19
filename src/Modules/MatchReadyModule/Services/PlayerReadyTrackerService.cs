@@ -81,7 +81,10 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
             
             if (isReady)
             {
-                _readyPlayers.Add(player);
+                if (!_readyPlayers.Contains(player))
+                {
+                    _readyPlayers.Add(player);
+                }
             }
             else if (_readyPlayers.Contains(player))
             {
