@@ -3,6 +3,7 @@
     <using namespace="EvoSC.Modules.Official.WorldRecordModule.Models"/>
 
     <property type="IMap?" name="map" default="null"/>
+    <property type="string" name="mapauthor" default="null"/>
     <property type="WorldRecord?" name="record" default="null"/>
 
     <property type="double" name="scale" default="0.9"/>
@@ -95,7 +96,7 @@
                            textfont="GameFontSemiBold"
                     />
                     <label pos="2 -3.2"
-                           text='by {{ map?.Author?.NickName ?? "loading..." }}'
+                           text='by {{ mapauthor ?? "loading..." }}'
                            textsize="1.1"
                            textfont="GameFontRegular"
                     />
