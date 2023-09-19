@@ -17,6 +17,7 @@ namespace EvoSC.Modules.Official.MatchRankingModule.Services;
 public class MatchRankingService : IMatchRankingService
 {
     private const int ShowRows = 4;
+    private const string Template = "MatchRankingModule.MatchRanking";
 
     private readonly IManialinkManager _manialinkManager;
     private readonly IPlayerManagerService _playerManager;
@@ -48,7 +49,7 @@ public class MatchRankingService : IMatchRankingService
         {
             if (player.State == PlayerState.Spectating)
             {
-                await _manialinkManager.SendManialinkAsync(player, "MatchRankingModule.MatchRanking", GetWidgetData());
+                await _manialinkManager.SendManialinkAsync(player, Template, GetWidgetData());
             }
         }
     }
@@ -74,6 +75,31 @@ public class MatchRankingService : IMatchRankingService
         };
     }
 
+    public async Task HideManialink()
+    {
+        await _manialinkManager.HideManialinkAsync(Template);
+    }
+
+    public Task ResetMatchData()
+    {
+        _logger.LogTrace("Clearing match ranking data.");
+        _matchRankingStore = new MatchRankingStore();
+
+        return Task.CompletedTask;
+    }
+
+    public async Task HandlePlayerStateChange(string accountId)
+    {
+        var player = await _playerManager.GetOnlinePlayerAsync(accountId);
+        if (player.State == PlayerState.Playing)
+        {
+            await _manialinkManager.HideManialinkAsync(Template);
+            return;
+        }
+
+        await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+    }
+    
     private IEnumerable<LiveRankingWidgetPosition> MapScoresForWidget(ScoresEventArgs? scores)
     {
         if (scores == null)
@@ -91,18 +117,5 @@ public class MatchRankingService : IMatchRankingService
                     false
                 )
             );
-    }
-
-    public async Task HideManialink()
-    {
-        await _manialinkManager.HideManialinkAsync("MatchRankingModule.MatchRanking");
-    }
-
-    public Task ResetMatchData()
-    {
-        _logger.LogTrace("Clearing match ranking data.");
-        _matchRankingStore = new MatchRankingStore();
-
-        return Task.CompletedTask;
     }
 }

@@ -24,4 +24,10 @@ public interface IMatchRankingService
     /// </summary>
     /// <returns></returns>
     Task ResetMatchData();
+
+    /// <sumamry>
+    /// Handles a player state change, e.g. the player switches from spectator to playing or vice versa.
+    /// </summary>
+    /// <returns></returns>
+    Task HandlePlayerStateChange(string accountId);
 }

@@ -37,14 +37,14 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnBeginMapAsync(object sender, RoundEventArgs args)
     {
-        await _matchRankingService.SendManialink(args);
+        await _matchRankingService.SendManialink();
     }
 
     [Subscribe(ModeScriptEvent.StartMatchStart)]
     public async Task OnStartMatch(object sender, MatchEventArgs args)
     {
         await _matchRankingService.ResetMatchData();
-        await _matchRankingService.SendManialink(args);
+        await _matchRankingService.SendManialink();
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
@@ -54,8 +54,8 @@ public class MatchRankingEventController : EvoScController<IEventControllerConte
     }
 
     [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
-    public void OnPlayerInfoChanged(object sender, PlayerInfoChangedGbxEventArgs args)
+    public async Task OnPlayerInfoChanged(object sender, PlayerInfoChangedGbxEventArgs args)
     {
-        args.PlayerInfo.GetSpectatorStatus();
+        await _matchRankingService.HandlePlayerStateChange(args.PlayerInfo.Login);
     }
 }
