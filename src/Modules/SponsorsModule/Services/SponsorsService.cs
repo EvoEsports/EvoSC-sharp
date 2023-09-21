@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Models.Enums;
+﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -18,20 +19,22 @@ public class SponsorsService : ISponsorsService
     private readonly IManialinkManager _manialinkManager;
     private readonly ILogger<SponsorsService> _logger;
     private readonly IPlayerCacheService _playerCacheService;
+    private readonly IEvoScBaseConfig _config;
 
     public SponsorsService(IPlayerManagerService playerManager, IManialinkManager manialinkManager,
-        ILogger<SponsorsService> logger, IPlayerCacheService playerCacheService)
+        ILogger<SponsorsService> logger, IPlayerCacheService playerCacheService, IEvoScBaseConfig config)
     {
         _playerManager = playerManager;
         _manialinkManager = manialinkManager;
         _logger = logger;
         _playerCacheService = playerCacheService;
+        _config = config;
     }
 
     public async Task ShowWidgetToAllSpectators()
     {
         _logger.LogInformation("Showing widget to everyone.");
-        await _manialinkManager.SendManialinkAsync(Template);
+        await _manialinkManager.SendManialinkAsync(Template, GetData());
         
         /*
         foreach (var player in players)
@@ -45,6 +48,23 @@ public class SponsorsService : ISponsorsService
         */
     }
 
+    private dynamic GetData()
+    {
+        return new
+        {
+            sponsorImageUrls = new List<string>
+            {
+                "https://cdn.evotm.com/tm2020/xpevo/Xperion.png",
+                "https://cdn.evotm.com/tm2020/xpevo/Evo.png",
+                "https://cdn.evotm.com/tm2020/xpevo/Lenovo.png",
+            },
+            headerColor = _config.Theme.UI.HeaderBackgroundColor,
+            primaryColor = _config.Theme.UI.PrimaryColor,
+            logoUrl = _config.Theme.UI.LogoWhiteUrl,
+            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+        };
+    }
+    
     public Task HideWidgetFromEveryone()
     {
         return _manialinkManager.HideManialinkAsync(Template);
