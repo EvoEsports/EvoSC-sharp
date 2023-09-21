@@ -4,6 +4,7 @@ using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
+[Tags("XPEvo")]
 [Migration(1695294772)]
 public class AddAdminGroup : Migration
 {

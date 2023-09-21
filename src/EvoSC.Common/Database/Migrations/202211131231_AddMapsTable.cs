@@ -2,6 +2,7 @@
 
 namespace EvoSC.Common.Database.Migrations;
 
+[Tags("Production")]
 [Migration(1668338922)]
 public class AddMapsTable : Migration
 {
