@@ -20,8 +20,7 @@ public static class TestDbMigrations
                 .AddSQLite()
                 .WithGlobalConnectionString(connectionString)
                 .ScanIn(asm).For.Migrations()
-            )
-            .Configure<RunnerOptions>(opt =>
+            ).Configure<RunnerOptions>(opt =>
             {
                 opt.Tags = new[] { "Production" };
             })
