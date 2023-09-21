@@ -24,7 +24,7 @@ public static class TestDbMigrations
             {
                 opt.Tags = new[] { "Production" };
             })
-            .BuildServiceProvider();
+            .BuildServiceProvider(false);
 
         var runner = sp.GetRequiredService<IMigrationRunner>();
         runner.MigrateUp();

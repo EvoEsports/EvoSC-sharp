@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Logging;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Generators;
+using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Common.Database;
@@ -31,6 +32,10 @@ public class MigrationManager : IMigrationManager
             .Configure<SelectingGeneratorAccessorOptions>(x =>
                 x.GeneratorId = GetDatabaseTypeIdentifier(_config.Database.Type))
             .AddEvoScLogging(_config.Logging)
+            .Configure<RunnerOptions>(opt =>
+            {
+                opt.Tags = new[] { "Production", "XPEvo" };
+            })
             .BuildServiceProvider(false);
 
         provider.GetRequiredService<IMigrationRunner>()

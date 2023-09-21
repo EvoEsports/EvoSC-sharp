@@ -10,24 +10,14 @@ public class AddAdminGroup : Migration
 {
     public override void Up()
     {
-        var groups = new Dictionary<string, DbGroup>();
-        groups.Add("1", new DbGroup {
+        var groups = new DbGroup {
             Id = 1,
             Title = "Admin",
             Description = "Admin",
             Icon = "",
             Color = "",
             Unrestricted = true
-        });
-        groups.Add("2", new DbGroup
-        {
-            Id = 2,
-            Title = "Observer",
-            Description = "Observer",
-            Icon = null,
-            Color = null,
-            Unrestricted = true
-        });
+        };
         Insert.IntoTable("Groups").Row(groups);
 
         var players = new Dictionary<string, DbPlayer>();
@@ -152,29 +142,6 @@ public class AddAdminGroup : Migration
             UbisoftName = "Biscione156",
             Zone = ""
         });
-        players.Add("12",
-            new DbPlayer
-            {
-                Id = 13,
-                LastVisit = DateTime.Now,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                AccountId = "f46b8742-e352-405d-a9e5-0d208f667023",
-                NickName = "ImportTM",
-                UbisoftName = "ImportTM",
-                Zone = ""
-            });
-        players.Add("13", new DbPlayer
-        {
-            Id = 14,
-            LastVisit = DateTime.Now,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            AccountId = "4c702731-5630-4108-b10c-d672f6e321ed",
-            NickName = "LuckersTurbo",
-            UbisoftName = "LuckersTurbo",
-            Zone = ""
-        });
 
         var userGroups = new Dictionary<string, DbUserGroup>();
         
@@ -184,9 +151,6 @@ public class AddAdminGroup : Migration
         userGroups.Add("4", new DbUserGroup { UserId = 9, GroupId = 1, Display = true });
         userGroups.Add("5", new DbUserGroup { UserId = 10, GroupId = 1, Display = true });
         userGroups.Add("6", new DbUserGroup { UserId = 11, GroupId = 1, Display = true });
-        userGroups.Add("7", new DbUserGroup { UserId = 12, GroupId = 2, Display = true });
-        userGroups.Add("8", new DbUserGroup { UserId = 13, GroupId = 2, Display = true });
-        userGroups.Add("9", new DbUserGroup { UserId = 14, GroupId = 2, Display = true });
         
 
         Insert.IntoTable("UserGroups").Row(userGroups);
