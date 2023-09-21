@@ -19,8 +19,6 @@
         
         EvoCheckpointTimes["{{ accountId }}"] = EvoSC_CheckpointTime{ AccountId = "{{ accountId }}", Time = {{ time }}, CpIndex = {{ cpIndex }} };
         EvoCheckpointTimesUpdate = Now;
-        
-        log("[SpecInfo] New cp time received: {{ accountId }} -> {{ time }}.");
     }
     --></script>
 </component>

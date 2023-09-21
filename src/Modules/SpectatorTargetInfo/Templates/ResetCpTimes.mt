@@ -17,8 +17,6 @@
         EvoCheckpointTimes = EvoSC_CheckpointTime[Text];
         EvoCheckpointTimesUpdate = Now;
         EvoCheckpointTimesReset = True;
-        
-        log("[SpecInfo] Reset cp times.");
     }
     --></script>
 </component>
