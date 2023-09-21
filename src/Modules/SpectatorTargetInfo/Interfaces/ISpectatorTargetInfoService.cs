@@ -1,4 +1,6 @@
-﻿namespace SpectatorTargetInfo.Interfaces;
+﻿using EvoSC.Common.Remote.EventArgsModels;
+
+namespace SpectatorTargetInfo.Interfaces;
 
 public interface ISpectatorTargetInfoService
 {
@@ -22,4 +24,16 @@ public interface ISpectatorTargetInfoService
     /// Shows the default spectator info.
     /// </summary>
     public Task ShowNadeoSpectatorInfo();
+    /// <summary>
+    /// Maps wayPointEventArgs and sends data to clients.
+    /// </summary>
+    public Task ForwardCheckpointTimeToClients(WayPointEventArgs wayPointEventArgs);
+    /// <summary>
+    /// Clears the checkpoint times for the clients.
+    /// </summary>
+    public Task ResetCheckpointTimes();
+    /// <summary>
+    /// Sends players DNF to clients.
+    /// </summary>
+    public Task ForwardDnf(PlayerUpdateEventArgs playerUpdateEventArgs);
 }
