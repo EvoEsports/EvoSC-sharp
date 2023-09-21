@@ -42,6 +42,7 @@ public class LiveRankingService : ILiveRankingService
     {
         _logger.LogTrace("LiveRankingModule enabled");
         await CheckIsRoundsModeAsync();
+        await HideNadeoScoreboard();
         if (_isRoundsMode)
         {
             await _liveRankingStore.ResetLiveRankingsAsync();
@@ -221,6 +222,24 @@ public class LiveRankingService : ILiveRankingService
     {
         await CheckIsRoundsModeAsync();
         await HideManialink();
+    }
+    
+    public async Task HideNadeoScoreboard()
+    {
+        var hudSettings = new List<string>()
+        {
+            @"{
+    ""uimodules"": [
+        {
+            ""id"": ""Rounds_SmallScoresTable"",
+            ""visible"": false,
+            ""visible_update"": true
+        }
+    ]
+}"
+        };
+
+        await _client.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
     private async Task HideManialink()

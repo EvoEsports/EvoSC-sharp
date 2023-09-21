@@ -114,7 +114,7 @@ public class WorldRecordService : IWorldRecordService
 
         foreach (var score in scoresEventArgs.Players)
         {
-            if (score != null && score.BestRaceTime < _currentWorldRecord.Time)
+            if (score is { BestRaceTime: < 0 } && score.BestRaceTime < _currentWorldRecord.Time)
             {
                 await OverwriteRecord(new WorldRecord { Name = score.Name, Time = score.BestRaceTime, Source = "local" });
             }

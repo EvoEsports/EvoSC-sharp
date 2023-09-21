@@ -14,7 +14,7 @@ public class MatchRankingModule : EvoScModule, IToggleable
         _matchRankingService = matchRankingService;
     }
     
-    public Task EnableAsync() => _matchRankingService.SendManialink();
+    public Task EnableAsync() => _matchRankingService.SendManialinkToPlayers();
 
     public Task DisableAsync() => _matchRankingService.HideManialink();
 }

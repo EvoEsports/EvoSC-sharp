@@ -10,10 +10,15 @@ public interface IMatchRankingService
     /// <returns></returns>
     Task UpdateAndShowScores(ScoresEventArgs scores);
     /// <summary>
-    /// Send the manialink to all players.
+    /// Send the manialink to spectating players.
     /// </summary>
     /// <returns></returns>
-    Task SendManialink();
+    Task SendManialinkToPlayers();
+    /// <summary>
+    /// Send the manialink to spectating player.
+    /// </summary>
+    /// <returns></returns>
+    Task SendManialinkToPlayer(string accountId);
     /// <summary>
     /// Hide the manialink for all players.
     /// </summary>
@@ -24,4 +29,10 @@ public interface IMatchRankingService
     /// </summary>
     /// <returns></returns>
     Task ResetMatchData();
+
+    /// <sumamry>
+    /// Handles a player state change, e.g. the player switches from spectator to playing or vice versa.
+    /// </summary>
+    /// <returns></returns>
+    Task HandlePlayerStateChange(string accountId);
 }

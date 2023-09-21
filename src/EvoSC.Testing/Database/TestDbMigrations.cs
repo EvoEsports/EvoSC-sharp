@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Testing.Database;
@@ -19,8 +20,11 @@ public static class TestDbMigrations
                 .AddSQLite()
                 .WithGlobalConnectionString(connectionString)
                 .ScanIn(asm).For.Migrations()
-            )
-            .BuildServiceProvider();
+            ).Configure<RunnerOptions>(opt =>
+            {
+                opt.Tags = new[] { "Production" };
+            })
+            .BuildServiceProvider(false);
 
         var runner = sp.GetRequiredService<IMigrationRunner>();
         runner.MigrateUp();
