@@ -17,23 +17,23 @@ public class SponsorsService : ISponsorsService
     private readonly IPlayerManagerService _playerManager;
     private readonly IManialinkManager _manialinkManager;
     private readonly ILogger<SponsorsService> _logger;
+    private readonly IPlayerCacheService _playerCacheService;
 
     public SponsorsService(IPlayerManagerService playerManager, IManialinkManager manialinkManager,
-        ILogger<SponsorsService> logger)
+        ILogger<SponsorsService> logger, IPlayerCacheService playerCacheService)
     {
         _playerManager = playerManager;
         _manialinkManager = manialinkManager;
         _logger = logger;
+        _playerCacheService = playerCacheService;
     }
 
     public async Task ShowWidgetToAllSpectators()
     {
         _logger.LogInformation("Showing widget to everyone.");
         await _manialinkManager.SendManialinkAsync(Template);
-
+        
         /*
-        var players = (await _playerManager.GetOnlinePlayersAsync()).ToList();
-        _logger.LogInformation("total players: {count}.", players.Count());
         foreach (var player in players)
         {
             //if (player.State == PlayerState.Spectating)
