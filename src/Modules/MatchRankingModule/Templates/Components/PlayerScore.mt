@@ -12,8 +12,8 @@
     <property type="string" name="playerRowBackgroundColor" default="999999"/>
 
     <template>
-        <frame id="player_row_{{ ranking.player.AccountId }}" pos="0 {{ y }}">
-            <quad id="player_row_trigger"
+        <frame id="player_row_{{ ranking?.player?.AccountId }}" pos="0 {{ y }}">
+            <quad id="player_row_trigger_{{ ranking?.player?.AccountId }}"
                   size="{{ w + 10.0 }} {{ h }}"
                   ScriptEvents="1"
             />
@@ -87,13 +87,9 @@
         <!--
             *** OnMouseClick ***
             ***
-            if(Event.Control.ControlId == "player_row_trigger"){
-                foreach(Player in Players){
-                    if(Player.User.WebServicesUserId == "{{ ranking?.player?.AccountId }}"){
-                        if(!IsSpectatorClient) RequestSpectatorClient(True);
-                        SetSpectateTarget(Player.User.Login);
-                    }
-                }
+            if(Event.Control.ControlId == "player_row_trigger_{{ ranking?.player?.AccountId }}"){
+                if(!IsSpectatorClient) RequestSpectatorClient(True);
+                SetSpectateTarget("{{ ranking?.login }}");
                 continue;
             }
             ***
