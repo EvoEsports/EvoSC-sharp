@@ -2,6 +2,8 @@
 
 namespace EvoSC.Common.Database.Migrations;
 
+[Tags("XPEvo", "Production")]
+[Migration(1695388994)]
 public class AddSnix : Migration {
     public override void Up()
     {
