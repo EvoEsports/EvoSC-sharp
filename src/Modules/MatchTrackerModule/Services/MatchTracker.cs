@@ -45,12 +45,12 @@ public class MatchTracker : IMatchTracker
 
     public async Task TrackScoresAsync(ScoresEventArgs scoreArgs)
     {
-        await VerifyTracker();
-
         if (!IsTracking)
         {
             return;
         }
+        
+        await VerifyTracker();
         
         IMatchState state;
 
@@ -185,7 +185,7 @@ public class MatchTracker : IMatchTracker
         return _currentTimeline;
     }
 
-    private async Task  VerifyTracker()
+    private async Task VerifyTracker()
     {
         if (!_settings.AutomaticTracking && !IsTracking)
         {
