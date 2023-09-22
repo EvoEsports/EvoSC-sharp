@@ -2,7 +2,7 @@
 
 namespace EvoSC.Common.Database.Migrations;
 
-[Tags("Production")]
+[Tags("XPEvo", "Production")]
 [Migration(1666859869)]
 public class AddConfigOptionsTable : Migration
 {
