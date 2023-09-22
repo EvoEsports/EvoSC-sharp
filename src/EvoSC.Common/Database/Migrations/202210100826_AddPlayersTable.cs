@@ -3,7 +3,7 @@ using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
-[Tags("Production")]
+[Tags("XPEvo", "Production")]
 [Migration(1665390396)]
 public class AddPlayersTable : Migration
 {
