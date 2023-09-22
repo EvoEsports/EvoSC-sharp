@@ -4,6 +4,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
@@ -18,7 +19,7 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Services;
 public class LiveRankingService : ILiveRankingService
 {
     private const int ShowRows = 4;
-    
+
     private readonly ILogger<LiveRankingService> _logger;
     private readonly IManialinkManager _manialinkManager;
     private readonly LiveRankingStore _liveRankingStore;
@@ -50,7 +51,8 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.IncreaseRoundCounter();
             _liveRankingStore.IncreaseTrackCounter();
 
-            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
+            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+                await GetWidgetData());
         }
 
         await Task.CompletedTask;
@@ -223,7 +225,7 @@ public class LiveRankingService : ILiveRankingService
         await CheckIsRoundsModeAsync();
         await HideManialink();
     }
-    
+
     public async Task HideNadeoScoreboard()
     {
         var hudSettings = new List<string>()
@@ -275,14 +277,16 @@ public class LiveRankingService : ILiveRankingService
 
         if (ranking.IsDnf)
         {
-            return new LiveRankingWidgetPosition(i + 1, ranking.Player, formattedTime, ranking.CheckpointIndex + 1, ranking.IsFinish);
+            return new LiveRankingWidgetPosition(i + 1, ranking.Player, ranking.Player.GetLogin(), formattedTime,
+                ranking.CheckpointIndex + 1, ranking.IsFinish);
         }
 
         var isDeltaTime = i > 0;
         var timeToFormat = isDeltaTime ? ranking.DiffToFirstPosition : ranking.CheckpointTime;
         formattedTime = FormatTime(timeToFormat, isDeltaTime);
 
-        return new LiveRankingWidgetPosition(i + 1, ranking.Player, formattedTime, ranking.CheckpointIndex + 1, ranking.IsFinish);
+        return new LiveRankingWidgetPosition(i + 1, ranking.Player, ranking.Player.GetLogin(), formattedTime,
+            ranking.CheckpointIndex + 1, ranking.IsFinish);
     }
 
     private Task<bool> CheckIsRoundsModeAsync()
