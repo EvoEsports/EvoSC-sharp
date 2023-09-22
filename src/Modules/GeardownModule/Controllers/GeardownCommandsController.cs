@@ -73,4 +73,7 @@ public class GeardownCommandsController : EvoScController<ICommandInteractionCon
 
     [ChatCommand("servername", "Set the current server name.", GeardownPermissions.ServerName)]
     public Task SetServerNameAsync(string name) => _matchManagement.SetServerNameAsync(name);
+
+    [ChatCommand("setmaxplayers", "Sets max players of the server.", GeardownPermissions.ServerName)]
+    public Task SetMaxPlayersAsync(int count) => _server.Remote.SetMaxPlayersAsync(count);
 }
