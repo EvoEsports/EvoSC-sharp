@@ -314,6 +314,12 @@ public class ManialinkManager : IManialinkManager
         return _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 3, true);
     }
 
+    public Task HideManialinkAsync(string playerLogin, string name)
+    {
+        var manialinkOutput = CreateHideManialink(name);
+        return _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 3, true);
+    }
+
     public Task HideManialinkAsync(IEnumerable<IPlayer> players, string name)
     {
         var manialinkOutput = CreateHideManialink(name);
