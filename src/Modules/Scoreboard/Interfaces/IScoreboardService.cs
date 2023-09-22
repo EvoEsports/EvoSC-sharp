@@ -7,6 +7,10 @@ public interface IScoreboardService
     /// </summary>
     public Task ShowScoreboard();
     /// <summary>
+    /// Sends the scoreboard manialink to a specific players.
+    /// </summary>
+    public Task ShowScoreboard(string playerLogin);
+    /// <summary>
     /// Hide the default game scoreboard.
     /// </summary>
     public Task HideNadeoScoreboard();
