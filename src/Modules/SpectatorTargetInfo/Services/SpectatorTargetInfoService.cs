@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -37,8 +38,8 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
     {
         return new
         {
-            primaryColor = _config.Theme.UI.PrimaryColor, 
-            backgroundColor = _config.Theme.UI.BackgroundColor, 
+            primaryColor = _config.Theme.UI.PrimaryColor,
+            backgroundColor = _config.Theme.UI.BackgroundColor,
             headerColor = _config.Theme.UI.HeaderBackgroundColor
         };
     }
@@ -83,5 +84,32 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
         };
 
         return _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
+    }
+
+    public Task ForwardCheckpointTimeToClients(WayPointEventArgs wayPointEventArgs)
+    {
+        return _manialinks.SendManialinkAsync("SpectatorTargetInfo.NewCpTime",
+            new
+            {
+                accountId = wayPointEventArgs.AccountId,
+                time = wayPointEventArgs.RaceTime,
+                cpIndex = wayPointEventArgs.CheckpointInRace
+            });
+    }
+
+    public Task ResetCheckpointTimes()
+    {
+        _manialinks.HideManialinkAsync("SpectatorTargetInfo.NewCpTime");
+        return _manialinks.SendManialinkAsync("SpectatorTargetInfo.ResetCpTimes");
+    }
+
+    public Task ForwardDnf(PlayerUpdateEventArgs playerUpdateEventArgs)
+    {
+        return _manialinks.SendManialinkAsync("SpectatorTargetInfo.NewCpTime", new
+        {
+            accountId = playerUpdateEventArgs.AccountId,
+            time = 0,
+            cpIndex = -1
+        });
     }
 }

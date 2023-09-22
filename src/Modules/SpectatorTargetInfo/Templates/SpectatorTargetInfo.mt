@@ -100,6 +100,12 @@
     #Const C_Status_NotSpawned		2
     #Const C_Status_Spectating		3
     
+    #Struct EvoSC_CheckpointTime {
+        Text AccountId;
+        Integer CpIndex;
+        Integer Time;
+    }
+    
     declare Integer FirstPositionTime;
     declare Integer LocalPositionTime;
         
@@ -136,33 +142,69 @@
         return 0;
     }
     
-    Integer GetPlayerRank(CSmPlayer player) {
-        declare rank = 1;
-        foreach(Score => Weight in GetSortedScores()){
-            if(rank == 1){
-                declare CSmPlayer Driver for Score;
-                FirstPositionTime = GetCurrentCheckpointTime(Driver);
-            }
-            if(Score == player.Score){
-                declare CSmPlayer Driver for Score;
-                LocalPositionTime = GetCurrentCheckpointTime(Driver);
-                break;
-            }
-            rank += 1;
+    Integer GetPlayerRank(Integer[Text] ranksByAccountId, CSmPlayer player) {
+        declare accountId = player.User.WebServicesUserId;
+    
+        if(ranksByAccountId.existskey(accountId)){
+            return ranksByAccountId[accountId];
         }
         
-        return rank;
+        return -1;
+    }
+    
+    Integer[Text] CalculatePlayerDiffs(Integer[Text] ranksByAccountId) {
+        declare Integer[Text] scoresByAccountId;
+        declare Integer[Text] diffsByAccountId;
+        declare Integer bestTime = -1;
+        
+        foreach(player in Players){
+            scoresByAccountId[player.User.WebServicesUserId] = GetCurrentCheckpointTime(player);
+        }
+    
+        foreach(rank in ranksByAccountId){
+            declare accountId = ranksByAccountId.keyof(rank);
+            
+            if(scoresByAccountId.existskey(accountId)){
+                if(bestTime == -1){
+                    bestTime = scoresByAccountId[accountId];
+                }
+                
+                diffsByAccountId[accountId] = ML::Abs(scoresByAccountId[accountId] - bestTime);
+            }
+        }
+        
+        return diffsByAccountId;
     }
         
     Text StripLeadingZeroes(Text input) {
         return TL::RegexReplace("^[0:]+", input, "", "");
     }
     
-    Void AssignDrivers() {
-        foreach(Player in Players){
-            declare CSmPlayer Driver for Player.Score;
-            Driver <=> Player;
+    Integer[Text] GetRanksForAccountIds(EvoSC_CheckpointTime[Text] checkpointTimes){
+        declare Integer[Text][Integer] timesByCheckpoints;
+        
+        foreach(cpTime in checkpointTimes){
+            declare index = cpTime.CpIndex;
+        
+            if(!timesByCheckpoints.existskey(index)){
+                timesByCheckpoints[index] = Integer[Text];
+            }
+        
+            timesByCheckpoints[index][cpTime.AccountId] = cpTime.Time;
         }
+        
+        declare Integer[Text] sortedTimes;
+        declare Integer rank = 1;
+        
+        foreach(checkpointsTimes in timesByCheckpoints.sortkeyreverse()){
+            foreach(cpTime in checkpointsTimes.sort()){
+                declare accountId = checkpointsTimes.keyof(cpTime);
+                sortedTimes[accountId] = rank;
+                rank += 1;
+            }
+        }
+        
+        return sortedTimes;
     }
     
     main() {
@@ -175,11 +217,23 @@
         declare clubTagLabel <=> (Page.MainFrame.GetFirstChild("club") as CMlLabel);
         declare lastAssignUpdate = 0;
         
+        declare EvoSC_CheckpointTime[Text] EvoCheckpointTimes for UI;
+        declare Integer EvoCheckpointTimesUpdate for UI;
+        declare Boolean EvoCheckpointTimesReset for UI = False;
+        declare Integer lastCheckpointUpdateCheck = 0;
+        declare Integer[Text] ranksByAccountId;
+        declare Integer[Text] diffs;
+        
         FirstPositionTime = 0;
         LocalPositionTime = 0;
         
         while(True) {
             yield;
+            
+            if(EvoCheckpointTimesReset){
+                ranksByAccountId = Integer[Text];
+                EvoCheckpointTimesReset = False;
+            }
             
             if(GUIPlayer == Null || GUIPlayer.User == LocalUser){
                 sleep(100);
@@ -189,20 +243,27 @@
                 continue;
             }
             
+            if(lastCheckpointUpdateCheck != EvoCheckpointTimesUpdate){
+                lastCheckpointUpdateCheck = EvoCheckpointTimesUpdate;
+                log("[SpecInfo] CALCULATE RANKS AND DIFFS.");
+                ranksByAccountId = GetRanksForAccountIds(EvoCheckpointTimes);
+                diffs = CalculatePlayerDiffs(ranksByAccountId);
+                log("[SpecInfo] Ranks: " ^ ranksByAccountId);
+                log("[SpecInfo] Diffs: " ^ diffs);
+            }
+            
             if(!mainFrame.Visible){
                 mainFrame.Show();
             }
             
-            if(lastAssignUpdate + 2500 < Now){
-                AssignDrivers();
-                lastAssignUpdate = Now;
+            declare Integer timeDifference = 0;
+            if(diffs.existskey(GUIPlayer.User.WebServicesUserId)){
+                timeDifference = diffs[GUIPlayer.User.WebServicesUserId];
             }
-            
-            declare timeDifference = ML::Abs(LocalPositionTime - FirstPositionTime);
             
             nameLabel.Value = GUIPlayer.User.Name;
             diffLabel.Value = "+" ^ StripLeadingZeroes(TL::TimeToText(timeDifference, True, True));
-            positionLabel.Value = GetPlayerRank(GUIPlayer) ^ ".";
+            positionLabel.Value = GetPlayerRank(ranksByAccountId, GUIPlayer) ^ ".";
             clubTagLabel.Value = GUIPlayer.User.ClubTag;
             
             if(GUIPlayer.User.ClubTag != ""){

@@ -180,6 +180,14 @@ public interface IManialinkManager
     public Task HideManialinkAsync(IPlayer player, string name);
     
     /// <summary>
+    /// Hide a manialink from a player.
+    /// </summary>
+    /// <param name="playerLogin">The player to hide the manialink from.</param>
+    /// <param name="name">Name of the manialink to hide.</param>
+    /// <returns></returns>
+    public Task HideManialinkAsync(string playerLogin, string name);
+    
+    /// <summary>
     /// Hide a manialink from a set of players.
     /// </summary>
     /// <param name="players">The players to hide the manialink from.</param>

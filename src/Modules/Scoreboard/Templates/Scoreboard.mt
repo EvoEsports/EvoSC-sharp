@@ -626,6 +626,12 @@
                 ToggleShowSettings();
             }
         ***
+        
+        *** OnScriptExecutionFinished *** 
+        ***
+            sleep(5000);
+            TriggerPageAction("ScoreboardManialinkController/ResendScoreboard");
+        ***
         -->
     </script>
 
