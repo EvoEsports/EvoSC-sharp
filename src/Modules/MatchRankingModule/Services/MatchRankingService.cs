@@ -4,6 +4,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
 using EvoSC.Modules.Official.LiveRankingModule.Utils;
@@ -137,6 +138,7 @@ public class MatchRankingService : IMatchRankingService
             playerScores.Add(new LiveRankingWidgetPosition(
                 score.Rank,
                 player,
+                player.GetLogin(),
                 (score.MatchPoints + score.RoundPoints).ToString(),
                 -1,
                 false

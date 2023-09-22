@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Official.SponsorsModule.Interfaces;
 using GbxRemoteNet.Events;
 
@@ -25,11 +26,18 @@ public class SponsorsController : EvoScController<IEventControllerContext>
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerJoin(object sender, PlayerConnectGbxEventArgs playerConnectArgs)
     {
-        var player = await _playerManager.GetOnlinePlayerAsync(playerConnectArgs.Login);
+        var player = await _playerManager.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerConnectArgs.Login));
+        
         if (player.State == PlayerState.Spectating)
         {
             await _sponsorsService.ShowWidget(playerConnectArgs.Login);
         }
+    }
+
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public async Task OnBeginMap(object sender, MapGbxEventArgs mapGbxEventArgs)
+    {
+        await _sponsorsService.ShowWidgetToAllSpectators();
     }
 
     [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
