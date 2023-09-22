@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
@@ -16,6 +17,7 @@ namespace EvoSC.Modules.Official.MatchRankingModule.Services;
 public class MatchRankingService : IMatchRankingService
 {
     private const int ShowRows = 4;
+    private const string Template = "MatchRankingModule.MatchRanking";
 
     private readonly IManialinkManager _manialinkManager;
     private readonly IPlayerManagerService _playerManager;
@@ -36,23 +38,43 @@ public class MatchRankingService : IMatchRankingService
     public Task UpdateAndShowScores(ScoresEventArgs scores)
     {
         _matchRankingStore.ConsumeScores(scores);
-        return SendManialink();
+        return SendManialinkToPlayers();
     }
 
-    public async Task SendManialink()
+    public async Task SendManialinkToPlayers()
     {
-        await _manialinkManager.SendPersistentManialinkAsync("MatchRankingModule.MatchRanking", GetWidgetData());
+        var players = await _playerManager.GetOnlinePlayersAsync();
+
+        foreach (var player in players)
+        {
+            if (player.State == PlayerState.Spectating)
+            {
+                await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+            }
+        }
     }
 
-    private dynamic GetWidgetData()
+    public async Task SendManialinkToPlayer(string accountId)
     {
-        var mappedScoresPrevious = MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores()).ToList().Take(ShowRows).ToList();
-        var mappedScoresLatest = MapScoresForWidget(_matchRankingStore.GetLatestMatchScores()).ToList().Take(ShowRows).ToList();
+        var player = await _playerManager.GetOnlinePlayerAsync(accountId);
+
+        if (player.State == PlayerState.Spectating)
+        {
+            await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+        }
+    }
+
+    private async Task<dynamic> GetWidgetData()
+    {
+        var mappedScoresPrevious = (await MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores())).ToList()
+            .Take(ShowRows).ToList();
+        var mappedScoresLatest = (await MapScoresForWidget(_matchRankingStore.GetLatestMatchScores())).ToList()
+            .Take(ShowRows).ToList();
 
         var mappedScoresExisting = mappedScoresLatest
             .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
         var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
-        
+
         return new
         {
             NewScores = mappedScoresNew,
@@ -65,28 +87,9 @@ public class MatchRankingService : IMatchRankingService
         };
     }
 
-    private IEnumerable<LiveRankingWidgetPosition> MapScoresForWidget(ScoresEventArgs? scores)
-    {
-        if (scores == null)
-        {
-            return new List<LiveRankingWidgetPosition>();
-        }
-
-        return scores.Players.ToList()
-            // .GetRange(0, ShowRows)
-            .Select(score => new LiveRankingWidgetPosition(
-                    score.Rank,
-                    _playerManager.GetPlayerAsync(score.AccountId).Result,
-                    (score.MatchPoints + score.RoundPoints).ToString(),
-                    -1,
-                    false
-                )
-            );
-    }
-
     public async Task HideManialink()
     {
-        await _manialinkManager.HideManialinkAsync("MatchRankingModule.MatchRanking");
+        await _manialinkManager.HideManialinkAsync(Template);
     }
 
     public Task ResetMatchData()
@@ -95,5 +98,51 @@ public class MatchRankingService : IMatchRankingService
         _matchRankingStore = new MatchRankingStore();
 
         return Task.CompletedTask;
+    }
+
+    public async Task HandlePlayerStateChange(string accountId)
+    {
+        var player = await _playerManager.GetOnlinePlayerAsync(accountId);
+        if (player.State == PlayerState.Playing)
+        {
+            await _manialinkManager.HideManialinkAsync(Template);
+            return;
+        }
+
+        await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+    }
+
+    private async Task<IEnumerable<LiveRankingWidgetPosition>> MapScoresForWidget(ScoresEventArgs? scores)
+    {
+        if (scores == null)
+        {
+            return new List<LiveRankingWidgetPosition>();
+        }
+
+        var playerScores = new List<LiveRankingWidgetPosition>();
+        foreach (var score in scores.Players)
+        {
+            if (score == null)
+            {
+                continue;
+            }
+
+            var player = await _playerManager.GetPlayerAsync(score.AccountId);
+
+            if (player == null)
+            {
+                continue;
+            }
+
+            playerScores.Add(new LiveRankingWidgetPosition(
+                score.Rank,
+                player,
+                (score.MatchPoints + score.RoundPoints).ToString(),
+                -1,
+                false
+            ));
+        }
+
+        return playerScores;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EvoSC.Common.Database.Migrations;
 
+[Tags("XPEvo", "Production")]
 [Migration(1668492589)]
 public class AddUserPermissionTables : Migration
 {

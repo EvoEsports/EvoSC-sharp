@@ -2,6 +2,7 @@
 
 namespace EvoSC.Common.Database.Migrations;
 
+[Tags("XPEvo", "Production")]
 [Migration(1689575375)]
 public class UpdateAuditLogTableDataTypes : Migration
 {
