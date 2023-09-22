@@ -29,8 +29,11 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
     }
 
     [Subscribe(MatchSettingsEvent.MatchSettingsLoaded)]
-    public async Task OnMatchSettingsLoaded(object sender, MatchSettingsLoadedEventArgs args) =>
+    public async Task OnMatchSettingsLoaded(object sender, MatchSettingsLoadedEventArgs args)
+    {
         await _scoreboardService.LoadAndSendRequiredAdditionalInfos();
+        await _scoreboardService.ShowScoreboard();
+    }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnRoundStart(object sender, RoundEventArgs args)
