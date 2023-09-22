@@ -184,9 +184,9 @@
         declare Integer[Text][Integer] timesByCheckpoints;
         
         foreach(cpTime in checkpointTimes){
-            declare index = cpTime.CpIndex * -1;
+            declare index = cpTime.CpIndex;
         
-            if(!timesByCheckpoints.existskey(cpTime.CpIndex)){
+            if(!timesByCheckpoints.existskey(index)){
                 timesByCheckpoints[index] = Integer[Text];
             }
         
@@ -196,7 +196,7 @@
         declare Integer[Text] sortedTimes;
         declare Integer rank = 1;
         
-        foreach(checkpointsTimes in timesByCheckpoints.sortkey()){
+        foreach(checkpointsTimes in timesByCheckpoints.sortkeyreverse()){
             foreach(cpTime in checkpointsTimes.sort()){
                 declare accountId = checkpointsTimes.keyof(cpTime);
                 sortedTimes[accountId] = rank;
