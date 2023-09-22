@@ -5,7 +5,7 @@ using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
-[Tags("XPEvo")]
+[Tags("XPEvo", "Production")]
 [Migration(1695294772)]
 public class XPEvoValues : Migration
 {
