@@ -26,8 +26,8 @@ public class SponsorsController : EvoScController<IEventControllerContext>
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerJoin(object sender, PlayerConnectGbxEventArgs playerConnectArgs)
     {
-        var player =
-            await _playerManager.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerConnectArgs.Login));
+        var player = await _playerManager.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerConnectArgs.Login));
+        
         if (player.State == PlayerState.Spectating)
         {
             await _sponsorsService.ShowWidget(playerConnectArgs.Login);
