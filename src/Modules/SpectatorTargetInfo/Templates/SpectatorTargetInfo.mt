@@ -245,11 +245,8 @@
             
             if(lastCheckpointUpdateCheck != EvoCheckpointTimesUpdate){
                 lastCheckpointUpdateCheck = EvoCheckpointTimesUpdate;
-                log("[SpecInfo] CALCULATE RANKS AND DIFFS.");
                 ranksByAccountId = GetRanksForAccountIds(EvoCheckpointTimes);
                 diffs = CalculatePlayerDiffs(ranksByAccountId);
-                log("[SpecInfo] Ranks: " ^ ranksByAccountId);
-                log("[SpecInfo] Diffs: " ^ diffs);
             }
             
             if(!mainFrame.Visible){

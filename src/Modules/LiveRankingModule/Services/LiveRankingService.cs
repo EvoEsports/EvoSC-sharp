@@ -8,9 +8,7 @@ using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
-using EvoSC.Modules.Official.LiveRankingModule.Utils;
 using GbxRemoteNet.Events;
-using LinqToDB.Common;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Services;
@@ -73,34 +71,30 @@ public class LiveRankingService : ILiveRankingService
             _logger.LogTrace("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
                 args.AccountId, _isRoundsMode);
 
-            var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
+            //var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
 
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
-                await GetWidgetData(previousRanking));
+                await GetWidgetData());
         }
     }
 
-    private async Task<dynamic> GetWidgetData(List<ExpandedLiveRankingPosition>? previousRanking = null)
+    private async Task<dynamic> GetWidgetData()
     {
         var currentRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).Take(ShowRows).ToList();
         await CalculateDiffs(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
 
-        if (previousRanking.IsNullOrEmpty())
+        return new
         {
-            return new
-            {
-                previousRankings = widgetCurrentRanking,
-                rankingsExisting = new List<LiveRankingWidgetPosition>(),
-                rankingsNew = new List<LiveRankingWidgetPosition>(),
-                headerColor = _config.Theme.UI.HeaderBackgroundColor,
-                primaryColor = _config.Theme.UI.PrimaryColor,
-                logoUrl = _config.Theme.UI.LogoWhiteUrl,
-                playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
-            };
-        }
+            rankings = widgetCurrentRanking,
+            headerColor = _config.Theme.UI.HeaderBackgroundColor,
+            primaryColor = _config.Theme.UI.PrimaryColor,
+            logoUrl = _config.Theme.UI.LogoWhiteUrl,
+            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+        };
 
+/*
         //Map ranking entries for widget
         var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking.Take(ShowRows).ToList());
 
@@ -119,6 +113,7 @@ public class LiveRankingService : ILiveRankingService
             logoUrl = _config.Theme.UI.LogoWhiteUrl,
             playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
         };
+        */
     }
 
     public Task CalculateDiffs(List<ExpandedLiveRankingPosition> rankings)
@@ -147,7 +142,7 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
 
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
-                await GetWidgetData(previousRanking));
+                await GetWidgetData());
         }
     }
 

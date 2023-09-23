@@ -5,9 +5,7 @@
     
     <import component="MatchRankingModule.Components.PlayerScore" as="PlayerScore"/>
 
-    <property type="List<LiveRankingWidgetPosition>" name="PreviousScores"/>
-    <property type="List<LiveRankingWidgetPosition>" name="NewScores"/>
-    <property type="List<LiveRankingWidgetPosition>" name="ExistingScores"/>
+    <property type="List<LiveRankingWidgetPosition>" name="Scores"/>
 
     <property type="double" name="scale" default="0.9"/>
     <property type="double" name="w" default="68.0"/>
@@ -73,16 +71,7 @@
 
             <!-- CONTENT -->
             <frame id="players" pos="0 {{ -headerHeight - rowSpacing * 2.0 }}" size="{{ w }} 999" z-index="10">
-                <PlayerScore foreach="LiveRankingWidgetPosition position in PreviousScores"
-                             y="{{ (position.position - 1) * (rowHeight + rowSpacing) * -1.0 }}"
-                             w="{{ w - 8.0 }}"
-                             h="{{ rowHeight }}"
-                             rowSpacing="{{ rowSpacing }}"
-                             playerRowBackgroundColor="{{ playerRowBackgroundColor }}"
-                             ranking="{{ position }}"
-                             newRanking="{{ ExistingScores.FirstOrDefault(r => r.player.AccountId == position.player.AccountId) }}"
-                />
-                <PlayerScore foreach="LiveRankingWidgetPosition position in NewScores"
+                <PlayerScore foreach="LiveRankingWidgetPosition position in Scores"
                              y="{{ (position.position - 1) * (rowHeight + rowSpacing) * -1.0 }}"
                              w="{{ w - 8.0 }}"
                              h="{{ rowHeight }}"
@@ -97,8 +86,6 @@
     <script>
         <!--
             main() {
-                +++ Animations +++
-                
                 while(True){
                     yield;
                     
