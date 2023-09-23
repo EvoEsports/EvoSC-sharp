@@ -3,6 +3,7 @@ using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.SponsorsModule.Interfaces;
 using GbxRemoteNet.Events;
@@ -77,7 +78,7 @@ public class SponsorsService : ISponsorsService
 
     public async Task ShowOrHide(PlayerInfoChangedGbxEventArgs playerInfoChangedArgs)
     {
-        var player = await _playerManager.GetOnlinePlayerAsync(playerInfoChangedArgs.PlayerInfo.Login);
+        var player = await _playerManager.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerInfoChangedArgs.PlayerInfo.Login));
 
         if (player.State == PlayerState.Spectating)
         {
