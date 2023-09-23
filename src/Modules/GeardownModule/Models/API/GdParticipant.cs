@@ -10,5 +10,4 @@ public class GdParticipant
     public string? created_at { get; set; }
     public string? updated_at { get; set; }
     public GdUser? user { get; set; } //null in team formats
-    public GdPage? page { get; set; } //null in solo mode
 }

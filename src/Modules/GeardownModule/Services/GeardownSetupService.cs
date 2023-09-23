@@ -86,6 +86,8 @@ public class GeardownSetupService : IGeardownSetupService
         // load the match settings and skip to the first map
         await _matchSettings.LoadMatchSettingsAsync(matchSettingsName);
 
+        await _server.Remote.SetServerNameAsync(match.name);
+
         if (players.Length <= 4)
         {
             await SetupReadyWidgetAsync(players);
