@@ -18,9 +18,9 @@ public class WorldRecordEventController : EvoScController<IEventControllerContex
         _worldRecordService = worldRecordService;
     }
 
-    [Subscribe(ModeScriptEvent.Scores)]
-    public Task OnScores(object sender, ScoresEventArgs scoresEventArgs)
-        => _worldRecordService.DetectNewWorldRecordThroughScores(scoresEventArgs);
+    //[Subscribe(ModeScriptEvent.Scores)]
+    //public Task OnScores(object sender, ScoresEventArgs scoresEventArgs)
+    //    => _worldRecordService.DetectNewWorldRecordThroughScores(scoresEventArgs);
 
     [Subscribe(ModeScriptEvent.EndMapEnd)]
     public Task OnMapEnd(object sender, MapEventArgs mapEventArgs)
