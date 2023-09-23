@@ -67,20 +67,18 @@ public class MatchRankingService : IMatchRankingService
 
     private async Task<dynamic> GetWidgetData()
     {
-        var mappedScoresPrevious = (await MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores())).ToList()
-            .Take(ShowRows).ToList();
+        //var mappedScoresPrevious = (await MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores())).ToList()
+        //    .Take(ShowRows).ToList();
         var mappedScoresLatest = (await MapScoresForWidget(_matchRankingStore.GetLatestMatchScores())).ToList()
             .Take(ShowRows).ToList();
 
-        var mappedScoresExisting = mappedScoresLatest
-            .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
-        var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
+        //var mappedScoresExisting = mappedScoresLatest
+        //    .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
+        //var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
 
         return new
         {
-            NewScores = mappedScoresNew,
-            ExistingScores = mappedScoresExisting,
-            PreviousScores = mappedScoresPrevious,
+            Scores = mappedScoresLatest,
             headerColor = _config.Theme.UI.HeaderBackgroundColor,
             primaryColor = _config.Theme.UI.PrimaryColor,
             logoUrl = _config.Theme.UI.LogoWhiteUrl,

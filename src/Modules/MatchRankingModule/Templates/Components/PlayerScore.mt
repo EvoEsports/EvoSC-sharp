@@ -2,7 +2,6 @@
     <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
 
     <property type="LiveRankingWidgetPosition?" name="ranking" default="null"/>
-    <property type="LiveRankingWidgetPosition?" name="newRanking" default="null"/>
 
     <property type="double" name="y" default="0.0"/>
     <property type="double" name="w" default="66.0"/>
@@ -12,8 +11,8 @@
     <property type="string" name="playerRowBackgroundColor" default="999999"/>
 
     <template>
-        <frame id="player_row_{{ ranking?.player?.AccountId }}" pos="0 {{ y }}">
-            <quad id="player_row_trigger_{{ ranking?.player?.AccountId }}"
+        <frame id="player_row_{{ ranking?.login }}" pos="0 {{ y }}">
+            <quad id="player_row_trigger_{{ ranking?.login }}"
                   size="{{ w + 10.0 }} {{ h }}"
                   ScriptEvents="1"
             />
@@ -87,21 +86,11 @@
         <!--
             *** OnMouseClick ***
             ***
-            if(Event.Control.ControlId == "player_row_trigger_{{ ranking?.player?.AccountId }}"){
+            if(Event.Control.ControlId == "player_row_trigger_{{ ranking?.login }}"){
                 if(!IsSpectatorClient) RequestSpectatorClient(True);
                 SetSpectateTarget("{{ ranking?.login }}");
                 continue;
             }
-            ***
-            
-            *** Animations ***
-            ***
-                if({{ newRanking != null ? "True" : "False" }}){
-                    declare scoreFrame <=> (Page.MainFrame.GetFirstChild("player_row_{{ ranking?.player.AccountId }}") as CMlFrame);
-                    (scoreFrame.GetFirstChild("position") as CMlLabel).Value = "{{ newRanking?.position }}";
-                    (scoreFrame.GetFirstChild("score") as CMlLabel).Value = "{{ newRanking?.time }}";
-                    AnimMgr.Add(scoreFrame, "<frame pos='0 {{ (newRanking?.position - 1) * (rowSpacing + h) * -1.0 }}' />", 320, CAnimManager::EAnimManagerEasing::ExpOut);
-                }
             ***
         -->
     </script>
