@@ -37,5 +37,9 @@
         <HintPath>..\..\..\..\..\..\.nuget\packages\hawf\1.0.3\lib\net6.0\Hawf.dll</HintPath>
       </Reference>
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Flurl" Version="3.0.7" />
+      <PackageReference Include="Flurl.Http" Version="3.2.4" />
+    </ItemGroup>
 
 </Project>

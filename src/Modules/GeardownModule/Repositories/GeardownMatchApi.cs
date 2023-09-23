@@ -1,51 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Evo.GeardownModule.Interfaces.Repositories;
-using EvoSC.Modules.Evo.GeardownModule.Models;
 using EvoSC.Modules.Evo.GeardownModule.Models.API;
 using EvoSC.Modules.Evo.GeardownModule.Settings;
-using Hawf.Attributes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Flurl;
+using Flurl.Http;
+using Flurl.Util;
 
 namespace EvoSC.Modules.Evo.GeardownModule.Repositories;
 
-[ApiClient]
-public class GeardownMatchApi : GeardownApiBase<GeardownMatchApi>, IGeardownMatchApi
+public class GeardownMatchApi : IGeardownMatchApi
 {
-    public GeardownMatchApi(IGeardownSettings settings) : base(settings)
+    private readonly IGeardownSettings _settings;
+    
+    public GeardownMatchApi(IGeardownSettings settings)
     {
+        _settings = settings;
     }
 
-    public Task<IEnumerable<GdParticipant>?> GetParticipantsAsync(int matchId) =>
-        WithAccessToken()
-            .WithJsonBody(new { matchId })
-            .GetJsonAsync<IEnumerable<GdParticipant>>("/v1/matches/participants");
-
-    public Task UpdateStatusAsync(int matchId, MatchStatus statusId) =>
-        WithAccessToken()
-            .PutStringAsync("/v1/matches/{matchId}/status/{statusId}", matchId, statusId);
-
-    public Task<GdMatch?> UpdateParticipantsAsync(int matchId, IEnumerable<GdParticipant> participants) =>
-        WithAccessToken()
-            .WithJsonBody(new { matchId, participants })
-            .PutJsonAsync<GdMatch>("/v1/matches/participants");
-
-    public Task<GdMatchResult?> CreateMatchResultAsync(int matchId, bool isTotalResult, int participantId,
-        string result, bool pending) =>
-        WithAccessToken()
-            .WithJsonBody(new { matchId, isTotalResult, participantId, result, pending })
-            .PostJsonAsync<GdMatchResult>("/api/matches/results");
-
-    public Task<GdMatchResult?> CreateTimeResultAsync(int matchId, string result, string nickname, string mapId) =>
-        WithAccessToken()
-            .WithJsonBody(new { matchId, result, nickname, mapId })
-            .PostJsonAsync<GdMatchResult>("/api/matches/time_results");
-
-    public Task<GdMatchToken?> AssignServerAsync(int matchId, string name, string serverId, string? serverPassword) =>
+    /* public Task<GdMatchToken?> AssignServerAsync(int matchId, string name, string serverId, string? serverPassword) =>
         WithAccessToken()
             .WithJsonBody(new { serverId, password = serverPassword, name })
             .PostJsonAsync<GdMatchToken>("/api/matches/game_server/{matchId}", matchId);
@@ -67,5 +38,57 @@ public class GeardownMatchApi : GeardownApiBase<GeardownMatchApi>, IGeardownMatc
     public Task AddResultsAsync(int matchId, IEnumerable<GdResult> results) =>
         WithAccessToken()
             .WithJsonBody(new { matchId = matchId, results = results })
-            .PostStringAsync("/api/console/dedicated_controllers/results");
+            .PostStringAsync("/api/console/dedicated_controllers/results"); */
+    public Task<GdMatchToken?> AssignServerAsync(int matchId, string name, string serverId, string? serverPassword)
+    {
+        return $"https://tourneyapi.evoesports.gg/api/matches/game_server/{matchId}"
+            .SetQueryParam("token", _settings.ApiAccessToken)
+            .PostJsonAsync(new { serverId, password = serverPassword, name })
+            .ReceiveJson<GdMatchToken?>();
+    }
+
+    public Task<GdMatch?> GetMatchDataByTokenAsync(string matchToken)
+    {
+        return $"https://tourneyapi.evoesports.gg/api/matches/evo_token/{matchToken}"
+            .WithHeader("Content-Type", "application/json")            .WithHeader("Content-Type", "application/json")
+            .WithHeader("User-Agent", "EvoSC")
+            .WithHeader("Connection", "keep-alive")
+            .WithHeader("Accept-Encoding", "gzip, deflate, br")
+            .SetQueryParam("token", _settings.ApiAccessToken)
+            .GetAsync()
+            .ReceiveJson<GdMatch?>();
+    }
+
+    public Task OnEndMatchAsync(string matchToken)
+    {
+        return $"https://tourneyapi.evoesports.gg/v1/matches/on_end_match"
+            .WithHeader("Content-Type", "application/json")            .WithHeader("Content-Type", "application/json")
+            .WithHeader("User-Agent", "EvoSC")
+            .WithHeader("Connection", "keep-alive")
+            .WithHeader("Accept-Encoding", "gzip, deflate, br")
+            .SetQueryParam("token", _settings.ApiAccessToken)
+            .PostAsync();
+    }
+
+    public Task OnStartMatchAsync(string matchToken)
+    {
+        return $"https://tourneyapi.evoesports.gg/v1/matches/on_start_match"
+            .WithHeader("Content-Type", "application/json")            .WithHeader("Content-Type", "application/json")
+            .WithHeader("User-Agent", "EvoSC")
+            .WithHeader("Connection", "keep-alive")
+            .WithHeader("Accept-Encoding", "gzip, deflate, br")
+            .SetQueryParam("token", _settings.ApiAccessToken)
+            .PostAsync();
+    }
+
+    public Task AddResultsAsync(int matchId, IEnumerable<GdResult> results)
+    {
+        return $"https://tourneyapi.evoesports.gg/api/matches/game_server/{matchId}"
+            .WithHeader("Content-Type", "application/json")            .WithHeader("Content-Type", "application/json")
+            .WithHeader("User-Agent", "EvoSC")
+            .WithHeader("Connection", "keep-alive")
+            .WithHeader("Accept-Encoding", "gzip, deflate, br")
+            .SetQueryParam("token", _settings.ApiAccessToken)
+            .PostJsonAsync(new { matchId = matchId, results = results });
+    }
 }

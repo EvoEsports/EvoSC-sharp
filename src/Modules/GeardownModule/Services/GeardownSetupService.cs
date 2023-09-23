@@ -241,6 +241,26 @@ public class GeardownSetupService : IGeardownSetupService
         
         var format = match.formats.First();
         var name = $"geardown_{format.id}";
+
+        var mapsToAdd = new List<IMap>();
+
+        foreach (var map in maps)
+        {
+            try
+            {
+                var serverMap = await _server.Remote.GetMapInfoAsync(map.FilePath);
+
+                if (serverMap != null)
+                {
+                    mapsToAdd.Add(map);
+                }
+            }
+            catch (Exception)
+            {
+                // do nothing
+            }
+        }
+        
         await _matchSettings.CreateMatchSettingsAsync(name, builder =>
         {
             var mode = format.type_id switch
@@ -268,7 +288,7 @@ public class GeardownSetupService : IGeardownSetupService
                 }
             });
 
-            builder.WithMaps(maps);
+            builder.WithMaps(mapsToAdd);
             builder.WithFilter(f => f.AsRandomMapOrder(true));
         });
 

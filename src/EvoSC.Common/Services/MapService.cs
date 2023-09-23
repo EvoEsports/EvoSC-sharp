@@ -17,15 +17,17 @@ public class MapService : IMapService
     private readonly IEvoScBaseConfig _config;
     private readonly IPlayerManagerService _playerService;
     private readonly IServerClient _serverClient;
+    private readonly IMatchSettingsService _matchSettings;
 
     public MapService(IMapRepository mapRepository, ILogger<MapService> logger, IEvoScBaseConfig config,
-        IPlayerManagerService playerService, IServerClient serverClient)
+        IPlayerManagerService playerService, IServerClient serverClient, IMatchSettingsService matchSettings)
     {
         _mapRepository = mapRepository;
         _logger = logger;
         _config = config;
         _playerService = playerService;
         _serverClient = serverClient;
+        _matchSettings = matchSettings;
     }
 
     public async Task<IMap?> GetMapByIdAsync(long id) => await _mapRepository.GetMapByIdAsync(id);
@@ -70,8 +72,12 @@ public class MapService : IMapService
             map = await _mapRepository.AddMapAsync(mapMetadata, author, relativePath);
         }
 
-        await _serverClient.Remote.InsertMapAsync($"EvoSC/{fileName}");
-        await _serverClient.Remote.SaveMatchSettingsAsync($"MatchSettings/{_config.Path.DefaultMatchSettings}");
+        await _matchSettings.EditMatchSettingsAsync(Path.GetFileNameWithoutExtension(_config.Path.DefaultMatchSettings),
+            builder => builder.AddMap($"EvoSC/{fileName}"));
+        
+        /*await _serverClient.Remote.InsertMapAsync($"EvoSC/{fileName}");
+        await _serverClient.Remote.SaveMatchSettingsAsync($"MatchSettings/{_config.Path.DefaultMatchSettings}"); */
+        
         return map;
     }
 
