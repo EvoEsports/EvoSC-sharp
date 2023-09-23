@@ -136,7 +136,30 @@ public class ServerCallbackHandler : IServerCallbackHandler
                     new RoundEventArgs
                     {
                         Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
-                        Valid = data.GetValue("valid", StringComparison.Ordinal).ToObject<int>(),
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
+                    });
+                break;
+            case "Maniaplanet.StartRound_End":
+                await _events.RaiseAsync(ModeScriptEvent.StartRoundEnd,
+                    new RoundEventArgs
+                    {
+                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
+                    });
+                break;
+            case "Maniaplanet.EndRound_Start":
+                await _events.RaiseAsync(ModeScriptEvent.EndRoundStart,
+                    new RoundEventArgs
+                    {
+                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
+                        Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
+                    });
+                break;
+            case "Maniaplanet.EndRound_End":
+                await _events.RaiseAsync(ModeScriptEvent.EndRoundEnd,
+                    new RoundEventArgs
+                    {
+                        Count = data.GetValue("count", StringComparison.Ordinal).ToObject<int>(),
                         Time = data.GetValue("time", StringComparison.Ordinal).ToObject<int>()
                     });
                 break;

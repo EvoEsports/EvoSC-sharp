@@ -38,7 +38,7 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnRoundStart(object sender, RoundEventArgs args)
     {
-        _scoreboardService.SetCurrentRound(args.Valid);
+        _scoreboardService.SetCurrentRound(args.Count);
         await _scoreboardService.SendRequiredAdditionalInfos();
     }
 }

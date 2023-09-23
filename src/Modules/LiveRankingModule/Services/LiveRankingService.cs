@@ -138,7 +138,7 @@ public class LiveRankingService : ILiveRankingService
             _logger.LogTrace("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
                 _isRoundsMode);
 
-            var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
+            //var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
 
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
