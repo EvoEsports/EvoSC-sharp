@@ -489,14 +489,14 @@
             }
         
             declare cursor = 0;
-            declare startFill = ML::Max(ScrollIndex - PlayerRowsVisible, 0);
-            declare endFill = ML::Min(ScrollIndex + PlayerRowsVisible * 2, MaxPlayers - 1);
+            //declare startFill = ML::Max(ScrollIndex - PlayerRowsVisible, 0);
+            //declare endFill = ML::Min(ScrollIndex + PlayerRowsVisible * 2, MaxPlayers - 1);
            
             foreach(Score => Weight in GetSortedScores()){
-                if(cursor < startFill || cursor > endFill){
-                    cursor += 1;
-                    continue;
-                }
+                //if(cursor < startFill || cursor > endFill){
+                //    cursor += 1;
+                //    continue;
+                //}
                 
                 declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
                 declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
