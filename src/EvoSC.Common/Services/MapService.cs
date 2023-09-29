@@ -93,6 +93,26 @@ public class MapService : IMapService
     public async Task RemoveMapAsync(long mapId)
     {
         await _mapRepository.RemoveMapAsync(mapId);
+        var map = await this.GetMapByIdAsync(mapId);
+
+        if (map == null) return;
+
+        var filePath = Path.Combine(_config.Path.Maps, "EvoSC", map.FilePath);
+        if (!File.Exists(filePath))
+        {
+            _logger.LogWarning("Tried to delete map which doesn't exists on the filesystem: {filePath}", filePath);
+            return;
+        }
+
+        try
+        {
+            File.Delete(filePath);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An exception occurred while trying to delete a map file.");
+            throw;
+        }
     }
 
     public async Task AddCurrentMapListAsync()
