@@ -2,6 +2,7 @@
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
 using EvoSC.Modules.Official.WorldRecordModule.Events;
 using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
@@ -29,7 +30,7 @@ public class WorldRecordService : IWorldRecordService
         _client = client;
     }
 
-    public async Task FetchRecord(string mapUid)
+    public async Task FetchRecordAsync(string mapUid)
     {
         TMioLeaderboardResponse? res = null;
         try
@@ -46,7 +47,9 @@ public class WorldRecordService : IWorldRecordService
         catch (FlurlHttpException ex)
         {
             _logger.LogError(ex, "Invalid response from Openplanet. Maybe API issues?");
+            throw;
         }
+        
         _logger.LogDebug("Loaded records for map.");
 
 
@@ -55,12 +58,17 @@ public class WorldRecordService : IWorldRecordService
             var bestRecord = res.tops.First();
             var newWorldRecord = new WorldRecord
             {
-                Name = bestRecord.player.name, Time = bestRecord.time, Source = "tm.io"
+                PlayerName = bestRecord.player.name,
+                Time = RaceTime.FromMilliseconds(bestRecord.time),
+                Source = WorldRecordSource.TrackmaniaIo
             };
 
-            _logger.LogTrace("New world record loaded from tm.io: {name} -> {time}", newWorldRecord.Name,
-                newWorldRecord.FormattedTime());
-            await OverwriteRecord(newWorldRecord);
+            _logger.LogTrace("New world record loaded from tm.io: {name} -> {time}",
+                newWorldRecord.PlayerName,
+                newWorldRecord.Time.ToString()
+            );
+            
+            await OverwriteRecordAsync(newWorldRecord);
         }
         else
         {
@@ -68,29 +76,19 @@ public class WorldRecordService : IWorldRecordService
             var author = mapInfo.AuthorNickname.Length > 0 ? mapInfo.AuthorNickname : mapInfo.Author;
             var newWorldRecord = new WorldRecord
             {
-                Name = author, Time = mapInfo.AuthorTime, Source = "AT"
+                PlayerName = author,
+                Time = RaceTime.FromMilliseconds(mapInfo.AuthorTime),
+                Source = WorldRecordSource.AuthorTime
             };
             
             _logger.LogDebug("Couldn't load World Record, using Author Time instead.");
-            await OverwriteRecord(newWorldRecord);
+            
+            await OverwriteRecordAsync(newWorldRecord);
         }
         
     }
 
-    public async Task OverwriteRecord(WorldRecord newRecord)
-    {
-        lock (_currentWorldRecordLock)
-        {
-            _currentWorldRecord = newRecord;
-        }
-
-        await _events.RaiseAsync(WorldRecordEvents.NewRecord, new WorldRecordLoaded
-        {
-            Record = newRecord
-        });
-    }
-
-    public Task ClearRecord()
+    public Task ClearRecordAsync()
     {
         lock (_currentWorldRecordLock)
         {
@@ -100,12 +98,12 @@ public class WorldRecordService : IWorldRecordService
         return Task.CompletedTask;
     }
 
-    public Task<WorldRecord?> GetRecord()
+    public Task<WorldRecord?> GetRecordAsync()
     {
         return Task.FromResult(_currentWorldRecord);
     }
 
-    public async Task DetectNewWorldRecordThroughScores(ScoresEventArgs scoresEventArgs)
+    public async Task DetectNewWorldRecordThroughScoresAsync(ScoresEventArgs scoresEventArgs)
     {
         if (_currentWorldRecord == null)
         {
@@ -114,10 +112,28 @@ public class WorldRecordService : IWorldRecordService
 
         foreach (var score in scoresEventArgs.Players)
         {
-            if (score is { BestRaceTime: < 0 } && score.BestRaceTime < _currentWorldRecord.Time)
+            if (score is { BestRaceTime: < 0 } && score.BestRaceTime < _currentWorldRecord.Time.TotalMilliseconds)
             {
-                await OverwriteRecord(new WorldRecord { Name = score.Name, Time = score.BestRaceTime, Source = "local" });
+                await OverwriteRecordAsync(new WorldRecord
+                {
+                    PlayerName = score.Name, 
+                    Time = RaceTime.FromMilliseconds(score.BestRaceTime), 
+                    Source = WorldRecordSource.Local
+                });
             }
         }
+    }
+    
+    private async Task OverwriteRecordAsync(WorldRecord newRecord)
+    {
+        lock (_currentWorldRecordLock)
+        {
+            _currentWorldRecord = newRecord;
+        }
+
+        await _events.RaiseAsync(WorldRecordEvents.NewRecord, new WorldRecordLoadedEventArgs
+        {
+            Record = newRecord
+        });
     }
 }

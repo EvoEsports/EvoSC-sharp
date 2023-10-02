@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Util.EnumIdentifier;
 
-namespace EvoSC.Modules.Official.WorldRecordModule;
+namespace EvoSC.Modules.Official.WorldRecordModule.Events;
 
 public enum WorldRecordEvents
 {

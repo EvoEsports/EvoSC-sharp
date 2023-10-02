@@ -19,10 +19,12 @@ public class WorldRecordModule : EvoScModule, IToggleable
 
     public async Task EnableAsync()
     {
+        // initially fetch the world record to be displayed
         var currentMap = await _mapService.GetCurrentMapAsync();
+        
         if (currentMap != null)
         {
-            await _worldRecordService.FetchRecord(currentMap.Uid);
+            await _worldRecordService.FetchRecordAsync(currentMap.Uid);
         }
     }
 

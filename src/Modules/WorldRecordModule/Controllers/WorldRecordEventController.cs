@@ -13,20 +13,14 @@ public class WorldRecordEventController : EvoScController<IEventControllerContex
 {
     private readonly IWorldRecordService _worldRecordService;
 
-    public WorldRecordEventController(IWorldRecordService worldRecordService)
-    {
+    public WorldRecordEventController(IWorldRecordService worldRecordService) =>
         _worldRecordService = worldRecordService;
-    }
-
-    //[Subscribe(ModeScriptEvent.Scores)]
-    //public Task OnScores(object sender, ScoresEventArgs scoresEventArgs)
-    //    => _worldRecordService.DetectNewWorldRecordThroughScores(scoresEventArgs);
 
     [Subscribe(ModeScriptEvent.EndMapEnd)]
     public Task OnMapEnd(object sender, MapEventArgs mapEventArgs)
-        => _worldRecordService.ClearRecord();
+        => _worldRecordService.ClearRecordAsync();
 
     [Subscribe(ModeScriptEvent.StartMapStart)]
     public Task OnMapStart(object sender, MapEventArgs mapEventArgs)
-        => _worldRecordService.FetchRecord(mapEventArgs.Map.Uid);
+        => _worldRecordService.FetchRecordAsync(mapEventArgs.Map.Uid);
 }
