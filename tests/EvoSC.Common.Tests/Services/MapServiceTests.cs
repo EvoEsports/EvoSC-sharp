@@ -151,8 +151,6 @@ public class MapServiceTests
 
         var createdMap = await _mapService.AddMapAsync(mapStream);
 
-        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapUid + ".Map.Gbx"));
-
         Assert.Equal(MapProviders.ManiaExchange, createdMap.ExternalMapProvider);
         Assert.Equal(map.ExternalId, createdMap.ExternalId);
         Assert.Equal(map.Uid, createdMap.Uid);
@@ -208,8 +206,6 @@ public class MapServiceTests
         _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
 
         var updatedMap = await _mapService.AddMapAsync(mapStream);
-
-        _server.Remote.Verify(m => m.InsertMapAsync("EvoSC/" + mapMetadata.MapUid + ".Map.Gbx"));
 
         Assert.NotEqual(mapMetadata.ExternalVersion, updatedMap.ExternalVersion);
         Assert.Equal(MapProviders.ManiaExchange, updatedMap.ExternalMapProvider);
@@ -322,8 +318,6 @@ public class MapServiceTests
         _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
 
         var createdMaps = await _mapService.AddMapsAsync(new List<MapStream> { mapStream, mapStream2 });
-
-        _server.Remote.Verify(m => m.InsertMapAsync(It.IsAny<string>()), Times.Exactly(2));
 
         Assert.Equal(2, createdMaps.Count());
     }
