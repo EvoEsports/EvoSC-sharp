@@ -1,31 +1,39 @@
-﻿namespace EvoSC.Modules.Official.Scoreboard.Interfaces;
+﻿using EvoSC.Common.Interfaces.Models;
+
+namespace EvoSC.Modules.Official.Scoreboard.Interfaces;
 
 public interface IScoreboardService
 {
     /// <summary>
     /// Sends the scoreboard manialink to all players.
     /// </summary>
-    public Task ShowScoreboard();
+    public Task ShowScoreboardToAllAsync();
+    
     /// <summary>
     /// Sends the scoreboard manialink to a specific players.
     /// </summary>
-    public Task ShowScoreboard(string playerLogin);
+    public Task ShowScoreboardAsync(IPlayer playerLogin);
+    
     /// <summary>
     /// Hide the default game scoreboard.
     /// </summary>
-    public Task HideNadeoScoreboard();
+    public Task HideNadeoScoreboardAsync();
+    
     /// <summary>
     /// Shows the default game scoreboard.
     /// </summary>
-    public Task ShowNadeoScoreboard();
+    public Task ShowNadeoScoreboardAsync();
+    
     /// <summary>
     /// Sends the manialink with additional values used by the scoreboard.
     /// </summary>
-    public Task SendRequiredAdditionalInfos();
+    public Task SendRequiredAdditionalInfoAsync();
+    
     /// <summary>
     /// Refreshes the additionally required data and sends the manialink.
     /// </summary>
-    public Task LoadAndSendRequiredAdditionalInfos();
+    public Task LoadAndSendRequiredAdditionalInfoAsync();
+    
     /// <summary>
     /// Sets the current round.
     /// </summary>
