@@ -23,10 +23,14 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
+      <ProjectReference Include="..\..\..\src\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
+    </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
-      <ProjectReference Include="..\src\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
+      <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
+      <ProjectReference Include="..\..\..\src\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
     </ItemGroup>
 
 </Project>
