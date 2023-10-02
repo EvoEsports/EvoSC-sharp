@@ -17,7 +17,6 @@ using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;
 using EvoSC.Modules.Official.SetName;
-using EvoSC.Modules.Official.SponsorsModule;
 using EvoSC.Modules.Official.WorldRecordModule;
 using FluentMigrator.Runner.Exceptions;
 using SpectatorTargetInfo;
@@ -46,8 +45,7 @@ public static class InternalModules
         typeof(LiveRankingModule),
         typeof(MatchRankingModule),
         typeof(ASayModule),
-        typeof(SpectatorTargetInfoModule),
-        typeof(SponsorsModule)
+        typeof(SpectatorTargetInfoModule)
     };
 
     /// <summary>
