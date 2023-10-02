@@ -92,7 +92,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextMapModule.Tests", "test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchRankingModule", "src\Modules\MatchRankingModule\MatchRankingModule.csproj", "{A3D8F2EB-59E4-44AB-B036-4BC0DB7D2774}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectatorTargetInfo", "src\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj", "{FCC3C10E-9CA8-4DF1-A508-339678846032}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectatorTargetInfoModule", "src\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj", "{FCC3C10E-9CA8-4DF1-A508-339678846032}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASayModule", "src\Modules\ASayModule\ASayModule.csproj", "{570CEDDA-7EBC-486D-BD5D-0A1C39DD69F8}"
 EndProject

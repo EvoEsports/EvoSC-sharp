@@ -1,5 +1,5 @@
 ﻿[info]
-name = "SpectatorTargetInfo"
+name = "SpectatorTargetInfoModule"
 title = "Spectator Target Info"
 summary = "Shows player info in spectator mode."
 version = "1.0.0"

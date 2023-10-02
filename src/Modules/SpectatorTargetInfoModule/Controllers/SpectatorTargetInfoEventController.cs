@@ -7,31 +7,29 @@ using EvoSC.Common.Remote.EventArgsModels;
 using GbxRemoteNet.Events;
 using SpectatorTargetInfo.Interfaces;
 
-namespace SpectatorTargetInfo.Controllers;
+namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Controllers;
 
 [Controller]
 public class SpectatorTargetInfoEventController : EvoScController<EventControllerContext>
 {
     private readonly ISpectatorTargetInfoService _spectatorTargetInfoService;
 
-    public SpectatorTargetInfoEventController(ISpectatorTargetInfoService spectatorTargetInfoService)
-    {
+    public SpectatorTargetInfoEventController(ISpectatorTargetInfoService spectatorTargetInfoService) =>
         _spectatorTargetInfoService = spectatorTargetInfoService;
-    }
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public Task OnPlayerConnect(object x, PlayerConnectGbxEventArgs args) =>
-        _spectatorTargetInfoService.SendManiaLink(args.Login);
+        _spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
 
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task OnWayPoint(object sender, WayPointEventArgs wayPointEventArgs) =>
-        _spectatorTargetInfoService.ForwardCheckpointTimeToClients(wayPointEventArgs);
+        _spectatorTargetInfoService.ForwardCheckpointTimeToClientsAsync(wayPointEventArgs);
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public Task OnNewRound(object sender, RoundEventArgs roundEventArgs) =>
-        _spectatorTargetInfoService.ResetCheckpointTimes();
+        _spectatorTargetInfoService.ResetCheckpointTimesAsync();
 
     [Subscribe(ModeScriptEvent.GiveUp)]
     public Task OnPlayerGiveUp(object sender, PlayerUpdateEventArgs playerUpdateEventArgs) =>
-        _spectatorTargetInfoService.ForwardDnf(playerUpdateEventArgs);
+        _spectatorTargetInfoService.ForwardDnfToClientsAsync(playerUpdateEventArgs);
 }

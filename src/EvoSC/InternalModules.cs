@@ -17,9 +17,9 @@ using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;
 using EvoSC.Modules.Official.SetName;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.WorldRecordModule;
 using FluentMigrator.Runner.Exceptions;
-using SpectatorTargetInfo;
 
 namespace EvoSC;
 

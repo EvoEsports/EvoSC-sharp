@@ -45,7 +45,7 @@
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
-        <ProjectReference Include="..\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj" />
+        <ProjectReference Include="..\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj" />
         <ProjectReference Include="..\Modules\SponsorsModule\SponsorsModule.csproj" />
         <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
@@ -65,7 +65,6 @@
     <ItemGroup>
       <Folder Include="bin\Debug\net7.0\config\" />
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
-        <ProjectReference Include="..\Modules\SpectatorTargetInfo\SpectatorTargetInfo.csproj" />
         <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
         <ProjectReference Include="..\Modules\XPEvoAdminControl\XPEvoAdminControl.csproj" />
     </ItemGroup>

@@ -6,12 +6,12 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using SpectatorTargetInfo.Interfaces;
 
-namespace SpectatorTargetInfo.Services;
+namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class SpectatorTargetInfoService : ISpectatorTargetInfoService
 {
-    private const string WidgetTemplate = "SpectatorTargetInfo.SpectatorTargetInfo";
+    private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfoModule";
 
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
@@ -24,27 +24,17 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
         _config = config;
     }
 
-    public async Task SendManiaLink() =>
-        await _manialinks.SendManialinkAsync(WidgetTemplate, await GetWidgetData());
+    public async Task SendManiaLinkAsync() =>
+        await _manialinks.SendManialinkAsync(WidgetTemplate, GetWidgetData());
 
 
-    public async Task SendManiaLink(string playerLogin) =>
-        await _manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, await GetWidgetData());
+    public async Task SendManiaLinkAsync(string playerLogin) =>
+        await _manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, GetWidgetData());
 
-    public async Task HideManiaLink() =>
+    public async Task HideManiaLinkAsync() =>
         await _manialinks.HideManialinkAsync(WidgetTemplate);
 
-    private async Task<dynamic> GetWidgetData()
-    {
-        return new
-        {
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            backgroundColor = _config.Theme.UI.BackgroundColor,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor
-        };
-    }
-
-    public Task HideNadeoSpectatorInfo()
+    public Task HideNadeoSpectatorInfoAsync()
     {
         var hudSettings = new List<string>()
         {
@@ -65,7 +55,7 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
         return _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
-    public Task ShowNadeoSpectatorInfo()
+    public Task ShowNadeoSpectatorInfoAsync()
     {
         var hudSettings = new List<string>()
         {
@@ -86,9 +76,9 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
         return _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
-    public Task ForwardCheckpointTimeToClients(WayPointEventArgs wayPointEventArgs)
+    public Task ForwardCheckpointTimeToClientsAsync(WayPointEventArgs wayPointEventArgs)
     {
-        return _manialinks.SendManialinkAsync("SpectatorTargetInfo.NewCpTime",
+        return _manialinks.SendManialinkAsync("SpectatorTargetInfoModule.NewCpTime",
             new
             {
                 accountId = wayPointEventArgs.AccountId,
@@ -97,19 +87,29 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
             });
     }
 
-    public Task ResetCheckpointTimes()
+    public Task ResetCheckpointTimesAsync()
     {
-        _manialinks.HideManialinkAsync("SpectatorTargetInfo.NewCpTime");
-        return _manialinks.SendManialinkAsync("SpectatorTargetInfo.ResetCpTimes");
+        _manialinks.HideManialinkAsync("SpectatorTargetInfoModule.NewCpTime");
+        return _manialinks.SendManialinkAsync("SpectatorTargetInfoModule.ResetCpTimes");
     }
 
-    public Task ForwardDnf(PlayerUpdateEventArgs playerUpdateEventArgs)
+    public Task ForwardDnfToClientsAsync(PlayerUpdateEventArgs playerUpdateEventArgs)
     {
-        return _manialinks.SendManialinkAsync("SpectatorTargetInfo.NewCpTime", new
+        return _manialinks.SendManialinkAsync("SpectatorTargetInfoModule.NewCpTime", new
         {
             accountId = playerUpdateEventArgs.AccountId,
             time = 0,
             cpIndex = -1
         });
+    }
+    
+    private dynamic GetWidgetData()
+    {
+        return new
+        {
+            primaryColor = _config.Theme.UI.PrimaryColor,
+            backgroundColor = _config.Theme.UI.BackgroundColor,
+            headerColor = _config.Theme.UI.HeaderBackgroundColor
+        };
     }
 }

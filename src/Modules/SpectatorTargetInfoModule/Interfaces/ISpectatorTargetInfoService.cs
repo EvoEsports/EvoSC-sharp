@@ -7,33 +7,40 @@ public interface ISpectatorTargetInfoService
     /// <summary>
     /// Sends the manialink to all players.
     /// </summary>
-    public Task SendManiaLink();
+    public Task SendManiaLinkAsync();
+    
     /// <summary>
     /// Sends the manialink to a specific player.
     /// </summary>
-    public Task SendManiaLink(string playerLogin);
+    public Task SendManiaLinkAsync(string playerLogin);
+    
     /// <summary>
     /// Hides the manialink for all players.
     /// </summary>
-    public Task HideManiaLink();
+    public Task HideManiaLinkAsync();
+    
     /// <summary>
     /// Hides the default spectator info.
     /// </summary>
-    public Task HideNadeoSpectatorInfo();
+    public Task HideNadeoSpectatorInfoAsync();
+    
     /// <summary>
     /// Shows the default spectator info.
     /// </summary>
-    public Task ShowNadeoSpectatorInfo();
+    public Task ShowNadeoSpectatorInfoAsync();
+    
     /// <summary>
     /// Maps wayPointEventArgs and sends data to clients.
     /// </summary>
-    public Task ForwardCheckpointTimeToClients(WayPointEventArgs wayPointEventArgs);
+    public Task ForwardCheckpointTimeToClientsAsync(WayPointEventArgs wayPointEventArgs);
+    
     /// <summary>
     /// Clears the checkpoint times for the clients.
     /// </summary>
-    public Task ResetCheckpointTimes();
+    public Task ResetCheckpointTimesAsync();
+    
     /// <summary>
     /// Sends players DNF to clients.
     /// </summary>
-    public Task ForwardDnf(PlayerUpdateEventArgs playerUpdateEventArgs);
+    public Task ForwardDnfToClientsAsync(PlayerUpdateEventArgs playerUpdateEventArgs);
 }
