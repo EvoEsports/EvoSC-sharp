@@ -30,15 +30,15 @@ public class ScoreboardService : IScoreboardService
 
     public async Task ShowScoreboardToAllAsync()
     {
-        await _manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetData());
+        await _manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetDataAsync());
     }
 
     public async Task ShowScoreboardAsync(IPlayer playerLogin)
     {
-        await _manialinks.SendManialinkAsync(playerLogin, "Scoreboard.Scoreboard", await GetData());
+        await _manialinks.SendManialinkAsync(playerLogin, "Scoreboard.Scoreboard", await GetDataAsync());
     }
 
-    private Task<dynamic> GetData()
+    private Task<dynamic> GetDataAsync()
     {
         return Task.FromResult<dynamic>(new
         {
@@ -57,7 +57,7 @@ public class ScoreboardService : IScoreboardService
 
     public async Task HideNadeoScoreboardAsync()
     {
-        var hudSettings = new List<string>()
+        var hudSettings = new List<string>
         {
             @"{
     ""uimodules"": [
@@ -77,7 +77,7 @@ public class ScoreboardService : IScoreboardService
 
     public async Task ShowNadeoScoreboardAsync()
     {
-        var hudSettings = new List<string>()
+        var hudSettings = new List<string>
         {
             @"{
     ""uimodules"": [

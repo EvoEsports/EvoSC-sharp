@@ -15,7 +15,7 @@ public class ScoreboardCommandsController : EvoScController<ICommandInteractionC
         _scoreboardService = scoreboardService;
     
     [ChatCommand("scoreboard", "[Command.ShowScoreboard]")]
-    public async Task ShowScoreboard()
+    public async Task ShowScoreboardAsync()
     {
         await _scoreboardService.ShowScoreboardAsync(Context.Player);
     }

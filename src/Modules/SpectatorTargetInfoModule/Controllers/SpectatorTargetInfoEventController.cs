@@ -18,18 +18,18 @@ public class SpectatorTargetInfoEventController : EvoScController<EventControlle
         _spectatorTargetInfoService = spectatorTargetInfoService;
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnect(object x, PlayerConnectGbxEventArgs args) =>
+    public Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args) =>
         _spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
 
     [Subscribe(ModeScriptEvent.WayPoint)]
-    public Task OnWayPoint(object sender, WayPointEventArgs wayPointEventArgs) =>
+    public Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs) =>
         _spectatorTargetInfoService.ForwardCheckpointTimeToClientsAsync(wayPointEventArgs);
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public Task OnNewRound(object sender, RoundEventArgs roundEventArgs) =>
+    public Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs) =>
         _spectatorTargetInfoService.ResetCheckpointTimesAsync();
 
     [Subscribe(ModeScriptEvent.GiveUp)]
-    public Task OnPlayerGiveUp(object sender, PlayerUpdateEventArgs playerUpdateEventArgs) =>
+    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs playerUpdateEventArgs) =>
         _spectatorTargetInfoService.ForwardDnfToClientsAsync(playerUpdateEventArgs);
 }

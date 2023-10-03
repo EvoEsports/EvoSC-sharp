@@ -17,10 +17,10 @@ public class WorldRecordEventController : EvoScController<IEventControllerContex
         _worldRecordService = worldRecordService;
 
     [Subscribe(ModeScriptEvent.EndMapEnd)]
-    public Task OnMapEnd(object sender, MapEventArgs mapEventArgs)
+    public Task OnMapEndAsync(object sender, MapEventArgs mapEventArgs)
         => _worldRecordService.ClearRecordAsync();
 
     [Subscribe(ModeScriptEvent.StartMapStart)]
-    public Task OnMapStart(object sender, MapEventArgs mapEventArgs)
+    public Task OnMapStartAsync(object sender, MapEventArgs mapEventArgs)
         => _worldRecordService.FetchRecordAsync(mapEventArgs.Map.Uid);
 }

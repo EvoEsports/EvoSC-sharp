@@ -20,21 +20,21 @@ public class ScoreboardEventController : EvoScController<IEventControllerContext
         _scoreboardService = scoreboardService;
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public async Task OnBeginMap(object sender, MapGbxEventArgs args)
+    public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
         await _scoreboardService.LoadAndSendRequiredAdditionalInfoAsync();
         await _scoreboardService.ShowScoreboardToAllAsync();
     }
 
     [Subscribe(MatchSettingsEvent.MatchSettingsLoaded)]
-    public async Task OnMatchSettingsLoaded(object sender, MatchSettingsLoadedEventArgs args)
+    public async Task OnMatchSettingsLoadedAsync(object sender, MatchSettingsLoadedEventArgs args)
     {
         await _scoreboardService.LoadAndSendRequiredAdditionalInfoAsync();
         await _scoreboardService.ShowScoreboardToAllAsync();
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public async Task OnRoundStart(object sender, RoundEventArgs args)
+    public async Task OnRoundStartAsync(object sender, RoundEventArgs args)
     {
         _scoreboardService.SetCurrentRound(args.Count);
         await _scoreboardService.SendRequiredAdditionalInfoAsync();

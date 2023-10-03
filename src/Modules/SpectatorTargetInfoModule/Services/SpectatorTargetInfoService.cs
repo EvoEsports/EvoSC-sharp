@@ -36,7 +36,7 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
 
     public Task HideNadeoSpectatorInfoAsync()
     {
-        var hudSettings = new List<string>()
+        var hudSettings = new List<string>
         {
             @"{""uimodules"": [
                 {
@@ -57,7 +57,7 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
 
     public Task ShowNadeoSpectatorInfoAsync()
     {
-        var hudSettings = new List<string>()
+        var hudSettings = new List<string>
         {
             @"{""uimodules"": [
                 {

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Util;
+﻿using System.Globalization;
+using EvoSC.Common.Interfaces.Util;
 
 namespace EvoSC.Common.Util;
 
@@ -30,15 +31,15 @@ public class RaceTime : IRaceTime
 
     public override string ToString()
     {
-        var milli = Milliseconds.ToString().PadLeft(3, '0');
-        var seconds = Seconds.ToString().PadLeft(2, '0');
+        var milli = Milliseconds.ToString(CultureInfo.InvariantCulture).PadLeft(3, '0');
+        var seconds = Seconds.ToString(CultureInfo.InvariantCulture).PadLeft(2, '0');
 
         if (Minutes == 0 && Hours == 0)
         {
             return $"{seconds}.{milli}";
         }
 
-        var minutes = Minutes.ToString().PadLeft(2, '0');
+        var minutes = Minutes.ToString(CultureInfo.InvariantCulture).PadLeft(2, '0');
 
         return Hours == 0 ? $"{minutes}:{seconds}.{milli}" : $"{Hours}:{minutes}:{seconds}.{milli}";
     }
