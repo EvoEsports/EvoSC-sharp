@@ -1,4 +1,5 @@
-﻿using System.Timers;
+﻿using System.Security;
+using System.Timers;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -57,7 +58,7 @@ public class MotdService : IMotdService, IDisposable
         };
         if (_isMotdLocal)
         {
-            MotdText = _settings.MotdLocalText;
+            MotdText = SecurityElement.Escape(_settings.MotdLocalText);
         }
 
         _motdUpdateTimer.Elapsed += MotdUpdateTimerOnElapsed;
@@ -73,7 +74,7 @@ public class MotdService : IMotdService, IDisposable
         }
 
         timer.Interval = _timerInterval;
-        MotdText = GetMotdAsync().Result;
+        MotdText = SecurityElement.Escape(GetMotdAsync().Result);
         _logger.LogDebug($"Fetching Motd");
     }
     
@@ -92,7 +93,7 @@ public class MotdService : IMotdService, IDisposable
     {
         var old = _settings.MotdLocalText;
         _settings.MotdLocalText = text;
-        MotdText = text;
+        MotdText = SecurityElement.Escape(text);
         
         _context.Audit().Success()
             .WithEventName(AuditEvents.LocalTextSet)
@@ -107,7 +108,7 @@ public class MotdService : IMotdService, IDisposable
         _isMotdLocal = local;
         if (local)
         {
-            MotdText = _settings.MotdLocalText;
+            MotdText = SecurityElement.Escape(_settings.MotdLocalText);
         }
         else
         {
@@ -125,7 +126,7 @@ public class MotdService : IMotdService, IDisposable
     {
         var oldUri = _motdUrl;
         _motdUrl = url;
-        MotdText = GetMotdAsync().Result;
+        MotdText = SecurityElement.Escape(GetMotdAsync().Result);
         if (!_motdUpdateTimer.Enabled)
         {
             _motdUpdateTimer.Enabled = true; // re-enable the timer when the url updates.
@@ -144,7 +145,7 @@ public class MotdService : IMotdService, IDisposable
             .HavingProperties(new {Player = player})
             .Comment("Local Motd editor shown.");
         
-        await _manialink.SendManialinkAsync(player, "MotdModule.MotdEdit", new { text = _settings.MotdLocalText });
+        await _manialink.SendManialinkAsync(player, "MotdModule.MotdEdit", new { text = MotdText });
     }
 
     public async Task ShowAsync(string login, bool explicitly)
@@ -169,8 +170,14 @@ public class MotdService : IMotdService, IDisposable
                 hidden = playerEntry.Hidden;
             }
         }
+
         var isCheckboxChecked = hidden ?? false;
-        await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate", new { isChecked = isCheckboxChecked, text = MotdText });
+        await _manialink.SendManialinkAsync(player, "MotdModule.MotdTemplate",
+        new
+        {
+            isChecked = isCheckboxChecked, 
+            text = MotdText
+        });
     }
     
     public async Task<string> GetMotdAsync()
