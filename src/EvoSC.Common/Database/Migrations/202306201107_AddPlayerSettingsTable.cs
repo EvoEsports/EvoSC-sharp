@@ -2,7 +2,7 @@
 
 namespace EvoSC.Common.Database.Migrations;
 
-[Tags("XPEvo", "Production")]
+[Tags("Production")]
 [Migration(1687252035)]
 public class AddPlayerSettingsTable : Migration
 {

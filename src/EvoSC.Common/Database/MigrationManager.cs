@@ -34,7 +34,7 @@ public class MigrationManager : IMigrationManager
             .AddEvoScLogging(_config.Logging)
             .Configure<RunnerOptions>(opt =>
             {
-                opt.Tags = new[] { "Production", "XPEvo" };
+                opt.Tags = new[] { "Production" };
             })
             .BuildServiceProvider(false);
 
