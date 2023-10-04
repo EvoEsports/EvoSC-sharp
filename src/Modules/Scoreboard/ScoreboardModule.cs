@@ -16,14 +16,14 @@ public class ScoreboardModule : EvoScModule, IToggleable
 
     public Task EnableAsync()
     {
-        _scoreboardService.LoadAndSendRequiredAdditionalInfos();
-        _scoreboardService.HideNadeoScoreboard();
+        _scoreboardService.LoadAndSendRequiredAdditionalInfoAsync();
+        _scoreboardService.HideNadeoScoreboardAsync();
         
-        return _scoreboardService.ShowScoreboard();
+        return _scoreboardService.ShowScoreboardToAllAsync();
     }
 
     public Task DisableAsync()
     {
-        return _scoreboardService.ShowNadeoScoreboard();
+        return _scoreboardService.ShowNadeoScoreboardAsync();
     }
 }

@@ -82,7 +82,7 @@ public class LiveRankingService : ILiveRankingService
     private async Task<dynamic> GetWidgetData()
     {
         var currentRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).Take(ShowRows).ToList();
-        await CalculateDiffs(currentRanking);
+        await CalculateDiffsAsync(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
 
         return new
@@ -116,7 +116,7 @@ public class LiveRankingService : ILiveRankingService
         */
     }
 
-    public Task CalculateDiffs(List<ExpandedLiveRankingPosition> rankings)
+    public Task CalculateDiffsAsync(List<ExpandedLiveRankingPosition> rankings)
     {
         if (rankings.Count > 0)
         {
@@ -175,7 +175,7 @@ public class LiveRankingService : ILiveRankingService
         }
     }
 
-    public async Task ResetLiveRanking()
+    public async Task ResetLiveRankingAsync()
     {
         await _liveRankingStore.ResetLiveRankingsAsync();
     }
@@ -187,7 +187,7 @@ public class LiveRankingService : ILiveRankingService
         await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
 
-    public async Task SendManialink()
+    public async Task SendManialinkAsync()
     {
         await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
     }
@@ -207,7 +207,7 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnBeginMatchAsync()
     {
-        await SendManialink();
+        await SendManialinkAsync();
     }
 
     public async Task OnEndMatchAsync(EndMatchGbxEventArgs args)

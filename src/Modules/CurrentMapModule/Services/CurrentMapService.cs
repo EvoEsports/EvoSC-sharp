@@ -57,7 +57,7 @@ public class CurrentMapService : ICurrentMapService
     {
         var dbMap = await _mapRepository.GetMapByUidAsync(mapUId);
         var author = "";
-        var worldRecord = await _worldRecordService.GetRecord();
+        var worldRecord = await _worldRecordService.GetRecordAsync();
         if (dbMap.Author.NickName == dbMap.Author.AccountId)
         {
             var serverMap = await _client.Remote.GetCurrentMapInfoAsync();
