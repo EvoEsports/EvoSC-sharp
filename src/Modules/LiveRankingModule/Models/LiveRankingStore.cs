@@ -10,6 +10,7 @@ internal class LiveRankingStore
     private ConcurrentDictionary<string, LiveRankingPosition> _prevLiveRanking { get; set; } = new();
     private readonly ILogger<LiveRankingStore> _logger;
     private readonly IPlayerManagerService _playerManager;
+    
     private MatchInfo _matchInfo = new();
 
     internal LiveRankingStore(ILogger<LiveRankingStore> logger, IPlayerManagerService playerManager)

@@ -75,9 +75,6 @@ public class MapService : IMapService
         await _matchSettings.EditMatchSettingsAsync(Path.GetFileNameWithoutExtension(_config.Path.DefaultMatchSettings),
             builder => builder.AddMap($"EvoSC/{fileName}"));
         
-        /*await _serverClient.Remote.InsertMapAsync($"EvoSC/{fileName}");
-        await _serverClient.Remote.SaveMatchSettingsAsync($"MatchSettings/{_config.Path.DefaultMatchSettings}"); */
-        
         return map;
     }
 

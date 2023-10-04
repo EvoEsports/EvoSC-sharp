@@ -1,5 +1,4 @@
 using EvoSC.Common.Interfaces;
-using EvoSC.Modules.Evo.GeardownModule;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.CurrentMapModule;
@@ -18,11 +17,9 @@ using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;
 using EvoSC.Modules.Official.SetName;
-using EvoSC.Modules.Official.SponsorsModule;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.WorldRecordModule;
-using EvoSC.Modules.Official.XPEvoAdminControl;
 using FluentMigrator.Runner.Exceptions;
-using SpectatorTargetInfo;
 
 namespace EvoSC;
 
@@ -44,14 +41,11 @@ public static class InternalModules
         typeof(OpenPlanetModule),
         typeof(MatchTrackerModule),
         typeof(MatchReadyModule),
-        typeof(GeardownModule),
-        typeof(XPEvoAdminControl),
         typeof(NextMapModule),
         typeof(LiveRankingModule),
         typeof(MatchRankingModule),
         typeof(ASayModule),
-        typeof(SpectatorTargetInfoModule),
-        typeof(SponsorsModule)
+        typeof(SpectatorTargetInfoModule)
     };
 
     /// <summary>
