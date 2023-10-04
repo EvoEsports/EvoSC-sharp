@@ -64,7 +64,7 @@ public interface ILiveRankingService
     /// Sends a manialink.
     /// </summary>
     /// <returns></returns>
-    Task SendManialink();
+    Task SendManialinkAsync();
 
     /// <summary>
     /// Called when a new match starts.
@@ -82,11 +82,11 @@ public interface ILiveRankingService
     /// Calculates and sets the diffs of given live ranking positions.
     /// </summary>
     /// <returns></returns>
-    Task CalculateDiffs(List<ExpandedLiveRankingPosition> rankings);
+    Task CalculateDiffsAsync(List<ExpandedLiveRankingPosition> rankings);
     
     /// <summary>
     /// Resets the live ranking data.
     /// </summary>
     /// <returns></returns>
-    Task ResetLiveRanking();
+    Task ResetLiveRankingAsync();
 }

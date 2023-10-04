@@ -14,63 +14,32 @@ public class LiveRankingEventController : EvoScController<IEventControllerContex
 {
     private readonly ILiveRankingService _service;
 
-    // You want to dependency inject the needed services here at the constructor
-    public LiveRankingEventController(ILiveRankingService service)
-    {
-        _service = service;
-    }
+    public LiveRankingEventController(ILiveRankingService service) => _service = service;
 
     [Subscribe(ModeScriptEvent.WayPoint)]
-    public async Task OnPlayerWaypointAsync(object sender, WayPointEventArgs args)
-    {
-        await _service.OnPlayerWaypointAsync(args);
-    }
+    public Task OnPlayerWaypointAsync(object sender, WayPointEventArgs args) => _service.OnPlayerWaypointAsync(args);
 
     [Subscribe(ModeScriptEvent.GiveUp)]
-    public async Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args)
-    {
-        await _service.OnPlayerGiveupAsync(args);
-    }
+    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args) => _service.OnPlayerGiveupAsync(args);
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public async Task OnStartRoundAsync(object sender, RoundEventArgs args)
-    {
-        await _service.OnStartRoundAsync(args);
-    }
+    public Task OnStartRoundAsync(object sender, RoundEventArgs args) => _service.OnStartRoundAsync(args);
 
     [Subscribe(ModeScriptEvent.EndMapStart)]
-    public async Task OnEndMapAsync(object sender, MapEventArgs args)
-    {
-        await _service.OnEndMapAsync(args);
-    }
+    public Task OnEndMapAsync(object sender, MapEventArgs args) => _service.OnEndMapAsync(args);
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public async Task OnPodiumStart(object sender, PodiumEventArgs args)
-    {
-        await _service.OnPodiumStartAsync(args);
-    }
+    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args) => _service.OnPodiumStartAsync(args);
 
     [Subscribe(ModeScriptEvent.EndRoundStart)]
-    public async Task OnEndRound(object sender, RoundEventArgs args)
-    {
-        await _service.OnEndRoundAsync(args);
-    }
+    public Task OnEndRoundAsync(object sender, RoundEventArgs args) => _service.OnEndRoundAsync(args);
 
     [Subscribe(GbxRemoteEvent.BeginMatch)]
-    public async Task OnBeginMatch(object sender, EventArgs args)
-    {
-        await _service.OnBeginMatchAsync();
-    }
+    public Task OnBeginMatchAsync(object sender, EventArgs args) => _service.OnBeginMatchAsync();
 
     [Subscribe(GbxRemoteEvent.EndMatch)]
-    public async Task OnEndMatch(object sender, EndMatchGbxEventArgs args)
-    {
-        await _service.OnEndMatchAsync(args);
-    }
+    public Task OnEndMatchAsync(object sender, EndMatchGbxEventArgs args) => _service.OnEndMatchAsync(args);
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
-    {
-        await _service.SendManialink();
-    }
+    public Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args) => _service.SendManialinkAsync();
 }
