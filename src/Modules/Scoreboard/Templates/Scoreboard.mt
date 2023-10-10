@@ -110,9 +110,9 @@
         #Include "MathLib" as ML
         #Include "TextLib" as TL
         #Include "ColorLib" as CL
-        #Include "Libs/Nadeo/ModeLibs/TrackMania/MV_Utils.Script.txt" as MV_Utils
-        #Include "ManiaApps/Nadeo/TMxSM/Race/UIModules/ScoresTable_Common.Script.txt" as UIModules_ScoresTable
-        #Include "ManiaApps/Nadeo/TMxSM/Race/UIModules/Helpers_Client.Script.txt" as RaceHelpers
+        #Include "Libs/Nadeo/TMGame/Modes/MV_Utils.Script.txt" as MV_Utils
+        #Include "Libs/Nadeo/TMGame/Modes/Base/UIModules/ScoresTable_Common.Script.txt" as UIModules_ScoresTable
+        #Include "Libs/Nadeo/TMGame/Modes/Base/UIModules/Helpers_Client.Script.txt" as RaceHelpers
     
         #Const C_Status_Disconnected	0
         #Const C_Status_Spawned			1
@@ -260,9 +260,9 @@
                 return;
             }
             
-            declare netread Text[][Text] Net_TMxSM_ScoresTable_CustomPoints for Teams[0];
+            declare netread Text[][Text] Net_TMGame_ScoresTable_CustomPoints for Teams[0];
             declare netread Integer[Text] Net_TMxSM_ScoresTable_CustomTimes for Teams[0];
-            declare Boolean CustomPointsEnabled = Net_TMxSM_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
+            declare Boolean CustomPointsEnabled = Net_TMGame_ScoresTable_CustomPoints.existskey(Score.User.WebServicesUserId);
             declare Boolean Race_ScoresTable_IsSpectator for Score = False;
             declare ScoresTable_PlayerLastUpdate for Score = -1;
             declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
@@ -284,13 +284,13 @@
                 declare CustomLabelColorHex = "000";
                 declare CustomLabelValue = "";
                 
-                if (Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Text)) {
-                    CustomLabelValue = Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Text];
+                if (Net_TMGame_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Text)) {
+                    CustomLabelValue = Net_TMGame_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Text];
                 }else{
                     CustomLabelValue = "";
                 }
-                if (Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Color)) {
-                    CustomLabelColorHex = Net_TMxSM_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Color];
+                if (Net_TMGame_ScoresTable_CustomPoints[Score.User.WebServicesUserId].existskey(C_CustomPoints_Color)) {
+                    CustomLabelColorHex = Net_TMGame_ScoresTable_CustomPoints[Score.User.WebServicesUserId][C_CustomPoints_Color];
                 }
             
                 if(CustomLabelValue != ""){
@@ -584,7 +584,7 @@
         <!--
         *** OnInitialization ***
         ***
-            declare netread Integer Net_TMxSM_ScoresTable_ScoreMode for Teams[0];
+            declare netread Integer Net_TMGame_ScoresTable_ScoreMode for Teams[0];
             declare Integer scoreboardUpdateInterval = 333;
             declare Integer lastScoreboardUpdate = 0;
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
@@ -613,8 +613,8 @@
                 lastScoreboardUpdate = Now;
             }
             
-            if(CurrentScoreMode != Net_TMxSM_ScoresTable_ScoreMode){
-                CurrentScoreMode = Net_TMxSM_ScoresTable_ScoreMode;
+            if(CurrentScoreMode != Net_TMGame_ScoresTable_ScoreMode){
+                CurrentScoreMode = Net_TMGame_ScoresTable_ScoreMode;
                 UpdateScoreboardLayout();
                 log("[EvoSC#] Update scoreboard layout.");
             }

@@ -59,8 +59,8 @@
                 <quad id="flag"
                       size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
                       valign="center"
-                      image="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
-                      alphamask="file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds"
+                      image="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
+                      alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
                 />
 
                <ClubTag h="{{ rowInnerHeight }}" />

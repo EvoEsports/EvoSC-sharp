@@ -49,8 +49,8 @@
             }else if (Event.Control.ControlId == "show_player_profile") {
                 declare playerRow = (Event.Control.Parent.Parent as CMlFrame);
                 declare CSmScore playerScore for playerRow;
-                declare Text LibTMxSMRaceScoresTable_OpenProfileUserId for ClientUI = "";
-                LibTMxSMRaceScoresTable_OpenProfileUserId = playerScore.User.WebServicesUserId;
+                declare Text TMGame_ScoresTable_OpenProfileUserId for ClientUI = "";
+                TMGame_ScoresTable_OpenProfileUserId = playerScore.User.WebServicesUserId;
                 TogglePlayerActions(playerRow);
             }
         ***
