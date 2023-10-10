@@ -22,11 +22,11 @@ public interface IUIThemeConfig
     public string PlayerRowBackgroundColor { get; }
     
     [Description("Colored logo to be displayed on UI elements like headers.")]
-    [Option(Alias = "logoUrl", DefaultValue = "https://liquipedia.net/commons/images/thumb/c/cb/XPEvo_allmode.png/600px-XPEvo_allmode.png")]
+    [Option(Alias = "logoUrl", DefaultValue = "")]
     public string LogoUrl { get; }
     
     [Description("White logo to be displayed on UI elements like headers.")]
-    [Option(Alias = "logoWhiteUrl", DefaultValue = "https://cdn.discordapp.com/attachments/764035004048080916/1150113831331307540/XPEvoW100px.png")]
+    [Option(Alias = "logoWhiteUrl", DefaultValue = "")]
     public string LogoWhiteUrl { get; }
     
     public IUIScoreboardThemeConfig Scoreboard { get; }

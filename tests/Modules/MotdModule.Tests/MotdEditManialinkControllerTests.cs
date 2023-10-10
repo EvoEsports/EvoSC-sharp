@@ -2,6 +2,7 @@
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Modules.Official.MotdModule.Controllers;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
+using EvoSC.Modules.Official.MotdModule.Models;
 using EvoSC.Testing.Controllers;
 using Moq;
 
@@ -21,7 +22,7 @@ public class MotdEditManialinkControllerTests : ManialinkControllerTestBase<Motd
     [Fact]
     public async Task SaveAsync_Closes_Manialink_And_Sets_LocalMotd()
     {
-        await Controller.SaveAsync("testing stuff");
+        await Controller.SaveAsync(new EditMotdEntryModel { Text = "testing stuff" });
 
         ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "MotdModule.MotdEdit"));
         _motdService.Verify(r => r.SetLocalMotd("testing stuff", It.IsAny<IPlayer>()));

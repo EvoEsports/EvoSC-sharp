@@ -1,6 +1,8 @@
 ﻿using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Manialinks;
+using EvoSC.Manialinks.Attributes;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
+using EvoSC.Modules.Official.MotdModule.Models;
 
 namespace EvoSC.Modules.Official.MotdModule.Controllers;
 
@@ -14,9 +16,10 @@ public class MotdEditManialinkController : ManialinkController
         _motdService = motdService;
     }
     
-    public async Task SaveAsync(string text)
+    [ManialinkRoute(Permission = MotdPermissions.EditMotd)]
+    public async Task SaveAsync(EditMotdEntryModel input)
     {
-        _motdService.SetLocalMotd(text, Context.Player);
+        _motdService.SetLocalMotd(input.Text, Context.Player);
         await HideAsync(Context.Player, "MotdModule.MotdEdit");
     }
 }

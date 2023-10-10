@@ -30,7 +30,7 @@ public class MotdCommandController : EvoScController<ICommandInteractionContext>
         }
     } 
 
-    [ChatCommand("motdedit", "[Command.EditMotd]", MotdPermissions.OpenMotdEdit)]
+    [ChatCommand("motdedit", "[Command.EditMotd]", MotdPermissions.EditMotd)]
     public async Task OpenEditMotdAsync()
         => await _motdService.ShowEditAsync(Context.Player);
 
