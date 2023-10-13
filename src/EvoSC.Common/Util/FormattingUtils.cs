@@ -46,7 +46,7 @@ public static class FormattingUtils
         return $"+ {s:0}.{ms:000}";
     }
 
-    public static string FormatPlayerChatMessage(string nickname, string message)
+    public static TextFormatter FormatPlayerChatMessage(string nickname, string message)
     {
         var formattedMessage = new TextFormatter()
             .AddText("[")
@@ -54,6 +54,6 @@ public static class FormattingUtils
             .AddText("] ")
             .AddText(text => text.AsIsolated().AddText(message));
 
-        return formattedMessage.ToString();
+        return formattedMessage;
     }
 }
