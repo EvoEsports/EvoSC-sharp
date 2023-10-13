@@ -105,9 +105,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule.Tests", "tests\Modules\MatchTrackerModule.Tests\MatchTrackerModule.Tests.csproj", "{9EF4D340-0C49-4A15-9BCF-6CD9508AA7DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalModulesDev", "ExternalModulesDev", "{7BBE1715-9A7D-4AFD-9A49-E82F8A524F53}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTestModule", "ExternalModulesDev\MyTestModule\MyTestModule.csproj", "{6D13DECB-8EB8-41BF-9880-4A78B771647F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -304,10 +301,6 @@ Global
 		{9EF4D340-0C49-4A15-9BCF-6CD9508AA7DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EF4D340-0C49-4A15-9BCF-6CD9508AA7DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EF4D340-0C49-4A15-9BCF-6CD9508AA7DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D13DECB-8EB8-41BF-9880-4A78B771647F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D13DECB-8EB8-41BF-9880-4A78B771647F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D13DECB-8EB8-41BF-9880-4A78B771647F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D13DECB-8EB8-41BF-9880-4A78B771647F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -356,6 +349,5 @@ Global
 		{42BCE01C-EBEF-4DB6-A61C-35B63C915AD3} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{65F795D5-058D-4F8D-B8E0-BE3F64E14CDF} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{9EF4D340-0C49-4A15-9BCF-6CD9508AA7DE} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
-		{6D13DECB-8EB8-41BF-9880-4A78B771647F} = {7BBE1715-9A7D-4AFD-9A49-E82F8A524F53}
 	EndGlobalSection
 EndGlobal
