@@ -11,7 +11,7 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class SpectatorTargetInfoService : ISpectatorTargetInfoService
 {
-    private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfoModule";
+    private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
