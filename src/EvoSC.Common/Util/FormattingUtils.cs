@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Common.Util;
 
@@ -42,5 +44,16 @@ public static class FormattingUtils
         var ms = milliseconds % 1000;
         var s = milliseconds / 1000 % 60;
         return $"+ {s:0}.{ms:000}";
+    }
+
+    public static TextFormatter FormatPlayerChatMessage(string nickname, string message)
+    {
+        var formattedMessage = new TextFormatter()
+            .AddText("[")
+            .AddText(text => text.AsIsolated().AddText(nickname))
+            .AddText("] ")
+            .AddText(text => text.AsIsolated().AddText(message));
+
+        return formattedMessage;
     }
 }

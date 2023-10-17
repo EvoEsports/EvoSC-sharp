@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using Config.Net;
@@ -474,7 +475,7 @@ public class ModuleManager : IModuleManager
     [MethodImpl(MethodImplOptions.NoInlining)]
     private (Type?, AssemblyLoadContext) CreateAssemblyLoadContext(Guid loadId, IExternalModuleInfo moduleInfo)
     {
-        var asmLoadContext = new AssemblyLoadContext(loadId.ToString(), true);
+        var asmLoadContext = new AssemblyLoadContext(loadId.ToString());
         Type? mainClass = null;
 
         foreach (var dependency in moduleInfo.Dependencies)
@@ -783,8 +784,9 @@ public class ModuleManager : IModuleManager
         _loadedModules.Remove(loadId);
 
         var instanceWeakRef = new WeakReference(moduleContext.Instance);
-        moduleContext.AsmLoadContext?.Unload();
-
+        
+        GC.AddMemoryPressure(50_000_000);
+        
         return instanceWeakRef;
     }
     

@@ -106,12 +106,12 @@
                     <frameinstance modelid="gradient_box" pos="0 -9" />
                     <frame pos="-0.2 -10">
                         <label pos="2 0"
-                               text="Record: {{ record?.FormattedTime() }} [{{ record?.Source }}]"
+                               text="Record: {{ record?.Time.ToString() }} [{{ record?.Source }}]"
                                textsize="1.4"
                                textfont="GameFontSemiBold"
                         />
                         <label pos="2 -3.2"
-                               text="by {{ record?.Name }}"
+                               text="by {{ record?.PlayerName }}"
                                textsize="1.1"
                                textfont="GameFontRegular"
                         />

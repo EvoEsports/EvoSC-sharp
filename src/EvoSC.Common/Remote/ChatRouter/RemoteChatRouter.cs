@@ -54,12 +54,9 @@ public class RemoteChatRouter : IRemoteChatRouter
                 {
                     Task.Run(async () =>
                     {
-                        await _server.SendChatMessageAsync(new TextFormatter()
-                            .AddText("[")
-                            .AddText(text => text.AsIsolated().AddText(player.NickName))
-                            .AddText("] ")
-                            .AddText(text => text.AsIsolated().AddText(chatContext.MessageText))
-                        );
+                        var formatted = FormattingUtils.FormatPlayerChatMessage(chatContext.Player.NickName,
+                            chatContext.MessageText);
+                        await _server.SendChatMessageAsync(formatted);
                     });
                 }
             });
