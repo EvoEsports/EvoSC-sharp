@@ -340,7 +340,7 @@ public class ManialinkActionManager : IManialinkActionManager
     {
         if (nextComponents.Length == 0 || currentNode.Children == null)
         {
-            if (nextComponents.Length > 0)
+            if (nextComponents.Length > 1)
             {
                 // reached end of current branch, but did not find the action
                 return (null, null);
@@ -348,7 +348,7 @@ public class ManialinkActionManager : IManialinkActionManager
             
             // reached end of current branch and found an action
             return (currentNode.Action,
-                new MlRouteNode(previousComponent) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
+                new MlRouteNode(nextComponents.First()) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
         }
 
         var currentComponent = nextComponents.First();
@@ -390,25 +390,28 @@ public class ManialinkActionManager : IManialinkActionManager
 
         lock (_rootNodeMutex)
         {
-            foreach (var child in _rootNode.Children.Values)
+            foreach (var rootComponent in _rootNode.Children.Values)
             {
-                var (manialinkAction, path) = FindActionInternal(routeComponents[1..], routeComponents[0], child);
-
-                if (manialinkAction == null || path == null)
+                foreach (var child in rootComponent.Children.Values)
                 {
-                    // action not found, try next root node
-                    continue;
+                    var (manialinkAction, path) = FindActionInternal(routeComponents[1..], routeComponents[0], child);
+
+                    if (manialinkAction == null || path == null)
+                    {
+                        // action not found, try next root node
+                        continue;
+                    }
+            
+                    var pathNode = new MlRouteNode(routeComponents[0])
+                    {
+                        Children = new Dictionary<string, IMlRouteNode>(),
+                        IsParameter = path.IsParameter
+                    };
+            
+                    pathNode.Children.Add(path.Name, path);
+
+                    return (manialinkAction, pathNode);
                 }
-            
-                var pathNode = new MlRouteNode(routeComponents[0])
-                {
-                    Children = new Dictionary<string, IMlRouteNode>(),
-                    IsParameter = path.IsParameter
-                };
-            
-                pathNode.Children.Add(path.Name, path);
-
-                return (manialinkAction, pathNode);
             }
         }
 
