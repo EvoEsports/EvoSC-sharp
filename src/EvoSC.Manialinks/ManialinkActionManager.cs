@@ -336,7 +336,7 @@ public class ManialinkActionManager : IManialinkActionManager
     /// <param name="previousComponent">The previous component from the recursive call.</param>
     /// <param name="currentNode">The current working route node.</param>
     /// <returns></returns>
-    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, string previousComponent, IMlRouteNode currentNode)
+    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, IMlRouteNode currentNode)
     {
         if (nextComponents.Length == 0 || currentNode.Children == null)
         {
@@ -366,7 +366,7 @@ public class ManialinkActionManager : IManialinkActionManager
                 continue;
             }
 
-            var (manialinkAction, nextNode) = FindActionInternal(nextComponents[1..], currentComponent, child);
+            var (manialinkAction, nextNode) = FindActionInternal(nextComponents[1..], child);
 
             if (nextNode != null)
             {
@@ -393,7 +393,7 @@ public class ManialinkActionManager : IManialinkActionManager
         {
             foreach (var rootComponent in _rootNode.Children.Values)
             {
-                var (manialinkAction, path) = FindActionInternal(routeComponents, null, rootComponent);
+                var (manialinkAction, path) = FindActionInternal(routeComponents, rootComponent);
 
                 if (manialinkAction == null || path == null)
                 {
