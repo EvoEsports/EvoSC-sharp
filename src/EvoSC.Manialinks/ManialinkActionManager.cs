@@ -352,6 +352,7 @@ public class ManialinkActionManager : IManialinkActionManager
         }
 
         var currentComponent = nextComponents.First();
+        var nextComponent = nextComponents.Skip(1).First();
         var pathNode = new MlRouteNode(currentComponent)
         {
             Children = new Dictionary<string, IMlRouteNode>(),
@@ -360,7 +361,7 @@ public class ManialinkActionManager : IManialinkActionManager
 
         foreach (var child in currentNode.Children.Values)
         {
-            if (!child.IsParameter && !child.Name.Equals(currentComponent, StringComparison.Ordinal))
+            if (!child.IsParameter && !child.Name.Equals(nextComponent, StringComparison.Ordinal))
             {
                 continue;
             }
@@ -392,26 +393,14 @@ public class ManialinkActionManager : IManialinkActionManager
         {
             foreach (var rootComponent in _rootNode.Children.Values)
             {
-                foreach (var child in rootComponent.Children.Values)
+                var (manialinkAction, path) = FindActionInternal(routeComponents, null, rootComponent);
+
+                if (manialinkAction == null || path == null)
                 {
-                    var (manialinkAction, path) = FindActionInternal(routeComponents[1..], routeComponents[0], child);
-
-                    if (manialinkAction == null || path == null)
-                    {
-                        // action not found, try next root node
-                        continue;
-                    }
-            
-                    var pathNode = new MlRouteNode(routeComponents[0])
-                    {
-                        Children = new Dictionary<string, IMlRouteNode>(),
-                        IsParameter = path.IsParameter
-                    };
-            
-                    pathNode.Children.Add(path.Name, path);
-
-                    return (manialinkAction, pathNode);
+                    continue;
                 }
+
+                return (manialinkAction, path);
             }
         }
 
