@@ -336,11 +336,11 @@ public class ManialinkActionManager : IManialinkActionManager
     /// <param name="previousComponent">The previous component from the recursive call.</param>
     /// <param name="currentNode">The current working route node.</param>
     /// <returns></returns>
-    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, string previousComponent, IMlRouteNode currentNode)
+    private (IManialinkAction?, IMlRouteNode?) FindActionInternal(string[] nextComponents, IMlRouteNode currentNode)
     {
         if (nextComponents.Length == 0 || currentNode.Children == null)
         {
-            if (nextComponents.Length > 0)
+            if (nextComponents.Length > 1)
             {
                 // reached end of current branch, but did not find the action
                 return (null, null);
@@ -348,10 +348,11 @@ public class ManialinkActionManager : IManialinkActionManager
             
             // reached end of current branch and found an action
             return (currentNode.Action,
-                new MlRouteNode(previousComponent) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
+                new MlRouteNode(nextComponents.First()) {Action = currentNode.Action, IsParameter = currentNode.IsParameter});
         }
 
         var currentComponent = nextComponents.First();
+        var nextComponent = nextComponents.Skip(1).First();
         var pathNode = new MlRouteNode(currentComponent)
         {
             Children = new Dictionary<string, IMlRouteNode>(),
@@ -360,12 +361,12 @@ public class ManialinkActionManager : IManialinkActionManager
 
         foreach (var child in currentNode.Children.Values)
         {
-            if (!child.IsParameter && !child.Name.Equals(currentComponent, StringComparison.Ordinal))
+            if (!child.IsParameter && !child.Name.Equals(nextComponent, StringComparison.Ordinal))
             {
                 continue;
             }
 
-            var (manialinkAction, nextNode) = FindActionInternal(nextComponents[1..], currentComponent, child);
+            var (manialinkAction, nextNode) = FindActionInternal(nextComponents[1..], child);
 
             if (nextNode != null)
             {
@@ -390,25 +391,16 @@ public class ManialinkActionManager : IManialinkActionManager
 
         lock (_rootNodeMutex)
         {
-            foreach (var child in _rootNode.Children.Values)
+            foreach (var rootComponent in _rootNode.Children.Values)
             {
-                var (manialinkAction, path) = FindActionInternal(routeComponents[1..], routeComponents[0], child);
+                var (manialinkAction, path) = FindActionInternal(routeComponents, rootComponent);
 
                 if (manialinkAction == null || path == null)
                 {
-                    // action not found, try next root node
                     continue;
                 }
-            
-                var pathNode = new MlRouteNode(routeComponents[0])
-                {
-                    Children = new Dictionary<string, IMlRouteNode>(),
-                    IsParameter = path.IsParameter
-                };
-            
-                pathNode.Children.Add(path.Name, path);
 
-                return (manialinkAction, pathNode);
+                return (manialinkAction, path);
             }
         }
 

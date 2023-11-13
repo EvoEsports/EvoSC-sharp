@@ -175,6 +175,14 @@ public class ManialinkActionManagerControllerRegistrationTests
         
         Assert.NotNull(action);
         Assert.NotNull(route);
+        
+        
+        Assert.NotNull(route.Children?.Values.FirstOrDefault()?.Children?.Values.FirstOrDefault()?.Children?.Values.FirstOrDefault());
+        
+        Assert.True(route.Children.Values.First().Children.Values.First().IsParameter);
+        Assert.True(route.Children.Values.First().Children.Values.First().Children.Values.First().IsParameter);
+        Assert.Equal("1", route.Children.Values.First().Children.Values.First().Name);
+        Assert.Equal("2", route.Children.Values.First().Children.Values.First().Children.Values.First().Name);
     }
     
     [Fact]
