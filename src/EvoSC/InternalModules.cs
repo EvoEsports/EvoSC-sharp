@@ -46,8 +46,7 @@ public static class InternalModules
         typeof(LiveRankingModule),
         typeof(MatchRankingModule),
         typeof(ASayModule),
-        typeof(SpectatorTargetInfoModule),
-        typeof(DefaultThemeModule)
+        typeof(SpectatorTargetInfoModule)
     };
 
     /// <summary>
