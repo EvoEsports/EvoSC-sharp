@@ -3,6 +3,7 @@ using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ASayModule;
+using EvoSC.Modules.Official.DefaultThemeModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCp;
 using EvoSC.Modules.Official.LiveRankingModule;
@@ -45,7 +46,8 @@ public static class InternalModules
         typeof(LiveRankingModule),
         typeof(MatchRankingModule),
         typeof(ASayModule),
-        typeof(SpectatorTargetInfoModule)
+        typeof(SpectatorTargetInfoModule),
+        typeof(DefaultThemeModule)
     };
 
     /// <summary>

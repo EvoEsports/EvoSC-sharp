@@ -143,7 +143,17 @@ public class ServiceContainerManager : IServiceContainerManager
         _dependencyServices[moduleId].Add(dependencyId);
         _logger.LogDebug("Registered dependency '{DepId}' for '{ContainerId}'", dependencyId, moduleId);
     }
-    
+
+    public Container GetContainer(Guid moduleId)
+    {
+        if (!_containers.ContainsKey(moduleId))
+        {
+            throw new InvalidOperationException($"Container '{moduleId}' was not found to have a container.");
+        }
+
+        return _containers[moduleId];
+    }
+
     private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid containerId)
     {
         try
