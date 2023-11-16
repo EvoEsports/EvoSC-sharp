@@ -72,6 +72,17 @@ public class ThemeManager : IThemeManager
         _availableThemes.Remove(name);
     }
 
+    public void RemoveThemesForModule(Guid moduleId)
+    {
+        foreach (var (name, theme) in _availableThemes)
+        {
+            if (theme.ModuleId.Equals(moduleId))
+            {
+                _availableThemes.Remove(name);
+            }
+        }
+    }
+
     public Task SetCurrentThemeAsync(string name)
     {
         ThrowIfNotExists(name);

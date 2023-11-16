@@ -8,6 +8,7 @@ using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
+using EvoSC.Manialinks.Interfaces.Themes;
 using EvoSC.Manialinks.Models;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
@@ -21,6 +22,7 @@ public class ManialinkManager : IManialinkManager
 {
     private readonly ILogger<ManialinkManager> _logger;
     private readonly IServerClient _server;
+    private readonly IThemeManager _themeManager;
 
     private readonly ManiaTemplateEngine _engine = new();
     private readonly Dictionary<string, IManialinkTemplateInfo> _templates = new();
@@ -32,10 +34,11 @@ public class ManialinkManager : IManialinkManager
         typeof(IOnlinePlayer).Assembly, typeof(ManialinkManager).Assembly
     };
 
-    public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server, IEventManager events)
+    public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server, IEventManager events, IThemeManager themeManager)
     {
         _logger = logger;
         _server = server;
+        _themeManager = themeManager;
         
         events.Subscribe(s => s
             .WithEvent(GbxRemoteEvent.PlayerConnect)
@@ -45,26 +48,7 @@ public class ManialinkManager : IManialinkManager
             .AsAsync()
         );
     }
-
-    /// <summary>
-    /// Used to send persistent manialinks to newly connected players.
-    /// </summary>
-    private async Task HandlePlayerConnectAsync(object sender, PlayerConnectGbxEventArgs e)
-    {
-        try
-        {
-            foreach (var (_, output) in _persistentManialinks)
-            {
-                await _server.Remote.SendDisplayManialinkPageToLoginAsync(e.Login, output, 0, false);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Failed to send persistent manialink login '{Login}'. Did they leave already?",
-                e.Login);
-        }
-    }
-
+    
     public async Task AddDefaultTemplatesAsync()
     {
         var namespaceParts = "EvoSC.Manialinks".Split(".");
@@ -124,36 +108,6 @@ public class ManialinkManager : IManialinkManager
         }
     }
 
-    private static string GetManialinkTemplateName(string[] namespaceParts, string[] nameComponents)
-    {
-        var index = 0;
-        while (index < namespaceParts.Length &&
-               nameComponents[index].Equals(namespaceParts[index], StringComparison.Ordinal))
-        {
-            index++;
-        }
-
-        if (nameComponents[index].Equals("Templates", StringComparison.Ordinal))
-        {
-            index++;
-        }
-
-        var templateName = $"EvoSC.{string.Join(".", nameComponents[index..^1])}";
-        return templateName;
-    }
-    
-    private MultiCall CreateMultiCall(IEnumerable<IPlayer> players, string manialinkOutput)
-    {
-        var multiCall = new MultiCall();
-
-        foreach (var player in players)
-        {
-            multiCall.Add("SendDisplayManialinkPageToLogin", player.GetLogin(), manialinkOutput, 0, false);
-        }
-
-        return multiCall;
-    }
-
     public void AddTemplate(IManialinkTemplateInfo template)
     {
         if (_templates.ContainsKey(template.Name))
@@ -200,6 +154,177 @@ public class ManialinkManager : IManialinkManager
         _scripts.Remove(name);
     }
 
+    public async Task SendManialinkAsync(string name, IDictionary<string, object?> data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
+    }
+
+    public async Task SendManialinkAsync(string name, dynamic data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
+    }
+
+    public Task SendManialinkAsync(string name) => SendManialinkAsync(name, new { });
+
+    public async Task SendPersistentManialinkAsync(string name, IDictionary<string, object?> data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
+        _persistentManialinks[name] = manialinkOutput;
+    }
+
+    public async Task SendPersistentManialinkAsync(string name, dynamic data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
+        _persistentManialinks[name] = manialinkOutput;
+    }
+
+    public Task SendPersistentManialinkAsync(string name) => SendPersistentManialinkAsync(name, new { });
+
+    public async Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
+    }
+
+    public async Task SendManialinkAsync(IPlayer player, string name, dynamic data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
+    }
+
+    public async Task SendManialinkAsync(string playerLogin, string name, dynamic data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 0, false);
+    }
+
+    public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, IDictionary<string, object?> data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        var multiCall = CreateMultiCall(players, manialinkOutput);
+        await _server.Remote.MultiCallAsync(multiCall);
+    }
+
+    public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, dynamic data)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        var multiCall = CreateMultiCall(players, manialinkOutput);
+        await _server.Remote.MultiCallAsync(multiCall);
+    }
+
+    public Task HideManialinkAsync(string name)
+    {
+        name = GetEffectiveName(name);
+        _persistentManialinks.TryRemove(name, out _);
+        var manialinkOutput = CreateHideManialink(name);
+        return _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 3, true);
+    }
+
+    public Task HideManialinkAsync(IPlayer player, string name)
+    {
+        name = GetEffectiveName(name);
+        _persistentManialinks.TryRemove(name, out _);
+        var manialinkOutput = CreateHideManialink(name);
+        return _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 3, true);
+    }
+
+    public Task HideManialinkAsync(string playerLogin, string name)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = CreateHideManialink(name);
+        return _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 3, true);
+    }
+
+    public Task HideManialinkAsync(IEnumerable<IPlayer> players, string name)
+    {
+        name = GetEffectiveName(name);
+        var manialinkOutput = CreateHideManialink(name);
+        var multiCall = new MultiCall();
+
+        foreach (var player in players)
+        {
+            multiCall.Add("SendDisplayManialinkPageToLogin", player.GetLogin(), manialinkOutput, 3, true);
+        }
+
+        return _server.Remote.MultiCallAsync(multiCall);
+    }
+
+    public async Task PreprocessAllAsync()
+    {
+        foreach (var template in _templates.Values)
+        {
+            _logger.LogDebug("Preprocessing template {Name}", template.Name);
+            
+            var assembles = new List<Assembly>();
+            assembles.AddRange(s_defaultAssemblies);
+            assembles.AddRange(template.Assemblies);
+
+            await _engine.PreProcessAsync(template.Name, assembles);
+        }
+    }
+    
+    /// <summary>
+    /// Used to send persistent manialinks to newly connected players.
+    /// </summary>
+    private async Task HandlePlayerConnectAsync(object sender, PlayerConnectGbxEventArgs e)
+    {
+        try
+        {
+            foreach (var (_, output) in _persistentManialinks)
+            {
+                await _server.Remote.SendDisplayManialinkPageToLoginAsync(e.Login, output, 0, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send persistent manialink login '{Login}'. Did they leave already?",
+                e.Login);
+        }
+    }
+    
+    private static string GetManialinkTemplateName(string[] namespaceParts, string[] nameComponents)
+    {
+        var index = 0;
+        while (index < namespaceParts.Length &&
+               nameComponents[index].Equals(namespaceParts[index], StringComparison.Ordinal))
+        {
+            index++;
+        }
+
+        if (nameComponents[index].Equals("Templates", StringComparison.Ordinal))
+        {
+            index++;
+        }
+
+        var templateName = $"EvoSC.{string.Join(".", nameComponents[index..^1])}";
+        return templateName;
+    }
+    
+    private MultiCall CreateMultiCall(IEnumerable<IPlayer> players, string manialinkOutput)
+    {
+        var multiCall = new MultiCall();
+
+        foreach (var player in players)
+        {
+            multiCall.Add("SendDisplayManialinkPageToLogin", player.GetLogin(), manialinkOutput, 0, false);
+        }
+
+        return multiCall;
+    }
+    
     private IEnumerable<Assembly> PrepareRender(string name)
     {
         if (!_templates.ContainsKey(name))
@@ -238,112 +363,15 @@ public class ManialinkManager : IManialinkManager
         return sb.ToString();
     }
 
-    public async Task SendManialinkAsync(string name, IDictionary<string, object?> data)
+    private string GetEffectiveName(string name)
     {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
-    }
-
-    public async Task SendManialinkAsync(string name, dynamic data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
-    }
-
-    public Task SendManialinkAsync(string name) => SendManialinkAsync(name, new { });
-
-    public async Task SendPersistentManialinkAsync(string name, IDictionary<string, object?> data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
-        _persistentManialinks[name] = manialinkOutput;
-    }
-
-    public async Task SendPersistentManialinkAsync(string name, dynamic data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
-        _persistentManialinks[name] = manialinkOutput;
-    }
-
-    public Task SendPersistentManialinkAsync(string name) => SendPersistentManialinkAsync(name, new { });
-
-    public async Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
-    }
-
-    public async Task SendManialinkAsync(IPlayer player, string name, dynamic data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 0, false);
-    }
-
-    public async Task SendManialinkAsync(string playerLogin, string name, dynamic data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        await _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 0, false);
-    }
-
-    public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, IDictionary<string, object?> data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        var multiCall = CreateMultiCall(players, manialinkOutput);
-        await _server.Remote.MultiCallAsync(multiCall);
-    }
-
-    public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, dynamic data)
-    {
-        var manialinkOutput = await PrepareAndRenderAsync(name, data);
-        var multiCall = CreateMultiCall(players, manialinkOutput);
-        await _server.Remote.MultiCallAsync(multiCall);
-    }
-
-    public Task HideManialinkAsync(string name)
-    {
-        _persistentManialinks.TryRemove(name, out _);
-        var manialinkOutput = CreateHideManialink(name);
-        return _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 3, true);
-    }
-
-    public Task HideManialinkAsync(IPlayer player, string name)
-    {
-        _persistentManialinks.TryRemove(name, out _);
-        var manialinkOutput = CreateHideManialink(name);
-        return _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 3, true);
-    }
-
-    public Task HideManialinkAsync(string playerLogin, string name)
-    {
-        var manialinkOutput = CreateHideManialink(name);
-        return _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 3, true);
-    }
-
-    public Task HideManialinkAsync(IEnumerable<IPlayer> players, string name)
-    {
-        var manialinkOutput = CreateHideManialink(name);
-        var multiCall = new MultiCall();
-
-        foreach (var player in players)
+        if (_themeManager.CurrentTheme == null)
         {
-            multiCall.Add("SendDisplayManialinkPageToLogin", player.GetLogin(), manialinkOutput, 3, true);
+            return null;
         }
 
-        return _server.Remote.MultiCallAsync(multiCall);
-    }
-
-    public async Task PreprocessAllAsync()
-    {
-        foreach (var template in _templates.Values)
-        {
-            _logger.LogDebug("Preprocessing template {Name}", template.Name);
-            
-            var assembles = new List<Assembly>();
-            assembles.AddRange(s_defaultAssemblies);
-            assembles.AddRange(template.Assemblies);
-
-            await _engine.PreProcessAsync(template.Name, assembles);
-        }
+        return _themeManager.CurrentTheme.ComponentReplacements.TryGetValue(name, out var effectiveName)
+            ? effectiveName
+            : name;
     }
 }

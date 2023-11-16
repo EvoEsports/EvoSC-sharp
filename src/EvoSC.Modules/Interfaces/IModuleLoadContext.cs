@@ -78,6 +78,11 @@ public interface IModuleLoadContext
     /// The localization manager for this module if the module includes localizations.
     /// </summary>
     public ILocalizationManager? Localization { get; }
+    
+    /// <summary>
+    /// List of themes available from this module.
+    /// </summary>
+    public IReadOnlyList<Type> Themes { get; }
 
     /// <summary>
     /// Whether this module is currently enabled.

@@ -22,7 +22,9 @@ using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
+using EvoSC.Manialinks.Attributes;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Manialinks.Interfaces.Themes;
 using EvoSC.Manialinks.Models;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
@@ -46,6 +48,7 @@ public class ModuleManager : IModuleManager
     private readonly IEvoScBaseConfig _config;
     private readonly IConfigStoreRepository _configStoreRepository;
     private readonly IManialinkManager _manialinkManager;
+    private readonly IThemeManager _themeManager;
 
     private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new();
     private readonly Dictionary<string, Guid> _moduleNameMap = new();
@@ -55,7 +58,7 @@ public class ModuleManager : IModuleManager
     public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers,
         IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager,
         IPermissionManager permissions,
-        IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager)
+        IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager)
     {
         _logger = logger;
         _config = config;
@@ -65,6 +68,7 @@ public class ModuleManager : IModuleManager
         _permissions = permissions;
         _configStoreRepository = configStoreRepository;
         _manialinkManager = manialinkManager;
+        _themeManager = themeManager;
 
         WarnForDisabledVerification();
     }
@@ -535,7 +539,7 @@ public class ModuleManager : IModuleManager
     [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
     {
-        var assemblies = asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly};
+        var assemblies = (asmLoadContext?.Assemblies ?? new[] {mainClass.Assembly}).ToArray();
         var rootNamespace = mainClass.Namespace ??
                             throw new InvalidOperationException("Failed to detect root namespace for module.");
         
@@ -550,6 +554,8 @@ public class ModuleManager : IModuleManager
             moduleServices.RegisterInstance(typeof(ILocalizationManager), localization);
             moduleServices.Register<Locale, LocaleResource>(Lifestyle.Scoped);
         }
+
+        var themes = GetModuleThemes(assemblies);
 
         await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
         var moduleInstance = CreateModuleInstance(mainClass, moduleServices);
@@ -568,8 +574,20 @@ public class ModuleManager : IModuleManager
             LoadedDependencies = loadedDependencies,
             ManialinkTemplates = new List<IModuleManialinkTemplate>(),
             RootNamespace = rootNamespace,
-            Localization = localization
+            Localization = localization,
+            Themes = themes
         };
+    }
+
+    private IReadOnlyList<Type> GetModuleThemes(IEnumerable<Assembly> assemblies)
+    {
+        var themes = new List<Type>();
+        foreach (var assembly in assemblies)
+        {
+            themes.AddRange(assembly.AssemblyTypesWithAttribute<ThemeAttribute>());
+        }
+
+        return themes;
     }
 
     private ILocalizationManager? GetModuleLocalization(Assembly assembly, string rootNamespace, IModuleInfo moduleInfo)
@@ -634,6 +652,7 @@ public class ModuleManager : IModuleManager
     {
         var moduleContext = GetModule(loadId);
 
+        await EnableThemesAsync(moduleContext);
         await EnableControllersAsync(moduleContext);
         await EnableMiddlewaresAsync(moduleContext);
         await EnableManialinkTemplatesAsync(moduleContext);
@@ -644,6 +663,14 @@ public class ModuleManager : IModuleManager
         moduleContext.SetEnabled(true);
         
         _logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
+    }
+
+    private async Task EnableThemesAsync(IModuleLoadContext moduleContext)
+    {
+        foreach (var theme in moduleContext.Themes)
+        {
+            await _themeManager.AddThemeAsync(theme, moduleContext.LoadId);
+        }
     }
 
     private async Task StartBackgroundServicesAsync(IModuleLoadContext moduleContext)
@@ -676,6 +703,7 @@ public class ModuleManager : IModuleManager
         await DisableManialinkTemplatesAsync(moduleContext);
         await DisableControllersAsync(moduleContext);
         await DisableMiddlewaresAsync(moduleContext);
+        await DisableThemesAsync(moduleContext);
         await StopBackgroundServicesAsync(moduleContext);
         
         await TryCallModuleDisableAsync(moduleContext);
@@ -683,6 +711,12 @@ public class ModuleManager : IModuleManager
         moduleContext.SetEnabled(false);
         
         _logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
+    }
+
+    private Task DisableThemesAsync(IModuleLoadContext moduleContext)
+    {
+        _themeManager.RemoveThemesForModule(moduleContext.LoadId);
+        return Task.CompletedTask;
     }
 
     private async Task StopBackgroundServicesAsync(IModuleLoadContext moduleContext)

@@ -8,5 +8,6 @@ public interface IThemeManager
     public Task AddThemeAsync(Type themeType, Guid moduleId);
     public Task AddThemeAsync(Type themeType);
     public void RemoveTheme(string name);
+    public void RemoveThemesForModule(Guid moduleId);
     public Task SetCurrentThemeAsync(string name);
 }
