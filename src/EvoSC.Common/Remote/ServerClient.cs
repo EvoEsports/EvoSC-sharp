@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Themes;
 using GbxRemoteNet;
 using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -13,17 +14,20 @@ public partial class ServerClient : IServerClient
     private readonly IEvoScBaseConfig _config;
     private readonly ILogger<ServerClient> _logger;
     private readonly IEvoSCApplication _app;
+    private readonly IThemeManager _themes;
 
     private bool _connected;
 
     public IGbxRemoteClient Remote => _gbxRemote;
     public bool Connected => _connected;
 
-    public ServerClient(IEvoScBaseConfig config, ILogger<ServerClient> logger, IEvoSCApplication app)
+    public ServerClient(IEvoScBaseConfig config, ILogger<ServerClient> logger, IEvoSCApplication app, IThemeManager themes)
     {
         _config = config;
         _logger = logger;
         _app = app;
+        _themes = themes;
+        
         _connected = false;
         _gbxRemote = new GbxRemoteClient(config.Server.Host, config.Server.Port, logger);
         

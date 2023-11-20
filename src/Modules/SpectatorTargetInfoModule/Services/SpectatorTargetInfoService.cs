@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -16,12 +17,14 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
     private readonly IEvoScBaseConfig _config;
+    private readonly IThemeManager _themes;
 
-    public SpectatorTargetInfoService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config)
+    public SpectatorTargetInfoService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config, IThemeManager themes)
     {
         _manialinks = manialinks;
         _server = server;
         _config = config;
+        _themes = themes;
     }
 
     public async Task SendManiaLinkAsync() =>
@@ -107,9 +110,9 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
     {
         return new
         {
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            backgroundColor = _config.Theme.UI.BackgroundColor,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor
+            primaryColor = _themes.Theme.UI_PrimaryColor,
+            backgroundColor = _themes.Theme.UI_BackgroundColor,
+            headerColor = _themes.Theme.UI_HeaderBackgroundColor
         };
     }
 }

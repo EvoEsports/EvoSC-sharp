@@ -1,7 +1,8 @@
-﻿using EvoSC.Manialinks.Themes;
-using EvoSC.Manialinks.Themes.Builders;
+﻿using System.Threading.Tasks;
+using EvoSC.Common.Themes;
+using Xunit;
 
-namespace EvoSC.Manialinks.Tests.Themes;
+namespace EvoSC.Common.Tests.Themes;
 
 public class ThemeBuilderTests
 {

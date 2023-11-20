@@ -23,6 +23,7 @@ public static class Configuration
             .UseEvoScConfig(MainConfigFile, cliOptions)
             .UseTypeParser(new TextColorTypeParser())
             .UseTypeParser(new VersionParser())
+            .UseTypeParser(new ThemeOptionsParser())
             .Build();
         
         return baseConfig;

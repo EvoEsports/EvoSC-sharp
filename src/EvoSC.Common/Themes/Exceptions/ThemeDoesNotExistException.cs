@@ -1,4 +1,4 @@
-namespace EvoSC.Manialinks.Exceptions.Themes;
+namespace EvoSC.Common.Themes.Exceptions;
 
 public class ThemeDoesNotExistException : ThemeException
 {

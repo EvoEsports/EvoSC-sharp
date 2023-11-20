@@ -8,25 +8,25 @@ public partial class ServerClient
 {
     private TextFormatter MakeInfoMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(_config.Theme.Chat.InfoColor))
+            .AddText("", styling => styling.WithColor(_themes.Theme.Chat_InfoColor))
             .AddText(" ")
             .AddText(text);
 
     private TextFormatter MakeSuccessMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(_config.Theme.Chat.SuccessColor))
+            .AddText("", styling => styling.WithColor(_themes.Theme.Chat_SuccessColor))
             .AddText(" ")
             .AddText(text);
     
     private TextFormatter MakeWarningMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(_config.Theme.Chat.WarningColor))
+            .AddText("", styling => styling.WithColor(_themes.Theme.Chat_WarningColor))
             .AddText(" ")
             .AddText(text);
     
     private TextFormatter MakeErrorMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(_config.Theme.Chat.ErrorColor))
+            .AddText("", styling => styling.WithColor(_themes.Theme.Chat_ErrorColor))
             .AddText(" ")
             .AddText(text);
 

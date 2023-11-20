@@ -2,6 +2,7 @@
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -21,11 +22,12 @@ public class CurrentMapService : ICurrentMapService
     private readonly IServerClient _client;
     private readonly IEvoScBaseConfig _config;
     private readonly IWorldRecordService _worldRecordService;
+    private readonly IThemeManager _themes;
 
     public CurrentMapService(IManialinkManager manialinkManager,
         ILogger<CurrentMapService> logger,
         IMapRepository mapRepository, IServerClient client, IEvoScBaseConfig config, 
-        IWorldRecordService worldRecordService)
+        IWorldRecordService worldRecordService, IThemeManager themes)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
@@ -33,6 +35,7 @@ public class CurrentMapService : ICurrentMapService
         _client = client;
         _config = config;
         _worldRecordService = worldRecordService;
+        _themes = themes;
     }
 
     [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]
@@ -73,10 +76,10 @@ public class CurrentMapService : ICurrentMapService
                 map = dbMap,
                 mapauthor = author,
                 record = worldRecord,
-                headerColor = _config.Theme.UI.HeaderBackgroundColor,
-                primaryColor = _config.Theme.UI.PrimaryColor,
-                logoUrl = _config.Theme.UI.LogoWhiteUrl,
-                playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+                headerColor = _themes.Theme.UI_HeaderBackgroundColor,
+                primaryColor = _themes.Theme.UI_PrimaryColor,
+                logoUrl = _themes.Theme.UI_LogoWhiteUrl,
+                playerRowBackgroundColor = _themes.Theme.UI_PlayerRowBackgroundColor
             });
         _logger.LogDebug("Showing current map widget");
     }

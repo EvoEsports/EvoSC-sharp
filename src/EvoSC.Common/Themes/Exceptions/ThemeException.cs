@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace EvoSC.Manialinks.Exceptions.Themes;
+namespace EvoSC.Common.Themes.Exceptions;
 
 public class ThemeException : Exception
 {

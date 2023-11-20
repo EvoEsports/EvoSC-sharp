@@ -1,6 +1,6 @@
-using EvoSC.Manialinks.Interfaces.Themes.Builders;
+using EvoSC.Common.Interfaces.Themes.Builders;
 
-namespace EvoSC.Manialinks.Themes.Builders;
+namespace EvoSC.Common.Themes.Builders;
 
 public class SetThemeOptionBuilder<TTheme> : ISetThemeOptionBuilder<TTheme>
 where TTheme : Theme<TTheme>

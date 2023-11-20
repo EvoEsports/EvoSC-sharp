@@ -3,6 +3,7 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Manialinks.Interfaces;
@@ -18,12 +19,14 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     private readonly INextMapService _nextMapService;
     private readonly IManialinkManager _manialinkManager;
     private readonly IEvoScBaseConfig _config;
+    private readonly IThemeManager _themes;
 
-    public NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager, IEvoScBaseConfig config)
+    public NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager, IEvoScBaseConfig config, IThemeManager themes)
     {
         _nextMapService = nextMapService;
         _manialinkManager = manialinkManager;
         _config = config;
+        _themes = themes;
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
@@ -35,10 +38,10 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
             {
                 mapName = nextMap.Name, 
                 author = nextMap.Author?.NickName,
-                headerColor = _config.Theme.UI.HeaderBackgroundColor,
-                primaryColor = _config.Theme.UI.PrimaryColor,
-                logoUrl = _config.Theme.UI.LogoWhiteUrl,
-                playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+                headerColor = _themes.Theme.UI_HeaderBackgroundColor,
+                primaryColor = _themes.Theme.UI_PrimaryColor,
+                logoUrl = _themes.Theme.UI_LogoWhiteUrl,
+                playerRowBackgroundColor = _themes.Theme.UI_PlayerRowBackgroundColor
             });
     }
 

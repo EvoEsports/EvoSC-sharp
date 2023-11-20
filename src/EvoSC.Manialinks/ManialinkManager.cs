@@ -3,12 +3,15 @@ using System.Reflection;
 using System.Text;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Remote;
+using EvoSC.Common.Themes;
+using EvoSC.Common.Themes.Events;
+using EvoSC.Common.Themes.Events.Args;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
-using EvoSC.Manialinks.Interfaces.Themes;
 using EvoSC.Manialinks.Models;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
@@ -47,8 +50,14 @@ public class ManialinkManager : IManialinkManager
             .WithHandlerMethod<PlayerConnectGbxEventArgs>(HandlePlayerConnectAsync)
             .AsAsync()
         );
+        
+        events.Subscribe(s => s
+            .WithEvent(ThemeEvents.CurrentThemeChanged)
+            .WithInstance(this)
+            .WithInstanceClass<ManialinkManager>()
+            .WithHandlerMethod<ThemeChangedEventArgs>(HandleThemeChangedAsync));
     }
-    
+
     public async Task AddDefaultTemplatesAsync()
     {
         var namespaceParts = "EvoSC.Manialinks".Split(".");
@@ -275,7 +284,22 @@ public class ManialinkManager : IManialinkManager
             await _engine.PreProcessAsync(template.Name, assembles);
         }
     }
-    
+
+    public void AddGlobalVariable(string name, object value) =>
+        _engine.GlobalVariables.AddOrUpdate(name, value, (s, o) => value);
+
+    public void RemoveGlobalVariable(string name)
+    {
+        if (_engine.GlobalVariables.ContainsKey(name))
+        {
+            _engine.GlobalVariables.Remove(name, out _);
+        }
+
+        throw new KeyNotFoundException($"Did not find global variable named '{name}'.");
+    }
+
+    public void ClearGlobalVariables() => _engine.GlobalVariables.Clear();
+
     /// <summary>
     /// Used to send persistent manialinks to newly connected players.
     /// </summary>
@@ -293,6 +317,14 @@ public class ManialinkManager : IManialinkManager
             _logger.LogWarning(ex, "Failed to send persistent manialink login '{Login}'. Did they leave already?",
                 e.Login);
         }
+    }
+    
+    private Task HandleThemeChangedAsync(object sender, ThemeChangedEventArgs e)
+    {
+        var dynamicOptions = new DynamicThemeOptions(e.Theme.ThemeOptions);
+        _engine.GlobalVariables["Theme"] = dynamicOptions;
+
+        return Task.CompletedTask;
     }
     
     private static string GetManialinkTemplateName(string[] namespaceParts, string[] nameComponents)
@@ -365,12 +397,12 @@ public class ManialinkManager : IManialinkManager
 
     private string GetEffectiveName(string name)
     {
-        if (_themeManager.CurrentTheme == null)
+        if (_themeManager.SelectedTheme == null)
         {
             return null;
         }
 
-        return _themeManager.CurrentTheme.ComponentReplacements.TryGetValue(name, out var effectiveName)
+        return _themeManager.SelectedTheme.ComponentReplacements.TryGetValue(name, out var effectiveName)
             ? effectiveName
             : name;
     }

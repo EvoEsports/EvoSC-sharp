@@ -2,6 +2,7 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Models.Players;
 using EvoSC.Manialinks.Interfaces;
@@ -24,12 +25,13 @@ public class CurrentMapServiceTest
     private readonly Mock<IMapRepository> _mapRepositoryMock = new();
     private readonly Mock<IEvoScBaseConfig> _configMock = new();
     private readonly Mock<IWorldRecordService> _worldRecordServiceMock = new();
+    private readonly Mock<IThemeManager> _themeManagerMock = new();
 
     public CurrentMapServiceTest()
     {
         _currentMapService =
             new CurrentMapService(_manialinkManager.Object, _logger, _mapRepositoryMock.Object, _clientMock.Object,
-                _configMock.Object, _worldRecordServiceMock.Object);
+                _configMock.Object, _worldRecordServiceMock.Object, _themeManagerMock.Object);
     }
 
     [Fact]

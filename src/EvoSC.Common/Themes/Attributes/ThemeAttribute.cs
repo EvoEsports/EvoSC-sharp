@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Manialinks.Attributes;
+﻿namespace EvoSC.Common.Themes.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class ThemeAttribute : Attribute

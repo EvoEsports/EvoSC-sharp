@@ -1,4 +1,4 @@
-namespace EvoSC.Manialinks.Themes.Events;
+namespace EvoSC.Common.Themes.Events;
 
 public enum ThemeEvents
 {

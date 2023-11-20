@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -24,15 +25,17 @@ public class MatchRankingService : IMatchRankingService
     private readonly IPlayerManagerService _playerManager;
     private readonly ILogger<MatchRankingService> _logger;
     private readonly IEvoScBaseConfig _config;
+    private readonly IThemeManager _themes;
     private MatchRankingStore _matchRankingStore;
 
     public MatchRankingService(IManialinkManager manialinkManager, IPlayerManagerService playerManager,
-        ILogger<MatchRankingService> logger, IEvoScBaseConfig config)
+        ILogger<MatchRankingService> logger, IEvoScBaseConfig config, IThemeManager themes)
     {
         _manialinkManager = manialinkManager;
         _playerManager = playerManager;
         _logger = logger;
         _config = config;
+        _themes = themes;
         _matchRankingStore = new MatchRankingStore();
     }
 
@@ -79,10 +82,10 @@ public class MatchRankingService : IMatchRankingService
         return new
         {
             Scores = mappedScoresLatest,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor,
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            logoUrl = _config.Theme.UI.LogoWhiteUrl,
-            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+            headerColor = _themes.Theme.UI_HeaderBackgroundColor,
+            primaryColor = _themes.Theme.UI_PrimaryColor,
+            logoUrl = _themes.Theme.UI_LogoWhiteUrl,
+            playerRowBackgroundColor = _themes.Theme.UI_PlayerRowBackgroundColor
         };
     }
 

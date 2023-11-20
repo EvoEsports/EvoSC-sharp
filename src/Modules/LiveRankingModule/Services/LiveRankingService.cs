@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -23,16 +24,18 @@ public class LiveRankingService : ILiveRankingService
     private readonly LiveRankingStore _liveRankingStore;
     private readonly IServerClient _client;
     private readonly IEvoScBaseConfig _config;
+    private readonly IThemeManager _themes;
     private bool _isRoundsMode;
 
     public LiveRankingService(ILogger<LiveRankingService> logger, ILoggerFactory loggerFactory,
         IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager,
-        IEvoScBaseConfig config)
+        IEvoScBaseConfig config, IThemeManager themes)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
         _client = client;
         _config = config;
+        _themes = themes;
         _liveRankingStore =
             new LiveRankingStore(loggerFactory.CreateLogger<LiveRankingStore>(), playerManager);
     }
@@ -88,10 +91,10 @@ public class LiveRankingService : ILiveRankingService
         return new
         {
             rankings = widgetCurrentRanking,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor,
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            logoUrl = _config.Theme.UI.LogoWhiteUrl,
-            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+            headerColor = _themes.Theme.UI_HeaderBackgroundColor,
+            primaryColor = _themes.Theme.UI_PrimaryColor,
+            logoUrl = _themes.Theme.UI_LogoWhiteUrl,
+            playerRowBackgroundColor = _themes.Theme.UI_PlayerRowBackgroundColor
         };
 
 /*

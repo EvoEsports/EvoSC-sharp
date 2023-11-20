@@ -1,31 +1,38 @@
 using System.Reflection;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Manialinks.Attributes;
-using EvoSC.Manialinks.Exceptions.Themes;
-using EvoSC.Manialinks.Interfaces.Themes;
-using EvoSC.Manialinks.Themes.Events;
-using EvoSC.Manialinks.Themes.Events.Args;
+using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Themes.Attributes;
+using EvoSC.Common.Themes.Events;
+using EvoSC.Common.Themes.Events.Args;
+using EvoSC.Common.Themes.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EvoSC.Manialinks.Themes;
+namespace EvoSC.Common.Themes;
 
 public class ThemeManager : IThemeManager
 {
     private readonly IServiceContainerManager _serviceManager;
     private readonly IEvoSCApplication _evoscApp;
     private readonly IEventManager _events;
+    private readonly IEvoScBaseConfig _evoscConfig;
     
     private Dictionary<string, IThemeInfo> _availableThemes = new();
     
-    public ITheme? CurrentTheme { get; private set; }
+    public ITheme? SelectedTheme { get; private set; }
     public IEnumerable<IThemeInfo> AvailableThemes => _availableThemes.Values;
-    
-    public ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplication evoscApp, IEventManager events)
+    public dynamic Theme => GetCurrentThemeOptions();
+
+
+    public ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplication evoscApp, IEventManager events, IEvoScBaseConfig evoscConfig)
     {
         _serviceManager = serviceManager;
         _evoscApp = evoscApp;
         _events = events;
+        _evoscConfig = evoscConfig;
+
+        AddThemeAsync(typeof(DefaultTheme));
     }
 
     public async Task AddThemeAsync(Type themeType, Guid moduleId)
@@ -64,7 +71,7 @@ public class ThemeManager : IThemeManager
 
         var themeInfo = _availableThemes[name];
 
-        if (CurrentTheme != null && CurrentTheme.GetType() == themeInfo.ThemeType)
+        if (SelectedTheme != null && SelectedTheme.GetType() == themeInfo.ThemeType)
         {
             throw new ThemeException("Cannot remove current theme. Change to another theme first.");
         }
@@ -89,6 +96,23 @@ public class ThemeManager : IThemeManager
         return ActivateThemeAsync(name);
     }
 
+    public dynamic GetCurrentThemeOptions()
+    {
+        if (SelectedTheme == null)
+        {
+            throw new ThemeException("Current theme is not set.");
+        }
+
+        var themeOptions = GetFallbackThemeOptions();
+
+        foreach (var option in SelectedTheme.ThemeOptions)
+        {
+            themeOptions[option.Key] = option.Value;
+        }
+        
+        return themeOptions;
+    }
+
     private async Task<ITheme> ActivateThemeAsync(string name)
     {
         var themeInfo = _availableThemes[name];
@@ -107,7 +131,7 @@ public class ThemeManager : IThemeManager
         }
         
         await theme.ConfigureAsync();
-        CurrentTheme = theme;
+        SelectedTheme = theme;
 
         await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeChangedEventArgs
         {
@@ -124,5 +148,19 @@ public class ThemeManager : IThemeManager
         {
             throw new ThemeDoesNotExistException(name);
         }
+    }
+
+    private Dictionary<string, object> GetFallbackThemeOptions()
+    {
+        var themeOptions = new Dictionary<string, object>();
+
+        foreach (var defaultOption in _evoscConfig.Theme)
+        {
+            var key = defaultOption.Key.StartsWith("Theme.") ? defaultOption.Key[6..] : defaultOption.Key;
+            
+            themeOptions[key] = defaultOption.Value;
+        }
+
+        return themeOptions;
     }
 }

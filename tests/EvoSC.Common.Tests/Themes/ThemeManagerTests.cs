@@ -1,14 +1,19 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Manialinks.Attributes;
-using EvoSC.Manialinks.Exceptions.Themes;
-using EvoSC.Manialinks.Interfaces.Themes;
-using EvoSC.Manialinks.Themes;
-using EvoSC.Manialinks.Themes.Events;
-using EvoSC.Manialinks.Themes.Events.Args;
+using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Themes;
+using EvoSC.Common.Themes.Attributes;
+using EvoSC.Common.Themes.Events;
+using EvoSC.Common.Themes.Events.Args;
+using EvoSC.Common.Themes.Exceptions;
 using Moq;
+using Xunit;
 
-namespace EvoSC.Manialinks.Tests.Themes;
+namespace EvoSC.Common.Tests.Themes;
 
 public class ThemeManagerTests
 {
@@ -51,18 +56,21 @@ public class ThemeManagerTests
         Mock<IServiceContainerManager> ServiceManager,
         Mock<IEvoSCApplication> EvoSCApp,
         Mock<IEventManager> Events,
+        Mock<IEvoScBaseConfig> Config,
         IThemeManager ThemeManager
         ) GetMock()
     {
         var serviceManager = new Mock<IServiceContainerManager>();
         var app = new Mock<IEvoSCApplication>();
         var events = new Mock<IEventManager>();
-        var manager = new ThemeManager(serviceManager.Object, app.Object, events.Object);
+        var config = new Mock<IEvoScBaseConfig>();
+        var manager = new ThemeManager(serviceManager.Object, app.Object, events.Object, config.Object);
 
         return (
             serviceManager,
             app,
             events,
+            config,
             manager
         );
     }
@@ -74,8 +82,8 @@ public class ThemeManagerTests
         
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
         
-        Assert.NotNull(mock.ThemeManager.CurrentTheme);
-        Assert.IsType<MyTheme>(mock.ThemeManager.CurrentTheme);
+        Assert.NotNull(mock.ThemeManager.SelectedTheme);
+        Assert.IsType<DefaultTheme>(mock.ThemeManager.SelectedTheme);
     }
 
     [Fact]
@@ -90,7 +98,7 @@ public class ThemeManagerTests
         var themes = mock.ThemeManager.AvailableThemes.Select(t => t.Name).ToArray();
         
         Assert.NotEmpty(themes);
-        Assert.Equal(new string[]{"MyTheme", "MyTheme2", "MyTheme3"}, themes);
+        Assert.Equal(new[]{"Default", "MyTheme", "MyTheme2", "MyTheme3"}, themes);
     }
 
     [Fact]
@@ -104,8 +112,8 @@ public class ThemeManagerTests
 
         await mock.ThemeManager.SetCurrentThemeAsync("MyTheme2");
         
-        Assert.NotNull(mock.ThemeManager.CurrentTheme);
-        Assert.IsType<MyTheme2>(mock.ThemeManager.CurrentTheme);
+        Assert.NotNull(mock.ThemeManager.SelectedTheme);
+        Assert.IsType<MyTheme2>(mock.ThemeManager.SelectedTheme);
     }
 
     [Fact]
@@ -149,6 +157,7 @@ public class ThemeManagerTests
         var mock = GetMock();
 
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
+        await mock.ThemeManager.SetCurrentThemeAsync("MyTheme");
 
         Assert.Throws<ThemeException>(() =>
         {

@@ -118,6 +118,11 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         {
             return string.Join(" ", arrayValue.Select(v => v.StringValue));
         }
+
+        if (keyValue is TomlTable tableValue)
+        {
+            return tableValue.SerializeNonInlineTable("Theme", false);
+        }
         
         return keyValue.StringValue;
     }

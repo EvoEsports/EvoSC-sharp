@@ -1,4 +1,4 @@
-namespace EvoSC.Manialinks.Interfaces.Themes;
+namespace EvoSC.Common.Interfaces.Themes;
 
 public interface IThemeInfo
 {

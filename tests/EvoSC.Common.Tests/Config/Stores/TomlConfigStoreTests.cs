@@ -86,6 +86,7 @@ public class TomlConfigStoreTests
         var config = new ConfigurationBuilder<IEvoScBaseConfig>()
             .UseConfigStore(new TomlConfigStore<IEvoScBaseConfig>(ConfigFile))
             .UseTypeParser(new TextColorTypeParser())
+            .UseTypeParser(new ThemeOptionsParser())
             .Build();
         
         Assert.Equal(IDatabaseConfig.DatabaseType.PostgreSql, config.Database.Type);
@@ -106,13 +107,6 @@ public class TomlConfigStoreTests
         Assert.True(config.Server.RetryConnection);
         
         Assert.Equal("my/server/maps", config.Path.Maps);
-        
-        Assert.Equal("$123", config.Theme.Chat.PrimaryColor.ToString());
-        Assert.Equal("$567", config.Theme.Chat.SecondaryColor.ToString());
-        Assert.Equal("$89a", config.Theme.Chat.InfoColor.ToString());
-        Assert.Equal("$bcd", config.Theme.Chat.ErrorColor.ToString());
-        Assert.Equal("$ef0", config.Theme.Chat.WarningColor.ToString());
-        Assert.Equal("$123", config.Theme.Chat.SuccessColor.ToString());
         
         Assert.Equal("no", config.Locale.DefaultLanguage);
         

@@ -52,6 +52,7 @@ public class RequiredFeaturesAttributeTests
             AppFeature.ActionPipelines,
             AppFeature.Permissions,
             AppFeature.Manialinks,
+            AppFeature.Themes
         }, attr.Features);
     }
 }

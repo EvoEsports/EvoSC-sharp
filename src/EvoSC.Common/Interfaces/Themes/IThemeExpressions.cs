@@ -1,7 +1,7 @@
-using EvoSC.Manialinks.Interfaces.Themes.Builders;
-using EvoSC.Manialinks.Themes;
+using EvoSC.Common.Interfaces.Themes.Builders;
+using EvoSC.Common.Themes;
 
-namespace EvoSC.Manialinks.Interfaces.Themes;
+namespace EvoSC.Common.Interfaces.Themes;
 
 public interface IThemeExpressions<TTheme>
 where TTheme : Theme<TTheme>

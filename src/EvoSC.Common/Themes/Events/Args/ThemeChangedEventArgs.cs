@@ -1,6 +1,6 @@
-using EvoSC.Manialinks.Interfaces.Themes;
+using EvoSC.Common.Interfaces.Themes;
 
-namespace EvoSC.Manialinks.Themes.Events.Args;
+namespace EvoSC.Common.Themes.Events.Args;
 
 public class ThemeChangedEventArgs : EventArgs
 {

@@ -200,4 +200,8 @@ public interface IManialinkManager
     /// </summary>
     /// <returns></returns>
     public Task PreprocessAllAsync();
+
+    public void AddGlobalVariable(string name, object value);
+    public void RemoveGlobalVariable(string name);
+    public void ClearGlobalVariables();
 }

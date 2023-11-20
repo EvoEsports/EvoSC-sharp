@@ -1,6 +1,6 @@
-using EvoSC.Manialinks.Interfaces.Themes;
+using EvoSC.Common.Interfaces.Themes;
 
-namespace EvoSC.Manialinks.Themes;
+namespace EvoSC.Common.Themes;
 
 public class ThemeInfo : IThemeInfo
 {

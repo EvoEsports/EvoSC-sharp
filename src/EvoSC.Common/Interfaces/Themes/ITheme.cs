@@ -1,6 +1,4 @@
-﻿using EvoSC.Manialinks.Interfaces.Themes.Builders;
-
-namespace EvoSC.Manialinks.Interfaces.Themes;
+﻿namespace EvoSC.Common.Interfaces.Themes;
 
 public interface ITheme
 {

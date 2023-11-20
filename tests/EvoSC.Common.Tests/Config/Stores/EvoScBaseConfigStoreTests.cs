@@ -58,10 +58,10 @@ public class EvoScBaseConfigStoreTests
     [Fact]
     public void Environment_Variables_Overrides_FileConfig_CustomType_Option()
     {
-        Environment.SetEnvironmentVariable("EVOSC_THEME_CHAT_PRIMARYTEXTCOLOR", "745");
+        Environment.SetEnvironmentVariable("EVOSC_PATH_MAPS", "/home/me/and/my/server/path/UserData/Maps/");
         var config = Configuration.GetBaseConfig(ConfigFile, new Dictionary<string, string>());
 
-        Assert.Equal("$745", config.Theme.Chat.PrimaryColor.ToString());
+        Assert.Equal("/home/me/and/my/server/path/UserData/Maps/", config.Path.Maps);
     }
     
     
@@ -103,10 +103,10 @@ public class EvoScBaseConfigStoreTests
     {
         var config = Configuration.GetBaseConfig(ConfigFile, new Dictionary<string, string>()
         {
-            {"Theme.Chat.primaryTextColor", "745"}
+            {"Modules.requireSignatureVerification", "false"}
         });
 
-        Assert.Equal("$745", config.Theme.Chat.PrimaryColor.ToString());
+        Assert.False(config.Modules.RequireSignatureVerification);
     }
 
     [Fact]

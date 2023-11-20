@@ -1,9 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Middleware;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Manialinks.Interfaces.Themes;
 using EvoSC.Manialinks.Middleware;
-using EvoSC.Manialinks.Themes;
 using SimpleInjector;
 
 namespace EvoSC.Manialinks;
@@ -15,7 +13,6 @@ public static class ManialinkServiceExtensions
         services.RegisterSingleton<IManialinkInteractionHandler, ManialinkInteractionHandler>();
         services.RegisterSingleton<IManialinkActionManager, ManialinkActionManager>();
         services.RegisterSingleton<IManialinkManager, ManialinkManager>();
-        services.RegisterSingleton<IThemeManager, ThemeManager>();
         
         return services;
     }
