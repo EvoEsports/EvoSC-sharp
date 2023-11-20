@@ -17,12 +17,14 @@ public class ThemeManager : IThemeManager
     private readonly IEvoSCApplication _evoscApp;
     private readonly IEventManager _events;
     private readonly IEvoScBaseConfig _evoscConfig;
+
+    private dynamic? _themeOptionsCache = null;
     
     private Dictionary<string, IThemeInfo> _availableThemes = new();
     
     public ITheme? SelectedTheme { get; private set; }
     public IEnumerable<IThemeInfo> AvailableThemes => _availableThemes.Values;
-    public dynamic Theme => GetCurrentThemeOptions();
+    public dynamic Theme => _themeOptionsCache ?? GetCurrentThemeOptions();
 
 
     public ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplication evoscApp, IEventManager events, IEvoScBaseConfig evoscConfig)
@@ -103,13 +105,15 @@ public class ThemeManager : IThemeManager
             throw new ThemeException("Current theme is not set.");
         }
 
-        var themeOptions = GetFallbackThemeOptions();
+        var fallbackOptions = GetFallbackThemeOptions();
+        var themeOptions = new DynamicThemeOptions(fallbackOptions);
 
         foreach (var option in SelectedTheme.ThemeOptions)
         {
             themeOptions[option.Key] = option.Value;
         }
-        
+
+        _themeOptionsCache = themeOptions;
         return themeOptions;
     }
 
@@ -132,6 +136,9 @@ public class ThemeManager : IThemeManager
         
         await theme.ConfigureAsync();
         SelectedTheme = theme;
+        
+        // invalidate options cache
+        _themeOptionsCache = null;
 
         await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeChangedEventArgs
         {

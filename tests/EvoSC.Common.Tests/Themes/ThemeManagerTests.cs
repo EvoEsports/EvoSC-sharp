@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EvoSC.Common.Config.Models;
@@ -64,6 +65,14 @@ public class ThemeManagerTests
         var app = new Mock<IEvoSCApplication>();
         var events = new Mock<IEventManager>();
         var config = new Mock<IEvoScBaseConfig>();
+
+        config.Setup(p => p.Theme).Returns(new DynamicThemeOptions(new Dictionary<string, object>
+        {
+            { "MyOptions.MyOption1", "MyValue" },
+            { "MyOptions.MyOption2", "MyValue2" },
+            { "MyOptions.MyOption3", "MyValue3" }
+        }));
+        
         var manager = new ThemeManager(serviceManager.Object, app.Object, events.Object, config.Object);
 
         return (
@@ -189,5 +198,17 @@ public class ThemeManagerTests
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
         
         mock.Events.Verify(e => e.RaiseAsync(ThemeEvents.CurrentThemeChanged, It.IsAny<ThemeChangedEventArgs>()));
+    }
+
+    [Fact]
+    public async Task Theme_Property_Returns_Current_Options()
+    {
+        var mock = GetMock();
+
+        var options = mock.ThemeManager.Theme;
+        
+        Assert.Equal("MyValue", mock.ThemeManager.Theme.MyOptions_MyOption1);
+        Assert.Equal("MyValue2", mock.ThemeManager.Theme.MyOptions_MyOption2);
+        Assert.Equal("MyValue3", mock.ThemeManager.Theme.MyOptions_MyOption3);
     }
 }

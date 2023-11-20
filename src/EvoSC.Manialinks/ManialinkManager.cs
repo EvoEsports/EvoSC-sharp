@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
+using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Themes;
@@ -37,12 +38,13 @@ public class ManialinkManager : IManialinkManager
         typeof(IOnlinePlayer).Assembly, typeof(ManialinkManager).Assembly
     };
 
-    public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server, IEventManager events, IThemeManager themeManager)
+    public ManialinkManager(ILogger<ManialinkManager> logger, IServerClient server, IEventManager events,
+        IThemeManager themeManager)
     {
         _logger = logger;
         _server = server;
         _themeManager = themeManager;
-        
+
         events.Subscribe(s => s
             .WithEvent(GbxRemoteEvent.PlayerConnect)
             .WithInstance(this)
@@ -50,8 +52,9 @@ public class ManialinkManager : IManialinkManager
             .WithHandlerMethod<PlayerConnectGbxEventArgs>(HandlePlayerConnectAsync)
             .AsAsync()
         );
-        
+
         events.Subscribe(s => s
+            .WithPriority(EventPriority.High)
             .WithEvent(ThemeEvents.CurrentThemeChanged)
             .WithInstance(this)
             .WithInstanceClass<ManialinkManager>()
@@ -321,7 +324,7 @@ public class ManialinkManager : IManialinkManager
     
     private Task HandleThemeChangedAsync(object sender, ThemeChangedEventArgs e)
     {
-        var dynamicOptions = new DynamicThemeOptions(e.Theme.ThemeOptions);
+        dynamic dynamicOptions = new DynamicThemeOptions(e.Theme.ThemeOptions);
         _engine.GlobalVariables["Theme"] = dynamicOptions;
 
         return Task.CompletedTask;
