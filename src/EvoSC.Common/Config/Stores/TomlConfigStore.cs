@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using Config.Net;
+using EvoSC.Common.Themes;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
 using Tomlet;
@@ -53,6 +54,11 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     {
         foreach (var property in type.GetProperties())
         {
+            if (property.PropertyType == typeof(DynamicThemeOptions))
+            {
+                continue;
+            }
+            
             if (property.PropertyType.IsInterface)
             {
                 document = BuildSubDocument(document, property.PropertyType, name == "" ? property.Name : $"{name}.{property.Name}");
