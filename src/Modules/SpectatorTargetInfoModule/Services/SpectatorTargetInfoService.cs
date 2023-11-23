@@ -110,9 +110,9 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
     {
         return new
         {
-            primaryColor = _themes.Theme.UI_PrimaryColor,
-            backgroundColor = _themes.Theme.UI_BackgroundColor,
-            headerColor = _themes.Theme.UI_HeaderBackgroundColor
+            primaryColor = _themes.Theme.UI_TextPrimary,
+            backgroundColor = _themes.Theme.UI_BackgroundPrimary,
+            headerColor = _themes.Theme.UI_HeaderBackground
         };
     }
 }

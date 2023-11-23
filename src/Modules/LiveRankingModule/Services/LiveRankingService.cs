@@ -91,10 +91,10 @@ public class LiveRankingService : ILiveRankingService
         return new
         {
             rankings = widgetCurrentRanking,
-            headerColor = _themes.Theme.UI_HeaderBackgroundColor,
-            primaryColor = _themes.Theme.UI_PrimaryColor,
-            logoUrl = _themes.Theme.UI_LogoWhiteUrl,
-            playerRowBackgroundColor = _themes.Theme.UI_PlayerRowBackgroundColor
+            headerColor = _themes.Theme.UI_HeaderBackground,
+            primaryColor = _themes.Theme.UI_TextPrimary,
+            logoUrl = _themes.Theme.UI_LogoWhite,
+            playerRowBackgroundColor = _themes.Theme.UI_RowBackground
         };
 
 /*

@@ -37,7 +37,7 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
 
         var theme = new DynamicThemeOptions(new Dictionary<string, object>
         {
-            { "UI.HeaderBackgroundColor", "" },
+            { "UI.HeaderBackground", "" },
             { "UI.PrimaryColor", "ff" },
             { "UI.LogoWhiteUrl", "" },
             { "UI.PlayerRowBackgroundColor", "111" }
