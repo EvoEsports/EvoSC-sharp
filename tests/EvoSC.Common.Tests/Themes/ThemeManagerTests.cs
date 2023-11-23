@@ -23,34 +23,45 @@ public class ThemeManagerTests
     {
         public override Task ConfigureAsync()
         {
+            Set("MyThemeOption").To("MyThemeOptionValue");
+            Replace("MyComponent").With("MyOtherComponent");
             return Task.CompletedTask;
         }
     }
-    
+
     [Theme(Name = "MyTheme2", Description = "This is my second theme.")]
-    public class MyTheme2 : Theme<MyTheme>
+    public class MyTheme2 : Theme<MyTheme2>
     {
         public override Task ConfigureAsync()
         {
+            Set("MyThemeOption2").To("MyThemeOptionValue2");
             return Task.CompletedTask;
         }
     }
     
     [Theme(Name = "MyTheme3", Description = "This is my third theme.")]
-    public class MyTheme3 : Theme<MyTheme>
+    public class MyTheme3 : Theme<MyTheme3>
     {
         public override Task ConfigureAsync()
         {
+            Set("MyThemeOption3").To("MyThemeOptionValue3");
             return Task.CompletedTask;
         }
     }
     
-    public class InvalidTheme : Theme<MyTheme>
+    [Theme(Name = "MyThemeOverride", Description = "This is my theme override.", OverrideTheme = typeof(MyTheme))]
+    public class MyThemeOverride : Theme<MyThemeOverride>
     {
         public override Task ConfigureAsync()
         {
+            Set("MyThemeOption").To("NewMyThemeOptionValue");
             return Task.CompletedTask;
         }
+    }
+    
+    public class InvalidTheme : Theme<InvalidTheme>
+    {
+        public override Task ConfigureAsync() => Task.CompletedTask;
     }
 
     private (
@@ -83,18 +94,51 @@ public class ThemeManagerTests
             manager
         );
     }
-
+    
     [Fact]
-    public async Task First_Theme_Added_Is_Set_As_Current()
+    public async Task Default_Theme_Falls_Back_To_Config()
     {
         var mock = GetMock();
         
-        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
-        
-        Assert.NotNull(mock.ThemeManager.SelectedTheme);
-        Assert.IsType<DefaultTheme>(mock.ThemeManager.SelectedTheme);
+        Assert.Equal("MyValue", mock.ThemeManager.Theme.MyOptions_MyOption1);
+        Assert.Equal("MyValue2", mock.ThemeManager.Theme.MyOptions_MyOption2);
+        Assert.Equal("MyValue3", mock.ThemeManager.Theme.MyOptions_MyOption3);
     }
 
+    [Fact]
+    public async Task New_Theme_Added_Is_Auto_Activated()
+    {
+        var mock = GetMock();
+
+        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
+        
+        Assert.Equal("MyThemeOptionValue", mock.ThemeManager.Theme.MyThemeOption);
+    }
+
+    [Fact]
+    public async Task Overriding_Theme_Is_Not_Activated_Automatically()
+    {
+        var mock = GetMock();
+
+        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
+        await mock.ThemeManager.AddThemeAsync(typeof(MyThemeOverride));
+        
+        Assert.Equal("MyThemeOptionValue", mock.ThemeManager.Theme.MyThemeOption);
+    }
+    
+    [Fact]
+    public async Task Theme_Override_Replaces_Existing_Theme()
+    {
+        var mock = GetMock();
+
+        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
+        await mock.ThemeManager.AddThemeAsync(typeof(MyThemeOverride));
+
+        await mock.ThemeManager.ActivateThemeAsync("MyThemeOverride");
+        
+        Assert.Equal("NewMyThemeOptionValue", mock.ThemeManager.Theme.MyThemeOption);
+    }
+    
     [Fact]
     public async Task Available_Themes_Property_Returns_All_Themes()
     {
@@ -109,22 +153,7 @@ public class ThemeManagerTests
         Assert.NotEmpty(themes);
         Assert.Equal(new[]{"Default", "MyTheme", "MyTheme2", "MyTheme3"}, themes);
     }
-
-    [Fact]
-    public async Task Theme_Is_Activated_And_Set_As_Current()
-    {
-        var mock = GetMock();
-        
-        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
-        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme2));
-        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme3));
-
-        await mock.ThemeManager.SetCurrentThemeAsync("MyTheme2");
-        
-        Assert.NotNull(mock.ThemeManager.SelectedTheme);
-        Assert.IsType<MyTheme2>(mock.ThemeManager.SelectedTheme);
-    }
-
+    
     [Fact]
     public async Task Adding_Existing_Theme_Throws_Exception()
     {
@@ -137,7 +166,7 @@ public class ThemeManagerTests
             await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
         });
     }
-
+    
     [Fact]
     public async Task Adding_Theme_Without_Attribute_Throws_Exception()
     {
@@ -156,24 +185,10 @@ public class ThemeManagerTests
 
         await Assert.ThrowsAsync<ThemeDoesNotExistException>(async () =>
         {
-            await mock.ThemeManager.SetCurrentThemeAsync("DoesNotExist");
+            await mock.ThemeManager.ActivateThemeAsync("DoesNotExist");
         });
     }
-
-    [Fact]
-    public async Task Removing_Current_Theme_Fails()
-    {
-        var mock = GetMock();
-
-        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
-        await mock.ThemeManager.SetCurrentThemeAsync("MyTheme");
-
-        Assert.Throws<ThemeException>(() =>
-        {
-            mock.ThemeManager.RemoveTheme("MyTheme");
-        });
-    }
-
+    
     [Fact]
     public async Task Theme_Is_Removed()
     {
@@ -182,7 +197,7 @@ public class ThemeManagerTests
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme2));
 
-        await mock.ThemeManager.SetCurrentThemeAsync("MyTheme2");
+        await mock.ThemeManager.ActivateThemeAsync("MyTheme2");
         mock.ThemeManager.RemoveTheme("MyTheme");
 
         var themes = mock.ThemeManager.AvailableThemes.Select(t => t.Name);
@@ -201,14 +216,15 @@ public class ThemeManagerTests
     }
 
     [Fact]
-    public async Task Theme_Property_Returns_Current_Options()
+    public async Task Component_Replacements_Are_Added()
     {
         var mock = GetMock();
 
-        var options = mock.ThemeManager.Theme;
-        
-        Assert.Equal("MyValue", mock.ThemeManager.Theme.MyOptions_MyOption1);
-        Assert.Equal("MyValue2", mock.ThemeManager.Theme.MyOptions_MyOption2);
-        Assert.Equal("MyValue3", mock.ThemeManager.Theme.MyOptions_MyOption3);
+        await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
+
+        var replacements = mock.ThemeManager.ComponentReplacements;
+
+        Assert.True(replacements.ContainsKey("MyComponent"));
+        Assert.Equal("MyOtherComponent", replacements["MyComponent"]);
     }
 }

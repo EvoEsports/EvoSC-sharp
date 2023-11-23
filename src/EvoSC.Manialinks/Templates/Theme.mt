@@ -7,14 +7,14 @@
             <!-- General -->
             <style 
                     class="text"
-                    textfont="RajdhaniMono" 
-                    textcolor="ffffff"
-                    textsize="1.5"
+                    textfont="{{ Theme.UI_Font }}" 
+                    textcolor="{{ Theme.UI_Text }}"
+                    textsize="{{ Theme.UI_FontSize }}"
             />
             
             <style 
                     class="bg-primary"
-                    bgcolor="ff0058"
+                    bgcolor="{{ Theme.UI_Background }}"
             />
 
             <style

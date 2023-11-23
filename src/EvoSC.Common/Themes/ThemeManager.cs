@@ -19,13 +19,16 @@ public class ThemeManager : IThemeManager
     private readonly IEvoScBaseConfig _evoscConfig;
 
     private dynamic? _themeOptionsCache = null;
+    private Dictionary<string, string>? _componentReplacementsCache = null;
     
     private Dictionary<string, IThemeInfo> _availableThemes = new();
+    private Dictionary<Type, ITheme> _activeThemes = new();
     
-    public ITheme? SelectedTheme { get; private set; }
     public IEnumerable<IThemeInfo> AvailableThemes => _availableThemes.Values;
     public dynamic Theme => _themeOptionsCache ?? GetCurrentThemeOptions();
 
+    public Dictionary<string, string> ComponentReplacements =>
+        _componentReplacementsCache ?? GetCurrentComponentReplacements();
 
     public ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplication evoscApp, IEventManager events, IEvoScBaseConfig evoscConfig)
     {
@@ -51,15 +54,18 @@ public class ThemeManager : IThemeManager
             throw new ThemeException($"A theme with the name '{attr.Name}' already exists.");
         }
 
-        _availableThemes[attr.Name] = new ThemeInfo
+        var themeInfo = new ThemeInfo
         {
             ThemeType = themeType,
             Name = attr.Name,
             Description = attr.Description,
-            ModuleId = moduleId
+            ModuleId = moduleId,
+            OverrideTheme = attr.OverrideTheme
         };
 
-        if (_availableThemes.Count == 1)
+        _availableThemes[attr.Name] = themeInfo;
+
+        if (!_activeThemes.ContainsKey(themeInfo.EffectiveThemeType))
         {
             await ActivateThemeAsync(attr.Name);
         }
@@ -72,13 +78,13 @@ public class ThemeManager : IThemeManager
         ThrowIfNotExists(name);
 
         var themeInfo = _availableThemes[name];
-
-        if (SelectedTheme != null && SelectedTheme.GetType() == themeInfo.ThemeType)
-        {
-            throw new ThemeException("Cannot remove current theme. Change to another theme first.");
-        }
         
         _availableThemes.Remove(name);
+
+        if (_activeThemes.Remove(themeInfo.EffectiveThemeType))
+        {
+            InvalidateCache();
+        }
     }
 
     public void RemoveThemesForModule(Guid moduleId)
@@ -87,38 +93,15 @@ public class ThemeManager : IThemeManager
         {
             if (theme.ModuleId.Equals(moduleId))
             {
-                _availableThemes.Remove(name);
+                RemoveTheme(name);
             }
         }
     }
 
-    public Task SetCurrentThemeAsync(string name)
+    public async Task<ITheme> ActivateThemeAsync(string name)
     {
         ThrowIfNotExists(name);
-        return ActivateThemeAsync(name);
-    }
-
-    public dynamic GetCurrentThemeOptions()
-    {
-        if (SelectedTheme == null)
-        {
-            throw new ThemeException("Current theme is not set.");
-        }
-
-        var fallbackOptions = GetFallbackThemeOptions();
-        var themeOptions = new DynamicThemeOptions(fallbackOptions);
-
-        foreach (var option in SelectedTheme.ThemeOptions)
-        {
-            themeOptions[option.Key] = option.Value;
-        }
-
-        _themeOptionsCache = themeOptions;
-        return themeOptions;
-    }
-
-    private async Task<ITheme> ActivateThemeAsync(string name)
-    {
+        
         var themeInfo = _availableThemes[name];
         var services = _evoscApp.Services;
 
@@ -133,20 +116,33 @@ public class ThemeManager : IThemeManager
         {
             throw new ThemeException($"Failed to activate theme '{name}'.");
         }
+
+        _activeThemes[themeInfo.EffectiveThemeType] = theme;
         
         await theme.ConfigureAsync();
-        SelectedTheme = theme;
-        
-        // invalidate options cache
-        _themeOptionsCache = null;
+        InvalidateCache();
 
         await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeChangedEventArgs
         {
             ThemeInfo = themeInfo,
             Theme = theme
         });
-        
+
         return theme;
+    }
+    
+    private dynamic GetCurrentThemeOptions()
+    {
+        var fallbackOptions = GetFallbackThemeOptions();
+        var themeOptions = new DynamicThemeOptions(fallbackOptions);
+
+        foreach (var option in _activeThemes.Values.SelectMany(theme => theme.ThemeOptions))
+        {
+            themeOptions[option.Key] = option.Value;
+        }
+        
+        _themeOptionsCache = themeOptions;
+        return themeOptions;
     }
 
     private void ThrowIfNotExists(string name)
@@ -169,5 +165,23 @@ public class ThemeManager : IThemeManager
         }
 
         return themeOptions;
+    }
+    
+    private Dictionary<string, string> GetCurrentComponentReplacements()
+    {
+        var replacements = new Dictionary<string, string>();
+        
+        foreach (var (component, replacement) in _activeThemes.Values.SelectMany(t => t.ComponentReplacements))
+        {
+            replacements[component] = replacement;
+        }
+
+        return replacements;
+    }
+
+    public void InvalidateCache()
+    {
+        _themeOptionsCache = null;
+        _componentReplacementsCache = null;
     }
 }

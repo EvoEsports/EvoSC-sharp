@@ -398,15 +398,8 @@ public class ManialinkManager : IManialinkManager
         return sb.ToString();
     }
 
-    private string GetEffectiveName(string name)
-    {
-        if (_themeManager.SelectedTheme == null)
-        {
-            return null;
-        }
-
-        return _themeManager.SelectedTheme.ComponentReplacements.TryGetValue(name, out var effectiveName)
+    private string GetEffectiveName(string name) =>
+        _themeManager.ComponentReplacements.TryGetValue(name, out var effectiveName)
             ? effectiveName
             : name;
-    }
 }

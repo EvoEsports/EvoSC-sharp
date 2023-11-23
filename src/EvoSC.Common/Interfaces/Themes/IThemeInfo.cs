@@ -6,5 +6,9 @@ public interface IThemeInfo
     public string Name { get; }
     public string Description { get; }
     
+    public Type? OverrideTheme { get; }
+    
     public Guid ModuleId { get; }
+    
+    public Type EffectiveThemeType { get; }
 }
