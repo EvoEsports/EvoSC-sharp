@@ -7,14 +7,14 @@
             <!-- General -->
             <style 
                     class="text"
-                    textfont="{{ Theme.UI_Font }}" 
-                    textcolor="{{ Theme.UI_Text }}"
-                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Theme.UI_TextdPrimary }}" 
+                    textcolor=""
+                    textsize=""
             />
             
             <style 
                     class="bg-primary"
-                    bgcolor="{{ Theme.UI_Background }}"
+                    bgcolor=""
             />
 
             <style

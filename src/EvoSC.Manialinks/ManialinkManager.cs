@@ -288,7 +288,7 @@ public class ManialinkManager : IManialinkManager
         }
     }
 
-    public void AddGlobalVariable(string name, object value) =>
+    public void AddGlobalVariable<T>(string name, T value) =>
         _engine.GlobalVariables.AddOrUpdate(name, value, (s, o) => value);
 
     public void RemoveGlobalVariable(string name)
@@ -326,6 +326,7 @@ public class ManialinkManager : IManialinkManager
     {
         dynamic dynamicOptions = new DynamicThemeOptions(e.Theme.ThemeOptions);
         _engine.GlobalVariables["Theme"] = dynamicOptions;
+        // AddGlobalVariable<dynamic>("Theme", dynamicOptions);
 
         return Task.CompletedTask;
     }
