@@ -108,6 +108,7 @@ public static class ColorUtils
     /// Get the luma of an RGB color.
     /// </summary>
     /// <param name="color">Color to calculate luma from.</param>
+    /// <remarks>The following method uses the BT. 709 coefficients to calculate the luma.</remarks>
     /// <returns></returns>
     public static double Luma(IRgb color) => Math.Round(color.R * 0.2126 + color.B * 0.7152 + color.B * 0.0722);
     
