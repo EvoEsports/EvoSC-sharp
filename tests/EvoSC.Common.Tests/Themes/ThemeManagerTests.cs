@@ -201,7 +201,7 @@ public class ThemeManagerTests
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme2));
 
         await mock.ThemeManager.ActivateThemeAsync("MyTheme2");
-        mock.ThemeManager.RemoveTheme("MyTheme");
+        await mock.ThemeManager.RemoveTheme("MyTheme");
 
         var themes = mock.ThemeManager.AvailableThemes.Select(t => t.Name);
         
@@ -215,7 +215,7 @@ public class ThemeManagerTests
 
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
         
-        mock.Events.Verify(e => e.RaiseAsync(ThemeEvents.CurrentThemeChanged, It.IsAny<ThemeChangedEventArgs>()));
+        mock.Events.Verify(e => e.RaiseAsync(ThemeEvents.CurrentThemeChanged, It.IsAny<ThemeUpdatedEventArgs>()));
     }
 
     [Fact]

@@ -12,6 +12,10 @@ public class TextColor
     private readonly byte _g;
     private readonly byte _b;
 
+    public byte R => _r;
+    public byte G => _g;
+    public byte B => _b;
+
     /// <summary>
     /// Create a text color using a System.Color object.
     /// </summary>

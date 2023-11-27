@@ -7,19 +7,19 @@
             <!-- General -->
             <style 
                     class="text"
-                    textfont="{{ Theme.UI_TextdPrimary }}" 
+                    textfont="{{ Theme.UI_TextPrimary }}" 
                     textcolor=""
                     textsize=""
             />
             
             <style 
                     class="bg-primary"
-                    bgcolor=""
+                    bgcolor="{{ Theme.UI_BackgroundPrimary }}"
             />
 
             <style
                     class="bg-secondary"
-                    bgcolor="47495A"
+                    bgcolor="{{ Theme.UI_BackgroundSecondary }}"
             />
             
             <!-- Buttons -->
@@ -28,7 +28,7 @@
                     textfont="RajdhaniMono" 
                     textcolor="ffffff"
                     textsize="1.5"
-                    bgcolor="ff0058"
+                    bgcolor="{{ Theme.UI_BackgroundPrimary }}"
                     bgcolorfocus="FE3278"
                     focusareacolor1="00000000"
                     focusareacolor2="ffffff22" />
@@ -37,7 +37,7 @@
                     textfont="RajdhaniMono"
                     textcolor="ffffff"
                     textsize="1.5"
-                    bgcolor="47495A"
+                    bgcolor="{{ Theme.UI_BackgroundSecondary }}"
                     bgcolorfocus="6B6C7A"
                     focusareacolor1="00000000"
                     focusareacolor2="ffffff22"/>
@@ -60,7 +60,7 @@
                     textsize="1.5"
                     textfont="RajdhaniMono"
                     textcolor="ffffff"
-                    bgcolor="47495A"
+                    bgcolor="{{ Theme.UI_BackgroundSecondary }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -125,7 +125,7 @@
             
             <style 
                     class="window-header-default"
-                    bgcolor="ff0058"
+                    bgcolor="{{ Theme.UI_BackgroundPrimary }}"
                     bgcolorfocus="FF5B95"
             />
 
@@ -139,21 +139,21 @@
                     class="window-title-default"
                     textsize="1.5"
                     textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textcolor="{{ Theme.UI_TextPrimary }}"
             />
 
             <style
                     class="window-title-secondary"
                     textsize="1.5"
                     textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textcolor="{{ Theme.UI_TextSecondary }}"
             />
             
             <style 
                     class="window-closebtn-default"
                     textsize="1.5"
                     textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textcolor="{{ Theme.UI_TextPrimary }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -162,7 +162,7 @@
                     class="window-closebtn-secondary"
                     textsize="1.5"
                     textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textcolor="{{ Theme.UI_TextSecondary }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -171,7 +171,7 @@
                     class="window-minimizebtn-default"
                     textsize="2"
                     textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textcolor="{{ Theme.UI_TextPrimary }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -180,7 +180,7 @@
                     class="window-minimizebtn-secdonary"
                     textsize="2"
                     textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textcolor="{{ Theme.UI_TextSecondary }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />

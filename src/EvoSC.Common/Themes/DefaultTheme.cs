@@ -1,10 +1,13 @@
-﻿using EvoSC.Common.Themes;
+﻿using System.Drawing;
 using EvoSC.Common.Themes.Attributes;
 
-namespace EvoSC.Common.Interfaces.Themes;
+namespace EvoSC.Common.Themes;
 
 [Theme(Name = "Default", Description = "The default theme as defined in the EvoSC# config.")]
 public class DefaultTheme : Theme<DefaultTheme>
 {
-    public override Task ConfigureAsync() => Task.CompletedTask;
+    public async override Task ConfigureAsync()
+    {
+        
+    }
 }

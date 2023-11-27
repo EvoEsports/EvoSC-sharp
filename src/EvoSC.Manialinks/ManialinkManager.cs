@@ -58,7 +58,7 @@ public class ManialinkManager : IManialinkManager
             .WithEvent(ThemeEvents.CurrentThemeChanged)
             .WithInstance(this)
             .WithInstanceClass<ManialinkManager>()
-            .WithHandlerMethod<ThemeChangedEventArgs>(HandleThemeChangedAsync));
+            .WithHandlerMethod<ThemeUpdatedEventArgs>(HandleThemeActivatedAsync));
     }
 
     public async Task AddDefaultTemplatesAsync()
@@ -322,11 +322,9 @@ public class ManialinkManager : IManialinkManager
         }
     }
     
-    private Task HandleThemeChangedAsync(object sender, ThemeChangedEventArgs e)
+    private Task HandleThemeActivatedAsync(object sender, ThemeUpdatedEventArgs e)
     {
-        dynamic dynamicOptions = new DynamicThemeOptions(e.Theme.ThemeOptions);
-        _engine.GlobalVariables["Theme"] = dynamicOptions;
-        // AddGlobalVariable<dynamic>("Theme", dynamicOptions);
+        _engine.GlobalVariables["Theme"] = _themeManager.Theme;
 
         return Task.CompletedTask;
     }

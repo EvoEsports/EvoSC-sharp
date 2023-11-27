@@ -73,7 +73,7 @@ public class ThemeManager : IThemeManager
     
     public Task AddThemeAsync(Type themeType) => AddThemeAsync(themeType, Guid.Empty);
 
-    public void RemoveTheme(string name)
+    public async Task RemoveTheme(string name)
     {
         ThrowIfNotExists(name);
 
@@ -84,16 +84,17 @@ public class ThemeManager : IThemeManager
         if (_activeThemes.Remove(themeInfo.EffectiveThemeType))
         {
             InvalidateCache();
+            await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeUpdatedEventArgs());
         }
     }
 
-    public void RemoveThemesForModule(Guid moduleId)
+    public async Task RemoveThemesForModule(Guid moduleId)
     {
         foreach (var (name, theme) in _availableThemes)
         {
             if (theme.ModuleId.Equals(moduleId))
             {
-                RemoveTheme(name);
+                await RemoveTheme(name);
             }
         }
     }
@@ -122,11 +123,7 @@ public class ThemeManager : IThemeManager
         await theme.ConfigureAsync();
         InvalidateCache();
 
-        await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeChangedEventArgs
-        {
-            ThemeInfo = themeInfo,
-            Theme = theme
-        });
+        await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeUpdatedEventArgs());
 
         return theme;
     }

@@ -712,10 +712,9 @@ public class ModuleManager : IModuleManager
         _logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
     }
 
-    private Task DisableThemesAsync(IModuleLoadContext moduleContext)
+    private async Task DisableThemesAsync(IModuleLoadContext moduleContext)
     {
-        _themeManager.RemoveThemesForModule(moduleContext.LoadId);
-        return Task.CompletedTask;
+        await _themeManager.RemoveThemesForModule(moduleContext.LoadId);
     }
 
     private async Task StopBackgroundServicesAsync(IModuleLoadContext moduleContext)
