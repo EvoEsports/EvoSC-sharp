@@ -26,7 +26,7 @@
             <style 
                     class="btn-default" 
                     textfont="{{ Theme.UI_Font }}" 
-                    textcolor="ffffff"
+                    textcolor="{{ Theme.UI_Button_Default_Text }}"
                     textsize="{{ Theme.UI_FontSize }}"
                     bgcolor="{{ Theme.UI_Button_Default_Bg }}"
                     bgcolorfocus="{{ Theme.UI_Button_Default_BgFocus }}"
@@ -34,11 +34,11 @@
                     focusareacolor2="ffffff22" />
             <style 
                     class="btn-secondary" 
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
-                    textsize="1.5"
+                    textfont="{{ Theme.UI_Font }}"
+                    textcolor="{{ Theme.UI_Button_Secondary_Text }}"
+                    textsize="{{ Theme.UI_FontSize }}"
                     bgcolor="{{ Theme.UI_BackgroundSecondary }}"
-                    bgcolorfocus="6B6C7A"
+                    bgcolorfocus="{{ Theme.UI_Button_Secondary_BgFocus }}"
                     focusareacolor1="00000000"
                     focusareacolor2="ffffff22"/>
             <style

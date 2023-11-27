@@ -66,4 +66,26 @@ public class ColorUtilsTests
         
         Assert.Equal("CC0046", newColor);
     }
+    
+    [Theory]
+    [InlineData("FFFFFF", 255)]
+    [InlineData("FF0058", 124)]
+    [InlineData("000000", 0)]
+    public void Luma_Calculated_For_Color(string inHex, double expectedLuma)
+    {
+        var luma = ColorUtils.Luma(inHex);
+        
+        Assert.Equal(expectedLuma, luma);
+    }
+
+    [Theory]
+    [InlineData("FFFFFF", "FFFFFF")]
+    [InlineData("FF0058", "7C7C7C")]
+    [InlineData("000000", "000000")]
+    public void Color_Converted_To_Gray_Scale(string inHex, string expected)
+    {
+        var newColor = ColorUtils.GrayScale(inHex);
+        
+        Assert.Equal(expected, newColor);
+    }
 }

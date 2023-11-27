@@ -61,17 +61,17 @@ public class DefaultTheme : Theme<DefaultTheme>
     
     protected void GenerateUtilityColorShades()
     {
-        GenerateShades("Red");
-        GenerateShades("Green");
-        GenerateShades("Blue");
-        GenerateShades("Yellow");
-        GenerateShades("Teal");
-        GenerateShades("Purple");
-        GenerateShades("Gold");
-        GenerateShades("Grass");
-        GenerateShades("Orange");
-        GenerateShades("Gray");
-        GenerateShades("Pink");
+        GenerateShades(DefaultThemeOptions.Red);
+        GenerateShades(DefaultThemeOptions.Green);
+        GenerateShades(DefaultThemeOptions.Blue);
+        GenerateShades(DefaultThemeOptions.Yellow);
+        GenerateShades(DefaultThemeOptions.Teal);
+        GenerateShades(DefaultThemeOptions.Purple);
+        GenerateShades(DefaultThemeOptions.Gold);
+        GenerateShades(DefaultThemeOptions.Grass);
+        GenerateShades(DefaultThemeOptions.Orange);
+        GenerateShades(DefaultThemeOptions.Gray);
+        GenerateShades(DefaultThemeOptions.Pink);
     }
     
     protected void SetComponentThemeOptions()
@@ -82,6 +82,8 @@ public class DefaultTheme : Theme<DefaultTheme>
         Set("UI.Button.Secondary.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
         Set("UI.Button.Secondary.BgFocus").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UIBgSecondary]));
         Set("UI.Button.Secondary.Text").To(ThemeOptions[DefaultThemeOptions.UITextSecondary]);
+        Set("UI.Button.Disabled.Text").To(ThemeOptions[DefaultThemeOptions.UITextSecondary]);
+        Set("UI.Button.Disabled.Bg").To(ThemeOptions[DefaultThemeOptions.UITextSecondary]);
     }
     
     private void GenerateShades(string key)

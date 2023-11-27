@@ -103,6 +103,54 @@ public static class ColorUtils
     /// <param name="color">Text color to darken.</param>
     /// <returns></returns>
     public static string Darken(TextColor color) => Darken(color, 10);
+
+    /// <summary>
+    /// Get the luma of an RGB color.
+    /// </summary>
+    /// <param name="color">Color to calculate luma from.</param>
+    /// <returns></returns>
+    public static double Luma(IRgb color) => Math.Round(color.R * 0.2126 + color.B * 0.7152 + color.B * 0.0722);
+    
+    /// <summary>
+    /// Get the luma of a color.
+    /// </summary>
+    /// <param name="hexColor">Hex color to calculate luma from.</param>
+    /// <returns></returns>
+    public static double Luma(string hexColor) => Luma(new Hex(hexColor).ToRgb());
+    /// <summary>
+    /// Get the luma of a color.
+    /// </summary>
+    /// <param name="color">Text color to calculate luma from.</param>
+    /// <returns></returns>
+    public static double Luma(TextColor color) => Luma(new Rgb { R = color.R, G = color.G, B = color.B });
+
+    /// <summary>
+    /// Convert a hex color to it's grayscale representation.
+    /// </summary>
+    /// <param name="hexColor">Hex color to convert.</param>
+    /// <returns></returns>
+    public static string GrayScale(string hexColor)
+    {
+        var luma = Luma(hexColor);
+        return new Rgb() { R = luma, G = luma, B = luma }
+            .To<Hex>()
+            .ToString()
+            .Substring(1);
+    }
+    
+    /// <summary>
+    /// Convert a text color to it's grayscale representation.
+    /// </summary>
+    /// <param name="hexColor">text color to convert.</param>
+    /// <returns></returns>
+    public static string GrayScale(TextColor color)
+    {
+        var luma = Luma(color);
+        return new Rgb() { R = luma, G = luma, B = luma }
+            .To<Hex>()
+            .ToString()
+            .Substring(1);
+    }
     
     private static Hsl AddLightness(Hsl hsl, float increase)
     {
