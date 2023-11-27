@@ -76,14 +76,53 @@ public class DefaultTheme : Theme<DefaultTheme>
     
     protected void SetComponentThemeOptions()
     {
+        // button
         Set("UI.Button.Default.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
         Set("UI.Button.Default.BgFocus").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UIBgPrimary]));
         Set("UI.Button.Default.Text").To(ThemeOptions[DefaultThemeOptions.UITextPrimary]);
+        Set("UI.Button.Default.DisabledBg").To(ColorUtils.GrayScale((string)ThemeOptions[DefaultThemeOptions.UIBgPrimary]));
+        Set("UI.Button.Default.DisabledText").To(ColorUtils.GrayScale((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
+        
         Set("UI.Button.Secondary.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
         Set("UI.Button.Secondary.BgFocus").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UIBgSecondary]));
         Set("UI.Button.Secondary.Text").To(ThemeOptions[DefaultThemeOptions.UITextSecondary]);
-        Set("UI.Button.Disabled.Text").To(ThemeOptions[DefaultThemeOptions.UITextSecondary]);
-        Set("UI.Button.Disabled.Bg").To(ThemeOptions[DefaultThemeOptions.UITextSecondary]);
+        Set("UI.Button.Secondary.DisabledBg").To(ColorUtils.GrayScale((string)ThemeOptions[DefaultThemeOptions.UIBgSecondary]));
+        Set("UI.Button.Secondary.DisabledText").To(ColorUtils.GrayScale((string)ThemeOptions[DefaultThemeOptions.UITextSecondary]));
+        
+        // text field
+        Set("UI.TextField.Default.Text").To(ThemeOptions[DefaultThemeOptions.UITextPrimary]);
+        Set("UI.TextField.Default.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
+        Set("UI.TextField.Default.Border").To(ThemeOptions[DefaultThemeOptions.UIBorderSecondary]);
+
+        // toggle switch
+        Set("UI.ToggleSwitch.Default.OnText").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.ToggleSwitch.Default.OnBg").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.ToggleSwitch.Default.OffText").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
+        Set("UI.ToggleSwitch.Default.OffBg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
+
+        // checkbox
+        Set("UI.Checkbox.Default.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.Checkbox.Default.Text").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.Checkbox.Default.BgFocus").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.Checkbox.Default.Border").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+
+        // radio button
+        Set("UI.RadioButton.Default.Text").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+
+        // window
+        Set("UI.Window.Default.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
+        Set("UI.Window.Default.Header.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.Window.Default.Header.BgFocus").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UIBgPrimary]));
+        Set("UI.Window.Default.Title.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
+        Set("UI.Window.Default.CloseBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
+        Set("UI.Window.Default.MinimizeBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
+        
+        Set("UI.Window.Secondary.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
+        Set("UI.Window.Secondary.Header.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
+        Set("UI.Window.Secondary.Header.BgFocus").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UIBgSecondary]));
+        Set("UI.Window.Secondary.Title.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
+        Set("UI.Window.Secondary.CloseBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
+        Set("UI.Window.Secondary.MinimizeBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
     }
     
     private void GenerateShades(string key)
