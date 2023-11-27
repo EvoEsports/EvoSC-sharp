@@ -4,7 +4,7 @@ using EvoSC.Common.Themes.Builders;
 
 namespace EvoSC.Common.Themes;
 
-public abstract class Theme<TTheme> : IDefaultThemeOptions, ITheme, IThemeExpressions<TTheme> where TTheme : Theme<TTheme>
+public abstract class Theme<TTheme> : ITheme, IThemeExpressions<TTheme> where TTheme : Theme<TTheme>
 {
     public abstract Task ConfigureAsync();
 

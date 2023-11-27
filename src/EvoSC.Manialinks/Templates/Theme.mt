@@ -25,11 +25,11 @@
             <!-- Buttons -->
             <style 
                     class="btn-default" 
-                    textfont="RajdhaniMono" 
+                    textfont="{{ Theme.UI_Font }}" 
                     textcolor="ffffff"
-                    textsize="1.5"
-                    bgcolor="{{ Theme.UI_BackgroundPrimary }}"
-                    bgcolorfocus="FE3278"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    bgcolor="{{ Theme.UI_Button_Default_Bg }}"
+                    bgcolorfocus="{{ Theme.UI_Button_Default_BgFocus }}"
                     focusareacolor1="00000000"
                     focusareacolor2="ffffff22" />
             <style 
