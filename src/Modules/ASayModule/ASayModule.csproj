@@ -13,4 +13,5 @@
         <EmbeddedResource Include="Templates\**\*" />
     </ItemGroup>
 
+
 </Project>

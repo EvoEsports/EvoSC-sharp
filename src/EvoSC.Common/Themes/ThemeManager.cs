@@ -36,8 +36,6 @@ public class ThemeManager : IThemeManager
         _evoscApp = evoscApp;
         _events = events;
         _evoscConfig = evoscConfig;
-
-        AddThemeAsync(typeof(DefaultTheme));
     }
 
     public async Task AddThemeAsync(Type themeType, Guid moduleId)

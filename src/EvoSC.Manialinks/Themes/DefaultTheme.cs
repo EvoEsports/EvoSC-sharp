@@ -1,8 +1,9 @@
 ﻿using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
 using EvoSC.Common.Util.TextFormatting;
 
-namespace EvoSC.Common.Themes;
+namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Default", Description = "The default theme as defined in the EvoSC# config.")]
 public class DefaultTheme : Theme<DefaultTheme>
@@ -44,8 +45,8 @@ public class DefaultTheme : Theme<DefaultTheme>
     
     protected void SetDefaultUtilityColors()
     {
-        Set("Red").To("00D909");
-        Set("Green").To("E22000");
+        Set("Red").To("E22000");
+        Set("Green").To("00D909");
         Set("Blue").To("3491FA");
         Set("Yellow").To("FCE100");
         Set("Teal").To("0FC6C2");
@@ -123,6 +124,9 @@ public class DefaultTheme : Theme<DefaultTheme>
         Set("UI.Window.Secondary.Title.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
         Set("UI.Window.Secondary.CloseBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
         Set("UI.Window.Secondary.MinimizeBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
+        
+        // alert
+        
     }
     
     private void GenerateShades(string key)

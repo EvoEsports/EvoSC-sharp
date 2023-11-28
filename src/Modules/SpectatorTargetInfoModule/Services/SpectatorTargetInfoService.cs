@@ -111,7 +111,7 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
         return new
         {
             primaryColor = _themes.Theme.UI_TextPrimary,
-            backgroundColor = _themes.Theme.UI_BackgroundPrimary,
+            backgroundColor = _themes.Theme.UI_BgPrimary,
             headerColor = _themes.Theme.UI_HeaderBackground
         };
     }

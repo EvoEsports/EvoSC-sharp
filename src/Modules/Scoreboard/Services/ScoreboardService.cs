@@ -51,7 +51,7 @@ public class ScoreboardService : IScoreboardService
             headerColor = _themes.Theme.UI_HeaderBackground,
             primaryColor = _themes.Theme.UI_TextPrimary,
             positionBackgroundColor = _themes.Theme.UI_Scoreboard_PositionBackgroundColor,
-            backgroundColor = _themes.Theme.UI_BackgroundPrimary,
+            backgroundColor = _themes.Theme.UI_BgPrimary,
             playerRowHighlightColor = _themes.Theme.UI_Scoreboard_PlayerRowHighlightColor,
             playerRowBackgroundColor = _themes.Theme.UI_RowBackground,
             logoUrl = _themes.Theme.UI_LogoDark

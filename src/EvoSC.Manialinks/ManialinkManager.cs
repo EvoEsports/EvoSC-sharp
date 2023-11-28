@@ -14,6 +14,8 @@ using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Manialinks.Models;
+using EvoSC.Manialinks.Themes;
+using EvoSC.Manialinks.Util;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
 using ManiaTemplates;
@@ -59,6 +61,10 @@ public class ManialinkManager : IManialinkManager
             .WithInstance(this)
             .WithInstanceClass<ManialinkManager>()
             .WithHandlerMethod<ThemeUpdatedEventArgs>(HandleThemeActivatedAsync));
+
+        themeManager.AddThemeAsync(typeof(DefaultTheme));
+        _engine.GlobalVariables["Util"] = new GlobalManialinkUtils(themeManager);
+        _engine.GlobalVariables["Icons"] = new GameIcons();
     }
 
     public async Task AddDefaultTemplatesAsync()

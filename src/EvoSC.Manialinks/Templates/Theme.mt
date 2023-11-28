@@ -14,12 +14,12 @@
             
             <style 
                     class="bg-primary"
-                    bgcolor="{{ Theme.UI_BackgroundPrimary }}"
+                    bgcolor="{{ Theme.UI_BgPrimary }}"
             />
 
             <style
                     class="bg-secondary"
-                    bgcolor="{{ Theme.UI_BackgroundSecondary }}"
+                    bgcolor="{{ Theme.UI_BgSecondary }}"
             />
             
             <!-- Buttons -->
@@ -37,7 +37,7 @@
                     textfont="{{ Theme.UI_Font }}"
                     textcolor="{{ Theme.UI_Button_Secondary_Text }}"
                     textsize="{{ Theme.UI_FontSize }}"
-                    bgcolor="{{ Theme.UI_BackgroundSecondary }}"
+                    bgcolor="{{ Theme.UI_BgSecondary }}"
                     bgcolorfocus="{{ Theme.UI_Button_Secondary_BgFocus }}"
                     focusareacolor1="00000000"
                     focusareacolor2="ffffff22"/>
