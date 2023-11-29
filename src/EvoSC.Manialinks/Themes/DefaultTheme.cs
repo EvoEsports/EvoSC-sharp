@@ -46,19 +46,21 @@ public class DefaultTheme : Theme<DefaultTheme>
     
     protected void SetDefaultUtilityColors()
     {
-        Set("Red").To("E22000");
-        Set("Green").To("00D909");
-        Set("Blue").To("3491FA");
-        Set("Yellow").To("FCE100");
-        Set("Teal").To("0FC6C2");
-        Set("Purple").To("722ED1");
-        Set("Gold").To("FFD000");
-        Set("Grass").To("9FDB1D");
-        Set("Orange").To("F77234");
-        Set("Gray").To("191A21");
-        Set("Black").To("000000");
-        Set("White").To("FFFFFF");
-        Set("Pink").To("FF0058");
+        Set(DefaultThemeOptions.Red).To("E22000");
+        Set(DefaultThemeOptions.Green).To("00D909");
+        Set(DefaultThemeOptions.Blue).To("3491FA");
+        Set(DefaultThemeOptions.Yellow).To("FCE100");
+        Set(DefaultThemeOptions.Teal).To("0FC6C2");
+        Set(DefaultThemeOptions.Purple).To("722ED1");
+        Set(DefaultThemeOptions.Gold).To("FFD000");
+        Set(DefaultThemeOptions.Silver).To("9e9e9e");
+        Set(DefaultThemeOptions.Bronze).To("915d29");
+        Set(DefaultThemeOptions.Grass).To("9FDB1D");
+        Set(DefaultThemeOptions.Orange).To("F77234");
+        Set(DefaultThemeOptions.Gray).To("191A21");
+        Set(DefaultThemeOptions.Black).To("000000");
+        Set(DefaultThemeOptions.White).To("FFFFFF");
+        Set(DefaultThemeOptions.Pink).To("FF0058");
     }
     
     protected void GenerateUtilityColorShades()
@@ -70,6 +72,8 @@ public class DefaultTheme : Theme<DefaultTheme>
         GenerateShades(DefaultThemeOptions.Teal);
         GenerateShades(DefaultThemeOptions.Purple);
         GenerateShades(DefaultThemeOptions.Gold);
+        GenerateShades(DefaultThemeOptions.Silver);
+        GenerateShades(DefaultThemeOptions.Bronze);
         GenerateShades(DefaultThemeOptions.Grass);
         GenerateShades(DefaultThemeOptions.Orange);
         GenerateShades(DefaultThemeOptions.Gray);

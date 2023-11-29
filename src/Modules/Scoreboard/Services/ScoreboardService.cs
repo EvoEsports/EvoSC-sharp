@@ -47,7 +47,7 @@ public class ScoreboardService : IScoreboardService
         {
             _scoreboardTracker.MaxPlayers,
             _scoreboardTracker.RoundsPerMap,
-            PositionColors = new Dictionary<int, string> { { 1, "d1b104" }, { 2, "9e9e9e" }, { 3, "915d29" } },
+            PositionColors = new Dictionary<int, string> { { 1, _themes.Theme.Gold }, { 2, _themes.Theme.Silver }, { 3, _themes.Theme.Bronze } },
             headerColor = _themes.Theme.UI_HeaderBackground,
             primaryColor = _themes.Theme.UI_TextPrimary,
             positionBackgroundColor = _themes.Theme.UI_Scoreboard_PositionBackgroundColor,

@@ -5,11 +5,11 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Modules.Official.ASayModule.Themes;
 
 [Theme(Name = "ASay", Description = "Default theme for ASay")]
-public class ASayTheme : Theme<ASayTheme>
+public class DefaultASayTheme : Theme<DefaultASayTheme>
 {
     private readonly dynamic _theme;
     
-    public ASayTheme(IThemeManager theme)
+    public DefaultASayTheme(IThemeManager theme)
     {
         _theme = theme.Theme;
     }

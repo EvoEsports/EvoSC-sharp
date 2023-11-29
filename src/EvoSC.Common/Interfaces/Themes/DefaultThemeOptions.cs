@@ -27,6 +27,8 @@ public interface DefaultThemeOptions
     public static readonly string Teal = "Teal";
     public static readonly string Purple = "Purple";
     public static readonly string Gold = "Gold";
+    public static readonly string Silver = "Silver";
+    public static readonly string Bronze = "Bronze";
     public static readonly string Grass = "Grass";
     public static readonly string Orange = "Orange";
     public static readonly string Gray = "Gray";

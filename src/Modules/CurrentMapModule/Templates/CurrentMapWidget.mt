@@ -56,7 +56,7 @@
                 <!-- BACKGROUND -->
                 <quad pos="0 {{ -headerHeight + 0.1 }}"
                       size="{{ w }} {{ bodyHeight }}"
-                      bgcolor="24262f"
+                      bgcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgContent }}"
                       opacity="0.9"
                 />
             </frame>
@@ -67,7 +67,7 @@
                           size="2 8.4"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          colorize="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgContent }}"
+                          colorize="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgRow }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -76,7 +76,7 @@
                 <quad pos="1 0"
                       size="{{ w - 10.0 }} 8"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgContent }}"
+                      modulatecolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgRow }}"
                       opacity="0.75"
                 />
             </framemodel>
