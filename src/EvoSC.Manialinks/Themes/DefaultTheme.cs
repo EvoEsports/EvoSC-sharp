@@ -103,13 +103,14 @@ public class DefaultTheme : Theme<DefaultTheme>
 
         // checkbox
         Set("UI.Checkbox.Default.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
-        Set("UI.Checkbox.Default.Text").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.Checkbox.Default.Text").To(ThemeOptions[DefaultThemeOptions.UITextPrimary]);
         Set("UI.Checkbox.Default.BgFocus").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
         Set("UI.Checkbox.Default.Border").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
         Set("UI.Checkbox.Default.CheckColor").To(ThemeOptions["White"]);
 
         // radio button
-        Set("UI.RadioButton.Default.Text").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.RadioButton.Default.Text").To(ThemeOptions[DefaultThemeOptions.UITextPrimary]);
+        Set("UI.RadioButton.Default.CheckSize").To(2);
 
         // window
         Set("UI.Window.Default.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
