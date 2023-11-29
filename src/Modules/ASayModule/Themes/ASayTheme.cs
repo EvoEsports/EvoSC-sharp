@@ -14,12 +14,14 @@ public class ASayTheme : Theme<ASayTheme>
         _theme = theme.Theme;
     }
     
-    public override async Task ConfigureAsync()
+    public override Task ConfigureAsync()
     {
         Set("ASayModule.Announcement.Default.TextSize").To(3);
         Set("ASayModule.Announcement.Default.IconSize").To(4);
         Set("ASayModule.Announcement.Default.Bg").To(_theme.UI_BgPrimary);
         Set("ASayModule.Announcement.Default.BgSecondary").To(_theme.White);
         Set("ASayModule.Announcement.Default.Text").To(_theme.UI_TextPrimary);
+        
+        return Task.CompletedTask;
     }
 }

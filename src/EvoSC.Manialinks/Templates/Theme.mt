@@ -7,9 +7,9 @@
             <!-- General -->
             <style 
                     class="text"
-                    textfont="{{ Theme.UI_TextPrimary }}" 
-                    textcolor=""
-                    textsize=""
+                    textfont="{{ Theme.UI_Font }}" 
+                    textcolor="{{ Theme.UI_TextPrimary }}"
+                    textsize="{{ Theme.UI_FontSize }}"
             />
             
             <style 

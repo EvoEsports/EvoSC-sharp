@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
+using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Manialinks.Themes;
@@ -31,8 +32,8 @@ public class DefaultTheme : Theme<DefaultTheme>
 
     protected void SetDefaultThemeOptions()
     {
-        Set(DefaultThemeOptions.UIFont).To("RajdhaniMono");
-        Set(DefaultThemeOptions.UIFontSize).To(1.5);
+        Set(DefaultThemeOptions.UIFont).To("GameFontExtraBold");
+        Set(DefaultThemeOptions.UIFontSize).To(1);
         Set(DefaultThemeOptions.UITextPrimary).To("FFFFFF");
         Set(DefaultThemeOptions.UITextSecondary).To("EDEDEF");
         Set(DefaultThemeOptions.UIBgPrimary).To("FF0058");

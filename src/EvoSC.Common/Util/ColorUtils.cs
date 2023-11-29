@@ -1,6 +1,7 @@
 ﻿using ColorMine.ColorSpaces;
+using EvoSC.Common.Util.TextFormatting;
 
-namespace EvoSC.Common.Util.TextFormatting;
+namespace EvoSC.Common.Util;
 
 public static class ColorUtils
 {
