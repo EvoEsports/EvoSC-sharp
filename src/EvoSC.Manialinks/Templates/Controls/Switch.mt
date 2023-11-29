@@ -32,7 +32,7 @@
                     data-id="{{ id }}"
             />
             <quad 
-                    bgcolor="FAE1EA"
+                    bgcolor="{{ Theme.UI_ToggleSwitch_Default_BgSecondary }}"
                     pos="{{ value ? 5 : 0 }} 0"
                     size="5 5"
                     scriptevents="1"
@@ -41,7 +41,7 @@
             />
             <label
                     class='{{ value ? "toggleswitch-on-default" : "toggleswitch-off-default" }} evosc-toggleswitch'
-                    text='{{ value ? "" : "" }}'
+                    text='{{ value ? Icons.Check : Icons.Close }}'
                     valign="center"
                     halign="center"
                     pos="{{ value ? 7.5 : 2.5 }} -2.1"

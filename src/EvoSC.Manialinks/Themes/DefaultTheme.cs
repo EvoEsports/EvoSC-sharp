@@ -100,6 +100,7 @@ public class DefaultTheme : Theme<DefaultTheme>
         Set("UI.ToggleSwitch.Default.OnBg").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
         Set("UI.ToggleSwitch.Default.OffText").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
         Set("UI.ToggleSwitch.Default.OffBg").To(ThemeOptions[DefaultThemeOptions.UIBgSecondary]);
+        Set("UI.ToggleSwitch.Default.BgSecondary").To(ThemeOptions["White"]);
 
         // checkbox
         Set("UI.Checkbox.Default.Bg").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
