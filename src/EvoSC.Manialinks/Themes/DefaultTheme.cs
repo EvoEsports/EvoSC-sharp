@@ -106,6 +106,7 @@ public class DefaultTheme : Theme<DefaultTheme>
         Set("UI.Checkbox.Default.Text").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
         Set("UI.Checkbox.Default.BgFocus").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
         Set("UI.Checkbox.Default.Border").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
+        Set("UI.Checkbox.Default.CheckColor").To(ThemeOptions["White"]);
 
         // radio button
         Set("UI.RadioButton.Default.Text").To(ThemeOptions[DefaultThemeOptions.UIBgPrimary]);
@@ -126,8 +127,8 @@ public class DefaultTheme : Theme<DefaultTheme>
         Set("UI.Window.Secondary.MinimizeBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
         
         // alert
-        Set("UI.Alert.Text").To(ThemeOptions[DefaultThemeOptions.UITextPrimary]);
-        Set("UI.Alert.BgSecondary").To(ThemeOptions["White"]);
+        Set("UI.Alert.Default.Text").To(ThemeOptions[DefaultThemeOptions.UITextPrimary]);
+        Set("UI.Alert.Default.BgSecondary").To(ThemeOptions["White"]);
     }
     
     private void GenerateShades(string key)

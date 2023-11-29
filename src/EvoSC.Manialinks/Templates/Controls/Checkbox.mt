@@ -19,12 +19,6 @@
     <!-- Text to display alongside the checkbox. -->
     <property type="string" name="text" default="" />
     
-    <!-- The font for the text. -->
-    <property type="string" name="textFont" default="" />
-    
-    <!-- The size of the text. -->
-    <property type="string" name="textSize" default="1.0" />
-    
     <template>
         <frame pos="{{ x }} {{ y }}" class="evosc-checkbox-frame" id="{{ id }}" data-value="{{ isChecked }}">
             <quad scriptevents="1" class="checkbox-outline-default evosc-checkbox" data-id="{{ id }}" size="0.1 3" pos="0 0" />
@@ -38,13 +32,11 @@
                     pos="0.1 -0.1"
                     scriptevents="1"
                     opacity="{{ isChecked ? 1 : 0 }}"
-                    bgcolorfocus='{{ isChecked ? "ff0058" : "00000000" }}'
+                    bgcolorfocus='{{ isChecked ? Theme.UI_Checkbox_Default_Bg : "00000000" }}'
             />
             <label 
                     class="checkbox-default evosc-checkbox"
                     data-id="{{ id }}"
-                    textfont="{{ textFont }}"
-                    textsize="{{ textSize }}"
                     text="{{ text }}"
                     height="3"
                     valign="center"
@@ -55,8 +47,8 @@
                     class="checkbox-default evosc-checkbox"
                     data-id="{{ id }}"
                     textsize="1"
-                    text='{{ isChecked ? "" : "" }}'
-                    textcolor="E8E8EA"
+                    text='{{ isChecked ? Icons.Check : "" }}'
+                    textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}"
                     height="3"
                     size="3 3"
                     halign="center"

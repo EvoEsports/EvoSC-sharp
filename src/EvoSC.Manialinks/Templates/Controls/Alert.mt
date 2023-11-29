@@ -34,7 +34,7 @@
                 <framemodel id="EvoSC_Model_Alert_Circle_C1_{{ id }}">
                     <quad
                             size="4 4"
-                            modulatecolor="{{ Theme.UI_Alert_BgSecondary }}"
+                            modulatecolor="{{ Theme.UI_Alert_Default_BgSecondary }}"
                             image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
                     />
                 </framemodel>
@@ -61,12 +61,12 @@
                     <frameinstance modelid="EvoSC_Model_Alert_Circle_C1_{{ id }}" />
                 </frame>
               
-                <quad bgcolor="{{ Theme.UI_Alert_BgSecondary }}" pos="2 0" size="5 2" />
-                <quad bgcolor="{{ Theme.UI_Alert_BgSecondary }}" pos="0 -5" size="5 2" />
-                <quad bgcolor="{{ Theme.UI_Alert_BgSecondary }}" pos="0 -2" size="7 3" />
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgSecondary }}" pos="2 0" size="5 2" />
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgSecondary }}" pos="0 -5" size="5 2" />
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgSecondary }}" pos="0 -2" size="7 3" />
 
                 <label text="{{ Util.TypeToIcon(type) }}" textcolor="{{ Util.TypeToColorBg(type) }}" valign="center" halign="center" pos="3.5 -3.3" />
-                <label class="text" text="{{ text }}" textcolor="{{ Theme.UI_Alert_Text }}" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
+                <label class="text" text="{{ text }}" textcolor="{{ Theme.UI_Alert_Default_Text }}" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
             </frame>
         </frame>
     </template>
