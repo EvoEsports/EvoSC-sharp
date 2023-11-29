@@ -4,16 +4,10 @@
     <import component="EvoSC.Controls.Button" as="Button" />
     
     <property type="string" name="text" />
-
-    <property type="string" name="primaryColor" default="ff0058"/>
-    <property type="string" name="backgroundColor" default="47495A"/>
-
+  
     <property type="double" name="titleBarHeight" default="6.0"/>
     
     <property type="double" name="buttonBarHeight" default="7.0"/>
-
-    <property type="string" name="checkboxUncheckedIcon" default="" />
-    <property type="string" name="checkboxCheckedIcon" default="" />
 
     <property type="int" name="zIndex" default="1" />
     <property type="double" name="w" default="160" />
