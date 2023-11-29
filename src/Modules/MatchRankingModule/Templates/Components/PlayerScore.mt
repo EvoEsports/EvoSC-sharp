@@ -32,7 +32,7 @@
                    text="{{ ranking?.position }}"
                    halign="center"
                    valign="center"
-                   textfont="GameFontExtraBold"
+                   textfont="{{ Font.Bold }}"
                    textsize="2"
                    textcolor="000000"
                    textprefix="$i"
@@ -44,7 +44,7 @@
                           size="2 {{ h + 0.25 }}"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          colorize="{{ playerRowBackgroundColor }}"
+                          colorize="{{ Theme.MatchRankingModule_MatchRanking_Default_Bg }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -53,7 +53,7 @@
                 <quad pos="1 0"
                       size="{{ w - 1 }} {{ h }}"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ playerRowBackgroundColor }}"
+                      modulatecolor="{{ Theme.MatchRankingModule_MatchRanking_Default_Bg }}"
                       opacity="0.75"
                 />
 
@@ -62,7 +62,7 @@
                        size="{{ w * 0.66 }} 6"
                        text="{{ ranking?.player?.NickName }}"
                        valign="center2"
-                       textfont="GameFontSemiBold"
+                       textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
                 />
@@ -74,7 +74,7 @@
                        text="{{ ranking?.time }}"
                        valign="center2"
                        halign="right"
-                       textfont="GameFontSemiBold"
+                       textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
                 />

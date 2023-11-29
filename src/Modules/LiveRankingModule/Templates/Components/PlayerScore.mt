@@ -84,7 +84,7 @@
                       size="6 {{ h - 2.0 }}"
                       style="UICommon64_1"
                       substyle="BgFrame2"
-                      colorize="{{ playerRowBackgroundColor }}"
+                      colorize="{{ Theme.LiveRankingModule_PlayerScore_Default_Bg }}"
                       halign="right"
                       valign="center"
                       opacity="0.75"
@@ -93,7 +93,7 @@
                 <label id="cp_index"
                        pos="{{ w - 5.0 }} {{ h / -2.0 }}"
                        size="5 5"
-                       text='{{ ranking != null ? (ranking.isFinish ? "" : ranking.cpIndex) : "" }}'
+                       text='{{ ranking != null ? (ranking.isFinish ? Icons.FlagCheckered : ranking.cpIndex) : "" }}'
                        valign="center2"
                        halign="center"
                        textfont="{{ Font.ExtraBold }}"

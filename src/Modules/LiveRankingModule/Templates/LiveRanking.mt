@@ -50,7 +50,7 @@
                     />
 
                     <!-- LOGO -->
-                    <quad if='Theme.CurrentMapModule_CurrentMapWidget_Default_Logo != ""'
+                    <quad if='Theme.LiveRankingModule_LiveRanking_Default_Logo != ""'
                           pos="{{ w - 3.0 }} {{ headerHeight / -2.0 }}"
                           size="20 3.2"
                           valign="center"
