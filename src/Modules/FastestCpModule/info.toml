@@ -1,5 +1,5 @@
 [info]
-name = "FastestCp"
+name = "FastestCpModule"
 title = "Fastest Checkpoint"
 summary = "A module for handling fastest checkpoint times"
 version = "1.0.0"

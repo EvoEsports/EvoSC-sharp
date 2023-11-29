@@ -3,13 +3,13 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.FastestCp.Models;
-using EvoSC.Modules.Official.FastestCp.Services;
+using EvoSC.Modules.Official.FastestCpModule.Models;
+using EvoSC.Modules.Official.FastestCpModule.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
-namespace EvoSC.Modules.Official.FastestCp.Tests;
+namespace EvoSC.Modules.Official.FastestCpModule.Tests;
 
 public class FastestCpServiceTest
 {
@@ -56,7 +56,7 @@ public class FastestCpServiceTest
 
         var actualData = new List<object>();
         _manialinkManagerMock.Verify(
-            manager => manager.SendPersistentManialinkAsync("FastestCp.FastestCp", Capture.In(actualData)), Times.Once);
+            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCpModule", Capture.In(actualData)), Times.Once);
         Assert.NotEmpty(actualData);
         Assert.Equivalent(
             new { times = new List<PlayerCpTime?> { new("NickName1", 0, TimeSpan.FromMilliseconds(10)) } },
@@ -87,7 +87,7 @@ public class FastestCpServiceTest
         });
 
         _manialinkManagerMock.Verify(
-            manager => manager.SendPersistentManialinkAsync("FastestCp.FastestCp", It.IsAny<object>()), Times.Never);
+            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCpModule", It.IsAny<object>()), Times.Never);
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class FastestCpServiceTest
         var after = fieldInfo?.GetValue(_fastestCpService);
 
 
-        _manialinkManagerMock.Verify(manager => manager.HideManialinkAsync("FastestCp.FastestCp"), Times.Once);
+        _manialinkManagerMock.Verify(manager => manager.HideManialinkAsync("FastestCpModule.FastestCpModule"), Times.Once);
 
         Assert.NotNull(before);
         Assert.NotNull(after);

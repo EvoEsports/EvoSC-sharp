@@ -4,7 +4,7 @@ using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ASayModule;
 using EvoSC.Modules.Official.ExampleModule;
-using EvoSC.Modules.Official.FastestCp;
+using EvoSC.Modules.Official.FastestCpModule;
 using EvoSC.Modules.Official.LiveRankingModule;
 using EvoSC.Modules.Official.MapsModule;
 using EvoSC.Modules.Official.MatchManagerModule;

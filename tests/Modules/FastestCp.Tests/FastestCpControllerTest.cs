@@ -1,10 +1,10 @@
 ﻿using EvoSC.Common.Remote.EventArgsModels;
-using EvoSC.Modules.Official.FastestCp.Controllers;
-using EvoSC.Modules.Official.FastestCp.Interfaces;
+using EvoSC.Modules.Official.FastestCpModule.Controllers;
+using EvoSC.Modules.Official.FastestCpModule.Interfaces;
 using GbxRemoteNet.Events;
 using Moq;
 
-namespace EvoSC.Modules.Official.FastestCp.Tests;
+namespace EvoSC.Modules.Official.FastestCpModule.Tests;
 
 public class FastestCpControllerTest
 {

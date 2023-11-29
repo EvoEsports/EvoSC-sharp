@@ -1,17 +1,17 @@
-﻿using EvoSC.Modules.Official.FastestCp.Models;
+﻿using EvoSC.Modules.Official.FastestCpModule.Models;
 using ManiaTemplates;
 
-namespace EvoSC.Modules.Official.FastestCp.Tests;
+namespace EvoSC.Modules.Official.FastestCpModule.Tests;
 
 public class FastestCpManialinkTest
 {
-    private const string Key = "FastestCp.FastestCp";
+    private const string Key = "FastestCpModule.FastestCpModule";
 
     private readonly ManiaTemplateEngine _maniaTemplateEngine = new();
 
     public FastestCpManialinkTest()
     {
-        var file = typeof(FastestCpModule).Assembly.GetManifestResourceStream("EvoSC.Modules.Official.FastestCp.Templates.FastestCp.mt");
+        var file = typeof(FastestCpModule).Assembly.GetManifestResourceStream("EvoSC.Modules.Official.FastestCpModule.Templates.FastestCpModule.mt");
         var reader = new StreamReader(file!);
         _maniaTemplateEngine.AddTemplateFromString(Key, reader.ReadToEnd());
     }

@@ -1,7 +1,7 @@
-﻿using EvoSC.Modules.Official.FastestCp.Models;
+﻿using EvoSC.Modules.Official.FastestCpModule.Models;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace EvoSC.Modules.Official.FastestCp.Tests;
+namespace EvoSC.Modules.Official.FastestCpModule.Tests;
 
 public class FastestCpStoreTest
 {

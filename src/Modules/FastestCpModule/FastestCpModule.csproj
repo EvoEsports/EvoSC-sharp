@@ -4,7 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>EvoSC.Modules.Official.FastestCp</RootNamespace>
+        <RootNamespace>EvoSC.Modules.Official.FastestCpModule</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
