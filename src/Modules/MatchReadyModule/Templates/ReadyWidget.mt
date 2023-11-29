@@ -23,7 +23,7 @@
                             size="18 60"
                             pos="-18 -18"
                             image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
-                            modulatecolor="F43A3A"
+                            modulatecolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_BgNotReady }}"
                             rot="-90"
                             id="readywidget-bg"
                     />
@@ -31,9 +31,9 @@
 
                 <label
                         class="text"
-                        textfont="GameFontSemiBold"
+                        textfont="{{ Font.Regular }}"
                         textsize="2"
-                        textcolor="ffffff"
+                        textcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_Text }}"
                         text="$iNOT READY"
                         halign="center"
                         pos="20 -2"
@@ -41,12 +41,12 @@
                 />
 
                 <frame pos="5 -8">
-                    <quad bgcolor="CE3535" size="30 8" id="readybtn-background" />
+                    <quad bgcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_Button_BgGrad1 }}" size="30 8" id="readybtn-background" />
 
                     <frame size="30 8">
                         <quad
                                 rot="167"
-                                modulatecolor="F43A3A"
+                                modulatecolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_Button_BgGrad2 }}"
                                 size="32 20"
                                 pos="33 -12"
                                 image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
@@ -55,9 +55,9 @@
                     </frame>
 
                     <label
-                            textfont="GameFontRegular"
+                            textfont="{{ Font.Thin }}"
                             textsize="3"
-                            textcolor="000000"
+                            textcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_Button_Text }}"
                             text='{{ isReady ? "UN-READY" : "I AM READY" }}'
                             id="readybtn-text"
                             halign="center"
@@ -66,11 +66,11 @@
                     />
                 </frame>
 
-                <quad bgcolor="ff0000" size="20 1" pos="0 0.5" id="readywidget-line-top" />
-                <quad bgcolor="ff0000" size="1 9.5" pos="-0.5 0.5" id="readywidget-line-left" />
+                <quad bgcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_BorderNotReady }}" size="20 1" pos="0 0.5" id="readywidget-line-top" />
+                <quad bgcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_BorderNotReady }}" size="1 9.5" pos="-0.5 0.5" id="readywidget-line-left" />
 
-                <quad bgcolor="ff0000" size="20 1" pos="20 -17.5" id="readywidget-line-right" />
-                <quad bgcolor="ff0000" size="1 9.5" pos="39.5 -9" id="readywidget-line-bottom" />
+                <quad bgcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_BorderNotReady }}" size="20 1" pos="20 -17.5" id="readywidget-line-right" />
+                <quad bgcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_BorderNotReady }}" size="1 9.5" pos="39.5 -9" id="readywidget-line-bottom" />
             </frame>
             
             <frame pos="0 10">
@@ -78,21 +78,21 @@
                         image="file:///Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
                         size="30 7"
                         pos="20 2"
-                        modulatecolor="3759f4"
+                        modulatecolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_PlayersReady_Bg }}"
                 />
                 <quad
                         rot="180"
                         image="file:///Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
                         size="30 7"
                         pos="20 -5"
-                        modulatecolor="3759f4"
+                        modulatecolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_PlayersReady_Bg }}"
                 />
 
                 <label
                         text="$s{{ playersReady }}/{{ requiredPlayers }} PLAYERS READY"
                         class="text"
                         textsize="3"
-                        textcolor="ffffff"
+                        textcolor="{{ Theme.MatchReadyModule_ReadyWidget_Default_PlayersReady_Text }}"
                         pos="20 0.5"
                         halign="center"
                         if="requiredPlayers > 0"
@@ -131,7 +131,7 @@
         declare lineBottom <=> Page.MainFrame.GetFirstChild("readywidget-line-bottom") as CMlQuad;
         
         if (isReady) {
-            readyWidgetBg.ModulateColor = TextLib::ToColor("60F437");
+            readyWidgetBg.ModulateColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_BgReady }}");
             
             if (isHover) {
                 readyBtnBg.BgColor = c1Ready;
@@ -144,17 +144,17 @@
             readyWidgetStatusText.SetText("$iREADY");
             readyBtnText.SetText("$iUN-READY");
             
-            lineTop.BgColor = <0., 1., 0.>;
-            lineLeft.BgColor = <0., 1., 0.>;
-            lineRight.BgColor = <0., 1., 0.>;
-            lineBottom.BgColor = <0., 1., 0.>;
+            lineTop.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_Ready }}");
+            lineLeft.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_Ready }}");
+            lineRight.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_Ready }}");
+            lineBottom.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_Ready }}");
             
             AnimMgr.Add(lineTop, """<quad size='40 1' pos='0 0.5' />""", 400, CAnimManager::EAnimManagerEasing::ExpOut);
             AnimMgr.Add(lineLeft, """<quad size='1 19' pos='-0.5 0.5' />""", 400, CAnimManager::EAnimManagerEasing::ExpOut);
             AnimMgr.Add(lineRight, """<quad size='40 1' pos='0 -17.5' />""", 400, CAnimManager::EAnimManagerEasing::ExpOut);
             AnimMgr.Add(lineBottom, """<quad size='1 19' pos='39.5 0.5'/>""", 400, CAnimManager::EAnimManagerEasing::ExpOut);
         } else {
-            readyWidgetBg.ModulateColor = TextLib::ToColor("F43A3A");
+            readyWidgetBg.ModulateColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_BgNotReady }}");
 
             if (isHover) {
                 readyBtnBg.BgColor = c1NotReady;
@@ -167,10 +167,10 @@
             readyWidgetStatusText.SetText("$iNOT READY");
             readyBtnText.SetText("$iI AM READY");
             
-            lineTop.BgColor = <1., 0., 0.>;
-            lineLeft.BgColor = <1., 0., 0.>;
-            lineRight.BgColor = <1., 0., 0.>;
-            lineBottom.BgColor = <1., 0., 0.>;
+            lineTop.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_NotReady }}");
+            lineLeft.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_NotReady }}");
+            lineRight.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_NotReady }}");
+            lineBottom.BgColor = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_NotReady }}");
             
             AnimMgr.Add(lineTop, """<quad size='20 1' pos='0 0.5' />""", 400, CAnimManager::EAnimManagerEasing::ExpOut);
             AnimMgr.Add(lineLeft, """<quad size='1 9.5' pos='-0.5 0.5' />""", 400, CAnimManager::EAnimManagerEasing::ExpOut);
@@ -213,10 +213,10 @@
     
     isReady = {{ isReady }};
 
-    c1NotReady = TextLib::ToColor("F43A3A");
-    c2NotReady = TextLib::ToColor("CE3535");
-    c1Ready = TextLib::ToColor("6FF43A");
-    c2Ready = TextLib::ToColor("3ACE35");
+    c1NotReady = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_NotReady }}");
+    c2NotReady = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_NotReadySecondary }}");
+    c1Ready = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_Ready }}");
+    c2Ready = TextLib::ToColor("{{ Theme.MatchReadyModule_ReadyWidget_Default_ReadySecondary }}");
     ***
     
     *** OnMouseMove ***
