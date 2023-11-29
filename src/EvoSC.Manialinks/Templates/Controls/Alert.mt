@@ -14,14 +14,11 @@
     <!-- The area width of the alert text. -->
     <property type="double" name="width" default="60.0" />
     
-    <!-- Icon to show for the alert. -->
-    <property type="string" name="icon" default="" />
-    
     <!-- The text to display in the alert. -->
     <property type="string" name="text" default="This is an alert" />
 
     <!-- The text to display in the alert. -->
-    <property type="string" name="type" default="danger" />
+    <property type="string" name="type" default="primary" />
     
     <template>
         <frame 
@@ -37,7 +34,7 @@
                 <framemodel id="EvoSC_Model_Alert_Circle_C1_{{ id }}">
                     <quad
                             size="4 4"
-                            modulatecolor="FAFAFA"
+                            modulatecolor="{{ Theme.UI_Alert_BgSecondary }}"
                             image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
                     />
                 </framemodel>
@@ -63,17 +60,13 @@
                 <frame size="2 2" pos="7 -7" rot="180">
                     <frameinstance modelid="EvoSC_Model_Alert_Circle_C1_{{ id }}" />
                 </frame>
+              
+                <quad bgcolor="{{ Theme.UI_Alert_BgSecondary }}" pos="2 0" size="5 2" />
+                <quad bgcolor="{{ Theme.UI_Alert_BgSecondary }}" pos="0 -5" size="5 2" />
+                <quad bgcolor="{{ Theme.UI_Alert_BgSecondary }}" pos="0 -2" size="7 3" />
 
-                <frame size="5 5">
-                    <label text="something" />
-                </frame>
-
-                <quad bgcolor="FAFAFA" pos="2 0" size="5 2" />
-                <quad bgcolor="FAFAFA" pos="0 -5" size="5 2" />
-                <quad bgcolor="FAFAFA" pos="0 -2" size="7 3" />
-
-                <label text="{{ icon }}" textcolor="{{ Util.TypeToColorBg(type) }}" valign="center" halign="center" pos="3.5 -3.3" />
-                <label class="text" text="{{ text }}" textcolor="FAFAFA" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
+                <label text="{{ Util.TypeToIcon(type) }}" textcolor="{{ Util.TypeToColorBg(type) }}" valign="center" halign="center" pos="3.5 -3.3" />
+                <label class="text" text="{{ text }}" textcolor="{{ Theme.UI_Alert_Text }}" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
             </frame>
         </frame>
     </template>

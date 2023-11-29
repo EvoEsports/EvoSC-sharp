@@ -126,7 +126,8 @@ public class DefaultTheme : Theme<DefaultTheme>
         Set("UI.Window.Secondary.MinimizeBtn.Text").To(ColorUtils.Lighten((string)ThemeOptions[DefaultThemeOptions.UITextPrimary]));
         
         // alert
-        
+        Set("UI.Alert.Text").To(ThemeOptions[DefaultThemeOptions.UITextPrimary]);
+        Set("UI.Alert.BgSecondary").To(ThemeOptions["White"]);
     }
     
     private void GenerateShades(string key)
