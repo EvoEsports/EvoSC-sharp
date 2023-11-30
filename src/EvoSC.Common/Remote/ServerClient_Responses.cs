@@ -26,7 +26,7 @@ public partial class ServerClient
     
     private TextFormatter MakeErrorMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Error)))
+            .AddText("", styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Danger)))
             .AddText(" ")
             .AddText(text);
 

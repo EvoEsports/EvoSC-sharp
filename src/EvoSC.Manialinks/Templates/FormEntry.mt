@@ -6,6 +6,8 @@
     <using namespace="EvoSC.Manialinks.Validation" />
     <using namespace="System.Linq" />
 
+    <import component="EvoSC.Controls.TextInput" as="TextInput" />
+
     <property type="IEnumerable<EntryValidationResult>?" name="validationResults" />
     <property type="string?" name="value"/>
     <property type="string" name="name"/>
@@ -27,7 +29,7 @@
                     textsize="1"
                     halign="left" valign="top"
             />
-            <entry
+            <!-- <entry
                     pos="0 -3"
                     name="{{ name }}"
                     default='{{ value ?? "" }}'
@@ -36,6 +38,16 @@
                     halign="left" valign="top"
                     textformat='{{ isPassword ? "Password" : "Basic" }}'
                     valuetype="{{ valueType }}"
+            /> -->
+            <TextInput 
+                    x="0"
+                    y="-3"
+                    name="{{ name }}"
+                    value='{{ value ?? "" }}'
+                    width="{{ w }}"
+                    height="3"
+                    isPassword="{{ isPassword }}"
+                    valueType="{{ valueType }}"
             />
             <Label
                     text='$s$F00 {{ validationResults?.FirstOrDefault(v => v.IsInvalid)?.Message ?? "Invalid input." }}'
