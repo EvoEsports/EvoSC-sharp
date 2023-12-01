@@ -28,11 +28,11 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
     }
 
     public async Task SendManiaLinkAsync() =>
-        await _manialinks.SendManialinkAsync(WidgetTemplate, GetWidgetData());
+        await _manialinks.SendManialinkAsync(WidgetTemplate);
 
 
     public async Task SendManiaLinkAsync(string playerLogin) =>
-        await _manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, GetWidgetData());
+        await _manialinks.SendManialinkAsync(playerLogin, WidgetTemplate);
 
     public async Task HideManiaLinkAsync() =>
         await _manialinks.HideManialinkAsync(WidgetTemplate);
@@ -104,15 +104,5 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
             time = 0,
             cpIndex = -1
         });
-    }
-    
-    private dynamic GetWidgetData()
-    {
-        return new
-        {
-            primaryColor = _themes.Theme.UI_TextPrimary,
-            backgroundColor = _themes.Theme.UI_BgPrimary,
-            headerColor = _themes.Theme.UI_HeaderBackground
-        };
     }
 }

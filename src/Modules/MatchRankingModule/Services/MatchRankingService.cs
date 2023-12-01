@@ -81,11 +81,7 @@ public class MatchRankingService : IMatchRankingService
 
         return new
         {
-            Scores = mappedScoresLatest,
-            headerColor = _themes.Theme.UI_HeaderBackground,
-            primaryColor = _themes.Theme.UI_TextPrimary,
-            logoUrl = _themes.Theme.UI_LogoWhite,
-            playerRowBackgroundColor = _themes.Theme.UI_RowBackground
+            Scores = mappedScoresLatest
         };
     }
 

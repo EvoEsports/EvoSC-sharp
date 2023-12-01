@@ -22,6 +22,7 @@ public class DefaultCurrentMapTheme : Theme<DefaultCurrentMapTheme>
         Set("CurrentMapModule.CurrentMapWidget.Default.BgContent").To(_theme.UI_BgSecondary);
         Set("CurrentMapModule.CurrentMapWidget.Default.BgRow").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
         Set("CurrentMapModule.CurrentMapWidget.Default.Logo").To(_theme.UI_LogoLight);
+        Set("CurrentMapModule.CurrentMapWidget.Default.Text").To(_theme.UI_TextPrimary);
         
         return Task.CompletedTask;
     }

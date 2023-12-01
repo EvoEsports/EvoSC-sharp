@@ -128,10 +128,16 @@ public class ThemeManager : IThemeManager
     
     private dynamic GetCurrentThemeOptions()
     {
-        var fallbackOptions = GetFallbackThemeOptions();
-        var themeOptions = new DynamicThemeOptions(fallbackOptions);
+        var configOverride = GetConfigOverrideOptions();
+        var themeOptions = new DynamicThemeOptions(configOverride);
 
         foreach (var option in _activeThemes.Values.SelectMany(theme => theme.ThemeOptions))
+        {
+            themeOptions[option.Key] = option.Value;
+        }
+        
+        // override options with whatever user has defined in the config
+        foreach (var option in configOverride)
         {
             themeOptions[option.Key] = option.Value;
         }
@@ -148,7 +154,7 @@ public class ThemeManager : IThemeManager
         }
     }
 
-    private Dictionary<string, object> GetFallbackThemeOptions()
+    private Dictionary<string, object> GetConfigOverrideOptions()
     {
         var themeOptions = new Dictionary<string, object>();
 

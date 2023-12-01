@@ -37,11 +37,7 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
             new
             {
                 mapName = nextMap.Name, 
-                author = nextMap.Author?.NickName,
-                headerColor = _themes.Theme.UI_HeaderBackground,
-                primaryColor = _themes.Theme.UI_TextPrimary,
-                logoUrl = _themes.Theme.UI_LogoWhite,
-                playerRowBackgroundColor = _themes.Theme.UI_RowBackground
+                author = nextMap.Author?.NickName
             });
     }
 

@@ -39,6 +39,7 @@
                            textfont="{{ Font.Bold }}"
                            textprefix="$i$t"
                            textsize="2"
+                           textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                     />
 
                     <!-- LOGO -->
@@ -89,11 +90,13 @@
                            text='{{ map?.Name ?? "loading..." }}'
                            textsize="1.4"
                            textfont="{{ Font.Regular }}"
+                           textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                     />
                     <label pos="2 -3.2"
                            text='by {{ mapauthor ?? "loading..." }}'
                            textsize="1.1"
                            textfont="{{ Font.Thin }}"
+                           textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                     />
                 </frame>
 
@@ -104,11 +107,13 @@
                                text="Record: {{ record?.Time.ToString() }} [{{ record?.Source }}]"
                                textsize="1.4"
                                textfont="{{ Font.Regular }}"
+                               textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                         />
                         <label pos="2 -3.2"
                                text="by {{ record?.PlayerName }}"
                                textsize="1.1"
                                textfont="{{ Font.Thin }}"
+                               textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                         />
                     </frame>
                 </frame>

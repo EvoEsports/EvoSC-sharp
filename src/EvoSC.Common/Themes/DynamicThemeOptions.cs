@@ -8,8 +8,9 @@ public class DynamicThemeOptions : DynamicObject, IDictionary<string, object>
     private readonly Dictionary<string, object> _options;
 
     public DynamicThemeOptions() => _options = new Dictionary<string, object>();
-    
-    public DynamicThemeOptions(Dictionary<string, object> options) => _options = options;
+
+    public DynamicThemeOptions(Dictionary<string, object> options) =>
+        _options = new Dictionary<string, object>(options);
 
     public override bool TryGetMember(GetMemberBinder binder, out object? result)
     {

@@ -75,11 +75,7 @@ public class CurrentMapService : ICurrentMapService
             {
                 map = dbMap,
                 mapauthor = author,
-                record = worldRecord,
-                /* headerColor = _themes.Theme.UI_HeaderBackground,
-                primaryColor = _themes.Theme.UI_TextPrimary,
-                logoUrl = _themes.Theme.UI_LogoLogoLight,
-                playerRowBackgroundColor = _themes.Theme.UI_RowBackground */
+                record = worldRecord
             });
         _logger.LogDebug("Showing current map widget");
     }
