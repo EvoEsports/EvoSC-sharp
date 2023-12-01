@@ -17,17 +17,17 @@
                 <frame size="{{ smallBoxWidth }} {{ h }}">
                     <quad pos="0 0.2"
                           size="{{ smallBoxWidth + 2.0 }} {{ h + 0.4 }}"
-                          colorize="{{ headerColor }}"
+                          colorize="{{ Theme.SpectatorTargetInfoModule_SpectatorTargetInfo_BgGrad2 }}"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          opacity="0.95"
+                          opacity="0.9"
                     />
                 </frame>
                 <!-- GRADIENT -->
                 <quad pos="{{ smallBoxWidth }} {{ -h }}"
                       size="{{ smallBoxWidth / 2.0 }} {{ h }}"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ bgDark }}"
+                      modulatecolor="{{ Theme.SpectatorTargetInfoModule_SpectatorTargetInfo_BgGrad1 }}"
                       rot="180"
                       opacity="0.5"
                 />
@@ -35,7 +35,7 @@
                        pos="{{ smallBoxWidth / 2.0 }} {{ h / -2.0 }}"
                        size="{{ smallBoxWidth - 6.0 }} {{ h }}"
                        textsize="2.8"
-                       textfont="GameFontSemiBold"
+                       textfont="{{ Font.Regular }}"
                        text="-1"
                        halign="center"
                        valign="center2"
@@ -46,24 +46,24 @@
                 <frame size="{{ smallBoxWidth }} {{ h }}">
                     <quad pos="-2 0.2"
                           size="{{ smallBoxWidth + 2.0 }} {{ h + 0.4 }}"
-                          colorize="{{ primaryColor }}"
+                          colorize="{{ Theme.SpectatorTargetInfoModule_SpectatorTargetInfo_BgGrad2 }}"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          opacity="0.95"
+                          opacity="0.9"
                     />
                 </frame>
                 <!-- GRADIENT -->
                 <quad pos="0 0"
                       size="{{ smallBoxWidth / 2.0 }} {{ h }}"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ bgDark }}"
+                      modulatecolor="{{ Theme.SpectatorTargetInfoModule_SpectatorTargetInfo_BgGrad1 }}"
                       opacity="0.5"
                 />
                 <label id="diff_label"
                        pos="{{ smallBoxWidth / 2.0 }} {{ h / -2.0 }}"
                        size="{{ smallBoxWidth - 6.0 }} {{ h }}"
                        textsize="2"
-                       textfont="GameFontSemiBold"
+                       textfont="{{ Font.Regular }}"
                        text="-1"
                        halign="center"
                        valign="center2"
@@ -73,7 +73,7 @@
             <!-- BOX MIDDLE -->
             <quad size="{{ centerBoxWidth }} {{ h }}"
                   halign="center"
-                  bgcolor="{{ backgroundColor }}"
+                  bgcolor="{{ Theme.SpectatorTargetInfoModule_SpectatorTargetInfo_Bg }}"
             />
             
             <frame id="name_box" pos="0 {{ h / -2.0 }}">
@@ -83,7 +83,7 @@
                 <label id="name_label"
                        size="{{ centerBoxWidth - 10.0 }} {{ h }}"
                        textsize="2.8"
-                       textfont="GameFontSemiBold"
+                       textfont="{{ Font.Regular }}"
                        text="-1"
                        valign="center2"
                 />
