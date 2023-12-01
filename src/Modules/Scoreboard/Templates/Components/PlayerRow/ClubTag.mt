@@ -7,7 +7,7 @@
         <quad id="club_bg"
               size="{{ h * 2 }} {{ h }}"
               valign="center"
-              modulatecolor="000"
+              modulatecolor="{{ Theme.ScoreboardModule_ClubTag_Bg }}"
               image="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
               alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
               hidden="{{ hidden }}"
@@ -20,7 +20,7 @@
                valign="center"
                halign="center"
                textsize="0.9"
-               textfont="GameFontSemiBold"
+               textfont="{{ Font.Regular }}"
                hidden="{{ hidden }}"
         />
     </template>

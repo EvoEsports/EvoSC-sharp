@@ -1,17 +1,20 @@
 ﻿<component>
     <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
+    <import component="EvoSC.Theme" as="Theme" />
     
     <property type="double" name="w" default="140"/>
     <property type="double" name="h" default="80"/>
 
     <template>
-        <label text="SCOREBOARD SETTINGS" textsize="5" textfont="GameFontBlack" />
+        <Theme />
+      
+        <label text="SCOREBOARD SETTINGS" textsize="5" textfont="{{ Font.ExtraBold }}" />
         <frame pos="0 -8">
-            <label text="Player Settings" textsize="2" textfont="GameFontSemiBold" />
-            <Checkbox id="show_flags" y="-6" text="Show country flags" textFont="GameFontRegular" isChecked="{{ true }}" />
-            <Checkbox id="show_club_tags" y="-11" text="Show club tags" textFont="GameFontRegular" isChecked="{{ true }}" />
-            <Checkbox id="show_spectators" y="-16" text="Show spectators" textFont="GameFontRegular" isChecked="{{ true }}" />
-            <Checkbox id="show_disconnected" y="-21" text="Show disconnected" textFont="GameFontRegular" isChecked="{{ true }}" />
+            <label text="Player Settings" textsize="2" textfont="{{ Font.Regular }}" />
+            <Checkbox id="show_flags" y="-6" text="Show country flags" isChecked="{{ true }}" />
+            <Checkbox id="show_club_tags" y="-11" text="Show club tags" isChecked="{{ true }}" />
+            <Checkbox id="show_spectators" y="-16" text="Show spectators" isChecked="{{ true }}" />
+            <Checkbox id="show_disconnected" y="-21" text="Show disconnected" isChecked="{{ true }}" />
         </frame>
     </template>
     

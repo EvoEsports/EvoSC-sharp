@@ -24,31 +24,15 @@
     <property type="double" name="innerSpacing" default="1.6"/>
     <property type="double" name="scrollBarWidth" default="1.5"/>
 
-    <property type="string" name="logoUrl" default=""/>
-    <property type="string" name="headerColor" default="d41e67"/>
-    <property type="string" name="primaryColor" default="1253a3"/>
-    <property type="string" name="positionBackgroundColor" default="313442"/>
-    <property type="string" name="backgroundColor" default="111111"/>
-    <property type="string" name="playerRowBackgroundColor" default="999999"/>
-    <property type="string" name="playerRowHighlightColor" default="1253a3"/>
-
     <template layer="ScoresTable">
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
             <ScoreboardBackground w="{{ w }}" 
                                   h="{{ VisiblePlayers * rowHeight * rowSpacing + padding - rowSpacing + headerHeight }}"
                                   radius="{{ backgroundBorderRadius }}"
                                   headerHeight="{{ headerHeight }}"
-                                  headerColor="{{ headerColor }}"
-                                  primaryColor="{{ primaryColor }}"
-                                  color="{{ backgroundColor }}"
-                                  gradientColor="{{ primaryColor }}"
             />
 
-            <ScoreboardHeader w="{{ w }}" 
-                              primaryColor="{{ primaryColor }}" 
-                              headerHeight="{{ headerHeight }}"
-                              logoUrl="{{ logoUrl }}"
-            />
+            <ScoreboardHeader w="{{ w }}" headerHeight="{{ headerHeight }}" />
 
             <!-- Player Rows -->
             <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
@@ -60,12 +44,7 @@
                     
                     
                     <!-- Player Rows -->
-                    <PlayerRowFramemodel backgroundColor="fff"
-                                         primaryColor="{{ primaryColor }}"
-                                         headerColor="{{ headerColor }}"
-                                         playerRowBackgroundColor="{{ playerRowBackgroundColor }}"
-                                         playerRowHighlightColor="{{ playerRowHighlightColor }}"
-                                         positionBackgroundColor="{{ positionBackgroundColor }}"
+                    <PlayerRowFramemodel
                                          w="{{ w }}"
                                          padding="{{ padding }}"
                                          rowHeight="{{ rowHeight }}"
@@ -86,7 +65,7 @@
                     <Scrollbar x="{{ w - scrollBarWidth }}"
                                w="{{ scrollBarWidth }}"
                                h="{{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing }}"
-                               accentColor="{{ positionBackgroundColor }}"
+                               accentColor="{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"
                                opacity="0.25"
                                rowHeight="{{ rowHeight + rowSpacing }}"
                                visiblePlayers="{{ VisiblePlayers }}"
@@ -95,7 +74,7 @@
                     <Scrollbar x="{{ w - scrollBarWidth }}"
                                w="{{ scrollBarWidth }}"
                                h="{{ (VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing) * 0.35 }}"
-                               accentColor="{{ positionBackgroundColor }}"
+                               accentColor="{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"
                                rowHeight="{{ rowHeight + rowSpacing }}"
                                visiblePlayers="{{ VisiblePlayers }}"
                                id="scrollbar_handle"
@@ -375,8 +354,8 @@
                 SetPositionBackgroundColor(positionBox, CL::HexToRgb(positionColor));
                 SetPlayerHighlightColor(playerRowBg, CL::HexToRgb(positionColor));
             }else{
-                SetPositionBackgroundColor(positionBox, CL::HexToRgb("{{ positionBackgroundColor }}"));
-                SetPlayerHighlightColor(playerRowBg, CL::HexToRgb("{{ positionBackgroundColor }}"));
+                SetPositionBackgroundColor(positionBox, CL::HexToRgb("{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"));
+                SetPlayerHighlightColor(playerRowBg, CL::HexToRgb("{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"));
             }
             
             if (PlayerIsConnected) {

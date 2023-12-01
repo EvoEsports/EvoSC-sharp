@@ -92,4 +92,10 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
                 IsSpectator = false
             });
     }
+
+    [ChatCommand("fakeplayer", "Add a fake player to the game.")]
+    public async Task AddFakePlayer()
+    {
+        await _server.Remote.ConnectFakePlayerAsync();
+    }
 }

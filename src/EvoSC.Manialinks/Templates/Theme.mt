@@ -7,7 +7,7 @@
             <!-- General -->
             <style 
                     class="text"
-                    textfont="{{ Theme.UI_Font }}" 
+                    textfont="{{ Font.Regular }}" 
                     textcolor="{{ Theme.UI_TextPrimary }}"
                     textsize="{{ Theme.UI_FontSize }}"
             />
@@ -25,7 +25,7 @@
             <!-- Buttons -->
             <style 
                     class="btn-default" 
-                    textfont="{{ Theme.UI_Font }}" 
+                    textfont="{{ Font.Regular }}" 
                     textcolor="{{ Theme.UI_Button_Default_Text }}"
                     textsize="{{ Theme.UI_FontSize }}"
                     bgcolor="{{ Theme.UI_Button_Default_Bg }}"
@@ -34,7 +34,7 @@
                     focusareacolor2="ffffff22" />
             <style 
                     class="btn-secondary" 
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Button_Secondary_Text }}"
                     textsize="{{ Theme.UI_FontSize }}"
                     bgcolor="{{ Theme.UI_BgSecondary }}"
@@ -43,13 +43,13 @@
                     focusareacolor2="ffffff22"/>
             <style
                     class="btn-disabled"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Button_Default_DisabledText }}"
                     textsize="{{ Theme.UI_FontSize }}"
                     bgcolor="{{ Theme.UI_Button_Default_DisabledBg }}" />
             <style
                     class="btn-secondary-disabled"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Button_Secondary_DisabledText }}"
                     textsize="{{ Theme.UI_FontSize }}"
                     bgcolor="{{ Theme.UI_Button_Secondary_DisabledBg }}" />
@@ -58,7 +58,7 @@
             <style 
                     class="textinput-default"
                     textsize="{{ Theme.UI_FontSize }}"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_TextField_Default_Text }}"
                     bgcolor="{{ Theme.UI_TextField_Default_Bg }}"
                     focusareacolor1="00000000"
@@ -89,7 +89,7 @@
                     bgcolor="{{ Theme.UI_Checkbox_Default_Bg }}"
                     textcolor="{{ Theme.UI_Checkbox_Default_Text }}"
                     textsize="{{ Theme.UI_FontSize }}"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     bgcolorfocus="{{ Theme.UI_Checkbox_Default_BgFocus }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
@@ -106,7 +106,7 @@
             <style 
                     class="radiobutton-default"
                     textsize="{{ Theme.UI_FontSize }}"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_RadioButton_Default_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
@@ -138,21 +138,21 @@
             <style
                     class="window-title-default"
                     textsize="{{ Theme.UI_FontSize }}"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Window_Default_Title_Text }}"
             />
 
             <style
                     class="window-title-secondary"
                     textsize="{{ Theme.UI_FontSize }}"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Window_Secondary_Title_Text }}"
             />
             
             <style 
                     class="window-closebtn-default"
                     textsize="{{ Theme.UI_FontSize }}"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Window_Default_CloseBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
@@ -161,7 +161,7 @@
             <style
                     class="window-closebtn-secondary"
                     textsize="{{ Theme.UI_FontSize }}"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Window_Secondary_CloseBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
@@ -170,7 +170,7 @@
             <style
                     class="window-minimizebtn-default"
                     textsize="2"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Window_Default_MinimizeBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
@@ -179,7 +179,7 @@
             <style
                     class="window-minimizebtn-secdonary"
                     textsize="2"
-                    textfont="{{ Theme.UI_Font }}"
+                    textfont="{{ Font.Regular }}"
                     textcolor="{{ Theme.UI_Window_Secondary_MinimizeBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"

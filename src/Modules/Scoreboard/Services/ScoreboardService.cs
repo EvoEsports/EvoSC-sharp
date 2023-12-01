@@ -48,13 +48,6 @@ public class ScoreboardService : IScoreboardService
             _scoreboardTracker.MaxPlayers,
             _scoreboardTracker.RoundsPerMap,
             PositionColors = new Dictionary<int, string> { { 1, _themes.Theme.Gold }, { 2, _themes.Theme.Silver }, { 3, _themes.Theme.Bronze } },
-            headerColor = _themes.Theme.UI_HeaderBackground,
-            primaryColor = _themes.Theme.UI_TextPrimary,
-            positionBackgroundColor = _themes.Theme.UI_Scoreboard_PositionBackgroundColor,
-            backgroundColor = _themes.Theme.UI_BgPrimary,
-            playerRowHighlightColor = _themes.Theme.UI_Scoreboard_PlayerRowHighlightColor,
-            playerRowBackgroundColor = _themes.Theme.UI_RowBackground,
-            logoUrl = _themes.Theme.UI_LogoDark
         });
     }
 
