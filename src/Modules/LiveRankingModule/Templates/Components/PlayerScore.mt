@@ -34,7 +34,7 @@
                    valign="center"
                    textfont="{{ Font.Bold }}"
                    textsize="2"
-                   textcolor="000000"
+                   textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_TextPosition }}"
                    textprefix="$i"
             />
 
@@ -65,6 +65,7 @@
                        textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
+                       textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                 />
 
                 <!-- TIME -->
@@ -77,6 +78,7 @@
                        textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
+                       textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                 />
 
                 <!-- CP-ID BOX -->
@@ -100,6 +102,7 @@
                        textsize="0.9"
                        opacity="0.9"
                        textprefix="$i$t"
+                       textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                 />
             </frame>
         </frame>

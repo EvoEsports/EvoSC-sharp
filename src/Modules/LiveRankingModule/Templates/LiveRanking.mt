@@ -45,6 +45,7 @@
                            text="Live Ranking"
                            valign="center2"
                            textfont="{{ Font.Bold }}"
+                           textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                            textprefix="$i$t"
                            textsize="2"
                     />

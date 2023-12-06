@@ -34,7 +34,7 @@
                    valign="center"
                    textfont="{{ Font.Bold }}"
                    textsize="2"
-                   textcolor="000000"
+                   textcolor="{{ Theme.MatchRankingModule_MatchRanking_Default_PositionText }}"
                    textprefix="$i"
             />
 
@@ -65,7 +65,7 @@
                        textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
-                />
+                       textcolor="{{ Theme.MatchRankingModule_MatchRanking_Default_Text }}"/>
 
                 <!-- TIME -->
                 <label id="score"
@@ -77,7 +77,7 @@
                        textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
-                />
+                       textcolor="{{ Theme.MatchRankingModule_MatchRanking_Default_Text }}"/>
             </frame>
         </frame>
     </template>

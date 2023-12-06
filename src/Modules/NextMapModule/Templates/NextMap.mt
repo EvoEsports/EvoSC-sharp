@@ -43,6 +43,7 @@
                            textfont="{{ Font.Bold }}"
                            textprefix="$i$t"
                            textsize="2"
+                           textcolor="{{ Theme.NextMapModule_NextMap_Default_Text }}"
                     />
     
                     <!-- LOGO -->
@@ -93,12 +94,12 @@
                            text="{{ mapName }}"
                            textsize="1.4"
                            textfont="{{ Font.Regular }}"
-                    />
+                           textcolor="{{ Theme.NextMapModule_NextMap_Default_Text }}"/>
                     <label pos="2 -3.2"
                            text="by {{ author }}"
                            textsize="1.1"
                            textfont="{{ Font.Thin }}"
-                    />
+                           textcolor="{{ Theme.NextMapModule_NextMap_Default_Text }}"/>
                 </frame>
             </frame>
         </frame>

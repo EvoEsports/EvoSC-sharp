@@ -14,6 +14,8 @@ public class DefaultLiveRankingTheme : Theme<DefaultLiveRankingTheme>
     
     public override Task ConfigureAsync()
     {
+        Set("LiveRankingModule.LiveRanking.Default.Text").To(_theme.UI_TextPrimary);
+        Set("LiveRankingModule.LiveRanking.Default.TextPosition").To(_theme.Black);
         Set("LiveRankingModule.LiveRanking.Default.BgHeaderGrad1").To(_theme.UI_BgPrimary);
         Set("LiveRankingModule.LiveRanking.Default.BgHeaderGrad2").To(ColorUtils.Darken(_theme.UI_BgPrimary));
         Set("LiveRankingModule.LiveRanking.Default.BgContent").To(_theme.UI_BgSecondary);

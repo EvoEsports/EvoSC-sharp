@@ -22,6 +22,7 @@
                textsize="0.9"
                textfont="{{ Font.Regular }}"
                hidden="{{ hidden }}"
+               textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"
         />
     </template>
 </component>

@@ -63,7 +63,7 @@
                        valign="center"
                        textsize="2.6"
                        textfont="{{ Font.Regular }}"
-                />
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
@@ -89,7 +89,8 @@
                        valign="center"
                        halign="right"
                        textsize="{{ textSize }}"
-                       textfont="{{ Font.Thin }}"/>
+                       textfont="{{ Font.Thin }}"
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
 
                 <!-- Player Score -->
                 <label id="score"
@@ -97,7 +98,8 @@
                        valign="center"
                        halign="right"
                        textsize="{{ textSize }}"
-                       textfont="{{ Font.Thin }}"/>
+                       textfont="{{ Font.Thin }}"
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
 
                 <!-- Points Box -->
                 <PointsBox id="points_box"

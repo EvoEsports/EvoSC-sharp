@@ -18,7 +18,7 @@
                  ScriptEvents="1"
                  focusareacolor1="0000"
                  focusareacolor2="{{ Theme.ScoreboardModule_PlayerRow_PlayerActions_BgHighlight }}"
-          />
+                 textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
 
           <!-- PROFILE -->
           <label id="show_player_profile"
@@ -31,7 +31,7 @@
                  ScriptEvents="1"
                  focusareacolor1="0000"
                  focusareacolor2="{{ Theme.ScoreboardModule_PlayerRow_PlayerActions_BgHighlight }}"
-          />
+                 textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
         </frame>
     </template>
 

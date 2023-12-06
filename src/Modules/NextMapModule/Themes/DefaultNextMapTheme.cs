@@ -14,6 +14,7 @@ public class DefaultNextMapTheme : Theme<DefaultNextMapTheme>
     
     public override Task ConfigureAsync()
     {
+        Set("NextMapModule.NextMap.Default.Text").To(_theme.UI_TextPrimary);
         Set("NextMapModule.NextMap.Default.BgHeaderGrad1").To(_theme.UI_BgPrimary);
         Set("NextMapModule.NextMap.Default.BgHeaderGrad2").To(ColorUtils.Darken(_theme.UI_BgPrimary));
         Set("NextMapModule.NextMap.Default.BgContent").To(_theme.UI_BgSecondary);

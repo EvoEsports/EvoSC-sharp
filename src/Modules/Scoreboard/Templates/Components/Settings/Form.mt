@@ -8,9 +8,15 @@
     <template>
         <Theme />
       
-        <label text="SCOREBOARD SETTINGS" textsize="5" textfont="{{ Font.ExtraBold }}" />
+        <label text="SCOREBOARD SETTINGS"
+               textsize="5"
+               textfont="{{ Font.ExtraBold }}" 
+               textcolor="{{ Theme.ScoreboardModule_Settings_Text }}"/>
         <frame pos="0 -8">
-            <label text="Player Settings" textsize="2" textfont="{{ Font.Regular }}" />
+            <label text="Player Settings"
+                   textsize="2"
+                   textfont="{{ Font.Regular }}"
+                   textcolor="{{ Theme.ScoreboardModule_Settings_Text }}"/>
             <Checkbox id="show_flags" y="-6" text="Show country flags" isChecked="{{ true }}" />
             <Checkbox id="show_club_tags" y="-11" text="Show club tags" isChecked="{{ true }}" />
             <Checkbox id="show_spectators" y="-16" text="Show spectators" isChecked="{{ true }}" />

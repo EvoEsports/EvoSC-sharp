@@ -47,6 +47,7 @@
                            textfont="{{ Font.Bold }}"
                            textprefix="$i$t"
                            textsize="2"
+                           textcolor="{{ Theme.MatchRankingModule_MatchRanking_Default_Text }}"
                     />
 
                     <!-- LOGO -->

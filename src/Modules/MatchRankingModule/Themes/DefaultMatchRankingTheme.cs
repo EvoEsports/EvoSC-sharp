@@ -14,6 +14,8 @@ public class DefaultMatchRankingTheme : Theme<DefaultMatchRankingTheme>
     
     public override Task ConfigureAsync()
     {
+        Set("MatchRankingModule.MatchRanking.Default.Text").To(_theme.UI_TextPrimary);
+        Set("MatchRankingModule.MatchRanking.Default.PositionText").To(_theme.UI_TextPrimary);
         Set("MatchRankingModule.MatchRanking.Default.BgHeaderGrad1").To(_theme.UI_BgPrimary);
         Set("MatchRankingModule.MatchRanking.Default.BgHeaderGrad2").To(ColorUtils.Darken(_theme.UI_BgPrimary));
         Set("MatchRankingModule.MatchRanking.Default.BgContent").To(_theme.UI_BgSecondary);

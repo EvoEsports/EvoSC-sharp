@@ -38,6 +38,7 @@
                textsize="2.6"
                textfont="{{ Font.ExtraBold }}"
                z-index="5"
+               textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"
         />
     </template>
 

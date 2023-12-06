@@ -62,7 +62,15 @@ public class ManialinkManager : IManialinkManager
             .WithInstanceClass<ManialinkManager>()
             .WithHandlerMethod<ThemeUpdatedEventArgs>(HandleThemeActivatedAsync));
 
-        themeManager.AddThemeAsync(typeof(DefaultTheme));
+        themeManager.AddThemeAsync<BaseEvoScTheme>();
+        themeManager.AddThemeAsync<DefaultAlertTheme>();
+        themeManager.AddThemeAsync<DefaultButtonTheme>();
+        themeManager.AddThemeAsync<DefaultCheckboxTheme>();
+        themeManager.AddThemeAsync<DefaultRadioButtonTheme>();
+        themeManager.AddThemeAsync<DefaultTextInputTheme>();
+        themeManager.AddThemeAsync<DefaultToggleSwitchTheme>();
+        themeManager.AddThemeAsync<DefaultWindowTheme>();
+        
         _engine.GlobalVariables["Util"] = new GlobalManialinkUtils(themeManager);
         _engine.GlobalVariables["Icons"] = new GameIcons();
         _engine.GlobalVariables["Font"] = new FontManialinkHelper(themeManager);

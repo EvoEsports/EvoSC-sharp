@@ -26,8 +26,8 @@
                 y="60"
         >
             <frame size="200 100" pos="0 -14">
-                <label textsize="15" halign="center" class="text" text="$FB0{{ Icons.Warning }}" pos="100 -1" />
-                <label textsize="4" class="text" text="$FB0{{ Locale.PlayerLanguage.WarningMl_OpenPlanetDetected }}" halign="center" pos="100 -18"/>
+                <label textsize="15" halign="center" class="text" text="{{ Icons.Warning }}" pos="100 -1" textcolor="{{ Theme.OpenPlanetModule_WarningWindow_TextWarning }}" />
+                <label textsize="4" class="text" text="{{ Locale.PlayerLanguage.WarningMl_OpenPlanetDetected }}" halign="center" pos="100 -18"  textcolor="{{ Theme.OpenPlanetModule_WarningWindow_TextWarning }}"/>
                 <label class="text" text="{{ Locale.PlayerLanguage.WarningMl_OpenPlanetRestricted }}" halign="center" pos="100 -24"/>
                 
                 <label class="text" text="{{ Locale.PlayerLanguage.WarningMl_ChoseSignatureMode }}" halign="center" pos="100 -32" if="Reason == OpJailReason.InvalidSignatureMode" />

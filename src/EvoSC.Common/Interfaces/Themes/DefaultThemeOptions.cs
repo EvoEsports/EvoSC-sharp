@@ -35,4 +35,9 @@ public interface DefaultThemeOptions
     public static readonly string Black = "Black";
     public static readonly string White = "White";
     public static readonly string Pink = "Pink";
+    
+    public static readonly string Info = "Info";
+    public static readonly string Success = "Success";
+    public static readonly string Warning = "Warning";
+    public static readonly string Danger = "Danger";
 }

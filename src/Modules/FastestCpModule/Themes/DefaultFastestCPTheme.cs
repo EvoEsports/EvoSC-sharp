@@ -13,6 +13,7 @@ public class DefaultFastestCPTheme : Theme<DefaultFastestCPTheme>
     
     public override Task ConfigureAsync()
     {
+        Set("FastestCpModule.FastestCP.Default.Text").To(_theme.UI_TextPrimary);
         Set("FastestCpModule.FastestCP.Default.Bg").To(_theme.UI_BgSecondary);
         Set("FastestCpModule.FastestCP.Default.Divider").To(_theme.UI_BgPrimary);
         

@@ -23,6 +23,7 @@ public class DefaultScoreboardTheme : Theme<DefaultScoreboardTheme>
         
         Set("ScoreboardModule.ClubTag.Bg").To(_theme.UI_BgSecondary);
         
+        Set("ScoreboardModule.PlayerRow.Text").To(_theme.UI_TextPrimary);
         Set("ScoreboardModule.PlayerRow.CustomLabelBackground.Bg").To(_theme.Black);
         
         Set("ScoreboardModule.PlayerRow.PlayerActions.BgHighlight").To(_theme.UI_BgSecondary);
@@ -42,6 +43,8 @@ public class DefaultScoreboardTheme : Theme<DefaultScoreboardTheme>
         Set("ScoreboardModule.PlayerRow.FrameModel.TextRoundPoints").To(_theme.UI_TextSecondary);
         
         Set("ScoreboardModule.Scoreboard.BgPosition").To(_theme.UI_BgSecondary);
+        
+        Set("ScoreboardModule.Settings.Text").To(_theme.UI_TextPrimary);
 
         return Task.CompletedTask;
     }
