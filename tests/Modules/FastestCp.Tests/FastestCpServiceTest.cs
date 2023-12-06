@@ -56,7 +56,7 @@ public class FastestCpServiceTest
 
         var actualData = new List<object>();
         _manialinkManagerMock.Verify(
-            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCpModule", Capture.In(actualData)), Times.Once);
+            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCp", Capture.In(actualData)), Times.Once);
         Assert.NotEmpty(actualData);
         Assert.Equivalent(
             new { times = new List<PlayerCpTime?> { new("NickName1", 0, TimeSpan.FromMilliseconds(10)) } },
@@ -87,7 +87,7 @@ public class FastestCpServiceTest
         });
 
         _manialinkManagerMock.Verify(
-            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCpModule", It.IsAny<object>()), Times.Never);
+            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCp", It.IsAny<object>()), Times.Never);
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class FastestCpServiceTest
         var after = fieldInfo?.GetValue(_fastestCpService);
 
 
-        _manialinkManagerMock.Verify(manager => manager.HideManialinkAsync("FastestCpModule.FastestCpModule"), Times.Once);
+        _manialinkManagerMock.Verify(manager => manager.HideManialinkAsync("FastestCpModule.FastestCp"), Times.Once);
 
         Assert.NotNull(before);
         Assert.NotNull(after);

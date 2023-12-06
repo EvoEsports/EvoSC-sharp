@@ -151,7 +151,7 @@ public class ThemeManagerTests
         var themes = mock.ThemeManager.AvailableThemes.Select(t => t.Name).ToArray();
         
         Assert.NotEmpty(themes);
-        Assert.Equal(new[]{"Default", "MyTheme", "MyTheme2", "MyTheme3"}, themes);
+        Assert.Equal(new[]{"MyTheme", "MyTheme2", "MyTheme3"}, themes);
         Assert.Equal("MyThemeOptionValue", mock.ThemeManager.Theme.MyThemeOption);
         Assert.Equal("MyThemeOptionValue2", mock.ThemeManager.Theme.MyThemeOption2);
         Assert.Equal("MyThemeOptionValue3", mock.ThemeManager.Theme.MyThemeOption3);

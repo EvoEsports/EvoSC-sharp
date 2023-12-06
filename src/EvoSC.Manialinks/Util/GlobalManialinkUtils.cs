@@ -12,6 +12,11 @@ public class GlobalManialinkUtils
         _theme = themeManager.Theme;
     }
 
+    /// <summary>
+    /// Status type to a color.
+    /// </summary>
+    /// <param name="type">Name of the status.</param>
+    /// <returns></returns>
     public string TypeToColorBg(string type) => type.ToLower() switch
     {
         "info" => _theme.Teal,
@@ -23,6 +28,11 @@ public class GlobalManialinkUtils
         _ => _theme.UI_BgPrimary
     };
 
+    /// <summary>
+    /// Status type to an icon.
+    /// </summary>
+    /// <param name="type">Name of the status.</param>
+    /// <returns></returns>
     public string TypeToIcon(string type) => type.ToLower() switch
     {
         "info" => _icons.InfoCircle,
