@@ -42,36 +42,40 @@ services:
   trackmania:
     image: evotm/trackmania
     ports:
-      - 2351:2350/udp
-      - 2351:2350/tcp
-      - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC to other hosts! Only if you really need to.
+      - 2350:2350/udp
+      - 2350:2350/tcp
+      - "5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-      MASTER_LOGIN: "SERVERLOGIN" # Create server credentials at https://players.trackmania.com
-      MASTER_PASSWORD: "SERVERPASS" # Create server credentials at https://players.trackmania.com
+      MASTER_LOGIN: "CHANGEME :)" # Create server credentials at https://players.trackmania.com
+      MASTER_PASSWORD: "CHANGEME :)" # Create server credentials at https://players.trackmania.com
       XMLRPC_ALLOWREMOTE: "True"
     volumes:
       - UserData:/server/UserData
   db:
-    image: mariadb
+    image: postgres
     restart: always
     ports:
-      - "127.0.0.1:3306:3306"
+      - "5432:5432"
     volumes:
-      - MariaDBData:/var/lib/mysql
+      - PostgresData:/var/lib/postgresql/data 
     environment:
-      MARIADB_ROOT_PASSWORD: CHANGEME
-      MARIADB_USER: evosc
-      MARIADB_PASSWORD: evosc123!
-      MARIADB_DATABASE: evosc
-      MARIADB_AUTO_UPGRADE: always
-  adminer:
-    image: adminer
+      - POSTGRES_PASSWORD=evosc
+      #- POSTGRES_USER=CHANGEME :) for a production server please change those values!
+      #- POSTGRES_DB=CHANGEME :)
+  pgadmin:
+    image: dpage/pgadmin4
     restart: always
+    extra_hosts: 
+        - "host.docker.internal:host-gateway"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: PLEASE@CHANGE.ME
+      PGADMIN_DEFAULT_PASSWORD: CHANGEME
     ports:
-      - "127.0.0.1:8081:8080"
+      - "8081:80"
 volumes:
   UserData: null
-  MariaDBData: null
+  PostgresData: null
+
 ```
 
 We also have a documentation of the current code base available at https://evosc.io/.

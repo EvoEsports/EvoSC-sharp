@@ -5,10 +5,10 @@ services:
     ports:
       - 2350:2350/udp
       - 2350:2350/tcp
-      - "127.0.0.1:5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
+      - "5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-      MASTER_LOGIN: "testesen"
-      MASTER_PASSWORD: "g-J3hFG~PAR`X0X8"
+      MASTER_LOGIN: "CHANGEME :)" # Create server credentials at https://players.trackmania.com
+      MASTER_PASSWORD: "CHANGEME :)" # Create server credentials at https://players.trackmania.com
       XMLRPC_ALLOWREMOTE: "True"
     volumes:
       - UserData:/server/UserData
@@ -16,13 +16,13 @@ services:
     image: postgres
     restart: always
     ports:
-      - "127.0.0.1:5438:5432"
+      - "5432:5432"
     volumes:
-      - POSTGRESData:/var/lib/postgresql/data 
+      - PostgresData:/var/lib/postgresql/data 
     environment:
-      - POSTGRES_USER=evosc
-      - POSTGRES_PASSWORD=evosc123!
-      - POSTGRES_DB=evosc
+      - POSTGRES_PASSWORD=evosc
+      #- POSTGRES_USER=CHANGEME :) for a production server please change those values!
+      #- POSTGRES_DB=CHANGEME :)
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -35,4 +35,4 @@ services:
       - "8081:80"
 volumes:
   UserData: null
-  POSTGRESData: null
+  PostgresData: null
