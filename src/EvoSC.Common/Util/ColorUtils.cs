@@ -119,6 +119,7 @@ public static class ColorUtils
     /// <param name="hexColor">Hex color to calculate luma from.</param>
     /// <returns></returns>
     public static double Luma(string hexColor) => Luma(new Hex(hexColor).ToRgb());
+    
     /// <summary>
     /// Get the luma of a color.
     /// </summary>
