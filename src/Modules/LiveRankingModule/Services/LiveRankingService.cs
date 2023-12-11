@@ -182,13 +182,13 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnEndMatchAsync(EndMatchGbxEventArgs args)
     {
-        await HideManialink();
+        await HideManialinkAsync();
     }
 
     public async Task OnPodiumStartAsync(PodiumEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        await HideManialink();
+        await HideManialinkAsync();
     }
 
     public async Task HideNadeoScoreboardAsync()
@@ -209,7 +209,7 @@ public class LiveRankingService : ILiveRankingService
         await _client.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
-    private async Task HideManialink()
+    private async Task HideManialinkAsync()
     {
         await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
     }
