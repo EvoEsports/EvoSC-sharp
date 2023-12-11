@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
-using EvoSC.Common.Util.TextFormatting;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 

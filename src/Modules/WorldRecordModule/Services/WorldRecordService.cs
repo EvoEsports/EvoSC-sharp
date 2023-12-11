@@ -9,7 +9,6 @@ using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 using EvoSC.Modules.Official.WorldRecordModule.Models;
 using Flurl;
 using Flurl.Http;
-using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.WorldRecordModule.Services;

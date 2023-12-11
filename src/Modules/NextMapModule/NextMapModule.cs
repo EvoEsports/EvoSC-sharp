@@ -1,5 +1,4 @@
 ﻿using EvoSC.Modules.Attributes;
-using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules.Official.NextMapModule;
 

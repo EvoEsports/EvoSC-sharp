@@ -8,8 +8,8 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
-using Microsoft.Extensions.Logging;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Services;
 

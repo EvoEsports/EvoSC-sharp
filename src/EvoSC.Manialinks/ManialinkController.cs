@@ -6,7 +6,6 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Validation;
 using EvoSC.Manialinks.Validation;
-using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace EvoSC.Manialinks;
 

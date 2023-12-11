@@ -1,7 +1,6 @@
 ﻿using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Models.Players;
-using EvoSC.Common.Tests.Database;
 using EvoSC.Modules.Official.MotdModule.Database.Migrations;
 using EvoSC.Modules.Official.MotdModule.Database.Repositories;
 using EvoSC.Testing.Database;

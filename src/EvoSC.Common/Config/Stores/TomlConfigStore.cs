@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
-using System.IO;
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Themes;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
 using Tomlet;
-using Tomlet.Exceptions;
 using Tomlet.Models;
 
 namespace EvoSC.Common.Config.Stores;

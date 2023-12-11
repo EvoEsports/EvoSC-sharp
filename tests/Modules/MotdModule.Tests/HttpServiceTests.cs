@@ -1,7 +1,7 @@
 ﻿using EvoSC.Modules.Official.MotdModule.Models;
 using EvoSC.Modules.Official.MotdModule.Services;
-using Microsoft.Extensions.Logging;
 using EvoSC.Testing;
+using Microsoft.Extensions.Logging;
 using MockHttpClient;
 using Moq;
 

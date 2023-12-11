@@ -1,11 +1,9 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.ASayModule.Events;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ASayModule.Services;
 

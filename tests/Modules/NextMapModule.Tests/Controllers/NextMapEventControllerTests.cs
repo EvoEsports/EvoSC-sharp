@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Config.Models.ThemeOptions;
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;

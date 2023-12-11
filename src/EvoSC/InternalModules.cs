@@ -1,8 +1,7 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Interfaces;
-using EvoSC.Modules.Official.OpenPlanetModule;
-using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ASayModule;
+using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCpModule;
 using EvoSC.Modules.Official.LiveRankingModule;
@@ -13,6 +12,7 @@ using EvoSC.Modules.Official.MatchReadyModule;
 using EvoSC.Modules.Official.MatchTrackerModule;
 using EvoSC.Modules.Official.MotdModule;
 using EvoSC.Modules.Official.NextMapModule;
+using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;

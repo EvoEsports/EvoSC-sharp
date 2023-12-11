@@ -1,7 +1,6 @@
 ﻿
 using EvoSC.Common.Interfaces.Database;
 using LinqToDB;
-using LinqToDB.Data;
 
 namespace EvoSC.Common.Database.Repository;
 

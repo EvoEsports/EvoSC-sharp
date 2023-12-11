@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using EvoSC.Common.Util.MatchSettings.Attributes;
+﻿using EvoSC.Common.Util.MatchSettings.Attributes;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Util.MatchSettings;

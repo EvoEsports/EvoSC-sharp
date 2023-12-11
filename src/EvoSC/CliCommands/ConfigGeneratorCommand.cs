@@ -5,7 +5,6 @@ using Config.Net;
 using EvoSC.CLI.Attributes;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
-using EvoSC.Common.Database;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.Attributes;

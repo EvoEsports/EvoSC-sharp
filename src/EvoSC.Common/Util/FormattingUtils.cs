@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Common.Util;
