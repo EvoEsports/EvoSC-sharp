@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Themes;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;

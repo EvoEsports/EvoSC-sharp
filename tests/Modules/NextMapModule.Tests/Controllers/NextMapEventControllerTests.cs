@@ -1,10 +1,7 @@
-﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Database.Models.Maps;
+﻿using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Remote.EventArgsModels;
-using EvoSC.Common.Themes;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
