@@ -25,7 +25,7 @@ public class ThemeConfigOptionsMapper : ITomlTypeMapper<DynamicThemeOptions>
 
         if (doc == null)
         {
-            throw new InvalidOperationException("Value is not a document.");
+            throw new InvalidOperationException("Value is not a document");
         }
 
         var options = new DynamicThemeOptions();
