@@ -31,7 +31,7 @@ public class CurrentMapServiceTest
     {
         _currentMapService =
             new CurrentMapService(_manialinkManager.Object, _logger, _mapRepositoryMock.Object, _clientMock.Object,
-                _configMock.Object, _worldRecordServiceMock.Object, _themeManagerMock.Object);
+                _worldRecordServiceMock.Object);
     }
 
     [Fact]

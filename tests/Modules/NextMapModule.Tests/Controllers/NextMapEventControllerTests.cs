@@ -20,32 +20,10 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
 
     private readonly Mock<INextMapService> _nextMapService = new();
     private readonly Mock<IManialinkManager> _manialinkManager = new();
-    private readonly Mock<IEvoScBaseConfig> _config = new();
-    private readonly Mock<IThemeManager> _themes = new();
 
     public NextMapEventControllerTests()
     {
-        /* var uiTheme = new Mock<IUIThemeConfig>();
-        uiTheme.Setup(p => p.HeaderBackgroundColor).Returns("");
-        uiTheme.Setup(p => p.PrimaryColor).Returns("fff");
-        uiTheme.Setup(p => p.LogoWhiteUrl).Returns("");
-        uiTheme.Setup(p => p.PlayerRowBackgroundColor).Returns("111");
-
-        var theme = new Mock<IThemeConfig>();
-        theme.Setup(p => p.UI).Returns(uiTheme.Object); */
-
-        var theme = new DynamicThemeOptions(new Dictionary<string, object>
-        {
-            { "UI.HeaderBackground", "" },
-            { "UI.PrimaryColor", "ff" },
-            { "UI.LogoWhiteUrl", "" },
-            { "UI.PlayerRowBackgroundColor", "111" }
-        });
-        
-        _config.Setup(p => p.Theme).Returns(theme);
-        _themes.Setup(p => p.Theme).Returns(theme);
-        
-        InitMock(_nextMapService, _manialinkManager, _config, _themes);
+        InitMock(_nextMapService, _manialinkManager);
     }
 
 
