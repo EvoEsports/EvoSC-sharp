@@ -83,7 +83,8 @@ public static class ColorUtils
     /// <param name="amount">Amount to darken in percentage (0-100).</param>
     /// <returns></returns>
     public static string Darken(string hexColor, float amount) => Lighten(hexColor, -amount);
-    /// <summary>
+   
+   /// <summary>
     /// Darken a text color by a set amount.
     /// </summary>
     /// <param name="color">Text color to darken.</param>
