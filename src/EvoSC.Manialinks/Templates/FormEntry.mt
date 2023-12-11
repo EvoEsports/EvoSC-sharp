@@ -29,16 +29,6 @@
                     textsize="1"
                     halign="left" valign="top"
             />
-            <!-- <entry
-                    pos="0 -3"
-                    name="{{ name }}"
-                    default='{{ value ?? "" }}'
-                    size="{{ w }} 3"
-                    textsize="1"
-                    halign="left" valign="top"
-                    textformat='{{ isPassword ? "Password" : "Basic" }}'
-                    valuetype="{{ valueType }}"
-            /> -->
             <TextInput 
                     x="0"
                     y="-3"
