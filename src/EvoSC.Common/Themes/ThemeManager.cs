@@ -126,6 +126,12 @@ public class ThemeManager : IThemeManager
         return theme;
     }
     
+    public void InvalidateCache()
+    {
+        _themeOptionsCache = null;
+        _componentReplacementsCache = null;
+    }
+    
     private dynamic GetCurrentThemeOptions()
     {
         var configOverride = GetConfigOverrideOptions();
@@ -180,11 +186,5 @@ public class ThemeManager : IThemeManager
         }
 
         return replacements;
-    }
-
-    public void InvalidateCache()
-    {
-        _themeOptionsCache = null;
-        _componentReplacementsCache = null;
     }
 }
