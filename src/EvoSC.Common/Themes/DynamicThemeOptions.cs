@@ -39,15 +39,15 @@ public class DynamicThemeOptions : DynamicObject, IDictionary<string, object>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public void Add(KeyValuePair<string, object> item) => throw new NotImplementedException();
+    public void Add(KeyValuePair<string, object> item) => throw new NotSupportedException();
 
     public void Clear() => _options.Clear();
 
-    public bool Contains(KeyValuePair<string, object> item) => throw new NotImplementedException();
+    public bool Contains(KeyValuePair<string, object> item) => throw new NotSupportedException();
 
-    public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) => throw new NotImplementedException();
+    public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) => throw new NotSupportedException();
 
-    public bool Remove(KeyValuePair<string, object> item) => throw new NotImplementedException();
+    public bool Remove(KeyValuePair<string, object> item) => throw new NotSupportedException();
 
     public int Count => _options.Count;
     public bool IsReadOnly => false;

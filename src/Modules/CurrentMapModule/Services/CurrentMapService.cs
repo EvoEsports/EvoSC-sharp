@@ -20,22 +20,16 @@ public class CurrentMapService : ICurrentMapService
     private readonly IManialinkManager _manialinkManager;
     private readonly IMapRepository _mapRepository;
     private readonly IServerClient _client;
-    private readonly IEvoScBaseConfig _config;
     private readonly IWorldRecordService _worldRecordService;
-    private readonly IThemeManager _themes;
 
-    public CurrentMapService(IManialinkManager manialinkManager,
-        ILogger<CurrentMapService> logger,
-        IMapRepository mapRepository, IServerClient client, IEvoScBaseConfig config, 
-        IWorldRecordService worldRecordService, IThemeManager themes)
+    public CurrentMapService(IManialinkManager manialinkManager, ILogger<CurrentMapService> logger,
+        IMapRepository mapRepository, IServerClient client, IWorldRecordService worldRecordService)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
         _mapRepository = mapRepository;
         _client = client;
-        _config = config;
         _worldRecordService = worldRecordService;
-        _themes = themes;
     }
 
     [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]

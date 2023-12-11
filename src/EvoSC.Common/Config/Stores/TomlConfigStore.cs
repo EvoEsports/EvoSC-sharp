@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Themes;
@@ -71,7 +72,9 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
                 var tomlValue = optionAttr?.DefaultValue ?? property.PropertyType.GetDefaultTypeValue();
                 if (property.PropertyType == typeof(TextColor))
+                {
                     tomlValue = new TextColor(tomlValue.ToString());
+                }
 
                 // get property value
                 var value = TomletMain.ValueFrom(property.PropertyType,
@@ -103,13 +106,13 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         if (lastDotIndex > 0 && key.Length > lastDotIndex + 1 && !char.IsAsciiLetterOrDigit(key[lastDotIndex + 1]))
         {
             var value = _document.GetValue(key[..lastDotIndex]) as TomlArray;
-            return value.Count.ToString();
+            return value.Count.ToString(CultureInfo.InvariantCulture);
         }
 
         if (key.EndsWith("]", StringComparison.Ordinal))
         {
             var indexStart = key.IndexOf("[", StringComparison.Ordinal);
-            var index = int.Parse(key[(indexStart + 1)..^1]);
+            var index = int.Parse(key[(indexStart + 1)..^1], CultureInfo.InvariantCulture);
             var value = _document.GetValue(key[..indexStart]) as TomlArray;
 
             return value?.Skip(index)?.FirstOrDefault()?.StringValue;

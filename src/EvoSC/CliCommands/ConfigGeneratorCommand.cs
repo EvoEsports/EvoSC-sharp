@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Config.Net;
@@ -30,7 +31,7 @@ public class ConfigGeneratorCommand
         string fileName
         )
     {
-        if (formatType.ToUpper() != "ENV")
+        if (formatType.ToUpper(CultureInfo.InvariantCulture) != "ENV")
         {
             Console.Error.WriteLine("Invalid output format, supported types: ENV");
             return;
@@ -129,7 +130,7 @@ public class ConfigGeneratorCommand
                     sb.AppendLine($"# {descAttr.Description}");
                 }
 
-                sb.Append($"EVOSC_{keyName.ToUpper()}");
+                sb.Append($"EVOSC_{keyName.ToUpper(CultureInfo.InvariantCulture)}");
                 sb.Append("=");
                 sb.AppendLine(optionAttr?.DefaultValue?.ToString() ?? "");
                 sb.AppendLine();

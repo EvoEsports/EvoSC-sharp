@@ -16,15 +16,11 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
 
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
-    private readonly IEvoScBaseConfig _config;
-    private readonly IThemeManager _themes;
 
-    public SpectatorTargetInfoService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config, IThemeManager themes)
+    public SpectatorTargetInfoService(IManialinkManager manialinks, IServerClient server)
     {
         _manialinks = manialinks;
         _server = server;
-        _config = config;
-        _themes = themes;
     }
 
     public async Task SendManiaLinkAsync() =>

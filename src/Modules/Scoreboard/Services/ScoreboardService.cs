@@ -15,17 +15,15 @@ public class ScoreboardService : IScoreboardService
 {
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
-    private readonly IEvoScBaseConfig _config;
     private readonly IMatchSettingsService _matchSettingsService;
     private readonly IScoreboardTrackerService _scoreboardTracker;
     private readonly IThemeManager _themes;
 
-    public ScoreboardService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config,
+    public ScoreboardService(IManialinkManager manialinks, IServerClient server,
         IMatchSettingsService matchSettingsService, IScoreboardTrackerService scoreboardTracker, IThemeManager themes)
     {
         _manialinks = manialinks;
         _server = server;
-        _config = config;
         _matchSettingsService = matchSettingsService;
         _scoreboardTracker = scoreboardTracker;
         _themes = themes;

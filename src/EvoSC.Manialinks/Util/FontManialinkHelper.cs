@@ -44,10 +44,10 @@ public class FontManialinkHelper
     /// <exception cref="InvalidOperationException"></exception>
     public string ToRegular(string font) => font switch
     {
-        _ when font.StartsWith("GameFont") => "GameFontSemiBold",
-        _ when font.StartsWith("Rajdhani") => "RajdhaniMono",
-        _ when font.StartsWith("Oswald") => "Oswald",
-        _ when font.StartsWith("Roboto") => "RobotoCondensed",
+        _ when font.StartsWith("GameFont", StringComparison.InvariantCulture) => "GameFontSemiBold",
+        _ when font.StartsWith("Rajdhani", StringComparison.InvariantCulture) => "RajdhaniMono",
+        _ when font.StartsWith("Oswald", StringComparison.InvariantCulture) => "Oswald",
+        _ when font.StartsWith("Roboto", StringComparison.InvariantCulture) => "RobotoCondensed",
         _ => throw new InvalidOperationException("Invalid font.")
     };
 
@@ -59,7 +59,7 @@ public class FontManialinkHelper
     /// <exception cref="InvalidOperationException"></exception>
     public string ToThin(string font) => font switch
     {
-        _ when font.StartsWith("GameFont") => "GameFontSemiRegular",
+        _ when font.StartsWith("GameFont", StringComparison.InvariantCulture) => "GameFontSemiRegular",
         _ => ToRegular(font)
     };
     
@@ -71,8 +71,8 @@ public class FontManialinkHelper
     /// <exception cref="InvalidOperationException"></exception>
     public string ToBold(string font) => font switch
     {
-        _ when font.StartsWith("GameFont") => "GameFontExtraBold",
-        _ when font.StartsWith("Roboto") => "RobotoCondensedBold",
+        _ when font.StartsWith("GameFont", StringComparison.InvariantCulture) => "GameFontExtraBold",
+        _ when font.StartsWith("Roboto", StringComparison.InvariantCulture) => "RobotoCondensedBold",
         _ => ToRegular(font)
     };
     
@@ -84,7 +84,7 @@ public class FontManialinkHelper
     /// <exception cref="InvalidOperationException"></exception>
     public string ToExtraBold(string font) => font switch
     {
-        _ when font.StartsWith("GameFont") => "GameFontBlack",
+        _ when font.StartsWith("GameFont", StringComparison.InvariantCulture) => "GameFontBlack",
         _ => ToBold(font)
     };
     
@@ -96,8 +96,8 @@ public class FontManialinkHelper
     /// <exception cref="InvalidOperationException"></exception>
     public string ToMono(string font) => font switch
     {
-        _ when font.StartsWith("Rajdhani") => "RajdhaniMono",
-        _ when font.StartsWith("Oswald") => "OswaldMono",
+        _ when font.StartsWith("Rajdhani", StringComparison.InvariantCulture) => "RajdhaniMono",
+        _ when font.StartsWith("Oswald", StringComparison.InvariantCulture) => "OswaldMono",
         _ => ToRegular(font)
     };
 }

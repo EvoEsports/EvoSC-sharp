@@ -1,11 +1,12 @@
-﻿using EvoSC.Common.Interfaces.Themes;
+﻿using System.Globalization;
+using EvoSC.Common.Interfaces.Themes;
 
 namespace EvoSC.Manialinks.Util;
 
 public class GlobalManialinkUtils
 {
     private readonly dynamic _theme;
-    private readonly GameIcons _icons = new GameIcons();
+    private readonly GameIcons _icons = new();
 
     public GlobalManialinkUtils(IThemeManager themeManager)
     {
@@ -17,7 +18,7 @@ public class GlobalManialinkUtils
     /// </summary>
     /// <param name="type">Name of the status.</param>
     /// <returns></returns>
-    public string TypeToColorBg(string type) => type.ToLower() switch
+    public string TypeToColorBg(string type) => type.ToLower(CultureInfo.InvariantCulture) switch
     {
         "info" => _theme.Teal,
         "success" => _theme.Green,
@@ -33,7 +34,7 @@ public class GlobalManialinkUtils
     /// </summary>
     /// <param name="type">Name of the status.</param>
     /// <returns></returns>
-    public string TypeToIcon(string type) => type.ToLower() switch
+    public string TypeToIcon(string type) => type.ToLower(CultureInfo.InvariantCulture) switch
     {
         "info" => _icons.InfoCircle,
         "success" => _icons.CheckCircle,

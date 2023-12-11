@@ -18,15 +18,11 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     
     private readonly INextMapService _nextMapService;
     private readonly IManialinkManager _manialinkManager;
-    private readonly IEvoScBaseConfig _config;
-    private readonly IThemeManager _themes;
 
-    public NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager, IEvoScBaseConfig config, IThemeManager themes)
+    public NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager)
     {
         _nextMapService = nextMapService;
         _manialinkManager = manialinkManager;
-        _config = config;
-        _themes = themes;
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
@@ -48,13 +44,13 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     }
 
     [Subscribe(ModeScriptEvent.StartMapStart)]
-    public async Task HideNextMapOnMapStart(object sender, MapEventArgs args)
+    public async Task HideNextMapOnMapStartAsync(object sender, MapEventArgs args)
     {
         await _manialinkManager.HideManialinkAsync(Template);
     }
 
     [Subscribe(ModeScriptEvent.EndMapEnd)]
-    public async Task HideNextMapOnMapEnd(object sender, MapEventArgs args)
+    public async Task HideNextMapOnMapEndAsync(object sender, MapEventArgs args)
     {
         await _manialinkManager.HideManialinkAsync(Template);
     }

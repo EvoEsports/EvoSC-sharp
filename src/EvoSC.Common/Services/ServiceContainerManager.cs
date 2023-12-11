@@ -183,20 +183,12 @@ public class ServiceContainerManager : IServiceContainerManager
                     }
                 }
                 
-                try
-                {
-                    _logger.LogTrace(
-                        "Dependencies does not have service '{Service}' for {Container}. Will try core services",
-                        e.UnregisteredServiceType,
-                        containerId);
-                    
-                    return _app.Services.GetInstance(e.UnregisteredServiceType);
-                }
-                catch (ActivationException ex)
-                {
-                    // _logger.LogError(ex, "Failed to get EvoSC core service");
-                    throw;
-                }
+                _logger.LogTrace(
+                    "Dependencies does not have service '{Service}' for {Container}. Will try core services",
+                    e.UnregisteredServiceType,
+                    containerId);
+                
+                return _app.Services.GetInstance(e.UnregisteredServiceType);
             });
         }
         catch (Exception ex)

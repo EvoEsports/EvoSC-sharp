@@ -18,11 +18,11 @@ public class ThemeManager : IThemeManager
     private readonly IEventManager _events;
     private readonly IEvoScBaseConfig _evoscConfig;
 
-    private dynamic? _themeOptionsCache = null;
-    private Dictionary<string, string>? _componentReplacementsCache = null;
+    private dynamic? _themeOptionsCache;
+    private Dictionary<string, string>? _componentReplacementsCache;
     
-    private Dictionary<string, IThemeInfo> _availableThemes = new();
-    private Dictionary<Type, ITheme> _activeThemes = new();
+    private readonly Dictionary<string, IThemeInfo> _availableThemes = new();
+    private readonly Dictionary<Type, ITheme> _activeThemes = new();
     
     public IEnumerable<IThemeInfo> AvailableThemes => _availableThemes.Values;
     public dynamic Theme => _themeOptionsCache ?? GetCurrentThemeOptions();
@@ -71,7 +71,7 @@ public class ThemeManager : IThemeManager
     
     public Task AddThemeAsync(Type themeType) => AddThemeAsync(themeType, Guid.Empty);
 
-    public async Task RemoveTheme(string name)
+    public async Task RemoveThemeAsync(string name)
     {
         ThrowIfNotExists(name);
 
@@ -86,13 +86,13 @@ public class ThemeManager : IThemeManager
         }
     }
 
-    public async Task RemoveThemesForModule(Guid moduleId)
+    public async Task RemoveThemesForModuleAsync(Guid moduleId)
     {
         foreach (var (name, theme) in _availableThemes)
         {
             if (theme.ModuleId.Equals(moduleId))
             {
-                await RemoveTheme(name);
+                await RemoveThemeAsync(name);
             }
         }
     }
@@ -160,7 +160,9 @@ public class ThemeManager : IThemeManager
 
         foreach (var defaultOption in _evoscConfig.Theme)
         {
-            var key = defaultOption.Key.StartsWith("Theme.") ? defaultOption.Key[6..] : defaultOption.Key;
+            var key = defaultOption.Key.StartsWith("Theme.", StringComparison.Ordinal)
+                ? defaultOption.Key[6..]
+                : defaultOption.Key;
             
             themeOptions[key] = defaultOption.Value;
         }

@@ -714,7 +714,7 @@ public class ModuleManager : IModuleManager
 
     private async Task DisableThemesAsync(IModuleLoadContext moduleContext)
     {
-        await _themeManager.RemoveThemesForModule(moduleContext.LoadId);
+        await _themeManager.RemoveThemesForModuleAsync(moduleContext.LoadId);
     }
 
     private async Task StopBackgroundServicesAsync(IModuleLoadContext moduleContext)

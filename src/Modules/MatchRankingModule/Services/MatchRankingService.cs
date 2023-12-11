@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using System.Globalization;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
@@ -23,18 +24,14 @@ public class MatchRankingService : IMatchRankingService
     private readonly IManialinkManager _manialinkManager;
     private readonly IPlayerManagerService _playerManager;
     private readonly ILogger<MatchRankingService> _logger;
-    private readonly IEvoScBaseConfig _config;
-    private readonly IThemeManager _themes;
     private MatchRankingStore _matchRankingStore;
 
     public MatchRankingService(IManialinkManager manialinkManager, IPlayerManagerService playerManager,
-        ILogger<MatchRankingService> logger, IEvoScBaseConfig config, IThemeManager themes)
+        ILogger<MatchRankingService> logger)
     {
         _manialinkManager = manialinkManager;
         _playerManager = playerManager;
         _logger = logger;
-        _config = config;
-        _themes = themes;
         _matchRankingStore = new MatchRankingStore();
     }
 
@@ -52,7 +49,7 @@ public class MatchRankingService : IMatchRankingService
         {
             if (player.State == PlayerState.Spectating)
             {
-                await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+                await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetDataAsync());
             }
         }
     }
@@ -63,20 +60,15 @@ public class MatchRankingService : IMatchRankingService
 
         if (player.State == PlayerState.Spectating)
         {
-            await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+            await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetDataAsync());
         }
     }
 
-    private async Task<dynamic> GetWidgetData()
+    private async Task<dynamic> GetWidgetDataAsync()
     {
-        //var mappedScoresPrevious = (await MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores())).ToList()
-        //    .Take(ShowRows).ToList();
-        var mappedScoresLatest = (await MapScoresForWidget(_matchRankingStore.GetLatestMatchScores())).ToList()
-            .Take(ShowRows).ToList();
-
-        //var mappedScoresExisting = mappedScoresLatest
-        //    .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
-        //var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
+        var mappedScoresLatest = (await MapScoresForWidgetAsync(_matchRankingStore.GetLatestMatchScores()))
+            .Take(ShowRows)
+            .ToList();
 
         return new
         {
@@ -106,10 +98,10 @@ public class MatchRankingService : IMatchRankingService
             return;
         }
 
-        await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+        await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetDataAsync());
     }
 
-    private async Task<IEnumerable<LiveRankingWidgetPosition>> MapScoresForWidget(ScoresEventArgs? scores)
+    private async Task<IEnumerable<LiveRankingWidgetPosition>> MapScoresForWidgetAsync(ScoresEventArgs? scores)
     {
         if (scores == null)
         {
@@ -135,7 +127,7 @@ public class MatchRankingService : IMatchRankingService
                 score.Rank,
                 player,
                 player.GetLogin(),
-                (score.MatchPoints + score.RoundPoints).ToString(),
+                (score.MatchPoints + score.RoundPoints).ToString(CultureInfo.InvariantCulture),
                 -1,
                 false
             ));

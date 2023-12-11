@@ -176,7 +176,7 @@ public class ManialinkController : EvoScController<IManialinkInteractionContext>
             {
                 Name = validationResult.MemberNames.FirstOrDefault() ?? "Invalid Value.",
                 IsInvalid = false,
-                Message = validationResult?.ErrorMessage ?? ""
+                Message = validationResult.ErrorMessage ?? ""
             });
         }
         else
@@ -185,7 +185,7 @@ public class ManialinkController : EvoScController<IManialinkInteractionContext>
             {
                 Name = validationResult.MemberNames.FirstOrDefault() ?? "",
                 IsInvalid = true,
-                Message = validationResult?.ErrorMessage ?? "Invalid Value."
+                Message = validationResult.ErrorMessage ?? "Invalid Value."
             });
         }
     }

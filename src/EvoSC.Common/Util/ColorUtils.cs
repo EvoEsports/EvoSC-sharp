@@ -135,7 +135,7 @@ public static class ColorUtils
     public static string GrayScale(string hexColor)
     {
         var luma = Luma(hexColor);
-        return new Rgb() { R = luma, G = luma, B = luma }
+        return new Rgb { R = luma, G = luma, B = luma }
             .To<Hex>()
             .ToString()
             .Substring(1);
@@ -149,7 +149,7 @@ public static class ColorUtils
     public static string GrayScale(TextColor color)
     {
         var luma = Luma(color);
-        return new Rgb() { R = luma, G = luma, B = luma }
+        return new Rgb { R = luma, G = luma, B = luma }
             .To<Hex>()
             .ToString()
             .Substring(1);

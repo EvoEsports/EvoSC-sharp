@@ -38,9 +38,5 @@ public class ReadyCommandsController : EvoScController<ICommandInteractionContex
     }
 
     [ChatCommand("readyfakeplayer", "Add a fake player with the ready widget.")]
-    public async Task ReadyFakePlayerAsync()
-    {
-        var name = await _server.Remote.ConnectFakePlayerAsync();
-        Console.WriteLine(name);
-    }
+    public Task ReadyFakePlayerAsync() => _server.Remote.ConnectFakePlayerAsync();
 }

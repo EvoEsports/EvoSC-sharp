@@ -56,14 +56,14 @@ public interface IThemeManager
     /// </summary>
     /// <param name="name">Name of the theme to remove.</param>
     /// <returns></returns>
-    public Task RemoveTheme(string name);
+    public Task RemoveThemeAsync(string name);
     
     /// <summary>
     /// Remove all themes from a module.
     /// </summary>
     /// <param name="moduleId">ID of the module to remove themes from.</param>
     /// <returns></returns>
-    public Task RemoveThemesForModule(Guid moduleId);
+    public Task RemoveThemesForModuleAsync(Guid moduleId);
     
     /// <summary>
     /// Activate a theme. This will replace existing themes which this theme will

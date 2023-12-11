@@ -304,7 +304,7 @@ public class ManialinkManager : IManialinkManager
     }
 
     public void AddGlobalVariable<T>(string name, T value) =>
-        _engine.GlobalVariables.AddOrUpdate(name, value, (s, o) => value);
+        _engine.GlobalVariables.AddOrUpdate(name, value, (_, _) => value);
 
     public void RemoveGlobalVariable(string name)
     {
