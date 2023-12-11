@@ -71,6 +71,7 @@ public class ThemeConfigOptionsMapper : ITomlTypeMapper<DynamicThemeOptions>
         if (doc == null)
         {
             options[key] = tomlValue.StringValue;
+            return;
         }
 
         foreach (var entry in doc.Entries)
