@@ -3,7 +3,6 @@ using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
-using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MatchReadyModule.Controllers;
@@ -39,9 +38,5 @@ public class ReadyCommandsController : EvoScController<ICommandInteractionContex
     }
 
     [ChatCommand("readyfakeplayer", "Add a fake player with the ready widget.")]
-    public async Task ReadyFakePlayerAsync()
-    {
-        var name = await _server.Remote.ConnectFakePlayerAsync();
-        Console.WriteLine(name);
-    }
+    public Task ReadyFakePlayerAsync() => _server.Remote.ConnectFakePlayerAsync();
 }

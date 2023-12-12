@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.OpenPlanetModule.Config;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule.Models;

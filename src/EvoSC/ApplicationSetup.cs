@@ -15,6 +15,7 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
+using EvoSC.Common.Themes;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
@@ -79,6 +80,8 @@ public static class ApplicationSetup
             .Services(AppFeature.Permissions, s => s.AddEvoScPermissions())
 
             .Services(AppFeature.Manialinks, s => s.AddEvoScManialinks())
+                
+                .Services(AppFeature.Themes, s => s.AddEvoScThemes())
 
                 // initialize the application
             .Action("ActionMigrateDatabase", MigrateDatabase)

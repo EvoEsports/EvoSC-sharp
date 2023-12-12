@@ -33,4 +33,6 @@ public interface IServiceContainerManager
     /// <param name="moduleId">The ID of the module that requires the dependency.</param>
     /// <param name="dependencyId">The ID of the dependency.</param>
     public void RegisterDependency(Guid moduleId, Guid dependencyId);
+
+    public Container GetContainer(Guid moduleId);
 }

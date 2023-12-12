@@ -30,33 +30,34 @@
                           valign="center"
                           style="UICommon64_1"
                           substyle="BgFrame1"
-                          colorize="{{ primaryColor }}"
+                          colorize="{{ Theme.LiveRankingModule_LiveRanking_Default_BgHeaderGrad1 }}"
                           rot="90"
                     />
 
                     <!-- GRADIENT -->
                     <quad size="{{ w }} {{ headerHeight + 0.1 }}"
                           image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                          modulatecolor="{{ headerColor }}"
+                          modulatecolor="{{ Theme.LiveRankingModule_LiveRanking_Default_BgHeaderGrad2 }}"
                     />
 
                     <!-- LABEL -->
                     <label pos="2 {{ headerHeight / -2.0 - 0.4 }}"
                            text="Live Ranking"
                            valign="center2"
-                           textfont="GameFontExtraBold"
+                           textfont="{{ Font.Bold }}"
+                           textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                            textprefix="$i$t"
                            textsize="2"
                     />
 
                     <!-- LOGO -->
-                    <quad if='logoUrl != ""'
+                    <quad if='Theme.LiveRankingModule_LiveRanking_Default_Logo != ""'
                           pos="{{ w - 3.0 }} {{ headerHeight / -2.0 }}"
                           size="20 3.2"
                           valign="center"
                           halign="right"
                           keepratio="Fit"
-                          image="{{ logoUrl }}"
+                          image="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Logo }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -64,7 +65,7 @@
                 <!-- BACKGROUND -->
                 <quad pos="0 {{ -headerHeight + 0.1 }}"
                       size="{{ w - 0.15 }} {{ rowsVisible * (rowSpacing + rowHeight) + rowSpacing * 4.0 }}"
-                      bgcolor="24262f"
+                      bgcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgContent }}"
                       opacity="0.9"
                 />
             </frame>

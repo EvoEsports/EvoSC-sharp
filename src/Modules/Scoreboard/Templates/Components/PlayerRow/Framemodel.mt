@@ -6,12 +6,6 @@
     <import component="Scoreboard.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
     <import component="Scoreboard.Components.PlayerRow.ClubTag" as="ClubTag"/>
 
-    <property type="string" name="positionBackgroundColor"/>
-    <property type="string" name="backgroundColor"/>
-    <property type="string" name="primaryColor"/>
-    <property type="string" name="headerColor"/>
-    <property type="string" name="playerRowBackgroundColor"/>
-    <property type="string" name="playerRowHighlightColor"/>
     <property type="double" name="w"/>
     <property type="double" name="padding"/>
     <property type="double" name="rowHeight"/>
@@ -32,7 +26,6 @@
             <!-- Player Row Background -->
             <PlayerRowBackground id="player_row_bg"
                                  rowHeight="{{ rowHeight }}"
-                                 backgroundColor="{{ playerRowBackgroundColor }}"
                                  padding="{{ padding }}"
                                  w="{{ w - scrollBarWidth - rowSpacing - positionBoxWidth - rowSpacing }}"
                                  x="{{ positionBoxWidth + rowSpacing }}"
@@ -43,14 +36,12 @@
                       w="{{ positionBoxWidth }}"
                       h="{{ rowHeight }}"
                       z-index="5"
-                      positionBackgroundColor="{{ positionBackgroundColor }}"
             />
 
             <!-- Custom Label Background -->
             <CustomLabelBackground id="custom_gradient"
                                    x="{{ w - padding }}"
                                    rowHeight="{{ rowHeight }}"
-                                   primaryColor="{{ primaryColor }}"
                                    w="{{ w }}"
             />
 
@@ -71,8 +62,8 @@
                        size="{{ w / 3.0 }} {{ rowHeight }}"
                        valign="center"
                        textsize="2.6"
-                       textfont="GameFontSemiBold"
-                />
+                       textfont="{{ Font.Regular }}"
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
@@ -80,17 +71,17 @@
                        valign="center"
                        halign="right"
                        textsize="{{ textSize }}"
-                       textcolor="fff"
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_FrameModel_Text }}"
                        opacity="0.5"
-                       textfont="GameFontSemiBold"/>
+                       textfont="{{ Font.Regular }}"/>
 
                 <!-- Round Points -->
                 <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
                        textsize="{{ textSize }}"
-                       textcolor="{{ headerColor }}"
-                       textfont="GameFontSemiBold"/>
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_FrameModel_TextRoundPoints }}"
+                       textfont="{{ Font.Regular }}"/>
 
                 <!-- Custom Label (FINALIST, etc) -->
                 <label id="custom_label"
@@ -98,7 +89,8 @@
                        valign="center"
                        halign="right"
                        textsize="{{ textSize }}"
-                       textfont="GameFontRegular"/>
+                       textfont="{{ Font.Thin }}"
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
 
                 <!-- Player Score -->
                 <label id="score"
@@ -106,7 +98,8 @@
                        valign="center"
                        halign="right"
                        textsize="{{ textSize }}"
-                       textfont="GameFontRegular"/>
+                       textfont="{{ Font.Thin }}"
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
 
                 <!-- Points Box -->
                 <PointsBox id="points_box"
@@ -126,7 +119,6 @@
                            y="{{ rowHeight / -2.0 }}" 
                            rowHeight="{{ rowHeight }}"
                            innerSpacing="{{ innerSpacing }}"
-                           highlightColor="{{ primaryColor }}"
                            textsize="{{ textSize }}"
             />
         </framemodel>
@@ -184,7 +176,7 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ playerRowHighlightColor }}"));
+                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.ScoreboardModule_PlayerRow_FrameModel_BgRow }}"));
                 continue;
             }
         ***
@@ -194,8 +186,8 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                ResetPlayerBackgroundColor(backgroundFrame);
                 continue;
+                ResetPlayerBackgroundColor(backgroundFrame);
             }
         ***
         -->

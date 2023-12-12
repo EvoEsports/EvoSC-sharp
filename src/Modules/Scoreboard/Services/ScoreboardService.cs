@@ -1,7 +1,7 @@
-﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -14,18 +14,18 @@ public class ScoreboardService : IScoreboardService
 {
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
-    private readonly IEvoScBaseConfig _config;
     private readonly IMatchSettingsService _matchSettingsService;
     private readonly IScoreboardTrackerService _scoreboardTracker;
+    private readonly IThemeManager _themes;
 
-    public ScoreboardService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config,
-        IMatchSettingsService matchSettingsService, IScoreboardTrackerService scoreboardTracker)
+    public ScoreboardService(IManialinkManager manialinks, IServerClient server,
+        IMatchSettingsService matchSettingsService, IScoreboardTrackerService scoreboardTracker, IThemeManager themes)
     {
         _manialinks = manialinks;
         _server = server;
-        _config = config;
         _matchSettingsService = matchSettingsService;
         _scoreboardTracker = scoreboardTracker;
+        _themes = themes;
     }
 
     public async Task ShowScoreboardToAllAsync()
@@ -44,14 +44,7 @@ public class ScoreboardService : IScoreboardService
         {
             _scoreboardTracker.MaxPlayers,
             _scoreboardTracker.RoundsPerMap,
-            PositionColors = new Dictionary<int, string> { { 1, "d1b104" }, { 2, "9e9e9e" }, { 3, "915d29" } },
-            headerColor = _config.Theme.UI.HeaderBackgroundColor,
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            positionBackgroundColor = _config.Theme.UI.Scoreboard.PositionBackgroundColor,
-            backgroundColor = _config.Theme.UI.BackgroundColor,
-            playerRowHighlightColor = _config.Theme.UI.Scoreboard.PlayerRowHighlightColor,
-            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor,
-            logoUrl = _config.Theme.UI.LogoUrl
+            PositionColors = new Dictionary<int, string> { { 1, _themes.Theme.Gold }, { 2, _themes.Theme.Silver }, { 3, _themes.Theme.Bronze } },
         });
     }
 

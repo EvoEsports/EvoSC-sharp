@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -15,21 +14,19 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
 
     private readonly IManialinkManager _manialinks;
     private readonly IServerClient _server;
-    private readonly IEvoScBaseConfig _config;
 
-    public SpectatorTargetInfoService(IManialinkManager manialinks, IServerClient server, IEvoScBaseConfig config)
+    public SpectatorTargetInfoService(IManialinkManager manialinks, IServerClient server)
     {
         _manialinks = manialinks;
         _server = server;
-        _config = config;
     }
 
     public async Task SendManiaLinkAsync() =>
-        await _manialinks.SendManialinkAsync(WidgetTemplate, GetWidgetData());
+        await _manialinks.SendManialinkAsync(WidgetTemplate);
 
 
     public async Task SendManiaLinkAsync(string playerLogin) =>
-        await _manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, GetWidgetData());
+        await _manialinks.SendManialinkAsync(playerLogin, WidgetTemplate);
 
     public async Task HideManiaLinkAsync() =>
         await _manialinks.HideManialinkAsync(WidgetTemplate);
@@ -101,15 +98,5 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
             time = 0,
             cpIndex = -1
         });
-    }
-    
-    private dynamic GetWidgetData()
-    {
-        return new
-        {
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            backgroundColor = _config.Theme.UI.BackgroundColor,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor
-        };
     }
 }

@@ -46,7 +46,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Manialinks.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetName", "src\Modules\SetName\SetName.csproj", "{568D81FE-858A-4052-B59B-9381E0FE604C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastestCp", "src\Modules\FastestCp\FastestCp.csproj", "{9E1335F9-6C39-4B3F-9CEB-A65EEDDF798D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastestCpModule", "src\Modules\FastestCpModule\FastestCpModule.csproj", "{9E1335F9-6C39-4B3F-9CEB-A65EEDDF798D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}"
 EndProject
@@ -104,6 +104,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule.Tests", "tests\Modules\MatchTrackerModule.Tests\MatchTrackerModule.Tests.csproj", "{9EF4D340-0C49-4A15-9BCF-6CD9508AA7DE}"
 EndProject
+
+
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

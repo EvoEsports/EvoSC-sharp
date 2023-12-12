@@ -29,14 +29,14 @@
                           size="{{ w + 20.1 }} {{ headerHeight + 0.3 }}"
                           style="UICommon64_1"
                           substyle="BgFrame1"
-                          colorize="{{ headerColor }}"
+                          colorize="{{ Theme.MatchRankingModule_MatchRanking_Default_BgHeaderGrad1 }}"
                     />
 
                     <!-- GRADIENT -->
                     <quad pos="{{ w }} {{ -headerHeight }}"
                           size="{{ w }} {{ headerHeight - 0.1 }}"
                           image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                          modulatecolor="{{ primaryColor }}"
+                          modulatecolor="{{ Theme.MatchRankingModule_MatchRanking_Default_BgHeaderGrad2 }}"
                           rot="180"
                     />
 
@@ -44,19 +44,20 @@
                     <label pos="2 {{ headerHeight / -2.0 - 0.4 }}"
                            text="Match Ranking"
                            valign="center2"
-                           textfont="GameFontExtraBold"
+                           textfont="{{ Font.Bold }}"
                            textprefix="$i$t"
                            textsize="2"
+                           textcolor="{{ Theme.MatchRankingModule_MatchRanking_Default_Text }}"
                     />
 
                     <!-- LOGO -->
-                    <quad if='logoUrl != ""'
+                    <quad if='Theme.MatchRankingModule_MatchRanking_Default_Logo != ""'
                           pos="{{ w - 3.0 }} {{ headerHeight / -2.0 }}"
                           size="20 3.2"
                           valign="center"
                           halign="right"
                           keepratio="Fit"
-                          image="{{ logoUrl }}"
+                          image="{{ Theme.MatchRankingModule_MatchRanking_Default_Logo }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -64,7 +65,7 @@
                 <!-- BACKGROUND -->
                 <quad pos="0 {{ -headerHeight + 0.1 }}"
                       size="{{ w }} {{ rowsVisible * (rowSpacing + rowHeight) + rowSpacing * 4.0 }}"
-                      bgcolor="24262f"
+                      bgcolor="{{ Theme.MatchRankingModule_MatchRanking_Default_BgContent }}"
                       opacity="0.9"
                 />
             </frame>
@@ -76,7 +77,7 @@
                              w="{{ w - 8.0 }}"
                              h="{{ rowHeight }}"
                              rowSpacing="{{ rowSpacing }}"
-                             playerRowBackgroundColor="{{ playerRowBackgroundColor }}"
+                             playerRowBackgroundColor="{{ Theme.MatchRankingModule_MatchRanking_Default_BgRow }}"
                              ranking="{{ position }}"
                 />
             </frame>

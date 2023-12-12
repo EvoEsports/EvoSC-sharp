@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>EvoSC.Modules.Official.FastestCpModule</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
+
+        <InternalsVisibleTo Include="FastestCp.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Templates\**\*.mt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+</Project>

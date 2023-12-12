@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using EvoSC.Common.Util.EnumIdentifier;
-using MySql.Data.MySqlClient;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Util;

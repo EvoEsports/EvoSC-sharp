@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using System.Globalization;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
@@ -22,17 +22,14 @@ public class LiveRankingService : ILiveRankingService
     private readonly IManialinkManager _manialinkManager;
     private readonly LiveRankingStore _liveRankingStore;
     private readonly IServerClient _client;
-    private readonly IEvoScBaseConfig _config;
     private bool _isRoundsMode;
 
     public LiveRankingService(ILogger<LiveRankingService> logger, ILoggerFactory loggerFactory,
-        IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager,
-        IEvoScBaseConfig config)
+        IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
         _client = client;
-        _config = config;
         _liveRankingStore =
             new LiveRankingStore(loggerFactory.CreateLogger<LiveRankingStore>(), playerManager);
     }
@@ -41,7 +38,7 @@ public class LiveRankingService : ILiveRankingService
     {
         _logger.LogTrace("LiveRankingModule enabled");
         await CheckIsRoundsModeAsync();
-        await HideNadeoScoreboard();
+        await HideNadeoScoreboardAsync();
         if (_isRoundsMode)
         {
             await _liveRankingStore.ResetLiveRankingsAsync();
@@ -50,7 +47,7 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.IncreaseTrackCounter();
 
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
-                await GetWidgetData());
+                await GetWidgetDataAsync());
         }
 
         await Task.CompletedTask;
@@ -71,15 +68,14 @@ public class LiveRankingService : ILiveRankingService
             _logger.LogTrace("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
                 args.AccountId, _isRoundsMode);
 
-            //var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
 
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
-                await GetWidgetData());
+                await GetWidgetDataAsync());
         }
     }
 
-    private async Task<dynamic> GetWidgetData()
+    private async Task<dynamic> GetWidgetDataAsync()
     {
         var currentRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).Take(ShowRows).ToList();
         await CalculateDiffsAsync(currentRanking);
@@ -88,32 +84,7 @@ public class LiveRankingService : ILiveRankingService
         return new
         {
             rankings = widgetCurrentRanking,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor,
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            logoUrl = _config.Theme.UI.LogoWhiteUrl,
-            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
         };
-
-/*
-        //Map ranking entries for widget
-        var widgetPreviousRanking = GetLiveRankingForWidget(previousRanking.Take(ShowRows).ToList());
-
-        //Split current ranking into previously existing and new players
-        var widgetExistingRanking = widgetCurrentRanking
-            .Where(cr => widgetPreviousRanking.Contains(cr, new RankingComparer())).ToList();
-        var widgetNewRanking = widgetCurrentRanking.Except(widgetExistingRanking).ToList();
-
-        return new
-        {
-            previousRankings = widgetPreviousRanking,
-            rankingsExisting = widgetExistingRanking,
-            rankingsNew = widgetNewRanking,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor,
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            logoUrl = _config.Theme.UI.LogoWhiteUrl,
-            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
-        };
-        */
     }
 
     public Task CalculateDiffsAsync(List<ExpandedLiveRankingPosition> rankings)
@@ -138,11 +109,10 @@ public class LiveRankingService : ILiveRankingService
             _logger.LogTrace("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
                 _isRoundsMode);
 
-            //var previousRanking = (await _liveRankingStore.GetFullLiveRankingAsync()).ToList();
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
 
             await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
-                await GetWidgetData());
+                await GetWidgetDataAsync());
         }
     }
 
@@ -184,12 +154,12 @@ public class LiveRankingService : ILiveRankingService
     {
         _logger.LogTrace("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
         await _liveRankingStore.ResetLiveRankingsAsync();
-        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
+        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetDataAsync());
     }
 
     public async Task SendManialinkAsync()
     {
-        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetData());
+        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetDataAsync());
     }
 
     public async Task OnEndRoundAsync(RoundEventArgs args)
@@ -212,18 +182,18 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnEndMatchAsync(EndMatchGbxEventArgs args)
     {
-        await HideManialink();
+        await HideManialinkAsync();
     }
 
     public async Task OnPodiumStartAsync(PodiumEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        await HideManialink();
+        await HideManialinkAsync();
     }
 
-    public async Task HideNadeoScoreboard()
+    public async Task HideNadeoScoreboardAsync()
     {
-        var hudSettings = new List<string>()
+        var hudSettings = new List<string>
         {
             @"{
     ""uimodules"": [
@@ -239,7 +209,7 @@ public class LiveRankingService : ILiveRankingService
         await _client.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
-    private async Task HideManialink()
+    private async Task HideManialinkAsync()
     {
         await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
     }
@@ -250,15 +220,15 @@ public class LiveRankingService : ILiveRankingService
 
         if (isDelta)
         {
-            return $"+ {Math.Abs(ts.Seconds)}.{ts.ToString("fff")}";
+            return $"+ {Math.Abs(ts.Seconds)}.{ts.ToString("fff", CultureInfo.InvariantCulture)}";
         }
 
         if (time > 60_000)
         {
-            return $"{ts.ToString(@"mm\:ss\.fff")}";
+            return $"{ts.ToString(@"mm\:ss\.fff", CultureInfo.InvariantCulture)}";
         }
 
-        return $"{ts.ToString(@"ss\.fff")}";
+        return $"{ts.ToString(@"ss\.fff", CultureInfo.InvariantCulture)}";
     }
 
     private List<LiveRankingWidgetPosition> GetLiveRankingForWidget(List<ExpandedLiveRankingPosition> liveRanking)
@@ -290,7 +260,7 @@ public class LiveRankingService : ILiveRankingService
         {
             "Trackmania/TM_Rounds_Online.Script.txt", "Trackmania/TM_Cup_Online.Script.txt"
         };
-        //TODO: implement
+        //TODO: https://github.com/EvoEsports/EvoSC-sharp/issues/234 
         _isRoundsMode = true;
         return Task.FromResult(_isRoundsMode);
     }

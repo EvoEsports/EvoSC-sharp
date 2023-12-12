@@ -115,5 +115,11 @@ public enum AppFeature
     /// Manage, add, remove, display manialinks and respond to actions. The manialink framework.
     /// </summary>
     [Identifier(NoPrefix = true)]
-    Manialinks
+    Manialinks,
+    
+    /// <summary>
+    /// Add, remove and manage themes using the theme manager.
+    /// </summary>
+    [Identifier(NoPrefix = true)]
+    Themes
 }

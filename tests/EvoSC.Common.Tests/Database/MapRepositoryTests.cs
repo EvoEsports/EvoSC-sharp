@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Repository.Maps;
-using EvoSC.Common.Database.Repository.Players;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Testing.Database;
-using GbxRemoteNet.Structs;
 using LinqToDB;
 using Xunit;
 

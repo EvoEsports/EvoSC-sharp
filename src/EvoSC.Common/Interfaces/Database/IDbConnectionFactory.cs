@@ -1,5 +1,4 @@
 ﻿using LinqToDB;
-using LinqToDB.Data;
 
 namespace EvoSC.Common.Interfaces.Database;
 

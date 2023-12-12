@@ -63,7 +63,7 @@
             <Button id="btnHideAlert" text="Hide Alert" x="88" y="-6" />
         </Window>
         
-        <Alert text="Hello there!" id="myAlert" y="70" />
+        <Alert text="Hello there!" id="myAlert" y="70" type="primary" />
     </template>
     
     <script>

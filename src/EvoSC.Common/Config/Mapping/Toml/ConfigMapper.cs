@@ -11,5 +11,6 @@ public static class ConfigMapper
     public static void SetupDefaultMappers()
     {
         AddMapper(new TextColorTomlMapper());
+        AddMapper(new ThemeConfigOptionsMapper());
     }
 }

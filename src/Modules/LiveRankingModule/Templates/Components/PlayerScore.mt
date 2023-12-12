@@ -32,9 +32,9 @@
                    text="{{ ranking?.position }}"
                    halign="center"
                    valign="center"
-                   textfont="GameFontExtraBold"
+                   textfont="{{ Font.Bold }}"
                    textsize="2"
-                   textcolor="000000"
+                   textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_TextPosition }}"
                    textprefix="$i"
             />
 
@@ -44,7 +44,7 @@
                           size="2 {{ h + 0.25 }}"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          colorize="{{ playerRowBackgroundColor }}"
+                          colorize="{{ Theme.LiveRankingModule_PlayerScore_Default_Bg }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -53,7 +53,7 @@
                 <quad pos="1 0"
                       size="{{ w - 1 }} {{ h }}"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ playerRowBackgroundColor }}"
+                      modulatecolor="{{ Theme.LiveRankingModule_PlayerScore_Default_Bg }}"
                       opacity="0.75"
                 />
 
@@ -62,9 +62,10 @@
                        size="{{ w * 0.66 }} 6"
                        text="{{ ranking?.player?.NickName }}"
                        valign="center2"
-                       textfont="GameFontSemiBold"
+                       textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
+                       textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                 />
 
                 <!-- TIME -->
@@ -74,9 +75,10 @@
                        text="{{ ranking?.time }}"
                        valign="center2"
                        halign="right"
-                       textfont="GameFontSemiBold"
+                       textfont="{{ Font.Regular }}"
                        textsize="1.15"
                        textprefix="$i$t"
+                       textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                 />
 
                 <!-- CP-ID BOX -->
@@ -84,7 +86,7 @@
                       size="6 {{ h - 2.0 }}"
                       style="UICommon64_1"
                       substyle="BgFrame2"
-                      colorize="{{ playerRowBackgroundColor }}"
+                      colorize="{{ Theme.LiveRankingModule_PlayerScore_Default_Bg }}"
                       halign="right"
                       valign="center"
                       opacity="0.75"
@@ -93,13 +95,14 @@
                 <label id="cp_index"
                        pos="{{ w - 5.0 }} {{ h / -2.0 }}"
                        size="5 5"
-                       text='{{ ranking != null ? (ranking.isFinish ? "" : ranking.cpIndex) : "" }}'
+                       text='{{ ranking != null ? (ranking.isFinish ? Icons.FlagCheckered : ranking.cpIndex) : "" }}'
                        valign="center2"
                        halign="center"
-                       textfont="GameFontBlack"
+                       textfont="{{ Font.ExtraBold }}"
                        textsize="0.9"
                        opacity="0.9"
                        textprefix="$i$t"
+                       textcolor="{{ Theme.LiveRankingModule_LiveRanking_Default_Text }}"
                 />
             </frame>
         </frame>

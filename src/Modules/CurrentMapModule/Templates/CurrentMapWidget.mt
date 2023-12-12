@@ -2,20 +2,15 @@
     <using namespace="EvoSC.Common.Interfaces.Models"/>
     <using namespace="EvoSC.Modules.Official.WorldRecordModule.Models"/>
 
-    <property type="IMap?" name="map" default="null"/>
-    <property type="string" name="mapauthor" default="null"/>
-    <property type="WorldRecord?" name="record" default="null"/>
+    <property type="IMap?" name="map" default="null" />
+    <property type="string" name="mapauthor" default="null" />
+    <property type="WorldRecord?" name="record" default="null" />
 
-    <property type="double" name="scale" default="0.9"/>
-    <property type="double" name="w" default="68.0"/>
-    <property type="double" name="y" default="85.0"/>
-    <property type="double" name="headerHeight" default="8.0"/>
-    <property type="double" name="bodyHeight" default="22.0"/>
-
-    <property type="string" name="headerColor" default="c21d62"/>
-    <property type="string" name="primaryColor" default="4357ea"/>
-    <property type="string" name="playerRowBackgroundColor" default="999999"/>
-    <property type="string" name="logoUrl" default=""/>
+    <property type="double" name="scale" default="0.9" />
+    <property type="double" name="w" default="68.0" />
+    <property type="double" name="y" default="85.0" />
+    <property type="double" name="headerHeight" default="8.0" />
+    <property type="double" name="bodyHeight" default="22.0" />
 
     <template>
         <frame pos="{{ 160.0 - w * scale }} {{ y }}" scale="{{ scale }}" z-index="100">
@@ -26,14 +21,14 @@
                           size="{{ w + 20.1 }} {{ headerHeight + 0.3 }}"
                           style="UICommon64_1"
                           substyle="BgFrame1"
-                          colorize="{{ headerColor }}"
+                          colorize="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgHeaderGrad1 }}"
                     />
 
                     <!-- GRADIENT -->
                     <quad pos="{{ w }} {{ -headerHeight }}"
                           size="{{ w }} {{ headerHeight - 0.1 }}"
                           image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                          modulatecolor="{{ primaryColor }}"
+                          modulatecolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgHeaderGrad2 }}"
                           rot="180"
                     />
 
@@ -41,19 +36,20 @@
                     <label pos="2 {{ headerHeight / -2.0 - 0.4 }}"
                            text="Current Map"
                            valign="center2"
-                           textfont="GameFontExtraBold"
+                           textfont="{{ Font.Bold }}"
                            textprefix="$i$t"
                            textsize="2"
+                           textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                     />
 
                     <!-- LOGO -->
-                    <quad if='logoUrl != ""'
+                    <quad if='Theme.CurrentMapModule_CurrentMapWidget_Default_Logo != ""'
                           pos="{{ w - 3.0 }} {{ headerHeight / -2.0 }}"
                           size="20 3.2"
                           valign="center"
                           halign="right"
                           keepratio="Fit"
-                          image="{{ logoUrl }}"
+                          image="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Logo }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -61,7 +57,7 @@
                 <!-- BACKGROUND -->
                 <quad pos="0 {{ -headerHeight + 0.1 }}"
                       size="{{ w }} {{ bodyHeight }}"
-                      bgcolor="24262f"
+                      bgcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgContent }}"
                       opacity="0.9"
                 />
             </frame>
@@ -72,7 +68,7 @@
                           size="2 8.4"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          colorize="{{ playerRowBackgroundColor }}"
+                          colorize="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgRow }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -81,7 +77,7 @@
                 <quad pos="1 0"
                       size="{{ w - 10.0 }} 8"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ playerRowBackgroundColor }}"
+                      modulatecolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_BgRow }}"
                       opacity="0.75"
                 />
             </framemodel>
@@ -93,12 +89,14 @@
                     <label pos="2 0"
                            text='{{ map?.Name ?? "loading..." }}'
                            textsize="1.4"
-                           textfont="GameFontSemiBold"
+                           textfont="{{ Font.Regular }}"
+                           textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                     />
                     <label pos="2 -3.2"
                            text='by {{ mapauthor ?? "loading..." }}'
                            textsize="1.1"
-                           textfont="GameFontRegular"
+                           textfont="{{ Font.Thin }}"
+                           textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                     />
                 </frame>
 
@@ -108,12 +106,14 @@
                         <label pos="2 0"
                                text="Record: {{ record?.Time.ToString() }} [{{ record?.Source }}]"
                                textsize="1.4"
-                               textfont="GameFontSemiBold"
+                               textfont="{{ Font.Regular }}"
+                               textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                         />
                         <label pos="2 -3.2"
                                text="by {{ record?.PlayerName }}"
                                textsize="1.1"
-                               textfont="GameFontRegular"
+                               textfont="{{ Font.Thin }}"
+                               textcolor="{{ Theme.CurrentMapModule_CurrentMapWidget_Default_Text }}"
                         />
                     </frame>
                 </frame>

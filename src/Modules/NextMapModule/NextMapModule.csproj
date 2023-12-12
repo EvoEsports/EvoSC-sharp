@@ -22,5 +22,6 @@
         <EmbeddedResource Update="Localization.resx" />
     </ItemGroup>
 
+
 </Project>
 

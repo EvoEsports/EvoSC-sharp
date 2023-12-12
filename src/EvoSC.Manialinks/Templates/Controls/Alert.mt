@@ -14,11 +14,11 @@
     <!-- The area width of the alert text. -->
     <property type="double" name="width" default="60.0" />
     
-    <!-- Icon to show for the alert. -->
-    <property type="string" name="icon" default="" />
-    
     <!-- The text to display in the alert. -->
     <property type="string" name="text" default="This is an alert" />
+
+    <!-- The text to display in the alert. -->
+    <property type="string" name="type" default="primary" />
     
     <template>
         <frame 
@@ -34,7 +34,7 @@
                 <framemodel id="EvoSC_Model_Alert_Circle_C1_{{ id }}">
                     <quad
                             size="4 4"
-                            modulatecolor="FAFAFA"
+                            modulatecolor="{{ Theme.UI_Alert_Default_BgSecondary }}"
                             image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
                     />
                 </framemodel>
@@ -42,13 +42,13 @@
                 <framemodel id="EvoSC_Model_Alert_Circle_C2_{{ id }}">
                     <quad
                             size="4 4"
-                            modulatecolor="FF0058"
+                            modulatecolor="{{ Util.TypeToColorBg(type) }}"
                             image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
                     />
                 </framemodel>
 
-                <quad bgcolor="FF0058" pos="5 0" size="{{ width }} 7" />
-                <quad bgcolor="FF0058" pos="{{ width + 5 }} 0" size="2 5" />
+                <quad bgcolor="{{ Util.TypeToColorBg(type) }}" pos="5 0" size="{{ width }} 7" />
+                <quad bgcolor="{{ Util.TypeToColorBg(type) }}" pos="{{ width + 5 }} 0" size="2 5" />
                 <frame size="2 2" pos="{{ width + 7 }} -7" rot="180">
                     <frameinstance modelid="EvoSC_Model_Alert_Circle_C2_{{ id }}" />
                 </frame>
@@ -60,17 +60,13 @@
                 <frame size="2 2" pos="7 -7" rot="180">
                     <frameinstance modelid="EvoSC_Model_Alert_Circle_C1_{{ id }}" />
                 </frame>
+              
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgSecondary }}" pos="2 0" size="5 2" />
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgSecondary }}" pos="0 -5" size="5 2" />
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgSecondary }}" pos="0 -2" size="7 3" />
 
-                <frame size="5 5">
-                    <label text="something" />
-                </frame>
-
-                <quad bgcolor="FAFAFA" pos="2 0" size="5 2" />
-                <quad bgcolor="FAFAFA" pos="0 -5" size="5 2" />
-                <quad bgcolor="FAFAFA" pos="0 -2" size="7 3" />
-
-                <label text="{{ icon }}" textcolor="FF0058" valign="center" halign="center" pos="3.5 -3.3" />
-                <label class="text" text="{{ text }}" textcolor="FAFAFA" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
+                <label text="{{ Util.TypeToIcon(type) }}" textcolor="{{ Util.TypeToColorBg(type) }}" valign="center" halign="center" pos="3.5 -3.3" />
+                <label class="text" text="{{ text }}" textcolor="{{ Theme.UI_Alert_Default_Text }}" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
             </frame>
         </frame>
     </template>

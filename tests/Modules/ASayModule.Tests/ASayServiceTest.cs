@@ -1,7 +1,6 @@
 ﻿using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
@@ -11,8 +10,6 @@ using EvoSC.Modules.Official.ASayModule.Services;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace EvoSC.Modules.Official.ASayModule.Tests;

@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
-using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using GbxRemoteNet.Events;
 

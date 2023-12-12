@@ -7,16 +7,10 @@
     <property type="bool" name="isChecked" />
     <property type="string" name="text" />
 
-    <property type="string" name="primaryColor" default="ff0058"/>
-    <property type="string" name="backgroundColor" default="47495A"/>
-
     <property type="double" name="titleBarHeight" default="6.0"/>
     
     <property type="double" name="buttonBarHeight" default="8.0"/>
     <property type="string" name="buttonText" default="Close"/>
-
-    <property type="string" name="checkboxUncheckedIcon" default="" />
-    <property type="string" name="checkboxCheckedIcon" default="" />
 
     <property type="double" name="w" default="160" />
     <property type="double" name="h" default="90" />

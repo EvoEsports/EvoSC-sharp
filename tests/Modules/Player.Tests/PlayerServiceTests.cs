@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
-using EvoSC.Common.Util.Auditing;
 using EvoSC.Modules.Official.Player.Interfaces;
 using EvoSC.Modules.Official.Player.Services;
 using EvoSC.Testing;

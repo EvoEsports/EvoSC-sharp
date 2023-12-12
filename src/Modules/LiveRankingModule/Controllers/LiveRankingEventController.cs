@@ -1,11 +1,11 @@
 ﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 using GbxRemoteNet.Events;
-using EvoSC.Common.Interfaces.Controllers;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Controllers;
 

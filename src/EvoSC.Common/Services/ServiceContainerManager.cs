@@ -143,7 +143,17 @@ public class ServiceContainerManager : IServiceContainerManager
         _dependencyServices[moduleId].Add(dependencyId);
         _logger.LogDebug("Registered dependency '{DepId}' for '{ContainerId}'", dependencyId, moduleId);
     }
-    
+
+    public Container GetContainer(Guid moduleId)
+    {
+        if (!_containers.ContainsKey(moduleId))
+        {
+            throw new InvalidOperationException($"Container '{moduleId}' was not found to have a container.");
+        }
+
+        return _containers[moduleId];
+    }
+
     private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid containerId)
     {
         try
@@ -173,20 +183,12 @@ public class ServiceContainerManager : IServiceContainerManager
                     }
                 }
                 
-                try
-                {
-                    _logger.LogTrace(
-                        "Dependencies does not have service '{Service}' for {Container}. Will try core services",
-                        e.UnregisteredServiceType,
-                        containerId);
-                    
-                    return _app.Services.GetInstance(e.UnregisteredServiceType);
-                }
-                catch (ActivationException ex)
-                {
-                    // _logger.LogError(ex, "Failed to get EvoSC core service");
-                    throw;
-                }
+                _logger.LogTrace(
+                    "Dependencies does not have service '{Service}' for {Container}. Will try core services",
+                    e.UnregisteredServiceType,
+                    containerId);
+                
+                return _app.Services.GetInstance(e.UnregisteredServiceType);
             });
         }
         catch (Exception ex)

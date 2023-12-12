@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using System.Globalization;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
@@ -7,7 +7,6 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
-using EvoSC.Modules.Official.LiveRankingModule.Utils;
 using EvoSC.Modules.Official.MatchRankingModule.Interfaces;
 using EvoSC.Modules.Official.MatchRankingModule.Models;
 using Microsoft.Extensions.Logging;
@@ -23,16 +22,14 @@ public class MatchRankingService : IMatchRankingService
     private readonly IManialinkManager _manialinkManager;
     private readonly IPlayerManagerService _playerManager;
     private readonly ILogger<MatchRankingService> _logger;
-    private readonly IEvoScBaseConfig _config;
     private MatchRankingStore _matchRankingStore;
 
     public MatchRankingService(IManialinkManager manialinkManager, IPlayerManagerService playerManager,
-        ILogger<MatchRankingService> logger, IEvoScBaseConfig config)
+        ILogger<MatchRankingService> logger)
     {
         _manialinkManager = manialinkManager;
         _playerManager = playerManager;
         _logger = logger;
-        _config = config;
         _matchRankingStore = new MatchRankingStore();
     }
 
@@ -50,7 +47,7 @@ public class MatchRankingService : IMatchRankingService
         {
             if (player.State == PlayerState.Spectating)
             {
-                await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+                await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetDataAsync());
             }
         }
     }
@@ -61,28 +58,19 @@ public class MatchRankingService : IMatchRankingService
 
         if (player.State == PlayerState.Spectating)
         {
-            await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+            await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetDataAsync());
         }
     }
 
-    private async Task<dynamic> GetWidgetData()
+    private async Task<dynamic> GetWidgetDataAsync()
     {
-        //var mappedScoresPrevious = (await MapScoresForWidget(_matchRankingStore.GetPreviousMatchScores())).ToList()
-        //    .Take(ShowRows).ToList();
-        var mappedScoresLatest = (await MapScoresForWidget(_matchRankingStore.GetLatestMatchScores())).ToList()
-            .Take(ShowRows).ToList();
-
-        //var mappedScoresExisting = mappedScoresLatest
-        //    .Where(ranking => mappedScoresPrevious.Contains(ranking, new RankingComparer())).ToList();
-        //var mappedScoresNew = mappedScoresLatest.Except(mappedScoresExisting).ToList();
+        var mappedScoresLatest = (await MapScoresForWidgetAsync(_matchRankingStore.GetLatestMatchScores()))
+            .Take(ShowRows)
+            .ToList();
 
         return new
         {
-            Scores = mappedScoresLatest,
-            headerColor = _config.Theme.UI.HeaderBackgroundColor,
-            primaryColor = _config.Theme.UI.PrimaryColor,
-            logoUrl = _config.Theme.UI.LogoWhiteUrl,
-            playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+            Scores = mappedScoresLatest
         };
     }
 
@@ -108,10 +96,10 @@ public class MatchRankingService : IMatchRankingService
             return;
         }
 
-        await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetData());
+        await _manialinkManager.SendManialinkAsync(player, Template, await GetWidgetDataAsync());
     }
 
-    private async Task<IEnumerable<LiveRankingWidgetPosition>> MapScoresForWidget(ScoresEventArgs? scores)
+    private async Task<IEnumerable<LiveRankingWidgetPosition>> MapScoresForWidgetAsync(ScoresEventArgs? scores)
     {
         if (scores == null)
         {
@@ -137,7 +125,7 @@ public class MatchRankingService : IMatchRankingService
                 score.Rank,
                 player,
                 player.GetLogin(),
-                (score.MatchPoints + score.RoundPoints).ToString(),
+                (score.MatchPoints + score.RoundPoints).ToString(CultureInfo.InvariantCulture),
                 -1,
                 false
             ));

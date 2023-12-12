@@ -25,6 +25,7 @@ public class ModuleLoadContext : IModuleLoadContext
     public required string RootNamespace { get; init; }
     
     public required ILocalizationManager? Localization { get; init; }
+    public required IReadOnlyList<Type> Themes { get; init; }
 
     public bool IsEnabled { get; private set; }
 

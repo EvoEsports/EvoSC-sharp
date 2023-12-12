@@ -13,7 +13,6 @@ public class ASayController : EvoScController<CommandInteractionContext>
 
     public ASayController(IASayService asayService)
     {
-
         _asayService = asayService;
     }
 

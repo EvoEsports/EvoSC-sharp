@@ -2,7 +2,6 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -10,9 +9,6 @@ using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
-using EvoSC.Common.Util.MatchSettings;
-using EvoSC.Common.Util.MatchSettings.Builders;
-using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Manialinks.Interfaces;
 using GbxRemoteNet.Events;
@@ -91,5 +87,11 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
                 Login = Context.Player.GetLogin(), 
                 IsSpectator = false
             });
+    }
+
+    [ChatCommand("fakeplayer", "Add a fake player to the game.")]
+    public async Task AddFakePlayer()
+    {
+        await _server.Remote.ConnectFakePlayerAsync();
     }
 }

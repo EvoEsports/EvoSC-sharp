@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Remote.EventArgsModels;
-using GbxRemoteNet.Events;
+﻿using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 

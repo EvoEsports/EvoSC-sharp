@@ -25,14 +25,14 @@
                           size="{{ w + 20.1 }} {{ headerHeight + 0.3 }}"
                           style="UICommon64_1"
                           substyle="BgFrame1"
-                          colorize="{{ headerColor }}"
+                          colorize="{{ Theme.NextMapModule_NextMap_Default_BgHeaderGrad1 }}"
                     />
     
                     <!-- GRADIENT -->
                     <quad pos="{{ w }} {{ -headerHeight }}"
                           size="{{ w }} {{ headerHeight - 0.1 }}"
                           image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                          modulatecolor="{{ primaryColor }}"
+                          modulatecolor="{{ Theme.NextMapModule_NextMap_Default_BgHeaderGrad2 }}"
                           rot="180"
                     />
     
@@ -40,9 +40,10 @@
                     <label pos="2 {{ headerHeight / -2.0 - 0.4 }}"
                            text="Next Map"
                            valign="center2"
-                           textfont="GameFontExtraBold"
+                           textfont="{{ Font.Bold }}"
                            textprefix="$i$t"
                            textsize="2"
+                           textcolor="{{ Theme.NextMapModule_NextMap_Default_Text }}"
                     />
     
                     <!-- LOGO -->
@@ -52,7 +53,7 @@
                           valign="center"
                           halign="right"
                           keepratio="Fit"
-                          image="{{ logoUrl }}"
+                          image="{{ Theme.NextMapModule_NextMap_Default_Logo }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -60,7 +61,7 @@
                 <!-- BACKGROUND -->
                 <quad pos="0 {{ -headerHeight + 0.1 }}"
                       size="{{ w }} {{ bodyHeight }}"
-                      bgcolor="24262f"
+                      bgcolor="{{ Theme.NextMapModule_NextMap_Default_BgContent }}"
                       opacity="0.9"
                 />
             </frame>
@@ -71,7 +72,7 @@
                           size="2 8.4"
                           style="UICommon64_1"
                           substyle="BgFrame2"
-                          colorize="{{ playerRowBackgroundColor }}"
+                          colorize="{{ Theme.NextMapModule_NextMap_Default_BgRow }}"
                           opacity="0.75"
                     />
                 </frame>
@@ -80,7 +81,7 @@
                 <quad pos="1 0"
                       size="{{ w - 10.0 }} 8"
                       image="file://Media/Painter/Stencils/15-Stripes/_Stripe0Grad/Brush.tga"
-                      modulatecolor="{{ playerRowBackgroundColor }}"
+                      modulatecolor="{{ Theme.NextMapModule_NextMap_Default_BgRow }}"
                       opacity="0.75"
                 />
             </framemodel>
@@ -92,28 +93,14 @@
                     <label pos="2 0"
                            text="{{ mapName }}"
                            textsize="1.4"
-                           textfont="GameFontSemiBold"
-                    />
+                           textfont="{{ Font.Regular }}"
+                           textcolor="{{ Theme.NextMapModule_NextMap_Default_Text }}"/>
                     <label pos="2 -3.2"
                            text="by {{ author }}"
                            textsize="1.1"
-                           textfont="GameFontRegular"
-                    />
+                           textfont="{{ Font.Thin }}"
+                           textcolor="{{ Theme.NextMapModule_NextMap_Default_Text }}"/>
                 </frame>
-    
-<!--                <frameinstance modelid="gradient_box" pos="0 -9" />-->
-<!--                <frame pos="-0.2 -10">-->
-<!--                    <label pos="2 0"-->
-<!--                           text="Record: n/a"-->
-<!--                           textsize="1.4"-->
-<!--                           textfont="GameFontSemiBold"-->
-<!--                    />-->
-<!--                    <label pos="2 -3.2"-->
-<!--                           text="by n/a"-->
-<!--                           textsize="1.1"-->
-<!--                           textfont="GameFontRegular"-->
-<!--                    />-->
-<!--                </frame>-->
             </frame>
         </frame>
     </template>

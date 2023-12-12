@@ -1,8 +1,8 @@
 ﻿using Config.Net;
-using EvoSC.Common.Config.Models;
-using EvoSC.Common.Config.Stores;
 using EvoSC.Common.Config.Mapping;
 using EvoSC.Common.Config.Mapping.Toml;
+using EvoSC.Common.Config.Models;
+using EvoSC.Common.Config.Stores;
 
 namespace EvoSC.Common.Config;
 
@@ -23,6 +23,7 @@ public static class Configuration
             .UseEvoScConfig(MainConfigFile, cliOptions)
             .UseTypeParser(new TextColorTypeParser())
             .UseTypeParser(new VersionParser())
+            .UseTypeParser(new ThemeOptionsParser())
             .Build();
         
         return baseConfig;

@@ -7,97 +7,97 @@
             <!-- General -->
             <style 
                     class="text"
-                    textfont="RajdhaniMono" 
-                    textcolor="ffffff"
-                    textsize="1.5"
+                    textfont="{{ Font.Regular }}" 
+                    textcolor="{{ Theme.UI_TextPrimary }}"
+                    textsize="{{ Theme.UI_FontSize }}"
             />
             
             <style 
                     class="bg-primary"
-                    bgcolor="ff0058"
+                    bgcolor="{{ Theme.UI_BgPrimary }}"
             />
 
             <style
                     class="bg-secondary"
-                    bgcolor="47495A"
+                    bgcolor="{{ Theme.UI_BgSecondary }}"
             />
             
             <!-- Buttons -->
             <style 
                     class="btn-default" 
-                    textfont="RajdhaniMono" 
-                    textcolor="ffffff"
-                    textsize="1.5"
-                    bgcolor="ff0058"
-                    bgcolorfocus="FE3278"
+                    textfont="{{ Font.Regular }}" 
+                    textcolor="{{ Theme.UI_Button_Default_Text }}"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    bgcolor="{{ Theme.UI_Button_Default_Bg }}"
+                    bgcolorfocus="{{ Theme.UI_Button_Default_BgFocus }}"
                     focusareacolor1="00000000"
                     focusareacolor2="ffffff22" />
             <style 
                     class="btn-secondary" 
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
-                    textsize="1.5"
-                    bgcolor="47495A"
-                    bgcolorfocus="6B6C7A"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Button_Secondary_Text }}"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    bgcolor="{{ Theme.UI_BgSecondary }}"
+                    bgcolorfocus="{{ Theme.UI_Button_Secondary_BgFocus }}"
                     focusareacolor1="00000000"
                     focusareacolor2="ffffff22"/>
             <style
                     class="btn-disabled"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
-                    textsize="1.5"
-                    bgcolor="999999" />
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Button_Default_DisabledText }}"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    bgcolor="{{ Theme.UI_Button_Default_DisabledBg }}" />
             <style
                     class="btn-secondary-disabled"
-                    textfont="RajdhaniMono"
-                    textcolor="9798A2"
-                    textsize="1.5"
-                    bgcolor="E8E8EA" />
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Button_Secondary_DisabledText }}"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    bgcolor="{{ Theme.UI_Button_Secondary_DisabledBg }}" />
             
             <!-- Text Fields -->
             <style 
                     class="textinput-default"
-                    textsize="1.5"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
-                    bgcolor="47495A"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_TextField_Default_Text }}"
+                    bgcolor="{{ Theme.UI_TextField_Default_Bg }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
 
             <style
                     class="textinput-outline-default"
-                    bgcolor="ffffff"
+                    bgcolor="{{ Theme.UI_TextField_Default_Border }}"
             />
             
             <!-- Toggle Switch -->
             <style 
                     class="toggleswitch-on-default"
-                    bgcolor="ff0058"
-                    textcolor="ff0058"
+                    bgcolor="{{ Theme.UI_ToggleSwitch_Default_OnText }}"
+                    textcolor="{{ Theme.UI_ToggleSwitch_Default_OnBg }}"
             />
             
             <style
                     class="toggleswitch-off-default"
-                    bgcolor="47495A"
-                    textcolor="47495A"
+                    bgcolor="{{ Theme.UI_ToggleSwitch_Default_OffText }}"
+                    textcolor="{{ Theme.UI_ToggleSwitch_Default_OffBg }}"
             />
             
             <!-- Checkbox -->
             <style
                     class="checkbox-default"
-                    bgcolor="ff0058"
-                    textcolor="ff0058"
-                    textsize="1.5"
-                    textfont="RajdhaniMono"
-                    bgcolorfocus="ff0058"
+                    bgcolor="{{ Theme.UI_Checkbox_Default_Bg }}"
+                    textcolor="{{ Theme.UI_Checkbox_Default_Text }}"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    bgcolorfocus="{{ Theme.UI_Checkbox_Default_BgFocus }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
             <style
                     class="checkbox-outline-default"
-                    bgcolor="ff0058"
-                    bgcolorfocus="ff0058"
+                    bgcolor="{{ Theme.UI_Checkbox_Default_Border }}"
+                    bgcolorfocus="{{ Theme.UI_Checkbox_Default_Border }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -105,9 +105,9 @@
             <!-- Radio Button -->
             <style 
                     class="radiobutton-default"
-                    textsize="1.5"
-                    textfont="RajdhaniMono"
-                    textcolor="ff0058"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_RadioButton_Default_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -115,54 +115,54 @@
             <!-- Window -->
             <style 
                     class="window-bg-default"
-                    bgcolor="47495A"
+                    bgcolor="{{ Theme.UI_Window_Default_Bg }}"
             />
 
             <style
                     class="window-bg-secondary"
-                    bgcolor="47495A"
+                    bgcolor="{{ Theme.UI_Window_Secondary_Bg }}"
             />
             
             <style 
                     class="window-header-default"
-                    bgcolor="ff0058"
-                    bgcolorfocus="FF5B95"
+                    bgcolor="{{ Theme.UI_Window_Default_Header_Bg }}"
+                    bgcolorfocus="{{ Theme.UI_Window_Default_Header_BgFocus }}"
             />
 
             <style
                     class="window-header-secondary"
-                    bgcolor="47495A"
-                    bgcolorfocus="FF5B95"
+                    bgcolor="{{ Theme.UI_Window_Secondary_Header_Bg }}"
+                    bgcolorfocus="{{ Theme.UI_Window_Secondary_Header_BgFocus }}"
             />
             
             <style
                     class="window-title-default"
-                    textsize="1.5"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Window_Default_Title_Text }}"
             />
 
             <style
                     class="window-title-secondary"
-                    textsize="1.5"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Window_Secondary_Title_Text }}"
             />
             
             <style 
                     class="window-closebtn-default"
-                    textsize="1.5"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Window_Default_CloseBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
 
             <style
                     class="window-closebtn-secondary"
-                    textsize="1.5"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Window_Secondary_CloseBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -170,8 +170,8 @@
             <style
                     class="window-minimizebtn-default"
                     textsize="2"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Window_Default_MinimizeBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />
@@ -179,8 +179,8 @@
             <style
                     class="window-minimizebtn-secdonary"
                     textsize="2"
-                    textfont="RajdhaniMono"
-                    textcolor="ffffff"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_Window_Secondary_MinimizeBtn_Text }}"
                     focusareacolor1="00000000"
                     focusareacolor2="00000000"
             />

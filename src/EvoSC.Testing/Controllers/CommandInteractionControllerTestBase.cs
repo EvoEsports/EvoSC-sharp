@@ -1,7 +1,6 @@
 ﻿using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
-using Moq;
 
 namespace EvoSC.Testing.Controllers;
 

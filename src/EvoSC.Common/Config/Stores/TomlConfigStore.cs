@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
-using System.IO;
+using System.Globalization;
 using System.Reflection;
 using Config.Net;
+using EvoSC.Common.Themes;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
 using Tomlet;
-using Tomlet.Exceptions;
 using Tomlet.Models;
 
 namespace EvoSC.Common.Config.Stores;
@@ -53,6 +52,11 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     {
         foreach (var property in type.GetProperties())
         {
+            if (property.PropertyType == typeof(DynamicThemeOptions))
+            {
+                continue;
+            }
+            
             if (property.PropertyType.IsInterface)
             {
                 document = BuildSubDocument(document, property.PropertyType, name == "" ? property.Name : $"{name}.{property.Name}");
@@ -68,7 +72,9 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
                 var tomlValue = optionAttr?.DefaultValue ?? property.PropertyType.GetDefaultTypeValue();
                 if (property.PropertyType == typeof(TextColor))
+                {
                     tomlValue = new TextColor(tomlValue.ToString());
+                }
 
                 // get property value
                 var value = TomletMain.ValueFrom(property.PropertyType,
@@ -100,13 +106,13 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         if (lastDotIndex > 0 && key.Length > lastDotIndex + 1 && !char.IsAsciiLetterOrDigit(key[lastDotIndex + 1]))
         {
             var value = _document.GetValue(key[..lastDotIndex]) as TomlArray;
-            return value.Count.ToString();
+            return value.Count.ToString(CultureInfo.InvariantCulture);
         }
 
         if (key.EndsWith("]", StringComparison.Ordinal))
         {
             var indexStart = key.IndexOf("[", StringComparison.Ordinal);
-            var index = int.Parse(key[(indexStart + 1)..^1]);
+            var index = int.Parse(key[(indexStart + 1)..^1], CultureInfo.InvariantCulture);
             var value = _document.GetValue(key[..indexStart]) as TomlArray;
 
             return value?.Skip(index)?.FirstOrDefault()?.StringValue;
@@ -117,6 +123,11 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
         if (keyValue is TomlArray arrayValue)
         {
             return string.Join(" ", arrayValue.Select(v => v.StringValue));
+        }
+
+        if (keyValue is TomlTable tableValue)
+        {
+            return tableValue.SerializeNonInlineTable("Theme", false);
         }
         
         return keyValue.StringValue;

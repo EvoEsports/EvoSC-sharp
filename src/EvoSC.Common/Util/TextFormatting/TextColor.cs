@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Globalization;
 
 namespace EvoSC.Common.Util.TextFormatting;
 
@@ -11,6 +11,10 @@ public class TextColor
     private readonly byte _r;
     private readonly byte _g;
     private readonly byte _b;
+
+    public byte R => _r;
+    public byte G => _g;
+    public byte B => _b;
 
     /// <summary>
     /// Create a text color using a System.Color object.
@@ -43,7 +47,7 @@ public class TextColor
     {
         if (r is < 0 or > 0xf || g is < 0 or > 0xf || b is < 0 or > 0xf)
         {
-            throw new ArgumentOutOfRangeException("Invalid RGB colors, must be between 0 and 15.");
+            throw new InvalidOperationException("Invalid RGB colors, must be between 0 and 15.");
         }
 
         _r = r;
@@ -58,7 +62,7 @@ public class TextColor
     /// <returns></returns>
     private static string ToHex(byte n) => n switch
     {
-        >= 0 and <= 9 => n.ToString(),
+        >= 0 and <= 9 => n.ToString(CultureInfo.InvariantCulture),
         10 => "a",
         11 => "b",
         12 => "c",

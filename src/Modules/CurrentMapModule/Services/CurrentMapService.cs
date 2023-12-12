@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Services.Attributes;
@@ -7,8 +6,8 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
-using Microsoft.Extensions.Logging;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Services;
 
@@ -19,19 +18,15 @@ public class CurrentMapService : ICurrentMapService
     private readonly IManialinkManager _manialinkManager;
     private readonly IMapRepository _mapRepository;
     private readonly IServerClient _client;
-    private readonly IEvoScBaseConfig _config;
     private readonly IWorldRecordService _worldRecordService;
 
-    public CurrentMapService(IManialinkManager manialinkManager,
-        ILogger<CurrentMapService> logger,
-        IMapRepository mapRepository, IServerClient client, IEvoScBaseConfig config, 
-        IWorldRecordService worldRecordService)
+    public CurrentMapService(IManialinkManager manialinkManager, ILogger<CurrentMapService> logger,
+        IMapRepository mapRepository, IServerClient client, IWorldRecordService worldRecordService)
     {
         _logger = logger;
         _manialinkManager = manialinkManager;
         _mapRepository = mapRepository;
         _client = client;
-        _config = config;
         _worldRecordService = worldRecordService;
     }
 
@@ -72,11 +67,7 @@ public class CurrentMapService : ICurrentMapService
             {
                 map = dbMap,
                 mapauthor = author,
-                record = worldRecord,
-                headerColor = _config.Theme.UI.HeaderBackgroundColor,
-                primaryColor = _config.Theme.UI.PrimaryColor,
-                logoUrl = _config.Theme.UI.LogoWhiteUrl,
-                playerRowBackgroundColor = _config.Theme.UI.PlayerRowBackgroundColor
+                record = worldRecord
             });
         _logger.LogDebug("Showing current map widget");
     }

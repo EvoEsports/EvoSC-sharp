@@ -1,13 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository.Players;
-using EvoSC.Common.Interfaces.Database;
 using EvoSC.Testing.Database;
 using GbxRemoteNet.Structs;
 using LinqToDB;
-using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Database;
