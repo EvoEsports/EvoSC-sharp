@@ -4,6 +4,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Services.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -156,6 +157,11 @@ public class ServiceContainerManager : IServiceContainerManager
 
     private void ResolveCoreService(UnregisteredTypeEventArgs e, Guid containerId)
     {
+        if (e.UnregisteredServiceType == typeof(IServiceProviderIsService))
+        {
+            return;
+        }
+        
         try
         {
             e.Register(() =>

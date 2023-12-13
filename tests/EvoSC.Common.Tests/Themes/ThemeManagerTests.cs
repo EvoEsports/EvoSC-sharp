@@ -12,6 +12,7 @@ using EvoSC.Common.Themes.Events;
 using EvoSC.Common.Themes.Events.Args;
 using EvoSC.Common.Themes.Exceptions;
 using Moq;
+using SimpleInjector;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Themes;
@@ -76,6 +77,8 @@ public class ThemeManagerTests
         var app = new Mock<IEvoSCApplication>();
         var events = new Mock<IEventManager>();
         var config = new Mock<IEvoScBaseConfig>();
+
+        app.Setup(p => p.Services).Returns(new Container());
 
         config.Setup(p => p.Theme).Returns(new DynamicThemeOptions(new Dictionary<string, object>
         {
