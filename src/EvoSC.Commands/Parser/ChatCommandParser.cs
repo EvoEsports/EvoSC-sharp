@@ -3,16 +3,9 @@ using EvoSC.Commands.Interfaces;
 
 namespace EvoSC.Commands.Parser;
 
-public class ChatCommandParser
+public class ChatCommandParser(IChatCommandManager cmdManager)
 {
-    private readonly IChatCommandManager _cmdManager;
-
     public static string CommandPrefix = "/";
-
-    public ChatCommandParser(IChatCommandManager cmdManager)
-    {
-        _cmdManager = cmdManager;
-    }
 
     public async Task<IParserResult> ParseAsync(string userInput)
     {
@@ -27,7 +20,7 @@ public class ChatCommandParser
 
             var cmdAlias = parts[0];
             bool intendedCommand = cmdAlias.StartsWith(CommandPrefix, StringComparison.Ordinal);
-            var cmd = _cmdManager.FindCommand(cmdAlias, false);
+            var cmd = cmdManager.FindCommand(cmdAlias, false);
 
             if (cmd == null)
             {
@@ -77,7 +70,7 @@ public class ChatCommandParser
             var parameter = cmd.Parameters[i];
             try
             {
-                var value = await _cmdManager.ValueReader.ConvertValueAsync(parameter.Type, parts[i - aliasArgCount]);
+                var value = await cmdManager.ValueReader.ConvertValueAsync(parameter.Type, parts[i - aliasArgCount]);
                 convertedArgs.Add(value);
             }
             catch (FormatException e)

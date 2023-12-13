@@ -5,11 +5,10 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "TextInput Component", Description = "Default theme for the TextInput component.")]
-public class DefaultTextInputTheme : Theme<DefaultTextInputTheme>
+public class DefaultTextInputTheme(IThemeManager theme) : Theme<DefaultTextInputTheme>
 {
-    private readonly dynamic _theme;
-    public DefaultTextInputTheme(IThemeManager theme) => _theme = theme.Theme;
-    
+    private readonly dynamic _theme = theme.Theme;
+
     public override Task ConfigureAsync()
     {
         Set("UI.TextField.Default.Text").To(_theme.UI_TextPrimary);

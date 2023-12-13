@@ -26,9 +26,8 @@ public class TestDbConnectionFactory : IDbConnectionFactory
     {
         if (_dbConnection == null)
         {
-            var dbOptions = new LinqToDBConnectionOptionsBuilder()
-                .UseSQLite(ConnectionString)
-                .Build();
+            var dbOptions = new DataOptions()
+                .UseSQLite(ConnectionString);
 
             _dbConnection = new DataContext(dbOptions);
         }

@@ -15,24 +15,12 @@ using EvoSC.Modules.Official.MatchTrackerModule.Models;
 namespace EvoSC.Modules.Official.MatchTrackerModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class MatchTracker : IMatchTracker
+public class MatchTracker(ITrackerSettings settings, IPlayerManagerService players, ITrackerStoreService trackerStore,
+        IEventManager events)
+    : IMatchTracker
 {
     private MatchStatus _status = MatchStatus.Unknown;
     private IMatchTimeline _currentTimeline;
-
-    private readonly ITrackerSettings _settings;
-    private readonly IPlayerManagerService _players;
-    private readonly ITrackerStoreService _trackerStore;
-    private readonly IEventManager _events;
-
-    public MatchTracker(ITrackerSettings settings, IPlayerManagerService players, ITrackerStoreService trackerStore,
-        IEventManager events)
-    {
-        _settings = settings;
-        _players = players;
-        _trackerStore = trackerStore;
-        _events = events;
-    }
 
     public bool IsTracking { get; private set; }
     
@@ -56,11 +44,11 @@ public class MatchTracker : IMatchTracker
 
         switch (scoreArgs.Section)
         {
-            case ModeScriptSection.EndMap when !_settings.RecordEndMap:
-            case ModeScriptSection.EndMatch when !_settings.RecordEndMatch:
-            case ModeScriptSection.EndRound when !_settings.RecordEndRound:
-            case ModeScriptSection.EndMatchEarly when !_settings.RecordEndMatchEarly:
-            case ModeScriptSection.PreEndRound when !_settings.RecordPreEndRound:
+            case ModeScriptSection.EndMap when !settings.RecordEndMap:
+            case ModeScriptSection.EndMatch when !settings.RecordEndMatch:
+            case ModeScriptSection.EndRound when !settings.RecordEndRound:
+            case ModeScriptSection.EndMatchEarly when !settings.RecordEndMatchEarly:
+            case ModeScriptSection.PreEndRound when !settings.RecordPreEndRound:
                 return;
             case ModeScriptSection.Undefined:
                 state = new MatchState {Status = MatchStatus.Unknown, Timestamp = DateTime.UtcNow, TimelineId = _currentTimeline.TimelineId};
@@ -71,7 +59,7 @@ public class MatchTracker : IMatchTracker
 
                     foreach (var playerScore in scoreArgs.Players)
                     {
-                        var player = await _players.GetPlayerAsync(playerScore.AccountId);
+                        var player = await players.GetPlayerAsync(playerScore.AccountId);
                         playerScores.Add(new PlayerScore
                         {
                             Player = player,
@@ -110,15 +98,15 @@ public class MatchTracker : IMatchTracker
         
         _currentTimeline.States.Add(state);
 
-        if (_settings.ImmediateStoring)
+        if (settings.ImmediateStoring)
         {
-            await _trackerStore.SaveState(state);
+            await trackerStore.SaveState(state);
         }
         
-        await _events.RaiseAsync(MatchTrackerEvent.StateTracked,
+        await events.RaiseAsync(MatchTrackerEvent.StateTracked,
             new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
 
-        if (scoreArgs.Section == ModeScriptSection.EndMatch && _settings.AutomaticMatchEnd)
+        if (scoreArgs.Section == ModeScriptSection.EndMatch && settings.AutomaticMatchEnd)
         {
             await EndMatchAsync();
         }
@@ -142,12 +130,12 @@ public class MatchTracker : IMatchTracker
         
         _currentTimeline.States.Add(state);
         
-        await _events.RaiseAsync(MatchTrackerEvent.StateTracked,
+        await events.RaiseAsync(MatchTrackerEvent.StateTracked,
             new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
 
-        if (_settings.ImmediateStoring)
+        if (settings.ImmediateStoring)
         {
-            await _trackerStore.SaveState(state);
+            await trackerStore.SaveState(state);
         }
 
         return _currentTimeline.TimelineId;
@@ -170,16 +158,16 @@ public class MatchTracker : IMatchTracker
         
         _currentTimeline.States.Add(state);
         
-        await _events.RaiseAsync(MatchTrackerEvent.StateTracked,
+        await events.RaiseAsync(MatchTrackerEvent.StateTracked,
             new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
 
-        if (_settings.ImmediateStoring)
+        if (settings.ImmediateStoring)
         {
-            await _trackerStore.SaveState(state);
+            await trackerStore.SaveState(state);
         }
         else
         {
-            await _trackerStore.SaveTimelineAsync(_currentTimeline);
+            await trackerStore.SaveTimelineAsync(_currentTimeline);
         }
         
         return _currentTimeline;
@@ -187,12 +175,12 @@ public class MatchTracker : IMatchTracker
 
     private async Task VerifyTracker()
     {
-        if (!_settings.AutomaticTracking && !IsTracking)
+        if (!settings.AutomaticTracking && !IsTracking)
         {
             throw new InvalidOperationException("Trying to track a un-started match with automatic tracking disabled.");
         }
 
-        if (_settings.AutomaticTracking && !IsTracking)
+        if (settings.AutomaticTracking && !IsTracking)
         {
             await BeginMatchAsync();
         }

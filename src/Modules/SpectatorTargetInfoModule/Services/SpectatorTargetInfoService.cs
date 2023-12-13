@@ -8,28 +8,20 @@ using SpectatorTargetInfo.Interfaces;
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class SpectatorTargetInfoService : ISpectatorTargetInfoService
+public class SpectatorTargetInfoService
+    (IManialinkManager manialinks, IServerClient server) : ISpectatorTargetInfoService
 {
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
-    private readonly IManialinkManager _manialinks;
-    private readonly IServerClient _server;
-
-    public SpectatorTargetInfoService(IManialinkManager manialinks, IServerClient server)
-    {
-        _manialinks = manialinks;
-        _server = server;
-    }
-
     public async Task SendManiaLinkAsync() =>
-        await _manialinks.SendManialinkAsync(WidgetTemplate);
+        await manialinks.SendManialinkAsync(WidgetTemplate);
 
 
     public async Task SendManiaLinkAsync(string playerLogin) =>
-        await _manialinks.SendManialinkAsync(playerLogin, WidgetTemplate);
+        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate);
 
     public async Task HideManiaLinkAsync() =>
-        await _manialinks.HideManialinkAsync(WidgetTemplate);
+        await manialinks.HideManialinkAsync(WidgetTemplate);
 
     public Task HideNadeoSpectatorInfoAsync()
     {
@@ -49,7 +41,7 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
             ]}"
         };
 
-        return _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
+        return server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
     public Task ShowNadeoSpectatorInfoAsync()
@@ -70,12 +62,12 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
             ]}"
         };
 
-        return _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
+        return server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
     public Task ForwardCheckpointTimeToClientsAsync(WayPointEventArgs wayPointEventArgs)
     {
-        return _manialinks.SendManialinkAsync("SpectatorTargetInfoModule.NewCpTime",
+        return manialinks.SendManialinkAsync("SpectatorTargetInfoModule.NewCpTime",
             new
             {
                 accountId = wayPointEventArgs.AccountId,
@@ -86,13 +78,13 @@ public class SpectatorTargetInfoService : ISpectatorTargetInfoService
 
     public Task ResetCheckpointTimesAsync()
     {
-        _manialinks.HideManialinkAsync("SpectatorTargetInfoModule.NewCpTime");
-        return _manialinks.SendManialinkAsync("SpectatorTargetInfoModule.ResetCpTimes");
+        manialinks.HideManialinkAsync("SpectatorTargetInfoModule.NewCpTime");
+        return manialinks.SendManialinkAsync("SpectatorTargetInfoModule.ResetCpTimes");
     }
 
     public Task ForwardDnfToClientsAsync(PlayerUpdateEventArgs playerUpdateEventArgs)
     {
-        return _manialinks.SendManialinkAsync("SpectatorTargetInfoModule.NewCpTime", new
+        return manialinks.SendManialinkAsync("SpectatorTargetInfoModule.NewCpTime", new
         {
             accountId = playerUpdateEventArgs.AccountId,
             time = 0,

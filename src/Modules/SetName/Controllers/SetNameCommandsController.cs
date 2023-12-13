@@ -8,21 +8,14 @@ using EvoSC.Manialinks.Interfaces;
 namespace EvoSC.Modules.Official.SetName.Controllers;
 
 [Controller]
-public class SetNameCommandsController : EvoScController<ICommandInteractionContext>
+public class SetNameCommandsController(IManialinkManager manialinks, Locale locale) : EvoScController<ICommandInteractionContext>
 {
-    private readonly IManialinkManager _manialinks;
-    private readonly dynamic _locale;
+    private readonly dynamic _locale = locale;
 
-    public SetNameCommandsController(IManialinkManager manialinks, Locale locale)
-    {
-        _manialinks = manialinks;
-        _locale = locale;
-    }
-    
     [ChatCommand("setname", "[Command.SetName]")]
     public async Task SetNameAsync()
     {
-        await _manialinks.SendManialinkAsync(Context.Player, "SetName.EditName",
+        await manialinks.SendManialinkAsync(Context.Player, "SetName.EditName",
             new
             {
                 Nickname = Context.Player.NickName, 

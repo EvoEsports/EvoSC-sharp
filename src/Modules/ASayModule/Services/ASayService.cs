@@ -8,21 +8,13 @@ using EvoSC.Modules.Official.ASayModule.Interfaces;
 namespace EvoSC.Modules.Official.ASayModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
-public class ASayService : IASayService
+public class ASayService(IManialinkManager manialinkManager, IContextService context)
+    : IASayService
 {
-    private readonly IManialinkManager _manialinkManager;
-    private readonly IContextService _contextService;
-
-    public ASayService(IManialinkManager manialinkManager, IContextService context)
-    {
-        _manialinkManager = manialinkManager;
-        _contextService = context;
-    }
-
     public async Task ShowAnnouncementAsync(string text)
     {
-        await _manialinkManager.SendPersistentManialinkAsync("ASayModule.Announcement", new {text});
-        _contextService.Audit().Success()
+        await manialinkManager.SendPersistentManialinkAsync("ASayModule.Announcement", new {text});
+        context.Audit().Success()
             .WithEventName(AuditEvents.ShowAnnouncement)
             .HavingProperties(new {Text = text})
             .Comment("Announcement was shown.");
@@ -30,8 +22,8 @@ public class ASayService : IASayService
 
     public async Task HideAnnouncementAsync()
     {
-        await _manialinkManager.HideManialinkAsync("ASayModule.Announcement");
-        _contextService.Audit().Success()
+        await manialinkManager.HideManialinkAsync("ASayModule.Announcement");
+        context.Audit().Success()
             .WithEventName(AuditEvents.ClearAnnouncement)
             .Comment("Announcement was cleared.");
     }

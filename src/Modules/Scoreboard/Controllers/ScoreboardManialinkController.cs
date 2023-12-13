@@ -5,12 +5,7 @@ using EvoSC.Modules.Official.Scoreboard.Interfaces;
 namespace EvoSC.Modules.Official.Scoreboard.Controllers;
 
 [Controller]
-public class ScoreboardManialinkController : ManialinkController
+public class ScoreboardManialinkController(IScoreboardService scoreboardService) : ManialinkController
 {
-    private readonly IScoreboardService _scoreboardService;
-
-    public ScoreboardManialinkController(IScoreboardService scoreboardService) =>
-        _scoreboardService = scoreboardService;
-
-    public Task ResendScoreboardAsync() => _scoreboardService.ShowScoreboardAsync(Context.Player);
+    public Task ResendScoreboardAsync() => scoreboardService.ShowScoreboardAsync(Context.Player);
 }

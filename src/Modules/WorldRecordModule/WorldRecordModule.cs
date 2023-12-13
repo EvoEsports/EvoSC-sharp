@@ -6,25 +6,17 @@ using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 namespace EvoSC.Modules.Official.WorldRecordModule;
 
 [Module(IsInternal = true)]
-public class WorldRecordModule : EvoScModule, IToggleable
+public class WorldRecordModule(IWorldRecordService worldRecordService, IMapService mapService)
+    : EvoScModule, IToggleable
 {
-    private readonly IWorldRecordService _worldRecordService;
-    private readonly IMapService _mapService;
-
-    public WorldRecordModule(IWorldRecordService worldRecordService, IMapService mapService)
-    {
-        _worldRecordService = worldRecordService;
-        _mapService = mapService;
-    }
-
     public async Task EnableAsync()
     {
         // initially fetch the world record to be displayed
-        var currentMap = await _mapService.GetCurrentMapAsync();
+        var currentMap = await mapService.GetCurrentMapAsync();
         
         if (currentMap != null)
         {
-            await _worldRecordService.FetchRecordAsync(currentMap.Uid);
+            await worldRecordService.FetchRecordAsync(currentMap.Uid);
         }
     }
 

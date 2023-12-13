@@ -6,10 +6,9 @@ using EvoSC.Common.Util;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Button Component", Description = "Default theme for the Button component.")]
-public class DefaultButtonTheme : Theme<DefaultButtonTheme>
+public class DefaultButtonTheme(IThemeManager theme) : Theme<DefaultButtonTheme>
 {
-    private readonly dynamic _theme;
-    public DefaultButtonTheme(IThemeManager theme) => _theme = theme.Theme;
+    private readonly dynamic _theme = theme.Theme;
 
     public override Task ConfigureAsync()
     {

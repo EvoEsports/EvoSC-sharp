@@ -6,19 +6,8 @@ using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Commands.Middleware;
 
-public class CommandsPermissionMiddleware
+public class CommandsPermissionMiddleware(ActionDelegate next, IPermissionManager permissions, IServerClient server)
 {
-    private readonly ActionDelegate _next;
-    private readonly IPermissionManager _permissions;
-    private readonly IServerClient _server;
-
-    public CommandsPermissionMiddleware(ActionDelegate next, IPermissionManager permissions, IServerClient server)
-    {
-        _next = next;
-        _permissions = permissions;
-        _server = server;
-    }
-
     public async Task ExecuteAsync(IControllerContext context)
     {
         var cmdContext = context as CommandInteractionContext;
@@ -26,17 +15,17 @@ public class CommandsPermissionMiddleware
         if (cmdContext == null)
         {
             // not a command interaction
-            await _next(context);
+            await next(context);
             return;
         }
 
         if (cmdContext.CommandExecuted.Permission == null ||
-            await _permissions.HasPermissionAsync(cmdContext.Player, cmdContext.CommandExecuted.Permission))
+            await permissions.HasPermissionAsync(cmdContext.Player, cmdContext.CommandExecuted.Permission))
         {
-            await _next(context);
+            await next(context);
             return;
         }
 
-        await _server.SendChatMessageAsync("Insufficient permissions to run this command.", cmdContext.Player);
+        await server.SendChatMessageAsync("Insufficient permissions to run this command.", cmdContext.Player);
     }
 }

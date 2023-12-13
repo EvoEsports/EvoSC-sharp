@@ -6,12 +6,8 @@ using LinqToDB;
 
 namespace EvoSC.Common.Database.Repository.Audit;
 
-public class AuditRepository : DbRepository, IAuditRepository
+public class AuditRepository(IDbConnectionFactory dbConnFactory) : DbRepository(dbConnFactory), IAuditRepository
 {
-    public AuditRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
-    {
-    }
-
     public async Task<IAuditRecord> AddRecordAsync(DbAuditRecord record)
     {
         var id = await Database.InsertWithIdentityAsync(record);

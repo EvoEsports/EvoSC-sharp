@@ -9,20 +9,12 @@ using EvoSC.Modules.Official.OpenPlanetModule.Models;
 namespace EvoSC.Modules.Official.OpenPlanetModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class OpenPlanetScheduler : IOpenPlanetScheduler
+public class OpenPlanetScheduler(IOpenPlanetControlSettings opSettings, IEventManager events)
+    : IOpenPlanetScheduler
 {
-    private readonly IOpenPlanetControlSettings _opSettings;
-    
     private readonly Dictionary<string, (DateTime, IPlayer)> _scheduledKicks = new();
-    private readonly IEventManager _events;
     private readonly object _scheduledKicksLock = new();
 
-    public OpenPlanetScheduler(IOpenPlanetControlSettings opSettings, IEventManager events)
-    {
-        _opSettings = opSettings;
-        _events = events;
-    }
-    
     public void ScheduleKickPlayer(IPlayer player, bool renew)
     {
         lock (_scheduledKicksLock)
@@ -49,7 +41,7 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
         {
             foreach (var (accountId, (time, player)) in _scheduledKicks)
             {
-                if (time + TimeSpan.FromSeconds(_opSettings.KickTimeout) > DateTime.Now)
+                if (time + TimeSpan.FromSeconds(opSettings.KickTimeout) > DateTime.Now)
                 {
                     continue;
                 }
@@ -61,7 +53,7 @@ public class OpenPlanetScheduler : IOpenPlanetScheduler
 
         foreach (var player in duePlayers)
         {
-            await _events.RaiseAsync(
+            await events.RaiseAsync(
                 OpenPlanetEvents.PlayerDueForKick,
                 new PlayerDueForKickEventArgs {Player = player}
             );

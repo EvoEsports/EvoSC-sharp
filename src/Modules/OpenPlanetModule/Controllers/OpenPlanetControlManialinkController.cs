@@ -10,25 +10,15 @@ namespace EvoSC.Modules.Official.OpenPlanetModule.Controllers;
 
 [Controller]
 [ManialinkRoute(Route = "OpenPlanetActions")]
-public class OpenPlanetControlManialinkController : ManialinkController
-{
-    private readonly IOpenPlanetControlService _opControl;
-    private readonly IServerClient _server;
-    private readonly IOpenPlanetTrackerService _trackerService;
-
-    public OpenPlanetControlManialinkController(IOpenPlanetControlService opControl, IServerClient server,
+public class OpenPlanetControlManialinkController(IOpenPlanetControlService opControl, IServerClient server,
         IOpenPlanetTrackerService trackerService)
-    {
-        _opControl = opControl;
-        _server = server;
-        _trackerService = trackerService;
-    }
-
+    : ManialinkController
+{
     public async Task CheckAsync(IOpenPlanetInfo openPlanetInfo)
     {
-        await _opControl.VerifySignatureModeAsync(Context.Player, openPlanetInfo);
-        _trackerService.AddOrUpdatePlayer(Context.Player, openPlanetInfo);
+        await opControl.VerifySignatureModeAsync(Context.Player, openPlanetInfo);
+        trackerService.AddOrUpdatePlayer(Context.Player, openPlanetInfo);
     }
 
-    public Task DisconnectAsync() => _server.Remote.KickAsync(Context.Player.GetLogin());
+    public Task DisconnectAsync() => server.Remote.KickAsync(Context.Player.GetLogin());
 }

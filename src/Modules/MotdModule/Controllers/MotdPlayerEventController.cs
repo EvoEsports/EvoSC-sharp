@@ -9,21 +9,14 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.MotdModule.Controllers;
 
 [Controller]
-public class MotdPlayerEventController : EvoScController<IEventControllerContext>
+public class MotdPlayerEventController(IMotdService motdService) : EvoScController<IEventControllerContext>
 {
-    private readonly IMotdService _motdService;
-    
-    public MotdPlayerEventController(IMotdService motdService)
-    {
-        _motdService = motdService;
-    }
-
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
         => await ShowAsync(args.Login);
 
     private async Task ShowAsync(string login)
     {
-        await _motdService.ShowAsync(login, false);
+        await motdService.ShowAsync(login, false);
     }
 }

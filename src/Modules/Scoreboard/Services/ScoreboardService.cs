@@ -10,41 +10,27 @@ using EvoSC.Modules.Official.Scoreboard.Interfaces;
 namespace EvoSC.Modules.Official.Scoreboard.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class ScoreboardService : IScoreboardService
-{
-    private readonly IManialinkManager _manialinks;
-    private readonly IServerClient _server;
-    private readonly IMatchSettingsService _matchSettingsService;
-    private readonly IScoreboardTrackerService _scoreboardTracker;
-    private readonly IThemeManager _themes;
-
-    public ScoreboardService(IManialinkManager manialinks, IServerClient server,
+public class ScoreboardService(IManialinkManager manialinks, IServerClient server,
         IMatchSettingsService matchSettingsService, IScoreboardTrackerService scoreboardTracker, IThemeManager themes)
-    {
-        _manialinks = manialinks;
-        _server = server;
-        _matchSettingsService = matchSettingsService;
-        _scoreboardTracker = scoreboardTracker;
-        _themes = themes;
-    }
-
+    : IScoreboardService
+{
     public async Task ShowScoreboardToAllAsync()
     {
-        await _manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetDataAsync());
+        await manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetDataAsync());
     }
 
     public async Task ShowScoreboardAsync(IPlayer playerLogin)
     {
-        await _manialinks.SendManialinkAsync(playerLogin, "Scoreboard.Scoreboard", await GetDataAsync());
+        await manialinks.SendManialinkAsync(playerLogin, "Scoreboard.Scoreboard", await GetDataAsync());
     }
 
     private Task<dynamic> GetDataAsync()
     {
         return Task.FromResult<dynamic>(new
         {
-            _scoreboardTracker.MaxPlayers,
-            _scoreboardTracker.RoundsPerMap,
-            PositionColors = new Dictionary<int, string> { { 1, _themes.Theme.Gold }, { 2, _themes.Theme.Silver }, { 3, _themes.Theme.Bronze } },
+            scoreboardTracker.MaxPlayers,
+            scoreboardTracker.RoundsPerMap,
+            PositionColors = new Dictionary<int, string> { { 1, themes.Theme.Gold }, { 2, themes.Theme.Silver }, { 3, themes.Theme.Bronze } },
         });
     }
 
@@ -65,7 +51,7 @@ public class ScoreboardService : IScoreboardService
 }"
         };
 
-        await _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
+        await server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
     public async Task ShowNadeoScoreboardAsync()
@@ -85,18 +71,18 @@ public class ScoreboardService : IScoreboardService
 }"
         };
 
-        await _server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
+        await server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
     public async Task SendRequiredAdditionalInfoAsync()
     {
-        await _manialinks.SendPersistentManialinkAsync("Scoreboard.RoundsInfo",
-            new { _scoreboardTracker.RoundsPerMap, _scoreboardTracker.CurrentRound, _scoreboardTracker.PointsLimit });
+        await manialinks.SendPersistentManialinkAsync("Scoreboard.RoundsInfo",
+            new { scoreboardTracker.RoundsPerMap, scoreboardTracker.CurrentRound, scoreboardTracker.PointsLimit });
     }
 
     public async Task LoadAndSendRequiredAdditionalInfoAsync()
     {
-        var settings = await _matchSettingsService.GetCurrentScriptSettingsAsync();
+        var settings = await matchSettingsService.GetCurrentScriptSettingsAsync();
 
         if (settings == null)
         {
@@ -115,15 +101,15 @@ public class ScoreboardService : IScoreboardService
             pointsLimit = (int)pointsLimitValue;
         }
 
-        _scoreboardTracker.MaxPlayers = (await _server.Remote.GetMaxPlayersAsync()).CurrentValue;
-        _scoreboardTracker.RoundsPerMap = roundsPerMap;
-        _scoreboardTracker.PointsLimit = pointsLimit;
+        scoreboardTracker.MaxPlayers = (await server.Remote.GetMaxPlayersAsync()).CurrentValue;
+        scoreboardTracker.RoundsPerMap = roundsPerMap;
+        scoreboardTracker.PointsLimit = pointsLimit;
         
         await SendRequiredAdditionalInfoAsync();
     }
 
     public void SetCurrentRound(int round)
     {
-        _scoreboardTracker.CurrentRound = round;
+        scoreboardTracker.CurrentRound = round;
     }
 }

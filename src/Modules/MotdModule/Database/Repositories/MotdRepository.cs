@@ -11,12 +11,8 @@ using LinqToDB;
 namespace EvoSC.Modules.Official.MotdModule.Database.Repositories;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class MotdRepository : DbRepository, IMotdRepository
+public class MotdRepository(IDbConnectionFactory dbConnFactory) : DbRepository(dbConnFactory), IMotdRepository
 {
-    public MotdRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
-    {
-    }
-
     public Task<MotdEntry?> GetEntryAsync(IPlayer player)
         => Table<MotdEntry>()
             .LoadWith(r => r.DbPlayer)

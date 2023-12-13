@@ -13,27 +13,18 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.OpenPlanetModule.Controllers;
 
 [Controller]
-public class OpenPlanetEventController : EvoScController<IEventControllerContext>
+public class OpenPlanetEventController(IServerClient server, IOpenPlanetTrackerService trackerService,
+        IPlayerManagerService players)
+    : EvoScController<IEventControllerContext>
 {
-    private readonly IServerClient _server;
-    private readonly IOpenPlanetTrackerService _trackerService;
-    private readonly IPlayerManagerService _players;
-
-    public OpenPlanetEventController(IServerClient server, IOpenPlanetTrackerService trackerService, IPlayerManagerService players)
-    {
-        _server = server;
-        _trackerService = trackerService;
-        _players = players;
-    }
-
     [Subscribe(OpenPlanetEvents.PlayerDueForKick)]
     public Task OnPlayerDueForKickAsync(object sender, PlayerDueForKickEventArgs args) =>
-        _server.Remote.KickAsync(args.Player.GetLogin());
+        server.Remote.KickAsync(args.Player.GetLogin());
 
     [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
     public async Task OnPlayerDisconnectAsync(object sender, PlayerDisconnectGbxEventArgs args)
     {
-        var player = await _players.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
-        _trackerService.RemovePlayer(player);
+        var player = await players.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
+        trackerService.RemovePlayer(player);
     }
 }

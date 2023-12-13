@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AssemblyName>EvoSC.Commands</AssemblyName>
@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SimpleInjector" Version="5.4.1" />
-      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
+      <PackageReference Include="SimpleInjector" Version="5.4.2" />
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.15.0.81779">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>

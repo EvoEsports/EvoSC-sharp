@@ -11,23 +11,15 @@ using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 
 [Controller]
-public class MatchCommandsController : EvoScController<ICommandInteractionContext>
+public class MatchCommandsController(IMatchControlService matchControl, IServerClient server, Locale locale)
+    : EvoScController<ICommandInteractionContext>
 {
-    private readonly IMatchControlService _matchControl;
-    private readonly IServerClient _server;
-    private readonly dynamic _locale;
-
-    public MatchCommandsController(IMatchControlService matchControl, IServerClient server, Locale locale)
-    {
-        _matchControl = matchControl;
-        _server = server;
-        _locale = locale;
-    }
+    private readonly dynamic _locale = locale;
 
     [ChatCommand("startmatch", "Start a match.", MatchControlPermissions.StartMatch)]
     public async Task StartMatchAsync()
     {
-        await _matchControl.StartMatchAsync();
+        await matchControl.StartMatchAsync();
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MatchStarted)
@@ -37,7 +29,7 @@ public class MatchCommandsController : EvoScController<ICommandInteractionContex
     [ChatCommand("endmatch", "End a match.", MatchControlPermissions.EndMatch)]
     public async Task EndMatchAsync()
     {
-        await _matchControl.EndMatchAsync();
+        await matchControl.EndMatchAsync();
 
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.MatchEnded)
@@ -48,8 +40,8 @@ public class MatchCommandsController : EvoScController<ICommandInteractionContex
     [CommandAlias("/resmatch", hide: true)]
     public async Task RestartMatchAsync()
     {
-        await _matchControl.RestartMatchAsync();
-        await _server.InfoMessageAsync(_locale.RestartedMatch(Context.Player.NickName));
+        await matchControl.RestartMatchAsync();
+        await server.InfoMessageAsync(_locale.RestartedMatch(Context.Player.NickName));
         
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.RestartMatch)
@@ -59,8 +51,8 @@ public class MatchCommandsController : EvoScController<ICommandInteractionContex
     [ChatCommand("endround", "[Command.EndRound]", MatchControlPermissions.EndRound)]
     public async Task EndRoundAsync()
     {
-        await _matchControl.EndRoundAsync();
-        await _server.InfoMessageAsync(_locale.ForcedRoundEnd(Context.Player.NickName));
+        await matchControl.EndRoundAsync();
+        await server.InfoMessageAsync(_locale.ForcedRoundEnd(Context.Player.NickName));
         
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.EndRound)
@@ -71,8 +63,8 @@ public class MatchCommandsController : EvoScController<ICommandInteractionContex
     [CommandAlias("/skip", hide: true)]
     public async Task SkipMapAsync()
     {
-        await _matchControl.SkipMapAsync();
-        await _server.InfoMessageAsync(_locale.SkippedToNextMap(Context.Player.NickName));
+        await matchControl.SkipMapAsync();
+        await server.InfoMessageAsync(_locale.SkippedToNextMap(Context.Player.NickName));
         
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.SkipMap)

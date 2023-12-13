@@ -7,13 +7,8 @@ using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 namespace EvoSC.Modules.Official.PlayerRecords.Controllers;
 
 [Controller]
-public class CommandController : EvoScController<ICommandInteractionContext>
+public class CommandController(IPlayerRecordHandlerService playerRecordHandler) : EvoScController<ICommandInteractionContext>
 {
-    private readonly IPlayerRecordHandlerService _playerRecordHandler;
-
-    public CommandController(IPlayerRecordHandlerService playerRecordHandler) =>
-        _playerRecordHandler = playerRecordHandler;
-
     [ChatCommand("pb", "[Command.Pb]")]
-    public Task ShowPb() => _playerRecordHandler.ShowCurrentPlayerPbAsync(Context.Player);
+    public Task ShowPb() => playerRecordHandler.ShowCurrentPlayerPbAsync(Context.Player);
 }

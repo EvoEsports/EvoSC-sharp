@@ -15,32 +15,17 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.OpenPlanetModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class OpenPlanetControlService : IOpenPlanetControlService
-{
-    private readonly ILogger<OpenPlanetControlService> _logger;
-    private readonly IPermissionManager _permissions;
-    private readonly IOpenPlanetControlSettings _opcSettings;
-    private readonly IManialinkManager _manialinks;
-    private readonly IServerClient _server;
-    private readonly IOpenPlanetScheduler _scheduler;
-    private readonly dynamic _locale;
-
-    public OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, IPermissionManager permissions,
-        IOpenPlanetControlSettings opcSettings, IManialinkManager manialinks, IServerClient server, IOpenPlanetScheduler scheduler,
+public class OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, IPermissionManager permissions,
+        IOpenPlanetControlSettings opcSettings, IManialinkManager manialinks, IServerClient server,
+        IOpenPlanetScheduler scheduler,
         Locale locale)
-    {
-        _logger = logger;
-        _permissions = permissions;
-        _opcSettings = opcSettings;
-        _manialinks = manialinks;
-        _server = server;
-        _scheduler = scheduler;
-        _locale = locale;
-    }
+    : IOpenPlanetControlService
+{
+    private readonly dynamic _locale = locale;
 
     public async Task VerifySignatureModeAsync(IPlayer player, IOpenPlanetInfo playerOpInfo)
     {
-        _logger.LogDebug("Verifying OpenPlanet for Player {Player}", player.AccountId);
+        logger.LogDebug("Verifying OpenPlanet for Player {Player}", player.AccountId);
 
         if (!playerOpInfo.IsOpenPlanet)
         {
@@ -48,23 +33,23 @@ public class OpenPlanetControlService : IOpenPlanetControlService
             return;
         }
         
-        if (playerOpInfo.Version < _opcSettings.MinimumRequiredVersion)
+        if (playerOpInfo.Version < opcSettings.MinimumRequiredVersion)
         {
             await JailPlayerAsync(player, OpJailReason.InvalidVersion);
             return;
         }
 
         var usingOp = playerOpInfo.IsOpenPlanet;
-        var canBypass = await _permissions.HasPermissionAsync(player, OpenPlanetPermissions.CanBypassVerification);
-        var correctSignature = _opcSettings.AllowedSignatureModes.HasFlag(playerOpInfo.SignatureMode);
+        var canBypass = await permissions.HasPermissionAsync(player, OpenPlanetPermissions.CanBypassVerification);
+        var correctSignature = opcSettings.AllowedSignatureModes.HasFlag(playerOpInfo.SignatureMode);
 
-        if (_opcSettings.AllowOpenplanet && (canBypass || correctSignature))
+        if (opcSettings.AllowOpenplanet && (canBypass || correctSignature))
         {
             await ReleasePlayerAsync(player);
             return;
         }
 
-        var jailReason = usingOp && !_opcSettings.AllowOpenplanet
+        var jailReason = usingOp && !opcSettings.AllowOpenplanet
             ? OpJailReason.OpenPlanetNotAllowed
             : OpJailReason.InvalidSignatureMode;
         
@@ -89,23 +74,23 @@ public class OpenPlanetControlService : IOpenPlanetControlService
     
     private async Task JailPlayerAsync(IPlayer player, OpJailReason reason)
     {
-        if (_scheduler.PlayerIsScheduledForKick(player))
+        if (scheduler.PlayerIsScheduledForKick(player))
         {
             return;
         }
         
-        await _server.Remote.ForceSpectatorAsync(player.GetLogin(), 1);
-        _scheduler.ScheduleKickPlayer(player);
+        await server.Remote.ForceSpectatorAsync(player.GetLogin(), 1);
+        scheduler.ScheduleKickPlayer(player);
         
         var allowedSignatures = Enum.GetValues<OpenPlanetSignatureMode>()
-            .Where(f => _opcSettings.AllowedSignatureModes.HasFlag(f))
+            .Where(f => opcSettings.AllowedSignatureModes.HasFlag(f))
             .Select(Enum.GetName)
             .ToArray();
         
-        await _manialinks.SendManialinkAsync(player, "OpenPlanetModule.WarningWindow", new
+        await manialinks.SendManialinkAsync(player, "OpenPlanetModule.WarningWindow", new
         {
             AllowedSignatures = allowedSignatures,
-            Config = _opcSettings,
+            Config = opcSettings,
             Reason = reason,
             WhatToDo = GetWhatToDoByReason(reason),
             Locale = _locale
@@ -114,27 +99,27 @@ public class OpenPlanetControlService : IOpenPlanetControlService
         switch (reason)
         {
             case OpJailReason.InvalidVersion:
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedVersion, player);
+                await server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedVersion, player);
                 break;
             case OpJailReason.InvalidSignatureMode:
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedSignatureMode, player);
+                await server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedSignatureMode, player);
                 break;
             case OpJailReason.OpenPlanetNotAllowed:
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage.OpenPlanetProhibited, player);
+                await server.ErrorMessageAsync(_locale.PlayerLanguage.OpenPlanetProhibited, player);
                 break;
         }
     }
     
     private async Task ReleasePlayerAsync(IPlayer player)
     {
-        if (!_scheduler.PlayerIsScheduledForKick(player))
+        if (!scheduler.PlayerIsScheduledForKick(player))
         {
             return;
         }
         
-        _scheduler.UnScheduleKickPlayer(player);
-        await _manialinks.HideManialinkAsync("OpenPlanetModule.WarningWindow");
-        await _server.Remote.ForceSpectatorAsync(player.GetLogin(), 0);
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage.CorrectSignatureMode, player);
+        scheduler.UnScheduleKickPlayer(player);
+        await manialinks.HideManialinkAsync("OpenPlanetModule.WarningWindow");
+        await server.Remote.ForceSpectatorAsync(player.GetLogin(), 0);
+        await server.SuccessMessageAsync(_locale.PlayerLanguage.CorrectSignatureMode, player);
     }
 }

@@ -1,16 +1,10 @@
 ﻿namespace EvoSC.Common.Exceptions.PlayerExceptions;
 
-public class PlayerException : EvoSCException
+public class PlayerException(string accountId, string message) : EvoSCException(message)
 {
-    public string AccountId { get; set; }
-    
-    public PlayerException(string accountId) : base($"An exception occured for player '{accountId}'")
+    public string AccountId { get; set; } = accountId;
+
+    public PlayerException(string accountId) : this(accountId, $"An exception occured for player '{accountId}'")
     {
-        AccountId = accountId;
-    }
-    
-    public PlayerException(string accountId, string message) : base(message)
-    {
-        AccountId = accountId;
     }
 }

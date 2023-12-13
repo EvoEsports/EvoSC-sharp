@@ -10,18 +10,13 @@ using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 namespace EvoSC.Modules.Official.PlayerRecords.Controllers;
 
 [Controller]
-public class PlayerEventsController : EvoScController<IEventControllerContext>
+public class PlayerEventsController(IPlayerRecordHandlerService playerRecordHandler) : EvoScController<IEventControllerContext>
 {
-    private readonly IPlayerRecordHandlerService _playerRecordHandler;
-
-    public PlayerEventsController(IPlayerRecordHandlerService playerRecordHandler) =>
-        _playerRecordHandler = playerRecordHandler;
-
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task OnWayPoint(object sender, WayPointEventArgs wayPoint) =>
-        _playerRecordHandler.CheckWaypointAsync(wayPoint);
+        playerRecordHandler.CheckWaypointAsync(wayPoint);
 
     [Subscribe(PlayerRecordsEvent.PbRecord)]
     public Task OnPbRecord(object sender, PbRecordUpdateEventArgs pbUpdate) =>
-        _playerRecordHandler.SendRecordUpdateToChatAsync(pbUpdate.Record);
+        playerRecordHandler.SendRecordUpdateToChatAsync(pbUpdate.Record);
 }

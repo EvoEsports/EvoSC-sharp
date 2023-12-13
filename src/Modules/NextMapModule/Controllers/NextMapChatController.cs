@@ -9,23 +9,15 @@ using EvoSC.Modules.Official.NextMapModule.Interfaces;
 namespace EvoSC.Modules.Official.NextMapModule.Controllers;
 
 [Controller]
-public class NextMapChatController : EvoScController<ICommandInteractionContext>
+public class NextMapChatController(INextMapService nextMapService, IServerClient server, Locale locale)
+    : EvoScController<ICommandInteractionContext>
 {
-    private readonly INextMapService _nextMapService;
-    private readonly IServerClient _server;
-    private readonly dynamic _locale;
+    private readonly dynamic _locale = locale;
 
-    public NextMapChatController(INextMapService nextMapService, IServerClient server, Locale locale)
-    {
-        _nextMapService = nextMapService;
-        _server = server;
-        _locale = locale;
-    }
-    
     [ChatCommand("nextmap", "[Command.NextMap]")]
     public async Task GetNextMapAsync()
     {
-        var nextMap = await _nextMapService.GetNextMapAsync();
-        await _server.InfoMessageAsync(_locale.PlayerLanguage.NextMap(nextMap.Name, nextMap.Author?.NickName));
+        var nextMap = await nextMapService.GetNextMapAsync();
+        await server.InfoMessageAsync(_locale.PlayerLanguage.NextMap(nextMap.Name, nextMap.Author?.NickName));
     }
 }

@@ -6,7 +6,7 @@ namespace EvoSC.Common.Services.Attributes;
 /// Classes annotated with this attribute will be automatically added to the
 /// DI container. Default lifestyle is Transient unless the service is a background service.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Class)]
 public class ServiceAttribute : Attribute
 {
     /// <summary>

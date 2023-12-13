@@ -6,12 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.MatchRankingModule.Themes;
 
 [Theme(Name = "Match Ranking", Description = "Default theme for the match ranking module.")]
-public class DefaultMatchRankingTheme : Theme<DefaultMatchRankingTheme>
+public class DefaultMatchRankingTheme(IThemeManager theme) : Theme<DefaultMatchRankingTheme>
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
-    public DefaultMatchRankingTheme(IThemeManager theme) => _theme = theme.Theme;
-    
     public override Task ConfigureAsync()
     {
         Set("MatchRankingModule.MatchRanking.Default.Text").To(_theme.UI_TextPrimary);

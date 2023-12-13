@@ -8,15 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database.Repository.Permissions;
 
-public class PermissionRepository : DbRepository, IPermissionRepository
+public class PermissionRepository(IDbConnectionFactory dbConnFactory, ILogger<PermissionRepository> logger)
+    : DbRepository(dbConnFactory), IPermissionRepository
 {
-    private readonly ILogger<PermissionRepository> _logger;
-    
-    public PermissionRepository(IDbConnectionFactory dbConnFactory, ILogger<PermissionRepository> logger) : base(dbConnFactory)
-    {
-        _logger = logger;
-    }
-
     public async Task<IPermission> AddPermissionAsync(IPermission permission)
     {
         var id = await Database.InsertWithIdentityAsync(new DbPermission(permission));
@@ -53,7 +47,7 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to remove permission");
+            logger.LogError(ex, "Failed to remove permission");
             await transaction.RollbackTransactionAsync();
             throw;
         }
@@ -90,7 +84,7 @@ public class PermissionRepository : DbRepository, IPermissionRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to remove group");
+            logger.LogError(ex, "Failed to remove group");
             await transaction.RollbackTransactionAsync();
             throw;
         }

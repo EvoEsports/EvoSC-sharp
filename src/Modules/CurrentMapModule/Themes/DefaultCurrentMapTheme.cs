@@ -6,15 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.CurrentMapModule.Themes;
 
 [Theme(Name = "Current Map", Description = "Default theme for the Current Map Module.")]
-public class DefaultCurrentMapTheme : Theme<DefaultCurrentMapTheme>
+public class DefaultCurrentMapTheme(IThemeManager theme) : Theme<DefaultCurrentMapTheme>
 {
-    private readonly dynamic _theme;
-    
-    public DefaultCurrentMapTheme(IThemeManager theme)
-    {
-        _theme = theme.Theme;
-    }
-    
+    private readonly dynamic _theme = theme.Theme;
+
     public override Task ConfigureAsync()
     {
         Set("CurrentMapModule.CurrentMapWidget.Default.BgHeaderGrad1").To(_theme.UI_BgPrimary);

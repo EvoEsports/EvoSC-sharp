@@ -5,16 +5,9 @@ using EvoSC.Modules.Interfaces;
 namespace EvoSC.Modules.Official.MapsModule;
 
 [Module(IsInternal = true)]
-public class MapsModule : EvoScModule, IToggleable
+public class MapsModule(IMapService maps) : EvoScModule, IToggleable
 {
-    private readonly IMapService _maps;
-
-    public MapsModule(IMapService maps)
-    {
-        _maps = maps;
-    }
-
-    public async Task EnableAsync() => await _maps.AddCurrentMapListAsync();
+    public async Task EnableAsync() => await maps.AddCurrentMapListAsync();
 
     public Task DisableAsync() => Task.CompletedTask;
 }

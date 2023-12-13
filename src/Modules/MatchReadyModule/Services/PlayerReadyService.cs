@@ -9,43 +9,31 @@ using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 namespace EvoSC.Modules.Official.MatchReadyModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class PlayerReadyService : IPlayerReadyService
+public class PlayerReadyService(IPlayerReadyTrackerService playerReadyTrackerService, IManialinkManager manialinks,
+        IServerClient server, IPlayerManagerService players)
+    : IPlayerReadyService
 {
-    private readonly IPlayerReadyTrackerService _playerReadyTrackerService;
-    private readonly IManialinkManager _manialinks;
-    private readonly IServerClient _server;
-    private readonly IPlayerManagerService _players;
-    
     private bool _widgetEnabled;
     private readonly object _widgetEnabledLock = new();
 
-    public PlayerReadyService(IPlayerReadyTrackerService playerReadyTrackerService, IManialinkManager manialinks,
-        IServerClient server, IPlayerManagerService players)
-    {
-        _playerReadyTrackerService = playerReadyTrackerService;
-        _manialinks = manialinks;
-        _server = server;
-        _players = players;
-    }
-
-    public bool MatchIsStarted => _playerReadyTrackerService.MatchStarted;
+    public bool MatchIsStarted => playerReadyTrackerService.MatchStarted;
 
     public async Task SetPlayerReadyStatusAsync(IPlayer player, bool isReady)
     {
-        if (!_playerReadyTrackerService.RequiredPlayers.Contains(player))
+        if (!playerReadyTrackerService.RequiredPlayers.Contains(player))
         {
             return;
         }
         
-        await _playerReadyTrackerService.SetIsReadyAsync(player, isReady);
+        await playerReadyTrackerService.SetIsReadyAsync(player, isReady);
 
         if (isReady)
         {
-            await _server.InfoMessageAsync($"$<{player.NickName}$> is ready.");
+            await server.InfoMessageAsync($"$<{player.NickName}$> is ready.");
         }
         else
         {
-            await _server.InfoMessageAsync($"$<{player.NickName}$> is no longer ready.");
+            await server.InfoMessageAsync($"$<{player.NickName}$> is no longer ready.");
         }
 
         await UpdateWidgetAsync();
@@ -53,18 +41,18 @@ public class PlayerReadyService : IPlayerReadyService
 
     public Task ResetReadyWidgetAsync(bool resetRequired)
     {
-        _playerReadyTrackerService.Reset(resetRequired);
+        playerReadyTrackerService.Reset(resetRequired);
         return Task.CompletedTask;
     }
 
     public Task SetMatchStartedAsync()
     {
-        _playerReadyTrackerService.SetMatchStarted(true);
+        playerReadyTrackerService.SetMatchStarted(true);
         return Task.CompletedTask;
     }
 
     public Task<bool> PlayerIsReadyAsync(IPlayer player) =>
-        Task.FromResult(_playerReadyTrackerService.ReadyPlayers.Any(p => p.AccountId == player.AccountId));
+        Task.FromResult(playerReadyTrackerService.ReadyPlayers.Any(p => p.AccountId == player.AccountId));
 
     public async Task SendWidgetAsync(IPlayer player)
     {
@@ -77,12 +65,12 @@ public class PlayerReadyService : IPlayerReadyService
         }
         
         // var isReady = await PlayerIsReadyAsync(player);
-        var isReady = _playerReadyTrackerService.ReadyPlayers.Contains(player);
-        var requiredPlayers = _playerReadyTrackerService.RequiredPlayers.Count();
-        var playersReady = _playerReadyTrackerService.ReadyPlayers.Count();
-        var showButton = _playerReadyTrackerService.RequiredPlayers.Any(p => p.AccountId == player.AccountId);
+        var isReady = playerReadyTrackerService.ReadyPlayers.Contains(player);
+        var requiredPlayers = playerReadyTrackerService.RequiredPlayers.Count();
+        var playersReady = playerReadyTrackerService.ReadyPlayers.Count();
+        var showButton = playerReadyTrackerService.RequiredPlayers.Any(p => p.AccountId == player.AccountId);
 
-        await _manialinks.SendManialinkAsync(player, "MatchReadyModule.ReadyWidget",
+        await manialinks.SendManialinkAsync(player, "MatchReadyModule.ReadyWidget",
             new { isReady, requiredPlayers, playersReady, showButton });
     }
 
@@ -96,13 +84,13 @@ public class PlayerReadyService : IPlayerReadyService
             }
         }
         
-        foreach (var player in await _players.GetOnlinePlayersAsync())
+        foreach (var player in await players.GetOnlinePlayersAsync())
         {
-            await _manialinks.SendManialinkAsync(player, "MatchReadyModule.UpdateWidget",
+            await manialinks.SendManialinkAsync(player, "MatchReadyModule.UpdateWidget",
                 new
                 {
-                    PlayerCount = _playerReadyTrackerService.ReadyPlayers.Count(),
-                    IsReady = _playerReadyTrackerService.ReadyPlayers.Contains(player)
+                    PlayerCount = playerReadyTrackerService.ReadyPlayers.Count(),
+                    IsReady = playerReadyTrackerService.ReadyPlayers.Contains(player)
                 });
         }
     }
@@ -116,8 +104,8 @@ public class PlayerReadyService : IPlayerReadyService
 
         if (!enabled)
         {
-            await _manialinks.HideManialinkAsync("MatchReadyModule.ReadyWidget");
-            await _manialinks.HideManialinkAsync("MatchReadyModule.UpdateWidget");
+            await manialinks.HideManialinkAsync("MatchReadyModule.ReadyWidget");
+            await manialinks.HideManialinkAsync("MatchReadyModule.UpdateWidget");
         }
     }
 
@@ -125,7 +113,7 @@ public class PlayerReadyService : IPlayerReadyService
     {
         foreach (var player in players)
         {
-            await _playerReadyTrackerService.AddRequiredPlayerAsync(player);
+            await playerReadyTrackerService.AddRequiredPlayerAsync(player);
         }
     }
 }

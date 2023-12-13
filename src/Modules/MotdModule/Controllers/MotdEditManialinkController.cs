@@ -7,19 +7,12 @@ using EvoSC.Modules.Official.MotdModule.Models;
 namespace EvoSC.Modules.Official.MotdModule.Controllers;
 
 [Controller]
-public class MotdEditManialinkController : ManialinkController
+public class MotdEditManialinkController(IMotdService motdService) : ManialinkController
 {
-    private readonly IMotdService _motdService;
-
-    public MotdEditManialinkController(IMotdService motdService)
-    {
-        _motdService = motdService;
-    }
-    
     [ManialinkRoute(Permission = MotdPermissions.EditMotd)]
     public async Task SaveAsync(EditMotdEntryModel input)
     {
-        _motdService.SetLocalMotd(input.Text, Context.Player);
+        motdService.SetLocalMotd(input.Text, Context.Player);
         await HideAsync(Context.Player, "MotdModule.MotdEdit");
     }
 }

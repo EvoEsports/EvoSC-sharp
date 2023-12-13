@@ -6,12 +6,10 @@ using EvoSC.Manialinks.Interfaces.Models;
 
 namespace EvoSC.Manialinks;
 
-public class ManialinkInteractionContext : PlayerInteractionContext, IManialinkInteractionContext
+public class ManialinkInteractionContext
+    (IOnlinePlayer player, IControllerContext context) : PlayerInteractionContext(player, context),
+        IManialinkInteractionContext
 {
     public required IManialinkActionContext ManialinkAction { get; init; }
     public required IManialinkManager ManialinkManager { get; init; }
-    
-    public ManialinkInteractionContext(IOnlinePlayer player, IControllerContext context) : base(player, context)
-    {
-    }
 }

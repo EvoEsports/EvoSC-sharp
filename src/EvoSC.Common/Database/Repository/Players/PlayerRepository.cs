@@ -8,12 +8,8 @@ using LinqToDB;
 
 namespace EvoSC.Common.Database.Repository.Players;
 
-public class PlayerRepository : DbRepository, IPlayerRepository
+public class PlayerRepository(IDbConnectionFactory dbConnFactory) : DbRepository(dbConnFactory), IPlayerRepository
 {
-    public PlayerRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
-    {
-    }
-
     public async Task<IPlayer?> GetPlayerByAccountIdAsync(string accountId) => await Table<DbPlayer>()
         .LoadWith(p => p.DbSettings)
         .SingleOrDefaultAsync(t => t.AccountId == accountId);

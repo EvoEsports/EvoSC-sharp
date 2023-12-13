@@ -10,24 +10,17 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.FastestCpModule.Controllers;
 
 [Controller]
-public class FastestCpController : EvoScController<IEventControllerContext>
+public class FastestCpController(IFastestCpService fastestCpService) : EvoScController<IEventControllerContext>
 {
-    private readonly IFastestCpService _fastestCpService;
-
-    public FastestCpController(IFastestCpService fastestCpService)
-    {
-        _fastestCpService = fastestCpService;
-    }
-
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task RegisterCpTimeAsync(object sender, WayPointEventArgs args)
     {
-        return _fastestCpService.RegisterCpTimeAsync(args);
+        return fastestCpService.RegisterCpTimeAsync(args);
     }
 
     [Subscribe(GbxRemoteEvent.EndMap)]
     public Task ResetCpTimesAsync(object sender, MapGbxEventArgs args)
     {
-        return _fastestCpService.ResetCpTimesAsync();
+        return fastestCpService.ResetCpTimesAsync();
     }
 }

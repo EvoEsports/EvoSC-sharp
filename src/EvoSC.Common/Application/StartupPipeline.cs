@@ -9,20 +9,13 @@ using SimpleInjector;
 
 namespace EvoSC.Common.Application;
 
-public class StartupPipeline : IStartupPipeline, IDisposable
+public class StartupPipeline(IEvoScBaseConfig config) : IStartupPipeline, IDisposable
 {
-    private readonly ServicesBuilder _services;
-    private readonly ILogger<StartupPipeline> _logger;
+    private readonly ServicesBuilder _services = new();
+    private readonly ILogger<StartupPipeline> _logger = new Container().AddEvoScLogging(config.Logging).GetInstance<ILogger<StartupPipeline>>();
     private readonly Dictionary<string, IStartupComponent> _components = new();
     
     public Container ServiceContainer => _services;
-    
-    public StartupPipeline(IEvoScBaseConfig config)
-    {
-        _services = new ServicesBuilder();
-
-        _logger = new Container().AddEvoScLogging(config.Logging).GetInstance<ILogger<StartupPipeline>>();
-    }
 
     private void CreatedDependencyOrder(IEnumerable<string> components, Dictionary<string, IStartupComponent> services,
         Dictionary<string, IStartupComponent> actions, HashSet<string> previousComponents)

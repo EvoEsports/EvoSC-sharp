@@ -2,9 +2,9 @@
 
 namespace EvoSC.Manialinks.Util;
 
-public class FontManialinkHelper
+public class FontManialinkHelper(IThemeManager theme)
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
     /// <summary>
     /// Thin thickness of the current font.
@@ -30,12 +30,7 @@ public class FontManialinkHelper
     /// Mono version of the current font.
     /// </summary>
     public string Mono => ToExtraBold(_theme.UI_Font);
-    
-    public FontManialinkHelper(IThemeManager theme)
-    {
-        _theme = theme.Theme;
-    }
-    
+
     /// <summary>
     /// Convert the provided font to it's regular thickness version.
     /// </summary>

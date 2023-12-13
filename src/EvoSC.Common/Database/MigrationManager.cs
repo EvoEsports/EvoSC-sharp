@@ -10,15 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Common.Database;
 
-public class MigrationManager : IMigrationManager
+public class MigrationManager(IEvoScBaseConfig config) : IMigrationManager
 {
-    private readonly IEvoScBaseConfig _config;
-
-    public MigrationManager(IEvoScBaseConfig config)
-    {
-        _config = config;
-    }
-
     public void MigrateFromAssembly(Assembly asm)
     {
         var provider = new ServiceCollection()
@@ -27,11 +20,11 @@ public class MigrationManager : IMigrationManager
                 .AddMySql5()
                 .AddSQLite()
                 .AddPostgres()
-                .WithGlobalConnectionString(_config.Database.GetConnectionString())
+                .WithGlobalConnectionString(config.Database.GetConnectionString())
                 .ScanIn(asm).For.Migrations())
             .Configure<SelectingGeneratorAccessorOptions>(x =>
-                x.GeneratorId = GetDatabaseTypeIdentifier(_config.Database.Type))
-            .AddEvoScLogging(_config.Logging)
+                x.GeneratorId = GetDatabaseTypeIdentifier(config.Database.Type))
+            .AddEvoScLogging(config.Logging)
             .Configure<RunnerOptions>(opt =>
             {
                 opt.Tags = new[] { "Production" };

@@ -11,22 +11,12 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
-public class MatchSettingsService : IMatchSettingsService
+public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IEvoScBaseConfig config)
+    : IMatchSettingsService
 {
-    private readonly ILogger<MatchSettingsService> _logger;
-    private readonly IServerClient _server;
-    private readonly IEvoScBaseConfig _config;
-
-    public MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IEvoScBaseConfig config)
-    {
-        _logger = logger;
-        _server = server;
-        _config = config;
-    }
-
     public async Task SetCurrentScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
     {
-        var settings = await _server.Remote.GetModeScriptSettingsAsync();
+        var settings = await server.Remote.GetModeScriptSettingsAsync();
 
         if (settings == null)
         {
@@ -34,7 +24,7 @@ public class MatchSettingsService : IMatchSettingsService
         }
         
         settingsAction(settings);
-        await _server.Remote.SetModeScriptSettingsAsync(settings);
+        await server.Remote.SetModeScriptSettingsAsync(settings);
     }
 
     public Task SetCurrentScriptSettingsAsync(IMatchSettings matchSettings) => SetCurrentScriptSettingsAsync(settings =>
@@ -49,7 +39,7 @@ public class MatchSettingsService : IMatchSettingsService
     });
 
     public async Task<Dictionary<string, object>?> GetCurrentScriptSettingsAsync() =>
-        await _server.Remote.GetModeScriptSettingsAsync();
+        await server.Remote.GetModeScriptSettingsAsync();
 
     public Task LoadMatchSettingsAsync(string name) => LoadMatchSettingsAsync(name, true);
     
@@ -58,16 +48,16 @@ public class MatchSettingsService : IMatchSettingsService
         try
         {
             var file = Path.GetFileName($"{name}.txt");
-            await _server.Remote.LoadMatchSettingsAsync($"MatchSettings/{file}");
+            await server.Remote.LoadMatchSettingsAsync($"MatchSettings/{file}");
 
             if (skipMap)
             {
-                await _server.Remote.NextMapAsync();
+                await server.Remote.NextMapAsync();
             }
         }
         catch (XmlRpcFaultException ex)
         {
-            _logger.LogError(ex, "Failed to load match settings: {Msg}", ex.Fault.FaultString);
+            logger.LogError(ex, "Failed to load match settings: {Msg}", ex.Fault.FaultString);
 
             if (ex.Fault.FaultCode == -1000)
             {
@@ -90,7 +80,7 @@ public class MatchSettingsService : IMatchSettingsService
 
         try
         {
-            if (!await _server.Remote.WriteFileAsync(fileName, contents))
+            if (!await server.Remote.WriteFileAsync(fileName, contents))
             {
                 throw new InvalidOperationException("Failed to create match settings due to an unknown error.");
             }
@@ -101,11 +91,11 @@ public class MatchSettingsService : IMatchSettingsService
         {
             if (ex is XmlRpcFaultException faultEx)
             {
-                _logger.LogError(faultEx, "Failed to create match settings due to XMLRPC fault");
+                logger.LogError(faultEx, "Failed to create match settings due to XMLRPC fault");
             }
             else
             {
-                _logger.LogError(ex, "An error occured while creating match settings");
+                logger.LogError(ex, "An error occured while creating match settings");
             }
 
             throw;
@@ -122,11 +112,11 @@ public class MatchSettingsService : IMatchSettingsService
 
     private async Task<string> GetFilePathAsync(string name)
     {
-        var mapsDir = _config.Path.Maps;
+        var mapsDir = config.Path.Maps;
 
         if (mapsDir == string.Empty)
         {
-            mapsDir = await _server.Remote.GetMapsDirectoryAsync();
+            mapsDir = await server.Remote.GetMapsDirectoryAsync();
         }
 
         // if it's still empty and doesn't exist, we should throw an error

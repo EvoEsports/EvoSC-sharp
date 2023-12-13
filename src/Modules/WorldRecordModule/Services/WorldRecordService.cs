@@ -14,20 +14,11 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.WorldRecordModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class WorldRecordService : IWorldRecordService
+public class WorldRecordService(ILogger<WorldRecordService> logger, IEventManager events, IServerClient client)
+    : IWorldRecordService
 {
-    private readonly ILogger<WorldRecordService> _logger;
-    private readonly IEventManager _events;
-    private readonly IServerClient _client;
     private WorldRecord? _currentWorldRecord;
     private readonly object _currentWorldRecordLock = new();
-
-    public WorldRecordService(ILogger<WorldRecordService> logger, IEventManager events, IServerClient client)
-    {
-        _logger = logger;
-        _events = events;
-        _client = client;
-    }
 
     public async Task FetchRecordAsync(string mapUid)
     {
@@ -45,11 +36,11 @@ public class WorldRecordService : IWorldRecordService
         }
         catch (FlurlHttpException ex)
         {
-            _logger.LogError(ex, "Invalid response from Openplanet. Maybe API issues?");
+            logger.LogError(ex, "Invalid response from Openplanet. Maybe API issues?");
             throw;
         }
         
-        _logger.LogDebug("Loaded records for map.");
+        logger.LogDebug("Loaded records for map.");
 
 
         if (res is {tops.Count: > 0})
@@ -62,7 +53,7 @@ public class WorldRecordService : IWorldRecordService
                 Source = WorldRecordSource.TrackmaniaIo
             };
 
-            _logger.LogTrace("New world record loaded from tm.io: {name} -> {time}",
+            logger.LogTrace("New world record loaded from tm.io: {name} -> {time}",
                 newWorldRecord.PlayerName,
                 newWorldRecord.Time.ToString()
             );
@@ -71,7 +62,7 @@ public class WorldRecordService : IWorldRecordService
         }
         else
         {
-            var mapInfo = await _client.Remote.GetCurrentMapInfoAsync();
+            var mapInfo = await client.Remote.GetCurrentMapInfoAsync();
             var author = mapInfo.AuthorNickname.Length > 0 ? mapInfo.AuthorNickname : mapInfo.Author;
             var newWorldRecord = new WorldRecord
             {
@@ -80,7 +71,7 @@ public class WorldRecordService : IWorldRecordService
                 Source = WorldRecordSource.AuthorTime
             };
             
-            _logger.LogDebug("Couldn't load World Record, using Author Time instead.");
+            logger.LogDebug("Couldn't load World Record, using Author Time instead.");
             
             await OverwriteRecordAsync(newWorldRecord);
         }
@@ -130,7 +121,7 @@ public class WorldRecordService : IWorldRecordService
             _currentWorldRecord = newRecord;
         }
 
-        await _events.RaiseAsync(WorldRecordEvents.NewRecord, new WorldRecordLoadedEventArgs
+        await events.RaiseAsync(WorldRecordEvents.NewRecord, new WorldRecordLoadedEventArgs
         {
             Record = newRecord
         });

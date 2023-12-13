@@ -9,7 +9,8 @@ using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 namespace EvoSC.Modules.Official.MatchManagerModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
-public class LiveModeService : ILiveModeService
+public class LiveModeService(IServerClient server, IContextService context, Locale locale)
+    : ILiveModeService
 {
     private readonly Dictionary<string, string> _availableModes = new()
     {
@@ -22,17 +23,8 @@ public class LiveModeService : ILiveModeService
         {"ko", "Trackmania/TM_Knockout_Online.Script.txt"}
     };
 
-    private readonly IServerClient _server;
-    private readonly IContextService _context;
-    private readonly dynamic _locale;
+    private readonly dynamic _locale = locale;
 
-    public LiveModeService(IServerClient server, IContextService context, Locale locale)
-    {
-        _server = server;
-        _context = context;
-        _locale = locale;
-    }
-    
     public IEnumerable<string> GetAvailableModes() => _availableModes.Keys;
 
     public async Task<string> LoadModeAsync(string mode)
@@ -44,10 +36,10 @@ public class LiveModeService : ILiveModeService
             modeName = _availableModes[mode];
         }
         
-        await _server.Remote.SetScriptNameAsync(modeName);
-        await _server.Remote.RestartMapAsync();
+        await server.Remote.SetScriptNameAsync(modeName);
+        await server.Remote.RestartMapAsync();
 
-        _context.Audit().Success()
+        context.Audit().Success()
             .WithEventName(AuditEvents.LoadMode)
             .HavingProperties(new {ModeName = modeName})
             .Comment(_locale.Audit_LoadedModeLive);

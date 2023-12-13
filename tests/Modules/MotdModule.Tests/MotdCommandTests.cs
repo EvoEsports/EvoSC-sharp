@@ -18,7 +18,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     public MotdCommandTests()
     {
         _context = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
-        InitMock(_motdService, _context.Object);
+        InitMock(_motdService);
     }
 
     [Theory]

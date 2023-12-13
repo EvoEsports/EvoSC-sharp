@@ -11,7 +11,7 @@ public class RankingComparer : IEqualityComparer<LiveRankingWidgetPosition>
             return false;
         }
         
-        return x.player.AccountId == y.player.AccountId;
+        return x.Player.AccountId == y.Player.AccountId;
     }
 
     public int GetHashCode(LiveRankingWidgetPosition obj)

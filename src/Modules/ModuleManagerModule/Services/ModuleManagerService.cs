@@ -13,47 +13,37 @@ namespace EvoSC.Modules.Official.ModuleManagerModule.Services;
 
 
 [Service]
-public class ModuleManagerService : IModuleManagerService
+public class ModuleManagerService(IContextService context, IModuleManager modules, IServerClient server, Locale locale)
+    : IModuleManagerService
 {
-    private readonly IContextService _context;
-    private readonly IModuleManager _modules;
-    private readonly IServerClient _server;
-    private readonly dynamic _locale;
-    
-    public ModuleManagerService(IContextService context, IModuleManager modules, IServerClient server, Locale locale)
-    {
-        _context = context;
-        _modules = modules;
-        _server = server;
-        _locale = locale;
-    }
-    
+    private readonly dynamic _locale = locale;
+
     public async Task EnableModuleAsync(IModuleLoadContext module)
     {
-        _context.Audit()
+        context.Audit()
             .WithEventName(AuditEvents.ModuleEnabled)
             .HavingProperties(new {module.LoadId, module.ModuleInfo})
             .Comment(_locale.Audit_ModuleEnabled);
 
-        var actor = _context.Audit().Actor;
+        var actor = context.Audit().Actor;
         
         try
         {
-            await _modules.EnableAsync(module.LoadId);
-            _context.Audit().Success();
+            await modules.EnableAsync(module.LoadId);
+            context.Audit().Success();
             
             if (actor != null)
             {
-                await _server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name), actor);
+                await server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name), actor);
             }
         }
         catch (Exception ex)
         {
-            _context.Audit().Error();
+            context.Audit().Error();
             
             if (actor != null)
             {
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage.FailedEnablingModule(ex.Message), actor);
+                await server.ErrorMessageAsync(_locale.PlayerLanguage.FailedEnablingModule(ex.Message), actor);
             }
             
             throw;
@@ -62,30 +52,30 @@ public class ModuleManagerService : IModuleManagerService
 
     public async Task DisableModuleAsync(IModuleLoadContext module)
     {
-        _context.Audit()
+        context.Audit()
             .WithEventName(AuditEvents.ModuleEnabled)
             .HavingProperties(new {module.LoadId, module.ModuleInfo})
             .Comment(_locale.Audit_ModuleDisabled);
 
-        var actor = _context.Audit().Actor;
+        var actor = context.Audit().Actor;
         
         try
         {
-            await _modules.DisableAsync(module.LoadId);
-            _context.Audit().Success();
+            await modules.DisableAsync(module.LoadId);
+            context.Audit().Success();
             
             if (actor != null)
             {
-                await _server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name), actor);
+                await server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name), actor);
             }
         }
         catch (Exception ex)
         {
-            _context.Audit().Error();
+            context.Audit().Error();
             
             if (actor != null)
             {
-                await _server.ErrorMessageAsync(_locale.PlayerLanguage.FailedDisablingModule(ex.Message), actor);
+                await server.ErrorMessageAsync(_locale.PlayerLanguage.FailedDisablingModule(ex.Message), actor);
             }
             
             throw;
@@ -97,7 +87,7 @@ public class ModuleManagerService : IModuleManagerService
         var message = new TextFormatter();
         message.AddText(_locale.PlayerLanguage.LoadedModules);
 
-        foreach (var module in _modules.LoadedModules)
+        foreach (var module in modules.LoadedModules)
         {
             message.AddText(module.ModuleInfo.Name, style => style
                 .WithColor(module.IsEnabled ? Color.Green : Color.Red)
@@ -106,6 +96,6 @@ public class ModuleManagerService : IModuleManagerService
             message.AddText(", ");
         }
 
-        return _server.InfoMessageAsync(message.ToString(), actor);
+        return server.InfoMessageAsync(message.ToString(), actor);
     }
 }

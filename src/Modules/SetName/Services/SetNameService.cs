@@ -11,39 +11,27 @@ using EvoSC.Modules.Official.SetName.Interfaces;
 namespace EvoSC.Modules.Official.SetName.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
-public class SetNameService : ISetNameService
-{
-    private readonly IServerClient _server;
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerCacheService _playerCache;
-    private readonly IEventManager _events;
-    private readonly dynamic _locale;
-
-    public SetNameService(IServerClient server, IPlayerRepository playerRepository, IPlayerCacheService playerCache,
+public class SetNameService(IServerClient server, IPlayerRepository playerRepository, IPlayerCacheService playerCache,
         IEventManager events, Locale locale)
-    {
-        _server = server;
-        _playerRepository = playerRepository;
-        _playerCache = playerCache;
-        _events = events;
-        _locale = locale;
-    }
+    : ISetNameService
+{
+    private readonly dynamic _locale = locale;
 
     public async Task SetNicknameAsync(IPlayer player, string newName)
     {
         if (player.NickName.Equals(newName, StringComparison.Ordinal))
         {
-            await _server.ErrorMessageAsync(_locale.PlayerLanguage.DidNotChangeName, player);
+            await server.ErrorMessageAsync(_locale.PlayerLanguage.DidNotChangeName, player);
             return;
         }
         
-        await _playerRepository.UpdateNicknameAsync(player, newName);
-        await _playerCache.UpdatePlayerAsync(player);
+        await playerRepository.UpdateNicknameAsync(player, newName);
+        await playerCache.UpdatePlayerAsync(player);
         
-        await _server.SuccessMessageAsync(_locale.PlayerLanguage.NameSuccessfullySet(newName), player);
-        await _server.InfoMessageAsync(_locale.PlayerChangedTheirName(player.NickName, newName));
+        await server.SuccessMessageAsync(_locale.PlayerLanguage.NameSuccessfullySet(newName), player);
+        await server.InfoMessageAsync(_locale.PlayerChangedTheirName(player.NickName, newName));
         
-        await _events.RaiseAsync(SetNameEvents.NicknameUpdated, new NicknameUpdatedEventArgs
+        await events.RaiseAsync(SetNameEvents.NicknameUpdated, new NicknameUpdatedEventArgs
         {
             Player = player,
             OldName = player.NickName,

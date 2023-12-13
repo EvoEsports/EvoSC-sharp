@@ -3,18 +3,11 @@ using Config.Net;
 
 namespace EvoSC.Common.Config.Stores;
 
-public class EvSCModuleConfigStore : IConfigStore
+public class EvSCModuleConfigStore(string moduleName, DatabaseStore dbStore) : IConfigStore
 {
     private const string EnviKeyPrefix = "EVOSC_MODULE_";
-    
-    private readonly DatabaseStore _dbStore;
-    private readonly string _moduleName;
-    
-    public EvSCModuleConfigStore(string moduleName, DatabaseStore dbStore)
-    {
-        _dbStore = dbStore;
-        _moduleName = moduleName.ToUpper(CultureInfo.InvariantCulture);
-    }
+
+    private readonly string _moduleName = moduleName.ToUpper(CultureInfo.InvariantCulture);
 
     public string? Read(string key)
     {
@@ -26,7 +19,7 @@ public class EvSCModuleConfigStore : IConfigStore
             return enviValue;
         }
 
-        return _dbStore.Read(key);
+        return dbStore.Read(key);
     }
 
     public void Write(string key, string? value)
@@ -39,13 +32,13 @@ public class EvSCModuleConfigStore : IConfigStore
             Environment.SetEnvironmentVariable(enviKey, value);
         }
         
-        _dbStore.Write(key, value);
+        dbStore.Write(key, value);
     }
 
     public bool CanRead => true;
     public bool CanWrite => true;
 
-    public void Dispose() => _dbStore.Dispose();
+    public void Dispose() => dbStore.Dispose();
 
     private string MakeEnviKey(string key)
     {

@@ -1,6 +1,3 @@
 ﻿namespace EvoSC.Common.Exceptions;
 
-public class ServerDisconnectedException : EvoSCException
-{
-    
-}
+public class ServerDisconnectedException : EvoSCException;

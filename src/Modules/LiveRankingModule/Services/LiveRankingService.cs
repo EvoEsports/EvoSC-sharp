@@ -14,29 +14,18 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.LiveRankingModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class LiveRankingService : ILiveRankingService
+public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkManager manialinkManager,
+        IServerClient client, IPlayerManagerService playerManager)
+    : ILiveRankingService
 {
     private const int ShowRows = 4;
 
-    private readonly ILogger<LiveRankingService> _logger;
-    private readonly IManialinkManager _manialinkManager;
-    private readonly LiveRankingStore _liveRankingStore;
-    private readonly IServerClient _client;
+    private readonly LiveRankingStore _liveRankingStore = new(playerManager);
     private bool _isRoundsMode;
-
-    public LiveRankingService(ILogger<LiveRankingService> logger, ILoggerFactory loggerFactory,
-        IManialinkManager manialinkManager, IServerClient client, IPlayerManagerService playerManager)
-    {
-        _logger = logger;
-        _manialinkManager = manialinkManager;
-        _client = client;
-        _liveRankingStore =
-            new LiveRankingStore(loggerFactory.CreateLogger<LiveRankingStore>(), playerManager);
-    }
 
     public async Task OnEnableAsync()
     {
-        _logger.LogTrace("LiveRankingModule enabled");
+        logger.LogTrace("LiveRankingModule enabled");
         await CheckIsRoundsModeAsync();
         await HideNadeoScoreboardAsync();
         if (_isRoundsMode)
@@ -46,7 +35,7 @@ public class LiveRankingService : ILiveRankingService
             _liveRankingStore.IncreaseRoundCounter();
             _liveRankingStore.IncreaseTrackCounter();
 
-            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+            await manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
                 await GetWidgetDataAsync());
         }
 
@@ -55,8 +44,8 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnDisableAsync()
     {
-        _logger.LogTrace("LiveRankingModule disabled");
-        await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
+        logger.LogTrace("LiveRankingModule disabled");
+        await manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
         await Task.CompletedTask;
     }
 
@@ -65,12 +54,12 @@ public class LiveRankingService : ILiveRankingService
         await CheckIsRoundsModeAsync();
         if (_isRoundsMode)
         {
-            _logger.LogTrace("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
+            logger.LogTrace("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
                 args.AccountId, _isRoundsMode);
 
             _liveRankingStore.RegisterTime(args.AccountId, args.CheckpointInRace, args.RaceTime, args.IsEndRace);
 
-            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+            await manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
                 await GetWidgetDataAsync());
         }
     }
@@ -81,10 +70,7 @@ public class LiveRankingService : ILiveRankingService
         await CalculateDiffsAsync(currentRanking);
         var widgetCurrentRanking = GetLiveRankingForWidget(currentRanking);
 
-        return new
-        {
-            rankings = widgetCurrentRanking,
-        };
+        return new { rankings = widgetCurrentRanking, };
     }
 
     public Task CalculateDiffsAsync(List<ExpandedLiveRankingPosition> rankings)
@@ -106,19 +92,19 @@ public class LiveRankingService : ILiveRankingService
         await CheckIsRoundsModeAsync();
         if (_isRoundsMode)
         {
-            _logger.LogTrace("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
+            logger.LogTrace("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
                 _isRoundsMode);
 
             _liveRankingStore.RegisterPlayerGiveUp(args.AccountId);
 
-            await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+            await manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
                 await GetWidgetDataAsync());
         }
     }
 
     public async Task OnBeginMapAsync(MapEventArgs args)
     {
-        _logger.LogTrace("Map starts: {MapName}, IsRounds: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
+        logger.LogTrace("Map starts: {MapName}, IsRounds: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
         await CheckIsRoundsModeAsync();
         if (!_isRoundsMode)
         {
@@ -136,12 +122,12 @@ public class LiveRankingService : ILiveRankingService
     public async Task OnEndMapAsync(MapEventArgs args)
     {
         await CheckIsRoundsModeAsync();
-        _logger.LogTrace("Map ends: {MapName} - RoundsMode: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
+        logger.LogTrace("Map ends: {MapName} - RoundsMode: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
         if (_isRoundsMode)
         {
             await _liveRankingStore.ResetLiveRankingsAsync();
-            await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
-            await _manialinkManager.HideManialinkAsync("LiveRankingModule.MatchInfo");
+            await manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
+            await manialinkManager.HideManialinkAsync("LiveRankingModule.MatchInfo");
         }
     }
 
@@ -152,26 +138,28 @@ public class LiveRankingService : ILiveRankingService
 
     public async Task OnStartRoundAsync(RoundEventArgs args)
     {
-        _logger.LogTrace("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
+        logger.LogTrace("Round {ArgsCount} starts - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
         await _liveRankingStore.ResetLiveRankingsAsync();
-        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetDataAsync());
+        await manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+            await GetWidgetDataAsync());
     }
 
     public async Task SendManialinkAsync()
     {
-        await _manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", await GetWidgetDataAsync());
+        await manialinkManager.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking",
+            await GetWidgetDataAsync());
     }
 
     public async Task OnEndRoundAsync(RoundEventArgs args)
     {
-        _logger.LogTrace("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
+        logger.LogTrace("Round {ArgsCount} ends - RoundsMode: {IsRoundsMode}", args.Count, _isRoundsMode);
         var liveRanking = await _liveRankingStore.GetFullLiveRankingAsync();
         var nbFinished = liveRanking.FindAll(x => x.IsFinish);
         if (nbFinished.Count > 0)
         {
-            _logger.LogTrace("MatchInfo Rounds before: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
+            logger.LogTrace("MatchInfo Rounds before: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
             _liveRankingStore.IncreaseRoundCounter();
-            _logger.LogTrace("MatchInfo Rounds after: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
+            logger.LogTrace("MatchInfo Rounds after: {ArgsCount}", _liveRankingStore.GetMatchInfo().NumRound);
         }
     }
 
@@ -206,12 +194,12 @@ public class LiveRankingService : ILiveRankingService
 }"
         };
 
-        await _client.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
+        await client.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
     }
 
     private async Task HideManialinkAsync()
     {
-        await _manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
+        await manialinkManager.HideManialinkAsync("LiveRankingModule.LiveRanking");
     }
 
     private string FormatTime(int time, bool isDelta)

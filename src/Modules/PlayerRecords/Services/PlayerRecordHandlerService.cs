@@ -15,28 +15,12 @@ using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 namespace EvoSC.Modules.Official.PlayerRecords.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class PlayerRecordHandlerService : IPlayerRecordHandlerService
-{
-    private readonly IPlayerRecordsService _playerRecords;
-    private readonly IPlayerManagerService _players;
-    private readonly IEventManager _events;
-    private readonly IPlayerRecordSettings _recordOptions;
-    private readonly IServerClient _server;
-    private readonly IMapService _maps;
-    private readonly dynamic _locale;
-
-    public PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
+public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
         IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server, IMapService maps,
         Locale locale)
-    {
-        _playerRecords = playerRecords;
-        _players = players;
-        _events = events;
-        _recordOptions = recordOptions;
-        _server = server;
-        _maps = maps;
-        _locale = locale;
-    }
+    : IPlayerRecordHandlerService
+{
+    private readonly dynamic _locale = locale;
 
     public async Task CheckWaypointAsync(WayPointEventArgs waypoint)
     {
@@ -45,12 +29,12 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
             return;
         }
 
-        var map = await _maps.GetOrAddCurrentMapAsync();
-        var player = await _players.GetOnlinePlayerAsync(waypoint.AccountId);
+        var map = await maps.GetOrAddCurrentMapAsync();
+        var player = await players.GetOnlinePlayerAsync(waypoint.AccountId);
         var (record, status) =
-            await _playerRecords.SetPbRecordAsync(player, map, waypoint.RaceTime, waypoint.CurrentLapCheckpoints);
+            await playerRecords.SetPbRecordAsync(player, map, waypoint.RaceTime, waypoint.CurrentLapCheckpoints);
 
-        await _events.RaiseAsync(PlayerRecordsEvent.PbRecord, new PbRecordUpdateEventArgs
+        await events.RaiseAsync(PlayerRecordsEvent.PbRecord, new PbRecordUpdateEventArgs
         {
             Player = player,
             Record = record,
@@ -59,23 +43,23 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
         });
     }
 
-    public Task SendRecordUpdateToChatAsync(IPlayerRecord record) => _recordOptions.EchoPb switch
+    public Task SendRecordUpdateToChatAsync(IPlayerRecord record) => recordOptions.EchoPb switch
     {
-        EchoOptions.All => _server.InfoMessageAsync(
+        EchoOptions.All => server.InfoMessageAsync(
             _locale.PlayerGotANewPb(record.Player.NickName, FormattingUtils.FormatTime(record.Score))),
-        EchoOptions.Player => _server.InfoMessageAsync(
+        EchoOptions.Player => server.InfoMessageAsync(
             _locale.PlayerLanguage.YouGotANewPb(FormattingUtils.FormatTime(record.Score)), record.Player),
         _ => Task.CompletedTask
     };
 
     public async Task ShowCurrentPlayerPbAsync(IPlayer player)
     {
-        var map = await _maps.GetOrAddCurrentMapAsync();
-        var pb = await _playerRecords.GetPlayerRecordAsync(player, map);
+        var map = await maps.GetOrAddCurrentMapAsync();
+        var pb = await playerRecords.GetPlayerRecordAsync(player, map);
 
         if (pb == null)
         {
-            await _server.InfoMessageAsync(_locale.PlayerLanguage.YouHaveNotSetATime, player);
+            await server.InfoMessageAsync(_locale.PlayerLanguage.YouHaveNotSetATime, player);
             return;
         }
 
@@ -84,6 +68,6 @@ public class PlayerRecordHandlerService : IPlayerRecordHandlerService
         var m = pb.Score / 1000 / 60;
         var formattedTime = $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
 
-        await _server.InfoMessageAsync(_locale.PlayerLanguage.YourCurrentPbIs(formattedTime), player);
+        await server.InfoMessageAsync(_locale.PlayerLanguage.YourCurrentPbIs(formattedTime), player);
     }
 }
