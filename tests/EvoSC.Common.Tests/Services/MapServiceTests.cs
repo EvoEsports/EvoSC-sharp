@@ -332,10 +332,12 @@ public class MapServiceTests
             Id = 123,
             ExternalId = "1337",
             Name = "snippens dream",
-            Uid = "Uid"
+            Uid = "Uid",
+            FilePath = "FilePath"
         };
         _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
             .Returns(Task.FromResult((IMap?)map));
+        _config.SetupGet(config => config.Path.Maps).Returns("MapPath");
 
         await _mapService.RemoveMapAsync(123);
 
