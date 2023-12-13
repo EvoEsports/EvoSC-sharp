@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Manialinks;
 
-public class ManialinkActionManager : IManialinkActionManager
+public class ManialinkActionManager(ILogger<ManialinkActionManager> logger) : IManialinkActionManager
 {
     private const BindingFlags ActionMethodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly;
     private static readonly char RouteDelimiter = '/';
@@ -19,17 +19,11 @@ public class ManialinkActionManager : IManialinkActionManager
     private static readonly Regex ValidCharactersInRouteNameRegex = new("[_\\.\\w\\d]+", RegexOptions.None, TimeSpan.FromMilliseconds(100));
     private static readonly string ControllerPostfix = "Controller";
     private static readonly string AsyncMethodPostfix = "Async";
-    
-    private readonly ILogger<ManialinkActionManager> _logger;
+
     private readonly IMlRouteNode _rootNode = new MlRouteNode("<root>"){Children = new Dictionary<string, IMlRouteNode>()};
     private readonly object _rootNodeMutex = new();
     private readonly Dictionary<Type, List<string>> _controllerRoutes = new();
     private readonly object _controllerRoutesMutex = new();
-
-    public ManialinkActionManager(ILogger<ManialinkActionManager> logger)
-    {
-        _logger = logger;
-    }
 
     /// <summary>
     /// Get the effective route to a controller.
@@ -284,7 +278,7 @@ public class ManialinkActionManager : IManialinkActionManager
             currentNode.Action = action;
         }
         
-        _logger.LogDebug("Registered manialink route: {Route}", route);
+        logger.LogDebug("Registered manialink route: {Route}", route);
     }
 
     public void AddRoute(string route, IManialinkAction action) => AddActionInternal(route, action);
@@ -478,7 +472,7 @@ public class ManialinkActionManager : IManialinkActionManager
                 catch (InvalidOperationException ex)
                 {
                     // ignore errors when the route already doesn't exist
-                    _logger.LogDebug(ex, "The route {Route} does not exist for controller {Controller}",
+                    logger.LogDebug(ex, "The route {Route} does not exist for controller {Controller}",
                         route,
                         controllerType.ToString());
                 }

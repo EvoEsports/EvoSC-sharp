@@ -5,12 +5,9 @@ using LinqToDB;
 
 namespace EvoSC.Common.Database.Repository.Stores;
 
-public class ConfigStoreRepository : DbRepository, IConfigStoreRepository
+public class ConfigStoreRepository(IDbConnectionFactory dbConnFactory) : DbRepository(dbConnFactory),
+    IConfigStoreRepository
 {
-    public ConfigStoreRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
-    {
-    }
-
     public async Task<DbConfigOption?> GetConfigOptionsByKeyAsync(string keyName) => await Table<DbConfigOption>()
         .SingleOrDefaultAsync(t => t.Key == keyName);
 

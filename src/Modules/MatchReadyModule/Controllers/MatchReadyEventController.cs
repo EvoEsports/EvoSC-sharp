@@ -11,32 +11,24 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.MatchReadyModule.Controllers;
 
 [Controller]
-public class MatchReadyEventController : EvoScController<IEventControllerContext>
+public class MatchReadyEventController(IPlayerReadyService playerReadyService, IPlayerManagerService players)
+    : EvoScController<IEventControllerContext>
 {
-    private readonly IPlayerReadyService _playerReadyService;
-    private readonly IPlayerManagerService _players;
-
-    public MatchReadyEventController(IPlayerReadyService playerReadyService, IPlayerManagerService players)
-    {
-        _playerReadyService = playerReadyService;
-        _players = players;
-    }
-
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
     {
-        if (_playerReadyService.MatchIsStarted)
+        if (playerReadyService.MatchIsStarted)
         {
             return;
         }
         
-        var player = await _players.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
+        var player = await players.GetPlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
 
         if (player == null)
         {
             return;
         }
 
-        await _playerReadyService.SendWidgetAsync(player);
+        await playerReadyService.SendWidgetAsync(player);
     }
 }

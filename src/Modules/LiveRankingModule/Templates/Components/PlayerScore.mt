@@ -11,8 +11,8 @@
     <property type="string" name="playerRowBackgroundColor" default="999999"/>
 
     <template>
-        <frame id="player_row_{{ ranking?.login }}" pos="0 {{ y }}">
-            <quad id="player_row_trigger_{{ ranking?.login }}"
+        <frame id="player_row_{{ ranking?.Login }}" pos="0 {{ y }}">
+            <quad id="player_row_trigger_{{ ranking?.Login }}"
                   size="{{ w + 10.0 }} {{ h }}"
                   ScriptEvents="1"
             />
@@ -29,7 +29,7 @@
             <label id="position"
                    pos="3.25 {{ h / -2.0 + 0.25 }}"
                    size="7 5"
-                   text="{{ ranking?.position }}"
+                   text="{{ ranking?.Position }}"
                    halign="center"
                    valign="center"
                    textfont="{{ Font.Bold }}"
@@ -60,7 +60,7 @@
                 <!-- NAME -->
                 <label pos="2 {{ h / -2.0 }}"
                        size="{{ w * 0.66 }} 6"
-                       text="{{ ranking?.player?.NickName }}"
+                       text="{{ ranking?.Player?.NickName }}"
                        valign="center2"
                        textfont="{{ Font.Regular }}"
                        textsize="1.15"
@@ -72,7 +72,7 @@
                 <label id="score"
                        pos="{{ w - 9.0 }} {{ h / -2.0 }}"
                        size="15 5"
-                       text="{{ ranking?.time }}"
+                       text="{{ ranking?.Time }}"
                        valign="center2"
                        halign="right"
                        textfont="{{ Font.Regular }}"
@@ -95,7 +95,7 @@
                 <label id="cp_index"
                        pos="{{ w - 5.0 }} {{ h / -2.0 }}"
                        size="5 5"
-                       text='{{ ranking != null ? (ranking.isFinish ? Icons.FlagCheckered : ranking.cpIndex) : "" }}'
+                       text='{{ ranking != null ? (ranking.IsFinish ? Icons.FlagCheckered : ranking.CpIndex) : "" }}'
                        valign="center2"
                        halign="center"
                        textfont="{{ Font.ExtraBold }}"
@@ -112,9 +112,9 @@
         <!--
             *** OnMouseClick ***
             ***
-            if(Event.Control.ControlId == "player_row_trigger_{{ ranking?.login }}"){
+            if(Event.Control.ControlId == "player_row_trigger_{{ ranking?.Login }}"){
                 if(!IsSpectatorClient) RequestSpectatorClient(True);
-                SetSpectateTarget("{{ ranking?.login }}");
+                SetSpectateTarget("{{ ranking?.Login }}");
                 continue;
             }
             ***

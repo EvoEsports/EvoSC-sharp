@@ -10,24 +10,16 @@ using EvoSC.Modules.Official.NextMapModule.Interfaces;
 namespace EvoSC.Modules.Official.NextMapModule.Controllers;
 
 [Controller]
-public class NextMapEventController : EvoScController<IEventControllerContext>
+public class NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager)
+    : EvoScController<IEventControllerContext>
 {
     private const string Template = "NextMapModule.NextMap";
-    
-    private readonly INextMapService _nextMapService;
-    private readonly IManialinkManager _manialinkManager;
-
-    public NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager)
-    {
-        _nextMapService = nextMapService;
-        _manialinkManager = manialinkManager;
-    }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task ShowNextMapOnPodiumStartAsync(object sender, PodiumEventArgs args)
     {
-        var nextMap = await _nextMapService.GetNextMapAsync();
-        await _manialinkManager.SendManialinkAsync(Template,
+        var nextMap = await nextMapService.GetNextMapAsync();
+        await manialinkManager.SendManialinkAsync(Template,
             new
             {
                 mapName = nextMap.Name, 
@@ -38,18 +30,18 @@ public class NextMapEventController : EvoScController<IEventControllerContext>
     [Subscribe(ModeScriptEvent.PodiumEnd)]
     public async Task HideNextMapOnPodiumEndAsync(object sender, PodiumEventArgs args)
     {
-        await _manialinkManager.HideManialinkAsync(Template);
+        await manialinkManager.HideManialinkAsync(Template);
     }
 
     [Subscribe(ModeScriptEvent.StartMapStart)]
     public async Task HideNextMapOnMapStartAsync(object sender, MapEventArgs args)
     {
-        await _manialinkManager.HideManialinkAsync(Template);
+        await manialinkManager.HideManialinkAsync(Template);
     }
 
     [Subscribe(ModeScriptEvent.EndMapEnd)]
     public async Task HideNextMapOnMapEndAsync(object sender, MapEventArgs args)
     {
-        await _manialinkManager.HideManialinkAsync(Template);
+        await manialinkManager.HideManialinkAsync(Template);
     }
 }

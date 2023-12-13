@@ -15,15 +15,8 @@ namespace EvoSC.CliCommands;
 
 [CliCommand(Name = "genconfig", Description = "Generate a config file in provided formats.")]
 [RequiredFeatures(AppFeature.Modules)]
-public class ConfigGeneratorCommand
+public class ConfigGeneratorCommand(IModuleManager modules)
 {
-    private readonly IModuleManager _modules;
-    
-    public ConfigGeneratorCommand(IModuleManager modules)
-    {
-        _modules = modules;
-    }
-    
     public async Task ExecuteAsync(
         [Alias(Name = "-t"), Description("The output format, supported types: ENV")]
         string formatType, 
@@ -80,9 +73,9 @@ public class ConfigGeneratorCommand
             return (name.Name, version.Version.ToString(), t.Assembly);
         }));
         
-        var modules = _modules.LoadedModules;
+        var loadedModules = modules.LoadedModules;
 
-        foreach (var module in modules)
+        foreach (var module in loadedModules)
         {
             foreach (var moduleAssembly in module.Assemblies)
             {

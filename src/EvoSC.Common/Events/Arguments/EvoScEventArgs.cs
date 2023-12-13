@@ -1,6 +1,3 @@
 ﻿namespace EvoSC.Common.Events.Arguments;
 
-public class EvoScEventArgs : EventArgs
-{
-    
-}
+public class EvoScEventArgs : EventArgs;

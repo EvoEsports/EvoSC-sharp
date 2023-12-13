@@ -2,15 +2,8 @@
 
 using DependencyGraph = Dictionary<string, IList<string>>;
 
-public class DependencyCycleException : DependencyException
+public class DependencyCycleException(DependencyGraph remainingGraph) : DependencyException
 {
-    private readonly DependencyGraph _remainingGraph;
-    
-    public DependencyCycleException(DependencyGraph remainingGraph)
-    {
-        _remainingGraph = remainingGraph;
-    }
-
     private bool FindCycle(string name, List<string> visited)
     {
         if (visited.Contains(name))
@@ -21,7 +14,7 @@ public class DependencyCycleException : DependencyException
         
         visited.Add(name);
 
-        foreach (var dep in _remainingGraph[name])
+        foreach (var dep in remainingGraph[name])
         {
             if (FindCycle(dep, visited))
             {
@@ -41,11 +34,11 @@ public class DependencyCycleException : DependencyException
     /// <returns></returns>
     public IEnumerable<string> GetCycle()
     {
-        foreach (var name in _remainingGraph.Keys)
+        foreach (var name in remainingGraph.Keys)
         {
             var cycle = new List<string>();
             
-            if (FindCycle(_remainingGraph.FirstOrDefault().Key, cycle))
+            if (FindCycle(remainingGraph.FirstOrDefault().Key, cycle))
             {
                 cycle.Add(name);
                 return cycle;

@@ -6,27 +6,18 @@ using EvoSC.Modules.Official.ModuleManagerModule.ValueReaders;
 namespace EvoSC.Modules.Official.ModuleManagerModule;
 
 [Module(IsInternal = true)]
-public class ModuleManagerModule : EvoScModule, IToggleable
+public class ModuleManagerModule(IChatCommandManager commands, IModuleManager modules) : EvoScModule, IToggleable
 {
-    private readonly IChatCommandManager _commands;
-    private readonly IModuleManager _modules;
-    
-    public ModuleManagerModule(IChatCommandManager commands, IModuleManager modules)
-    {
-        _commands = commands;
-        _modules = modules;
-    }
-
     public Task EnableAsync()
     {
-        _commands.ValueReader.AddReader(new ModuleValueReader(_modules));
+        commands.ValueReader.AddReader(new ModuleValueReader(modules));
 
         return Task.CompletedTask;
     }
 
     public Task DisableAsync()
     {
-        _commands.ValueReader.RemoveReaders(typeof(IModuleLoadContext));
+        commands.ValueReader.RemoveReaders(typeof(IModuleLoadContext));
         
         return Task.CompletedTask;
     }

@@ -6,12 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.Scoreboard.Themes;
 
 [Theme(Name = "Scoreboard", Description = "Default theme for the scoreboard.")]
-public class DefaultScoreboardTheme : Theme<DefaultScoreboardTheme>
+public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboardTheme>
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
-    public DefaultScoreboardTheme(IThemeManager theme) => _theme = theme.Theme;
-    
     public override Task ConfigureAsync()
     {
         Set("ScoreboardModule.BackgroundBox.BgHeader").To(_theme.UI_BgPrimary);

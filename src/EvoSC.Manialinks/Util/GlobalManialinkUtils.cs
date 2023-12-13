@@ -3,15 +3,10 @@ using EvoSC.Common.Interfaces.Themes;
 
 namespace EvoSC.Manialinks.Util;
 
-public class GlobalManialinkUtils
+public class GlobalManialinkUtils(IThemeManager themeManager)
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = themeManager.Theme;
     private readonly GameIcons _icons = new();
-
-    public GlobalManialinkUtils(IThemeManager themeManager)
-    {
-        _theme = themeManager.Theme;
-    }
 
     /// <summary>
     /// Status type to a color.

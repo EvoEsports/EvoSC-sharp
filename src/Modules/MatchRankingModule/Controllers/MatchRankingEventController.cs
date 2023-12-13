@@ -12,56 +12,49 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.MatchRankingModule.Controllers;
 
 [Controller]
-public class MatchRankingEventController : EvoScController<IEventControllerContext>
+public class MatchRankingEventController(IMatchRankingService matchRankingService) : EvoScController<IEventControllerContext>
 {
-    private readonly IMatchRankingService _matchRankingService;
-
-    public MatchRankingEventController(IMatchRankingService matchRankingService)
-    {
-        _matchRankingService = matchRankingService;
-    }
-
     [Subscribe(ModeScriptEvent.Scores)]
     public async Task OnScores(object data, ScoresEventArgs eventArgs)
     {
         if (eventArgs.Section is ModeScriptSection.EndMatch)
         {
-            await _matchRankingService.ResetMatchData();
-            await _matchRankingService.HideManialink();
+            await matchRankingService.ResetMatchData();
+            await matchRankingService.HideManialink();
             return;
         }
         
-        await _matchRankingService.UpdateAndShowScores(eventArgs);
+        await matchRankingService.UpdateAndShowScores(eventArgs);
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnBeginMapAsync(object sender, RoundEventArgs args)
     {
-        await _matchRankingService.SendManialinkToPlayers();
+        await matchRankingService.SendManialinkToPlayers();
     }
 
     [Subscribe(ModeScriptEvent.StartMatchStart)]
     public async Task OnStartMatch(object sender, MatchEventArgs args)
     {
-        await _matchRankingService.ResetMatchData();
-        await _matchRankingService.SendManialinkToPlayers();
+        await matchRankingService.ResetMatchData();
+        await matchRankingService.SendManialinkToPlayers();
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args)
     {
-        await _matchRankingService.HideManialink();
+        await matchRankingService.HideManialink();
     }
 
     [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
     public async Task OnPlayerInfoChanged(object sender, PlayerInfoChangedGbxEventArgs args)
     {
-        await _matchRankingService.HandlePlayerStateChange(PlayerUtils.ConvertLoginToAccountId(args.PlayerInfo.Login));
+        await matchRankingService.HandlePlayerStateChange(PlayerUtils.ConvertLoginToAccountId(args.PlayerInfo.Login));
     }
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
     {
-        await _matchRankingService.SendManialinkToPlayer(PlayerUtils.ConvertLoginToAccountId(args.Login));
+        await matchRankingService.SendManialinkToPlayer(PlayerUtils.ConvertLoginToAccountId(args.Login));
     }
 }

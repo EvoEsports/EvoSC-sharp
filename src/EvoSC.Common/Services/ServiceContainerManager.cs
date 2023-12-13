@@ -11,19 +11,11 @@ using SimpleInjector.Lifestyles;
 
 namespace EvoSC.Common.Services;
 
-public class ServiceContainerManager : IServiceContainerManager
+public class ServiceContainerManager(IEvoSCApplication app, ILogger<ServiceContainerManager> logger)
+    : IServiceContainerManager
 {
-    private readonly IEvoSCApplication _app;
-    private readonly ILogger<ServiceContainerManager> _logger;
-
     private readonly Dictionary<Guid, Container> _containers = new();
     private readonly Dictionary<Guid, List<Guid>> _dependencyServices = new();
-
-    public ServiceContainerManager(IEvoSCApplication app, ILogger<ServiceContainerManager> logger)
-    {
-        _app = app;
-        _logger = logger;
-    }
 
     public void AddContainer(Guid moduleId, Container container)
     {
@@ -39,7 +31,7 @@ public class ServiceContainerManager : IServiceContainerManager
         
         _containers.Add(moduleId, container);
         
-        _logger.LogDebug("Added service container with ID: {ContainerId}", moduleId);
+        logger.LogDebug("Added service container with ID: {ContainerId}", moduleId);
     }
 
     public Container NewContainer(Guid moduleId, IEnumerable<Assembly> assemblies, List<Guid> loadedDependencies)
@@ -121,7 +113,7 @@ public class ServiceContainerManager : IServiceContainerManager
         GC.WaitForPendingFinalizers();
         GC.Collect();
         
-        _logger.LogDebug("Removed service container for container: {ContainerId}", moduleId);
+        logger.LogDebug("Removed service container for container: {ContainerId}", moduleId);
     }
 
     public void RegisterDependency(Guid moduleId, Guid dependencyId)
@@ -142,7 +134,7 @@ public class ServiceContainerManager : IServiceContainerManager
         }
         
         _dependencyServices[moduleId].Add(dependencyId);
-        _logger.LogDebug("Registered dependency '{DepId}' for '{ContainerId}'", dependencyId, moduleId);
+        logger.LogDebug("Registered dependency '{DepId}' for '{ContainerId}'", dependencyId, moduleId);
     }
 
     public Container GetContainer(Guid moduleId)
@@ -166,7 +158,7 @@ public class ServiceContainerManager : IServiceContainerManager
         {
             e.Register(() =>
             {
-                _logger.LogTrace("Will attempt to resolve service '{Service}' for {Container}", 
+                logger.LogTrace("Will attempt to resolve service '{Service}' for {Container}", 
                     e.UnregisteredServiceType,
                     containerId);
                 
@@ -180,7 +172,7 @@ public class ServiceContainerManager : IServiceContainerManager
                         }
                         catch (ActivationException ex)
                         {
-                            _logger.LogTrace(ex,
+                            logger.LogTrace(ex,
                                 "Did not find service {Service} for container {Container} in dependency {Dependency}",
                                 e.UnregisteredServiceType,
                                 containerId,
@@ -189,17 +181,17 @@ public class ServiceContainerManager : IServiceContainerManager
                     }
                 }
                 
-                _logger.LogTrace(
+                logger.LogTrace(
                     "Dependencies does not have service '{Service}' for {Container}. Will try core services",
                     e.UnregisteredServiceType,
                     containerId);
                 
-                return _app.Services.GetInstance(e.UnregisteredServiceType);
+                return app.Services.GetInstance(e.UnregisteredServiceType);
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unknown error occured while trying to resolve a core service");
+            logger.LogError(ex, "An unknown error occured while trying to resolve a core service");
         }
     }
 }

@@ -10,15 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database.Repository.Maps;
 
-public class MapRepository : DbRepository, IMapRepository
+public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapRepository> logger)
+    : DbRepository(dbConnFactory), IMapRepository
 {
-    private readonly ILogger<MapRepository> _logger;
-    
-    public MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapRepository> logger) : base(dbConnFactory)
-    {
-        _logger = logger;
-    }
-
     public async Task<IMap?> GetMapByIdAsync(long id) => await Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
         .SingleOrDefaultAsync(m => m.Id == id);
@@ -57,7 +51,7 @@ public class MapRepository : DbRepository, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed adding map with UID {MapMapUid} to the database", map.MapUid);
+            logger.LogError(e, "Failed adding map with UID {MapMapUid} to the database", map.MapUid);
             await transaction.RollbackTransactionAsync();
             throw new EvoScDatabaseException($"Failed adding map with UID {map.MapUid} to the database", e);
         }
@@ -96,7 +90,7 @@ public class MapRepository : DbRepository, IMapRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to update map with UID {MapMapUid}", map.MapUid);
+            logger.LogError(e, "Failed to update map with UID {MapMapUid}", map.MapUid);
             await transaction.RollbackTransactionAsync();
             throw new EvoScDatabaseException($"Failed to update map with UID {map.MapUid}", e);
         }

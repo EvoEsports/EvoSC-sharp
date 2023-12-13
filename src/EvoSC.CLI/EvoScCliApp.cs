@@ -8,19 +8,14 @@ public class EvoScCliApp : IEvoSCApplication
     public IStartupPipeline StartupPipeline { get; }
     public CancellationToken MainCancellationToken { get; }
     public Container Services { get; }
-
-    public EvoScCliApp()
-    {
-        
-    }
     
     public Task RunAsync()
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 
     public Task ShutdownAsync()
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException();
     }
 }

@@ -6,12 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.OpenPlanetModule.Themes;
 
 [Theme(Name = "OpenPlanet", Description = "Default theme for the OpenPlanet module.")]
-public class DefaultOpenPlanetTheme : Theme<DefaultOpenPlanetTheme>
+public class DefaultOpenPlanetTheme(IThemeManager theme) : Theme<DefaultOpenPlanetTheme>
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
-    public DefaultOpenPlanetTheme(IThemeManager theme) => _theme = theme.Theme; 
-    
     public override Task ConfigureAsync()
     {
         Set("OpenPlanetModule.WarningWindow.TextWarning").To(_theme.Warning);

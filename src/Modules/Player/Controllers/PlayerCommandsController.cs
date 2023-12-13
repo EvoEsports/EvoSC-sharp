@@ -8,24 +8,20 @@ using EvoSC.Modules.Official.Player.Interfaces;
 namespace EvoSC.Modules.Official.Player.Controllers;
 
 [Controller]
-public class PlayerCommandsController : EvoScController<ICommandInteractionContext>
+public class PlayerCommandsController(IPlayerService players) : EvoScController<ICommandInteractionContext>
 {
-    private readonly IPlayerService _players;
-
-    public PlayerCommandsController(IPlayerService players) => _players = players;
-
     [ChatCommand("kick", "[Command.Kick]", ModPermissions.KickPlayer)]
-    public Task KickPlayerAsync(IOnlinePlayer player) => _players.KickAsync(player, Context.Player);
+    public Task KickPlayerAsync(IOnlinePlayer player) => players.KickAsync(player, Context.Player);
 
     [ChatCommand("mute", "[Command.Mute]", ModPermissions.MutePlayer)]
-    public Task MutePlayerAsync(IOnlinePlayer player) => _players.MuteAsync(player, Context.Player);
+    public Task MutePlayerAsync(IOnlinePlayer player) => players.MuteAsync(player, Context.Player);
     
     [ChatCommand("unmute", "[Command.Unmute]", ModPermissions.MutePlayer)]
-    public Task UnMutePlayerAsync(IOnlinePlayer player) => _players.UnmuteAsync(player, Context.Player);
+    public Task UnMutePlayerAsync(IOnlinePlayer player) => players.UnmuteAsync(player, Context.Player);
     
     [ChatCommand("ban", "[Command.Ban]", ModPermissions.BanPlayer)]
-    public Task BanPlayerAsync(IOnlinePlayer player) => _players.BanAsync(player, Context.Player);
+    public Task BanPlayerAsync(IOnlinePlayer player) => players.BanAsync(player, Context.Player);
     
     [ChatCommand("unban", "[Command.Unban]", ModPermissions.BanPlayer)]
-    public Task UnbanPlayerAsync(string login) => _players.UnbanAsync(login, Context.Player);
+    public Task UnbanPlayerAsync(string login) => players.UnbanAsync(login, Context.Player);
 }

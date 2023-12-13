@@ -3,23 +3,13 @@ using EvoSC.Commands.Interfaces;
 
 namespace EvoSC.Commands;
 
-public class CommandAlias : ICommandAlias
+public class CommandAlias(string name, bool hide, params object[] args) : ICommandAlias
 {
-    public string Name { get; init; }
-    public object[] DefaultArgs { get; init; }
-    public bool Hide { get; }
+    public string Name { get; init; } = name;
+    public object[] DefaultArgs { get; init; } = args;
+    public bool Hide { get; } = hide;
 
-    public CommandAlias(string name, bool hide, params object[] args)
+    public CommandAlias(CommandAliasAttribute attr) : this(attr.Name, attr.Hide, attr.Arguments)
     {
-        Name = name;
-        DefaultArgs = args;
-        Hide = hide;
-    }
-
-    public CommandAlias(CommandAliasAttribute attr)
-    {
-        Name = attr.Name;
-        DefaultArgs = attr.Arguments;
-        Hide = attr.Hide;
     }
 }

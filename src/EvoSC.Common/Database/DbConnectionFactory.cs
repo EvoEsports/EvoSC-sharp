@@ -10,19 +10,11 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database;
 
-public class DbConnectionFactory : IDbConnectionFactory
+public class DbConnectionFactory(IEvoScBaseConfig config, ILogger<DbConnectionFactory> logger)
+    : IDbConnectionFactory
 {
-    private readonly IEvoScBaseConfig _config;
-    private readonly object _mutex = new();
     private DataConnection? _connection;
-    private readonly ILogger<DbConnectionFactory> _logger;
 
-    public DbConnectionFactory(IEvoScBaseConfig config, ILogger<DbConnectionFactory> logger)
-    {
-        _config = config;
-        _logger = logger;
-    }
-    
     public DataContext GetConnection()
     {
         return CreateConnection();
@@ -45,16 +37,16 @@ public class DbConnectionFactory : IDbConnectionFactory
     /// <returns></returns>
     private DataOptions CreateDatabaseOptions() =>
         new DataOptions(new ConnectionOptions(
-                ProviderName: _config.Database.Type switch
+                ProviderName: config.Database.Type switch
                 {
                     IDatabaseConfig.DatabaseType.MySql => ProviderName.MySql,
                     IDatabaseConfig.DatabaseType.SQLite => ProviderName.SQLite,
                     IDatabaseConfig.DatabaseType.PostgreSql => ProviderName.PostgreSQL,
                     _ => throw new InvalidOperationException("Invalid database type requested.")
                 },
-                ConnectionString: _config.Database.GetConnectionString()
+                ConnectionString: config.Database.GetConnectionString()
             ))
-            .UseTraceLevel(_config.Logging.LogLevel.ToUpper(CultureInfo.InvariantCulture) switch
+            .UseTraceLevel(config.Logging.LogLevel.ToUpper(CultureInfo.InvariantCulture) switch
             {
                 "INFORMATION" => TraceLevel.Info,
                 "ERROR" => TraceLevel.Error,
@@ -72,6 +64,6 @@ public class DbConnectionFactory : IDbConnectionFactory
     /// <param name="level"></param>
     private void LogTracing(string? s1, string? s2, TraceLevel level)
     {
-        _logger.LogTrace("Database Trace: {One} | {Two}", s1, s2);
+        logger.LogTrace("Database Trace: {One} | {Two}", s1, s2);
     }
 }

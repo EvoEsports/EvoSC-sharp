@@ -1,5 +1,3 @@
 namespace EvoSC.Common.Themes.Events.Args;
 
-public class ThemeUpdatedEventArgs : EventArgs
-{
-}
+public class ThemeUpdatedEventArgs : EventArgs;

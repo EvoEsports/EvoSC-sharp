@@ -10,20 +10,13 @@ using SimpleInjector.Lifestyles;
 
 namespace EvoSC.Common.Controllers;
 
-public class ControllerManager : IControllerManager
+public class ControllerManager(ILogger<ControllerManager> logger) : IControllerManager
 {
-    private readonly ILogger<ControllerManager> _logger;
-
     private readonly Dictionary<Type, ControllerInfo> _controllers = new();
     private readonly Dictionary<Type, List<IController>> _instances = new();
     private readonly List<IControllerActionRegistry> _registries = new();
 
     public IEnumerable<ControllerInfo> Controllers => _controllers.Values;
-    
-    public ControllerManager(ILogger<ControllerManager> logger)
-    {
-        _logger = logger;
-    }
 
     public void AddController(Type controllerType, Guid moduleId, Container services)
     {
@@ -42,13 +35,13 @@ public class ControllerManager : IControllerManager
     {
         if (!controllerType.IsControllerClass())
         {
-            _logger.LogError("{Type} does not implement IController. Make sure to inherit the EvoScController base class", controllerType);
+            logger.LogError("{Type} does not implement IController. Make sure to inherit the EvoScController base class", controllerType);
             throw new InvalidControllerClassException("The controller must implement IController.");
         }
 
         if (controllerType.GetCustomAttribute<ControllerAttribute>() == null)
         {
-            _logger.LogError("{Type} does not annotate the [Controller] attribute", controllerType);
+            logger.LogError("{Type} does not annotate the [Controller] attribute", controllerType);
             throw new InvalidControllerClassException("The controller must annotate the Controller attribute.");
         }
     }
@@ -91,7 +84,7 @@ public class ControllerManager : IControllerManager
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to dispose controller instance of type '{Type}'", controllerType);
+                logger.LogError("Failed to dispose controller instance of type '{Type}'", controllerType);
             }
         }
 

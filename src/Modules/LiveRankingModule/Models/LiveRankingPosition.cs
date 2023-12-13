@@ -3,9 +3,9 @@
 /// <summary>
 /// The live ranking position of a player.
 /// </summary>
-/// <param name="accountId">Account Id of the player.</param>
-/// <param name="cpTime">The checkpoint time of the player.</param>
-/// <param name="cpIndex">The checkpoint index that was driven through.</param>
-/// <param name="isDNF">Whether the player has given up or not.</param>
-/// <param name="isFinish">Whether the player has finished.</param>
-public record LiveRankingPosition(string accountId, int cpTime, int cpIndex, bool isDNF, bool isFinish);
+/// <param name="AccountId">Account Id of the player.</param>
+/// <param name="CpTime">The checkpoint time of the player.</param>
+/// <param name="CpIndex">The checkpoint index that was driven through.</param>
+/// <param name="IsDnf">Whether the player has given up or not.</param>
+/// <param name="IsFinish">Whether the player has finished.</param>
+public record LiveRankingPosition(string AccountId, int CpTime, int CpIndex, bool IsDnf, bool IsFinish);

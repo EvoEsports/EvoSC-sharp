@@ -1,6 +1,3 @@
 ﻿namespace EvoSC.Common.Exceptions;
 
-public class GbxRemoteAuthenticationException: EvoSCException
-{
-    
-}
+public class GbxRemoteAuthenticationException: EvoSCException;

@@ -10,36 +10,32 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.LiveRankingModule.Controllers;
 
 [Controller]
-public class LiveRankingEventController : EvoScController<IEventControllerContext>
+public class LiveRankingEventController(ILiveRankingService service) : EvoScController<IEventControllerContext>
 {
-    private readonly ILiveRankingService _service;
-
-    public LiveRankingEventController(ILiveRankingService service) => _service = service;
-
     [Subscribe(ModeScriptEvent.WayPoint)]
-    public Task OnPlayerWaypointAsync(object sender, WayPointEventArgs args) => _service.OnPlayerWaypointAsync(args);
+    public Task OnPlayerWaypointAsync(object sender, WayPointEventArgs args) => service.OnPlayerWaypointAsync(args);
 
     [Subscribe(ModeScriptEvent.GiveUp)]
-    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args) => _service.OnPlayerGiveupAsync(args);
+    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args) => service.OnPlayerGiveupAsync(args);
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public Task OnStartRoundAsync(object sender, RoundEventArgs args) => _service.OnStartRoundAsync(args);
+    public Task OnStartRoundAsync(object sender, RoundEventArgs args) => service.OnStartRoundAsync(args);
 
     [Subscribe(ModeScriptEvent.EndMapStart)]
-    public Task OnEndMapAsync(object sender, MapEventArgs args) => _service.OnEndMapAsync(args);
+    public Task OnEndMapAsync(object sender, MapEventArgs args) => service.OnEndMapAsync(args);
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args) => _service.OnPodiumStartAsync(args);
+    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args) => service.OnPodiumStartAsync(args);
 
     [Subscribe(ModeScriptEvent.EndRoundStart)]
-    public Task OnEndRoundAsync(object sender, RoundEventArgs args) => _service.OnEndRoundAsync(args);
+    public Task OnEndRoundAsync(object sender, RoundEventArgs args) => service.OnEndRoundAsync(args);
 
     [Subscribe(GbxRemoteEvent.BeginMatch)]
-    public Task OnBeginMatchAsync(object sender, EventArgs args) => _service.OnBeginMatchAsync();
+    public Task OnBeginMatchAsync(object sender, EventArgs args) => service.OnBeginMatchAsync();
 
     [Subscribe(GbxRemoteEvent.EndMatch)]
-    public Task OnEndMatchAsync(object sender, EndMatchGbxEventArgs args) => _service.OnEndMatchAsync(args);
+    public Task OnEndMatchAsync(object sender, EndMatchGbxEventArgs args) => service.OnEndMatchAsync(args);
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args) => _service.SendManialinkAsync();
+    public Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args) => service.SendManialinkAsync();
 }

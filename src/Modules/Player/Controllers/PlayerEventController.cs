@@ -9,13 +9,9 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.Player.Controllers;
 
 [Controller]
-public class PlayerEventController : EvoScController<IEventControllerContext>
+public class PlayerEventController(IPlayerService playerService) : EvoScController<IEventControllerContext>
 {
-    private readonly IPlayerService _playerService;
-    
-    public PlayerEventController(IPlayerService playerService) => _playerService = playerService;
-
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args) =>
-        _playerService.UpdateAndGreetPlayerAsync(args.Login);
+        playerService.UpdateAndGreetPlayerAsync(args.Login);
 }

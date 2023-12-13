@@ -3,8 +3,5 @@
 /// <summary>
 /// Defines the annotated class as a controller class and that it should be registered.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class ControllerAttribute : Attribute
-{
-    
-}
+[AttributeUsage(AttributeTargets.Class)]
+public class ControllerAttribute : Attribute;

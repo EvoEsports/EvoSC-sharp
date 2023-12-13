@@ -5,15 +5,8 @@ using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 namespace EvoSC.Modules.Official.CurrentMapModule;
 
 [Module(IsInternal = true)]
-public class CurrentMapModule : EvoScModule, IToggleable
+public class CurrentMapModule(ICurrentMapService service) : EvoScModule, IToggleable
 {
-    private readonly ICurrentMapService _service;
-
-    public CurrentMapModule(ICurrentMapService service)
-    {
-        _service = service;
-    }
-
-    public Task EnableAsync() => _service.ShowWidgetAsync();
-    public Task DisableAsync() => _service.HideWidgetAsync();
+    public Task EnableAsync() => service.ShowWidgetAsync();
+    public Task DisableAsync() => service.HideWidgetAsync();
 }

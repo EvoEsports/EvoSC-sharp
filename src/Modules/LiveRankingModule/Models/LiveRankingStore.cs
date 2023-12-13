@@ -4,21 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Models;
 
-internal class LiveRankingStore
+internal class LiveRankingStore(IPlayerManagerService playerManager)
 {
     private ConcurrentDictionary<string, LiveRankingPosition> _curLiveRanking { get; set; } = new();
     private ConcurrentDictionary<string, LiveRankingPosition> _prevLiveRanking { get; set; } = new();
-    private readonly ILogger<LiveRankingStore> _logger;
-    private readonly IPlayerManagerService _playerManager;
-    
-    private MatchInfo _matchInfo = new();
 
-    internal LiveRankingStore(ILogger<LiveRankingStore> logger, IPlayerManagerService playerManager)
-    {
-        _logger = logger;
-        _playerManager = playerManager;
-        _logger.LogDebug("Instantiated LiveRankingStore");
-    }
+    private MatchInfo _matchInfo = new();
 
     internal Task ResetLiveRankingsAsync()
     {
@@ -40,7 +31,7 @@ internal class LiveRankingStore
         _prevLiveRanking = new ConcurrentDictionary<string, LiveRankingPosition>(_curLiveRanking);
 
         _curLiveRanking.AddOrUpdate(accountId, _ => new LiveRankingPosition(accountId, 0, 0, true, false),
-            (_, arg) => new LiveRankingPosition(accountId, arg.cpTime, arg.cpIndex, true, false));
+            (_, arg) => new LiveRankingPosition(accountId, arg.CpTime, arg.CpIndex, true, false));
     }
 
     /// <summary>
@@ -63,14 +54,14 @@ internal class LiveRankingStore
         List<ExpandedLiveRankingPosition> expandedLiveRanking = new();
         foreach (var rank in _curLiveRanking)
         {
-            var player = await _playerManager.GetOnlinePlayerAsync(rank.Value.accountId);
+            var player = await playerManager.GetOnlinePlayerAsync(rank.Value.AccountId);
             expandedLiveRanking.Add(new ExpandedLiveRankingPosition
             {
                 Player = player,
-                CheckpointTime = rank.Value.cpTime,
-                CheckpointIndex = rank.Value.cpIndex,
-                IsDnf = rank.Value.isDNF,
-                IsFinish = rank.Value.isFinish
+                CheckpointTime = rank.Value.CpTime,
+                CheckpointIndex = rank.Value.CpIndex,
+                IsDnf = rank.Value.IsDnf,
+                IsFinish = rank.Value.IsFinish
             });
         }
 
@@ -84,14 +75,14 @@ internal class LiveRankingStore
         List<ExpandedLiveRankingPosition> expandedLiveRanking = new();
         foreach (var rank in _prevLiveRanking)
         {
-            var player = await _playerManager.GetOnlinePlayerAsync(rank.Value.accountId);
+            var player = await playerManager.GetOnlinePlayerAsync(rank.Value.AccountId);
             expandedLiveRanking.Add(new ExpandedLiveRankingPosition
             {
                 Player = player,
-                CheckpointTime = rank.Value.cpTime,
-                CheckpointIndex = rank.Value.cpIndex,
-                IsDnf = rank.Value.isDNF,
-                IsFinish = rank.Value.isFinish
+                CheckpointTime = rank.Value.CpTime,
+                CheckpointIndex = rank.Value.CpIndex,
+                IsDnf = rank.Value.IsDnf,
+                IsFinish = rank.Value.IsFinish
             });
         }
 

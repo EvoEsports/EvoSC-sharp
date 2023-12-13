@@ -10,24 +10,11 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.FastestCpModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class FastestCpService : IFastestCpService
-{
-    private readonly ILogger<FastestCpService> _logger;
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly IManialinkManager _manialinkManager;
-    private readonly IPlayerManagerService _playerManagerService;
-
-    private FastestCpStore _fastestCpStore;
-
-    public FastestCpService(IPlayerManagerService playerManagerService, IManialinkManager manialinkManager,
+public class FastestCpService(IPlayerManagerService playerManagerService, IManialinkManager manialinkManager,
         ILoggerFactory loggerFactory, ILogger<FastestCpService> logger)
-    {
-        _playerManagerService = playerManagerService;
-        _logger = logger;
-        _loggerFactory = loggerFactory;
-        _manialinkManager = manialinkManager;
-        _fastestCpStore = GetNewFastestCpStore();
-    }
+    : IFastestCpService
+{
+    private FastestCpStore _fastestCpStore = new(loggerFactory.CreateLogger<FastestCpStore>());
 
     public async Task RegisterCpTimeAsync(WayPointEventArgs args)
     {
@@ -40,16 +27,16 @@ public class FastestCpService : IFastestCpService
 
     public async Task ResetCpTimesAsync()
     {
-        _fastestCpStore = GetNewFastestCpStore();
-        await _manialinkManager.HideManialinkAsync("FastestCpModule.FastestCp");
-        _logger.LogDebug("Hiding fastest cp manialink for all users");
+        _fastestCpStore = new(loggerFactory.CreateLogger<FastestCpStore>());
+        await manialinkManager.HideManialinkAsync("FastestCpModule.FastestCp");
+        logger.LogDebug("Hiding fastest cp manialink for all users");
     }
 
     private async Task ShowWidgetAsync()
     {
-        await _manialinkManager.SendPersistentManialinkAsync("FastestCpModule.FastestCp",
+        await manialinkManager.SendPersistentManialinkAsync("FastestCpModule.FastestCp",
             new { times = await GetCurrentBestCpTimesAsync() });
-        _logger.LogDebug("Updating fastest cp manialink for all users");
+        logger.LogDebug("Updating fastest cp manialink for all users");
     }
 
     private async Task<PlayerCpTime[]> GetCurrentBestCpTimesAsync()
@@ -63,17 +50,12 @@ public class FastestCpService : IFastestCpService
                 .Distinct()
                 .Select(async id =>
                 {
-                    var player = await _playerManagerService.GetOrCreatePlayerAsync(id);
+                    var player = await playerManagerService.GetOrCreatePlayerAsync(id);
                     playerNameCache[id] = player.StrippedNickName;
                 }));
 
         return fastestTimes.Where(time => time != null).Select((time, index) =>
                 new PlayerCpTime(playerNameCache[time!.AccountId], index, TimeSpan.FromMilliseconds(time.RaceTime)))
             .TakeLast(18).ToArray();
-    }
-
-    private FastestCpStore GetNewFastestCpStore()
-    {
-        return new FastestCpStore(_loggerFactory.CreateLogger<FastestCpStore>());
     }
 }

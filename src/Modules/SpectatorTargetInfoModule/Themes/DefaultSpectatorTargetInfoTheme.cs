@@ -6,12 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Themes;
 
 [Theme(Name = "Spectator Target Info", Description = "Default theme for the Spectator Target Info module.")]
-public class DefaultSpectatorTargetInfoTheme : Theme<DefaultSpectatorTargetInfoTheme>
+public class DefaultSpectatorTargetInfoTheme(IThemeManager theme) : Theme<DefaultSpectatorTargetInfoTheme>
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
-    public DefaultSpectatorTargetInfoTheme(IThemeManager theme) => _theme = theme.Theme;
-    
     public override Task ConfigureAsync()
     {
         Set("SpectatorTargetInfoModule.SpectatorTargetInfo.Bg").To(_theme.UI_BgPrimary);

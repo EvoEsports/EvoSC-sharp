@@ -5,12 +5,10 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Modules.Official.FastestCpModule.Themes;
 
 [Theme(Name = "Fastest CP", Description = "Default them for the Fastest CP module.")]
-public class DefaultFastestCPTheme : Theme<DefaultFastestCPTheme>
+public class DefaultFastestCPTheme(IThemeManager theme) : Theme<DefaultFastestCPTheme>
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
-    public DefaultFastestCPTheme(IThemeManager theme) => _theme = theme.Theme;
-    
     public override Task ConfigureAsync()
     {
         Set("FastestCpModule.FastestCP.Default.Text").To(_theme.UI_TextPrimary);

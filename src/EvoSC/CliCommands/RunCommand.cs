@@ -7,18 +7,11 @@ namespace EvoSC.CliCommands;
 
 [CliCommand(Name = "run", Description = "Start the server controller.")]
 [RequiredFeatures(AppFeature.Config)]
-public class RunCommand
+public class RunCommand(IEvoScBaseConfig config)
 {
-    private readonly IEvoScBaseConfig _config;
-    
-    public RunCommand(IEvoScBaseConfig config)
-    {
-        _config = config;
-    }
-    
     public async Task ExecuteAsync([Alias(Name = "-s")]int something)
     {
-        var app = new Application(_config);
+        var app = new Application(config);
         await app.RunAsync();
         app.Dispose();
     }

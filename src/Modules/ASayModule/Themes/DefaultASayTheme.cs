@@ -5,15 +5,10 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Modules.Official.ASayModule.Themes;
 
 [Theme(Name = "ASay", Description = "Default theme for ASay")]
-public class DefaultASayTheme : Theme<DefaultASayTheme>
+public class DefaultASayTheme(IThemeManager theme) : Theme<DefaultASayTheme>
 {
-    private readonly dynamic _theme;
-    
-    public DefaultASayTheme(IThemeManager theme)
-    {
-        _theme = theme.Theme;
-    }
-    
+    private readonly dynamic _theme = theme.Theme;
+
     public override Task ConfigureAsync()
     {
         Set("ASayModule.Announcement.Default.TextSize").To(3);

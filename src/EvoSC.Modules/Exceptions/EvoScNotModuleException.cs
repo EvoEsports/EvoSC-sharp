@@ -3,7 +3,4 @@
 /// <summary>
 /// Thrown when a module does not exist during retrieval.
 /// </summary>
-public class EvoScNotModuleException : EvoScModuleException
-{
-    
-}
+public class EvoScNotModuleException : EvoScModuleException;

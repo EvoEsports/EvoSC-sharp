@@ -13,15 +13,9 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.MatchTrackerModule.Repository;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class MatchRecordRepository : DbRepository, IMatchRecordRepository
+public class MatchRecordRepository(IDbConnectionFactory dbConnFactory, ILogger<MatchRecordRepository> logger)
+    : DbRepository(dbConnFactory), IMatchRecordRepository
 {
-    private readonly ILogger<MatchRecordRepository> _logger;
-    
-    public MatchRecordRepository(IDbConnectionFactory dbConnFactory, ILogger<MatchRecordRepository> logger) : base(dbConnFactory)
-    {
-        _logger = logger;
-    }
-
     public async Task<DbMatchRecord> InsertStateAsync(IMatchState state)
     {
         var report = JsonSerializer.Serialize(state.CastToSuperClass());
@@ -42,7 +36,7 @@ public class MatchRecordRepository : DbRepository, IMatchRecordRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to add match state record");
+            logger.LogError(ex, "Failed to add match state record");
             throw;
         }
     }

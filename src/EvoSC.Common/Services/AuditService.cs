@@ -12,20 +12,12 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
-public class AuditService : IAuditService
+public class AuditService(ILogger<AuditService> logger, IAuditRepository auditRepository)
+    : IAuditService
 {
-    private readonly ILogger<AuditService> _logger;
-    private readonly IAuditRepository _auditRepository;
-    
-    public AuditService(ILogger<AuditService> logger, IAuditRepository auditRepository)
-    {
-        _logger = logger;
-        _auditRepository = auditRepository;
-    }
-
     private async Task LogDatabaseAsync(DbAuditRecord auditRecord)
     {
-        await _auditRepository.AddRecordAsync(auditRecord);
+        await auditRepository.AddRecordAsync(auditRecord);
     }
 
     private void LogLogger(DbAuditRecord auditRecord)
@@ -36,7 +28,7 @@ public class AuditService : IAuditService
             _ => LogLevel.Information
         };
 
-        _logger.Log(logLevel, "status={Status} event={Id} actor={Actor} comment={Comment} actionData={ActionData}",
+        logger.Log(logLevel, "status={Status} event={Id} actor={Actor} comment={Comment} actionData={ActionData}",
             auditRecord.Status,
             auditRecord.EventName,
             auditRecord.Actor?.AccountId ?? "<unknown>",

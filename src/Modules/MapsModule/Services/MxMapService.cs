@@ -11,17 +11,8 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.MapsModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class MxMapService : IMxMapService
+public class MxMapService(ILogger<MxMapService> logger, IMapService mapService) : IMxMapService
 {
-    private readonly ILogger<MxMapService> _logger;
-    private readonly IMapService _mapService;
-
-    public MxMapService(ILogger<MxMapService> logger, IMapService mapService)
-    {
-        _logger = logger;
-        _mapService = mapService;
-    }
-
     public async Task<IMap?> FindAndDownloadMapAsync(int mxId, string? shortName, IPlayer actor)
     {
         var tmxApi = new MxTmApi("EvoSC#");
@@ -29,7 +20,7 @@ public class MxMapService : IMxMapService
 
         if (mapFile == null)
         {
-            _logger.LogDebug("Could not find any map stream for ID {MxId} from Trackmania Exchange", mxId);
+            logger.LogDebug("Could not find any map stream for ID {MxId} from Trackmania Exchange", mxId);
             return null;
         }
 
@@ -37,7 +28,7 @@ public class MxMapService : IMxMapService
 
         if (mapInfoDto == null)
         {
-            _logger.LogDebug("Could not find any map info for ID {MxId} from Trackmania Exchange", mxId);
+            logger.LogDebug("Could not find any map info for ID {MxId} from Trackmania Exchange", mxId);
             return null;
         }
 
@@ -54,6 +45,6 @@ public class MxMapService : IMxMapService
 
         var map = new MapStream(mapMetadata, mapFile);
 
-        return await _mapService.AddMapAsync(map);
+        return await mapService.AddMapAsync(map);
     }
 }

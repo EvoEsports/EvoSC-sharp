@@ -7,16 +7,11 @@ using EvoSC.Modules.Official.Scoreboard.Interfaces;
 namespace EvoSC.Modules.Official.Scoreboard.Controllers;
 
 [Controller]
-public class ScoreboardCommandsController : EvoScController<ICommandInteractionContext>
+public class ScoreboardCommandsController(IScoreboardService scoreboardService) : EvoScController<ICommandInteractionContext>
 {
-    private readonly IScoreboardService _scoreboardService;
-
-    public ScoreboardCommandsController(IScoreboardService scoreboardService) =>
-        _scoreboardService = scoreboardService;
-    
     [ChatCommand("scoreboard", "[Command.ShowScoreboard]")]
     public async Task ShowScoreboardAsync()
     {
-        await _scoreboardService.ShowScoreboardAsync(Context.Player);
+        await scoreboardService.ShowScoreboardAsync(Context.Player);
     }
 }

@@ -10,12 +10,9 @@ using EvoSC.Common.Interfaces.Localization;
 
 namespace EvoSC.Common.Localization;
 
-public class LocaleResource : Locale
+public class LocaleResource(ILocalizationManager localeManager, IContextService context, IEvoScBaseConfig config)
+    : Locale
 {
-    private readonly ILocalizationManager _localeManager;
-    private readonly IContextService _context;
-    private readonly IEvoScBaseConfig _config;
-    
     private bool _useDefaultCulture = true;
 
     private static readonly Regex TranslationTag =
@@ -25,15 +22,8 @@ public class LocaleResource : Locale
 
     public override Locale PlayerLanguage => UsePlayerLanguage();
 
-    public LocaleResource(ILocalizationManager localeManager, IContextService context, IEvoScBaseConfig config)
-    {
-        _localeManager = localeManager;
-        _context = context;
-        _config = config;
-    }
-
     public override ResourceSet? GetResourceSet() =>
-        _localeManager.Manager.GetResourceSet(GetCulture(), true, true);
+        localeManager.Manager.GetResourceSet(GetCulture(), true, true);
 
     public override string Translate(string pattern, params object[] args)
     {
@@ -60,14 +50,14 @@ public class LocaleResource : Locale
 
     private CultureInfo GetCulture()
     {
-        var context = _context.GetContext() as PlayerInteractionContext;
+        var currentContext = context.GetContext() as PlayerInteractionContext;
 
-        if (_useDefaultCulture || context?.Player?.Settings == null)
+        if (_useDefaultCulture || currentContext?.Player?.Settings == null)
         {
-            return CultureInfo.GetCultureInfo(_config.Locale.DefaultLanguage);
+            return CultureInfo.GetCultureInfo(config.Locale.DefaultLanguage);
         }
 
-        return CultureInfo.GetCultureInfo(context.Player.Settings.DisplayLanguage);
+        return CultureInfo.GetCultureInfo(currentContext.Player.Settings.DisplayLanguage);
     }
 
     private Locale UsePlayerLanguage()
@@ -78,7 +68,7 @@ public class LocaleResource : Locale
     
     private string GetString(string name, params object[] args)
     {
-        var localString = _localeManager.GetString(GetCulture(), name, args);
+        var localString = localeManager.GetString(GetCulture(), name, args);
         _useDefaultCulture = true;
         return localString;
     }

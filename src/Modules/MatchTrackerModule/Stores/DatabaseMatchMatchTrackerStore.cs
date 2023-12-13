@@ -7,15 +7,8 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Stores;
 namespace EvoSC.Modules.Official.MatchTrackerModule.Stores;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class DatabaseMatchMatchTrackerStore : IDatabaseMatchTrackerStore
+public class DatabaseMatchMatchTrackerStore(IMatchRecordRepository repository) : IDatabaseMatchTrackerStore
 {
-    private readonly IMatchRecordRepository _repository;
-    
-    public DatabaseMatchMatchTrackerStore(IMatchRecordRepository repository)
-    {
-        _repository = repository;
-    }
-    
     public async Task SaveTimelineAsync(IMatchTimeline timeline)
     {
         foreach (var state in timeline.States)
@@ -26,7 +19,7 @@ public class DatabaseMatchMatchTrackerStore : IDatabaseMatchTrackerStore
 
     public Task SaveStateAsync(IMatchState state)
     {
-        return _repository.InsertStateAsync(state);
+        return repository.InsertStateAsync(state);
     }
 
     public Task<IEnumerable<IMatchTimeline>> GetTimeLinesAsync()

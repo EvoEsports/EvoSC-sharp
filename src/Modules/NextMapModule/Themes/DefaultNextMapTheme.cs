@@ -6,12 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.NextMapModule.Themes;
 
 [Theme(Name = "Next Map", Description = "Default theme for the Next Map module.")]
-public class DefaultNextMapTheme : Theme<DefaultNextMapTheme>
+public class DefaultNextMapTheme(IThemeManager theme) : Theme<DefaultNextMapTheme>
 {
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
-    public DefaultNextMapTheme(IThemeManager theme) => _theme = theme.Theme;
-    
     public override Task ConfigureAsync()
     {
         Set("NextMapModule.NextMap.Default.Text").To(_theme.UI_TextPrimary);

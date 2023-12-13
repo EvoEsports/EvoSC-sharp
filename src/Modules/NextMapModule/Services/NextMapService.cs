@@ -8,22 +8,12 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.NextMapModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class NextMapService : INextMapService
+public class NextMapService(ILogger<NextMapService> logger, IMapService mapService) : INextMapService
 {
-
-    private readonly ILogger<NextMapService> _logger;
-    private readonly IMapService _mapService;
-
-    public NextMapService(ILogger<NextMapService> logger, IMapService mapService)
-    {
-        _logger = logger;
-        _mapService = mapService;
-    }
-
     public async Task<IMap> GetNextMapAsync()
     {
-        _logger.LogDebug("Getting next map from server");
-        var nextMap = await _mapService.GetNextMapAsync();
+        logger.LogDebug("Getting next map from server");
+        var nextMap = await mapService.GetNextMapAsync();
 
         if (nextMap == null)
         {

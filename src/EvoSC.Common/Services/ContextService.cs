@@ -7,22 +7,16 @@ using SimpleInjector;
 
 namespace EvoSC.Common.Services;
 
-public class ContextService : IContextService
+public class ContextService(IAuditService auditService) : IContextService
 {
     private IControllerContext? _context;
-    private readonly IAuditService _auditService;
-
-    public ContextService(IAuditService auditService)
-    {
-        _auditService = auditService;
-    }
 
     public IControllerContext CreateContext(Scope scope, IController controller)
     {
         IControllerContext context = new GenericControllerContext(scope)
         {
             Controller = controller,
-            AuditEvent = new AuditEventBuilder(_auditService)
+            AuditEvent = new AuditEventBuilder(auditService)
         };
         
         context.SetScope(scope);

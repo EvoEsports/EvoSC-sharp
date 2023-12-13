@@ -7,26 +7,17 @@ using EvoSC.Modules.Official.SetName.Models;
 namespace EvoSC.Modules.Official.SetName.Controllers;
 
 [Controller]
-public class SetNameController : ManialinkController
+public class SetNameController(ISetNameService setNameService, Locale locale) : ManialinkController
 {
-    private readonly ISetNameService _setNameService;
-    private readonly Locale _locale;
-
-    public SetNameController(ISetNameService setNameService, Locale locale)
-    {
-        _setNameService = setNameService;
-        _locale = locale;
-    }
-    
     public async Task EditNameAsync(SetNameEntryModel input)
     {
         if (!IsModelValid)
         {
-            await ShowAsync(Context.Player, "SetName.EditName", new {input.Nickname, Locale = _locale});
+            await ShowAsync(Context.Player, "SetName.EditName", new {input.Nickname, Locale = locale});
             return;
         }
 
-        await _setNameService.SetNicknameAsync(Context.Player, input.Nickname);
+        await setNameService.SetNicknameAsync(Context.Player, input.Nickname);
         await HideAsync(Context.Player, "SetName.EditName");
 
         Context.AuditEvent

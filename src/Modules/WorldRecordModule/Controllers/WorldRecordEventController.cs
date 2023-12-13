@@ -9,18 +9,13 @@ using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 namespace EvoSC.Modules.Official.WorldRecordModule.Controllers;
 
 [Controller]
-public class WorldRecordEventController : EvoScController<IEventControllerContext>
+public class WorldRecordEventController(IWorldRecordService worldRecordService) : EvoScController<IEventControllerContext>
 {
-    private readonly IWorldRecordService _worldRecordService;
-
-    public WorldRecordEventController(IWorldRecordService worldRecordService) =>
-        _worldRecordService = worldRecordService;
-
     [Subscribe(ModeScriptEvent.EndMapEnd)]
     public Task OnMapEndAsync(object sender, MapEventArgs mapEventArgs)
-        => _worldRecordService.ClearRecordAsync();
+        => worldRecordService.ClearRecordAsync();
 
     [Subscribe(ModeScriptEvent.StartMapStart)]
     public Task OnMapStartAsync(object sender, MapEventArgs mapEventArgs)
-        => _worldRecordService.FetchRecordAsync(mapEventArgs.Map.Uid);
+        => worldRecordService.FetchRecordAsync(mapEventArgs.Map.Uid);
 }

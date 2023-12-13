@@ -3,7 +3,7 @@
 /// <summary>
 /// Defines a class as a module's main class.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Class)]
 public class ModuleAttribute : Attribute
 {
     /// <summary>

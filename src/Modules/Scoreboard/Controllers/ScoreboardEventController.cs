@@ -12,31 +12,26 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.Scoreboard.Controllers;
 
 [Controller]
-public class ScoreboardEventController : EvoScController<IEventControllerContext>
+public class ScoreboardEventController(IScoreboardService scoreboardService) : EvoScController<IEventControllerContext>
 {
-    private readonly IScoreboardService _scoreboardService;
-
-    public ScoreboardEventController(IScoreboardService scoreboardService) =>
-        _scoreboardService = scoreboardService;
-
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
-        await _scoreboardService.LoadAndSendRequiredAdditionalInfoAsync();
-        await _scoreboardService.ShowScoreboardToAllAsync();
+        await scoreboardService.LoadAndSendRequiredAdditionalInfoAsync();
+        await scoreboardService.ShowScoreboardToAllAsync();
     }
 
     [Subscribe(MatchSettingsEvent.MatchSettingsLoaded)]
     public async Task OnMatchSettingsLoadedAsync(object sender, MatchSettingsLoadedEventArgs args)
     {
-        await _scoreboardService.LoadAndSendRequiredAdditionalInfoAsync();
-        await _scoreboardService.ShowScoreboardToAllAsync();
+        await scoreboardService.LoadAndSendRequiredAdditionalInfoAsync();
+        await scoreboardService.ShowScoreboardToAllAsync();
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnRoundStartAsync(object sender, RoundEventArgs args)
     {
-        _scoreboardService.SetCurrentRound(args.Count);
-        await _scoreboardService.SendRequiredAdditionalInfoAsync();
+        scoreboardService.SetCurrentRound(args.Count);
+        await scoreboardService.SendRequiredAdditionalInfoAsync();
     }
 }

@@ -3,7 +3,7 @@
 /// <summary>
 /// Allows to set a custom route or permission to the Manialink Action or all Manialink Actions within a controller.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class ManialinkRouteAttribute : Attribute
 {
     /// <summary>

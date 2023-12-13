@@ -11,13 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Common.Themes;
 
-public class ThemeManager : IThemeManager
+public class ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplication evoscApp, IEventManager events,
+        IEvoScBaseConfig evoscConfig)
+    : IThemeManager
 {
-    private readonly IServiceContainerManager _serviceManager;
-    private readonly IEvoSCApplication _evoscApp;
-    private readonly IEventManager _events;
-    private readonly IEvoScBaseConfig _evoscConfig;
-
     private dynamic? _themeOptionsCache;
     private Dictionary<string, string>? _componentReplacementsCache;
     
@@ -29,14 +26,6 @@ public class ThemeManager : IThemeManager
 
     public Dictionary<string, string> ComponentReplacements =>
         _componentReplacementsCache ?? GetCurrentComponentReplacements();
-
-    public ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplication evoscApp, IEventManager events, IEvoScBaseConfig evoscConfig)
-    {
-        _serviceManager = serviceManager;
-        _evoscApp = evoscApp;
-        _events = events;
-        _evoscConfig = evoscConfig;
-    }
 
     public async Task AddThemeAsync(Type themeType, Guid moduleId)
     {
@@ -82,7 +71,7 @@ public class ThemeManager : IThemeManager
         if (_activeThemes.Remove(themeInfo.EffectiveThemeType))
         {
             InvalidateCache();
-            await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeUpdatedEventArgs());
+            await events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeUpdatedEventArgs());
         }
     }
 
@@ -102,11 +91,11 @@ public class ThemeManager : IThemeManager
         ThrowIfNotExists(name);
         
         var themeInfo = _availableThemes[name];
-        var services = _evoscApp.Services;
+        var services = evoscApp.Services;
 
         if (!themeInfo.ModuleId.Equals(Guid.Empty))
         {
-            services = _serviceManager.GetContainer(themeInfo.ModuleId);
+            services = serviceManager.GetContainer(themeInfo.ModuleId);
         }
 
         var theme = ActivatorUtilities.CreateInstance(services, themeInfo.ThemeType) as ITheme;
@@ -121,7 +110,7 @@ public class ThemeManager : IThemeManager
         await theme.ConfigureAsync();
         InvalidateCache();
 
-        await _events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeUpdatedEventArgs());
+        await events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeUpdatedEventArgs());
 
         return theme;
     }
@@ -164,7 +153,7 @@ public class ThemeManager : IThemeManager
     {
         var themeOptions = new Dictionary<string, object>();
 
-        foreach (var defaultOption in _evoscConfig.Theme)
+        foreach (var defaultOption in evoscConfig.Theme)
         {
             var key = defaultOption.Key.StartsWith("Theme.", StringComparison.Ordinal)
                 ? defaultOption.Key[6..]

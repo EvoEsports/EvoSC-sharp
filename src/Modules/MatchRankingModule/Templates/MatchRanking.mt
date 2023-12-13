@@ -73,7 +73,7 @@
             <!-- CONTENT -->
             <frame id="players" pos="0 {{ -headerHeight - rowSpacing * 2.0 }}" size="{{ w }} 999" z-index="10">
                 <PlayerScore foreach="LiveRankingWidgetPosition position in Scores"
-                             y="{{ (position.position - 1) * (rowHeight + rowSpacing) * -1.0 }}"
+                             y="{{ (position.Position - 1) * (rowHeight + rowSpacing) * -1.0 }}"
                              w="{{ w - 8.0 }}"
                              h="{{ rowHeight }}"
                              rowSpacing="{{ rowSpacing }}"

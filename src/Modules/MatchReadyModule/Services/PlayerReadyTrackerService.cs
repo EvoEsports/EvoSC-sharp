@@ -9,15 +9,13 @@ using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 namespace EvoSC.Modules.Official.MatchReadyModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class PlayerReadyTrackerService : IPlayerReadyTrackerService
+public class PlayerReadyTrackerService(IEventManager events) : IPlayerReadyTrackerService
 {
     private readonly List<IPlayer> _readyPlayers = new();
     private readonly object _readyPlayersLock = new();
 
     private readonly List<IPlayer> _requiredPlayers = new();
     private readonly object _requiredPlayersLock = new();
-
-    private readonly IEventManager _events;
 
     private bool _matchStarted;
     private readonly object _matchStartedLock = new();
@@ -55,13 +53,11 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
         }
     }
 
-    public PlayerReadyTrackerService(IEventManager events) => _events = events;
-
     private Task FireEventIfAllReadyAsync()
     {
         if (RequiredPlayers.Count() == ReadyPlayers.Count())
         {
-            return _events.RaiseAsync(MatchReadyEvents.AllPlayersReady, new AllPlayersReadyEventArgs
+            return events.RaiseAsync(MatchReadyEvents.AllPlayersReady, new AllPlayersReadyEventArgs
             {
                 ReadyPlayers = ReadyPlayers
             });
@@ -92,7 +88,7 @@ public class PlayerReadyTrackerService : IPlayerReadyTrackerService
             }
         }
         
-        await _events.RaiseAsync(MatchReadyEvents.PlayerReadyChanged, new PlayerReadyEventArgs
+        await events.RaiseAsync(MatchReadyEvents.PlayerReadyChanged, new PlayerReadyEventArgs
         {
             Player = player,
             IsReady = isReady

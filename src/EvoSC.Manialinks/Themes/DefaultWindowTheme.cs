@@ -6,11 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Window Component", Description = "Default theme for the Window component.")]
-public class DefaultWindowTheme : Theme<DefaultWindowTheme>
+public class DefaultWindowTheme(IThemeManager theme) : Theme<DefaultWindowTheme>
 {
-    private readonly dynamic _theme;
-    public DefaultWindowTheme(IThemeManager theme) => _theme = theme.Theme;
-    
+    private readonly dynamic _theme = theme.Theme;
+
     public override Task ConfigureAsync()
     {
         Set("UI.Window.Default.Bg").To(_theme.UI_BgSecondary);

@@ -6,11 +6,9 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.MatchReadyModule.Themes;
 
 [Theme(Name = "Match Ready", Description = "Default theme for the Match Ready module.")]
-public class DefaultMatchReadyTheme : Theme<DefaultMatchReadyTheme>
+public class DefaultMatchReadyTheme(IThemeManager theme) : Theme<DefaultMatchReadyTheme>
 {
-    private readonly dynamic _theme;
-
-    public DefaultMatchReadyTheme(IThemeManager theme) => _theme = theme.Theme;
+    private readonly dynamic _theme = theme.Theme;
 
     public override Task ConfigureAsync()
     {

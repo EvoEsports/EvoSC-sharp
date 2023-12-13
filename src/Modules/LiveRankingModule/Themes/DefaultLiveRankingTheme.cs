@@ -6,12 +6,10 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.LiveRankingModule.Themes;
 
 [Theme(Name = "Live Ranking", Description = "Default theme for the Live Ranking module.")]
-public class DefaultLiveRankingTheme : Theme<DefaultLiveRankingTheme>
+public class DefaultLiveRankingTheme(IThemeManager theme) : Theme<DefaultLiveRankingTheme>
 { 
-    private readonly dynamic _theme;
+    private readonly dynamic _theme = theme.Theme;
 
-    public DefaultLiveRankingTheme(IThemeManager theme) => _theme = theme.Theme;
-    
     public override Task ConfigureAsync()
     {
         Set("LiveRankingModule.LiveRanking.Default.Text").To(_theme.UI_TextPrimary);

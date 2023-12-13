@@ -10,30 +10,23 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.CurrentMapModule.Controllers;
 
 [Controller]
-public class CurrentMapController : EvoScController<IEventControllerContext>
+public class CurrentMapController(ICurrentMapService service) : EvoScController<IEventControllerContext>
 {
-    private readonly ICurrentMapService _service;
-
-    public CurrentMapController(ICurrentMapService service)
-    {
-        _service = service;
-    }
-
     [Subscribe(GbxRemoteEvent.BeginMatch)]
     public Task OnBeginMatchAsync(object sender, EventArgs args)
     {
-        return _service.ShowWidgetAsync();
+        return service.ShowWidgetAsync();
     }
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
-        return _service.ShowWidgetAsync(args);
+        return service.ShowWidgetAsync(args);
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public Task OnPodiumStartAsync(object sender, PodiumEventArgs args)
     {
-        return _service.HideWidgetAsync();
+        return service.HideWidgetAsync();
     }
 }

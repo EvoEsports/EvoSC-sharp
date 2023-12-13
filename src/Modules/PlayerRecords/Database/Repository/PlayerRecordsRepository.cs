@@ -14,15 +14,9 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.PlayerRecords.Database.Repository;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class PlayerRecordsRepository : DbRepository, IPlayerRecordsRepository
+public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<PlayerRecordsRepository> logger)
+    : DbRepository(dbConnFactory), IPlayerRecordsRepository
 {
-    private readonly ILogger<PlayerRecordsRepository> _logger;
-    
-    public PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<PlayerRecordsRepository> logger) : base(dbConnFactory)
-    {
-        _logger = logger;
-    }
-
     public Task<DbPlayerRecord?> GetRecordAsync(IPlayer player, IMap map) =>
         Table<DbPlayerRecord>()
             .LoadWith(r => r.DbPlayer)
@@ -52,7 +46,7 @@ public class PlayerRecordsRepository : DbRepository, IPlayerRecordsRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to add record");
+            logger.LogError(ex, "Failed to add record");
             throw;
         }
 

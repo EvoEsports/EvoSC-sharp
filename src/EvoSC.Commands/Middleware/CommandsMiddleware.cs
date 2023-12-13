@@ -14,26 +14,11 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Commands.Middleware;
 
-public class CommandsMiddleware
+public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware> logger,
+    IChatCommandManager cmdManager, IControllerManager controllers, IServerClient serverClient,
+    IActionPipelineManager actionPipeline)
 {
-    private readonly ActionDelegate _next;
-    private readonly ILogger<CommandsMiddleware> _logger;
-    private readonly IControllerManager _controllers;
-    private readonly IServerClient _serverClient;
-    private readonly IActionPipelineManager _actionPipeline;
-    private readonly ChatCommandParser _parser;
-
-    public CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware> logger,
-        IChatCommandManager cmdManager, IControllerManager controllers, IServerClient serverClient,
-        IActionPipelineManager actionPipeline)
-    {
-        _next = next;
-        _logger = logger;
-        _controllers = controllers;
-        _serverClient = serverClient;
-        _actionPipeline = actionPipeline;
-        _parser = new ChatCommandParser(cmdManager);
-    }
+    private readonly ChatCommandParser _parser = new(cmdManager);
 
     async Task HandleUserErrorsAsync(IParserResult result, string playerLogin)
     {
@@ -45,22 +30,22 @@ public class CommandsMiddleware
             }
 
             var message = $"Error: {cmdParserException.Message}";
-            await _serverClient.SendChatMessageAsync($"Error: {message}", playerLogin);
+            await serverClient.SendChatMessageAsync($"Error: {message}", playerLogin);
         }
 
         if (result.Exception is PlayerNotFoundException playerNotFoundException)
         {
-            await _serverClient.SendChatMessageAsync($"Error: {playerNotFoundException.Message}", playerLogin);
+            await serverClient.SendChatMessageAsync($"Error: {playerNotFoundException.Message}", playerLogin);
         }
         else
         {
-            _logger.LogError(result.Exception, "Failed to parse command");
+            logger.LogError(result.Exception, "Failed to parse command");
         }
     }
 
     private async Task ExecuteCommandAsync(IChatCommand cmd, object[] args, ChatRouterPipelineContext routerContext)
     {
-        var (controller, context) = _controllers.CreateInstance(cmd.ControllerType);
+        var (controller, context) = controllers.CreateInstance(cmd.ControllerType);
 
         var playerInteractionContext = new CommandInteractionContext((IOnlinePlayer)routerContext.Player, context)
         {
@@ -71,7 +56,7 @@ public class CommandsMiddleware
         var contextService = context.ServiceScope.GetInstance<IContextService>();
         contextService.UpdateContext(playerInteractionContext);
 
-        var actionChain = _actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
+        var actionChain = actionPipeline.BuildChain(PipelineType.ControllerAction, _ =>
             (Task?)cmd.HandlerMethod.Invoke(controller, args) ?? Task.CompletedTask
         );
 
@@ -93,7 +78,7 @@ public class CommandsMiddleware
             }
             else if (cmd.Permission != null)
             {
-                _logger.LogWarning("Command '{Name}' has permissions set but does not activate an audit", cmd.Name);
+                logger.LogWarning("Command '{Name}' has permissions set but does not activate an audit", cmd.Name);
             }
         }
     }
@@ -133,16 +118,16 @@ public class CommandsMiddleware
             }
             else
             {
-                _logger.LogError(
+                logger.LogError(
                     "An unknown error occured while trying to parse command. No exception thrown, but parsing failed");
             }
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "A fatal error occured while trying to handle chat command");
+            logger.LogCritical(ex, "A fatal error occured while trying to handle chat command");
             throw;
         }
         
-        await _next(context);
+        await next(context);
     }
 }

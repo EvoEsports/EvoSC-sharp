@@ -8,27 +8,17 @@ using EvoSC.Modules.Official.OpenPlanetModule.Parsing;
 namespace EvoSC.Modules.Official.OpenPlanetModule;
 
 [Module(IsInternal = true)]
-public class OpenPlanetModule : EvoScModule, IToggleable
-{
-    private readonly IManialinkManager _manialinks;
-    private readonly IOpenPlanetControlSettings _settings;
-    private readonly IManialinkInteractionHandler _manialinkInteractions;
-
-    public OpenPlanetModule(IManialinkManager manialinks, IOpenPlanetControlSettings settings,
+public class OpenPlanetModule(IManialinkManager manialinks, IOpenPlanetControlSettings settings,
         IManialinkInteractionHandler manialinkInteractions)
-    {
-        _manialinks = manialinks;
-        _settings = settings;
-        _manialinkInteractions = manialinkInteractions;
-    }
-
+    : EvoScModule, IToggleable
+{
     public Task EnableAsync()
     {
-        _manialinkInteractions.ValueReader.AddReader(new OpenPlanetInfoValueReader());
+        manialinkInteractions.ValueReader.AddReader(new OpenPlanetInfoValueReader());
         
-        _manialinks.SendPersistentManialinkAsync("OpenPlanetModule.DetectOP", new
+        manialinks.SendPersistentManialinkAsync("OpenPlanetModule.DetectOP", new
         {
-            config = _settings
+            config = settings
         });
 
         return Task.CompletedTask;
@@ -36,8 +26,8 @@ public class OpenPlanetModule : EvoScModule, IToggleable
 
     public Task DisableAsync()
     {
-        _manialinks.HideManialinkAsync("OpenPlanetModule.DetectOP");
-        _manialinkInteractions.ValueReader.RemoveReaders(typeof(IOpenPlanetInfo));
+        manialinks.HideManialinkAsync("OpenPlanetModule.DetectOP");
+        manialinkInteractions.ValueReader.RemoveReaders(typeof(IOpenPlanetInfo));
 
         return Task.CompletedTask;
     }

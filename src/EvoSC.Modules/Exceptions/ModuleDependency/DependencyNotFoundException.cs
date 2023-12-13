@@ -1,20 +1,15 @@
 ﻿namespace EvoSC.Modules.Exceptions.ModuleDependency;
 
-public class DependencyNotFoundException : DependencyException
+public class DependencyNotFoundException(string dependent, string dependency) : DependencyException(
+    $"The module '{dependent}' depend on '{dependency}' which doesn't exist.")
 {
     /// <summary>
     /// The module that has a the non-existent dependency.
     /// </summary>
-    public string Dependent { get; }
+    public string Dependent { get; } = dependent;
+
     /// <summary>
     /// The dependency that was not found for the dependent.
     /// </summary>
-    public string Dependency { get; }
-
-    public DependencyNotFoundException(string dependent, string dependency) : base(
-        $"The module '{dependent}' depend on '{dependency}' which doesn't exist.")
-    {
-        Dependent = dependent;
-        Dependency = dependency;
-    }
+    public string Dependency { get; } = dependency;
 }

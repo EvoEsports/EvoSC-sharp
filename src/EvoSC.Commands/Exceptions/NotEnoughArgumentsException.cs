@@ -3,14 +3,7 @@
 /// <summary>
 /// Thrown when the input does not have enough arguments to call a command's handler.
 /// </summary>
-public class NotEnoughArgumentsException : CommandParserException
+public class NotEnoughArgumentsException(int requiredArgs, bool intendedCommand) : CommandParserException(intendedCommand)
 {
-    private readonly int _requiredArgs;
-    
-    public NotEnoughArgumentsException(int requiredArgs, bool intendedCommand) : base(intendedCommand)
-    {
-        _requiredArgs = requiredArgs;
-    }
-
-    public override string Message => $"The command requires {_requiredArgs} argument(s).";
+    public override string Message => $"The command requires {requiredArgs} argument(s).";
 }

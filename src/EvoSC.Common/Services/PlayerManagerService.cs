@@ -9,24 +9,12 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
-public class PlayerManagerService : IPlayerManagerService
-{
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerCacheService _playerCache;
-    private readonly IServerClient _server;
-    private readonly ILogger<PlayerManagerService> _logger;
-
-    public PlayerManagerService(IPlayerRepository playerRepository, IPlayerCacheService playerCache,
+public class PlayerManagerService(IPlayerRepository playerRepository, IPlayerCacheService playerCache,
         IServerClient server, ILogger<PlayerManagerService> logger)
-    {
-        _playerRepository = playerRepository;
-        _playerCache = playerCache;
-        _server = server;
-        _logger = logger;
-    }
-
+    : IPlayerManagerService
+{
     public async Task<IPlayer?> GetPlayerAsync(string accountId) =>
-        await _playerRepository.GetPlayerByAccountIdAsync(accountId);
+        await playerRepository.GetPlayerByAccountIdAsync(accountId);
 
     public async Task<IPlayer> GetOrCreatePlayerAsync(string accountId)
     {
@@ -41,7 +29,7 @@ public class PlayerManagerService : IPlayerManagerService
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex,
+            logger.LogDebug(ex,
                 "Error when trying to get player with Account ID '{AccountID}'. Will attempt creating it instead",
                 accountId);
         }
@@ -58,21 +46,21 @@ public class PlayerManagerService : IPlayerManagerService
         TmPlayerDetailedInfo? playerInfo = null;
         try
         {
-            playerInfo = await _server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
+            playerInfo = await server.Remote.GetDetailedPlayerInfoAsync(playerLogin);
         }
         catch (Exception ex)
         {
-            _logger.LogTrace(ex, "Failed to obtain player info, are they on the server?");
+            logger.LogTrace(ex, "Failed to obtain player info, are they on the server?");
         }
 
         playerInfo ??= new TmPlayerDetailedInfo {Login = playerLogin, NickName = name ?? accountId};
 
-        return await _playerRepository.AddPlayerAsync(accountId, playerInfo);
+        return await playerRepository.AddPlayerAsync(accountId, playerInfo);
     }
 
     public async Task<IOnlinePlayer> GetOnlinePlayerAsync(string accountId)
     {
-        var player = await _playerCache.GetOnlinePlayerCachedAsync(accountId);
+        var player = await playerCache.GetOnlinePlayerCachedAsync(accountId);
 
         if (player == null)
         {
@@ -85,9 +73,9 @@ public class PlayerManagerService : IPlayerManagerService
 
     public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player) => GetOnlinePlayerAsync(player.AccountId);
 
-    public Task UpdateLastVisitAsync(IPlayer player) => _playerRepository.UpdateLastVisitAsync(player);
+    public Task UpdateLastVisitAsync(IPlayer player) => playerRepository.UpdateLastVisitAsync(player);
 
-    public Task<IEnumerable<IOnlinePlayer>> GetOnlinePlayersAsync() => Task.FromResult(_playerCache.OnlinePlayers);
+    public Task<IEnumerable<IOnlinePlayer>> GetOnlinePlayersAsync() => Task.FromResult(playerCache.OnlinePlayers);
 
     private const int MinMatchingCharacters = 2;
     

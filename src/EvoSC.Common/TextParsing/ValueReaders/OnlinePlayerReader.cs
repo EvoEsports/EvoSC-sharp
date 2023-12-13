@@ -9,20 +9,13 @@ namespace EvoSC.Common.TextParsing.ValueReaders;
 /// Find a player online on the server from an input search pattern.
 /// Best match is returned.
 /// </summary>
-public class OnlinePlayerReader : IValueReader
+public class OnlinePlayerReader(IPlayerManagerService playerManager) : IValueReader
 {
     public IEnumerable<Type> AllowedTypes => new[] {typeof(IOnlinePlayer)};
 
-    private readonly IPlayerManagerService _playerManager;
-    
-    public OnlinePlayerReader(IPlayerManagerService playerManager)
-    {
-        _playerManager = playerManager;
-    }
-    
     public async Task<object> ReadAsync(Type type, string input)
     {
-        var players = await _playerManager.FindOnlinePlayerAsync(input);
+        var players = await playerManager.FindOnlinePlayerAsync(input);
 
         if (!players.Any())
         {

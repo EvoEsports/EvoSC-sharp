@@ -3,22 +3,15 @@ using EvoSC.Common.Interfaces.Util;
 
 namespace EvoSC.Common.Util;
 
-public class RaceTime : IRaceTime
+public class RaceTime(int milliseconds, int seconds, int minutes, int hours)
+    : IRaceTime
 {
     public int TotalMilliseconds => Milliseconds + Seconds * 1000 + Minutes * 60 * 1000 + Hours * 60 * 60 * 1000;
-    public int Milliseconds { get; set; }
-    public int Seconds { get; set; }
-    public int Minutes { get; set; }
-    public int Hours { get; set; }
+    public int Milliseconds { get; set; } = milliseconds;
+    public int Seconds { get; set; } = seconds;
+    public int Minutes { get; set; } = minutes;
+    public int Hours { get; set; } = hours;
 
-    public RaceTime(int milliseconds, int seconds, int minutes, int hours)
-    {
-        Milliseconds = milliseconds;
-        Seconds = seconds;
-        Minutes = minutes;
-        Hours = hours;
-    }
-    
     public static IRaceTime FromMilliseconds(int totalMilliseconds)
     {
         var milliseconds = totalMilliseconds % 1000;

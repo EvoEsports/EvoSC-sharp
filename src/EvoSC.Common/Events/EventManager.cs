@@ -12,21 +12,11 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Events;
 
-public class EventManager : IEventManager
+public class EventManager(ILogger<EventManager> logger, IEvoSCApplication app, IControllerManager controllers)
+    : IEventManager
 {
-    private readonly ILogger<EventManager> _logger;
-    private readonly IEvoSCApplication _app;
-    private readonly IControllerManager _controllers;
-    
     private readonly Dictionary<string, List<EventSubscription>> _subscriptions = new();
     private readonly Dictionary<Type, List<EventSubscription>> _controllerSubscriptions = new();
-
-    public EventManager(ILogger<EventManager> logger, IEvoSCApplication app, IControllerManager controllers)
-    {
-        _logger = logger;
-        _app = app;
-        _controllers = controllers;
-    }
 
     public void Subscribe(EventSubscription subscription)
     {
@@ -39,7 +29,7 @@ public class EventManager : IEventManager
         _subscriptions[subscription.Name].Sort(CompareSubscriptionPriority);
         _subscriptions[subscription.Name].Sort(CompareSubscriptionSynchronization);
 
-        _logger.LogDebug("Subscribed to event '{Name}' with handler '{Handler}' in class '{Class}'. In Controller: {IsController}",
+        logger.LogDebug("Subscribed to event '{Name}' with handler '{Handler}' in class '{Class}'. In Controller: {IsController}",
             subscription.Name,
             subscription.HandlerMethod,
             subscription.InstanceClass,
@@ -100,7 +90,7 @@ public class EventManager : IEventManager
 
         _subscriptions[subscription.Name].Remove(subscription);
 
-        _logger.LogDebug("handler '{Handler}' unsubscribed to event {Name}.",
+        logger.LogDebug("handler '{Handler}' unsubscribed to event {Name}.",
             subscription.HandlerMethod,
             subscription.Name);
 
@@ -126,7 +116,7 @@ public class EventManager : IEventManager
             return;
         }
 
-        _logger.LogTrace("Attempting to fire event '{Event}'", name);
+        logger.LogTrace("Attempting to fire event '{Event}'", name);
         
         var tasks = InvokeEventTasks(name, args, sender ?? this);
         await WaitEventTasksAsync(tasks);
@@ -145,7 +135,7 @@ public class EventManager : IEventManager
                 {
                     Task.Run(() =>
                     {
-                        _logger.LogTrace("run async");
+                        logger.LogTrace("run async");
                         InvokeTaskMethodAsync(args, sender, subscription, tasks).GetAwaiter().GetResult();
                     });
                 }
@@ -156,7 +146,7 @@ public class EventManager : IEventManager
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to execute subscription handler: {name}", subscription.HandlerMethod.Name);
+                logger.LogError(ex, "Failed to execute subscription handler: {name}", subscription.HandlerMethod.Name);
             }
         }
 
@@ -175,7 +165,7 @@ public class EventManager : IEventManager
 
             if (task == null)
             {
-                _logger.LogError("An error occured while calling event, task is null for event: {Name}",
+                logger.LogError("An error occured while calling event, task is null for event: {Name}",
                     subscription.Name);
                 return Task.CompletedTask;
             }
@@ -186,7 +176,7 @@ public class EventManager : IEventManager
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to execute subscription");
+            logger.LogError(ex, "Failed to execute subscription");
         }
 
         return Task.CompletedTask;
@@ -210,11 +200,11 @@ public class EventManager : IEventManager
 
             if (!task.IsCompletedSuccessfully)
             {
-                _logger.LogError("Event execution failed for {Name}, status: {Status}", sub.Name, task.Status);
+                logger.LogError("Event execution failed for {Name}, status: {Status}", sub.Name, task.Status);
 
                 if (task.IsFaulted)
                 {
-                    _logger.LogError(task.Exception?.InnerException, "Event handler faulted");
+                    logger.LogError(task.Exception?.InnerException, "Event handler faulted");
                 }
             }
         }
@@ -232,12 +222,12 @@ public class EventManager : IEventManager
             return CreateControllerInstance(subscription);
         }
         
-        return ActivatorUtilities.CreateInstance(_app.Services, subscription.InstanceClass);
+        return ActivatorUtilities.CreateInstance(app.Services, subscription.InstanceClass);
     }
 
     private IController CreateControllerInstance(EventSubscription subscription)
     {
-        var (instance, scopeContext) = _controllers.CreateInstance(subscription.InstanceClass);
+        var (instance, scopeContext) = controllers.CreateInstance(subscription.InstanceClass);
         var context = new EventControllerContext(scopeContext);
         instance.SetContext(context);
 

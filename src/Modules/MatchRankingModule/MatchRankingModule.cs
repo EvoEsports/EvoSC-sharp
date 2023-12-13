@@ -5,16 +5,9 @@ using EvoSC.Modules.Official.MatchRankingModule.Interfaces;
 namespace EvoSC.Modules.Official.MatchRankingModule;
 
 [Module(IsInternal = true)]
-public class MatchRankingModule : EvoScModule, IToggleable
+public class MatchRankingModule(IMatchRankingService matchRankingService) : EvoScModule, IToggleable
 {
-    private readonly IMatchRankingService _matchRankingService;
+    public Task EnableAsync() => matchRankingService.SendManialinkToPlayers();
 
-    public MatchRankingModule(IMatchRankingService matchRankingService)
-    {
-        _matchRankingService = matchRankingService;
-    }
-    
-    public Task EnableAsync() => _matchRankingService.SendManialinkToPlayers();
-
-    public Task DisableAsync() => _matchRankingService.HideManialink();
+    public Task DisableAsync() => matchRankingService.HideManialink();
 }

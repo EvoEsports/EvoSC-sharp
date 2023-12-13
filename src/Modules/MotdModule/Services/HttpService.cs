@@ -8,19 +8,11 @@ using Newtonsoft.Json;
 namespace EvoSC.Modules.Official.MotdModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class HttpService : IHttpService, IDisposable
+public class HttpService(ILogger<HttpService> logger) : IHttpService, IDisposable
 {
-    private HttpClient _httpClient;
-    private readonly ILogger<HttpService> _logger;
-    
-    public bool IsDisposed { get; private set; }
+    private HttpClient _httpClient = new();
 
-    public HttpService(ILogger<HttpService> logger)
-    {
-        _httpClient ??= new();
-        _logger = logger;
-        IsDisposed = false;
-    }
+    public bool IsDisposed { get; private set; }
 
     /// <summary>
     /// Only for unit testing!
@@ -42,7 +34,7 @@ public class HttpService : IHttpService, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
         }
 
         if (responseObject is null)

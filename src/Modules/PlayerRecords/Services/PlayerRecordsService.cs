@@ -13,32 +13,18 @@ using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 namespace EvoSC.Modules.Official.PlayerRecords.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class PlayerRecordsService : IPlayerRecordsService
-{
-    private readonly IPlayerRecordsRepository _recordsRepo;
-    private readonly IServerClient _server;
-    private readonly IMapService _maps;
-    private readonly IPlayerManagerService _players;
-    private readonly MapRepository _mapsRepo;
-
-    public PlayerRecordsService(IPlayerRecordsRepository recordsRepo, IServerClient server, IMapService maps,
+public class PlayerRecordsService(IPlayerRecordsRepository recordsRepo, IServerClient server, IMapService maps,
         IPlayerManagerService players, MapRepository mapsRepo)
-    {
-        _recordsRepo = recordsRepo;
-        _server = server;
-        _maps = maps;
-        _players = players;
-        _mapsRepo = mapsRepo;
-    }
-
+    : IPlayerRecordsService
+{
     public async Task<IMap> GetOrAddCurrentMapAsync()
     {
-        var currentMap = await _server.Remote.GetCurrentMapInfoAsync();
-        var map = await _maps.GetMapByUidAsync(currentMap.UId);
+        var currentMap = await server.Remote.GetCurrentMapInfoAsync();
+        var map = await maps.GetMapByUidAsync(currentMap.UId);
         
         if (map == null)
         {
-            var mapAuthor = await _players.GetOrCreatePlayerAsync(PlayerUtils.ConvertLoginToAccountId(currentMap.Author));
+            var mapAuthor = await players.GetOrCreatePlayerAsync(PlayerUtils.ConvertLoginToAccountId(currentMap.Author));
 
             var mapMeta = new MapMetadata
             {
@@ -51,7 +37,7 @@ public class PlayerRecordsService : IPlayerRecordsService
                 ExternalMapProvider = null
             };
 
-            map = await _mapsRepo.AddMapAsync(mapMeta, mapAuthor, currentMap.FileName);
+            map = await mapsRepo.AddMapAsync(mapMeta, mapAuthor, currentMap.FileName);
         }
 
         return map;
@@ -59,17 +45,17 @@ public class PlayerRecordsService : IPlayerRecordsService
 
     public async Task<IPlayerRecord?> GetPlayerRecordAsync(IPlayer player, IMap map)
     {
-        return await _recordsRepo.GetRecordAsync(player, map);
+        return await recordsRepo.GetRecordAsync(player, map);
     }
 
     public async Task<(IPlayerRecord, RecordUpdateStatus)> SetPbRecordAsync(IPlayer player, IMap map, int score,
         IEnumerable<int> checkpoints)
     {
-        var record = await _recordsRepo.GetRecordAsync(player, map);
+        var record = await recordsRepo.GetRecordAsync(player, map);
 
         if (record == null)
         {
-            await _recordsRepo.InsertRecordAsync(player, map, score, checkpoints);
+            await recordsRepo.InsertRecordAsync(player, map, score, checkpoints);
             return (record, RecordUpdateStatus.New);
         }
 
@@ -81,7 +67,7 @@ public class PlayerRecordsService : IPlayerRecordsService
         record.Score = score;
         record.Checkpoints = string.Join(',', checkpoints);
         record.UpdatedAt = DateTime.UtcNow;
-        await _recordsRepo.UpdateRecordAsync(record);
+        await recordsRepo.UpdateRecordAsync(record);
 
         return (record, RecordUpdateStatus.Updated);
     }
