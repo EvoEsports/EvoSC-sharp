@@ -35,26 +35,26 @@ public class DbConnectionFactory : IDbConnectionFactory
     /// <exception cref="InvalidOperationException">Thrown when an invalid database type was specified in the config.</exception>
     private DataContext CreateConnection()
     {
-        var configBuilder = CreateConfigBuilder();
-
-        configBuilder.UseConnectionString(_config.Database.Type switch
-        {
-            IDatabaseConfig.DatabaseType.MySql => ProviderName.MySql,
-            IDatabaseConfig.DatabaseType.SQLite => ProviderName.SQLite,
-            IDatabaseConfig.DatabaseType.PostgreSql => ProviderName.PostgreSQL,
-            _ => throw new InvalidOperationException("Invalid database type requested.")
-        }, _config.Database.GetConnectionString());
-
-        return new DataContext(configBuilder.Build());
+        var options = CreateDatabaseOptions();
+        return new DataContext(options);
     }
 
     /// <summary>
     /// Create a new database config builder with common configuration.
     /// </summary>
     /// <returns></returns>
-    private LinqToDBConnectionOptionsBuilder CreateConfigBuilder() =>
-        new LinqToDBConnectionOptionsBuilder()
-            .WithTraceLevel(_config.Logging.LogLevel.ToUpper(CultureInfo.InvariantCulture) switch
+    private DataOptions CreateDatabaseOptions() =>
+        new DataOptions(new ConnectionOptions(
+                ProviderName: _config.Database.Type switch
+                {
+                    IDatabaseConfig.DatabaseType.MySql => ProviderName.MySql,
+                    IDatabaseConfig.DatabaseType.SQLite => ProviderName.SQLite,
+                    IDatabaseConfig.DatabaseType.PostgreSql => ProviderName.PostgreSQL,
+                    _ => throw new InvalidOperationException("Invalid database type requested.")
+                },
+                ConnectionString: _config.Database.GetConnectionString()
+            ))
+            .UseTraceLevel(_config.Logging.LogLevel.ToUpper(CultureInfo.InvariantCulture) switch
             {
                 "INFORMATION" => TraceLevel.Info,
                 "ERROR" => TraceLevel.Error,
@@ -62,7 +62,7 @@ public class DbConnectionFactory : IDbConnectionFactory
                 "TRACE" => TraceLevel.Verbose,
                 _ => TraceLevel.Off
             })
-            .WriteTraceWith(LogTracing);
+            .UseTraceWith(LogTracing);
 
     /// <summary>
     /// Write database tracing to the logger.
