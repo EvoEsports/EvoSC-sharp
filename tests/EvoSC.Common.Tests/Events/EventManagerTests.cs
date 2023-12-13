@@ -43,16 +43,21 @@ public class EventManagerTests
     }
 
     [Fact]
-    public void Event_Added_And_Fired()
+    public async Task Event_Added_And_Fired()
     {
         IEventManager manager = new EventManager(_logger, _app.Object, null);
 
-        manager.Subscribe<EventArgs>("test", (sender, args) => throw new HandlerRanException());
-
-        Assert.ThrowsAsync<HandlerRanException>(async () =>
+        var result = 0;
+        
+        manager.Subscribe<EventArgs>("test", (sender, args) =>
         {
-            await manager.RaiseAsync("test", EventArgs.Empty);
+            result = 76;
+            return Task.CompletedTask;
         });
+
+        await manager.RaiseAsync("test", EventArgs.Empty);
+        
+        Assert.Equal(76, result);
     }
 
     [Fact]
@@ -71,20 +76,31 @@ public class EventManagerTests
     }
 
     [Fact]
-    public void Only_Equal_Event_Handler_Removed()
+    public async Task Only_Equal_Event_Handler_Removed()
     {
         IEventManager manager = new EventManager(_logger, _app.Object, null);
 
-        var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
-        var handler2 = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException2());
+        var result = 0;
+
+        var handler = new AsyncEventHandler<EventArgs>((sender, args) =>
+        {
+            result = 32;
+            return Task.CompletedTask;
+        });
+        
+        var handler2 = new AsyncEventHandler<EventArgs>((sender, args) =>
+        {
+            result = 64;
+            return Task.CompletedTask;
+
+        });
         
         manager.Subscribe("test", handler);
         manager.Subscribe("test", handler2);
         manager.Unsubscribe("test", handler);
-
-        Assert.ThrowsAsync<HandlerRanException2>(async () =>
-        {
-            await manager.RaiseAsync("test", EventArgs.Empty);
-        });
+        
+        await manager.RaiseAsync("test", EventArgs.Empty);
+        
+        Assert.Equal(64, result);
     }
 }
