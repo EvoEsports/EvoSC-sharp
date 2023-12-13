@@ -15,7 +15,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="Moq" Version="4.20.70" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.15.0.81779">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

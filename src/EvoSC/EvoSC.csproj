@@ -12,7 +12,7 @@
         <PackageReference Include="linq2db" Version="4.4.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.15.0.81779">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
