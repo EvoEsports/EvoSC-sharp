@@ -26,7 +26,7 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
     public async Task OnEnableAsync()
     {
         logger.LogTrace("LiveRankingModule enabled");
-        await CheckIsRoundsModeAsync();
+        await CheckAndSetRoundsMode();
         await HideNadeoScoreboardAsync();
         if (_isRoundsMode)
         {
@@ -51,7 +51,7 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
 
     public async Task OnPlayerWaypointAsync(WayPointEventArgs args)
     {
-        await CheckIsRoundsModeAsync();
+        await CheckAndSetRoundsMode();
         if (_isRoundsMode)
         {
             logger.LogTrace("Player crossed a checkpoint: {ArgsAccountId} - RoundsMode: {IsRoundsMode}",
@@ -89,7 +89,7 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
 
     public async Task OnPlayerGiveupAsync(PlayerUpdateEventArgs args)
     {
-        await CheckIsRoundsModeAsync();
+        await CheckAndSetRoundsMode();
         if (_isRoundsMode)
         {
             logger.LogTrace("Player gave up: {ArgsAccountId} - RoundsMode: {IsRoundsMode}", args.AccountId,
@@ -105,7 +105,7 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
     public async Task OnBeginMapAsync(MapEventArgs args)
     {
         logger.LogTrace("Map starts: {MapName}, IsRounds: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
-        await CheckIsRoundsModeAsync();
+        await CheckAndSetRoundsMode();
         if (!_isRoundsMode)
         {
             await Task.CompletedTask;
@@ -121,7 +121,7 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
 
     public async Task OnEndMapAsync(MapEventArgs args)
     {
-        await CheckIsRoundsModeAsync();
+        await CheckAndSetRoundsMode();
         logger.LogTrace("Map ends: {MapName} - RoundsMode: {IsRoundsMode}", args.Map.Name, _isRoundsMode);
         if (_isRoundsMode)
         {
@@ -175,7 +175,7 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
 
     public async Task OnPodiumStartAsync(PodiumEventArgs args)
     {
-        await CheckIsRoundsModeAsync();
+        await CheckAndSetRoundsMode();
         await HideManialinkAsync();
     }
 
@@ -242,15 +242,18 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
             ranking.CheckpointIndex + 1, ranking.IsFinish);
     }
 
-    private Task<bool> CheckIsRoundsModeAsync()
+    private async Task CheckAndSetRoundsMode()
     {
         List<string> validModes = new List<string>
         {
             "Trackmania/TM_Rounds_Online.Script.txt", "Trackmania/TM_Cup_Online.Script.txt"
         };
-        //TODO: https://github.com/EvoEsports/EvoSC-sharp/issues/234 
-        _isRoundsMode = true;
-        return Task.FromResult(_isRoundsMode);
+        var scriptInfo = await client.Remote.GetModeScriptInfoAsync();
+        if (validModes.Contains(scriptInfo.Name))
+        {
+            _isRoundsMode = true;
+        }
+        _isRoundsMode = false;
     }
 
     public MatchInfo GetMatchInfo()
