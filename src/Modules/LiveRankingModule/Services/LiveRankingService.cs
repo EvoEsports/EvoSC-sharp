@@ -249,11 +249,7 @@ public class LiveRankingService(ILogger<LiveRankingService> logger, IManialinkMa
             "Trackmania/TM_Rounds_Online.Script.txt", "Trackmania/TM_Cup_Online.Script.txt"
         };
         var scriptInfo = await client.Remote.GetModeScriptInfoAsync();
-        if (validModes.Contains(scriptInfo.Name))
-        {
-            _isRoundsMode = true;
-        }
-        _isRoundsMode = false;
+        _isRoundsMode = validModes.Contains(scriptInfo.Name);
     }
 
     public MatchInfo GetMatchInfo()
