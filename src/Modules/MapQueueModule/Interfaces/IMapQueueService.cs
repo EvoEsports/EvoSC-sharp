@@ -5,6 +5,7 @@ namespace EvoSC.Modules.Official.MapQueueModule.Interfaces;
 public interface IMapQueueService
 {
     public IReadOnlyCollection<IMap> QueuedMaps { get; }
+    public int QueuedMapsCount { get; }
     public Task EnqueueAsync(IMap map);
     public Task<IMap> DequeueNextAsync();
     public Task<IMap> PeekNextAsync();

@@ -1,90 +1,57 @@
-﻿using System.Collections.Concurrent;
-using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Modules.Official.MapQueueModule.Events;
+using EvoSC.Modules.Official.MapQueueModule.Events.Args;
 using EvoSC.Modules.Official.MapQueueModule.Interfaces;
+using EvoSC.Modules.Official.MapQueueModule.Interfaces.Utils.AsyncDeque;
+using EvoSC.Modules.Official.MapQueueModule.Utils.AsyncDeque;
 
 namespace EvoSC.Modules.Official.MapQueueModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class MapQueueService(IEventManager events, IServerClient server, IMapService maps) : IMapQueueService
 {
-    private Queue<IMap> _mapQueue = new();
-    private object _mapQueueLock = new();
+    private readonly IAsyncDeque<IMap> _mapQueue = new AsyncDeque<IMap>();
 
-    public IReadOnlyCollection<IMap> QueuedMaps
-    {
-        get
-        {
-            lock (_mapQueueLock)
-            {
-                return _mapQueue;
-            }
-        }
-    }
+    public IReadOnlyCollection<IMap> QueuedMaps => _mapQueue.ToArray();
+    public int QueuedMapsCount => _mapQueue.Count;
 
-    public async Task EnqueueAsync(IMap map)
+    public Task EnqueueAsync(IMap map)
     {
-        lock (_mapQueueLock)
-        {
-            _mapQueue.Enqueue(map);
-        }
+        _mapQueue.Enqueue(map);
+        return events.RaiseAsync(MapQueueEvents.MapQueued, new MapQueueEventArgs { QueuedMap = map });
     }
 
     public async Task<IMap> DequeueNextAsync()
     {
-        if (QueuedMaps.Count == 0)
-        {
-            throw new InvalidOperationException("There are no more maps to dequeue");
-        }
+        var map = _mapQueue.Dequeue();
+        await events.RaiseAsync(MapQueueEvents.MapDequeued, new MapQueueEventArgs { QueuedMap = map });
 
-        IMap? nextMap;
-        
-        lock (_mapQueueLock)
-        {
-            nextMap = _mapQueue.Dequeue();
-        }
-
-        if (nextMap == null)
-        {
-            throw new InvalidOperationException("Failed to get next map from the queue");
-        }
-
-        return nextMap;
+        return map;
     }
 
     public Task<IMap> PeekNextAsync()
     {
-        if (QueuedMaps.Count == 0)
-        {
-            throw new InvalidOperationException("There are no maps in the queue");
-        }
-        
-        lock (_mapQueueLock)
-        {
-            return Task.FromResult(_mapQueue.Peek());
-        }
+        return Task.FromResult(_mapQueue.PeekFirst());
     }
 
     public Task DropAsync(IMap map)
     {
-        lock (_mapQueueLock)
+        var isNext = _mapQueue.PeekFirst() == map;
+        _mapQueue.Drop(map);
+        return events.RaiseAsync(MapQueueEvents.MapDropped, new MapQueueMapDroppedEventArgs
         {
-            
-        }
-        
-        return Task.CompletedTask;
+            QueuedMap = map, 
+            WasNext = isNext 
+        });
     }
 
     public Task ClearAsync()
     {
-        lock (_mapQueueLock)
-        {
-            _mapQueue.Clear();
-        }
-        
-        return Task.CompletedTask;
+        _mapQueue.Clear();
+        return events.RaiseAsync(MapQueueEvents.QueueCleared, EventArgs.Empty);
     }
 }

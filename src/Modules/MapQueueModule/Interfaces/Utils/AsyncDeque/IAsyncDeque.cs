@@ -2,7 +2,7 @@
 
 namespace EvoSC.Modules.Official.MapQueueModule.Interfaces.Utils.AsyncDeque;
 
-public interface IAsyncDeque<TItem> : ICollection
+public interface IAsyncDeque<TItem> : ICollection, IEnumerable<TItem>
 {
     public void Enqueue(TItem item);
     public TItem Dequeue();

@@ -9,8 +9,8 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
     private IDequeNode<TItem>? _first;
     private readonly object _lock = new();
     private int _count = 0;
-    
-    public IEnumerator GetEnumerator()
+
+    IEnumerator<TItem> IEnumerable<TItem>.GetEnumerator()
     {
         var node = _first;
 
@@ -19,6 +19,11 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
             yield return node.Item;
             node = node.Next;
         }
+    }
+
+    public IEnumerator GetEnumerator()
+    {
+        return GetEnumerator();
     }
 
     public void CopyTo(Array array, int index)
@@ -56,6 +61,8 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
                 _last.Next = newItem;
                 _last = newItem;
             }
+
+            _count++;
         }
     }
 
@@ -80,6 +87,7 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
                 _first = _first.Next;
             }
 
+            _count--;
             return item;
         }
     }
@@ -107,16 +115,21 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
             {
                 if (node.Item != null && node.Item.Equals(item))
                 {
-                    if (node.Previous != null)
+                    if (node == _first)
+                    {
+                        _first = _first.Next;
+                    }
+                    else if (node == _last)
+                    {
+                        _last = _last.Previous;
+                    }
+                    else
                     {
                         node.Previous.Next = node.Next;
-                    }
-
-                    if (node.Next != null)
-                    {
                         node.Next.Previous = node.Previous;
                     }
 
+                    _count--;
                     return;
                 }
             
@@ -133,6 +146,7 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
         {
             _first = null;
             _last = null;
+            _count = 0;
         }
     }
 }
