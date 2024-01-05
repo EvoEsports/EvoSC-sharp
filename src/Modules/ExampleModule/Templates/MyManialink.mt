@@ -9,6 +9,9 @@
     <import component="EvoSC.Controls.RadioButton" as="RadioButton" />
     <import component="EvoSC.Controls.Alert" as="Alert" />
     <import component="EvoSC.Window" as="Window" />
+    <import component="EvoSC.Controls.Container" as="Container" />
+    <import component="EvoSC.Controls.Panel" as="Panel" />
+    <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />
     
     <template>
         <Theme />
@@ -38,28 +41,19 @@
             <label text="test" />
         </Window> -->
         
-        <Alert id="myAlert" />
-        <Button id="showAlert" text="Toggle Alert" width="20" y="-10" />
+        <!-- <Window>
+          <Container width="50" height="20" id="test" scrollable="true" scrollHeight="5">
+            <label text="hello 1" pos="0 0" />
+            <label text="hello 2" pos="0 -5" />
+            <label text="hello 3" pos="0 -10" />
+            <label text="hello 4" pos="0 -15" />
+            <label text="hello 5" pos="0 -20" />
+          </Container>
+        </Window> -->
+      
+        <Panel width="50" height="20" bgColor="ff0000" padding="2" cornerRadius="1">
+          <label text="hello" />
+        </Panel>
     </template>
-    
-    <script>
-        *** OnInitialization ***
-        ***
-            declare alertShown = False;
-        ***
-        
-        *** OnMouseClick ***
-        ***
-            if (Event.Control.ControlId == "showAlert") {
-                if (alertShown) {
-                    HideAlert("myAlert");
-                } else {
-                    ShowAlert("myAlert");
-                }
-            
-                alertShown = !alertShown;
-            }
-        ***
-    </script>
     <script resource="EvoSC.Scripts.UIScripts" />
 </component>

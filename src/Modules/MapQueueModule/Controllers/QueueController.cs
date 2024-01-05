@@ -9,11 +9,12 @@ using EvoSC.Modules.Official.MapQueueModule.Events;
 using EvoSC.Modules.Official.MapQueueModule.Events.Args;
 using EvoSC.Modules.Official.MapQueueModule.Interfaces;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MapQueueModule.Controllers;
 
 [Controller]
-public class QueueController(IMapQueueService mapQueue, IServerClient server, IMapService maps) : EvoScController<IEventControllerContext>
+public class QueueController(IMapQueueService mapQueue, IServerClient server, IMapService maps, ILogger<QueueController> logger) : EvoScController<IEventControllerContext>
 {
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
@@ -39,6 +40,9 @@ public class QueueController(IMapQueueService mapQueue, IServerClient server, IM
     [Subscribe(MapQueueEvents.MapQueued)]
     public async Task OnMapQueuedAsync(object sender, MapQueueEventArgs args)
     {
+        logger.LogDebug("Queued map {Name}, number of queued maps: {Count}", args.QueuedMap.Name,
+            mapQueue.QueuedMapsCount);
+        
         if (mapQueue.QueuedMapsCount == 1)
         {
             await server.Remote.ChooseNextMapAsync(args.QueuedMap.FilePath);

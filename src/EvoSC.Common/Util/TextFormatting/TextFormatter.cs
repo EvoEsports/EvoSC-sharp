@@ -121,6 +121,17 @@ public class TextFormatter
     }
 
     /// <summary>
+    /// Add a formatted text object.
+    /// </summary>
+    /// <param name="formattedText">Formatted text to add.</param>
+    /// <returns></returns>
+    public TextFormatter AddText(FormattedText formattedText)
+    {
+        _textParts.Add(formattedText);
+        return this;
+    }
+
+    /// <summary>
     /// Convert the complete text into the raw formatted representation.
     /// </summary>
     /// <returns></returns>

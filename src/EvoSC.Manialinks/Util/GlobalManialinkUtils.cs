@@ -39,4 +39,9 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
         "secondary" => _icons.ExclamationCircle,
         _ => _icons.ExclamationCircle
     };
+
+    public string RandomId(string id) => $"{id}_{new Guid().ToString()}";
+
+    public string DefaultOrRandomId(string defaultId, string id) =>
+        id == defaultId ? $"{id}_{new Guid().ToString()}" : id;
 }
