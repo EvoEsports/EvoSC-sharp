@@ -51,7 +51,7 @@
           </Container>
         </Window> -->
       
-        <Panel width="50" height="20" bgColor="ff0000" padding="2" cornerRadius="1">
+        <Panel width="50" height="20" bgColor="ff0000" padding="2" cornerRadius="2" border="1" borderColor="0000ff">
           <label text="hello" />
         </Panel>
     </template>
