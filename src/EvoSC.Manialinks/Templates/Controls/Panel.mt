@@ -7,7 +7,7 @@
   <property type="double" name="width" />
   <property type="double" name="height" />
   <property type="double" name="padding" default="0.0" />
-  <property type="string" name="bgColor" />
+  <property type="string" name="bgColor" default="00000000" />
   <property type="double" name="cornerRadius" default="0.0" />
   <property type="double" name="zIndex" default="0" />
   <property type="string" name="className" default="0" />
@@ -44,10 +44,12 @@
            scriptevents='{{ scriptEvents ? "1" : "0" }}'
     >
       <frame>
-        <QuarterCircle quadrant="TopLeft" radius="{{ cornerRadius }}" x="0" y="0" color="{{ bgColor }}" />
-        <QuarterCircle quadrant="TopRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" color="{{ bgColor }}" />
-        <QuarterCircle quadrant="BottomLeft" radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" />
-        <QuarterCircle quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" />
+        <frame if="cornerRadius > 0">
+          <QuarterCircle quadrant="TopLeft" radius="{{ cornerRadius }}" x="0" y="0" color="{{ bgColor }}" />
+          <QuarterCircle quadrant="TopRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" color="{{ bgColor }}" />
+          <QuarterCircle quadrant="BottomLeft" radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" />
+          <QuarterCircle quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" />
+        </frame>
 
         <quad bgcolor="{{ bgColor }}" pos="{{ cornerRadius }} 0" size="{{ width-cornerRadius*2 }} {{ cornerRadius }}" /> <!-- Top -->
         <quad bgcolor="{{ bgColor }}" pos="0 -{{ cornerRadius }}" size="{{ cornerRadius }} {{ height-cornerRadius*2 }}" /> <!-- Left -->

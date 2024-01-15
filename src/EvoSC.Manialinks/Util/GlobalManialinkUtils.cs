@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using EvoSC.Common.Interfaces.Themes;
 
 namespace EvoSC.Manialinks.Util;
@@ -44,4 +45,17 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
 
     public string DefaultOrRandomId(string defaultId, string id) =>
         id == defaultId ? $"{id}_{new Guid().ToString()}" : id;
+
+    public double ColorOpacity(string color)
+    {
+        if (color.Length != 8)
+        {
+            return 1;
+        }
+
+        var opacity = Convert.FromHexString(color[6..]).First();
+
+        return Math.Round(opacity / 255.0, 2);
+
+    }
 }

@@ -12,6 +12,7 @@
     <import component="EvoSC.Controls.Container" as="Container" />
     <import component="EvoSC.Controls.Panel" as="Panel" />
     <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />
+    <import component="EvoSC.Controls.Chip" as="Chip" />
     
     <template>
         <Theme />
@@ -51,9 +52,15 @@
           </Container>
         </Window> -->
       
-        <Panel width="50" height="20" bgColor="ff0000" padding="2" cornerRadius="2" border="1" borderColor="0000ff">
+        <Panel width="15" height="5" bgColor="ffffff44" cornerRadius="2" borderColor="0000ff">
           <label text="hello" />
         </Panel>
+
+      
+      <!-- <Window>
+        <Chip text="test" />
+      </Window> -->
+      
     </template>
     <script resource="EvoSC.Scripts.UIScripts" />
 </component>
