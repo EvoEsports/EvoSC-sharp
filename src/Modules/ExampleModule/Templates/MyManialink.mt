@@ -13,6 +13,7 @@
     <import component="EvoSC.Controls.Panel" as="Panel" />
     <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />
     <import component="EvoSC.Controls.Chip" as="Chip" />
+    <import component="EvoSC.Controls.Separator" as="Separator" />
     
     <template>
         <Theme />
@@ -58,7 +59,8 @@
 
       
       <Window>
-        <Chip text="TEST" closable="true" />
+        <!-- <Chip text="TEST" closable="true" /> -->
+        <Separator />
       </Window>
       
     </template>

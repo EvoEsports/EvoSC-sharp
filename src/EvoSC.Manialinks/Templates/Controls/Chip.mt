@@ -8,7 +8,6 @@
   <property type="double" name="width" default="15" />
   <property type="string" name="style" default="Square" /> <!-- Styles: Round, Square -->
   <property type="string" name="closable" default="false" />
-  <property type="string" name="closable" default="false" />
   
   <template>
     <Panel
