@@ -16,6 +16,7 @@
   <property type="bool" name="scriptEvents" default="false" />
   <property type="double" name="border" default="0" />
   <property type="string" name="borderColor" default="ffffff" />
+  <property type="string" name="data" default="" />
   
   <template>
     <frame if="border > 0" 
@@ -42,6 +43,7 @@
            rot="{{ rotate }}"
            hidden='{{ hidden ? "1" : "0" }}'
            scriptevents='{{ scriptEvents ? "1" : "0" }}'
+           data-data="{{ data }}"
     >
       <frame>
         <frame if="cornerRadius > 0">

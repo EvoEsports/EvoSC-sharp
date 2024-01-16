@@ -52,14 +52,14 @@
           </Container>
         </Window> -->
       
-        <Panel width="15" height="5" bgColor="ffffff44" cornerRadius="2" borderColor="0000ff">
+        <!-- <Panel width="15" height="5" bgColor="ffffff44" cornerRadius="2" borderColor="0000ff">
           <label text="hello" />
-        </Panel>
+        </Panel> -->
 
       
-      <!-- <Window>
-        <Chip text="test" />
-      </Window> -->
+      <Window>
+        <Chip text="TEST" closable="true" />
+      </Window>
       
     </template>
     <script resource="EvoSC.Scripts.UIScripts" />

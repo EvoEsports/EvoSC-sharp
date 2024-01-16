@@ -1,5 +1,9 @@
 ﻿namespace EvoSC.Manialinks.Util;
 
+/// <summary>
+/// Generated from: https://fontawesome.com/v4/cheatsheet/
+/// And: https://kenney.nl/assets/game-icons
+/// </summary>
 public class GameIcons
 {
     public KenneyIcons Kenney = new KenneyIcons();
