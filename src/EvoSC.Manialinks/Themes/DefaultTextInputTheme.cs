@@ -14,6 +14,7 @@ public class DefaultTextInputTheme(IThemeManager theme) : Theme<DefaultTextInput
         Set("UI.TextField.Default.Text").To(_theme.UI_TextPrimary);
         Set("UI.TextField.Default.Bg").To(_theme.UI_BgSecondary);
         Set("UI.TextField.Default.Border").To(_theme.UI_BorderSecondary);
+        Set("UI.TextField.Default.Placeholder").To(_theme.UI_TextSecondary);
         
         return Task.CompletedTask;
     }

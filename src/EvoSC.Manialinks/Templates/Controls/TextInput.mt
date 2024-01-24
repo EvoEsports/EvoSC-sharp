@@ -32,18 +32,22 @@ Basic text input control.
     
     <!-- The maximum number of characters that can be added. -->
     <property type="int" name="maxLength" default="255" />
+  
+    <property type="string" name="placeholder" default="" />
     
     <template>
-        <frame pos="{{ x }} {{ y }}">
+        <frame pos="{{ x }} {{ y }}" id="{{ name }}">
             <quad 
                     class="textinput-outline-default"
                     size="{{ width }} {{ height }}"
+                    z-index="0"
             />
             <quad 
                     class="textinput-default"
                     size="{{ width-0.2 }} {{ height-0.2 }}"
                     pos="0.1 -0.1"
                     scriptevents="1"
+                    z-index="0"
             />
             <entry
                     class="textinput-default"
@@ -52,12 +56,33 @@ Basic text input control.
                     valuetype="{{ valueType }}"
                     textformat='{{ isPassword ? "Password" : "Basic" }}'
                     name="{{ name }}"
+                    data-id="{{ name }}"
                     default="{{ value }}"
                     selecttext="{{ autoSelect }}"
                     maxlen="{{ maxLength }}"
                     valign="center"
                     pos="{{ 1 }} {{ -height/2 }}"
+                    z-index="0"
             />
+            <frame
+                    pos="0.1 -0.1"
+                    z-index="1" 
+                    size="{{ width-0.2 }} {{ height-0.2 }}"
+                    if='placeholder != ""'
+            >
+              <quad 
+                      size="{{ width-0.2 }} {{ height-0.2 }}"
+                      bgcolor="{{ Theme.UI_TextField_Default_Bg }}"
+              />
+              <label
+                      text="$i{{ placeholder }}"
+                      valign="center"
+                      class="textinput-placeholder-default"
+                      pos="{{ (height-3)/2 }} {{ -(height-0.15)/2 }}"
+              />
+            </frame>
         </frame>
     </template>
+
+  <script resource="EvoSC.Scripts.TextInput" once="true" />
 </component>

@@ -14,6 +14,8 @@
     <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />
     <import component="EvoSC.Controls.Chip" as="Chip" />
     <import component="EvoSC.Controls.Separator" as="Separator" />
+    <import component="EvoSC.Controls.Select" as="Select" />
+    <import component="EvoSC.Controls.SelectItem" as="SelectItem" />
     
     <template>
         <Theme />
@@ -60,7 +62,12 @@
       
       <Window>
         <!-- <Chip text="TEST" closable="true" /> -->
-        <Separator />
+        <!-- <Select>
+          <SelectItem text="Fullspeed" value="fs" />
+          <SelectItem text="Tech" value="tech" />
+          <SelectItem text="Dirt" value="dirt" />
+          <SelectItem text="Ice" value="ice" />
+        </Select> -->
       </Window>
       
     </template>

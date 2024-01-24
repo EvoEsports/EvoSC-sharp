@@ -31,7 +31,7 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
         Set(DefaultThemeOptions.UIFont).To("GameFontExtraBold");
         Set(DefaultThemeOptions.UIFontSize).To(1);
         Set(DefaultThemeOptions.UITextPrimary).To("FFFFFF");
-        Set(DefaultThemeOptions.UITextSecondary).To("EDEDEF");
+        Set(DefaultThemeOptions.UITextSecondary).To("C3C3C5");
         Set(DefaultThemeOptions.UIBgPrimary).To("FF0058");
         Set(DefaultThemeOptions.UIBgSecondary).To("47495A");
         Set(DefaultThemeOptions.UIBorderPrimary).To("FF0058");

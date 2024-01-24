@@ -66,6 +66,14 @@
             />
 
             <style
+                    class="textinput-placeholder-default"
+                    textsize="{{ Theme.UI_FontSize }}"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_TextField_Default_Placeholder }}"
+                    bgcolor="{{ Theme.UI_TextField_Default_Bg }}"
+            />
+
+            <style
                     class="textinput-outline-default"
                     bgcolor="{{ Theme.UI_TextField_Default_Border }}"
             />
