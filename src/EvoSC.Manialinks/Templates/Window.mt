@@ -2,6 +2,8 @@
 General purpose window that can hold any type of component. The window is designed to only be used once per Manialink.
 -->
 <component>
+    <import component="EvoSC.Controls.Container" as="Container" />
+  
     <!-- The ID of the window. Default is 'evosc-window' -->
     <property type="string" name="id" default="evosc-window" />
     
@@ -40,6 +42,9 @@ General purpose window that can hold any type of component. The window is design
     
     <!-- Whether to display the titlebar or not. -->
     <property type="bool" name="hasTitlebar" default="true" />
+  
+    <property type="double" name="padding" default="2" />
+    <property type="bool" name="scrollable" default="false" />
 
     <template>
         <frame 
@@ -99,7 +104,15 @@ General purpose window that can hold any type of component. The window is design
                     if="hasTitlebar &amp;&amp; canMinimize"
             />
 
-            <frame pos="1 -{{ hasTitlebar ? 6 : 1 }}" size="{{ width-2 }} {{ height-(hasTitlebar ? 7 : 2) }}">
+            <frame
+                    x="{{ padding }}"
+                    y="-{{ hasTitlebar ? 5+padding : padding }}"
+                    width="{{ width-padding*2 }}"
+                    height="{{ height-(hasTitlebar ? 5+padding*2 : padding*2) }}"
+                    
+                    pos="{{ padding }} -{{ hasTitlebar ? 5+padding : padding }}" 
+                    size="{{ width-padding*2 }} {{ height-(hasTitlebar ? 5+padding*2 : padding*2) }}"
+            >
                 <slot />
             </frame>
         </frame>
