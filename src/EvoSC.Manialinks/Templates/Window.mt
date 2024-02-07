@@ -56,6 +56,7 @@ General purpose window that can hold any type of component. The window is design
             <quad
                     class="window-bg-{{ style }}"
                     size="{{ width }} {{ height }}"
+                    scriptevents="1"
             />
             
             <quad 
@@ -104,17 +105,14 @@ General purpose window that can hold any type of component. The window is design
                     if="hasTitlebar &amp;&amp; canMinimize"
             />
 
-            <frame
+            <Container
                     x="{{ padding }}"
                     y="-{{ hasTitlebar ? 5+padding : padding }}"
                     width="{{ width-padding*2 }}"
                     height="{{ height-(hasTitlebar ? 5+padding*2 : padding*2) }}"
-                    
-                    pos="{{ padding }} -{{ hasTitlebar ? 5+padding : padding }}" 
-                    size="{{ width-padding*2 }} {{ height-(hasTitlebar ? 5+padding*2 : padding*2) }}"
             >
                 <slot />
-            </frame>
+            </Container>
         </frame>
     </template>
 

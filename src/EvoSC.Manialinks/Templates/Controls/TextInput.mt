@@ -42,7 +42,7 @@ Basic text input control.
                     size="{{ width }} {{ height }}"
                     z-index="0"
             />
-            <quad 
+            <quad
                     class="textinput-default"
                     size="{{ width-0.2 }} {{ height-0.2 }}"
                     pos="0.1 -0.1"
@@ -50,7 +50,7 @@ Basic text input control.
                     z-index="0"
             />
             <entry
-                    class="textinput-default"
+                    class="textinput-default textinput-entry"
                     scriptevents="1"
                     size="{{ width-2 }} {{ height }}"
                     valuetype="{{ valueType }}"

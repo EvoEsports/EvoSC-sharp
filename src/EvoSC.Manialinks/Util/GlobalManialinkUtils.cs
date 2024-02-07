@@ -58,4 +58,6 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
         return Math.Round(opacity / 255.0, 2);
 
     }
+
+    public int[] Range(int n) => new int[]{1,2,3};
 }

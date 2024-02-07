@@ -1,13 +1,10 @@
 <!--
 Void Private_HidePlaceholder(Text _Id) {
-    log("ID: " ^ _Id);
     declare CMlFrame TextInputFrame <=> (Page.MainFrame.GetFirstChild(_Id) as CMlFrame);
     TextInputFrame.Controls[3].Hide();
 }
 
 Void Private_ShowPlaceholderIfEmpty(Text _Id) {
-    log("ID: " ^ _Id);
-    
     declare CMlFrame TextInputFrame <=> (Page.MainFrame.GetFirstChild(_Id) as CMlFrame);
     declare CMlEntry TextInputEntry <=> (TextInputFrame.Controls[2] as CMlEntry);
     
@@ -23,7 +20,7 @@ declare Text FocusedTextInputId = "";
 
 *** OnLoop ***
 ***
-if (Page.FocusedControl != Null && Page.FocusedControl.HasClass("textinput-default")) {
+if (Page.FocusedControl != Null && Page.FocusedControl.HasClass("textinput-entry")) {
     declare Text NewFocused = Page.FocusedControl.DataAttributeGet("id");
     
     if (NewFocused != FocusedTextInputId) {

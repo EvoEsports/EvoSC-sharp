@@ -72,6 +72,7 @@ public class ManialinkManager : IManialinkManager
         themeManager.AddThemeAsync<DefaultWindowTheme>();
         themeManager.AddThemeAsync<DefaultChipTheme>();
         themeManager.AddThemeAsync<DefaultSeparatorTheme>();
+        themeManager.AddThemeAsync<DefaultSelectTheme>();
         
         _engine.GlobalVariables["Util"] = new GlobalManialinkUtils(themeManager);
         _engine.GlobalVariables["Icons"] = new GameIcons();

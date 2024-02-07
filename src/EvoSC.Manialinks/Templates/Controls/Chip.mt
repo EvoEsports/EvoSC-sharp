@@ -8,15 +8,19 @@
   <property type="double" name="width" default="15" />
   <property type="string" name="style" default="Square" /> <!-- Styles: Round, Square -->
   <property type="string" name="closable" default="false" />
+  <property type="bool" name="hidden" default="false" />
   
   <template>
     <Panel
+            x="{{ x }}"
+            y="{{ y }}"
             id="{{ id }}"
             width="{{ width }}"
             height="3"
             cornerRadius='{{ style == "Round" ? 2.5 : 0 }}'
             bgColor="{{ Theme.UI_Chip_Default_Bg }}"
             data="{{ closable }}"
+            hidden="{{ hidden }}"
     >
       <label 
               class="text"

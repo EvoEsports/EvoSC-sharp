@@ -21,7 +21,7 @@
             id='{{ Util.DefaultOrRandomId("evosc_container", id) }}'
             pos="{{ x }} {{ y }}"
             size="{{ width }} {{ height }}"
-            scriptevents='{{ scrollable ? "1" : "0" }}'
+            scriptevents="1"
             z-index="{{ zIndex }}"
             rot="{{ rotate }}"
             scale="{{ scale }}"
