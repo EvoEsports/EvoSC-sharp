@@ -1,5 +1,5 @@
 <component>
-  <import component="EvoSC.Controls.Panel" as="Panel" />
+  <import component="EvoSC.Controls.Tag" as="Tag" />
   
   <property type="string" name="id" default="evosc_chip" />
   <property type="string" name="text" default="" />
@@ -9,9 +9,38 @@
   <property type="string" name="style" default="Square" /> <!-- Styles: Round, Square -->
   <property type="string" name="closable" default="false" />
   <property type="bool" name="hidden" default="false" />
+  <property type="string" name="severity" default="primary" /> <!-- primary, secondary, success, info, warning, danger -->
+  <property type="string?" name="bgColor" default="null" />
+  <property type="string?" name="textColor" default="null" />
   
   <template>
-    <Panel
+    <Tag 
+            custom="true" 
+            id="{{ id }}"
+            text="{{ text }}"
+            x="{{ x }}"
+            y="{{ y }}"
+            width="{{ width }}"
+            style="{{ style }}"
+            closable="{{ closable }}"
+            hidden="{{ hidden }}"
+            severity="{{ severity }}"
+            bgColor="{{ bgColor }}"
+            textColor="{{ textColor }}"
+    >
+      <template slot="content">
+        <label
+                text="{{ Icons.TimesCircle }}"
+                textcolor="{{ textColor == null ? Util.TypeToColorText(severity) : textColor }}"
+                textsize="0.7"
+                pos="{{ width-3 }} -1.35"
+                valign="center"
+                scriptevents="1"
+                class="chip-btnClose"
+        />
+      </template>
+    </Tag>
+    <!-- <Panel
             x="{{ x }}"
             y="{{ y }}"
             id="{{ id }}"
@@ -41,7 +70,7 @@
               scriptevents="1"
               class="chip-btnClose"
       />
-    </Panel>
+    </Panel> -->
   </template>
   
   <script resource="EvoSC.Scripts.Chip" once="true" />

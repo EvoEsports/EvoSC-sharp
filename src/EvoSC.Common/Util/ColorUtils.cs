@@ -3,7 +3,7 @@ using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Common.Util;
 
-public static class ColorUtils
+public class ColorUtils
 {
     /// <summary>
     /// Set the lightness for a color.

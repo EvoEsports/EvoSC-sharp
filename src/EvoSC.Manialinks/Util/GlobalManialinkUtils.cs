@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Util;
 
 namespace EvoSC.Manialinks.Util;
 
@@ -24,6 +25,14 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
         "secondary" => _theme.UI_BgSecondary,
         _ => _theme.UI_BgPrimary
     };
+
+    public string TypeToColorText(string type)
+    {
+        var bgColor = TypeToColorBg(type);
+        var luma = ColorUtils.Luma(bgColor);
+
+        return luma <= 50 ? ColorUtils.Lighten(bgColor, 40) : ColorUtils.Darken(bgColor, 40);
+    } 
 
     /// <summary>
     /// Status type to an icon.

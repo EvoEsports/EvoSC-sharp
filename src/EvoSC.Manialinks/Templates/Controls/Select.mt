@@ -24,7 +24,8 @@
               scriptevents="1"
       />
       
-      <Chip foreach="int i in Util.Range(options)" />
+      <!-- throws error -->
+      <!-- <Chip foreach="int i in Util.Range(options)" /> -->
       
       <frame id="evosc-select-dpanel-{{ id }}"
              data-id="{{ id }}"

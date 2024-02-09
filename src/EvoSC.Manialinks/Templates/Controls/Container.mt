@@ -28,7 +28,7 @@
             class="{{ className }}"
             hidden='{{ hidden ? "1" : "0" }}'
     >
-      <quad size="9999 9999" pos="0 0" if="scrollable" />
+      <quad size="9999 9999" pos="0 0" if="scrollable" scriptevents="1" />
       <slot />
     </frame>
   </template>

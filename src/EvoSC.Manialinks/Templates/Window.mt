@@ -110,6 +110,7 @@ General purpose window that can hold any type of component. The window is design
                     y="-{{ hasTitlebar ? 5+padding : padding }}"
                     width="{{ width-padding*2 }}"
                     height="{{ height-(hasTitlebar ? 5+padding*2 : padding*2) }}"
+                    scrollable="false"
             >
                 <slot />
             </Container>

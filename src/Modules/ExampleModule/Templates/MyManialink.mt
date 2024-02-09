@@ -60,7 +60,7 @@
         </Panel> -->
 
       
-      <Window>
+      <!-- <Window> -->
         <!-- <Chip text="TEST" closable="true" /> -->
         <!-- <Select>
           <SelectItem text="Fullspeed" value="fs" />
@@ -68,7 +68,16 @@
           <SelectItem text="Dirt" value="dirt" />
           <SelectItem text="Ice" value="ice" />
         </Select> -->
-      </Window>
+      <!-- </Window> -->
+      
+      <!-- <Window>
+        <Chip text="TEST" closable="true" severity="primary" y="0" />
+        <Chip text="TEST" closable="true" severity="secondary" y="-5" />
+        <Chip text="TEST" closable="true" severity="success" y="-10" />
+        <Chip text="TEST" closable="true" severity="info" y="-15" />
+        <Chip text="TEST" closable="true" severity="warning" y="-20" />
+        <Chip text="TEST" closable="true" severity="danger" y="-25" />
+      </Window> -->
       
     </template>
     <script resource="EvoSC.Scripts.UIScripts" />
