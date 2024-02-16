@@ -37,7 +37,6 @@
     
     <frame id="{{ id }}"
            pos="{{ x }} {{ y }}" 
-           size="{{ width }} {{ height }}" 
            z-index="{{ zIndex }}" 
            class="{{ className }}"
            rot="{{ rotate }}"
@@ -64,7 +63,7 @@
               size="{{ width-cornerRadius*2 }} {{ height-cornerRadius*2 }}"
               bgcolor="{{ bgColor }}"
       />
-      <frame pos="{{ padding }} {{ -padding }}" size="{{ width-padding*2 }} {{ height-padding*2 }}">
+      <frame pos="{{ padding }} {{ -padding }}">
         <slot />
       </frame>
     </frame>

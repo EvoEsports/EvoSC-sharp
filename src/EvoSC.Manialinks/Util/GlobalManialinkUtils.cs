@@ -68,5 +68,8 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
 
     }
 
-    public int[] Range(int n) => new int[]{1,2,3};
+    public int[] Range(int n) => Enumerable.Range(0, n).ToArray();
+
+    public int RatingParts(double min, double max, double value, double parts) =>
+        (int)Math.Floor(value / (max - min) * parts);
 }

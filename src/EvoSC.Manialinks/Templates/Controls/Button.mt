@@ -23,6 +23,8 @@
     <!-- The button style type, can be default or secondary. -->
     <property type="string" name="type" default="default" />
     
+    <property type="string?" name="bgColor" default="null" />
+    
     <!-- The action to call when clicking the button. This disables script events. -->
     <property type="string" name="action" default="" />
     
@@ -39,6 +41,7 @@
                         class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
                         size="{{ width }} {{ height }}"
                         scriptevents="1"
+                        bgcolor='{{ bgColor == null ? "" : bgColor }}'
                 />
                 <label
                         size="{{ width }} {{ height }}"

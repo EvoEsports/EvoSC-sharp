@@ -12,6 +12,7 @@
   <property type="string" name="severity" default="primary" /> <!-- primary, secondary, success, info, warning, danger -->
   <property type="string?" name="bgColor" default="null" />
   <property type="string?" name="textColor" default="null" />
+  <property type="bool" name="centerText" default="true" />
   
   <template>
     <Panel
@@ -19,20 +20,21 @@
             y="{{ y }}"
             id="{{ id }}"
             width="{{ width }}"
-            height="3"
-            cornerRadius='{{ style == "Round" ? 2.5 : 0 }}'
+            height="2"
+            cornerRadius='{{ style == "Round" ? 1 : 0 }}'
             bgColor="{{ bgColor == null ? Util.TypeToColorBg(severity) : bgColor }}"
             data="{{ closable }}"
             hidden="{{ hidden }}"
     >
       <label
               class="text"
-              pos="0.4 -1.2"
+              pos="{{ centerText ? width/2.0 : 0.4 }} -0.7"
               textcolor="{{ textColor == null ? Util.TypeToColorText(severity) : textColor }}"
               size="{{ width }} 5"
               text="{{ text }}"
-              textsize="1"
+              textsize="0.5"
               valign="center"
+              halign="center"
       />
 
       <slot name="content" />

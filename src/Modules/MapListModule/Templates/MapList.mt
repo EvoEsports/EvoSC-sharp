@@ -14,7 +14,7 @@
   <template>
     <Theme />
     
-    <Window title="Maps" icon="{{ Icons.Map }}" width="200" height="130" x="-100" y="65">
+    <Window title="Maps" icon="{{ Icons.Map }}" width="230" height="130" x="-100" y="65">
       <frame pos="0 -10">
         <TextInput name="txtSearch" y="0" width="50" placeholder="Search ..." />
         <Checkbox id="chkAllMaps" text="All Maps" y="-8" isChecked="true" />
@@ -39,7 +39,7 @@
                  scrollable="true"
                  scrollHeight="{{ 121-115 + 5 }}"
       >
-        <MapListRow y="0" />
+        <MapListRow foreach="int j in Util.Range(10)" y="{{ -j*11 }}" key="{{ j }}" />
       </Container>
     </Window>
   </template>
