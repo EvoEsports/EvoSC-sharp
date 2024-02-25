@@ -3,7 +3,7 @@ using EvoSC.Modules.Official.MotdModule.Services;
 using EvoSC.Testing;
 using Microsoft.Extensions.Logging;
 using MockHttpClient;
-using Moq;
+using NSubstitute;
 
 namespace MotdModule.Tests;
 
@@ -11,12 +11,12 @@ public class HttpServiceTests : IDisposable
 {
     private readonly HttpService _service;
     private readonly MockHttpClient.MockHttpClient httpMock;
-    private readonly Mock<ILogger<HttpService>> _logger = new();
+    private readonly ILogger<HttpService> _logger = Substitute.For<ILogger<HttpService>>();
 
     public HttpServiceTests()
     {
         httpMock = new MockHttpClient.MockHttpClient();
-        _service = new(_logger.Object);
+        _service = new(_logger);
         _service.SetHttpClient(httpMock);
     }
 
@@ -24,9 +24,9 @@ public class HttpServiceTests : IDisposable
     {
         yield return new object[]
         {
-            "https://www.correctUrl.com",
-            new HttpResponseMessage()
-                .WithStringContent("{\"data\":[{\"id\":2,\"message\":\"This is a MOTD message served by the API. Including $f00styling.\",\"server\":\"testserver\"}]}"),
+            "https://www.correctUrl.com", new HttpResponseMessage()
+                .WithStringContent(
+                    "{\"data\":[{\"id\":2,\"message\":\"This is a MOTD message served by the API. Including $f00styling.\",\"server\":\"testserver\"}]}"),
             new MotdResponse
             {
                 Data = new List<ResponseData>
@@ -41,31 +41,20 @@ public class HttpServiceTests : IDisposable
             },
             false
         };
-        
+
+        yield return new object[] { "https://www.falseUrl.com", new HttpResponseMessage(), new MotdResponse(), false };
+
         yield return new object[]
         {
-            "https://www.falseUrl.com",
-            new HttpResponseMessage(),
-            new MotdResponse(),
-            false
-        };
-        
-        yield return new object[]
-        {
-            "falseUrl",
-            new HttpResponseMessage()
-                .WithJsonContent(new
-                {
-                    WrongData = 1
-                }),
-            new MotdResponse(),
-            true
+            "falseUrl", new HttpResponseMessage()
+                .WithJsonContent(new { WrongData = 1 }),
+            new MotdResponse(), true
         };
     }
 
     [Theory]
     [MemberData(nameof(GetAsync_Data))]
-    public async Task GetAsync_Returns_Correct_Format(string url, HttpResponseMessage expectedResult, 
+    public async Task GetAsync_Returns_Correct_Format(string url, HttpResponseMessage expectedResult,
         MotdResponse expectedResponse, bool throwException)
     {
         if (!throwException)
@@ -73,26 +62,19 @@ public class HttpServiceTests : IDisposable
             httpMock.When(url)
                 .Then(ret => expectedResult);
         }
-        
+
         var result = await _service.GetAsync(url);
         if (throwException)
         {
             Assert.Empty(result);
-            _logger.Verify(LogLevel.Error,null, It.IsAny<string?>(), Times.Once());
+            _logger.Received(1).Log(LogLevel.Error, null, Arg.Any<string?>());
         }
         else
         {
-            if (expectedResponse.Data is null)
-            {
-                Assert.Empty(result);
-            }
-            else
-            {
-                var data = expectedResponse.Data.FirstOrDefault()!;
-                Assert.Equal(data.Message, result);
-                Assert.IsType<int>(data.Id);
-                Assert.NotEmpty(data.Server);
-            }
+            var data = expectedResponse.Data.FirstOrDefault()!;
+            Assert.Equal(data.Message, result);
+            Assert.IsType<int>(data.Id);
+            Assert.NotEmpty(data.Server);
         }
     }
 

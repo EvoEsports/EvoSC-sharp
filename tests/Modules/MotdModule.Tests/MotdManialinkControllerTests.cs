@@ -3,19 +3,19 @@ using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Modules.Official.MotdModule.Controllers;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
 
 namespace MotdModule.Tests;
 
 public class MotdManialinkControllerTests : ManialinkControllerTestBase<MotdManialinkController>
 {
-    private readonly Mock<IManialinkActionContext> _manialinkActionContext = new();
-    private readonly Mock<IOnlinePlayer> _actor = new();
-    private readonly Mock<IMotdService> _motdService = new();
+    private readonly IManialinkActionContext _manialinkActionContext = Substitute.For<IManialinkActionContext>();
+    private readonly IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
+    private readonly IMotdService _motdService = Substitute.For<IMotdService>();
 
     public MotdManialinkControllerTests()
     {
-        InitMock(_actor.Object, _manialinkActionContext.Object, _motdService.Object);
+        InitMock(_actor, _manialinkActionContext, _motdService);
     }
 
     [Theory]
@@ -25,7 +25,7 @@ public class MotdManialinkControllerTests : ManialinkControllerTestBase<MotdMani
     {
         await Controller.CloseAsync(hidden);
         
-        ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "MotdModule.MotdTemplate"));
-        _motdService.Verify(r => r.InsertOrUpdateEntryAsync(_actor.Object, hidden));
+        await ManialinkManager.Received().HideManialinkAsync(_actor, "MotdModule.MotdTemplate");
+        await _motdService.Received().InsertOrUpdateEntryAsync(_actor, hidden);
     }
 }

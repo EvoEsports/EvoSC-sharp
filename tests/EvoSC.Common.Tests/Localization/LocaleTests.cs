@@ -12,7 +12,7 @@ using EvoSC.Common.Localization;
 using EvoSC.Common.Models.Audit;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util.Auditing;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Localization;
@@ -20,33 +20,32 @@ namespace EvoSC.Common.Tests.Localization;
 public class LocaleTests
 {
     private readonly ILocalizationManager _manager;
-    private readonly Mock<IContextService> _contextService;
-    private readonly Mock<IEvoScBaseConfig> _config;
+    private readonly IContextService _contextService;
+    private readonly IEvoScBaseConfig _config;
 
     public LocaleTests()
     {
         _manager = new LocalizationManager(typeof(LocalizationManagerTests).Assembly,
             "EvoSC.Common.Tests.Localization.TestLocalization");
 
-        var localeConfigMock = new Mock<ILocaleConfig>();
-        localeConfigMock.Setup(lc => lc.DefaultLanguage)
+        var localeConfigMock = Substitute.For<ILocaleConfig>();
+        localeConfigMock.DefaultLanguage
             .Returns("en");
 
-        var auditService = new Mock<IAuditService>();
-        auditService.Setup(a => a.LogAsync(
-            It.IsAny<string>(),
-            It.IsAny<AuditEventStatus>(),
-            It.IsAny<IPlayer>(),
-            It.IsAny<string>(),
-            It.IsAny<object>())
-        );
+        var auditService = Substitute.For<IAuditService>();
+        auditService.LogAsync(
+            Arg.Any<string>(),
+            Arg.Any<AuditEventStatus>(),
+            Arg.Any<IPlayer>(),
+            Arg.Any<string>(),
+            Arg.Any<object>());
         var baseContext = new GenericControllerContext {
             Controller = null, 
-            AuditEvent = new AuditEventBuilder(auditService.Object)
+            AuditEvent = new AuditEventBuilder(auditService)
         };
         
-        _contextService = new Mock<IContextService>();
-        _contextService.Setup(c => c.GetContext())
+        _contextService = Substitute.For<IContextService>();
+        _contextService.GetContext()
             .Returns(new PlayerInteractionContext(new OnlinePlayer
             {
                 Id = 0,
@@ -63,15 +62,15 @@ public class LocaleTests
                 Flags = null
             }, baseContext) {Controller = null, AuditEvent = null});
         
-        _config = new Mock<IEvoScBaseConfig>();
-        _config.Setup(c => c.Locale)
-            .Returns(localeConfigMock.Object);
+        _config = Substitute.For<IEvoScBaseConfig>();
+        _config.Locale
+            .Returns(localeConfigMock);
     }
 
     [Fact]
     public void Get_Locale_From_Indexer()
     {
-        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService, _config);
 
         var result = locale["TestKey"];
         
@@ -81,7 +80,7 @@ public class LocaleTests
     [Fact]
     public void Returns_Player_Defined_Locale()
     {
-        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService, _config);
 
         var result = locale.PlayerLanguage["TestKey"];
         
@@ -94,7 +93,7 @@ public class LocaleTests
     [InlineData("A random [TestKey] string [TestKey] with [TestKey] Locales in [TestKey] between.", "A random This is a sentence. string This is a sentence. with This is a sentence. Locales in This is a sentence. between.")]
     public void Replaces_Locales_In_Arbitrary_Strings(string toTranslate, string expected)
     {
-        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService, _config);
 
         var result = locale.Translate(toTranslate);
 
@@ -104,7 +103,7 @@ public class LocaleTests
     [Fact]
     public void Dynamic_Accessor_Returns_Locale()
     {
-        dynamic locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
+        dynamic locale = new LocaleResource(_manager, _contextService, _config);
 
         var result = locale.TestKey;
         
@@ -114,7 +113,7 @@ public class LocaleTests
     [Fact]
     public void Dynamic_Accessor_Returns_Locale_With_Args()
     {
-        dynamic locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
+        dynamic locale = new LocaleResource(_manager, _contextService, _config);
 
         var result = locale.TestKeyWithArgs("My Argument");
         
@@ -124,7 +123,7 @@ public class LocaleTests
     [Fact]
     public void Returns_Resource_Set()
     {
-        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService, _config);
 
         var resources = locale
             .GetResourceSet()?
@@ -141,7 +140,7 @@ public class LocaleTests
     [Fact]
     public void Returns_Resource_Set_Of_Player_Language()
     {
-        var locale = new LocaleResource(_manager, _contextService.Object, _config.Object);
+        var locale = new LocaleResource(_manager, _contextService, _config);
 
         var resources = locale
             .PlayerLanguage

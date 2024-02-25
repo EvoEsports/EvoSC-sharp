@@ -1,6 +1,5 @@
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.MapsModule.Controllers;
@@ -10,105 +9,107 @@ using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
+using NSubstitute.ReceivedExtensions;
+using ILogger = Castle.Core.Logging.ILogger;
 
 namespace EvoSC.Modules.Official.MapsModule.Tests.Controllers;
 
 public class MapsControllerTests : CommandInteractionControllerTestBase<MapsController>
 {
-    private Mock<IOnlinePlayer> _actor = new();
-    private Mock<ILogger<MapsController>> _logger = new();
-    private Mock<IMxMapService> _mxMapService = new();
-    private Mock<IMapService> _mapService = new();
-    private Locale _locale;
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
-    private Mock<IMap?> _map;
+    private readonly IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
+    private readonly ILogger<MapsController> _logger = Substitute.For<ILogger<MapsController>>();
+    private readonly IMxMapService _mxMapService = Substitute.For<IMxMapService>();
+    private readonly IMapService _mapService = Substitute.For<IMapService>();
+    private (IServerClient Client, IGbxRemoteClient Remote) _server = Mocking.NewServerClientMock();
+    private readonly IMap? _map;
 
     public MapsControllerTests()
     {
-        _locale = Mocking.NewLocaleMock(ContextService.Object);
-        InitMock(_actor.Object, _logger, _mxMapService, _mapService, _server.Client, _locale);
+        var locale = Mocking.NewLocaleMock(ContextService);
+        InitMock(_actor, _logger, _mxMapService, _mapService, _server.Client, locale);
         
-        _map = new Mock<IMap?>();
-        _map.Setup(m => m.Name).Returns("MyMap");
-        _map.Setup(m => m.Author).Returns(_actor.Object);
+        _map = Substitute.For<IMap?>();
+        _map?.Name.Returns("MyMap");
+        _map?.Author.Returns(_actor);
     }
     
     [Fact]
     public async Task Map_Is_Added()
     {
-        _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
-            .Returns(Task.FromResult(_map.Object));
+        _mxMapService.FindAndDownloadMapAsync(123, null, _actor)
+            .Returns(Task.FromResult(_map));
         
         await Controller.AddMapAsync("123");
         
-        _mxMapService.Verify(m => m.FindAndDownloadMapAsync(123, null, _actor.Object), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Once);
-        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MapAdded), Times.Once);
-        _server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        await _mxMapService.Received(1).FindAndDownloadMapAsync(123, null, _actor);
+        AuditEventBuilder.Received(1).Success();
+        AuditEventBuilder.Received(1).WithEventName(AuditEvents.MapAdded);
+        await _server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), _actor);
     }
 
     [Fact]
     public async Task Adding_Map_Failing_With_Exception_Is_Logged()
     {
         var ex = new Exception();
-        _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
-            .Throws(ex);
+        _mxMapService.FindAndDownloadMapAsync(123, null, _actor)
+            .ThrowsAsync(ex);
 
         await Assert.ThrowsAsync<Exception>(() => Controller.AddMapAsync("123"));
         
-        _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        await _server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
     }
 
     [Fact]
     public async Task Adding_Duplicate_Map_Returns_Error()
     {
         var ex = new DuplicateMapException("Failed map add");
-        _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
-            .Throws(ex);
+        _mxMapService.FindAndDownloadMapAsync(123, null, _actor)
+.ThrowsAsync(ex);
 
         await Assert.ThrowsAsync<DuplicateMapException>(() => Controller.AddMapAsync("123"));
         
-        _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        await _server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
     }
     
     [Fact]
     public async Task Adding_Map_Failing_With_Null_Return_Is_Logged()
     {
-        _mxMapService.Setup(m => m.FindAndDownloadMapAsync(123, null, _actor.Object))
+        _mxMapService.FindAndDownloadMapAsync(123, null, _actor)
             .Returns(Task.FromResult((IMap?)null));
 
         await Controller.AddMapAsync("123");
         
-        _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        await _server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
     }
 
     [Fact]
     public async Task Map_Is_Removed()
     {
-        _mapService.Setup(m => m.GetMapByIdAsync(123)).Returns(Task.FromResult(_map.Object));
+        _mapService.GetMapByIdAsync(123).Returns(Task.FromResult(_map));
 
         await Controller.RemoveMapAsync(123);
         
-        _mapService.Verify(m => m.GetMapByIdAsync(123), Times.Once);
-        _mapService.Verify(m => m.RemoveMapAsync(123), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Once);
-        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MapRemoved), Times.Once);
-        _server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
-        _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);
-        _logger.Verify(LogLevel.Debug, null, null, Times.Once());
+        await _mapService.Received(1).GetMapByIdAsync(123);
+        await _mapService.Received(1).RemoveMapAsync(123);
+        AuditEventBuilder.Received(1).Success();
+        AuditEventBuilder.Received(1).WithEventName(AuditEvents.MapRemoved);
+        await _server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), _actor);
+        await _server.Client.DidNotReceive().ErrorMessageAsync(Arg.Any<string>(), _actor);
+        _logger.Received(1).Log(LogLevel.Debug, null, Arg.Any<string?>());
     }
 
     [Fact]
     public async Task Map_Removal_Failed_Is_Reported()
     {
-        _mapService.Setup(m => m.GetMapByIdAsync(123)).Returns(Task.FromResult((IMap?)null));
+        _mapService.GetMapByIdAsync(123).Returns(Task.FromResult((IMap?)null));
 
         await Controller.RemoveMapAsync(123);
         
-        _mapService.Verify(m => m.RemoveMapAsync(123), Times.Never);
-        _server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);
-        _server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Never);
+        await _mapService.DidNotReceive().RemoveMapAsync(123);
+        await _server.Client.DidNotReceive().SuccessMessageAsync(Arg.Any<string>(), _actor);
+        await _server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
+        AuditEventBuilder.DidNotReceive().Success();
     }
 }

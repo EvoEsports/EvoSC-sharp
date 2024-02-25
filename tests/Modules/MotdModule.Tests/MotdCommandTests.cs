@@ -5,19 +5,20 @@ using EvoSC.Modules.Official.MotdModule.Controllers;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 
 namespace MotdModule.Tests;
 
 public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommandController>
 {
-    private readonly Mock<IMotdService> _motdService = new();
-    private readonly Mock<IContextService> _context;
+    private readonly IMotdService _motdService = Substitute.For<IMotdService>();
+    private readonly IContextService _context;
     private readonly ControllerContextMock<ICommandInteractionContext> _commandContext = Mocking.NewControllerContextMock<ICommandInteractionContext>();
     
     public MotdCommandTests()
     {
-        _context = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
+        _context = Mocking.NewContextServiceMock(_commandContext.Context, null);
         InitMock(_motdService);
     }
 
@@ -27,14 +28,14 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     public void SetMotdLocal_Sets_Motd_Source_To_Local(string isLocal)
     {
         Controller.SetMotdLocal(isLocal);
-        _motdService.Verify(r => r.SetMotdSource(bool.Parse(isLocal), null));
+        _motdService.Received().SetMotdSource(bool.Parse(isLocal), null);
     }
 
     [Fact]
     public async Task OpenEditMotdAsync_Shows_Edit()
     {
         await Controller.OpenEditMotdAsync();
-        _motdService.Verify(r => r.ShowEditAsync(It.IsAny<IPlayer>()));
+        await _motdService.Received().ShowEditAsync(Arg.Any<IPlayer>());
     }
     
     [Fact]
@@ -42,7 +43,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     {
         await Controller.OpenMotdAsync();
         
-        _motdService.Verify(r => r.ShowAsync(It.IsAny<IOnlinePlayer>(), It.IsAny<bool>()), Times.Once);
+        await _motdService.Received(1).ShowAsync(Arg.Any<IOnlinePlayer>(), Arg.Any<bool>());
     }
     
     [Fact]
@@ -50,7 +51,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     {
         Controller.SetUrl("testing");
         
-        _motdService.Verify(r => r.SetUrl(It.IsAny<string>(), It.IsAny<IPlayer>()), Times.Once);
+        _motdService.Received(1).SetUrl(Arg.Any<string>(), Arg.Any<IPlayer>());
     }
     
     [Fact]
@@ -58,6 +59,6 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     {
         Controller.SetFetchInterval(1000);
         
-        _motdService.Verify(r => r.SetInterval(It.IsAny<int>(), It.IsAny<IPlayer>()), Times.Once);
+        _motdService.Received(1).SetInterval(Arg.Any<int>(), Arg.Any<IPlayer>());
     }
 }

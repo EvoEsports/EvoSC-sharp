@@ -12,7 +12,7 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Testing;
 
@@ -38,8 +38,8 @@ public static class Mocking
     public static ControllerContextMock<IPlayerInteractionContext> SetupMock(
         this ControllerContextMock<IPlayerInteractionContext> mock, IOnlinePlayer actor)
     {
-        mock.Context.Setup(c => c.Player).Returns(actor);
-        mock.Context.Object.AuditEvent.CausedBy(actor);
+        mock.Context.Player.Returns(actor);
+        mock.Context.AuditEvent.CausedBy(actor);
 
         return mock;
     }
@@ -62,8 +62,8 @@ public static class Mocking
     public static ControllerContextMock<ICommandInteractionContext> SetupMock(
         this ControllerContextMock<ICommandInteractionContext> mock, IOnlinePlayer actor)
     {
-        mock.Context.Setup(c => c.Player).Returns(actor);
-        mock.Context.Object.AuditEvent.CausedBy(actor);
+        mock.Context.Player.Returns(actor);
+        mock.Context.AuditEvent.CausedBy(actor);
 
         return mock;
     }
@@ -89,10 +89,10 @@ public static class Mocking
         this ControllerContextMock<IManialinkInteractionContext> mock, IOnlinePlayer actor,
         IManialinkActionContext actionContext, IManialinkManager mlManager)
     {
-        mock.Context.Setup(c => c.Player).Returns(actor);
-        mock.Context.Setup(c => c.ManialinkAction).Returns(actionContext);
-        mock.Context.Setup(m => m.ManialinkManager).Returns(mlManager);
-        mock.Context.Object.AuditEvent.CausedBy(actor);
+        mock.Context.Player.Returns(actor);
+        mock.Context.ManialinkAction.Returns(actionContext);
+        mock.Context.ManialinkManager.Returns(mlManager);
+        mock.Context.AuditEvent.CausedBy(actor);
 
         return mock;
     }
@@ -122,15 +122,14 @@ public static class Mocking
         where TController : class, IController
         where TContext : class, IControllerContext
     {
-        var ctorArgs = services.Select(s => s.GetType().IsAssignableTo(typeof(Mock)) ? ((Mock)s).Object : s).ToArray();
-        var controller = Activator.CreateInstance(typeof(TController), ctorArgs) as TController;
+        var controller = Activator.CreateInstance(typeof(TController), services) as TController;
 
         if (controller == null)
         {
             throw new InvalidOperationException($"Failed to create instance of controller {typeof(TController)}");
         }
 
-        controller.SetContext(contextMock.Context.Object);
+        controller.SetContext(contextMock.Context);
 
         return controller;
     }
@@ -159,16 +158,16 @@ public static class Mocking
     /// <param name="context">The context which the context service will use.</param>
     /// <param name="actor">The actor that triggered the action.</param>
     /// <returns></returns>
-    public static Mock<IContextService> NewContextServiceMock(IControllerContext context, IOnlinePlayer? actor)
+    public static IContextService NewContextServiceMock(IControllerContext context, IOnlinePlayer? actor)
     {
-        var mock = new Mock<IContextService>();
+        var mock = Substitute.For<IContextService>();
         
-        mock.Setup(s => s.Audit()).Returns(context.AuditEvent);
-        mock.Setup(s => s.GetContext()).Returns(context);
+        mock.Audit().Returns(context.AuditEvent);
+        mock.GetContext().Returns(context);
 
         if (actor != null)
         {
-            mock.Object.Audit().CausedBy(actor);
+            mock.Audit().CausedBy(actor);
         }
 
         return mock;
@@ -181,13 +180,13 @@ public static class Mocking
     /// <returns></returns>
     public static Locale NewLocaleMock(IContextService contextService)
     {
-        var config = new Mock<IEvoScBaseConfig>();
-        config.Setup(m => m.Locale.DefaultLanguage).Returns("en");
-        var localeManager = new Mock<ILocalizationManager>();
-        localeManager.Setup(m => m.GetString(It.IsAny<CultureInfo>(), It.IsAny<string>(), It.IsAny<object[]>()))
+        var config = Substitute.For<IEvoScBaseConfig>();
+        config.Locale.DefaultLanguage.Returns("en");
+        var localeManager = Substitute.For<ILocalizationManager>();
+        localeManager.GetString(Arg.Any<CultureInfo>(), Arg.Any<string>(), Arg.Any<object[]>())
             .Returns("Test_Locale_String");
 
-        var locale = new LocaleResource(localeManager.Object, contextService, config.Object);
+        var locale = new LocaleResource(localeManager, contextService, config);
         return locale;
     }
 
@@ -195,11 +194,11 @@ public static class Mocking
     /// Create a new mock of the server client and it's GBXRemoteClient.
     /// </summary>
     /// <returns></returns>
-    public static (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) NewServerClientMock()
+    public static (IServerClient Client, IGbxRemoteClient Remote) NewServerClientMock()
     {
-        var remote = new Mock<IGbxRemoteClient>();
-        var client = new Mock<IServerClient>();
-        client.Setup(m => m.Remote).Returns(remote.Object);
+        var remote = Substitute.For<IGbxRemoteClient>();
+        var client = Substitute.For<IServerClient>();
+        client.Remote.Returns(remote);
 
         return (client, remote);
     }
@@ -209,22 +208,22 @@ public static class Mocking
     /// simply returns itself. Is used to verify the methods which are called for checking if auditing occured.
     /// </summary>
     /// <returns></returns>
-    public static Mock<IAuditEventBuilder> NewAuditEventBuilderMock()
+    public static IAuditEventBuilder NewAuditEventBuilderMock()
     {
-        var builder = new Mock<IAuditEventBuilder>();
+        var builder = Substitute.For<IAuditEventBuilder>();
 
-        builder.Setup(m => m.CausedBy(It.IsAny<IPlayer>())).Returns(builder.Object);
-        builder.Setup(m => m.Comment(It.IsAny<string>())).Returns(builder.Object);
-        builder.Setup(m => m.HavingProperties(It.IsAny<object>())).Returns(builder.Object);
-        builder.Setup(m => m.Cancel()).Returns(builder.Object);
-        builder.Setup(m => m.Cancel(It.IsAny<bool>())).Returns(builder.Object);
-        builder.Setup(m => m.Error()).Returns(builder.Object);
-        builder.Setup(m => m.Info()).Returns(builder.Object);
-        builder.Setup(m => m.Success()).Returns(builder.Object);
-        builder.Setup(m => m.UnCancel()).Returns(builder.Object);
-        builder.Setup(m => m.WithStatus(It.IsAny<AuditEventStatus>())).Returns(builder.Object);
-        builder.Setup(m => m.WithEventName(It.IsAny<string>())).Returns(builder.Object);
-        builder.Setup(m => m.WithEventName(It.IsAny<Enum>())).Returns(builder.Object);
+        builder.CausedBy(Arg.Any<IPlayer>()).Returns(builder);
+        builder.Comment(Arg.Any<string>()).Returns(builder);
+        builder.HavingProperties(Arg.Any<object>()).Returns(builder);
+        builder.Cancel().Returns(builder);
+        builder.Cancel(Arg.Any<bool>()).Returns(builder);
+        builder.Error().Returns(builder);
+        builder.Info().Returns(builder);
+        builder.Success().Returns(builder);
+        builder.UnCancel().Returns(builder);
+        builder.WithStatus(Arg.Any<AuditEventStatus>()).Returns(builder);
+        builder.WithEventName(Arg.Any<string>()).Returns(builder);
+        builder.WithEventName(Arg.Any<Enum>()).Returns(builder);
 
         return builder;
     }

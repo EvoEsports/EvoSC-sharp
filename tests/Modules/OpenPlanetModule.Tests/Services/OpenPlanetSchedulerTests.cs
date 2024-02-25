@@ -4,29 +4,30 @@ using EvoSC.Modules.Official.OpenPlanetModule.Config;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Services;
-using Moq;
+using NSubstitute;
+using Org.BouncyCastle.Utilities;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Services;
 
 public class OpenPlanetSchedulerTests
 {
-    private readonly Mock<IEventManager> _events = new();
-    private readonly Mock<IPlayer> _player = new();
-    private readonly Mock<IOpenPlanetControlSettings> _settings = new();
+    private readonly IEventManager _events = Substitute.For<IEventManager>();
+    private readonly IPlayer _player = Substitute.For<IPlayer>();
+    private readonly IOpenPlanetControlSettings _settings = Substitute.For<IOpenPlanetControlSettings>();
 
     public OpenPlanetSchedulerTests()
     {
-        _player.Setup(p => p.AccountId).Returns("something");
+        _player.AccountId.Returns("something");
     }
 
     [Fact]
     public void Player_Is_Scheduled()
     {
-        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings.Object, _events.Object);
+        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings, _events);
         
-        scheduler.ScheduleKickPlayer(_player.Object);
+        scheduler.ScheduleKickPlayer(_player);
 
-        var isScheduled = scheduler.PlayerIsScheduledForKick(_player.Object);
+        var isScheduled = scheduler.PlayerIsScheduledForKick(_player);
         
         Assert.True(isScheduled);
     }
@@ -34,12 +35,12 @@ public class OpenPlanetSchedulerTests
     [Fact]
     public void Player_Is_Unscheduled()
     {
-        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings.Object, _events.Object);
+        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings, _events);
         
-        scheduler.ScheduleKickPlayer(_player.Object);
-        scheduler.UnScheduleKickPlayer(_player.Object);
+        scheduler.ScheduleKickPlayer(_player);
+        scheduler.UnScheduleKickPlayer(_player);
 
-        var isScheduled = scheduler.PlayerIsScheduledForKick(_player.Object);
+        var isScheduled = scheduler.PlayerIsScheduledForKick(_player);
         
         Assert.False(isScheduled);
     }
@@ -47,29 +48,28 @@ public class OpenPlanetSchedulerTests
     [Fact]
     public async Task Player_Scheduled_Is_Triggered_When_Due()
     {
-        _settings.Setup(m => m.KickTimeout).Returns(0);
-        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings.Object, _events.Object);
+        _settings.KickTimeout.Returns(0);
+        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings, _events);
 
-        scheduler.ScheduleKickPlayer(_player.Object);
+        scheduler.ScheduleKickPlayer(_player);
 
         await Task.Delay(1000);
         await scheduler.TriggerDuePlayerKicksAsync();
 
-        _events.Verify(m => m.RaiseAsync(OpenPlanetEvents.PlayerDueForKick, It.IsAny<PlayerDueForKickEventArgs>()),
-            Times.Once);
+        await _events.Received(1).RaiseAsync(OpenPlanetEvents.PlayerDueForKick, Arg.Any<PlayerDueForKickEventArgs>());
     }
 
     [Fact]
     public async Task Scheduled_Players_Not_Due_Are_Not_Triggered()
     {
-        _settings.Setup(m => m.KickTimeout).Returns(5);
-        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings.Object, _events.Object);
+        _settings.KickTimeout.Returns(5);
+        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings, _events);
 
-        scheduler.ScheduleKickPlayer(_player.Object);
+        scheduler.ScheduleKickPlayer(_player);
 
         await scheduler.TriggerDuePlayerKicksAsync();
 
-        _events.Verify(m => m.RaiseAsync(OpenPlanetEvents.PlayerDueForKick, It.IsAny<PlayerDueForKickEventArgs>()),
-            Times.Never);
+        await _events.DidNotReceive().RaiseAsync(OpenPlanetEvents.PlayerDueForKick, Arg.Any<PlayerDueForKickEventArgs>());
+        
     }
 }

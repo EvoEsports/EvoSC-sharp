@@ -7,7 +7,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Repository;
 using EvoSC.Testing.Database;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Tests.Repository;
 
@@ -16,8 +16,8 @@ public class MatchRecordRepositoryTests
     private static (MatchRecordRepository, IDbConnectionFactory) CreateNewRepository()
     {
         var factory = TestDbSetup.CreateDb(typeof(AddMatchRecordsTable).Assembly);
-        var logger = new Mock<ILogger<MatchRecordRepository>>();
-        return (new MatchRecordRepository(factory, logger.Object), factory);
+        var logger = Substitute.For<ILogger<MatchRecordRepository>>();
+        return (new MatchRecordRepository(factory, logger), factory);
     }
 
     [Fact]

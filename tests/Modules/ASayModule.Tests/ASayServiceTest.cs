@@ -10,7 +10,8 @@ using EvoSC.Modules.Official.ASayModule.Services;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.ASayModule.Tests;
 
@@ -20,39 +21,39 @@ public class ASayServiceTest
     private const string PlayerAccountId = "17868d60-b494-4b88-81df-f4ddfdae1cf1";
     private const string PlayerLogin = "F4aNYLSUS4iB3_Td_a4c8Q";
 
-    private Mock<IOnlinePlayer> _actor = new();
-    private readonly Mock<IManialinkManager> _manialinkManager = new();
-    private ControllerContextMock<ICommandInteractionContext> _commandContext;
+    private readonly IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
+    private readonly IManialinkManager _manialinkManager = Substitute.For<IManialinkManager>();
+    private readonly ControllerContextMock<ICommandInteractionContext> _commandContext;
 
     public ASayServiceTest()
     {
-        _commandContext = Mocking.NewCommandInteractionContextMock(_actor.Object);
+        _commandContext = Mocking.NewCommandInteractionContextMock(_actor);
 
-        _actor.Setup(m => m.NickName).Returns(PlayerNickName);
-        _actor.Setup(m => m.AccountId).Returns(PlayerAccountId);
+        _actor.NickName.Returns(PlayerNickName);
+        _actor.AccountId.Returns(PlayerAccountId);
     }
 
     private (
         IASayService ASayService,
-        Mock<IContextService> ContextService,
-        Mock<IPlayerManagerService> PlayerManager,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
-        Mock<IOnlinePlayer> Player,
-        Mock<IOnlinePlayer> Actor,
-        Mock<IAuditEventBuilder> Audit
+        IContextService ContextService,
+        IPlayerManagerService PlayerManager,
+        (IServerClient Client, IGbxRemoteClient Remote) Server,
+        IOnlinePlayer Player,
+        IOnlinePlayer Actor,
+        IAuditEventBuilder Audit
         )
         NewASayServiceMock()
     {
-        var contextService = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
-        var playerManager = new Mock<IPlayerManagerService>();
+        var contextService = Mocking.NewContextServiceMock(_commandContext.Context, null);
+        var playerManager = Substitute.For<IPlayerManagerService>();
 
         var server = Mocking.NewServerClientMock();
 
-        var aSayService = new ASayService(_manialinkManager.Object, contextService.Object);
+        var aSayService = new ASayService(_manialinkManager, contextService);
 
-        var player = new Mock<IOnlinePlayer>();
-        player.Setup(m => m.AccountId).Returns(PlayerAccountId);
-        player.Setup(m => m.NickName).Returns(PlayerNickName);
+        var player = Substitute.For<IOnlinePlayer>();
+        player.AccountId.Returns(PlayerAccountId);
+        player.NickName.Returns(PlayerNickName);
 
         return (
             ASayService: aSayService,
@@ -72,8 +73,8 @@ public class ASayServiceTest
         
         var text = "example message";
         await mock.ASayService.ShowAnnouncementAsync(text);
-        mock.Audit.Verify(m=>m.Success(), Times.Once());
-        _manialinkManager.Verify(manager => manager.SendPersistentManialinkAsync("ASayModule.Announcement", It.Is<object>(o => text.Equals(o.GetType().GetProperty("text")!.GetValue(o)))));
+        mock.Audit.Received(1).Success();
+        await _manialinkManager.Received().SendPersistentManialinkAsync("ASayModule.Announcement", Arg.Is<object>(o => text.Equals(o.GetType().GetProperty("text")!.GetValue(o))));
     }
 
     [Fact]
@@ -81,7 +82,7 @@ public class ASayServiceTest
     {
         var mock = NewASayServiceMock();
         await mock.ASayService.HideAnnouncementAsync();
-        mock.Audit.Verify(m => m.Success(), Times.Once());
-        _manialinkManager.Verify(manager => manager.HideManialinkAsync("ASayModule.Announcement"));
+        mock.Audit.Received(1).Success();
+        await _manialinkManager.Received().HideManialinkAsync("ASayModule.Announcement");
     }
 }

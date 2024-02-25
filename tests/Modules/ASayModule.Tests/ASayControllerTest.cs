@@ -1,18 +1,18 @@
 using EvoSC.Modules.Official.ASayModule.Controllers;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.ASayModule.Tests;
 
 public class ASayControllerTest : CommandInteractionControllerTestBase<ASayController>
 {
     private readonly ASayController _controller;
-    private readonly Mock<IASayService> _service = new();
+    private readonly IASayService _service = Substitute.For<IASayService>();
     
     public ASayControllerTest()
     {
-        _controller = new ASayController(_service.Object);
+        _controller = new ASayController(_service);
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public class ASayControllerTest : CommandInteractionControllerTestBase<ASayContr
     {
         var text = "example message";
         await _controller.ShowAnnounceMessageToPlayersAsync(text);
-        _service.Verify(service => service.ShowAnnouncementAsync(text));
+        await _service.Received().ShowAnnouncementAsync(text);
     }
 
     [Fact]
@@ -28,13 +28,13 @@ public class ASayControllerTest : CommandInteractionControllerTestBase<ASayContr
     {
         var empty = string.Empty;
         await _controller.ShowAnnounceMessageToPlayersAsync(empty);
-        _service.Verify(service => service.HideAnnouncementAsync());
+        await _service.Received().HideAnnouncementAsync();
     }
 
     [Fact]
     private async void Should_Clear_Announcement_Message()
     {
         await _controller.ClearAnnouncementMessageForPlayersAsync();
-        _service.Verify(service => service.HideAnnouncementAsync());
+        await _service.Received().HideAnnouncementAsync();
     }
 }

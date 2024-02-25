@@ -12,7 +12,7 @@ using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Services;
 
@@ -23,34 +23,34 @@ public class OpenPlanetControlServiceTests
 
     private (
         IOpenPlanetControlService Service,
-        Mock<IOnlinePlayer> Player,
-        Mock<ILogger<OpenPlanetControlService>> Logger,
-        Mock<IPermissionManager> Permissions,
-        Mock<IOpenPlanetControlSettings> Settings,
-        Mock<IManialinkManager> Manialinks,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
-        Mock<IOpenPlanetScheduler> Scheduler,
+        IOnlinePlayer Player,
+        ILogger<OpenPlanetControlService> Logger,
+        IPermissionManager Permissions,
+        IOpenPlanetControlSettings Settings,
+        IManialinkManager Manialinks,
+        (IServerClient Client, IGbxRemoteClient Remote) Server,
+        IOpenPlanetScheduler Scheduler,
         ControllerContextMock<IManialinkInteractionContext> Context
         ) NewServiceMock()
     {
-        var player = new Mock<IOnlinePlayer>();
-        var logger = new Mock<ILogger<OpenPlanetControlService>>();
-        var permissions = new Mock<IPermissionManager>();
-        var settings = new Mock<IOpenPlanetControlSettings>();
-        var manialinks = new Mock<IManialinkManager>();
+        var player = Substitute.For<IOnlinePlayer>();
+        var logger = Substitute.For<ILogger<OpenPlanetControlService>>();
+        var permissions = Substitute.For<IPermissionManager>();
+        var settings = Substitute.For<IOpenPlanetControlSettings>();
+        var manialinks = Substitute.For<IManialinkManager>();
         var server = Mocking.NewServerClientMock();
-        var scheduler = new Mock<IOpenPlanetScheduler>();
+        var scheduler = Substitute.For<IOpenPlanetScheduler>();
 
-        var actionContext = new Mock<IManialinkActionContext>();
+        var actionContext = Substitute.For<IManialinkActionContext>();
         var context =
-            Mocking.NewManialinkInteractionContextMock(player.Object, actionContext.Object, manialinks.Object);
-        var contextService = Mocking.NewContextServiceMock(context.Context.Object, player.Object);
-        var locale = Mocking.NewLocaleMock(contextService.Object);
+            Mocking.NewManialinkInteractionContextMock(player, actionContext, manialinks);
+        var contextService = Mocking.NewContextServiceMock(context.Context, player);
+        var locale = Mocking.NewLocaleMock(contextService);
 
-        var controlService = new OpenPlanetControlService(logger.Object, permissions.Object, settings.Object,
-            manialinks.Object, server.Client.Object, scheduler.Object, locale);
+        var controlService = new OpenPlanetControlService(logger, permissions, settings,
+            manialinks, server.Client, scheduler, locale);
 
-        player.Setup(m => m.AccountId).Returns(PlayerAccountId);
+        player.AccountId.Returns(PlayerAccountId);
         
         return (
             controlService,
@@ -85,31 +85,31 @@ public class OpenPlanetControlServiceTests
         bool alreadyScheduled)
     {
         var mock = NewServiceMock();
-        var opInfo = new Mock<IOpenPlanetInfo>();
+        var opInfo = Substitute.For<IOpenPlanetInfo>();
 
-        opInfo.Setup(m => m.IsOpenPlanet).Returns(isOpenPlanet);
-        opInfo.Setup(m => m.Version).Returns(new Version(version[0], version[1], version[2]));
-        opInfo.Setup(m => m.SignatureMode).Returns(signature);
+        opInfo.IsOpenPlanet.Returns(isOpenPlanet);
+        opInfo.Version.Returns(new Version(version[0], version[1], version[2]));
+        opInfo.SignatureMode.Returns(signature);
 
-        mock.Settings.Setup(m => m.AllowedSignatureModes).Returns(expectedSignature);
-        mock.Settings.Setup(m => m.MinimumRequiredVersion)
+        mock.Settings.AllowedSignatureModes.Returns(expectedSignature);
+        mock.Settings.MinimumRequiredVersion
             .Returns(new Version(expectedVersion[0], expectedVersion[1], expectedVersion[2]));
-        mock.Settings.Setup(m => m.AllowOpenplanet).Returns(allowOpenplanet);
+        mock.Settings.AllowOpenplanet.Returns(allowOpenplanet);
 
-        mock.Scheduler.Setup(m => m.PlayerIsScheduledForKick(It.IsAny<IOnlinePlayer>())).Returns(alreadyScheduled);
+        mock.Scheduler.PlayerIsScheduledForKick(Arg.Any<IOnlinePlayer>()).Returns(alreadyScheduled);
 
-        await mock.Service.VerifySignatureModeAsync(mock.Player.Object, opInfo.Object);
+        await mock.Service.VerifySignatureModeAsync(mock.Player, opInfo);
 
         switch (isJailed)
         {
             case true when !alreadyScheduled:
-                mock.Server.Remote.Verify(m => m.ForceSpectatorAsync(PlayerLogin, 1), Times.Once);
+                await mock.Server.Remote.Received(1).ForceSpectatorAsync(PlayerLogin, 1);
                 break;
             case false when alreadyScheduled:
-                mock.Server.Remote.Verify(m => m.ForceSpectatorAsync(PlayerLogin, 0), Times.Once);
+                await mock.Server.Remote.Received(1).ForceSpectatorAsync(PlayerLogin, 0);
                 break;
             default:
-                mock.Server.Remote.Verify(m => m.ForceSpectatorAsync(PlayerLogin, It.IsAny<int>()), Times.Never);
+                await mock.Server.Remote.DidNotReceive().ForceSpectatorAsync(PlayerLogin, Arg.Any<int>());
                 break;
         }
     }
@@ -118,31 +118,31 @@ public class OpenPlanetControlServiceTests
     public async Task Player_Is_Not_Jailed_If_Already_Jailed()
     {
         var mock = NewServiceMock();
-        var opInfo = new Mock<IOpenPlanetInfo>();
+        var opInfo = Substitute.For<IOpenPlanetInfo>();
 
-        opInfo.Setup(m => m.IsOpenPlanet).Returns(true);
-        mock.Settings.Setup(m => m.AllowOpenplanet).Returns(false);
+        opInfo.IsOpenPlanet.Returns(true);
+        mock.Settings.AllowOpenplanet.Returns(false);
 
-        mock.Scheduler.Setup(m => m.PlayerIsScheduledForKick(It.IsAny<IOnlinePlayer>())).Returns(true);
+        mock.Scheduler.PlayerIsScheduledForKick(Arg.Any<IOnlinePlayer>()).Returns(true);
 
-        await mock.Service.VerifySignatureModeAsync(mock.Player.Object, opInfo.Object);
+        await mock.Service.VerifySignatureModeAsync(mock.Player, opInfo);
         
-        mock.Server.Remote.Verify(m => m.ForceSpectatorAsync(PlayerLogin, It.IsAny<int>()), Times.Never);
+        await mock.Server.Remote.DidNotReceive().ForceSpectatorAsync(PlayerLogin, Arg.Any<int>());
     }
     
     [Fact]
     public async Task Player_Is_Not_Released_If_Already_Released()
     {
         var mock = NewServiceMock();
-        var opInfo = new Mock<IOpenPlanetInfo>();
+        var opInfo = Substitute.For<IOpenPlanetInfo>();
 
-        opInfo.Setup(m => m.IsOpenPlanet).Returns(false);
-        mock.Settings.Setup(m => m.AllowOpenplanet).Returns(false);
+        opInfo.IsOpenPlanet.Returns(false);
+        mock.Settings.AllowOpenplanet.Returns(false);
 
-        mock.Scheduler.Setup(m => m.PlayerIsScheduledForKick(It.IsAny<IOnlinePlayer>())).Returns(false);
+        mock.Scheduler.PlayerIsScheduledForKick(Arg.Any<IOnlinePlayer>()).Returns(false);
 
-        await mock.Service.VerifySignatureModeAsync(mock.Player.Object, opInfo.Object);
+        await mock.Service.VerifySignatureModeAsync(mock.Player, opInfo);
         
-        mock.Server.Remote.Verify(m => m.ForceSpectatorAsync(PlayerLogin, It.IsAny<int>()), Times.Never);
+        await mock.Server.Remote.DidNotReceive().ForceSpectatorAsync(PlayerLogin, Arg.Any<int>());
     }
 }

@@ -1,16 +1,16 @@
 ﻿using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Tests;
 
 public class CurrentMapModuleTest
 {
     private readonly CurrentMapModule _module;
-    private readonly Mock<ICurrentMapService> _serviceMock = new();
+    private readonly ICurrentMapService _serviceMock = Substitute.For<ICurrentMapService>();
 
     public CurrentMapModuleTest()
     {
-        _module = new CurrentMapModule(_serviceMock.Object);
+        _module = new CurrentMapModule(_serviceMock);
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class CurrentMapModuleTest
     {
         await _module.EnableAsync();
 
-        _serviceMock.Verify(service => service.ShowWidgetAsync());
+        await _serviceMock.Received().ShowWidgetAsync();
     }
 
     [Fact]
@@ -26,6 +26,6 @@ public class CurrentMapModuleTest
     {
         await _module.DisableAsync();
 
-        _serviceMock.Verify(service => service.HideWidgetAsync());
+        await _serviceMock.Received().HideWidgetAsync();
     }
 }

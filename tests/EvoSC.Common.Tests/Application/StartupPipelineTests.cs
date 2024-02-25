@@ -4,7 +4,7 @@ using EvoSC.Common.Application;
 using EvoSC.Common.Application.Exceptions;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Tests.Application.TestObjects;
-using Moq;
+using NSubstitute;
 using SimpleInjector;
 using Xunit;
 
@@ -12,20 +12,20 @@ namespace EvoSC.Common.Tests.Application;
 
 public class StartupPipelineTests
 {
-    private Mock<IEvoScBaseConfig> _config;
+    private IEvoScBaseConfig _config;
 
     public StartupPipelineTests()
     {
-        var loggingMock = new Mock<ILoggingConfig>();
-        loggingMock.Setup(l => l.LogLevel).Returns("info");
-        _config = new Mock<IEvoScBaseConfig>();
-        _config.Setup(c => c.Logging).Returns(loggingMock.Object);
+        var loggingMock = Substitute.For<ILoggingConfig>();
+        loggingMock.LogLevel.Returns("info");
+        _config = Substitute.For<IEvoScBaseConfig>();
+        _config.Logging.Returns(loggingMock);
     }
     
     [Fact]
     public async Task Simple_Service_Is_Set_Up()
     {
-        var startup = new StartupPipeline(_config.Object);
+        var startup = new StartupPipeline(_config);
         startup.Services("TestService", s => s
             .Register<IMyService, MyService>()
         );
@@ -39,7 +39,7 @@ public class StartupPipelineTests
     [Fact]
     public async Task Dependency_Is_Also_Executed()
     {
-        var startup = new StartupPipeline(_config.Object);
+        var startup = new StartupPipeline(_config);
         startup.Services("TestService", s => s
             .Register<IMyService, MyService>()
         );
@@ -56,7 +56,7 @@ public class StartupPipelineTests
     [Fact]
     public async Task Only_Specified_Component_Is_Executed()
     {
-        var startup = new StartupPipeline(_config.Object);
+        var startup = new StartupPipeline(_config);
         startup.Services("TestService", s => s
             .Register<IMyService, MyService>()
         );
@@ -75,7 +75,7 @@ public class StartupPipelineTests
     [Fact]
     public async Task All_Components_Are_Executed()
     {
-        var startup = new StartupPipeline(_config.Object);
+        var startup = new StartupPipeline(_config);
         var actionExecuted = false;
         var asyncActionExecuted = true;
         
@@ -99,7 +99,7 @@ public class StartupPipelineTests
     [Fact]
     public async Task Dependency_Cycle_Detected_Throws_Exception()
     {
-        var startup = new StartupPipeline(_config.Object);
+        var startup = new StartupPipeline(_config);
         startup.Services("TestService", s => s
             .Register<IMyService, MyService>()
         , "TestService2");
@@ -113,14 +113,14 @@ public class StartupPipelineTests
     [Fact]
     public async Task Startup_Component_Not_Existing_Throws_Exception()
     {
-        var startup = new StartupPipeline(_config.Object);
+        var startup = new StartupPipeline(_config);
         await Assert.ThrowsAsync<StartupPipelineException>(() => startup.ExecuteAsync("InvalidComponent"));
     }
 
     [Fact]
     public async Task Services_Is_Executed_Before_Actions()
     {
-        var startup = new StartupPipeline(_config.Object);
+        var startup = new StartupPipeline(_config);
 
         startup.Services("MyService", s => throw new Exception("service"), "MyAction");
         startup.Services("MyService2", s => { }, "MyService");

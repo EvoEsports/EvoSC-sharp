@@ -4,49 +4,48 @@ using EvoSC.Modules.Official.OpenPlanetModule.Config;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Services;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Services;
 
 public class OpenPlanetSchedulerWorkerTests
 {
-    private readonly Mock<IEventManager> _events = new();
-    private readonly Mock<IPlayer> _player = new();
-    private readonly Mock<IOpenPlanetControlSettings> _settings = new();
+    private readonly IEventManager _events = Substitute.For<IEventManager>();
+    private readonly IPlayer _player = Substitute.For<IPlayer>();
+    private readonly IOpenPlanetControlSettings _settings = Substitute.For<IOpenPlanetControlSettings>();
 
     public OpenPlanetSchedulerWorkerTests()
     {
-        _player.Setup(p => p.AccountId).Returns("something");
+        _player.AccountId.Returns("something");
     }
     
     [Fact]
     public async Task Player_Due_Is_Triggered_From_Loop()
     {
-        _settings.Setup(m => m.KickTimeout).Returns(0);
-        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings.Object, _events.Object);
+        _settings.KickTimeout.Returns(0);
+        IOpenPlanetScheduler scheduler = new OpenPlanetScheduler(_settings, _events);
         
-        scheduler.ScheduleKickPlayer(_player.Object);
+        scheduler.ScheduleKickPlayer(_player);
 
         var schedulerWorker = new OpenPlanetSchedulerWorker(scheduler);
 
         await schedulerWorker.StartAsync();
         await Task.Delay(2000);
         
-        _events.Verify(m => m.RaiseAsync(OpenPlanetEvents.PlayerDueForKick, It.IsAny<PlayerDueForKickEventArgs>()),
-            Times.Once);
+        await _events.Received(1).RaiseAsync(OpenPlanetEvents.PlayerDueForKick, Arg.Any<PlayerDueForKickEventArgs>());
     }
     
     [Fact]
     public async Task Worker_Is_Stopped()
     {
-        var scheduler = new Mock<IOpenPlanetScheduler>();
+        var scheduler = Substitute.For<IOpenPlanetScheduler>();
 
-        var schedulerWorker = new OpenPlanetSchedulerWorker(scheduler.Object);
+        var schedulerWorker = new OpenPlanetSchedulerWorker(scheduler);
 
         await schedulerWorker.StartAsync();
         await schedulerWorker.StopAsync();
         await Task.Delay(2000);
 
-       scheduler.Verify(m => m.TriggerDuePlayerKicksAsync(), Times.Never);
+       await scheduler.DidNotReceive().TriggerDuePlayerKicksAsync();
     }
 }

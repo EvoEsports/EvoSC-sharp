@@ -3,18 +3,19 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Stores;
 using EvoSC.Modules.Official.MatchTrackerModule.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Stores;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Tests.Stores;
 
 public class DatabaseMatchTrackerStoreTests
 {
-    private Mock<IMatchRecordRepository> _repo = new();
+    private IMatchRecordRepository _repo = Substitute.For<IMatchRecordRepository>();
     private IDatabaseMatchTrackerStore _store;
 
     public DatabaseMatchTrackerStoreTests()
     {
-        _store = new DatabaseMatchMatchTrackerStore(_repo.Object);
+        _store = new DatabaseMatchMatchTrackerStore(_repo);
     }
     
     [Fact]
@@ -34,7 +35,7 @@ public class DatabaseMatchTrackerStoreTests
 
         await _store.SaveTimelineAsync(timeline);
         
-        _repo.Verify(m => m.InsertStateAsync(It.IsAny<IMatchState>()), Times.Exactly(5));
+        await _repo.Received(5).InsertStateAsync(Arg.Any<IMatchState>());
     }
 
     [Fact]
@@ -43,6 +44,6 @@ public class DatabaseMatchTrackerStoreTests
         var state = new MatchState {TimelineId = default, Status = MatchStatus.Unknown, Timestamp = default};
         await _store.SaveStateAsync(state);
         
-        _repo.Verify(m => m.InsertStateAsync(state), Times.Once);
+        await _repo.Received(1).InsertStateAsync(state);
     }
 }

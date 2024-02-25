@@ -8,7 +8,7 @@ using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;
 using GbxRemoteNet.Interfaces;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Controllers;
 
@@ -17,14 +17,14 @@ public class OpenPlanetEventControllerTests : EventControllerTestBase<OpenPlanet
     private const string PlayerAccountId = "a467a996-eba5-44bf-9e2b-8543b50f39ae";
     private const string PlayerLogin = "pGepluulRL-eK4VDtQ85rg";
     
-    private readonly Mock<IOpenPlanetTrackerService> _trackerService = new();
-    private readonly (Mock<IServerClient> Server, Mock<IGbxRemoteClient> Client) _server = Mocking.NewServerClientMock();
-    private readonly Mock<IPlayerManagerService> _playerService = new();
-    private Mock<IPlayer> _player = new();
+    private readonly IOpenPlanetTrackerService _trackerService = Substitute.For<IOpenPlanetTrackerService>();
+    private readonly (IServerClient Server, IGbxRemoteClient Client) _server = Mocking.NewServerClientMock();
+    private readonly IPlayerManagerService _playerService = Substitute.For<IPlayerManagerService>();
+    private readonly IPlayer _player = Substitute.For<IPlayer>();
 
     public OpenPlanetEventControllerTests()
     {
-        _player.Setup(p => p.AccountId).Returns(PlayerAccountId);
+        _player.AccountId.Returns(PlayerAccountId);
         
         InitMock(_server.Server, _trackerService, _playerService);
     }
@@ -32,21 +32,21 @@ public class OpenPlanetEventControllerTests : EventControllerTestBase<OpenPlanet
     [Fact]
     public async Task Player_Due_For_Kick_Is_Kicked()
     {
-        await Controller.OnPlayerDueForKickAsync(null, new PlayerDueForKickEventArgs {Player = _player.Object});
+        await Controller.OnPlayerDueForKickAsync(null, new PlayerDueForKickEventArgs {Player = _player});
 
-        _server.Client.Verify(c => c.KickAsync(PlayerLogin), Times.Once);
+        await _server.Client.Received(1).KickAsync(PlayerLogin);
     }
 
     [Fact]
     public async Task Player_Disconnected_Is_Removed_From_Tracker()
     {
         _playerService
-            .Setup(s => s.GetPlayerAsync(PlayerAccountId))
-            .Returns(Task.FromResult((IPlayer?)_player.Object));
+            .GetPlayerAsync(PlayerAccountId)
+            .Returns(Task.FromResult((IPlayer?)_player));
 
         await Controller.OnPlayerDisconnectAsync(null,
             new PlayerDisconnectGbxEventArgs {Login = PlayerLogin, Reason = null});
         
-        _trackerService.Verify(s => s.RemovePlayer(_player.Object), Times.Once);
+        _trackerService.Received(1).RemovePlayer(_player);
     }
 }

@@ -17,28 +17,28 @@ using EvoSC.Testing;
 using GbxRemoteNet.Interfaces;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Services;
 
 public class MapServiceTests
 {
-    private readonly Mock<IMapRepository> _mapRepository = new();
-    private readonly Mock<ILogger<MapService>> _logger = new();
-    private readonly Mock<IEvoScBaseConfig> _config = new();
-    private readonly Mock<IPlayerManagerService> _playerService = new();
-    private readonly Mock<IMatchSettingsService> _matchSettings = new();
+    private readonly IMapRepository _mapRepository = Substitute.For<IMapRepository>();
+    private readonly ILogger<MapService> _logger = Substitute.For<ILogger<MapService>>();
+    private readonly IEvoScBaseConfig _config = Substitute.For<IEvoScBaseConfig>();
+    private readonly IPlayerManagerService _playerService = Substitute.For<IPlayerManagerService>();
+    private readonly IMatchSettingsService _matchSettings = Substitute.For<IMatchSettingsService>();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly (IServerClient Client, IGbxRemoteClient Remote)
         _server = Mocking.NewServerClientMock();
 
     private readonly MapService _mapService;
 
     public MapServiceTests()
     {
-        _mapService = new MapService(_mapRepository.Object, _logger.Object, _config.Object, _playerService.Object,
-            _server.Client.Object, _matchSettings.Object);
+        _mapService = new MapService(_mapRepository, _logger, _config, _playerService,
+            _server.Client, _matchSettings);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class MapServiceTests
             Name = "snippens dream",
             Uid = "Uid"
         };
-        _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
+        _mapRepository.GetMapByIdAsync(Arg.Any<long>())
             .Returns(Task.FromResult((IMap?)map));
 
         var retrievedMap = await _mapService.GetMapByIdAsync(123);
@@ -65,7 +65,7 @@ public class MapServiceTests
     [Fact]
     public async Task Get_Map_By_Id_Returns_Null_If_Map_Not_Exist()
     {
-        _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
+        _mapRepository.GetMapByIdAsync(Arg.Any<long>())
             .Returns(Task.FromResult((IMap?)null));
 
         var retrievedMap = await _mapService.GetMapByIdAsync(123);
@@ -85,7 +85,7 @@ public class MapServiceTests
             Name = "snippens dream",
             Uid = "Uid"
         };
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>())!
             .Returns(Task.FromResult((IMap)map)!);
 
         var retrievedMap = await _mapService.GetMapByUidAsync("123");
@@ -97,7 +97,7 @@ public class MapServiceTests
     [Fact]
     public async Task Get_Map_By_Uid_Returns_Null_If_Map_Not_Exist()
     {
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IMap?)null));
 
         var retrievedMap = await _mapService.GetMapByUidAsync("123");
@@ -142,12 +142,12 @@ public class MapServiceTests
             DbAuthor = player
         };
 
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IMap?)null));
-        _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
+        _mapRepository.AddMapAsync(Arg.Any<MapMetadata>(), Arg.Any<IPlayer>(), Arg.Any<string>())
             .Returns(Task.FromResult((IMap)map));
-        _config.Setup(c => c.Path.Maps).Returns("maps");
-        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
+        _config.Path.Maps.Returns("maps");
+        _playerService.GetPlayerAsync(Arg.Any<string>()).Returns(Task.FromResult((IPlayer?)player));
 
         var createdMap = await _mapService.AddMapAsync(mapStream);
 
@@ -156,7 +156,7 @@ public class MapServiceTests
         Assert.Equal(map.Uid, createdMap.Uid);
         Assert.Equal(map.ExternalVersion, createdMap.ExternalVersion);
         Assert.Equal(map.Name, createdMap.Name);
-        Assert.Equal(map.AuthorId, createdMap.Author.Id);
+        Assert.Equal(map.AuthorId, createdMap.Author!.Id);
     }
 
     [Fact]
@@ -198,12 +198,12 @@ public class MapServiceTests
             DbAuthor = player
         };
 
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IMap?)map));
-        _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
+        _mapRepository.UpdateMapAsync(Arg.Any<long>(), Arg.Any<MapMetadata>())
             .Returns(Task.FromResult((IMap)map));
-        _config.Setup(c => c.Path.Maps).Returns("maps");
-        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
+        _config.Path.Maps.Returns("maps");
+        _playerService.GetPlayerAsync(Arg.Any<string>()).Returns(Task.FromResult((IPlayer?)player));
 
         var updatedMap = await _mapService.AddMapAsync(mapStream);
 
@@ -212,7 +212,7 @@ public class MapServiceTests
         Assert.Equal(map.ExternalId, updatedMap.ExternalId);
         Assert.Equal(map.Uid, updatedMap.Uid);
         Assert.Equal(map.Name, updatedMap.Name);
-        Assert.Equal(map.AuthorId, updatedMap.Author.Id);
+        Assert.Equal(map.AuthorId, updatedMap.Author!.Id);
     }
 
     [Fact]
@@ -254,9 +254,9 @@ public class MapServiceTests
             DbAuthor = player
         };
 
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IMap?)map));
-        _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
+        _mapRepository.UpdateMapAsync(Arg.Any<long>(), Arg.Any<MapMetadata>())
             .Returns(Task.FromResult((IMap)map));
 
         await Assert.ThrowsAsync<DuplicateMapException>(() => _mapService.AddMapAsync(mapStream));
@@ -310,12 +310,12 @@ public class MapServiceTests
             DbAuthor = player
         };
 
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IMap?)null));
-        _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
+        _mapRepository.AddMapAsync(Arg.Any<MapMetadata>(), Arg.Any<IPlayer>(), Arg.Any<string>())
             .Returns(Task.FromResult((IMap)map));
-        _config.Setup(c => c.Path.Maps).Returns("maps");
-        _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
+        _config.Path.Maps.Returns("maps");
+        _playerService.GetPlayerAsync(Arg.Any<string>()).Returns(Task.FromResult((IPlayer?)player));
 
         var createdMaps = await _mapService.AddMapsAsync(new List<MapStream> { mapStream, mapStream2 });
 
@@ -334,12 +334,12 @@ public class MapServiceTests
             Name = "snippens dream",
             Uid = "Uid"
         };
-        _mapRepository.Setup(m => m.GetMapByIdAsync(It.IsAny<long>()))
+        _mapRepository.GetMapByIdAsync(Arg.Any<long>())
             .Returns(Task.FromResult((IMap?)map));
 
         await _mapService.RemoveMapAsync(123);
 
-        _mapRepository.Verify(m => m.RemoveMapAsync(123), Times.Once);
+        await _mapRepository.Received(1).RemoveMapAsync(123);
     }
 
     [Fact]
@@ -368,15 +368,14 @@ public class MapServiceTests
             LastVisit = new DateTime()
         };
 
-        _server.Remote.Setup(r => r.GetMapListAsync(It.IsAny<int>(), It.IsAny<int>()))
+        _server.Remote.GetMapListAsync(Arg.Any<int>(), Arg.Any<int>())
             .Returns(Task.FromResult(new[] { tmMapInfo }));
-        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>()))
+        _playerService.GetOrCreatePlayerAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IPlayer)player));
 
         await _mapService.AddCurrentMapListAsync();
 
-        _mapRepository.Verify(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()),
-            Times.Exactly(1));
+        await _mapRepository.Received(1).AddMapAsync(Arg.Any<MapMetadata>(), Arg.Any<IPlayer>(), Arg.Any<string>());
     }
 
     [Fact]
@@ -425,13 +424,13 @@ public class MapServiceTests
             Uid = "MapUid"
         };
 
-        _server.Remote.Setup(r => r.GetCurrentMapInfoAsync())
+        _server.Remote.GetCurrentMapInfoAsync()
             .Returns(Task.FromResult(tmMapInfo));
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IMap?)null));
-        _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
+        _mapRepository.AddMapAsync(Arg.Any<MapMetadata>(), Arg.Any<IPlayer>(), Arg.Any<string>())
             .Returns(Task.FromResult((IMap)map));
-        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>()))
+        _playerService.GetOrCreatePlayerAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IPlayer)player));
 
         var retrievedMap = await _mapService.GetOrAddCurrentMapAsync();
@@ -467,9 +466,9 @@ public class MapServiceTests
             UId = "MapUid"
         };
 
-        _server.Remote.Setup(r => r.GetNextMapInfoAsync())
+        _server.Remote.GetNextMapInfoAsync()
             .Returns(Task.FromResult(tmMapInfo));
-        _mapRepository.Setup(r => r.GetMapByUidAsync(It.IsAny<string>())).Returns(Task.FromResult((IMap?)map));
+        _mapRepository.GetMapByUidAsync(Arg.Any<string>()).Returns(Task.FromResult((IMap?)map));
         
         var retrievedMap = await _mapService.GetNextMapAsync();
         
@@ -481,7 +480,7 @@ public class MapServiceTests
     [Fact]
     public async Task Get_Next_Map_Returns_Null_If_No_Next_Map()
     {
-        _server.Remote.Setup(r => r.GetNextMapInfoAsync())
+        _server.Remote.GetNextMapInfoAsync()
             .Returns(Task.FromResult((TmMapInfo?)null));
         
         var retrievedMap = await _mapService.GetNextMapAsync();

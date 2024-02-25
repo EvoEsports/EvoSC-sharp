@@ -4,7 +4,7 @@ using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using SimpleInjector;
 using Xunit;
 
@@ -17,20 +17,20 @@ public class EventManagerTests
 
     private readonly ILogger<EventManager> _logger;
     private readonly IServiceProvider _services;
-    private readonly Mock<IEvoSCApplication> _app;
+    private readonly IEvoSCApplication _app;
 
     public EventManagerTests()
     {
         _logger = LoggerFactory.Create(c => { }).CreateLogger<EventManager>();
         _services = new ServiceCollection().BuildServiceProvider();
-        _app = new Mock<IEvoSCApplication>();
-        _app.Setup(a => a.Services).Returns(new Container());
+        _app = Substitute.For<IEvoSCApplication>();
+        _app.Services.Returns(new Container());
     }
     
     [Fact]
     public async Task Event_Added_AndFired_Dont_Throw_Exception()
     {
-        IEventManager manager = new EventManager(_logger, _app.Object, null);
+        IEventManager manager = new EventManager(_logger, _app, null);
 
         manager.Subscribe("test", (object sender, EventArgs args) =>
         {
@@ -45,7 +45,7 @@ public class EventManagerTests
     [Fact]
     public async Task Event_Added_And_Fired()
     {
-        IEventManager manager = new EventManager(_logger, _app.Object, null);
+        IEventManager manager = new EventManager(_logger, _app, null);
 
         var result = 0;
         
@@ -63,7 +63,7 @@ public class EventManagerTests
     [Fact]
     public async Task Event_Added_And_Removed()
     {
-        IEventManager manager = new EventManager(_logger, _app.Object, null);
+        IEventManager manager = new EventManager(_logger, _app, null);
 
         var handler = new AsyncEventHandler<EventArgs>((sender, args) => throw new HandlerRanException());
         
@@ -78,7 +78,7 @@ public class EventManagerTests
     [Fact]
     public async Task Only_Equal_Event_Handler_Removed()
     {
-        IEventManager manager = new EventManager(_logger, _app.Object, null);
+        IEventManager manager = new EventManager(_logger, _app, null);
 
         var result = 0;
 

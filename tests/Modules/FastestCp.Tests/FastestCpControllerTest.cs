@@ -2,22 +2,22 @@
 using EvoSC.Modules.Official.FastestCpModule.Controllers;
 using EvoSC.Modules.Official.FastestCpModule.Interfaces;
 using GbxRemoteNet.Events;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.FastestCpModule.Tests;
 
 public class FastestCpControllerTest
 {
     private readonly FastestCpController _fastestCpController;
-    private readonly Mock<IFastestCpService> _fastestCpService = new();
+    private readonly IFastestCpService _fastestCpService = Substitute.For<IFastestCpService>();
 
     public FastestCpControllerTest()
     {
-        _fastestCpController = new FastestCpController(_fastestCpService.Object);
+        _fastestCpController = new FastestCpController(_fastestCpService);
     }
 
     [Fact]
-    public async void Should_Register_Time_And_Update_Widget()
+    public async Task Should_Register_Time_And_Update_Widget()
     {
         var waypoint = new WayPointEventArgs
         {
@@ -37,13 +37,13 @@ public class FastestCpControllerTest
         };
 
         await _fastestCpController.RegisterCpTimeAsync(new object(), waypoint);
-        _fastestCpService.Verify(service => service.RegisterCpTimeAsync(waypoint), Times.Once);
+        await _fastestCpService.Received(1).RegisterCpTimeAsync(waypoint);
     }
 
     [Fact]
-    public async void Should_Reset_Store()
+    public async Task Should_Reset_Store()
     {
         await _fastestCpController.ResetCpTimesAsync(new object(), new MapGbxEventArgs { Map = null });
-        _fastestCpService.Verify(service => service.ResetCpTimesAsync(), Times.Once);
+        await _fastestCpService.Received(1).ResetCpTimesAsync();
     }
 }

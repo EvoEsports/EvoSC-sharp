@@ -11,7 +11,9 @@ using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
+using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.Player.Tests;
 
@@ -21,18 +23,18 @@ public class PlayerServiceTests
     private const string PlayerAccountId = "a467a996-eba5-44bf-9e2b-8543b50f39ae";
     private const string PlayerLogin = "pGepluulRL-eK4VDtQ85rg";
     
-    private Mock<ILogger<PlayerService>> _logger = new();
-    private Mock<IOnlinePlayer> _actor = new();
-    private ControllerContextMock<IEventControllerContext> _eventContext;
-    private ControllerContextMock<ICommandInteractionContext> _commandContext;
+    private readonly ILogger<PlayerService> _logger = Substitute.For<ILogger<PlayerService>>();
+    private readonly IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
+    private readonly ControllerContextMock<IEventControllerContext> _eventContext;
+    private readonly ControllerContextMock<ICommandInteractionContext> _commandContext;
 
     public PlayerServiceTests()
     {
         _eventContext = Mocking.NewControllerContextMock<IEventControllerContext>();
-        _commandContext = Mocking.NewCommandInteractionContextMock(_actor.Object);
+        _commandContext = Mocking.NewCommandInteractionContextMock(_actor);
 
-        _actor.Setup(m => m.NickName).Returns(PlayerNickName);
-        _actor.Setup(m => m.AccountId).Returns(PlayerAccountId);
+        _actor.NickName.Returns(PlayerNickName);
+        _actor.AccountId.Returns(PlayerAccountId);
     }
     
     /// <summary>
@@ -41,29 +43,29 @@ public class PlayerServiceTests
     /// <returns></returns>
     private (
         IPlayerService PlayerService,
-        Mock<IContextService> ContextService,
+        IContextService ContextService,
         Locale Locale,
-        Mock<IPlayerManagerService> PlayerManager,
-        Mock<ILogger<PlayerService>> Logger,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
-        Mock<IOnlinePlayer> Player,
-        Mock<IOnlinePlayer> Actor,
-        Mock<IAuditEventBuilder> Audit
+        IPlayerManagerService PlayerManager,
+        ILogger<PlayerService> Logger,
+        (IServerClient Client, IGbxRemoteClient Remote) Server,
+        IOnlinePlayer Player,
+        IOnlinePlayer Actor,
+        IAuditEventBuilder Audit
         )
         NewPlayerServiceMock()
     {
-        var contextService = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
-        var locale = Mocking.NewLocaleMock(contextService.Object);
-        var playerManager = new Mock<IPlayerManagerService>();
+        var contextService = Mocking.NewContextServiceMock(_commandContext.Context, null);
+        var locale = Mocking.NewLocaleMock(contextService);
+        var playerManager = Substitute.For<IPlayerManagerService>();
 
         var server = Mocking.NewServerClientMock();
 
-        var playerService = new PlayerService(playerManager.Object, server.Client.Object, _logger.Object,
-            contextService.Object, locale);
+        var playerService = new PlayerService(playerManager, server.Client, _logger,
+            contextService, locale);
 
-        var player = new Mock<IOnlinePlayer>();
-        player.Setup(m => m.AccountId).Returns(PlayerAccountId);
-        player.Setup(m => m.NickName).Returns(PlayerNickName);
+        var player = Substitute.For<IOnlinePlayer>();
+        player.AccountId.Returns(PlayerAccountId);
+        player.NickName.Returns(PlayerNickName);
 
         return (
             PlayerService: playerService,
@@ -81,56 +83,57 @@ public class PlayerServiceTests
     [Fact]
     public async Task Player_Created_And_Greeted_On_First_Join()
     {
-        var contextService = Mocking.NewContextServiceMock(_eventContext.Context.Object, null);
-        var locale = Mocking.NewLocaleMock(contextService.Object);
+        var contextService = Mocking.NewContextServiceMock(_eventContext.Context, null);
+        var locale = Mocking.NewLocaleMock(contextService);
         
-        var playerManager = new Mock<IPlayerManagerService>();
-        playerManager.Setup(m => m.GetPlayerAsync(PlayerAccountId)).Returns(Task.FromResult((IPlayer?)null));
-        playerManager.Setup(m => m.CreatePlayerAsync(PlayerAccountId)).Returns(Task.FromResult((IPlayer)_actor.Object));
+        var playerManager = Substitute.For<IPlayerManagerService>();
+        playerManager.GetPlayerAsync(PlayerAccountId).Returns(Task.FromResult((IPlayer?)null));
+        playerManager.CreatePlayerAsync(PlayerAccountId).Returns(Task.FromResult((IPlayer)_actor));
 
         var server = Mocking.NewServerClientMock();
 
-        var playerService = new PlayerService(playerManager.Object, server.Client.Object, _logger.Object, contextService.Object, locale);
+        var playerService = new PlayerService(playerManager, server.Client, _logger, contextService, locale);
         
         await playerService.UpdateAndGreetPlayerAsync(PlayerLogin);
-        
-        playerManager.Verify(m => m.GetPlayerAsync(PlayerAccountId), Times.Once);
-        playerManager.Verify(m => m.CreatePlayerAsync(PlayerAccountId), Times.Once);
-        playerManager.Verify(m => m.UpdateLastVisitAsync(_actor.Object), Times.Once);
-        server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>()));
+
+        await playerManager.Received(1).GetPlayerAsync(PlayerAccountId);
+        await playerManager.Received(1).CreatePlayerAsync(PlayerAccountId);
+        await playerManager.Received(1).UpdateLastVisitAsync(_actor);
+        await server.Client.Received(1).InfoMessageAsync(Arg.Any<string>());
     }
 
     [Fact]
     public async Task Player_Is_Greeted_When_Already_Exists()
     {
-        var contextService = Mocking.NewContextServiceMock(_eventContext.Context.Object, null);
-        var locale = Mocking.NewLocaleMock(contextService.Object);
+        var contextService = Mocking.NewContextServiceMock(_eventContext.Context, null);
+        var locale = Mocking.NewLocaleMock(contextService);
 
-        var playerManager = new Mock<IPlayerManagerService>();
-        playerManager.Setup(m => m.GetPlayerAsync(PlayerAccountId)).Returns(Task.FromResult((IPlayer)_actor.Object));
+        var playerManager = Substitute.For<IPlayerManagerService>();
+        playerManager.GetPlayerAsync(PlayerAccountId)!.Returns(Task.FromResult((IPlayer)_actor));
 
         var server = Mocking.NewServerClientMock();
         
-        var playerService = new PlayerService(playerManager.Object, server.Client.Object, _logger.Object, contextService.Object, locale);
+        var playerService = new PlayerService(playerManager, server.Client, _logger, contextService, locale);
 
         await playerService.UpdateAndGreetPlayerAsync(PlayerLogin);
-        
-        playerManager.Verify(m => m.GetPlayerAsync(PlayerAccountId), Times.Once);
-        playerManager.Verify(m => m.UpdateLastVisitAsync(_actor.Object), Times.Once);
-        server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>()));
+
+        await playerManager.Received(1).GetPlayerAsync(PlayerAccountId);
+        await playerManager.Received(1).UpdateLastVisitAsync(_actor);
+        await server.Client.Received(1).InfoMessageAsync(Arg.Any<string>());
     }
 
     [Fact]
     public async Task Player_Is_Kicked_And_Audited()
     {
         var mock = NewPlayerServiceMock();
-        mock.Server.Remote.Setup(m => m.KickAsync(PlayerLogin, "")).Returns(Task.FromResult(true));
+        mock.Server.Remote.KickAsync(PlayerLogin, "").Returns(Task.FromResult(true));
 
-        await mock.PlayerService.KickAsync(mock.Player.Object, mock.Actor.Object);
+        await mock.PlayerService.KickAsync(mock.Player, mock.Actor);
         
-        mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Server.Remote.Verify(m => m.KickAsync(PlayerLogin,""), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        
+        mock.Audit.Received(1).Success();
+        await mock.Server.Remote.Received(1).KickAsync(PlayerLogin, "");
+        await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), mock.Actor);
     }
 
     [Fact]
@@ -138,24 +141,24 @@ public class PlayerServiceTests
     {
         var mock = NewPlayerServiceMock();
 
-        await mock.PlayerService.KickAsync(mock.Player.Object, mock.Actor.Object);
+        await mock.PlayerService.KickAsync(mock.Player, mock.Actor);
 
-        mock.ContextService.Verify(m => m.Audit(), Times.Never);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.ContextService.DidNotReceive().Audit();
+        await mock.Server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), mock.Actor);
     }
 
     [Fact]
     public async Task Player_Is_Muted_And_Audited()
     {
         var mock = NewPlayerServiceMock();
-        mock.Server.Remote.Setup(m => m.IgnoreAsync(PlayerLogin)).Returns(Task.FromResult(true));
+        mock.Server.Remote.IgnoreAsync(PlayerLogin).Returns(Task.FromResult(true));
 
-        await mock.PlayerService.MuteAsync(mock.Player.Object, mock.Actor.Object);
-        
-        mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Server.Remote.Verify(m => m.IgnoreAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.WarningMessageAsync(It.IsAny<string>(), mock.Player.Object), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        await mock.PlayerService.MuteAsync(mock.Player, mock.Actor);
+
+        mock.Audit.Received(1).Success();
+        await mock.Server.Remote.Received(1).IgnoreAsync(PlayerLogin);
+        await mock.Server.Client.Received(1).WarningMessageAsync(Arg.Any<string>(), mock.Player);
+        await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), mock.Actor);
     }
     
     [Fact]
@@ -163,24 +166,24 @@ public class PlayerServiceTests
     {
         var mock = NewPlayerServiceMock();
 
-        await mock.PlayerService.MuteAsync(mock.Player.Object, mock.Actor.Object);
+        await mock.PlayerService.MuteAsync(mock.Player, mock.Actor);
         
-        mock.ContextService.Verify(m => m.Audit(), Times.Never);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.ContextService.DidNotReceive().Audit();
+        await mock.Server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), mock.Actor);
     }
     
     [Fact]
     public async Task Player_Is_UnMuted_And_Audited()
     {
         var mock = NewPlayerServiceMock();
-        mock.Server.Remote.Setup(m => m.UnIgnoreAsync(PlayerLogin)).Returns(Task.FromResult(true));
+        mock.Server.Remote.UnIgnoreAsync(PlayerLogin).Returns(Task.FromResult(true));
 
-        await mock.PlayerService.UnmuteAsync(mock.Player.Object, mock.Actor.Object);
+        await mock.PlayerService.UnmuteAsync(mock.Player, mock.Actor);
         
-        mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Server.Remote.Verify(m => m.UnIgnoreAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>(), mock.Player.Object), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Audit.Received(1).Success();
+        await mock.Server.Remote.Received(1).UnIgnoreAsync(PlayerLogin);
+        await mock.Server.Client.Received(1).WarningMessageAsync(Arg.Any<string>(), mock.Player);
+        await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), mock.Actor);
     }
     
     [Fact]
@@ -188,10 +191,10 @@ public class PlayerServiceTests
     {
         var mock = NewPlayerServiceMock();
 
-        await mock.PlayerService.MuteAsync(mock.Player.Object, mock.Actor.Object);
+        await mock.PlayerService.UnmuteAsync(mock.Player, mock.Actor);
         
-        mock.ContextService.Verify(m => m.Audit(), Times.Never);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.ContextService.DidNotReceive().Audit();
+        await mock.Server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), mock.Actor);
     }
 
     [Fact]
@@ -199,12 +202,12 @@ public class PlayerServiceTests
     {
         var mock = NewPlayerServiceMock();
 
-        await mock.PlayerService.BanAsync(mock.Player.Object, mock.Actor.Object);
+        await mock.PlayerService.BanAsync(mock.Player, mock.Actor);
         
-        mock.Server.Remote.Verify(m => m.BanAsync(PlayerLogin), Times.Once);
-        mock.Server.Remote.Verify(m => m.BlackListAsync(PlayerLogin), Times.Once);
-        mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Audit.Received(1).Success();
+        await mock.Server.Remote.Received(1).BanAsync(PlayerLogin);
+        await mock.Server.Remote.Received(1).BlackListAsync(PlayerLogin);
+        await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), mock.Actor);
     }
     
     [Fact]
@@ -212,30 +215,31 @@ public class PlayerServiceTests
     {
         var mock = NewPlayerServiceMock();
         var ex = new Exception();
-        mock.Server.Remote.Setup(m => m.BanAsync(PlayerLogin)).Returns(() => throw ex);
+        mock.Server.Remote.BanAsync(PlayerLogin).ThrowsAsync(ex);
 
-        await mock.PlayerService.BanAsync(mock.Player.Object, mock.Actor.Object);
-        
-        mock.Server.Remote.Verify(m => m.BanAsync(PlayerLogin), Times.Once);
-        mock.Logger.Verify(LogLevel.Trace, ex, null, Times.Once());
-        mock.Server.Remote.Verify(m => m.BlackListAsync(PlayerLogin), Times.Once);
-        mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        await mock.PlayerService.BanAsync(mock.Player, mock.Actor);
+
+
+        await mock.Server.Remote.Received(1).BanAsync(PlayerLogin);
+        mock.Logger.Received(1).Log(LogLevel.Trace, null);
+        await mock.Server.Remote.Received(1).BlackListAsync(PlayerLogin);
+        await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), mock.Actor);
+        mock.Audit.Received(1).Success();
     }
     
     [Fact]
     public async Task Player_Is_Unbanned_And_Audited()
     {
         var mock = NewPlayerServiceMock();
-        mock.Server.Remote.Setup(m => m.UnBanAsync(PlayerLogin)).Returns(Task.FromResult(true));
-        mock.Server.Remote.Setup(m => m.UnBlackListAsync(PlayerLogin)).Returns(Task.FromResult(true));
+        mock.Server.Remote.UnBanAsync(PlayerLogin).Returns(Task.FromResult(true));
+        mock.Server.Remote.UnBlackListAsync(PlayerLogin).Returns(Task.FromResult(true));
 
-        await mock.PlayerService.UnbanAsync(PlayerLogin, mock.Actor.Object);
+        await mock.PlayerService.UnbanAsync(PlayerLogin, mock.Actor);
         
-        mock.Server.Remote.Verify(m => m.UnBanAsync(PlayerLogin), Times.Once);
-        mock.Server.Remote.Verify(m => m.UnBlackListAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Exactly(2));
-        mock.Audit.Verify(m => m.Success(), Times.Exactly(2));
+        await mock.Server.Remote.Received(1).UnBanAsync(PlayerLogin);
+        await mock.Server.Remote.Received(1).UnBlackListAsync(PlayerLogin);
+        await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), _actor);
+        mock.Audit.Received(2).Success();
     }
     
     [Fact]
@@ -243,16 +247,16 @@ public class PlayerServiceTests
     {
         var mock = NewPlayerServiceMock();
         var ex = new Exception();
-        mock.Server.Remote.Setup(m => m.UnBanAsync(PlayerLogin)).Returns(() => throw ex);
-        mock.Server.Remote.Setup(m => m.UnBlackListAsync(PlayerLogin)).Returns(Task.FromResult(true));
+        mock.Server.Remote.UnBanAsync(PlayerLogin).ThrowsAsync(ex);
+        mock.Server.Remote.UnBlackListAsync(PlayerLogin).Returns(Task.FromResult(true));
 
-        await mock.PlayerService.UnbanAsync(PlayerLogin, mock.Actor.Object);
+        await mock.PlayerService.UnbanAsync(PlayerLogin, mock.Actor);
         
-        mock.Server.Remote.Verify(m => m.UnBanAsync(PlayerLogin), Times.Once);
-        mock.Server.Remote.Verify(m => m.UnBlackListAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
-        mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Logger.Verify(LogLevel.Error, ex, null, Times.Once());
+        await mock.Server.Remote.Received(1).UnBanAsync(PlayerLogin);
+        await mock.Server.Remote.Received(1).UnBlackListAsync(PlayerLogin);
+        await mock.Server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
+        mock.Audit.Received(1).Success();
+        mock.Logger.Received(1).Log(LogLevel.Error, ex, null);
     }
     
     [Fact]
@@ -260,15 +264,15 @@ public class PlayerServiceTests
     {
         var mock = NewPlayerServiceMock();
         var ex = new Exception();
-        mock.Server.Remote.Setup(m => m.UnBanAsync(PlayerLogin)).Returns(Task.FromResult(true));
-        mock.Server.Remote.Setup(m => m.UnBlackListAsync(PlayerLogin)).Returns(() => throw ex);
+        mock.Server.Remote.UnBanAsync(PlayerLogin).Returns(Task.FromResult(true));
+        mock.Server.Remote.UnBlackListAsync(PlayerLogin).ThrowsAsync(ex);
 
-        await mock.PlayerService.UnbanAsync(PlayerLogin, mock.Actor.Object);
+        await mock.PlayerService.UnbanAsync(PlayerLogin, mock.Actor);
         
-        mock.Server.Remote.Verify(m => m.UnBanAsync(PlayerLogin), Times.Once);
-        mock.Server.Remote.Verify(m => m.UnBlackListAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
-        mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Logger.Verify(LogLevel.Error, ex, null, Times.Once());
+        await mock.Server.Remote.Received(1).UnBanAsync(PlayerLogin);
+        await mock.Server.Remote.Received(1).UnBlackListAsync(PlayerLogin);
+        await mock.Server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
+        mock.Audit.Received(1).Success();
+        mock.Logger.Received(1).Log(LogLevel.Error, ex, null);
     }
 }

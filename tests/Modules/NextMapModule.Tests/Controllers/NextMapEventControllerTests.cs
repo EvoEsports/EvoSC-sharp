@@ -6,7 +6,8 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
+using Org.BouncyCastle.Utilities;
 using Xunit;
 
 namespace EvoSC.Modules.Official.NextMapModule.Tests.Controllers;
@@ -15,8 +16,8 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
 {
     private const string Template = "NextMapModule.NextMap";
 
-    private readonly Mock<INextMapService> _nextMapService = new();
-    private readonly Mock<IManialinkManager> _manialinkManager = new();
+    private readonly INextMapService _nextMapService = Substitute.For<INextMapService>();
+    private readonly IManialinkManager _manialinkManager = Substitute.For<IManialinkManager>();
 
     public NextMapEventControllerTests()
     {
@@ -36,14 +37,14 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
             Name = "snippens dream",
             Uid = "Uid"
         };
-        _nextMapService.Setup(r => r.GetNextMapAsync()).Returns(Task.FromResult((IMap) map));
+        _nextMapService.GetNextMapAsync().Returns(Task.FromResult((IMap) map));
 
         await Controller.ShowNextMapOnPodiumStartAsync(new(), new PodiumEventArgs
         {
             Time = 0
         });
-        
-        _manialinkManager.Verify(m => m.SendManialinkAsync(Template, It.IsAny<object>()), Times.Once());
+
+        await _manialinkManager.Received(1).SendManialinkAsync(Template, Arg.Any<object>());
     }
 
     [Fact]
@@ -58,9 +59,9 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
             Name = "snippens dream",
             Uid = "Uid"
         };
-        _nextMapService.Setup(r => r.GetNextMapAsync()).Returns(Task.FromResult((IMap) map));
+        _nextMapService.GetNextMapAsync().Returns(Task.FromResult((IMap) map));
         
         await Controller.HideNextMapOnPodiumEndAsync(new(), null);
-        _manialinkManager.Verify(r => r.HideManialinkAsync(Template), Times.Once);
+        await _manialinkManager.Received(1).HideManialinkAsync(Template);
     }
 }

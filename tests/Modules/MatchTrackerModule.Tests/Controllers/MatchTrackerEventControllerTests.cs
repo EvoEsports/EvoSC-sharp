@@ -4,14 +4,15 @@ using EvoSC.Modules.Official.MatchTrackerModule.Config;
 using EvoSC.Modules.Official.MatchTrackerModule.Controllers;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Tests.Controllers;
 
 public class MatchTrackerEventControllerTests : EventControllerTestBase<MatchTrackerEventController>
 {
-    private Mock<ITrackerSettings> _settings = new();
-    private Mock<IMatchTracker> _tracker = new();
+    private ITrackerSettings _settings = Substitute.For<ITrackerSettings>();
+    private IMatchTracker _tracker = Substitute.For<IMatchTracker>();
 
     public MatchTrackerEventControllerTests()
     {
@@ -33,7 +34,7 @@ public class MatchTrackerEventControllerTests : EventControllerTestBase<MatchTra
 
         await Controller.OnScoresAsync(null, scoresArgs);
         
-        _tracker.Verify(m => m.TrackScoresAsync(scoresArgs), Times.Once);
+        await _tracker.Received(1).TrackScoresAsync(scoresArgs);
     }
 
     [Theory]
@@ -41,12 +42,10 @@ public class MatchTrackerEventControllerTests : EventControllerTestBase<MatchTra
     [InlineData(false, false)]
     public async Task Begin_Match_Is_Tracked_Depending_On_Settings(bool automaticTracking, bool isTracked)
     {
-        _settings.Setup(m => m.AutomaticTracking).Returns(automaticTracking);
+        _settings.AutomaticTracking.Returns(automaticTracking);
 
         await Controller.OnBeginMatchAsync(null, EventArgs.Empty);
 
-        var timesCalled = isTracked ? Times.Once() : Times.Never();
-        
-        _tracker.Verify(m => m.BeginMatchAsync(), timesCalled);
+        await _tracker.Received(isTracked ? 1 : 0).BeginMatchAsync();
     }
 }

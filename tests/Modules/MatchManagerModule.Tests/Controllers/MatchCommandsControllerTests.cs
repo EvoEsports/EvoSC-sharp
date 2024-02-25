@@ -1,50 +1,48 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Controllers;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
-using Moq;
+using NSubstitute;
 
 namespace MatchManagerModule.Tests.Controllers;
 
 public class MatchCommandsControllerTests : CommandInteractionControllerTestBase<MatchCommandsController>
 {
-    private Mock<IOnlinePlayer> _player = new();
-    private Mock<IMatchControlService> _matchControl = new();
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
-    private Locale _locale;
+    private readonly IOnlinePlayer _player = Substitute.For<IOnlinePlayer>();
+    private readonly IMatchControlService _matchControl = Substitute.For<IMatchControlService>();
+    private readonly (IServerClient Client, IGbxRemoteClient Remote) _server = Mocking.NewServerClientMock();
 
     public MatchCommandsControllerTests()
     {
-        _locale = Mocking.NewLocaleMock(this.ContextService.Object);
-        InitMock(_player.Object, _matchControl, _server.Client, _locale);
+        var locale = Mocking.NewLocaleMock(this.ContextService);
+        InitMock(_player, _matchControl, _server.Client, locale);
     }
 
     [Fact]
     public async Task Match_Is_Started_And_Audited()
     {
         var id = Guid.NewGuid();
-        _matchControl.Setup(m => m.StartMatchAsync()).Returns(Task.FromResult(id));
+        _matchControl.StartMatchAsync().Returns(Task.FromResult(id));
         
         await Controller.StartMatchAsync();
         
-        _matchControl.Verify(m => m.StartMatchAsync(), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+        await _matchControl.Received(1).StartMatchAsync();
+        AuditEventBuilder.Received(1).Success();
     }
 
     [Fact]
     public async Task Match_Is_Ended_And_Audited()
     {
         var id = Guid.NewGuid();
-        _matchControl.Setup(m => m.EndMatchAsync()).Returns(Task.FromResult(id));
+        _matchControl.EndMatchAsync().Returns(Task.FromResult(id));
         
         await Controller.EndMatchAsync();
         
-        _matchControl.Verify(m => m.EndMatchAsync(), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+        await _matchControl.Received(1).EndMatchAsync();
+        AuditEventBuilder.Received(1).Success();
     }
 
     [Fact]
@@ -52,8 +50,8 @@ public class MatchCommandsControllerTests : CommandInteractionControllerTestBase
     {
         await Controller.RestartMatchAsync();
         
-        _matchControl.Verify(m => m.RestartMatchAsync(), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+        await _matchControl.Received(1).RestartMatchAsync();
+        AuditEventBuilder.Received(1).Success();
     }
 
     [Fact]
@@ -61,8 +59,8 @@ public class MatchCommandsControllerTests : CommandInteractionControllerTestBase
     {
         await Controller.EndRoundAsync();
         
-        _matchControl.Verify(m => m.EndRoundAsync(), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+        await _matchControl.Received(1).EndRoundAsync();
+        AuditEventBuilder.Received(1).Success();
     }
     
     [Fact]
@@ -70,7 +68,7 @@ public class MatchCommandsControllerTests : CommandInteractionControllerTestBase
     {
         await Controller.SkipMapAsync();
         
-        _matchControl.Verify(m => m.SkipMapAsync(), Times.Once);
-        AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+        await _matchControl.Received(1).SkipMapAsync();
+        AuditEventBuilder.Received(1).Success();
     }
 }

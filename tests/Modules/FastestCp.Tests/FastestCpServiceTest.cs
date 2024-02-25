@@ -7,7 +7,8 @@ using EvoSC.Modules.Official.FastestCpModule.Models;
 using EvoSC.Modules.Official.FastestCpModule.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.FastestCpModule.Tests;
 
@@ -16,23 +17,23 @@ public class FastestCpServiceTest
     private readonly FastestCpService _fastestCpService;
     private readonly ILogger<FastestCpService> _logger = new NullLogger<FastestCpService>();
     private readonly ILoggerFactory _loggerFactory = new NullLoggerFactory();
-    private readonly Mock<IManialinkManager> _manialinkManagerMock = new();
-    private readonly Mock<IPlayerManagerService> _playerManagerServiceMock = new();
+    private readonly IManialinkManager _manialinkManagerMock = Substitute.For<IManialinkManager>();
+    private readonly IPlayerManagerService _playerManagerServiceMock = Substitute.For<IPlayerManagerService>();
 
     public FastestCpServiceTest()
     {
         _manialinkManagerMock
-            .Setup(manager => manager.SendPersistentManialinkAsync(It.IsAny<string>(), It.IsAny<object>()))
+            .SendPersistentManialinkAsync(Arg.Any<string>(), Arg.Any<object>())
             .Returns(Task.CompletedTask);
-        _fastestCpService = new FastestCpService(_playerManagerServiceMock.Object, _manialinkManagerMock.Object,
+        _fastestCpService = new FastestCpService(_playerManagerServiceMock, _manialinkManagerMock,
             _loggerFactory, _logger);
     }
 
     [Fact]
-    public async void Should_Register_Time_And_Update_Widget()
+    public async Task Should_Register_Time_And_Update_Widget()
     {
-        _playerManagerServiceMock.Setup(service => service.GetOrCreatePlayerAsync("AccountId1"))
-            .ReturnsAsync(() => new Player
+        _playerManagerServiceMock.GetOrCreatePlayerAsync("AccountId1")
+            .Returns(new Player
             {
                 AccountId = "AccountId1", Id = 1, NickName = "NickName1", UbisoftName = "Ubisoft1"
             });
@@ -54,20 +55,18 @@ public class FastestCpServiceTest
             IsEndRace = false
         });
 
-        var actualData = new List<object>();
-        _manialinkManagerMock.Verify(
-            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCp", Capture.In(actualData)), Times.Once);
-        Assert.NotEmpty(actualData);
+        object? actualData = null;
+        await _manialinkManagerMock.Received(1).SendPersistentManialinkAsync("FastestCpModule.FastestCp", Arg.Do<object>(x => actualData = x));
         Assert.Equivalent(
             new { times = new List<PlayerCpTime?> { new("NickName1", 0, TimeSpan.FromMilliseconds(10)) } },
-            actualData[0]);
+            actualData);
     }
 
     [Fact]
-    public async void Should_Register_Slower_Time_And_Not_Update_Widget()
+    public async Task Should_Register_Slower_Time_And_Not_Update_Widget()
     {
         Should_Register_Time_And_Update_Widget();
-        _manialinkManagerMock.Invocations.Clear();
+        _manialinkManagerMock.ClearReceivedCalls();
 
         await _fastestCpService.RegisterCpTimeAsync(new WayPointEventArgs
         {
@@ -86,12 +85,11 @@ public class FastestCpServiceTest
             IsEndRace = false
         });
 
-        _manialinkManagerMock.Verify(
-            manager => manager.SendPersistentManialinkAsync("FastestCpModule.FastestCp", It.IsAny<object>()), Times.Never);
+        await _manialinkManagerMock.DidNotReceive().SendPersistentManialinkAsync("FastestCpModule.FastestCp", Arg.Any<object>());
     }
 
     [Fact]
-    public async void Should_Reset_Store()
+    public async Task Should_Reset_Store()
     {
         var fieldInfo = _fastestCpService.GetType()
             .GetField("_fastestCpStore", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -102,7 +100,7 @@ public class FastestCpServiceTest
         var after = fieldInfo?.GetValue(_fastestCpService);
 
 
-        _manialinkManagerMock.Verify(manager => manager.HideManialinkAsync("FastestCpModule.FastestCp"), Times.Once);
+        await _manialinkManagerMock.Received(1).HideManialinkAsync("FastestCpModule.FastestCp");
 
         Assert.NotNull(before);
         Assert.NotNull(after);

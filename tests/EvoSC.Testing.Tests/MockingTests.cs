@@ -5,7 +5,7 @@ using EvoSC.Common.Models.Audit;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Testing.Tests.TestClasses;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Testing.Tests;
 
@@ -20,51 +20,51 @@ public class MockingTests
         Assert.NotNull(mock.AuditEventBuilder);
         Assert.NotNull(mock.AuditService);
         Assert.NotNull(mock.ContextService);
-        Assert.Equal(mock.AuditEventBuilder.Object, mock.Context.Object.AuditEvent);
-        Assert.Equal(mock.Context.Object, mock.ContextService.Object.GetContext());
-        Assert.Equal(mock.AuditEventBuilder.Object, mock.ContextService.Object.Audit());
+        Assert.Equal(mock.AuditEventBuilder, mock.Context.AuditEvent);
+        Assert.Equal(mock.Context, mock.ContextService.GetContext());
+        Assert.Equal(mock.AuditEventBuilder, mock.ContextService.Audit());
     }
 
     [Fact]
     public void SetupMock_For_PlayerInteraction_Sets_Up_Correctly()
     {
         var mock = Mocking.NewControllerContextMock<IPlayerInteractionContext>();
-        var player = new Mock<IOnlinePlayer>();
-        mock.SetupMock(player.Object);
+        var player = Substitute.For<IOnlinePlayer>();
+        mock.SetupMock(player);
         
-        Assert.Equal(player.Object, mock.Context.Object.Player);
-        mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
+        Assert.Equal(player, mock.Context.Player);
+        mock.AuditEventBuilder.Received(1).CausedBy(player);
     }
 
     [Fact]
     public void NewPlayerInteractionContextMock_Returns_Correct_Mock()
     {
-        var player = new Mock<IOnlinePlayer>();
-        var mock = Mocking.NewPlayerInteractionContextMock(player.Object);
+        var player = Substitute.For<IOnlinePlayer>();
+        var mock = Mocking.NewPlayerInteractionContextMock(player);
         
-        Assert.Equal(player.Object, mock.Context.Object.Player);
-        mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
+        Assert.Equal(player, mock.Context.Player);
+        mock.AuditEventBuilder.Received(1).CausedBy(player);
     }
 
     [Fact]
     public void SetupMock_For_CommandInteraction_Sets_Up_Correctly()
     {
         var mock = Mocking.NewControllerContextMock<ICommandInteractionContext>();
-        var player = new Mock<IOnlinePlayer>();
-        mock.SetupMock(player.Object);
+        var player = Substitute.For<IOnlinePlayer>();
+        mock.SetupMock(player);
         
-        Assert.Equal(player.Object, mock.Context.Object.Player);
-        mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
+        Assert.Equal(player, mock.Context.Player);
+        mock.AuditEventBuilder.Received(1).CausedBy(player);
     }
     
     [Fact]
     public void NewCommandInteractionContextMock_Returns_Correct_Mock()
     {
-        var player = new Mock<IOnlinePlayer>();
-        var mock = Mocking.NewCommandInteractionContextMock(player.Object);
+        var player = Substitute.For<IOnlinePlayer>();
+        var mock = Mocking.NewCommandInteractionContextMock(player);
         
-        Assert.Equal(player.Object, mock.Context.Object.Player);
-        mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
+        Assert.Equal(player, mock.Context.Player);
+        mock.AuditEventBuilder.Received(1).CausedBy(player);
     }
     
     
@@ -72,29 +72,29 @@ public class MockingTests
     public void SetupMock_For_ManialinkInteraction_Sets_Up_Correctly()
     {
         var mock = Mocking.NewControllerContextMock<IManialinkInteractionContext>();
-        var player = new Mock<IOnlinePlayer>();
-        var mlActionContext = new Mock<IManialinkActionContext>();
-        var mlManager = new Mock<IManialinkManager>();
-        mock.SetupMock(player.Object, mlActionContext.Object, mlManager.Object);
+        var player = Substitute.For<IOnlinePlayer>();
+        var mlActionContext = Substitute.For<IManialinkActionContext>();
+        var mlManager = Substitute.For<IManialinkManager>();
+        mock.SetupMock(player, mlActionContext, mlManager);
         
-        Assert.Equal(player.Object, mock.Context.Object.Player);
-        Assert.Equal(mlActionContext.Object, mock.Context.Object.ManialinkAction);
-        Assert.Equal(mlManager.Object, mock.Context.Object.ManialinkManager);
-        mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
+        Assert.Equal(player, mock.Context.Player);
+        Assert.Equal(mlActionContext, mock.Context.ManialinkAction);
+        Assert.Equal(mlManager, mock.Context.ManialinkManager);
+        mock.AuditEventBuilder.Received(1).CausedBy(player);
     }
     
     [Fact]
     public void NewManialinkInteractionContextMock_Returns_Correct_Mock()
     {
-        var player = new Mock<IOnlinePlayer>();
-        var mlActionContext = new Mock<IManialinkActionContext>();
-        var mlManager = new Mock<IManialinkManager>();
-        var mock = Mocking.NewManialinkInteractionContextMock(player.Object, mlActionContext.Object, mlManager.Object);
+        var player = Substitute.For<IOnlinePlayer>();
+        var mlActionContext = Substitute.For<IManialinkActionContext>();
+        var mlManager = Substitute.For<IManialinkManager>();
+        var mock = Mocking.NewManialinkInteractionContextMock(player, mlActionContext, mlManager);
         
-        Assert.Equal(player.Object, mock.Context.Object.Player);
-        Assert.Equal(mlActionContext.Object, mock.Context.Object.ManialinkAction);
-        Assert.Equal(mlManager.Object, mock.Context.Object.ManialinkManager);
-        mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
+        Assert.Equal(player, mock.Context.Player);
+        Assert.Equal(mlActionContext, mock.Context.ManialinkAction);
+        Assert.Equal(mlManager, mock.Context.ManialinkManager);
+        mock.AuditEventBuilder.Received(1).CausedBy(player);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class MockingTests
 
         await controller.DoingSomething();
         
-        contextMock.AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+        contextMock.AuditEventBuilder.Received(1).Success();
     }
 
     [Fact]
@@ -115,48 +115,48 @@ public class MockingTests
 
         await mock.Controller.DoingSomething();
         
-        mock.ContextMock.AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+        mock.ContextMock.AuditEventBuilder.Received(1).Success();
     }
 
     [Fact]
     public async Task New_Controller_Mock_Passes_Ctor_Services()
     {
-        var serviceMock = new Mock<ITestService>();
+        var serviceMock = Substitute.For<ITestService>();
         var mock = Mocking.NewControllerMock<TestControllerWithServices, IPlayerInteractionContext>(serviceMock);
 
         await mock.Controller.DoSomething();
         
-        serviceMock.Verify(m => m.DoSomethingElse(), Times.Once);
+        serviceMock.Received(1).DoSomethingElse();
     }
 
     [Fact]
     public void NewContextServiceMock_Sets_Up_Correctly()
     {
         var contextMock = Mocking.NewControllerContextMock<IControllerContext>();
-        var mock = Mocking.NewContextServiceMock(contextMock.Context.Object, null);
+        var mock = Mocking.NewContextServiceMock(contextMock.Context, null);
         
-        Assert.Equal(contextMock.AuditEventBuilder.Object, mock.Object.Audit());
-        Assert.Equal(contextMock.Context.Object, mock.Object.GetContext());
-        contextMock.AuditEventBuilder.Verify(m => m.CausedBy(It.IsAny<IOnlinePlayer>()), Times.Never);
+        Assert.Equal(contextMock.AuditEventBuilder, mock.Audit());
+        Assert.Equal(contextMock.Context, mock.GetContext());
+        contextMock.AuditEventBuilder.DidNotReceive().CausedBy(Arg.Any<IOnlinePlayer>());
     }
 
     [Fact]
     public void NewContextServiceMock_Sets_Up_Correctly_With_Actor()
     {
-        var actor = new Mock<IOnlinePlayer>();
+        var actor = Substitute.For<IOnlinePlayer>();
         var contextMock = Mocking.NewControllerContextMock<IControllerContext>();
-        var mock = Mocking.NewContextServiceMock(contextMock.Context.Object, actor.Object);
+        var mock = Mocking.NewContextServiceMock(contextMock.Context, actor);
         
-        Assert.Equal(contextMock.AuditEventBuilder.Object, mock.Object.Audit());
-        Assert.Equal(contextMock.Context.Object, mock.Object.GetContext());
-        contextMock.AuditEventBuilder.Verify(m => m.CausedBy(actor.Object), Times.Once);
+        Assert.Equal(contextMock.AuditEventBuilder, mock.Audit());
+        Assert.Equal(contextMock.Context, mock.GetContext());
+        contextMock.AuditEventBuilder.Received(1).CausedBy(actor);
     }
 
     [Fact]
     public void NewLocaleMock_Returns_Simplified_Mock()
     {
         var context = Mocking.NewControllerContextMock<IPlayerInteractionContext>();
-        var locale = Mocking.NewLocaleMock(context.ContextService.Object);
+        var locale = Mocking.NewLocaleMock(context.ContextService);
 
         var str = locale["SomeRandomLocale"];
         
@@ -168,27 +168,27 @@ public class MockingTests
     {
         var server = Mocking.NewServerClientMock();
         
-        Assert.NotNull(server.Remote);
-        Assert.Equal(server.Remote.Object, server.Client.Object.Remote);
+        Assert.NotNull(server.Client);
+        Assert.Equal(server.Remote, server.Client.Remote);
     }
 
     [Fact]
     public void NewAuditEventBuilderMock_Returns_Mock_With_No_Null_Methods()
     {
-        var player = new Mock<IOnlinePlayer>();
+        var player = Substitute.For<IOnlinePlayer>();
         var mock = Mocking.NewAuditEventBuilderMock();
         
-        Assert.NotNull(mock.Object.WithEventName(""));
-        Assert.NotNull(mock.Object.WithEventName(TestEnum.TestField));
-        Assert.NotNull(mock.Object.HavingProperties(new{}));
-        Assert.NotNull(mock.Object.WithStatus(AuditEventStatus.Info));
-        Assert.NotNull(mock.Object.Success());
-        Assert.NotNull(mock.Object.Info());
-        Assert.NotNull(mock.Object.Error());
-        Assert.NotNull(mock.Object.CausedBy(player.Object));
-        Assert.NotNull(mock.Object.Cancel());
-        Assert.NotNull(mock.Object.Cancel(true));
-        Assert.NotNull(mock.Object.UnCancel());
-        Assert.NotNull(mock.Object.Comment(""));
+        Assert.NotNull(mock.WithEventName(""));
+        Assert.NotNull(mock.WithEventName(TestEnum.TestField));
+        Assert.NotNull(mock.HavingProperties(new{}));
+        Assert.NotNull(mock.WithStatus(AuditEventStatus.Info));
+        Assert.NotNull(mock.Success());
+        Assert.NotNull(mock.Info());
+        Assert.NotNull(mock.Error());
+        Assert.NotNull(mock.CausedBy(player));
+        Assert.NotNull(mock.Cancel());
+        Assert.NotNull(mock.Cancel(true));
+        Assert.NotNull(mock.UnCancel());
+        Assert.NotNull(mock.Comment(""));
     }
 }
