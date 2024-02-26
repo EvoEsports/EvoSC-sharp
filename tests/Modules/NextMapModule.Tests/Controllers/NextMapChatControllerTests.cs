@@ -1,30 +1,27 @@
 ﻿using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace EvoSC.Modules.Official.NextMapModule.Tests.Controllers;
 
 public class NextMapChatControllerTests : CommandInteractionControllerTestBase<NextMapChatController>
 {
-    private readonly Mock<IOnlinePlayer> _actor = new();
-    private readonly Mock<INextMapService> _nextMapService = new();
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
+    private readonly INextMapService _nextMapService = Substitute.For<INextMapService>();
+    private readonly (IServerClient Client, IGbxRemoteClient Remote)
         _server = Mocking.NewServerClientMock();
-
-    private readonly Locale _locale;
 
     public NextMapChatControllerTests()
     {
-        _locale = Mocking.NewLocaleMock(ContextService.Object);
-        InitMock(_actor.Object, _nextMapService, _server.Client, _locale);
+        var locale = Mocking.NewLocaleMock(ContextService);
+        InitMock(_actor, _nextMapService, _server.Client, locale);
     }
 
     [Fact]
@@ -39,10 +36,10 @@ public class NextMapChatControllerTests : CommandInteractionControllerTestBase<N
             Name = "snippens dream",
             Uid = "Uid"
         };
-        _nextMapService.Setup(m => m.GetNextMapAsync()).Returns(Task.FromResult((IMap)map));
+        _nextMapService.GetNextMapAsync().Returns(Task.FromResult((IMap)map));
 
         await Controller.GetNextMapAsync();
 
-        _server.Client.Verify(c => c.InfoMessageAsync(It.IsAny<string>()));
+        await _server.Client.Received().InfoMessageAsync(Arg.Any<string>());
     }
 }

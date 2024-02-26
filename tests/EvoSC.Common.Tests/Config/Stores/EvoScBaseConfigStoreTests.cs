@@ -9,7 +9,7 @@ namespace EvoSC.Common.Tests.Config.Stores;
 
 public class EvoScBaseConfigStoreTests
 {
-    private static string ConfigFile = "TestFiles/Config/BasicConfig/main.toml";
+    private static readonly string ConfigFile = "TestFiles/Config/BasicConfig/main.toml";
 
     [Fact]
     public void Can_Read()

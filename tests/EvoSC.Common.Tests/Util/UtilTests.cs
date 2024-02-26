@@ -28,8 +28,8 @@ public class UtilTests
     [InlineData(2, true)]
     public void Player_ForcedSpectator_Parsed(int flags, bool actual)
     {
-        bool result = (new TmPlayerInfo {Flags = flags}).IsForcedSpectator();
-        
+        var result = new TmPlayerInfo { Flags = flags }.IsForcedSpectator();
+
         Assert.Equal(actual, result);
     }
     
@@ -39,8 +39,8 @@ public class UtilTests
     [InlineData(0, false)]
     public void Player_ForcedSpectatorSelectable_Parsed(int flags, bool actual)
     {
-        bool result = (new TmPlayerInfo {Flags = flags}).IsForcedSpectatorSelectable();
-        
+        var result = new TmPlayerInfo { Flags = flags }.IsForcedSpectatorSelectable();
+
         Assert.Equal(actual, result);
     }
     
@@ -50,8 +50,8 @@ public class UtilTests
     [InlineData(2000, 2)]
     public void Player_StereoDisplayMode_Parsed(int flags, int actual)
     {
-        int result = (new TmPlayerInfo {Flags = flags}).StereoDisplayMode();
-        
+        var result = new TmPlayerInfo { Flags = flags }.StereoDisplayMode();
+
         Assert.Equal(actual, result);
     }
     
@@ -60,8 +60,8 @@ public class UtilTests
     [InlineData(0, false)]
     public void Player_IsManagedByAnOtherServer_Parsed(int flags, bool actual)
     {
-        bool result = (new TmPlayerInfo {Flags = flags}).IsManagedByAnOtherServer();
-        
+        var result = new TmPlayerInfo { Flags = flags }.IsManagedByAnOtherServer();
+
         Assert.Equal(actual, result);
     }
     
@@ -70,8 +70,8 @@ public class UtilTests
     [InlineData(0, false)]
     public void Player_IsServer_Parsed(int flags, bool actual)
     {
-        bool result = (new TmPlayerInfo {Flags = flags}).IsServer();
-        
+        var result = new TmPlayerInfo { Flags = flags }.IsServer();
+
         Assert.Equal(actual, result);
     }
     
@@ -80,8 +80,8 @@ public class UtilTests
     [InlineData(0, false)]
     public void Player_HasPlayerSlot_Parsed(int flags, bool actual)
     {
-        bool result = (new TmPlayerInfo {Flags = flags}).HasPlayerSlot();
-        
+        var result = new TmPlayerInfo { Flags = flags }.HasPlayerSlot();
+
         Assert.Equal(actual, result);
     }
     
@@ -90,8 +90,8 @@ public class UtilTests
     [InlineData(0, false)]
     public void Player_IsBroadcasting_Parsed(int flags, bool actual)
     {
-        bool result = (new TmPlayerInfo {Flags = flags}).IsBroadcasting();
-        
+        var result = new TmPlayerInfo { Flags = flags }.IsBroadcasting();
+
         Assert.Equal(actual, result);
     }
     
@@ -100,8 +100,8 @@ public class UtilTests
     [InlineData(0, false)]
     public void Player_HasJoinedGame_Parsed(int flags, bool actual)
     {
-        bool result = (new TmPlayerInfo {Flags = flags}).HasJoinedGame();
-        
+        var result = new TmPlayerInfo { Flags = flags }.HasJoinedGame();
+
         Assert.Equal(actual, result);
     }
     

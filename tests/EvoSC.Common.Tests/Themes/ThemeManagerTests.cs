@@ -11,7 +11,7 @@ using EvoSC.Common.Themes.Attributes;
 using EvoSC.Common.Themes.Events;
 using EvoSC.Common.Themes.Events.Args;
 using EvoSC.Common.Themes.Exceptions;
-using Moq;
+using NSubstitute;
 using SimpleInjector;
 using Xunit;
 
@@ -66,28 +66,28 @@ public class ThemeManagerTests
     }
 
     private (
-        Mock<IServiceContainerManager> ServiceManager,
-        Mock<IEvoSCApplication> EvoSCApp,
-        Mock<IEventManager> Events,
-        Mock<IEvoScBaseConfig> Config,
+        IServiceContainerManager ServiceManager,
+        IEvoSCApplication EvoSCApp,
+        IEventManager Events,
+        IEvoScBaseConfig Config,
         IThemeManager ThemeManager
         ) GetMock()
     {
-        var serviceManager = new Mock<IServiceContainerManager>();
-        var app = new Mock<IEvoSCApplication>();
-        var events = new Mock<IEventManager>();
-        var config = new Mock<IEvoScBaseConfig>();
+        var serviceManager = Substitute.For<IServiceContainerManager>();
+        var app = Substitute.For<IEvoSCApplication>();
+        var events = Substitute.For<IEventManager>();
+        var config = Substitute.For<IEvoScBaseConfig>();
 
-        app.Setup(p => p.Services).Returns(new Container());
+        app.Services.Returns(new Container());
 
-        config.Setup(p => p.Theme).Returns(new DynamicThemeOptions(new Dictionary<string, object>
+        config.Theme.Returns(new DynamicThemeOptions(new Dictionary<string, object>
         {
             { "MyOptions.MyOption1", "MyValue" },
             { "MyOptions.MyOption2", "MyValue2" },
             { "MyOptions.MyOption3", "MyValue3" }
         }));
         
-        var manager = new ThemeManager(serviceManager.Object, app.Object, events.Object, config.Object);
+        var manager = new ThemeManager(serviceManager, app, events, config);
 
         return (
             serviceManager,
@@ -218,7 +218,7 @@ public class ThemeManagerTests
 
         await mock.ThemeManager.AddThemeAsync(typeof(MyTheme));
         
-        mock.Events.Verify(e => e.RaiseAsync(ThemeEvents.CurrentThemeChanged, It.IsAny<ThemeUpdatedEventArgs>()));
+        await mock.Events.Received().RaiseAsync(ThemeEvents.CurrentThemeChanged, Arg.Any<ThemeUpdatedEventArgs>());
     }
 
     [Fact]

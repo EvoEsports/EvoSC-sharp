@@ -3,13 +3,13 @@ using EvoSC.Modules.Official.Player.Controllers;
 using EvoSC.Modules.Official.Player.Interfaces;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.Player.Tests;
 
 public class PlayerEventControllerTests : ControllerMock<PlayerEventController, IEventControllerContext>
 {
-    private Mock<IPlayerService> _playerService = new();
+    private readonly IPlayerService _playerService = Substitute.For<IPlayerService>();
 
     public PlayerEventControllerTests()
     {
@@ -22,6 +22,6 @@ public class PlayerEventControllerTests : ControllerMock<PlayerEventController, 
         var args = new PlayerConnectGbxEventArgs {Login = "MyPlayerLogin"};
         await Controller.OnPlayerConnect(null, args);
 
-        _playerService.Verify(s => s.UpdateAndGreetPlayerAsync(args.Login));
+        await _playerService.Received().UpdateAndGreetPlayerAsync(args.Login);
     }
 }

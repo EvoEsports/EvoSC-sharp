@@ -11,7 +11,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Util;
@@ -85,8 +85,8 @@ public class ValueReaderManagerTests
     public async Task Boolean_Reader_Correctly_Selected_For_Parsing_By_Manager()
     {
         var manager = new ValueReaderManager(new BooleanReader());
-        
-        bool value = await manager.ConvertValueAsync<bool>("1");
+
+        var value = await manager.ConvertValueAsync<bool>("1");
 
         Assert.True(value);
     }
@@ -278,11 +278,11 @@ public class ValueReaderManagerTests
             Flags = null
         };
 
-        var playerManager = new Mock<IPlayerManagerService>();
-        playerManager.Setup(m => m.FindOnlinePlayerAsync("player"))
-            .Returns(() => Task.FromResult(new IOnlinePlayer[] {onlinePlayer}.AsEnumerable()));
+        var playerManager = Substitute.For<IPlayerManagerService>();
+        playerManager.FindOnlinePlayerAsync("player")
+            .Returns(_ => Task.FromResult(new IOnlinePlayer[] {onlinePlayer}.AsEnumerable()));
         
-        var manager = new ValueReaderManager(new OnlinePlayerReader(playerManager.Object));
+        var manager = new ValueReaderManager(new OnlinePlayerReader(playerManager));
 
         var value = await manager.ConvertValueAsync(typeof(IOnlinePlayer), "player") as IOnlinePlayer;
         
@@ -293,11 +293,11 @@ public class ValueReaderManagerTests
     [Fact]
     public async Task OnlinePlayer_Reader_Not_Finding_Players_Throws_Exception()
     {
-        var playerManager = new Mock<IPlayerManagerService>();
-        playerManager.Setup(m => m.FindOnlinePlayerAsync("player"))
-            .Returns(() => Task.FromResult(Array.Empty<IOnlinePlayer>().AsEnumerable()));
+        var playerManager = Substitute.For<IPlayerManagerService>();
+        playerManager.FindOnlinePlayerAsync("player")
+            .Returns(_ => Task.FromResult(Array.Empty<IOnlinePlayer>().AsEnumerable()));
 
-        var reader = new OnlinePlayerReader(playerManager.Object);
+        var reader = new OnlinePlayerReader(playerManager);
 
         await Assert.ThrowsAsync<PlayerNotFoundException>(() =>
             reader.ReadAsync(typeof(IOnlinePlayer), "")

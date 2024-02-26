@@ -29,12 +29,12 @@ public class MatchStateUtilsTests
         Assert.NotNull(intf);
     }
 
-    interface IUnknownStateType : IMatchState
+    private interface IUnknownStateType : IMatchState
     {
         public int Test { get; }
     }
 
-    class UnknownStateType : IUnknownStateType
+    private class UnknownStateType : IUnknownStateType
     {
         public Guid TimelineId { get; }
         public MatchStatus Status { get; }

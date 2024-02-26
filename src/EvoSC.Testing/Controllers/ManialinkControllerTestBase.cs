@@ -2,19 +2,19 @@
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Testing.Controllers;
 
 public class ManialinkControllerTestBase<TController> : ControllerMock<TController, IManialinkInteractionContext>
     where TController : class, IController
 {
-    private Mock<IManialinkManager> _mlManager = new();
+    private readonly IManialinkManager _mlManager = Substitute.For<IManialinkManager>();
 
     /// <summary>
     /// The manialink manager mock used for this mock.
     /// </summary>
-    public Mock<IManialinkManager> ManialinkManager => _mlManager;
+    public IManialinkManager ManialinkManager => _mlManager;
     
     /// <summary>
     /// Initialize this controller mock.
@@ -25,6 +25,6 @@ public class ManialinkControllerTestBase<TController> : ControllerMock<TControll
     protected void InitMock(IOnlinePlayer actor, IManialinkActionContext actionContext, params object[] services)
     {
         base.InitMock(services);
-        this.SetupMock(actor, actionContext, _mlManager.Object);
+        this.SetupMock(actor, actionContext, _mlManager);
     }
 }

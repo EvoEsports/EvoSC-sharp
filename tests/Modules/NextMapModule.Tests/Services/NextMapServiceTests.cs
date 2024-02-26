@@ -3,21 +3,21 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.NextMapModule.Services;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace EvoSC.Modules.Official.NextMapModule.Tests.Services;
 
 public class NextMapServiceTests
 {
-    private readonly Mock<ILogger<NextMapService>> _mockLogger = new();
-    private readonly Mock<IMapService> _mockMapService = new();
+    private readonly ILogger<NextMapService> _mockLogger = Substitute.For<ILogger<NextMapService>>();
+    private readonly IMapService _mockMapService = Substitute.For<IMapService>();
 
     private readonly NextMapService _nextMapService;
 
     public NextMapServiceTests()
     {
-        _nextMapService = new(_mockLogger.Object, _mockMapService.Object);
+        _nextMapService = new(_mockLogger, _mockMapService);
     }
 
     [Fact]
@@ -32,18 +32,18 @@ public class NextMapServiceTests
             Name = "snippens dream",
             Uid = "Uid"
         };
-        _mockMapService.Setup(r => r.GetNextMapAsync()).ReturnsAsync(map);
+        _mockMapService.GetNextMapAsync().Returns(map);
 
         await _nextMapService.GetNextMapAsync();
 
-        _mockMapService.Verify(r => r.GetNextMapAsync(), Times.Once);
+        await _mockMapService.Received(1).GetNextMapAsync();
     }
 
     [Fact]
     public async Task GetNextMapAsync_Should_Not_Get_Next_Map_If_Null()
     {
-        _mockMapService.Setup(r => r.GetNextMapAsync()).ReturnsAsync((IMap?)null);
+        _mockMapService.GetNextMapAsync().Returns((IMap?)null);
         await Assert.ThrowsAsync<InvalidOperationException>(() => _nextMapService.GetNextMapAsync());
-        _mockMapService.Verify(r => r.GetNextMapAsync(), Times.Once);
+        await _mockMapService.Received(1).GetNextMapAsync();
     }
 }

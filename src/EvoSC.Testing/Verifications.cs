@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Testing;
 
 public static class Verifications
 {
+    
     /// <summary>
     /// Helper method for verifying that a logging call was made.
     /// </summary>
@@ -14,37 +16,31 @@ public static class Verifications
     /// <param name="msg">Message which was logged.</param>
     /// <param name="times">How many times this log was called.</param>
     /// <typeparam name="T">The type which this logger is assigned to.</typeparam>
-    public static void Verify<T>(this Mock<ILogger<T>> loggerMock, LogLevel logLevel, Exception? exception, string? msg,
-        Times times)
+    public static void Verify<T>(this ILogger<T> loggerMock, LogLevel logLevel, Exception? exception, string? msg, Quantity times)
     {
         if (exception == null)
         {
-            loggerMock.Verify(m => m.Log(
+            loggerMock.Received(times).Log(
                 logLevel,
-                0,
-                It.Is<It.IsAnyType>((o, type) =>
-                    msg == null || (
-                        o.ToString()!.StartsWith(msg, StringComparison.Ordinal) 
-                        &&type.Name.Equals("FormattedLogValues", StringComparison.Ordinal)
-                    )),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()
-            ), times);
+                Arg.Any<EventId>(),
+                Arg.Is<object>(o =>  msg == null || (
+                    o.ToString()!.StartsWith(msg, StringComparison.Ordinal) 
+                    && o.GetType().Name.Equals("FormattedLogValues", StringComparison.Ordinal)
+                )),
+                Arg.Any<Exception>(),
+                Arg.Any<Func<object, Exception?, string>>());
         }
         else
         {
-            // duplicate code is required due to the way moq works with it's expression system
-            loggerMock.Verify(m => m.Log(
+            loggerMock.Received(times).Log(
                 logLevel,
-                0,
-                It.Is<It.IsAnyType>((o, type) =>
-                    msg == null || (
-                        o.ToString()!.StartsWith(msg, StringComparison.Ordinal) 
-                        &&type.Name.Equals("FormattedLogValues", StringComparison.Ordinal)
-                    )),
+                Arg.Any<EventId>(),
+                Arg.Is<object>(o =>  msg == null || (
+                    o.ToString()!.StartsWith(msg, StringComparison.Ordinal) 
+                    && o.GetType().Name.Equals("FormattedLogValues", StringComparison.Ordinal)
+                )),
                 exception,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()
-            ), times);
+                Arg.Any<Func<object, Exception?, string>>());
         }
     }
 }

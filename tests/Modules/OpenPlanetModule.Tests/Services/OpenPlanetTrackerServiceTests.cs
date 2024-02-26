@@ -1,7 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Services;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Services;
 
@@ -11,35 +11,35 @@ public class OpenPlanetTrackerServiceTests
     public void Player_Is_Added()
     {
         var service = new OpenPlanetTrackerService();
-        var player = new Mock<IPlayer>();
-        var opInfo = new Mock<IOpenPlanetInfo>();
+        var player = Substitute.For<IPlayer>();
+        var opInfo = Substitute.For<IOpenPlanetInfo>();
 
-        player.Setup(p => p.AccountId).Returns("something");
-        player.Setup(p => p.Equals(It.IsAny<IPlayer>()))
-            .Returns((IPlayer a) => player.Object.AccountId.Equals(a.AccountId));
+        player.AccountId.Returns("something");
+        player.Equals(Arg.Any<IPlayer>())
+            .ReturnsForAnyArgs(p => player.AccountId.Equals(p.Arg<IPlayer>().AccountId));
         
-        service.AddOrUpdatePlayer(player.Object, opInfo.Object);
+        service.AddOrUpdatePlayer(player, opInfo);
 
         var addedPlayer = service.Players.FirstOrDefault();
         
         Assert.NotNull(addedPlayer);
-        Assert.Equal(player.Object, addedPlayer.Player);
-        Assert.Equal(opInfo.Object, addedPlayer.OpenPlanetInfo);
+        Assert.Equal(player, addedPlayer.Player);
+        Assert.Equal(opInfo, addedPlayer.OpenPlanetInfo);
     }
     
     [Fact]
     public void Player_Is_Removed()
     {
         var service = new OpenPlanetTrackerService();
-        var player = new Mock<IPlayer>();
-        var opInfo = new Mock<IOpenPlanetInfo>();
+        var player = Substitute.For<IPlayer>();
+        var opInfo = Substitute.For<IOpenPlanetInfo>();
         
-        player.Setup(p => p.AccountId).Returns("something");
-        player.Setup(p => p.Equals(It.IsAny<IPlayer>()))
-            .Returns((IPlayer a) => player.Object.AccountId.Equals(a.AccountId));
+        player.AccountId.Returns("something");
+        player.Equals(Arg.Any<IPlayer>())
+            .ReturnsForAnyArgs(p => player.AccountId.Equals(p.Arg<IPlayer>().AccountId));
         
-        service.AddOrUpdatePlayer(player.Object, opInfo.Object);
-        service.RemovePlayer(player.Object);
+        service.AddOrUpdatePlayer(player, opInfo);
+        service.RemovePlayer(player);
 
         var addedPlayer = service.Players.FirstOrDefault();
         
@@ -50,21 +50,21 @@ public class OpenPlanetTrackerServiceTests
     public void Player_Is_Updated()
     {
         var service = new OpenPlanetTrackerService();
-        var player = new Mock<IPlayer>();
-        var opInfo1 = new Mock<IOpenPlanetInfo>();
-        var opInfo2 = new Mock<IOpenPlanetInfo>();
+        var player = Substitute.For<IPlayer>();
+        var opInfo1 = Substitute.For<IOpenPlanetInfo>();
+        var opInfo2 = Substitute.For<IOpenPlanetInfo>();
         
-        player.Setup(p => p.AccountId).Returns("something");
-        player.Setup(p => p.Equals(It.IsAny<IPlayer>()))
-            .Returns((IPlayer a) => player.Object.AccountId.Equals(a.AccountId));
+        player.AccountId.Returns("something");
+        player.Equals(Arg.Any<IPlayer>())
+            .ReturnsForAnyArgs(p => player.AccountId.Equals(p.Arg<IPlayer>().AccountId));
         
-        service.AddOrUpdatePlayer(player.Object, opInfo1.Object);
-        service.AddOrUpdatePlayer(player.Object, opInfo2.Object);
+        service.AddOrUpdatePlayer(player, opInfo1);
+        service.AddOrUpdatePlayer(player, opInfo2);
 
         var addedPlayer = service.Players.FirstOrDefault();
         
         Assert.NotNull(addedPlayer);
-        Assert.Equal(player.Object, addedPlayer.Player);
-        Assert.Equal(opInfo2.Object, addedPlayer.OpenPlanetInfo);
+        Assert.Equal(player, addedPlayer.Player);
+        Assert.Equal(opInfo2, addedPlayer.OpenPlanetInfo);
     }
 }

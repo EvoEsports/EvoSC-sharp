@@ -2,49 +2,49 @@
 using EvoSC.Modules.Official.Player.Controllers;
 using EvoSC.Modules.Official.Player.Interfaces;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.Player.Tests;
 
 public class PlayerCommandsControllerTests : CommandInteractionControllerTestBase<PlayerCommandsController>
 {
-    private Mock<IPlayerService> _playerService = new();
-    private Mock<IOnlinePlayer> _player = new();
+    private readonly IPlayerService _playerService = Substitute.For<IPlayerService>();
+    private readonly IOnlinePlayer _player = Substitute.For<IOnlinePlayer>();
     
     public PlayerCommandsControllerTests()
     {
-        InitMock(_player.Object, _playerService);
+        InitMock(_player, _playerService);
     }
 
     [Fact]
     public async Task Player_Is_Kicked()
     {
-        await Controller.KickPlayerAsync(_player.Object);
-        _playerService.Verify(p => p.KickAsync(_player.Object, Context.Object.Player));
+        await Controller.KickPlayerAsync(_player);
+        await _playerService.Received().KickAsync(_player, Context.Player);
     }
     
     [Fact]
     public async Task Player_Is_Muted()
     {
-        await Controller.MutePlayerAsync(_player.Object);
+        await Controller.MutePlayerAsync(_player);
         
-        _playerService.Verify(p => p.MuteAsync(_player.Object, Context.Object.Player));
+        await _playerService.Received().MuteAsync(_player, Context.Player);
     }
     
     [Fact]
     public async Task Player_Is_UnMuted()
     {
-        await Controller.UnMutePlayerAsync(_player.Object);
+        await Controller.UnMutePlayerAsync(_player);
         
-        _playerService.Verify(p => p.UnmuteAsync(_player.Object, Context.Object.Player));
+        await _playerService.Received().UnmuteAsync(_player, Context.Player);
     }
     
     [Fact]
     public async Task Player_Is_Banned()
     {
-        await Controller.BanPlayerAsync(_player.Object);
+        await Controller.BanPlayerAsync(_player);
         
-        _playerService.Verify(p => p.BanAsync(_player.Object, Context.Object.Player));
+        await _playerService.Received().BanAsync(_player, Context.Player);
     }
     
     [Fact]
@@ -52,6 +52,6 @@ public class PlayerCommandsControllerTests : CommandInteractionControllerTestBas
     {
         await Controller.UnbanPlayerAsync("ThePlayerLogin");
         
-        _playerService.Verify(p => p.UnbanAsync("ThePlayerLogin", Context.Object.Player));
+        await _playerService.Received().UnbanAsync("ThePlayerLogin", Context.Player);
     }
 }

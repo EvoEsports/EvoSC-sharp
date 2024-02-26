@@ -2,18 +2,18 @@
 using EvoSC.Modules.Official.MatchManagerModule.Controllers;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
 
 namespace MatchManagerModule.Tests.Controllers;
 
 public class MatchSettingsCommandsControllerTests : CommandInteractionControllerTestBase<MatchSettingsCommandsController>
 {
-    private Mock<IOnlinePlayer> _player = new();
-    private Mock<IMatchManagerHandlerService> _matchHandler = new();
+    private readonly IOnlinePlayer _player = Substitute.For<IOnlinePlayer>();
+    private readonly IMatchManagerHandlerService _matchHandler = Substitute.For<IMatchManagerHandlerService>();
 
     public MatchSettingsCommandsControllerTests()
     {
-        InitMock(_player.Object, _matchHandler);
+        InitMock(_player, _matchHandler);
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class MatchSettingsCommandsControllerTests : CommandInteractionController
     {
         await Controller.SetModeAsync("MyMode");
 
-        _matchHandler.Verify(m => m.SetModeAsync("MyMode", Context.Object.Player), Times.Once);
+        await _matchHandler.Received(1).SetModeAsync("MyMode", Context.Player);
     }
     
     [Fact]
@@ -29,7 +29,7 @@ public class MatchSettingsCommandsControllerTests : CommandInteractionController
     {
         await Controller.LoadMatchSettingsAsync("MySettings");
 
-        _matchHandler.Verify(m => m.LoadMatchSettingsAsync("MySettings", Context.Object.Player), Times.Once);
+        await _matchHandler.Received(1).LoadMatchSettingsAsync("MySettings", Context.Player);
     }
     
     [Fact]
@@ -37,6 +37,6 @@ public class MatchSettingsCommandsControllerTests : CommandInteractionController
     {
         await Controller.SetScriptSettingAsync("S_MySetting", "123");
 
-        _matchHandler.Verify(m => m.SetScriptSettingAsync("S_MySetting", "123", Context.Object.Player), Times.Once);
+        await _matchHandler.Received(1).SetScriptSettingAsync("S_MySetting", "123", Context.Player);
     }
 }

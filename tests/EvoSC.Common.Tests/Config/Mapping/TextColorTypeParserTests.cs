@@ -22,7 +22,7 @@ public class TextColorTypeParserTests
     {
         var colorParser = new TextColorTypeParser();
 
-        bool parsed = colorParser.TryParse(value, null, out var result);
+        var parsed = colorParser.TryParse(value, null, out var result);
 
         if (shouldBeParsed)
         {

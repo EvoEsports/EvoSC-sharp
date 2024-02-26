@@ -4,21 +4,21 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.SetName.Controllers;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
-using Moq;
+using NSubstitute;
 
 namespace EvoSC.Modules.Official.SetName.Tests;
 
 public class SetNameCommandsControllerTests : CommandInteractionControllerTestBase<SetNameCommandsController>
 {
-    private Mock<IOnlinePlayer> _actor = new();
-    private Mock<IManialinkManager> _manialinkManager = new();
-    private Locale _locale;
+    private readonly IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
+    private readonly IManialinkManager _manialinkManager = Substitute.For<IManialinkManager>();
+    private readonly Locale _locale;
 
     public SetNameCommandsControllerTests()
     {
-        _locale = Mocking.NewLocaleMock(ContextService.Object);
+        _locale = Mocking.NewLocaleMock(ContextService);
         
-        InitMock(_actor.Object, _manialinkManager, _locale);
+        InitMock(_actor, _manialinkManager, _locale);
     }
     
     [Fact]
@@ -26,7 +26,6 @@ public class SetNameCommandsControllerTests : CommandInteractionControllerTestBa
     {
         await Controller.SetNameAsync();
 
-        _manialinkManager.Verify(m =>
-            m.SendManialinkAsync(_actor.Object, "SetName.EditName", It.IsAny<It.IsAnyType>()));
+        await _manialinkManager.Received().SendManialinkAsync(_actor, "SetName.EditName", Arg.Any<object>());
     }
 }

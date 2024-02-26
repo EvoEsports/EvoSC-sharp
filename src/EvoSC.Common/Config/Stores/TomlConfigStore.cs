@@ -115,7 +115,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
             var index = int.Parse(key[(indexStart + 1)..^1], CultureInfo.InvariantCulture);
             var value = _document.GetValue(key[..indexStart]) as TomlArray;
 
-            return value?.Skip(index)?.FirstOrDefault()?.StringValue;
+            return value?.Skip(index).FirstOrDefault()?.StringValue;
         }
 
         var keyValue = _document.GetValue(key);

@@ -5,8 +5,8 @@ namespace EvoSC.Testing.Tests.TestClasses;
 
 public class TestControllerWithServices : EvoScController<IPlayerInteractionContext>
 {
-    private ITestService _service;
-    
+    private readonly ITestService _service;
+
     public TestControllerWithServices(ITestService service)
     {
         _service = service;
