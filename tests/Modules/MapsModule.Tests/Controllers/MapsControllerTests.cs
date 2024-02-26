@@ -97,7 +97,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         AuditEventBuilder.Received(1).WithEventName(AuditEvents.MapRemoved);
         await _server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), _actor);
         await _server.Client.DidNotReceive().ErrorMessageAsync(Arg.Any<string>(), _actor);
-        _logger.Received(1).Log(LogLevel.Debug, null, Arg.Any<string?>());
+        _logger.Verify(LogLevel.Debug, null, null, Quantity.Exactly(1));
     }
 
     [Fact]

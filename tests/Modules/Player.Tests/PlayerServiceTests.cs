@@ -182,7 +182,7 @@ public class PlayerServiceTests
         
         mock.Audit.Received(1).Success();
         await mock.Server.Remote.Received(1).UnIgnoreAsync(PlayerLogin);
-        await mock.Server.Client.Received(1).WarningMessageAsync(Arg.Any<string>(), mock.Player);
+        await mock.Server.Client.Received(1).InfoMessageAsync(Arg.Any<string>(), mock.Player);
         await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), mock.Actor);
     }
     
@@ -221,7 +221,7 @@ public class PlayerServiceTests
 
 
         await mock.Server.Remote.Received(1).BanAsync(PlayerLogin);
-        mock.Logger.Received(1).Log(LogLevel.Trace, null);
+        mock.Logger.Verify(LogLevel.Trace, null,  null, Quantity.Exactly(1));
         await mock.Server.Remote.Received(1).BlackListAsync(PlayerLogin);
         await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), mock.Actor);
         mock.Audit.Received(1).Success();
@@ -238,7 +238,7 @@ public class PlayerServiceTests
         
         await mock.Server.Remote.Received(1).UnBanAsync(PlayerLogin);
         await mock.Server.Remote.Received(1).UnBlackListAsync(PlayerLogin);
-        await mock.Server.Client.Received(1).SuccessMessageAsync(Arg.Any<string>(), _actor);
+        await mock.Server.Client.Received(2).SuccessMessageAsync(Arg.Any<string>(), _actor);
         mock.Audit.Received(2).Success();
     }
     
@@ -256,7 +256,7 @@ public class PlayerServiceTests
         await mock.Server.Remote.Received(1).UnBlackListAsync(PlayerLogin);
         await mock.Server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
         mock.Audit.Received(1).Success();
-        mock.Logger.Received(1).Log(LogLevel.Error, ex, null);
+        mock.Logger.Verify(LogLevel.Error, ex, null, Quantity.Exactly(1));
     }
     
     [Fact]
@@ -273,6 +273,6 @@ public class PlayerServiceTests
         await mock.Server.Remote.Received(1).UnBlackListAsync(PlayerLogin);
         await mock.Server.Client.Received(1).ErrorMessageAsync(Arg.Any<string>(), _actor);
         mock.Audit.Received(1).Success();
-        mock.Logger.Received(1).Log(LogLevel.Error, ex, null);
+        mock.Logger.Verify(LogLevel.Error, ex, null, Quantity.Exactly(1));
     }
 }

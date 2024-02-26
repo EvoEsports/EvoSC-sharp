@@ -27,6 +27,8 @@ public class MotdServiceTests
     private readonly IPlayerManagerService _playerManager = Substitute.For<IPlayerManagerService>();
     private readonly IContextService _context;
 
+    private const int Max = 100;
+
     private readonly ControllerContextMock<ICommandInteractionContext> _commandContext =
         Mocking.NewControllerContextMock<ICommandInteractionContext>();
 
@@ -106,7 +108,7 @@ public class MotdServiceTests
         SetupController();
         _motdService!.SetInterval(100, _player);
         await Task.Delay(150 * times);
-        await _httpService.Received(int.MaxValue).GetAsync(Arg.Any<string>());
+        await _httpService.Received(Quantity.Within(times, Max)).GetAsync(Arg.Any<string>());
     }
 
     [Fact]
@@ -174,8 +176,6 @@ public class MotdServiceTests
     {
         _httpService.GetAsync(Arg.Any<string>())
             .Returns(Task.FromResult("test"));
-        await _maniaLinkManager.SendManialinkAsync(_player, "MotdModule.MotdTemplate",
-            new { isChecked = false, text = "test" });
 
         SetupMocks();
         SetupController();

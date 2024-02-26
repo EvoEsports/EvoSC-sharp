@@ -50,7 +50,7 @@ public class SetNameControllerTests : ManialinkControllerTestBase<SetNameControl
         await Controller.EditNameAsync(entry);
         
         await _setNameService.DidNotReceive().SetNicknameAsync(_actor, entry.Nickname);
-        await ManialinkManager.DidNotReceive().SendManialinkAsync(_actor, "SetName.EditName", Arg.Any<ExpandoObject>());
+        await ManialinkManager.DidNotReceive().SendManialinkAsync(_actor, "SetName.EditName", Arg.Any<object>());
     }
 
     [Fact]

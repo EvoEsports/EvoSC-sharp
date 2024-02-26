@@ -160,9 +160,10 @@ public static class Mocking
     /// <returns></returns>
     public static IContextService NewContextServiceMock(IControllerContext context, IOnlinePlayer? actor)
     {
+        var auditEvent = context.AuditEvent;
         var mock = Substitute.For<IContextService>();
         
-        mock.Audit().Returns(context.AuditEvent);
+        mock.Audit().Returns(auditEvent);
         mock.GetContext().Returns(context);
 
         if (actor != null)

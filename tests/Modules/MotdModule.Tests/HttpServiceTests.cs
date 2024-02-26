@@ -4,6 +4,7 @@ using EvoSC.Testing;
 using Microsoft.Extensions.Logging;
 using MockHttpClient;
 using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 
 namespace MotdModule.Tests;
 
@@ -67,14 +68,21 @@ public class HttpServiceTests : IDisposable
         if (throwException)
         {
             Assert.Empty(result);
-            _logger.Received(1).Log(LogLevel.Error, null, Arg.Any<string?>());
+            _logger.Verify(LogLevel.Error, null, null, Quantity.Exactly(1));
         }
         else
         {
-            var data = expectedResponse.Data.FirstOrDefault()!;
-            Assert.Equal(data.Message, result);
-            Assert.IsType<int>(data.Id);
-            Assert.NotEmpty(data.Server);
+            if (expectedResponse.Data is null)
+            {
+                Assert.Empty(result);
+            }
+            else
+            {
+                var data = expectedResponse.Data.FirstOrDefault()!;
+                Assert.Equal(data.Message, result);
+                Assert.IsType<int>(data.Id);
+                Assert.NotEmpty(data.Server);
+            }
         }
     }
 

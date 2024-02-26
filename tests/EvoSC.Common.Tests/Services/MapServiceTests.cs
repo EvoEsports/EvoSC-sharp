@@ -18,6 +18,7 @@ using GbxRemoteNet.Interfaces;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using NSubstitute.ClearExtensions;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Services;
@@ -367,9 +368,9 @@ public class MapServiceTests
             UpdatedAt = new DateTime(),
             LastVisit = new DateTime()
         };
-
         _server.Remote.GetMapListAsync(Arg.Any<int>(), Arg.Any<int>())
             .Returns(Task.FromResult(new[] { tmMapInfo }));
+        _mapRepository.GetMapByUidAsync(tmMapInfo.UId).Returns((IMap?) null);
         _playerService.GetOrCreatePlayerAsync(Arg.Any<string>())
             .Returns(Task.FromResult((IPlayer)player));
 

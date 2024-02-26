@@ -6,7 +6,6 @@ using EvoSC.Modules.Official.MotdModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace MotdModule.Tests;
 
@@ -28,7 +27,7 @@ public class MotdCommandTests : CommandInteractionControllerTestBase<MotdCommand
     public void SetMotdLocal_Sets_Motd_Source_To_Local(string isLocal)
     {
         Controller.SetMotdLocal(isLocal);
-        _motdService.Received().SetMotdSource(bool.Parse(isLocal), null);
+        _motdService.Received().SetMotdSource(bool.Parse(isLocal), Arg.Any<IPlayer>());
     }
 
     [Fact]

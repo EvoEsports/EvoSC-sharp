@@ -37,6 +37,8 @@ public class FastestCpServiceTest
             {
                 AccountId = "AccountId1", Id = 1, NickName = "NickName1", UbisoftName = "Ubisoft1"
             });
+        object? actualData = null;
+        await _manialinkManagerMock.SendPersistentManialinkAsync(Arg.Any<string>(), Arg.Do<object>(x => actualData = x));
 
         await _fastestCpService.RegisterCpTimeAsync(new WayPointEventArgs
         {
@@ -54,9 +56,8 @@ public class FastestCpServiceTest
             IsEndLap = false,
             IsEndRace = false
         });
-
-        object? actualData = null;
-        await _manialinkManagerMock.Received(1).SendPersistentManialinkAsync("FastestCpModule.FastestCp", Arg.Do<object>(x => actualData = x));
+        
+        await _manialinkManagerMock.Received(1).SendPersistentManialinkAsync("FastestCpModule.FastestCp", Arg.Any<object>());
         Assert.Equivalent(
             new { times = new List<PlayerCpTime?> { new("NickName1", 0, TimeSpan.FromMilliseconds(10)) } },
             actualData);

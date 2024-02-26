@@ -33,7 +33,7 @@ public class SetNameServiceTests
 
         await service.SetNicknameAsync(player, "NewName");
 
-        await playerRepository.Received(1).UpdateNicknameAsync(player, "New Name");
+        await playerRepository.Received(1).UpdateNicknameAsync(player, "NewName");
         await playerCache.Received(1).UpdatePlayerAsync(player);
         await eventManager.Received(1).RaiseAsync(SetNameEvents.NicknameUpdated, Arg.Any<NicknameUpdatedEventArgs>());
     }
