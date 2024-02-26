@@ -18,7 +18,6 @@ using GbxRemoteNet.Interfaces;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NSubstitute.ClearExtensions;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Services;

@@ -1,5 +1,4 @@
-﻿using System.Dynamic;
-using EvoSC.Common.Interfaces.Localization;
+﻿using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Modules.Official.SetName.Controllers;
@@ -8,16 +7,15 @@ using EvoSC.Modules.Official.SetName.Models;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.SetName.Tests;
 
 public class SetNameControllerTests : ManialinkControllerTestBase<SetNameController>
 {
-    private IManialinkActionContext _manialinkActionContext = Substitute.For<IManialinkActionContext>();
-    private IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
-    private ISetNameService _setNameService = Substitute.For<ISetNameService>();
-    private Locale _locale;
+    private readonly IOnlinePlayer _actor = Substitute.For<IOnlinePlayer>();
+    private readonly Locale _locale;
+    private readonly IManialinkActionContext _manialinkActionContext = Substitute.For<IManialinkActionContext>();
+    private readonly ISetNameService _setNameService = Substitute.For<ISetNameService>();
 
     public SetNameControllerTests()
     {

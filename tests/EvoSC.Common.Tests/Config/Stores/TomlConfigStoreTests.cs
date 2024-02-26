@@ -11,7 +11,7 @@ namespace EvoSC.Common.Tests.Config.Stores;
 
 public class TomlConfigStoreTests
 {
-    private static string ConfigFile = "TestFiles/Config/BasicConfig/main.toml";
+    private static readonly string ConfigFile = "TestFiles/Config/BasicConfig/main.toml";
 
     private TomlConfigStore<IEvoScBaseConfig> GetStore() => new TomlConfigStore<IEvoScBaseConfig>(ConfigFile);
 

@@ -35,7 +35,7 @@ public class CommandParserTests
         _cmdManager.AddCommand(cmd);
     }
 
-    ValueReaderManager GetFullValueReader()
+    private ValueReaderManager GetFullValueReader()
     {
         var valueReader = new ValueReaderManager();
         valueReader.AddReader(new FloatReader());

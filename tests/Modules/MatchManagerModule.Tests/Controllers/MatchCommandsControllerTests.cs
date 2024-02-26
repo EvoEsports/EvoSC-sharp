@@ -17,7 +17,7 @@ public class MatchCommandsControllerTests : CommandInteractionControllerTestBase
 
     public MatchCommandsControllerTests()
     {
-        var locale = Mocking.NewLocaleMock(this.ContextService);
+        var locale = Mocking.NewLocaleMock(ContextService);
         InitMock(_player, _matchControl, _server.Client, locale);
     }
 

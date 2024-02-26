@@ -12,7 +12,7 @@ namespace EvoSC.Common.Tests.Application;
 
 public class StartupPipelineTests
 {
-    private IEvoScBaseConfig _config;
+    private readonly IEvoScBaseConfig _config;
 
     public StartupPipelineTests()
     {

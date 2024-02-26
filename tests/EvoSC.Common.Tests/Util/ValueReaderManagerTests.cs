@@ -85,8 +85,8 @@ public class ValueReaderManagerTests
     public async Task Boolean_Reader_Correctly_Selected_For_Parsing_By_Manager()
     {
         var manager = new ValueReaderManager(new BooleanReader());
-        
-        bool value = await manager.ConvertValueAsync<bool>("1");
+
+        var value = await manager.ConvertValueAsync<bool>("1");
 
         Assert.True(value);
     }

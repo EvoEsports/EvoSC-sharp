@@ -8,7 +8,6 @@ using EvoSC.Modules.Official.FastestCpModule.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.FastestCpModule.Tests;
 

@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReceivedExtensions;
-using ILogger = Castle.Core.Logging.ILogger;
 
 namespace EvoSC.Modules.Official.MapsModule.Tests.Controllers;
 
@@ -66,7 +65,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     {
         var ex = new DuplicateMapException("Failed map add");
         _mxMapService.FindAndDownloadMapAsync(123, null, _actor)
-.ThrowsAsync(ex);
+            .ThrowsAsync(ex);
 
         await Assert.ThrowsAsync<DuplicateMapException>(() => Controller.AddMapAsync("123"));
         

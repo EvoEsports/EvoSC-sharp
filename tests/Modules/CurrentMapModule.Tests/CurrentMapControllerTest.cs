@@ -3,7 +3,6 @@ using EvoSC.Modules.Official.CurrentMapModule.Controllers;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
 using GbxRemoteNet.Events;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Tests;
 

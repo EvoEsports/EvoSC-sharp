@@ -7,7 +7,6 @@ using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing.Controllers;
 using NSubstitute;
-using Org.BouncyCastle.Utilities;
 using Xunit;
 
 namespace EvoSC.Modules.Official.NextMapModule.Tests.Controllers;

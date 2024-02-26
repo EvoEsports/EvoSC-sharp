@@ -5,7 +5,6 @@ using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Services;
 using NSubstitute;
-using Org.BouncyCastle.Utilities;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Services;
 

@@ -26,7 +26,7 @@ public class CurrentMapServiceTest
     }
 
     [Fact]
-    async Task Should_Hide_Widget()
+    private async Task Should_Hide_Widget()
     {
         await _currentMapService.HideWidgetAsync();
         await _manialinkManager.Received().HideManialinkAsync("CurrentMapModule.CurrentMapWidget");

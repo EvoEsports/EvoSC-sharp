@@ -5,14 +5,13 @@ using EvoSC.Modules.Official.MatchTrackerModule.Controllers;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Testing.Controllers;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Tests.Controllers;
 
 public class MatchTrackerEventControllerTests : EventControllerTestBase<MatchTrackerEventController>
 {
-    private ITrackerSettings _settings = Substitute.For<ITrackerSettings>();
-    private IMatchTracker _tracker = Substitute.For<IMatchTracker>();
+    private readonly ITrackerSettings _settings = Substitute.For<ITrackerSettings>();
+    private readonly IMatchTracker _tracker = Substitute.For<IMatchTracker>();
 
     public MatchTrackerEventControllerTests()
     {

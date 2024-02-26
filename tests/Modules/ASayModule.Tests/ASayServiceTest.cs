@@ -11,7 +11,6 @@ using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.ASayModule.Tests;
 

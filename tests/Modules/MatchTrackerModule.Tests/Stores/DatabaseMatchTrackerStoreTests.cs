@@ -4,14 +4,13 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Stores;
 using EvoSC.Modules.Official.MatchTrackerModule.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Stores;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Tests.Stores;
 
 public class DatabaseMatchTrackerStoreTests
 {
-    private IMatchRecordRepository _repo = Substitute.For<IMatchRecordRepository>();
-    private IDatabaseMatchTrackerStore _store;
+    private readonly IMatchRecordRepository _repo = Substitute.For<IMatchRecordRepository>();
+    private readonly IDatabaseMatchTrackerStore _store;
 
     public DatabaseMatchTrackerStoreTests()
     {

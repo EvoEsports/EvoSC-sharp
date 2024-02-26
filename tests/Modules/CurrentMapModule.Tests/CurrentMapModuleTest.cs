@@ -14,7 +14,7 @@ public class CurrentMapModuleTest
     }
 
     [Fact]
-    async Task Should_Enable_Async()
+    private async Task Should_Enable_Async()
     {
         await _module.EnableAsync();
 
@@ -22,7 +22,7 @@ public class CurrentMapModuleTest
     }
 
     [Fact]
-    async Task Should_Disable_Async()
+    private async Task Should_Disable_Async()
     {
         await _module.DisableAsync();
 

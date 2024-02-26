@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Controllers;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
@@ -9,7 +8,6 @@ using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Interfaces;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Tests.Controllers;
 

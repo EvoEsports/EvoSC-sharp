@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Data.SQLite;
+using System.Threading.Tasks;
 using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository.Players;
@@ -38,7 +39,7 @@ public class PlayerRepositoryTests
         var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         var playerRepo = new PlayerRepository(factory);
 
-        Assert.Throws<System.Data.SQLite.SQLiteException>(() =>
+        Assert.Throws<SQLiteException>(() =>
         {
             playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
             {
