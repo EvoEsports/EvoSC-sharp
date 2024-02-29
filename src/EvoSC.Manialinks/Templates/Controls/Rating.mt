@@ -22,14 +22,25 @@
                 class="evosc-rating"
                 pos="{{ x }} {{ y }}"
         >
-            <label 
+          <label
+                  foreach="int i in Util.Range(parts)"
+                  pos="{{ i*4}} 0"
+                  textfont="{{ Font.Regular }}"
+                  textcolor="{{ Theme.UI_BgSecondary }}"
+                  text="{{ partEmpty }}"
+                  textsize="2"
+          />
+          <frame size="{{ ((value-min)/(max-min))*(4*parts-0.6) }} 5">
+            <label
                     foreach="int i in Util.Range(parts)"
-                    text="{{ Util.RatingParts(min, max, value, parts) &gt;= i ? partFull : partEmpty }}"
-                    textcolor="{{ Util.RatingParts(min, max, value, parts) &gt;= i ? Theme.UI_BgPrimary : Theme.UI_BgSecondary }}"
-                    textfont="{{ Font.Regular }}"
-                    textsize="2"
                     pos="{{ i*4 }} 0"
+                    textfont="{{ Font.Regular }}"
+                    textcolor="{{ Theme.UI_BgPrimary }}"
+                    text="{{ partEmpty }}"
+                    autoscale="0"
+                    textsize="2"
             />
+          </frame>
         </frame>
     </template>
 </component>

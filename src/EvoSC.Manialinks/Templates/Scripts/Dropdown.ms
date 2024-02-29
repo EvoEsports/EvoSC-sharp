@@ -20,7 +20,7 @@ declare Text[] EvoSC_UI_DropdownIds = [];
          Panel.Visible = False;
      }
 
-    if (Event.Control.HasClass("evosc-dropdown-btn")) {
+    if (Event.Control.HasClass("evosc-dropdown-btn-default")) {
         declare ControlId = Event.Control.DataAttributeGet("id");
         declare Panel <=> Page.MainFrame.GetFirstChild(ControlId^"-slotpanel") as CMlFrame;
         

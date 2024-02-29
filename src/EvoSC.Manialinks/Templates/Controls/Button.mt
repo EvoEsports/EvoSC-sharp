@@ -31,21 +31,21 @@
     <!-- Whether the button is disabled or not. If disabled, the button wont fire events. -->
     <property type="bool" name="disabled" default="false" />
     
-    <!-- Class to assign to the button. -->
+    <!-- Custom style -->
     <property type="string" name="className" default="evosc-button" />
     
     <template>
         <frame id="{{ id }}-frame" pos="{{ x }} {{ y }}" class="{{ className }}-frame" data-disabled="{{ disabled }}">
             <frame if="!disabled">
                 <quad
-                        class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
+                        class='{{ className }}-bg-default {{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
                         size="{{ width }} {{ height }}"
                         scriptevents="1"
                         bgcolor='{{ bgColor == null ? "" : bgColor }}'
                 />
                 <label
                         size="{{ width }} {{ height }}"
-                        class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }} {{ className }}-btn'
+                        class='{{ className }}-btn-default {{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
                         text="{{ text }}"
                         scriptevents="1"
                         halign="center"
@@ -56,7 +56,7 @@
                         id="{{ id }}"
                 />
                 <label
-                        class='{{ type == "secondary" ? "btn-secondary" : "btn-default" }} {{ className }}-btn'
+                        class='{{ className }}-btn-default {{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
                         size="{{ width }} {{ height }}"
                         text="{{ text }}"
                         scriptevents="1"
@@ -72,11 +72,11 @@
             <frame if="disabled">
                 <quad
                         size="{{ width }} {{ height }}"
-                        class='{{ type == "secondary" ? "btn-secondary-disabled" : "btn-disabled" }}'
+                        class='{{ className }}-bg-disabled {{ type == "secondary" ? "btn-secondary-disabled" : "btn-disabled" }}'
                 />
                 <label
                         id="{{ id }}"
-                        class='{{ type == "secondary" ? "btn-secondary-disabled" : "btn-disabled" }}'
+                        class='{{ className }}-btn-disabled {{ type == "secondary" ? "btn-secondary-disabled" : "btn-disabled" }}'
                         size="{{ width }} {{ height }}"
                         text="{{ text }}"
                         halign="center"

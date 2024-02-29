@@ -13,7 +13,6 @@
         Frame.ScrollGridSnap = True;
         Frame.ScrollGrid = <{{ scrollGridX }}*1.0, {{ scrollGridY }}*1.0>;
     }
-    log(Frame);
   }
 }
 ***

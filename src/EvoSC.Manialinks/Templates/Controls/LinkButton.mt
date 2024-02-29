@@ -41,7 +41,7 @@
                 width="{{ width }}"
                 height="{{ height }}"
                 disabled="{{ disabled }}"
-                className="evosc-linkbutton"
+                className="{{ className }}"
                 bgColor="{{ bgColor }}"
         />
     </template>

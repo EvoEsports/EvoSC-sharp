@@ -6,6 +6,7 @@
   <property type="double" name="x" default="0.0" />
   <property type="double" name="y" default="0.0" />
   <property type="double" name="width" default="15" />
+  <property type="double" name="height" default="3" />
   <property type="string" name="style" default="Square" /> <!-- Styles: Round, Square -->
   <property type="string" name="closable" default="false" />
   <property type="bool" name="hidden" default="false" />
@@ -20,7 +21,7 @@
             y="{{ y }}"
             id="{{ id }}"
             width="{{ width }}"
-            height="2"
+            height="{{ height }}"
             cornerRadius='{{ style == "Round" ? 1 : 0 }}'
             bgColor="{{ bgColor == null ? Util.TypeToColorBg(severity) : bgColor }}"
             data="{{ closable }}"
@@ -28,11 +29,11 @@
     >
       <label
               class="text"
-              pos="{{ centerText ? width/2.0 : 0.4 }} -0.7"
+              pos="{{ centerText ? width/2.0 : 0.4 }} {{ -height/2+0.2 }}"
               textcolor="{{ textColor == null ? Util.TypeToColorText(severity) : textColor }}"
               size="{{ width }} 5"
               text="{{ text }}"
-              textsize="0.5"
+              textsize="0.4"
               valign="center"
               halign="center"
       />
