@@ -8,6 +8,7 @@
   <import component="EvoSC.Controls.Select" as="Select" />
   <import component="EvoSC.Controls.SelectItem" as="SelectItem" />
   <import component="EvoSC.Controls.Container" as="Container" />
+  <import component="EvoSC.Controls.ScrollBar" as="ScrollBar" />
   <import component="MapListModule.Styles" as="MapListStyles" />
   
   <import component="MapListModule.MapListRow" as="MapListRow" />
@@ -39,31 +40,24 @@
                  x="38"
                  y="-7"
                  height="106"
-                 width="188"
+                 width="185"
                  scrollable="true"
                  scrollHeight="{{ (20*12)-106-2 }}"
                  scrollGridY="12"
                  scrollGridSnap="true"
       >
         <MapListRow foreach="int j in Util.Range(20)" y="{{ -j*12 }}" key="{{ j }}" mapName="FMS - Bloom ft Aethal {{ j }}" />
-        <!-- <MapListRow 
-                mapName="$i$fffイ$5b0入$000»$fffŦlє$5b0ॅ$fffx$5b0N - $o$i$f00к$fffιиgѕ $f00и$fffєvєя $f00Đ$fffιє 2020"
-                key="0"
-                y="0"
-        />
-
-        <MapListRow
-                mapName="Vert"
-                key="1"
-                y="-12"
-        />
-        
-        <MapListRow
-                mapName="$s$o$FF4E$DE4L$BD3E$AC3K$8B2T$6A2R$491I$491C$681 $781C$972I$A72T$C62Y $F64F$F65E$F55A$F56T$E57 $E47E$E48N$E48T$C48R$949Y$749L$44AA$24AG"
-                key="2"
-                y="-24"
-        /> -->
       </Container>
+      <ScrollBar 
+              id="maplistScrollbar"
+              forFrame="maplist"
+              min="0"
+              max="132"
+              length="106"
+              x="224"
+              y="-7"
+              zIndex="1000"
+      />
     </Window>
   </template>
   

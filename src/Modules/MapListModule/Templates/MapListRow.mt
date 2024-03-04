@@ -12,7 +12,7 @@
   <property type="int" name="key" />
   <property type="double" name="x" default="0.0" />
   <property type="double" name="y" default="0.0" />
-  <property type="double" name="width" default="188" />
+  <property type="double" name="width" default="185" />
   
   <property type="string" name="mapName" default="" />
   
@@ -55,7 +55,7 @@
         </frame>
         
         <!-- Map rating -->
-        <frame pos="124 -4.3">
+        <frame pos="122 -4.3">
           <Rating value="50" />
           <label text="$888($aaa321$888)" pos="20 -0.5" textsize="0.7" />
         </frame>
