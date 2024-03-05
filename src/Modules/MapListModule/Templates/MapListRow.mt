@@ -1,4 +1,6 @@
 <component>
+  <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
+  
   <import component="EvoSC.Controls.Panel" as="Panel" />
   <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
   <import component="EvoSC.Controls.Text" as="Text" />
@@ -14,7 +16,7 @@
   <property type="double" name="y" default="0.0" />
   <property type="double" name="width" default="185" />
   
-  <property type="string" name="mapName" default="" />
+  <property type="IMapListMapDto" name="map" />
   
   <template>
     <Panel width="{{ width }}" 
@@ -28,7 +30,7 @@
 
         <!-- Map name and author -->
       <frame pos="7.5 -1.5">
-          <label text="{{ mapName }}" textsize="1.8" textfont="{{ Font.Regular }}" size="34 5" />
+          <label text="{{ map.Map.Name }}" textsize="1.8" textfont="{{ Font.Regular }}" size="34 5" />
           <label text="{{ Icons.User }} evo | Chroma" textsize="0.7" pos="0 -4.5" textfont="{{ Font.Thin }}"/>
       </frame>
 

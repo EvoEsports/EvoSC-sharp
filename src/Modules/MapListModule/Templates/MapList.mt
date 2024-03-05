@@ -1,4 +1,6 @@
 <component>
+  <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
+  
   <import component="EvoSC.Theme" as="Theme" />
   <import component="EvoSC.Window" as="Window" />
   <import component="EvoSC.Controls.TextInput" as="TextInput" />
@@ -12,6 +14,8 @@
   <import component="MapListModule.Styles" as="MapListStyles" />
   
   <import component="MapListModule.MapListRow" as="MapListRow" />
+  
+  <property type="IMapListMapDto[]" name="maps" />
   
   <template>
     <Theme />
@@ -42,17 +46,17 @@
                  height="106"
                  width="185"
                  scrollable="true"
-                 scrollHeight="{{ (20*12)-106-2 }}"
+                 scrollHeight="{{ (maps.Length*12)-104 }}"
                  scrollGridY="12"
                  scrollGridSnap="true"
       >
-        <MapListRow foreach="int j in Util.Range(20)" y="{{ -j*12 }}" key="{{ j }}" mapName="FMS - Bloom ft Aethal {{ j }}" />
+        <MapListRow foreach="IMapListMapDto map in maps" y="{{ -__index*12 }}" key="{{ __index }}" map="{{ map }}" />
       </Container>
       <ScrollBar 
               id="maplistScrollbar"
               forFrame="maplist"
               min="0"
-              max="132"
+              max="{{ (maps.Length*12)-104 }}"
               length="106"
               x="224"
               y="-7"
