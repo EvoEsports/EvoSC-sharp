@@ -17,15 +17,18 @@ declare Text[] EvoSC_UI_DropdownIds = [];
 ***
     foreach (id in EvoSC_UI_DropdownIds) {
          declare Panel <=> Page.MainFrame.GetFirstChild(id^"-btn-slotpanel") as CMlFrame;
-         Panel.Visible = False;
+         Panel.Hide();
      }
 
     if (Event.Control.HasClass("evosc-dropdown-btn-default")) {
         declare ControlId = Event.Control.DataAttributeGet("id");
         declare Panel <=> Page.MainFrame.GetFirstChild(ControlId^"-slotpanel") as CMlFrame;
         
-        Panel.Visible = !Panel.Visible;
-        log(Panel.Size);
+        if (Panel.Visible) {
+            Panel.Hide();
+        } else {
+            Panel.Show();
+        }
     }
 ***
 
