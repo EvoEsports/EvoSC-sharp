@@ -31,7 +31,7 @@
         <!-- Map name and author -->
       <frame pos="7.5 -1.5">
           <label text="{{ map.Map.Name }}" textsize="1.8" textfont="{{ Font.Regular }}" size="34 5" />
-          <label text="{{ Icons.User }} evo | Chroma" textsize="0.7" pos="0 -4.5" textfont="{{ Font.Thin }}"/>
+          <label text="{{ Icons.User }} {{ map.Map.Author.NickName }}" textsize="0.7" pos="0 -4.5" textfont="{{ Font.Thin }}"/>
       </frame>
 
         <!-- PB and AT -->

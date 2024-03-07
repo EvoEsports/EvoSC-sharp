@@ -31,4 +31,6 @@ public class Map: IMap
         ExternalVersion = dbMap.ExternalVersion;
         ExternalMapProvider = dbMap.ExternalMapProvider;
     }
+
+    public static IParsedMap Parse(string baseDirectory, IMap map) => new ParsedMap(baseDirectory, map);
 }

@@ -5,5 +5,5 @@ namespace EvoSC.Modules.Official.MapListModule.Models;
 
 public class MapListMapDto : IMapListMapDto
 {
-    public IMap Map { get; init; }
+    public IParsedMap Map { get; init; }
 }

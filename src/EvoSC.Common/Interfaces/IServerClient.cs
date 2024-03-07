@@ -83,4 +83,6 @@ public interface IServerClient
     /// <param name="text">Text to send.</param>
     /// <returns></returns>
     public Task ErrorMessageAsync(string text, IPlayer player);
+
+    public Task<string> GetMapsDirectoryAsync();
 }

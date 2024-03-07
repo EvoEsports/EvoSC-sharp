@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Common.Services;
 
 public class MapService(IMapRepository mapRepository, ILogger<MapService> logger, IEvoScBaseConfig config,
-        IPlayerManagerService playerService, IServerClient serverClient, IMatchSettingsService matchSettings)
+        IPlayerManagerService playerService, IServerClient serverClient)
     : IMapService
 {
     public async Task<IMap?> GetMapByIdAsync(long id) => await mapRepository.GetMapByIdAsync(id);
@@ -56,8 +56,8 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
             map = await mapRepository.AddMapAsync(mapMetadata, author, relativePath);
         }
 
-        await matchSettings.EditMatchSettingsAsync(Path.GetFileNameWithoutExtension(config.Path.DefaultMatchSettings),
-            builder => builder.AddMap($"EvoSC/{fileName}"));
+        /* await matchSettings.EditMatchSettingsAsync(Path.GetFileNameWithoutExtension(config.Path.DefaultMatchSettings),
+            builder => builder.AddMap($"EvoSC/{fileName}")); */
         
         return map;
     }

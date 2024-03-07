@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Localization;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
@@ -28,11 +29,12 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     private readonly IManialinkActionManager _manialinkActions;
     private readonly Locale _locale;
     private readonly IEventManager _events;
+    private readonly IMapService _mapService;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
         IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo,
         IMapRepository mapRepo, IMatchSettingsService matchSettings, IManialinkActionManager manialinkActions,
-        Locale locale, IEventManager events)
+        Locale locale, IEventManager events, IMapService mapService)
     {
         _settings = settings;
         _server = server;
@@ -44,6 +46,7 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
         _manialinkActions = manialinkActions;
         _locale = locale;
         _events = events;
+        _mapService = mapService;
     }
 
     [ChatCommand("hey", "Say hey!")]
@@ -74,8 +77,13 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var translation = _locale.Translate("some [TestValue] sdf [TestValue] ds", "Elon Musk");
-        Console.WriteLine(translation);
+        var mapList = await _server.Remote.GetMapListAsync(-1, 0);
+
+        var maps = new List<IMap>();
+        foreach (var map in mapList)
+        {
+            maps.Add(await _mapService.GetMapByUidAsync(map.UId));
+        }
     }
 
     [ChatCommand("rejoin", "Simulates the player joining the server.")]
