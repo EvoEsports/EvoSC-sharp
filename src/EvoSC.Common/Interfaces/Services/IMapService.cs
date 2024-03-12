@@ -72,4 +72,6 @@ public interface IMapService
     /// </summary>
     /// <returns></returns>
     public Task<IMap?> GetCurrentMapAsync();
+
+    public Task<IMapDetails> FetchMapDetailsAsync(IMap map);
 }

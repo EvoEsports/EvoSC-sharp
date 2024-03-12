@@ -12,6 +12,11 @@
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
         <EmbeddedResource Include="Templates\**\*" />
+        <ProjectReference Include="..\PlayerRecords\PlayerRecords.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Database\Repositories\" />
     </ItemGroup>
 
 </Project>

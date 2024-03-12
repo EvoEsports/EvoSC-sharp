@@ -25,7 +25,8 @@ public class MapsController(
 {
     private readonly dynamic _locale = locale;
 
-    [ChatCommand("add", "[Commmand.Add]", MapsPermissions.AddMap)]
+    [ChatCommand("addmap", "[Commmand.Add]", MapsPermissions.AddMap)]
+    [CommandAlias("/am", true)]
     public async Task AddMapAsync(string mapId)
     {
         IMap? map;
@@ -59,7 +60,8 @@ public class MapsController(
             Context.Player);
     }
 
-    [ChatCommand("remove", "[Command.Remove]", MapsPermissions.RemoveMap)]
+    [ChatCommand("removemap", "[Command.Remove]", MapsPermissions.RemoveMap)]
+    [CommandAlias("/rm", true)]
     public async Task RemoveMapAsync(long mapId)
     {
         var map = await mapService.GetMapByIdAsync(mapId);

@@ -9,41 +9,25 @@ namespace EvoSC.Common.Models.Maps;
 
 internal class ParsedMap : IParsedMap
 {
-    public long Id { get; set; }
-    public string Uid { get; set; }
-    public string Name { get; set; }
-    public IPlayer? Author { get; }
-    public string FilePath { get; set; }
-    public bool Enabled { get; set; }
-    public string? ExternalId { get; set; }
-    public DateTime? ExternalVersion { get; set; }
-    public MapProviders? ExternalMapProvider { get; set; }
-    
-    public IRaceTime AuthorTime { get; init; }
-    public IRaceTime GoldTime { get; init; }
-    public IRaceTime SilverTime { get; init; }
-    public IRaceTime BronzeTime { get; init; }
-    public string Environment { get; init; }
-    public string Mood { get; init; }
-    public int Cost { get; init; }
-    public bool MultiLap { get; init; }
-    public int LapCount { get; init; }
-    public string MapStyle { get; init; }
-    public string MapType { get; init; }
-    public int CheckpointCount { get; init; }
+    public IRaceTime AuthorTime { get; set; }
+    public IRaceTime GoldTime { get; set; }
+    public IRaceTime SilverTime { get; set; }
+    public IRaceTime BronzeTime { get; set; }
+    public string Environment { get; set; }
+    public string Mood { get; set; }
+    public int Cost { get; set; }
+    public bool MultiLap { get; set; }
+    public int LapCount { get; set; }
+    public string MapStyle { get; set; }
+    public string MapType { get; set; }
+    public int CheckpointCount { get; set; }
+    public IMap Map { get; set; }
 
     public ParsedMap(){}
 
     public ParsedMap(TmMapInfo serverMap, IMap map)
     {
-        Id = map.Id;
-        Uid = map.Uid;
-        Name = map.Name;
-        Author = map.Author;
-        FilePath = map.FilePath;
-        Enabled = map.Enabled;
-        ExternalId = map.ExternalId;
-        ExternalVersion = map.ExternalVersion;
+        Map = map;
 
         AuthorTime = RaceTime.FromMilliseconds(serverMap.AuthorTime);
         GoldTime = RaceTime.FromMilliseconds(serverMap.GoldTime);
@@ -62,15 +46,7 @@ internal class ParsedMap : IParsedMap
     
     public ParsedMap(string baseDirectory, IMap map)
     {
-        Id = map.Id;
-        Uid = map.Uid;
-        Name = map.Name;
-        Author = map.Author;
-        FilePath = map.FilePath;
-        Enabled = map.Enabled;
-        ExternalId = map.ExternalId;
-        ExternalVersion = map.ExternalVersion;
-
+        Map = map;
         var mapNode = ParseMap(baseDirectory, map.FilePath);
         
         AuthorTime = RaceTime.FromMilliseconds(mapNode.TMObjective_AuthorTime?.Milliseconds ?? 0);

@@ -1,5 +1,7 @@
 <component>
   <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
+  <using namespace="EvoSC.Common.Util" />
+  <using namespace="System.Linq" />
   
   <import component="EvoSC.Controls.Panel" as="Panel" />
   <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
@@ -16,7 +18,7 @@
   <property type="double" name="y" default="0.0" />
   <property type="double" name="width" default="185" />
   
-  <property type="IMapListMapDto" name="map" />
+  <property type="IMapListMap" name="map" />
   
   <template>
     <Panel width="{{ width }}" 
@@ -36,12 +38,18 @@
 
         <!-- PB and AT -->
       <frame pos="48 -1.5">
-          <label text="PB:" textsize="0.7" class="text" />
-          <label text="$AAA0:$g53.360" textsize="0.7" pos="5 0" class="text" />
-          <Tag text="888" x="16" style="Round" width="5" bgColor="888888" />
+          <label text="PB:" textsize="0.7" class="text" if="map.HasPb" />
+          <label 
+                  text="{{ RaceTime.FormatFromMilliseconds(map.Pb?.Score ?? 0) }}" 
+                  textsize="0.7" 
+                  pos="5 0" 
+                  class="text"
+                  if="map.HasPb"
+          />
+          <Tag text="888" x="16" style="Round" width="5" bgColor="888888" if="map.HasPb" />
 
           <label text="AT:" textsize="0.7"  pos="0 -4.5" class="text"/>
-          <label text="$AAA0:$g53.360" textsize="0.7"  pos="5 -4.5" class="text" />
+          <label text="{{ map.Map.Details.AuthorTime.ToString() }}" textsize="0.7"  pos="5 -4.5" class="text" />
       </frame>
 
         <!-- Tags and links -->

@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Common.Util.TextFormatting;
 
@@ -8,19 +9,19 @@ public partial class ServerClient
 {
     private TextFormatter MakeInfoMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Info)))
+            .AddText(GameIcons.Icons.ExclamationCircle, styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Info)))
             .AddText(" ")
             .AddText(text);
 
     private TextFormatter MakeSuccessMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Success)))
+            .AddText(GameIcons.Icons.CheckCircle, styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Success)))
             .AddText(" ")
             .AddText(text);
     
     private TextFormatter MakeWarningMessage(string text) =>
         new TextFormatter()
-            .AddText("", styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Warning)))
+            .AddText(GameIcons.Icons.ExclamationTriangle, styling => styling.WithColor(new TextColor(_themes.Theme.Chat_Warning)))
             .AddText(" ")
             .AddText(text);
     

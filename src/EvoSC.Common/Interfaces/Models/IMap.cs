@@ -51,4 +51,6 @@ public interface IMap
     /// The maps external provider. E.g. trackmania.io.
     /// </summary>
     public MapProviders? ExternalMapProvider { get; set; }
+    
+    public IMapDetails? Details { get; }
 }

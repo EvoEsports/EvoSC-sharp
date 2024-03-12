@@ -15,14 +15,17 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
 {
     public async Task<IMap?> GetMapByIdAsync(long id) => await Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
+        .LoadWith(t => t.DbDetails)
         .SingleOrDefaultAsync(m => m.Id == id);
 
     public async Task<IMap?> GetMapByUidAsync(string uid) => await Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
+        .LoadWith(t => t.DbDetails)
         .SingleOrDefaultAsync(m => m.Uid == uid);
 
     public async Task<IMap?> GetMapByExternalIdAsync(string id) => await Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
+        .LoadWith(t => t.DbDetails)
         .SingleOrDefaultAsync(m => m.ExternalId == id);
     
     public async Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath)
@@ -57,6 +60,42 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         }
 
         return dbMap;
+    }
+
+    public async Task<IMapDetails> AddMapDetailsAsync(IMapDetails mapDetails, IMap map)
+    {
+        var dbMapDetails = new DbMapDetails
+        {
+            AuthorTime = mapDetails.AuthorTime,
+            GoldTime = mapDetails.GoldTime,
+            SilverTime = mapDetails.SilverTime,
+            BronzeTime = mapDetails.BronzeTime,
+            MapId = (int)map.Id,
+            Environment = mapDetails.Environment,
+            Mood = mapDetails.Mood,
+            Cost = mapDetails.Cost,
+            MultiLap = mapDetails.MultiLap,
+            LapCount = mapDetails.LapCount,
+            MapStyle = mapDetails.MapStyle,
+            MapType = mapDetails.MapType,
+            CheckpointCount = mapDetails.CheckpointCount,
+            DbMap = new DbMap(map)
+        };
+
+        await using var transaction = await Database.BeginTransactionAsync();
+
+        try
+        {
+            await Database.InsertAsync(dbMapDetails);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed adding map details for map ID {MapId}", map.Id);
+            await transaction.RollbackTransactionAsync();
+            throw new EvoScDatabaseException($"Failed adding map details for map ID {map.Id}");
+        }
+
+        return dbMapDetails;
     }
 
     public async Task<IMap> UpdateMapAsync(long mapId, MapMetadata map)

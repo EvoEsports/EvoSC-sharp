@@ -15,7 +15,7 @@
   
   <import component="MapListModule.MapListRow" as="MapListRow" />
   
-  <property type="IMapListMapDto[]" name="maps" />
+  <property type="IEnumerable<IMapListMap>" name="maps" />
   
   <template>
     <Theme />
@@ -46,17 +46,17 @@
                  height="106"
                  width="185"
                  scrollable="true"
-                 scrollHeight="{{ (maps.Length*12)-104 }}"
+                 scrollHeight="{{ (maps.Count()*12)-104 }}"
                  scrollGridY="12"
                  scrollGridSnap="true"
       >
-        <MapListRow foreach="IMapListMapDto map in maps" y="{{ -__index*12 }}" key="{{ __index }}" map="{{ map }}" />
+        <MapListRow foreach="IMapListMap map in maps" y="{{ -__index*12 }}" key="{{ __index }}" map="{{ map }}" />
       </Container>
       <ScrollBar 
               id="maplistScrollbar"
               forFrame="maplist"
               min="0"
-              max="{{ (maps.Length*12)-104 }}"
+              max="{{ (maps.Count()*12)-104 }}"
               length="106"
               x="224"
               y="-7"

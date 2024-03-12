@@ -86,11 +86,11 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         return await MatchSettingsXmlParser.ParseAsync(contents);
     }
 
-    public async Task<IEnumerable<IParsedMap>> GetCurrentMapListAsync()
+    public async Task<IEnumerable<IMap>> GetCurrentMapListAsync()
     {
         var serverMapList = await server.Remote.GetMapListAsync(-1, 0);
 
-        var maps = new List<IParsedMap>();
+        var maps = new List<IMap>();
 
         foreach (var serverMap in serverMapList)
         {
@@ -101,7 +101,7 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
                 continue;
             }
             
-            maps.Add(new ParsedMap(serverMap, map));
+            maps.Add(map);
         }
 
         return maps;

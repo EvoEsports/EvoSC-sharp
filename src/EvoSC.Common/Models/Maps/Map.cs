@@ -14,6 +14,8 @@ public class Map: IMap
     public string? ExternalId { get; set; }
     public DateTime? ExternalVersion { get; set; }
     public MapProviders? ExternalMapProvider { get; set; }
+    
+    public IMapDetails? Details { get; set; }
 
     public Map()
     {
@@ -30,6 +32,7 @@ public class Map: IMap
         ExternalId = dbMap.ExternalId;
         ExternalVersion = dbMap.ExternalVersion;
         ExternalMapProvider = dbMap.ExternalMapProvider;
+        Details = dbMap.Details;
     }
 
     public static IParsedMap Parse(string baseDirectory, IMap map) => new ParsedMap(baseDirectory, map);

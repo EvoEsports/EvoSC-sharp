@@ -137,4 +137,11 @@ public partial class ServerClient : IServerClient
 
         return mapsDir;
     }
+
+    public async Task<bool> FileExistsAsync(string file)
+    {
+        var mapsDir = await GetMapsDirectoryAsync();
+
+        return File.Exists(Path.Combine(mapsDir, file));
+    }
 }

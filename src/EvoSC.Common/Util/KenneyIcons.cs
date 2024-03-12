@@ -1,4 +1,4 @@
-namespace EvoSC.Manialinks.Util;
+namespace EvoSC.Common.Util;
 
 public class KenneyIcons
 {

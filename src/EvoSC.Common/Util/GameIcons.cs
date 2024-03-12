@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Manialinks.Util;
+﻿namespace EvoSC.Common.Util;
 
 /// <summary>
 /// Generated from: https://fontawesome.com/v4/cheatsheet/
@@ -6,6 +6,8 @@
 /// </summary>
 public class GameIcons
 {
+    public static GameIcons Icons => new GameIcons();
+    
     public KenneyIcons Kenney = new KenneyIcons();
     
     public string Addresscard => "";

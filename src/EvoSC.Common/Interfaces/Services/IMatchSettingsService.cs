@@ -67,7 +67,11 @@ public interface IMatchSettingsService
     /// <returns></returns>
     public Task<IMatchSettings> GetMatchSettingsAsync(string name);
 
-    public Task<IEnumerable<IParsedMap>> GetCurrentMapListAsync();
+    /// <summary>
+    /// Get a list of maps loaded in the current live match settings.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<IMap>> GetCurrentMapListAsync();
     
     /// <summary>
     /// Edit an existing match settings file.

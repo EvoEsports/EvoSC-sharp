@@ -54,6 +54,9 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
         {
             logger.LogDebug("Adding map {Name} ({Uid}) to the database", mapMetadata.MapName, mapMetadata.MapUid);
             map = await mapRepository.AddMapAsync(mapMetadata, author, relativePath);
+            
+            var mapDetails = await FetchMapDetailsAsync(map);
+            await mapRepository.AddMapDetailsAsync(mapDetails, map);
         }
 
         /* await matchSettings.EditMatchSettingsAsync(Path.GetFileNameWithoutExtension(config.Path.DefaultMatchSettings),
@@ -109,7 +112,10 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
                 };
 
                 logger.LogDebug("Adding map {Name} ({Uid}) to the database", serverMap.Name, serverMap.UId);
-                await mapRepository.AddMapAsync(mapMeta, author, serverMap.FileName);
+                var map = await mapRepository.AddMapAsync(mapMeta, author, serverMap.FileName);
+
+                var mapDetails = await FetchMapDetailsAsync(map);
+                await mapRepository.AddMapDetailsAsync(mapDetails, map);
             }
             catch (Exception ex)
             {
@@ -175,6 +181,20 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
         var map = await GetMapByUidAsync(currentMap.UId);
 
         return map;
+    }
+
+    public async Task<IMapDetails> FetchMapDetailsAsync(IMap map)
+    {
+        try
+        {
+            var serverMap = await serverClient.Remote.GetMapInfoAsync(map.FilePath);
+            return new ParsedMap(serverMap, map);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to fetch map details for map: {File}", map.FilePath);
+            throw new FileLoadException($"Failed to fetch map details for map", map.FilePath);
+        }
     }
 
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)

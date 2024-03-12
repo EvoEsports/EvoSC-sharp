@@ -46,6 +46,11 @@ public class DbMap : IMap
 
     public IPlayer? Author => DbAuthor;
     
+    [Association(ThisKey = nameof(Id), OtherKey = nameof(DbMapDetails.MapId))]
+    public DbMapDetails? DbDetails { get; set; }
+
+    public IMapDetails? Details => DbDetails;
+    
     public DbMap(){}
 
     public DbMap(IMap? map)
@@ -68,5 +73,4 @@ public class DbMap : IMap
         UpdatedAt = default;
         DbAuthor = new DbPlayer(map.Author);
     }
-
 }

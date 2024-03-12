@@ -2,7 +2,8 @@
 
 namespace EvoSC.Modules.Official.MapListModule.Interfaces.Models;
 
-public interface IMapListMapDto
+public interface IMapFavorite
 {
-    public IParsedMap Map { get; }
+    public IMap Map { get; }
+    public IPlayer Player { get; }
 }

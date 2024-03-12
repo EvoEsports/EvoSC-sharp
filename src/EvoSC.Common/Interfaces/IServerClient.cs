@@ -85,4 +85,6 @@ public interface IServerClient
     public Task ErrorMessageAsync(string text, IPlayer player);
 
     public Task<string> GetMapsDirectoryAsync();
+    
+    public Task<bool> FileExistsAsync(string file);
 }
