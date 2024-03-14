@@ -19,21 +19,21 @@ public class QueueController(IMapQueueService mapQueue, IServerClient server, IM
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
-        var currentMap = await maps.GetCurrentMapAsync();
+        var map = await maps.GetCurrentMapAsync();
 
         try
         {
-            await mapQueue.DropAsync(currentMap);
+            await mapQueue.DropAsync(map);
         }
         catch (Exception ex)
         {
-            // if map isn't in the queue, we just ignore it
-        } 
-        
-        if (mapQueue.QueuedMapsCount > 0)
-        {
-            var next = await mapQueue.PeekNextAsync();
-            await server.Remote.ChooseNextMapAsync(next.FilePath);
+            logger.LogDebug(ex, "Failed to drop map '{MapUid}' from the queue", args.Map.Uid);
+            
+            if (mapQueue.QueuedMapsCount > 0)
+            {
+                var next = await mapQueue.PeekNextAsync();
+                await server.Remote.ChooseNextMapAsync(next.FilePath);
+            }
         }
     }
 
@@ -47,15 +47,22 @@ public class QueueController(IMapQueueService mapQueue, IServerClient server, IM
         {
             await server.Remote.ChooseNextMapAsync(args.QueuedMap.FilePath);
         }
+
+        await server.InfoMessageAsync($"Map queued: {args.QueuedMap.Name}");
     }
 
     [Subscribe(MapQueueEvents.MapDropped)]
     public async Task OnMapDroppedAsync(object sender, MapQueueMapDroppedEventArgs args)
     {
-        if (args.WasNext)
+        if (mapQueue.QueuedMapsCount > 0)
         {
             var next = await mapQueue.PeekNextAsync();
             await server.Remote.ChooseNextMapAsync(next.FilePath);
+        }
+        
+        if (!args.WasNext)
+        {
+            await server.InfoMessageAsync($"Map removed from queue: {args.QueuedMap.Name}");
         }
     }
 }

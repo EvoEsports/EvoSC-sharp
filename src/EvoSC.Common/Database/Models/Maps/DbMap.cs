@@ -73,4 +73,31 @@ public class DbMap : IMap
         UpdatedAt = default;
         DbAuthor = new DbPlayer(map.Author);
     }
+
+    public bool Equals(IMap? other) => other != null && Uid.Equals(other.Uid, StringComparison.Ordinal);
+    
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != this.GetType())
+        {
+            return false;
+        }
+
+        return Equals((IMap)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return Uid.GetHashCode();
+    }
 }

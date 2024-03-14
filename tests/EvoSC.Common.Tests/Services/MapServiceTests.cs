@@ -28,7 +28,6 @@ public class MapServiceTests
     private readonly Mock<ILogger<MapService>> _logger = new();
     private readonly Mock<IEvoScBaseConfig> _config = new();
     private readonly Mock<IPlayerManagerService> _playerService = new();
-    private readonly Mock<IMatchSettingsService> _matchSettings = new();
 
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
@@ -38,7 +37,7 @@ public class MapServiceTests
     public MapServiceTests()
     {
         _mapService = new MapService(_mapRepository.Object, _logger.Object, _config.Object, _playerService.Object,
-            _server.Client.Object, _matchSettings.Object);
+            _server.Client.Object);
     }
 
     [Fact]

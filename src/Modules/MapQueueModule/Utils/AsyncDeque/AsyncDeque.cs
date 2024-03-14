@@ -3,6 +3,11 @@ using EvoSC.Modules.Official.MapQueueModule.Interfaces.Utils.AsyncDeque;
 
 namespace EvoSC.Modules.Official.MapQueueModule.Utils.AsyncDeque;
 
+/// <summary>
+/// Implementation of a thread-safe double-ended queue (deque),
+/// allows full editing of the map queue.
+/// </summary>
+/// <typeparam name="TItem"></typeparam>
 public class AsyncDeque<TItem> : IAsyncDeque<TItem>
 {
     private IDequeNode<TItem>? _last;

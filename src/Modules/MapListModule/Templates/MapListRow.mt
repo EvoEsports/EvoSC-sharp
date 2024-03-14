@@ -73,7 +73,7 @@
         <!-- Action buttons -->
       <frame pos="{{ width - 34 }} -2.5">
           <Button text="{{ Icons.HeartO }}" id="btnFavorite-{{ key }}" width="5" />
-          <Button text="{{ Icons.PlayCircle }}" id="btnQueue-{{ key }}" width="5" x="6"/>
+          <Button text="{{ Icons.PlayCircle }}" id="btnQueue-{{ key }}" width="5" x="6" action="MapListManialinkController/QueueMap/{{ map.Map.Uid }}"/>
           <Dropdown text="Actions" x="12" id="dpActions-{{ key }}">
               <Button text="Disable" y="0" id="btnDisable-{{ key }}" />
               <Button text="Remove" y="-5" id="btnRemove-{{ key }}"/>

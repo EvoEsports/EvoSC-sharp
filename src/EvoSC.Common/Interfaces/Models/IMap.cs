@@ -5,7 +5,7 @@ namespace EvoSC.Common.Interfaces.Models;
 /// <summary>
 /// Represents a map.
 /// </summary>
-public interface IMap
+public interface IMap : IEquatable<IMap>
 {
     /// <summary>
     /// The maps ID.
