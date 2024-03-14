@@ -17,6 +17,10 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
     public async Task<IMap?> GetMapByIdAsync(long id) => await mapRepository.GetMapByIdAsync(id);
 
     public async Task<IMap?> GetMapByUidAsync(string uid) => await mapRepository.GetMapByUidAsync(uid);
+
+    public Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids) =>
+        mapRepository.GetMapsByUidAsync(mapUids);
+
     public async Task<IMap?> GetMapByExternalIdAsync(string id) => await mapRepository.GetMapByExternalIdAsync(id);
 
     public async Task<IMap> AddMapAsync(MapStream mapStream)
@@ -58,9 +62,6 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
             var mapDetails = await FetchMapDetailsAsync(map);
             await mapRepository.AddMapDetailsAsync(mapDetails, map);
         }
-
-        /* await matchSettings.EditMatchSettingsAsync(Path.GetFileNameWithoutExtension(config.Path.DefaultMatchSettings),
-            builder => builder.AddMap($"EvoSC/{fileName}")); */
         
         return map;
     }

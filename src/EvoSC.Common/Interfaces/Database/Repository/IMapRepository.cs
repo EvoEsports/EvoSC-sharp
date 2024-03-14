@@ -58,5 +58,7 @@ public interface IMapRepository
     /// Gets a map from the database based on the external provider ID.
     /// </summary>
     /// <returns></returns>
-    Task<IMap?> GetMapByExternalIdAsync(string id);
+    public Task<IMap?> GetMapByExternalIdAsync(string id);
+
+    public Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids);
 }

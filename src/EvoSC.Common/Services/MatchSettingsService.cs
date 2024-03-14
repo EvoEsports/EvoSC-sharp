@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -89,21 +90,8 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
     public async Task<IEnumerable<IMap>> GetCurrentMapListAsync()
     {
         var serverMapList = await server.Remote.GetMapListAsync(-1, 0);
-
-        var maps = new List<IMap>();
-
-        foreach (var serverMap in serverMapList)
-        {
-            var map = await mapService.GetMapByUidAsync(serverMap.UId);
-
-            if (map == null)
-            {
-                continue;
-            }
-            
-            maps.Add(map);
-        }
-
+        var maps = await mapService.GetMapsByUidAsync(serverMapList.Select(m => m.UId));
+        
         return maps;
     }
 

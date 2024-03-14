@@ -18,6 +18,8 @@ public interface IMapService
     /// <param name="uid">The maps unique identifier.</param>
     /// <returns></returns>
     public Task<IMap?> GetMapByUidAsync(string uid);
+    
+    public Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids);
 
     /// <summary>
     /// Gets a map by it's external provider ID.

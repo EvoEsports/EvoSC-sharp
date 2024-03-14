@@ -6,6 +6,8 @@ using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
 using LinqToDB;
+using LinqToDB.DataProvider.MySql;
+using LinqToDB.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database.Repository.Maps;
@@ -27,7 +29,13 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         .LoadWith(t => t.DbAuthor)
         .LoadWith(t => t.DbDetails)
         .SingleOrDefaultAsync(m => m.ExternalId == id);
-    
+
+    public async Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids) => await Table<DbMap>()
+        .LoadWith(t => t.DbAuthor)
+        .LoadWith(t => t.DbDetails)
+        .Where(m => mapUids.Contains(m.Uid))
+        .ToArrayAsync();
+
     public async Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath)
     {
         var dbMap = new DbMap
