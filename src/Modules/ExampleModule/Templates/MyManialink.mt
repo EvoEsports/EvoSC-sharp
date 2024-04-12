@@ -16,9 +16,10 @@
     <import component="EvoSC.Controls.Separator" as="Separator" />
     <import component="EvoSC.Controls.Select" as="Select" />
     <import component="EvoSC.Controls.SelectItem" as="SelectItem" />
+    <import component="EvoSC.Containers.Widget" as="Widget" />
     
     <template>
-        <Theme />
+        <!-- <Theme /> -->
         <!-- <Dropdown text="Dropdown" id="myDropdown" x="10" y="20">
             <Button text="Normal" id="myAction1" y="0" />
             <Button text="Secondary" id="myAction2" y="-5" type="secondary" />
@@ -78,6 +79,18 @@
         <Chip text="TEST" closable="true" severity="warning" y="-20" />
         <Chip text="TEST" closable="true" severity="danger" y="-25" />
       </Window> -->
+
+
+      <!-- <quad bgcolor="ff0058" size="100 5" />
+      <quad 
+              size="100 50"
+              pos="0 -5"
+              image="file:///Media/Painter/Stencils/48-ZGrafik4/Brush.tga"
+              modulatecolor="1d1c21"
+      />
+      <quad pos="0 -5" bgcolor="161519" size="100 50" /> -->
+      
+      <Widget header="Live Ranking" height="20" />
       
     </template>
     <script resource="EvoSC.Scripts.UIScripts" />
