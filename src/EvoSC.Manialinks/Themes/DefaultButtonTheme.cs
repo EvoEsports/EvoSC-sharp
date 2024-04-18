@@ -18,10 +18,10 @@ public class DefaultButtonTheme(IThemeManager theme) : Theme<DefaultButtonTheme>
         Set("UI.Button.Default.DisabledBg").To(ColorUtils.GrayScale(_theme.UI_BgPrimary));
         Set("UI.Button.Default.DisabledText").To(ColorUtils.GrayScale(_theme.UI_TextPrimary));
         
-        Set("UI.Button.Secondary.Bg").To(_theme.UI_BgSecondary);
-        Set("UI.Button.Secondary.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
+        Set("UI.Button.Secondary.Bg").To(_theme.UI_BgHighlight);
+        Set("UI.Button.Secondary.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
         Set("UI.Button.Secondary.Text").To(_theme.UI_TextSecondary);
-        Set("UI.Button.Secondary.DisabledBg").To(ColorUtils.GrayScale(_theme.UI_BgSecondary));
+        Set("UI.Button.Secondary.DisabledBg").To(ColorUtils.GrayScale(_theme.UI_BgHighlight));
         Set("UI.Button.Secondary.DisabledText").To(ColorUtils.GrayScale(_theme.UI_TextSecondary));
         
         return Task.CompletedTask;

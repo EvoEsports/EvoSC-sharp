@@ -12,19 +12,21 @@ public class DefaultWindowTheme(IThemeManager theme) : Theme<DefaultWindowTheme>
 
     public override Task ConfigureAsync()
     {
-        Set("UI.Window.Default.Bg").To(_theme.UI_BgSecondary);
+        Set("UI.Window.Default.Bg").To(_theme.UI_BgHighlight);
         Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgPrimary);
         Set("UI.Window.Default.Header.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
         Set("UI.Window.Default.Title.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
         Set("UI.Window.Default.CloseBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
         Set("UI.Window.Default.MinimizeBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
         
-        Set("UI.Window.Secondary.Bg").To(_theme.UI_BgSecondary);
-        Set("UI.Window.Secondary.Header.Bg").To(_theme.UI_BgSecondary);
-        Set("UI.Window.Secondary.Header.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
+        Set("UI.Window.Secondary.Bg").To(_theme.UI_BgHighlight);
+        Set("UI.Window.Secondary.Header.Bg").To(_theme.UI_BgHighlight);
+        Set("UI.Window.Secondary.Header.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
         Set("UI.Window.Secondary.Title.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
         Set("UI.Window.Secondary.CloseBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
         Set("UI.Window.Secondary.MinimizeBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
+        
+        Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgHighlight);
 
         return Task.CompletedTask;
     }

@@ -90,7 +90,19 @@
       />
       <quad pos="0 -5" bgcolor="161519" size="100 50" /> -->
       
-      <Widget header="Live Ranking" height="20" />
+      <Widget header="Live Ranking" height="20" x="0" y="9" />
+      <Widget header="Live Ranking" height="20" x="-1" y="8" />
+      <Widget header="Live Ranking" height="20" x="-2" y="7" />
+      <Widget header="Live Ranking" height="20" x="-3" y="6" />
+      <Widget header="Live Ranking" height="20" x="-4" y="5" />
+      <Widget header="Live Ranking" height="20" x="-5" y="4" />
+      <Widget header="Live Ranking" height="20" x="-6" y="3" />
+      <Widget header="Live Ranking" height="20" x="-7" y="2" />
+      <Widget header="Live Ranking" height="20" x="-8" y="1" />
+      <Widget header="Live Ranking" height="20" x="-9" y="0" />
+      <Widget header="Live Ranking" height="20" x="-10" y="-1" />
+      <Widget header="Live Ranking" height="20" x="-11" y="-2" />
+      <Widget header="Live Ranking" height="20" x="-12" y="-3" />
       
     </template>
     <script resource="EvoSC.Scripts.UIScripts" />

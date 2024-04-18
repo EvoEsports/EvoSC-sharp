@@ -22,7 +22,7 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
         "warning" => _theme.Orange,
         "danger" => _theme.Red,
         "primary" => _theme.UI_BgPrimary,
-        "secondary" => _theme.UI_BgSecondary,
+        "secondary" => _theme.UI_BgHighlight,
         _ => _theme.UI_BgPrimary
     };
 

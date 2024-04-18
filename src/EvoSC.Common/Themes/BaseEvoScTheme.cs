@@ -30,12 +30,21 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
     {
         Set(DefaultThemeOptions.UIFont).To("GameFontExtraBold");
         Set(DefaultThemeOptions.UIFontSize).To(1);
+        
+        Set(DefaultThemeOptions.UIHeaderBg).To("28212F");
+        Set(DefaultThemeOptions.UIBgPrimary).To("28212F");
+        Set(DefaultThemeOptions.UIBgHighlight).To("50515A");
+        
+        Set(DefaultThemeOptions.UIAccentPrimary).To("FF0058");
+        Set(DefaultThemeOptions.UIAccentSecondary).To("FFFFFF");
+        
+        Set(DefaultThemeOptions.UISurfaceBgPrimary).To("454252");
+        Set(DefaultThemeOptions.UISurfaceBgSecondary).To("FFFFFF");
+        
         Set(DefaultThemeOptions.UITextPrimary).To("FFFFFF");
-        Set(DefaultThemeOptions.UITextSecondary).To("C3C3C5");
-        Set(DefaultThemeOptions.UIBgPrimary).To("FF0058");
-        Set(DefaultThemeOptions.UIBgSecondary).To("47495A");
-        Set(DefaultThemeOptions.UIBorderPrimary).To("FF0058");
-        Set(DefaultThemeOptions.UIBorderSecondary).To("FFFFFF");
+        Set(DefaultThemeOptions.UITextSecondary).To("2D2D2D");
+        Set(DefaultThemeOptions.UITextMuted).To("A2A0AD");
+        
         Set(DefaultThemeOptions.UILogoDark).To("");
         Set(DefaultThemeOptions.UILogoLight).To("");
     }
@@ -43,20 +52,24 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
     protected void SetDefaultUtilityColors()
     {
         Set(DefaultThemeOptions.Red).To("E22000");
-        Set(DefaultThemeOptions.Green).To("00D909");
-        Set(DefaultThemeOptions.Blue).To("3491FA");
-        Set(DefaultThemeOptions.Yellow).To("FCE100");
-        Set(DefaultThemeOptions.Teal).To("0FC6C2");
-        Set(DefaultThemeOptions.Purple).To("722ED1");
-        Set(DefaultThemeOptions.Gold).To("FFD000");
-        Set(DefaultThemeOptions.Silver).To("9e9e9e");
-        Set(DefaultThemeOptions.Bronze).To("915d29");
-        Set(DefaultThemeOptions.Grass).To("9FDB1D");
-        Set(DefaultThemeOptions.Orange).To("F77234");
-        Set(DefaultThemeOptions.Gray).To("191A21");
+        Set(DefaultThemeOptions.Green).To("E22000");
+        Set(DefaultThemeOptions.Blue).To("E22000");
+        Set(DefaultThemeOptions.Pink).To("E22000");
+        Set(DefaultThemeOptions.Gray).To("E22000");
+        Set(DefaultThemeOptions.Orange).To("E22000");
+        Set(DefaultThemeOptions.Yellow).To("E22000");
+        Set(DefaultThemeOptions.Teal).To("E22000");
+        Set(DefaultThemeOptions.Purple).To("E22000");
+        Set(DefaultThemeOptions.Gold).To("E22000");
+        Set(DefaultThemeOptions.Silver).To("E22000");
+        Set(DefaultThemeOptions.Bronze).To("E22000");
+        Set(DefaultThemeOptions.Grass).To("E22000");
+        Set(DefaultThemeOptions.Dirt).To("E22000");
+        Set(DefaultThemeOptions.Tarmac).To("E22000");
+        Set(DefaultThemeOptions.Ice).To("E22000");
+        
         Set(DefaultThemeOptions.Black).To("000000");
         Set(DefaultThemeOptions.White).To("FFFFFF");
-        Set(DefaultThemeOptions.Pink).To("FF0058");
         
         Set(DefaultThemeOptions.Info).To("29b");
         Set(DefaultThemeOptions.Success).To("c44");
@@ -69,6 +82,9 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
         GenerateShades(DefaultThemeOptions.Red);
         GenerateShades(DefaultThemeOptions.Green);
         GenerateShades(DefaultThemeOptions.Blue);
+        GenerateShades(DefaultThemeOptions.Pink);
+        GenerateShades(DefaultThemeOptions.Gray);
+        GenerateShades(DefaultThemeOptions.Orange);
         GenerateShades(DefaultThemeOptions.Yellow);
         GenerateShades(DefaultThemeOptions.Teal);
         GenerateShades(DefaultThemeOptions.Purple);
@@ -76,9 +92,9 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
         GenerateShades(DefaultThemeOptions.Silver);
         GenerateShades(DefaultThemeOptions.Bronze);
         GenerateShades(DefaultThemeOptions.Grass);
-        GenerateShades(DefaultThemeOptions.Orange);
-        GenerateShades(DefaultThemeOptions.Gray);
-        GenerateShades(DefaultThemeOptions.Pink);
+        GenerateShades(DefaultThemeOptions.Dirt);
+        GenerateShades(DefaultThemeOptions.Tarmac);
+        GenerateShades(DefaultThemeOptions.Ice);
     }
     
     private void GenerateShades(string key)

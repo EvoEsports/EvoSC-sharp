@@ -12,8 +12,8 @@ public class DefaultSelectTheme(IThemeManager theme) : Theme<DefaultSelectTheme>
 
     public override Task ConfigureAsync()
     {
-        Set("UI.Select.Default.Bg").To(_theme.UI_BgSecondary);
-        Set("UI.Select.Default.Border").To(_theme.UI_BorderSecondary);
+        Set("UI.Select.Default.Bg").To(_theme.UI_BgHighlight);
+        Set("UI.Select.Default.Border").To(_theme.UI_AccentSecondary);
         Set("UI.SelectItem.Default.Bg").To(_theme.UI_BgPrimary);
 
         return Task.CompletedTask;

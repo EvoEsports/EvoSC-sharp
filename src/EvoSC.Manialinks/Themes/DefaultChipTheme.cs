@@ -12,7 +12,7 @@ public class DefaultChipTheme(IThemeManager theme) : Theme<DefaultChipTheme>
 
     public override Task ConfigureAsync()
     {
-        Set("UI.Chip.Default.Bg").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
+        Set("UI.Chip.Default.Bg").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
         Set("UI.Chip.Default.Text").To(_theme.UI_TextSecondary);
 
         return Task.CompletedTask;

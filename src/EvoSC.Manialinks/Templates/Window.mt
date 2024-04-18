@@ -53,6 +53,7 @@ General purpose window that can hold any type of component. The window is design
                 size="{{ width }} {{ height }}" 
                 id="{{ id }}"
         >
+          <!-- Window Header -->
             <quad
                     class="window-bg-{{ style }}"
                     size="{{ width }} {{ height }}"
@@ -105,6 +106,7 @@ General purpose window that can hold any type of component. The window is design
                     if="hasTitlebar &amp;&amp; canMinimize"
             />
 
+            <!-- Window Body -->
             <Container
                     x="{{ padding }}"
                     y="-{{ hasTitlebar ? 5+padding : padding }}"

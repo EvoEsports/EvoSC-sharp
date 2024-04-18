@@ -15,7 +15,7 @@ public class DefaultOpenPlanetTheme(IThemeManager theme) : Theme<DefaultOpenPlan
         Set("OpenPlanetModule.WarningWindow.TextWarning").To(_theme.Warning);
         Set("OpenPlanetModule.WarningWindow.TextHighlight").To("99ddff");
         Set("OpenPlanetModule.WarningWindow.Border").To(_theme.White);
-        Set("OpenPlanetModule.WarningWindow.BgSecondary").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
+        Set("OpenPlanetModule.WarningWindow.BgSecondary").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
         
         return Task.CompletedTask;
     }

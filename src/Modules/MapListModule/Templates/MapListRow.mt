@@ -60,8 +60,8 @@
             <Tag style="Square" text=".." x="41" width="3" bgColor="{{ Theme.MapListModule_MapListRow_Default_TagBg }}" />
             
             <label class="text" text="Open: " pos="0 -4.5" textsize="0.7" />
-            <LinkButton text="TMX" url="https://trackmania.exchange" x="9" y="-4.5" id="linkTmx" bgColor="{{ Theme.UI_BgSecondary }}" width="8" className="maplistrow-linkbtn" />
-            <LinkButton text="TM.IO" url="https://trackmania.exchange" x="18" y="-4.5" id="linkTmx" bgColor="{{ Theme.UI_BgSecondary }}" width="10" className="maplistrow-linkbtn" />
+            <LinkButton text="TMX" url="https://trackmania.exchange" x="9" y="-4.5" id="linkTmx" bgColor="{{ Theme.UI_BgHighlight }}" width="8" className="maplistrow-linkbtn" />
+            <LinkButton text="TM.IO" url="https://trackmania.exchange" x="18" y="-4.5" id="linkTmx" bgColor="{{ Theme.UI_BgHighlight }}" width="10" className="maplistrow-linkbtn" />
         </frame>
         
         <!-- Map rating -->
