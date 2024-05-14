@@ -28,7 +28,7 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
 
     protected void SetDefaultThemeOptions()
     {
-        Set(DefaultThemeOptions.UIFont).To("GameFontExtraBold");
+        Set(DefaultThemeOptions.UIFont).To("GameFontSemiBold");
         Set(DefaultThemeOptions.UIFontSize).To(1);
         
         Set(DefaultThemeOptions.UIHeaderBg).To("28212F");

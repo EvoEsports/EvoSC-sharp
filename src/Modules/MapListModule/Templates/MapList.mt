@@ -1,7 +1,7 @@
 <component>
   <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
   
-  <import component="EvoSC.Theme" as="Theme" />
+  <import component="EvoSC.Style.UIStyle" as="UIStyle" />
   <import component="EvoSC.Window" as="Window" />
   <import component="EvoSC.Controls.TextInput" as="TextInput" />
   <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
@@ -18,7 +18,7 @@
   <property type="IEnumerable<IMapListMap>" name="maps" />
   
   <template>
-    <Theme />
+    <UIStyle />
     <MapListStyles />
     
     <Window title="Maps" icon="{{ Icons.Map }}" width="230" height="130" x="-100" y="65">

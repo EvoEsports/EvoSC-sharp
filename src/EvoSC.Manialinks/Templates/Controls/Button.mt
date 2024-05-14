@@ -2,88 +2,131 @@
     Simple clickable button.
 -->
 <component>
-    <!-- The ID of the button. -->
-    <property type="string" name="id" />
-    
-    <!-- Text to display in the button -->
-    <property type="string" name="text" />
-    
-    <!-- X position of the button. -->
-    <property type="double" name="x" default="0.0" />
-    
-    <!-- Y position of the button. -->
-    <property type="double" name="y" default="0.0" />
-    
-    <!-- Width of the button background. -->
-    <property type="double" name="width" default="17.0" />
-    
-    <!-- Height of the button background. -->
-    <property type="double" name="height" default="5.0" />
-    
-    <!-- The button style type, can be default or secondary. -->
-    <property type="string" name="type" default="default" />
-    
-    <property type="string?" name="bgColor" default="null" />
-    
-    <!-- The action to call when clicking the button. This disables script events. -->
-    <property type="string" name="action" default="" />
-    
-    <!-- Whether the button is disabled or not. If disabled, the button wont fire events. -->
-    <property type="bool" name="disabled" default="false" />
-    
-    <!-- Custom style -->
-    <property type="string" name="className" default="evosc-button" />
-    
-    <template>
-        <frame id="{{ id }}-frame" pos="{{ x }} {{ y }}" class="{{ className }}-frame" data-disabled="{{ disabled }}">
-            <frame if="!disabled">
-                <quad
-                        class='{{ className }}-bg-default {{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
-                        size="{{ width }} {{ height }}"
-                        scriptevents="1"
-                        bgcolor='{{ bgColor == null ? "" : bgColor }}'
-                />
-                <label
-                        size="{{ width }} {{ height }}"
-                        class='{{ className }}-btn-default {{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
-                        text="{{ text }}"
-                        scriptevents="1"
-                        halign="center"
-                        valign="center"
-                        pos="{{ width/2 }} {{ -height/2 }}"
-                        if='action.Equals("", StringComparison.Ordinal)'
-                        data-id="{{ id }}"
-                        id="{{ id }}"
-                />
-                <label
-                        class='{{ className }}-btn-default {{ type == "secondary" ? "btn-secondary" : "btn-default" }}'
-                        size="{{ width }} {{ height }}"
-                        text="{{ text }}"
-                        scriptevents="1"
-                        action="{{ action }}"
-                        halign="center"
-                        valign="center"
-                        pos="{{ width/2 }} {{ -height/2 }}"
-                        if='!action.Equals("", StringComparison.Ordinal)'
-                        data-id="{{ id }}"
-                        id="{{ id }}"
-                />
-            </frame>
-            <frame if="disabled">
-                <quad
-                        size="{{ width }} {{ height }}"
-                        class='{{ className }}-bg-disabled {{ type == "secondary" ? "btn-secondary-disabled" : "btn-disabled" }}'
-                />
-                <label
-                        id="{{ id }}"
-                        class='{{ className }}-btn-disabled {{ type == "secondary" ? "btn-secondary-disabled" : "btn-disabled" }}'
-                        size="{{ width }} {{ height }}"
-                        text="{{ text }}"
-                        halign="center"
-                        valign="center"
-                        pos="{{ width/2 }} {{ -height/2 }}"
-                />
-            </frame>
-        </frame>
-    </template>
+  <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />
+  
+  <!-- The ID of the button. -->
+  <property type="string" name="id" />
+  
+  <!-- Text to display in the button -->
+  <property type="string" name="text" default="" />
+  
+  <!-- X position of the button. -->
+  <property type="double" name="x" default="0.0" />
+  
+  <!-- Y position of the button. -->
+  <property type="double" name="y" default="0.0" />
+  
+  <!-- Width of the button background. -->
+  <property type="double" name="width" default="17.0" />
+  
+  <!-- Height of the button background. -->
+  <property type="double" name="height" default="5.0" />
+  
+  <!-- The button style type, can be primary or secondary. -->
+  <property type="string" name="type" default="primary" />
+  
+  <property type="string?" name="bgColor" default="null" />
+  
+  <!-- The action to call when clicking the button. This disables script events. -->
+  <property type="string" name="action" default="" />
+  
+  <!-- Whether the button is disabled or not. If disabled, the button wont fire events. -->
+  <property type="bool" name="disabled" default="false" />
+  
+  <!-- Custom style -->
+  <property type="string" name="className" default="evosc-button" />
+  
+  <template>
+    <frame
+            id="{{ id }}"
+            pos="{{ x }} {{ y }}"
+            data-type="{{ type }}"
+    >
+      <!-- Background -->
+      <quad
+              class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
+              size="{{ width-1 }} {{ height }}"
+              pos="0.5 0"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              data-id="{{ id }}"
+      />
+
+      <quad
+              class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
+              size="{{ 0.5 }} {{ height-1 }}"
+              pos="0 -0.5"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              data-id="{{ id }}"
+      />
+
+      <quad
+              class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
+              size="{{ 0.5 }} {{ height-1 }}"
+              pos="{{ width-0.5 }} -0.5"
+              data-id="{{ id }}"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+      />
+
+      <QuarterCircle
+              className="{{ id }}-surface"
+              radius="0.5"
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              quadrant="TopLeft"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              data-id="{{ id }}"
+              enableScriptEvents="true"
+      />
+
+      <QuarterCircle
+              className="{{ id }}-surface"
+              radius="0.5"
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              quadrant="TopRight"
+              x="{{ width-0.5 }}"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              data-id="{{ id }}"
+              enableScriptEvents="true"
+      />
+      <QuarterCircle
+              className="{{ id }}-surface"
+              radius="0.5"
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              quadrant="BottomLeft"
+              y="{{ -height+0.5 }}"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              data-id="{{ id }}"
+              enableScriptEvents="true"
+      />
+      <QuarterCircle
+              className="{{ id }}-surface"
+              radius="0.5"
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              quadrant="BottomRight"
+              x="{{ width-0.5 }}"
+              y="{{ -height+0.5 }}"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              data-id="{{ id }}"
+              enableScriptEvents="true"
+      />
+
+      <!-- Text -->
+      <label
+              focusareacolor1="00000000"
+              focusareacolor2="00000000"
+              class='btn-part btn-btn btn-text-{{ disabled ? "disabled" : type }} {{ className }}-btn'
+              textfont="{{ Font.Regular }}"
+              text="{{ text.ToUpper() }}"
+              valign="center"
+              halign="center"
+              size="{{ width }} {{ height }}"
+              pos="{{ width/2 }} {{ -height/2+0.3 }}"
+              data-id="{{ id }}"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              action="{{ action }}"
+              id="{{ id }}-btn"
+      />
+    </frame>
+  </template>
+
+  <script resource="EvoSC.Scripts.Button" once="true" />
 </component>

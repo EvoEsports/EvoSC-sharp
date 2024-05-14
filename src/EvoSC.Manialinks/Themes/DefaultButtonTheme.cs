@@ -12,17 +12,16 @@ public class DefaultButtonTheme(IThemeManager theme) : Theme<DefaultButtonTheme>
 
     public override Task ConfigureAsync()
     {
-        Set("UI.Button.Default.Bg").To(_theme.UI_BgPrimary);
-        Set("UI.Button.Default.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
-        Set("UI.Button.Default.Text").To(_theme.UI_TextPrimary);
-        Set("UI.Button.Default.DisabledBg").To(ColorUtils.GrayScale(_theme.UI_BgPrimary));
-        Set("UI.Button.Default.DisabledText").To(ColorUtils.GrayScale(_theme.UI_TextPrimary));
+        Set("UI.Button.Default.Bg").To(_theme.UI_SurfaceBgSecondary);
+        Set("UI.Button.Default.BgFocus").To(ColorUtils.Darken(_theme.UI_SurfaceBgSecondary));
+        Set("UI.Button.Default.Text").To(_theme.UI_TextSecondary);
         
-        Set("UI.Button.Secondary.Bg").To(_theme.UI_BgHighlight);
-        Set("UI.Button.Secondary.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
-        Set("UI.Button.Secondary.Text").To(_theme.UI_TextSecondary);
-        Set("UI.Button.Secondary.DisabledBg").To(ColorUtils.GrayScale(_theme.UI_BgHighlight));
-        Set("UI.Button.Secondary.DisabledText").To(ColorUtils.GrayScale(_theme.UI_TextSecondary));
+        Set("UI.Button.Secondary.Bg").To(_theme.UI_SurfaceBgPrimary);
+        Set("UI.Button.Secondary.BgFocus").To(ColorUtils.Lighten(_theme.UI_SurfaceBgPrimary));
+        Set("UI.Button.Secondary.Text").To(_theme.UI_TextPrimary);
+        
+        Set("UI.Button.Disabled.Bg").To(ColorUtils.SetLightness(_theme.UI_SurfaceBgPrimary, 50));
+        Set("UI.Button.Disabled.Text").To(ColorUtils.SetLightness(_theme.UI_TextPrimary, 50));
         
         return Task.CompletedTask;
     }

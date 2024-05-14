@@ -3,7 +3,7 @@
     <using namespace="EvoSC.Modules.Official.OpenPlanetModule.Models" />
     
     <import component="EvoSC.Window" as="Window" />
-    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="EvoSC.Controls.IconButton" as="IconButton" />
     
     <property type="string[]" name="AllowedSignatures" />
@@ -13,7 +13,7 @@
     <property type="(string Explanation, string Question)" name="WhatToDo" />
     
     <template>
-        <Theme />
+        <UIStyle />
         
         <Window 
                 canClose="false" 

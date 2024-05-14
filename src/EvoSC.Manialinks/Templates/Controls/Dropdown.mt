@@ -22,8 +22,8 @@ Toggles a panel below the button that can contain any components.
     <!-- Height of the button background. -->
     <property type="double" name="height" default="5.0" />
     
-    <!-- Style type of the button, can be default or secondary. -->
-    <property type="string" name="type" default="default" />
+    <!-- Style type of the button, can be primary or secondary. -->
+    <property type="string" name="type" default="primary" />
 
     <!-- Whether the dropdown button is disabled or not. If disabled, the panel wont open. -->
     <property type="bool" name="disabled" default="false" />
@@ -43,7 +43,7 @@ Toggles a panel below the button that can contain any components.
         <frame 
                 id="{{ id }}-btn-slotpanel" 
                 pos="{{ x }} {{ y-height }}" 
-                class="evosc-dropdown-slotpanel"
+                class="dropdown-slotpanel"
                 data-id="{{ id }}"
         >
             <slot />

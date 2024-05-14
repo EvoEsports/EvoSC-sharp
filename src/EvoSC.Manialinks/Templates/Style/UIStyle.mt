@@ -1,13 +1,12 @@
-﻿<!--
-    General theme component for all UI elements. Must be imported for the UI to work.
--->
 <component>
+  <import component="EvoSC.Style.Controls.ButtonStyle" as="ButtonStyle" />
+  
   <template>
     <stylesheet>
       <!-- Text -->
-      <style 
-              class="text"
-              textfont="{{ Font.Regular }}" 
+      <style
+              class="text-primary"
+              textfont="{{ Font.Regular }}"
               textcolor="{{ Theme.UI_TextPrimary }}"
               textsize="{{ Theme.UI_FontSize }}"
       />
@@ -27,7 +26,7 @@
       />
 
       <!-- Background -->
-      <style 
+      <style
               class="bg-header"
               bgcolor="{{ Theme.UI_BgPrimary }}"
               opacity="0.95"
@@ -58,7 +57,7 @@
 
       <!-- Accent -->
       <style
-              class="accent"
+              class="accent-primary"
               bgcolor="{{ Theme.UI_AccentPrimary }}"
       />
 
@@ -67,5 +66,7 @@
               bgcolor="{{ Theme.UI_AccentSecondary }}"
       />
     </stylesheet>
+    
+    <ButtonStyle />
   </template>
 </component>

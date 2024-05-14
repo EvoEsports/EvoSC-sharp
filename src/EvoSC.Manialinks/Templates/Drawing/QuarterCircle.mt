@@ -3,9 +3,12 @@
   <property type="double" name="x" default="0.0" />
   <property type="double" name="y" default="0.0" />
   <property type="string" name="color" />
+  <property type="bool" name="enableScriptEvents" default="false" />
+  <property type="string" name="action" default="" />
   
   <!-- Possible values: TopLeft, TopRight, BottomLeft, BottomRight -->
   <property type="string" name="quadrant" />
+  <property type="string" name="className" default="" />
   
   <template>
     <frame pos="{{ x }} {{ y }}" size="{{ radius }} {{ radius }}" >
@@ -16,6 +19,8 @@
               pos="0 0"
               if='quadrant == "TopLeft"'
               opacity="{{ Util.ColorOpacity(color) }}"
+              class="{{ className }}"
+              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
       />
 
       <quad
@@ -25,6 +30,8 @@
               pos="-{{ radius }} 0"
               if='quadrant == "TopRight"'
               opacity="{{ Util.ColorOpacity(color) }}"
+              class="{{ className }}"
+              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
       />
 
       <quad
@@ -34,6 +41,8 @@
               pos="0 {{ radius }}"
               if='quadrant == "BottomLeft"'
               opacity="{{ Util.ColorOpacity(color) }}"
+              class="{{ className }}"
+              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
       />
 
       <quad
@@ -43,6 +52,8 @@
               pos="-{{ radius }} {{ radius }}"
               if='quadrant == "BottomRight"'
               opacity="{{ Util.ColorOpacity(color) }}"
+              class="{{ className }}"
+              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
       />
     </frame>
   </template>

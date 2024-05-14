@@ -4,7 +4,7 @@
     <import component="EvoSC.FormEntry" as="FormEntry" />
     <!-- <import component="EvoSC.FormSubmit" as="FormSubmit" /> -->
     <import component="EvoSC.Window" as="Window" />
-    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="EvoSC.Controls.Button" as="Button" />
 
     <property type="FormValidationResult" name="Validation" />
@@ -12,7 +12,7 @@
     <property type="dynamic" name="Locale" />
 
     <template>
-      <Theme />
+      <UIStyle />
       
       <Window
               width="50"
