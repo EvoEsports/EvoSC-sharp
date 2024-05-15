@@ -11,8 +11,8 @@
   <property type="string" name="closable" default="false" />
   <property type="bool" name="hidden" default="false" />
   <property type="string" name="severity" default="primary" /> <!-- primary, secondary, success, info, warning, danger -->
-  <property type="string?" name="bgColor" default="null" />
-  <property type="string?" name="textColor" default="null" />
+  <property type="string?" name="bgColor" default="" />
+  <property type="string?" name="textColor" default="" />
   <property type="bool" name="centerText" default="true" />
   
   <template>
@@ -23,14 +23,14 @@
             width="{{ width }}"
             height="{{ height }}"
             cornerRadius='{{ style == "Round" ? 1 : 0 }}'
-            bgColor="{{ bgColor == null ? Util.TypeToColorBg(severity) : bgColor }}"
+            bgColor='{{ string.IsNullOrEmpty(bgColor) ? Util.TypeToColorBg(severity) : bgColor }}'
             data="{{ closable }}"
             hidden="{{ hidden }}"
     >
       <label
-              class="text"
+              class="text-primary"
               pos="{{ centerText ? width/2.0 : 0.4 }} {{ -height/2+0.2 }}"
-              textcolor="{{ textColor == null ? Util.TypeToColorText(severity) : textColor }}"
+              textcolor="{{ string.IsNullOrEmpty(textColor) ? Util.TypeToColorText(severity) : textColor }}"
               size="{{ width }} 5"
               text="{{ text }}"
               textsize="0.4"

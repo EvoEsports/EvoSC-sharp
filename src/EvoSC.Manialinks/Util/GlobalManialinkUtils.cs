@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using ColorMine.ColorSpaces;
 using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Util;
 
@@ -15,23 +16,28 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
     /// </summary>
     /// <param name="type">Name of the status.</param>
     /// <returns></returns>
-    public string TypeToColorBg(string type) => type.ToLower(CultureInfo.InvariantCulture) switch
+    public string TypeToColorBg(string type)
     {
-        "info" => _theme.Teal,
-        "success" => _theme.Green,
-        "warning" => _theme.Orange,
-        "danger" => _theme.Red,
-        "primary" => _theme.UI_AccentPrimary,
-        "secondary" => _theme.UI_AccentSecondary,
-        _ => _theme.UI_BgPrimary
-    };
+        var color = type.ToLower(CultureInfo.InvariantCulture) switch
+        {
+            "info" => _theme.Teal,
+            "success" => _theme.Green,
+            "warning" => _theme.Orange,
+            "danger" => _theme.Red,
+            "primary" => _theme.UI_SurfaceBgPrimary,
+            "secondary" => _theme.UI_SurfaceBgSecondary,
+            _ => _theme.UI_BgPrimary
+        };
+
+        return color.ToString();
+    }
 
     public string TypeToColorText(string type)
     {
         var bgColor = TypeToColorBg(type);
         var luma = ColorUtils.Luma(bgColor);
-
-        return luma <= 50 ? ColorUtils.Lighten(bgColor, 40) : ColorUtils.Darken(bgColor, 40);
+        
+        return luma <= 50 ? _theme.UI_TextPrimary : _theme.UI_TextSecondary;
     } 
 
     /// <summary>

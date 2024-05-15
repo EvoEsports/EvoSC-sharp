@@ -86,8 +86,8 @@ General purpose window that can hold any type of component. The window is design
                   class="window-title-icon"
                   valign="center"
                   halign="center"
-                  text="{{ Icons.Trophy }}"
-                  pos="4.5 -3.2"
+                  text="{{ icon }}"
+                  pos="4.5 -3"
           />
 
           <!-- Window Title Text -->

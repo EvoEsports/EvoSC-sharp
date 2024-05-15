@@ -8,6 +8,7 @@
   <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
   <import component="EvoSC.Controls.RadioButton" as="RadioButton" />
   <import component="EvoSC.Controls.Alert" as="Alert" />
+  <import component="EvoSC.Controls.Tag" as="Tag" />
   <import component="EvoSC.Window" as="Window" />
   <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   
@@ -25,7 +26,7 @@
           </frame>
           
           <label text="DROPDOWN:" class="text-primary" pos="30 -1" />
-          <frame pos="55 0" z-index="10">
+          <frame pos="57 0" z-index="10">
               <Dropdown text="Chose Something" id="dropdownDemo" width="30">
                   <Button text="Action 1" id="dropdownBtn1" />
                   <Button text="Action 2" id="dropdownBtn2" y="-5" />
@@ -34,10 +35,10 @@
           </frame>
           
           <frame pos="30 -6">
-              <label text="TEXT INPUT:" class="text-primary" pos="0 0" />
-              <TextInput id="txtInputDemo" x="25" />
+              <label text="TEXT INPUT:" class="text-primary" pos="0 -1.5" />
+              <TextInput id="txtInputDemo" x="27" />
               <label text="PASSWORD INPUT:" class="text-primary" pos="0 -7" />
-              <TextInput id="txtInputDemoPassword" isPassword="true" y="-6" x="25" />
+              <TextInput id="txtInputDemoPassword" isPassword="true" y="-6" x="27" />
           </frame>
 
           <label text="SWITCH:" class="text-primary" pos="0 -41" />
@@ -52,15 +53,30 @@
               <Checkbox id="checkbox3" text="three" y="-12" />
           </frame>
 
-          <label text="RADIO BUTTONS:" class="text-primary" pos="50 -20" />
-          <frame pos="50 -24">
+          <label text="RADIO BUTTONS:" class="text-primary" pos="57 -20" />
+          <frame pos="57 -24">
               <RadioButton id="radioButton1" text="one" isChecked="true" />
               <RadioButton id="radioButton2" text="two" y="-6" />
               <RadioButton id="radioButton3" text="three" y="-12" />
           </frame>
           
-          <Button id="btnShowAlert" text="Show Alert" x="88" />
-          <Button id="btnHideAlert" text="Hide Alert" x="88" y="-6" />
+          <Button id="btnShowAlert" text="Show Alert" x="90" />
+          <Button id="btnHideAlert" text="Hide Alert" x="90" y="-6" />
+        
+        <frame pos="85 -14">
+          <Tag text="Tag" width="7"/>
+          <Tag text="Tag" width="7" y="-4" severity="secondary" />
+          <Tag text="Tag" width="7" y="-8" severity="success" />
+          <Tag text="Tag" width="7" y="-12" severity="info" />
+          <Tag text="Tag" width="7" y="-16" severity="warning" />
+          <Tag text="Tag" width="7" y="-20" severity="danger" />
+          <Tag text="Tag" style="Round" x="8" width="7"/>
+          <Tag text="Tag" style="Round" x="8" width="7" y="-4" severity="secondary" />
+          <Tag text="Tag" style="Round" x="8" width="7" y="-8" severity="success" />
+          <Tag text="Tag" style="Round" x="8" width="7" y="-12" severity="info" />
+          <Tag text="Tag" style="Round" x="8" width="7" y="-16" severity="warning" />
+          <Tag text="Tag" style="Round" x="8" width="7" y="-20" severity="danger" />
+        </frame>
       </Window>
       
       <Alert text="Hello there!" id="myAlert" y="70" type="primary" />
