@@ -1,6 +1,5 @@
 ﻿<!--
 Void ShowAlert(Text alertId) {
-    log("show");
     declare frame <=> Page.MainFrame.GetFirstChild(alertId) as CMlFrame;
     declare frameInner <=> Page.MainFrame.GetFirstChild(alertId^"-inner-frame") as CMlFrame;
     

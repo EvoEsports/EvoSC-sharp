@@ -19,7 +19,7 @@
 
     <!-- The text to display in the alert. -->
     <property type="string" name="type" default="primary" />
-    
+  
     <template>
         <frame 
                 pos="{{ x }} {{ y }}" 
@@ -42,13 +42,13 @@
                 <framemodel id="EvoSC_Model_Alert_Circle_C2_{{ id }}">
                     <quad
                             size="4 4"
-                            modulatecolor="{{ Util.TypeToColorBg(type) }}"
+                            modulatecolor="{{ Theme.UI_Alert_Default_BgPrimary }}"
                             image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
                     />
                 </framemodel>
 
-                <quad bgcolor="{{ Util.TypeToColorBg(type) }}" pos="5 0" size="{{ width }} 7" />
-                <quad bgcolor="{{ Util.TypeToColorBg(type) }}" pos="{{ width + 5 }} 0" size="2 5" />
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgPrimary }}" pos="5 0" size="{{ width }} 7" />
+                <quad bgcolor="{{ Theme.UI_Alert_Default_BgPrimary }}" pos="{{ width + 5 }} 0" size="2 5" />
                 <frame size="2 2" pos="{{ width + 7 }} -7" rot="180">
                     <frameinstance modelid="EvoSC_Model_Alert_Circle_C2_{{ id }}" />
                 </frame>

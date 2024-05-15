@@ -1,9 +1,0 @@
-<component>
-  <template>
-    <stylesheet>
-      <style 
-              class="evosc-alert-frame"
-      />
-    </stylesheet>
-  </template>
-</component>

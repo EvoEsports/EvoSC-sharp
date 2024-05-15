@@ -38,7 +38,7 @@
   
   <template>
     <frame
-            id="{{ id }}"
+            id="{{ id }}-frame"
             pos="{{ x }} {{ y }}"
             data-type="{{ type }}"
     >
@@ -123,7 +123,7 @@
               data-id="{{ id }}"
               scriptevents="{{ disabled ? 0 : 1 }}"
               action="{{ action }}"
-              id="{{ id }}-btn"
+              id="{{ id }}"
       />
     </frame>
   </template>

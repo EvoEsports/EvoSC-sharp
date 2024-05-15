@@ -28,8 +28,8 @@
           <frame pos="55 0" z-index="10">
               <Dropdown text="Chose Something" id="dropdownDemo" width="30">
                   <Button text="Action 1" id="dropdownBtn1" />
-                  <Button text="Action 2" id="dropdownBtn1" y="-5" />
-                  <Button text="Action 3" id="dropdownBtn1" y="-10" />
+                  <Button text="Action 2" id="dropdownBtn2" y="-5" />
+                  <Button text="Action 3" id="dropdownBtn3" y="-10" />
               </Dropdown>
           </frame>
           
@@ -67,11 +67,12 @@
   </template>
   
   <script>
-      *** OnButtonClicked ***
+      *** OnMouseClick ***
       ***
-          if (ButtonId == "btnShowAlert") {
+          log(Event.Control.ControlId);
+          if (Event.Control.ControlId == "btnShowAlert") {
               ShowAlert("myAlert");
-          } else if (ButtonId == "btnHideAlert") {
+          } else if (Event.Control.ControlId == "btnHideAlert") {
               HideAlert("myAlert");
           }
       ***
