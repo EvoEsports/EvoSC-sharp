@@ -70,7 +70,7 @@ if ({{ canMove }}) {
     DragStartPosition = WindowInstance.RelativePosition_V3;
     
     if (MouseX >= DragStartPosition.X && MouseX <= DragStartPosition.X + WindowInstance.Size.X
-        && MouseY <= DragStartPosition.Y && MouseY >= DragStartPosition.Y - 5) {
+        && MouseY <= DragStartPosition.Y && MouseY >= DragStartPosition.Y - 8) {
         IsFocused = True;
     }
     

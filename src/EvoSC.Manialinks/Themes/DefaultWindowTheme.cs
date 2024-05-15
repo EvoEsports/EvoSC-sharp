@@ -12,7 +12,10 @@ public class DefaultWindowTheme(IThemeManager theme) : Theme<DefaultWindowTheme>
 
     public override Task ConfigureAsync()
     {
-        Set("UI.Window.Default.Bg").To(_theme.UI_BgHighlight);
+        Set("UI.Window.Default.Title.Icon").To(ColorUtils.SetLightness(_theme.UI_AccentSecondary, 65));
+        Set("UI.Window.Default.Title.Text").To(ColorUtils.SetLightness(_theme.UI_TextPrimary, 65));
+        
+        /* Set("UI.Window.Default.Bg").To(_theme.UI_BgHighlight);
         Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgPrimary);
         Set("UI.Window.Default.Header.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
         Set("UI.Window.Default.Title.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
@@ -26,7 +29,7 @@ public class DefaultWindowTheme(IThemeManager theme) : Theme<DefaultWindowTheme>
         Set("UI.Window.Secondary.CloseBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
         Set("UI.Window.Secondary.MinimizeBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
         
-        Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgHighlight);
+        Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgHighlight); */
 
         return Task.CompletedTask;
     }

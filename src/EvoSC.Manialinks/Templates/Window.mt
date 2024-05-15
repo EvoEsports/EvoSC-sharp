@@ -39,35 +39,91 @@ General purpose window that can hold any type of component. The window is design
     
     <!-- Whether the user can drag the window around. -->
     <property type="bool" name="canMove" default="true" />
-    
-    <!-- Whether to display the titlebar or not. -->
-    <property type="bool" name="hasTitlebar" default="true" />
   
-    <property type="double" name="padding" default="2" />
+    <property type="double" name="padding" default="3" />
     <property type="bool" name="scrollable" default="false" />
 
     <template>
-        <frame 
-                class="evosc-window"
-                pos="{{ x }} {{ y }}" 
-                size="{{ width }} {{ height }}" 
-                id="{{ id }}"
+        <frame class="evosc-window"
+               pos="{{ x }} {{ y }}" 
+               size="{{ width+2 }} {{ height }}" 
+               id="{{ id }}"
         >
+          <!-- Header BG Icon -->
+          <quad size="7 7" 
+                pos="1 0"
+                bgcolor="{{ Theme.UI_AccentSecondary }}" />
+
+          <!-- Header BG Line -->
+          <quad pos="1 -7" 
+                size="{{ width }} 1" 
+                bgcolor="{{ Theme.UI_AccentSecondary }}" />
+
+          <!-- Header BG -->
+          <quad class="bg-header" 
+                size="{{ width-7 }} 7" 
+                pos="8 0" />
+
+          <!-- Header BG Accent Line Left -->
+          <quad class="accent-primary"
+                size="1 {{ height }}"
+          />
+          
+          <!-- Header BG Accent Line Right -->
+          <quad class="accent-primary"
+                pos="{{ width+1 }} 0"
+                size="1 {{ height }}"
+          />
+
+          <!-- Body BG -->
+          <quad class="bg-primary"
+                pos="1 -8"
+                size="{{ width }} {{ height-8 }}"
+          />
+
+          <!-- Window Icon -->
+          <label
+                  class="window-title-icon"
+                  valign="center"
+                  halign="center"
+                  text="{{ Icons.Trophy }}"
+                  pos="4.5 -3.2"
+          />
+
+          <!-- Window Title Text -->
+          <label
+                  class="text-header"
+                  valign="center"
+                  text="{{ title.ToUpper() }}"
+                  pos="10 -3.2"
+          />
+
+          <!-- Body Contents -->
+          <Container
+                  x="{{ padding+1 }}"
+                  y="-{{ 8+padding }}"
+                  width="{{ width-padding*2 }}"
+                  height="{{ height - (8+padding*2) }}"
+                  scrollable="false"
+          >
+            <slot />
+          </Container>
+          
           <!-- Window Header -->
-            <quad
-                    class="window-bg-{{ style }}"
+            <!-- <quad
+                    class="window-bg"
                     size="{{ width }} {{ height }}"
                     scriptevents="1"
             />
             
             <quad 
-                    class="window-header-{{ style }} evosc-window-header evosc-window"
+                    class="window-header evosc-window-header evosc-window"
                     size="{{ width }} {{ 5 }}"
                     if="hasTitlebar"
             />
 
             <label
-                    class="window-title-{{ style }} evosc-window"
+                    class="window-title evosc-window"
                     valign="center"
                     text="{{ icon }}"
                     size="{{ width-1.5 }} 5"
@@ -78,7 +134,7 @@ General purpose window that can hold any type of component. The window is design
             <label 
                     class="window-title-{{ style }} evosc-window"
                     valign="center"
-                    text="{{ title }}"
+                    text="{{ title.ToUpper() }}"
                     size='{{ width-1.5 }} 5'
                     pos='{{ icon != "" ? 5.5 : 1.5 }} -2.2'
                     if="hasTitlebar"
@@ -106,7 +162,6 @@ General purpose window that can hold any type of component. The window is design
                     if="hasTitlebar &amp;&amp; canMinimize"
             />
 
-            <!-- Window Body -->
             <Container
                     x="{{ padding }}"
                     y="-{{ hasTitlebar ? 5+padding : padding }}"
@@ -115,7 +170,7 @@ General purpose window that can hold any type of component. The window is design
                     scrollable="false"
             >
                 <slot />
-            </Container>
+            </Container> -->
         </frame>
     </template>
 

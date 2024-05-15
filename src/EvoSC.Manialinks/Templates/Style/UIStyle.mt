@@ -3,6 +3,7 @@
   <import component="EvoSC.Style.Controls.DropdownStyle" as="DropdownStyle" />
   <import component="EvoSC.Style.Controls.TextInputStyle" as="TextInputStyle" />
   <import component="EvoSC.Style.Controls.CheckboxStyle" as="CheckboxStyle" />
+  <import component="EvoSC.Style.WindowStyle" as="WindowStyle" />
   
   <template>
     <stylesheet>
@@ -26,6 +27,13 @@
               textfont="{{ Font.Regular }}"
               textcolor="{{ Theme.UI_TextMuted }}"
               textsize="{{ Theme.UI_FontSize }}"
+      />
+
+      <style
+              class="text-header"
+              textfont="{{ Font.Bold }}"
+              textcolor="{{ Theme.UI_TextPrimary }}"
+              textsize="3"
       />
 
       <!-- Background -->
@@ -74,5 +82,6 @@
     <DropdownStyle />
     <TextInputStyle />
     <CheckboxStyle />
+    <WindowStyle />
   </template>
 </component>

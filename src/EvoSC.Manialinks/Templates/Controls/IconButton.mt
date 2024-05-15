@@ -26,7 +26,7 @@
     <property type="double" name="height" default="5.0" />
     
     <!-- The style type of the button, can be default or secondary. -->
-    <property type="string" name="type" default="default" />
+    <property type="string" name="type" default="primary" />
     
     <!-- The action to call when the button is clicked. This disables event scripts. -->
     <property type="string" name="action" default="" />

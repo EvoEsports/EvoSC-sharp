@@ -13,7 +13,7 @@
   
   <template>
     <UIStyle />
-      <Window title="UI Demo" icon="" width="120" height="60" x="-60" y="30">
+      <Window title="UI Demo" icon="" width="120" height="65" x="-60" y="30">
           <label text="BUTTONS:" class="text-primary" />
           <frame pos="0 -4">
               <Button id="btnDefault" text="Default" />
