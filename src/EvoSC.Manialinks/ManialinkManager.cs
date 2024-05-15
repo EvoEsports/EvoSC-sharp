@@ -303,7 +303,7 @@ public class ManialinkManager : IManialinkManager
             assembles.AddRange(s_defaultAssemblies);
             assembles.AddRange(template.Assemblies);
 
-            await _engine.PreProcessAsync(template.Name, assembles);
+           await _engine.PreProcessAsync(template.Name, assembles);
         }
     }
 

@@ -69,4 +69,12 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
     }
 
     public int[] Range(int n) => Enumerable.Range(0, n).ToArray();
+
+    public bool HasItem(string items, string item, string splitter)
+    {
+        var itemsSplit = items.Split(splitter);
+        return itemsSplit.Contains(item);
+    }
+
+    public bool HasItem(string items, string item) => HasItem(items, item, ",");
 }

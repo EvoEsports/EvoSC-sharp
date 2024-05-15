@@ -2,6 +2,7 @@
   <import component="EvoSC.Style.Controls.ButtonStyle" as="ButtonStyle" />
   <import component="EvoSC.Style.Controls.DropdownStyle" as="DropdownStyle" />
   <import component="EvoSC.Style.Controls.TextInputStyle" as="TextInputStyle" />
+  <import component="EvoSC.Style.Controls.CheckboxStyle" as="CheckboxStyle" />
   
   <template>
     <stylesheet>
@@ -72,5 +73,6 @@
     <ButtonStyle />
     <DropdownStyle />
     <TextInputStyle />
+    <CheckboxStyle />
   </template>
 </component>

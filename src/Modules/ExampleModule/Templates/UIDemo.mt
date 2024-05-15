@@ -9,10 +9,10 @@
   <import component="EvoSC.Controls.RadioButton" as="RadioButton" />
   <import component="EvoSC.Controls.Alert" as="Alert" />
   <import component="EvoSC.Window" as="Window" />
+  <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   
   <template>
     <UIStyle />
-
       <Window title="UI Demo" icon="" width="120" height="60" x="-60" y="30">
           <label text="Buttons:" class="text-primary" />
           <frame pos="0 -4">
@@ -48,15 +48,15 @@
           <label text="Checkbox:" class="text-primary" pos="30 -20" />
           <frame pos="30 -24">
               <Checkbox id="checkbox1" text="one" isChecked="true" />
-              <Checkbox id="checkbox2" text="two" isChecked="true" y="-5" />
-              <Checkbox id="checkbox3" text="three" y="-10" />
+              <Checkbox id="checkbox2" text="two" isChecked="true" y="-6" />
+              <Checkbox id="checkbox3" text="three" y="-12" />
           </frame>
 
           <label text="Radio Buttons:" class="text-primary" pos="50 -20" />
           <frame pos="50 -24">
               <RadioButton id="radioButton1" text="one" isChecked="true" />
-              <RadioButton id="radioButton2" text="two" y="-5" />
-              <RadioButton id="radioButton3" text="three" y="-10" />
+              <RadioButton id="radioButton2" text="two" y="-6" />
+              <RadioButton id="radioButton3" text="three" y="-12" />
           </frame>
           
           <Button id="btnShowAlert" text="Show Alert" x="88" />
