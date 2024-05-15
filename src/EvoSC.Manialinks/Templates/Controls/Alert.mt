@@ -66,7 +66,7 @@
                 <quad bgcolor="{{ Theme.UI_Alert_Default_BgSecondary }}" pos="0 -2" size="7 3" />
 
                 <label text="{{ Util.TypeToIcon(type) }}" textcolor="{{ Util.TypeToColorBg(type) }}" valign="center" halign="center" pos="3.5 -3.3" />
-                <label class="text" text="{{ text }}" textcolor="{{ Theme.UI_Alert_Default_Text }}" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
+                <label class="text-primary" text="{{ text }}" textcolor="{{ Theme.UI_Alert_Default_Text }}" valign="center" pos="9.5 -3.2" size="{{ width }} 7" />
             </frame>
         </frame>
     </template>

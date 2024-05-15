@@ -46,8 +46,10 @@ if (Event.Control.HasClass("btn-btn")) {
 *** OnMouseClick ***
 ***
 if (Event.Control.HasClass("btn-btn")) {
-    declare Id = Event.Control.DataAttributeGet("id");
-    +++ OnButtonClicked +++
+    declare ButtonId = Event.Control.DataAttributeGet("id");
+    {
+        +++ OnButtonClicked +++
+    }
 }
 ***
 

@@ -67,15 +67,14 @@
   </template>
   
   <script>
-      /* *** OnMouseClick ***
+      *** OnButtonClicked ***
       ***
-          log(Event.Control.ControlId);
-          if (Event.Control.ControlId == "btnShowAlert") {
+          if (ButtonId == "btnShowAlert") {
               ShowAlert("myAlert");
-          } else if (Event.Control.ControlId == "btnHideAlert") {
+          } else if (ButtonId == "btnHideAlert") {
               HideAlert("myAlert");
           }
-      *** */
+      ***
   </script>
   
   <script resource="EvoSC.Scripts.UIScripts" />
