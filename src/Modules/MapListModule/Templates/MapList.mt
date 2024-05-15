@@ -23,7 +23,7 @@
     
     <Window title="Maps" icon="{{ Icons.Map }}" width="230" height="130" x="-100" y="65">
       <frame pos="0 -7">
-        <TextInput name="txtSearch" y="0" width="34" placeholder="Search ..." />
+        <TextInput id="txtSearch" y="0" width="34" placeholder="Search ..." />
         <Checkbox id="chkAllMaps" text="All Maps" y="-8" isChecked="true" />
         <Separator length="34" y="-14" />
         <Checkbox id="chkFavorites" text="Favorites" y="-17" />

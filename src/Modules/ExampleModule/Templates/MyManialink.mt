@@ -27,7 +27,7 @@
             <IconButton icon="" text="Icon" id="myAction4" y="-15" />
         </Dropdown> -->
         
-        <!-- <TextInput name="myinput" value="something" /> -->
+        <!-- <TextInput id="myinput" value="something" /> -->
         
         <!-- <Switch value="false" id="switch1" />
         <Switch value="false" y="-6" id="switch2" /> -->

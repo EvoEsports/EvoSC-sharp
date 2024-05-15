@@ -32,7 +32,7 @@
             <TextInput 
                     x="0"
                     y="-3"
-                    name="{{ name }}"
+                    id="{{ name }}"
                     value='{{ value ?? "" }}'
                     width="{{ w }}"
                     height="3"

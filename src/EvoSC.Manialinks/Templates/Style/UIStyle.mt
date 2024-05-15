@@ -1,5 +1,7 @@
 <component>
   <import component="EvoSC.Style.Controls.ButtonStyle" as="ButtonStyle" />
+  <import component="EvoSC.Style.Controls.DropdownStyle" as="DropdownStyle" />
+  <import component="EvoSC.Style.Controls.TextInputStyle" as="TextInputStyle" />
   
   <template>
     <stylesheet>
@@ -68,5 +70,7 @@
     </stylesheet>
     
     <ButtonStyle />
+    <DropdownStyle />
+    <TextInputStyle />
   </template>
 </component>

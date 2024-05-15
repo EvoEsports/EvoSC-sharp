@@ -2,9 +2,10 @@
 Basic text input control.
 -->
 <component>
-    
+    <import component="EvoSC.Controls.Panel" as="Panel" />  
+  
     <!-- The name of the control. -->
-    <property type="string" name="name" />
+    <property type="string" name="id" />
     
     <!-- The X position of the control. -->
     <property type="double" name="x" default="0.0"/>
@@ -36,7 +37,34 @@ Basic text input control.
     <property type="string" name="placeholder" default="" />
     
     <template>
-        <frame pos="{{ x }} {{ y }}" id="{{ name }}">
+      <frame pos="{{ x }} {{ y }}" id="{{ id }}">
+        <Panel width="{{ width }}" 
+               height="{{ height }}" 
+               id="{{ id }}-panel"
+               bgColor="{{ Theme.UI_SurfaceBgPrimary }}"
+               cornerRadius="0.5"
+        >
+          <entry
+                  scriptevents="1"
+                  valuetype="{{ valueType }}"
+                  focusareacolor1="00000000"
+                  focusareacolor2="00000000"
+                  textformat='{{ isPassword ? "Password" : "Basic" }}'
+                  name="{{ id }}"
+                  data-id="{{ id }}"
+                  default="{{ value }}"
+                  selecttext="{{ autoSelect }}"
+                  maxlen="{{ maxLength }}"
+                  z-index="0"
+
+                  class="txtinput-text"
+                  
+                  size="{{ width-2 }} {{ height }}"
+                  pos="{{ 1 }} {{ -height/4 }}"
+          />
+        </Panel>
+      </frame>
+        <!-- <frame pos="{{ x }} {{ y }}" id="{{ name }}">
             <quad 
                     class="textinput-outline-default"
                     size="{{ width }} {{ height }}"
@@ -81,8 +109,8 @@ Basic text input control.
                       pos="{{ (height-3)/2 }} {{ -(height-0.15)/2 }}"
               />
             </frame>
-        </frame>
+        </frame> -->
     </template>
 
-  <script resource="EvoSC.Scripts.TextInput" once="true" />
+  <!-- <script resource="EvoSC.Scripts.TextInput" once="true" /> -->
 </component>
