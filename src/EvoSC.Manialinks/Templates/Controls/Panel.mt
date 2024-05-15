@@ -17,6 +17,7 @@
   <property type="double" name="border" default="0" />
   <property type="string" name="borderColor" default="ffffff" />
   <property type="string" name="data" default="" />
+  <property type="string" name="dataId" default="" />
   
   <template>
     <frame if="border > 0" 
@@ -41,8 +42,9 @@
            class="{{ className }}"
            rot="{{ rotate }}"
            hidden='{{ hidden ? "1" : "0" }}'
-           scriptevents='{{ scriptEvents ? "1" : "0" }}'
+           scriptevents="{{ scriptEvents ? 1 : 0 }}"
            data-data="{{ data }}"
+           data-id="{{ dataId }}"
     >
       <frame>
         <frame if="cornerRadius > 0">
@@ -52,16 +54,51 @@
           <QuarterCircle quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" />
         </frame>
 
-        <quad bgcolor="{{ bgColor }}" pos="{{ cornerRadius }} 0" size="{{ width-cornerRadius*2 }} {{ cornerRadius }}" /> <!-- Top -->
-        <quad bgcolor="{{ bgColor }}" pos="0 -{{ cornerRadius }}" size="{{ cornerRadius }} {{ height-cornerRadius*2 }}" /> <!-- Left -->
-        <quad bgcolor="{{ bgColor }}" pos="{{ cornerRadius }} -{{ height-cornerRadius }}" size="{{ width-cornerRadius*2 }} {{ cornerRadius }}" /> <!-- Bottom -->
-        <quad bgcolor="{{ bgColor }}" pos="{{ width-cornerRadius }} -{{ cornerRadius }}" size="{{ cornerRadius }} {{ height-cornerRadius*2 }}" /> <!-- Right -->
+        <quad bgcolor="{{ bgColor }}"
+              pos="{{ cornerRadius }} 0" 
+              size="{{ width-cornerRadius*2 }} {{ cornerRadius }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              data-data="{{ data }}"
+              data-id="{{ dataId }}"
+              class="{{ className }}"
+        /> <!-- Top -->
+        
+        <quad bgcolor="{{ bgColor }}" 
+              pos="0 -{{ cornerRadius }}" 
+              size="{{ cornerRadius }} {{ height-cornerRadius*2 }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              data-data="{{ data }}"
+              data-id="{{ dataId }}"
+              class="{{ className }}"
+        /> <!-- Left -->
+        
+        <quad bgcolor="{{ bgColor }}" 
+              pos="{{ cornerRadius }} -{{ height-cornerRadius }}" 
+              size="{{ width-cornerRadius*2 }} {{ cornerRadius }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              data-data="{{ data }}"
+              data-id="{{ dataId }}"
+              class="{{ className }}"
+        /> <!-- Bottom -->
+        
+        <quad bgcolor="{{ bgColor }}" 
+              pos="{{ width-cornerRadius }} -{{ cornerRadius }}"
+              size="{{ cornerRadius }} {{ height-cornerRadius*2 }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              data-data="{{ data }}"
+              data-id="{{ dataId }}"
+              class="{{ className }}"
+        /> <!-- Right -->
       </frame>
       
       <quad
               pos="{{ cornerRadius }} {{ -cornerRadius }}" 
               size="{{ width-cornerRadius*2 }} {{ height-cornerRadius*2 }}"
               bgcolor="{{ bgColor }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              data-data="{{ data }}"
+              data-id="{{ dataId }}"
+              class="{{ className }}"
       />
       <frame pos="{{ padding }} {{ -padding }}">
         <slot />

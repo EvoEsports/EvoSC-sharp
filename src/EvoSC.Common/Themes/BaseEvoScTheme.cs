@@ -51,22 +51,22 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
     
     protected void SetDefaultUtilityColors()
     {
-        Set(DefaultThemeOptions.Red).To("E22000");
-        Set(DefaultThemeOptions.Green).To("E22000");
-        Set(DefaultThemeOptions.Blue).To("E22000");
-        Set(DefaultThemeOptions.Pink).To("E22000");
-        Set(DefaultThemeOptions.Gray).To("E22000");
-        Set(DefaultThemeOptions.Orange).To("E22000");
-        Set(DefaultThemeOptions.Yellow).To("E22000");
-        Set(DefaultThemeOptions.Teal).To("E22000");
-        Set(DefaultThemeOptions.Purple).To("E22000");
-        Set(DefaultThemeOptions.Gold).To("E22000");
-        Set(DefaultThemeOptions.Silver).To("E22000");
-        Set(DefaultThemeOptions.Bronze).To("E22000");
-        Set(DefaultThemeOptions.Grass).To("E22000");
-        Set(DefaultThemeOptions.Dirt).To("E22000");
-        Set(DefaultThemeOptions.Tarmac).To("E22000");
-        Set(DefaultThemeOptions.Ice).To("E22000");
+        Set(DefaultThemeOptions.Red).To("E3391D");
+        Set(DefaultThemeOptions.Green).To("1CE21C");
+        Set(DefaultThemeOptions.Blue).To("2929EC");
+        Set(DefaultThemeOptions.Pink).To("FF0058");
+        Set(DefaultThemeOptions.Gray).To("888888");
+        Set(DefaultThemeOptions.Orange).To("F77234");
+        Set(DefaultThemeOptions.Yellow).To("FCE100");
+        Set(DefaultThemeOptions.Teal).To("0FC6C2");
+        Set(DefaultThemeOptions.Purple).To("722ED1");
+        Set(DefaultThemeOptions.Gold).To("F6DF0F");
+        Set(DefaultThemeOptions.Silver).To("C8C8C8");
+        Set(DefaultThemeOptions.Bronze).To("8B670C");
+        Set(DefaultThemeOptions.Grass).To("80AC20");
+        Set(DefaultThemeOptions.Dirt).To("B15C2C");
+        Set(DefaultThemeOptions.Tarmac).To("949494");
+        Set(DefaultThemeOptions.Ice).To("AACFD7");
         
         Set(DefaultThemeOptions.Black).To("000000");
         Set(DefaultThemeOptions.White).To("FFFFFF");
