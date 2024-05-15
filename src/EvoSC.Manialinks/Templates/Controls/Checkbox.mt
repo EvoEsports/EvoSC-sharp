@@ -50,7 +50,7 @@
                     text="{{ text.ToUpper() }}"
                     height="3"
                     valign="center"
-                    pos="5.5 -2.5"
+                    pos="6.5 -2.5"
                     scriptevents="1"
             />
             <label

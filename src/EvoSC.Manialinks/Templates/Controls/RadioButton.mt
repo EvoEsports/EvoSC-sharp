@@ -3,6 +3,7 @@ A radio button that can be grouped with other radio buttons to form a selective 
 -->
 <component>
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
+    <import component="EvoSC.Drawing.Circle" as="Circle" />
     
     <!-- The ID of the radio button. -->
     <property type="string" name="id" />
@@ -23,7 +24,46 @@ A radio button that can be grouped with other radio buttons to form a selective 
     <property type="double" name="y" default="0.0" />
     
     <template>
-        <frame 
+      <frame
+              class="evosc-radiobutton-frame {{ group }}-radiogroup"
+              id="{{ id }}"
+              pos="{{ x }} {{ y }}"
+              data-initvalue="{{ isChecked }}"
+              data-group="{{ group }}"
+      >
+        <Circle bgColor="{{ Theme.UI_SurfaceBgPrimary }}" 
+                radius="2.5" 
+                scriptEvents="true" 
+                className="evosc-radiobutton" 
+                dataId="{{ id }}" />
+        
+        <Circle bgColor="{{ Theme.UI_SurfaceBgSecondary }}" 
+                radius="1.5"
+                x="1"
+                y="-1" 
+                scriptEvents="true"
+                className="evosc-radiobutton"
+                dataId="{{ id }}" 
+                hidden="{{ !isChecked }}"
+        />
+
+        <label
+                text="{{ text.ToUpper() }}"
+                class="radiobutton-default evosc-radiobutton text-primary"
+                data-group="{{ group }}"
+                data-id="{{ id }}"
+                scriptevents="1"
+                pos="6.5 -2.5"
+                valign="center"
+        />
+        
+        <HiddenEntry
+                name="{{ id }}"
+                value="{{ isChecked }}"
+        />
+      </frame>
+      
+        <!-- <frame 
                 class="evosc-radiobutton-frame {{ group }}-radiogroup" 
                 id="{{ id }}" 
                 pos="{{ x }} {{ y }}"
@@ -58,7 +98,7 @@ A radio button that can be grouped with other radio buttons to form a selective 
                     name="{{ id }}"
                     value="{{ isChecked }}"
             />
-        </frame>
+        </frame>-->
     </template>
     
     <script resource="EvoSC.Scripts.RadioButton" once="true" />
