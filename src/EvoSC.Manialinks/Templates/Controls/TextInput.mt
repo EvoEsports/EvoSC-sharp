@@ -2,7 +2,7 @@
 Basic text input control.
 -->
 <component>
-    <import component="EvoSC.Controls.Panel" as="Panel" />  
+    <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />  
   
     <!-- The name of the control. -->
     <property type="string" name="id" />
@@ -38,12 +38,12 @@ Basic text input control.
     
     <template>
       <frame pos="{{ x }} {{ y }}" id="{{ id }}">
-        <Panel width="{{ width }}" 
-               height="{{ height }}" 
-               id="{{ id }}-panel"
-               bgColor="{{ Theme.UI_SurfaceBgPrimary }}"
-               cornerRadius="0.5"
-        >
+        <Rectangle
+                width="{{ width }}"
+                height="{{ height }}"
+                bgColor="{{ Theme.UI_SurfaceBgPrimary }}"
+                cornerRadius="0.5"
+        />
           <entry
                   scriptevents="1"
                   valuetype="{{ valueType }}"
@@ -62,7 +62,6 @@ Basic text input control.
                   size="{{ width-2 }} {{ height }}"
                   pos="{{ 1 }} {{ -height/4 }}"
           />
-        </Panel>
       </frame>
         <!-- <frame pos="{{ x }} {{ y }}" id="{{ name }}">
             <quad 

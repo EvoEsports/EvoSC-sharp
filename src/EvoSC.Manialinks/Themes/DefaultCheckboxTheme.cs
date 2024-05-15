@@ -11,11 +11,9 @@ public class DefaultCheckboxTheme(IThemeManager theme) : Theme<DefaultCheckboxTh
 
     public override Task ConfigureAsync()
     {
-        Set("UI.Checkbox.Default.Bg").To(_theme.UI_BgPrimary);
+        Set("UI.Checkbox.Default.Bg").To(_theme.UI_SurfaceBgPrimary);
         Set("UI.Checkbox.Default.Text").To(_theme.UI_TextPrimary);
-        Set("UI.Checkbox.Default.BgFocus").To(_theme.UI_BgPrimary);
-        Set("UI.Checkbox.Default.Border").To(_theme.UI_BgPrimary);
-        Set("UI.Checkbox.Default.CheckColor").To(_theme.White);
+        Set("UI.Checkbox.Default.CheckColor").To(_theme.UI_SurfaceBgSecondary);
 
         return Task.CompletedTask;
     }
