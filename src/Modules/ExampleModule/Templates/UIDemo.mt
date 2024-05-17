@@ -15,10 +15,11 @@
   <import component="EvoSC.Controls.Separator" as="Separator" />
   <import component="EvoSC.Window" as="Window" />
   <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
+  <import component="EvoSC.Drawing.Circle" as="Circle" />
   
   <template>
     <UIStyle />
-      <Window title="UI Demo" icon="" width="150" height="65" x="-60" y="30">
+      <Window title="UI Demo" icon="" width="160" height="95" x="-80" y="47.5">
           <label text="BUTTONS:" class="text-primary" />
           <frame pos="0 -4">
               <Button id="btnDefault" text="Default" />
@@ -88,7 +89,7 @@
           <Chip id="chip2" text="Chip" closable="true" style="Round" x="10" width="9" severity="secondary" />
         </frame>
         
-        <frame pos="110 0">
+        <frame pos="111 0">
           <Rating value="0" />
           <Rating y="-4" value="100" />
           <Rating y="-8" value="70" />
@@ -98,6 +99,25 @@
           <label text="SEPARATOR:" class="text-primary" />
           <Separator x="19" length="5" y="-1.5" />
           <Separator x="25" length="5" y="0.5" direction="vertical" />
+        </frame>
+        
+        <frame pos="132">
+          <Circle radius="2" bgColor="{{ Theme.Red }}" /><label pos="5 -0.5" class="text-primary" text="RED" />
+          <Circle radius="2" bgColor="{{ Theme.Green }}" y="-5" /><label pos="5 -5.5" class="text-primary" text="GREEN" />
+          <Circle radius="2" bgColor="{{ Theme.Blue }}" y="-10" /><label pos="5 -10.5" class="text-primary" text="BLUE" />
+          <Circle radius="2" bgColor="{{ Theme.Pink }}" y="-15" /><label pos="5 -15.5" class="text-primary" text="PINK" />
+          <Circle radius="2" bgColor="{{ Theme.Gray }}" y="-20" /><label pos="5 -20.5" class="text-primary" text="GRAY" />
+          <Circle radius="2" bgColor="{{ Theme.Orange }}" y="-25" /><label pos="5 -25.5" class="text-primary" text="ORANGE" />
+          <Circle radius="2" bgColor="{{ Theme.Yellow }}" y="-30" /><label pos="5 -30.5" class="text-primary" text="YELLOW" />
+          <Circle radius="2" bgColor="{{ Theme.Teal }}" y="-35" /><label pos="5 -35.5" class="text-primary" text="TEAL" />
+          <Circle radius="2" bgColor="{{ Theme.Purple }}" y="-40" /><label pos="5 -40.5" class="text-primary" text="PURPLE" />
+          <Circle radius="2" bgColor="{{ Theme.Gold }}" y="-45" /><label pos="5 -45.5" class="text-primary" text="GOLD" />
+          <Circle radius="2" bgColor="{{ Theme.Silver }}" y="-50" /><label pos="5 -50.5" class="text-primary" text="SILVER" />
+          <Circle radius="2" bgColor="{{ Theme.Bronze }}" y="-55" /><label pos="5 -55.5" class="text-primary" text="BRONZE" />
+          <Circle radius="2" bgColor="{{ Theme.Grass }}" y="-60" /><label pos="5 -60.5" class="text-primary" text="GRASS" />
+          <Circle radius="2" bgColor="{{ Theme.Dirt }}" y="-65" /><label pos="5 -65.5" class="text-primary" text="DIRT" />
+          <Circle radius="2" bgColor="{{ Theme.Tarmac }}" y="-70" /><label pos="5 -70.5" class="text-primary" text="TARMAC" />
+          <Circle radius="2" bgColor="{{ Theme.Ice }}" y="-75" /><label pos="5 -75.5" class="text-primary" text="ICE" />
         </frame>
       </Window>
       
