@@ -10,6 +10,7 @@
   <import component="EvoSC.Controls.Alert" as="Alert" />
   <import component="EvoSC.Controls.Tag" as="Tag" />
   <import component="EvoSC.Controls.Chip" as="Chip" />
+  <import component="EvoSC.Controls.Rating" as="Rating" />
   <import component="EvoSC.Window" as="Window" />
   <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   
@@ -82,6 +83,12 @@
         <frame pos="90 -39">
           <Chip id="chip1" text="Chip" closable="true" width="9"/>
           <Chip id="chip2" text="Chip" closable="true" style="Round" x="10" width="9" severity="secondary" />
+        </frame>
+        
+        <frame pos="110 0">
+          <Rating value="0" />
+          <Rating y="-4" value="100" />
+          <Rating y="-8" value="70" />
         </frame>
       </Window>
       

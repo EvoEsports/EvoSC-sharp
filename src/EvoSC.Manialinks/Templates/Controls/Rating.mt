@@ -26,7 +26,7 @@
                   foreach="int i in Util.Range(parts)"
                   pos="{{ i*4}} 0"
                   textfont="{{ Font.Regular }}"
-                  textcolor="{{ Theme.UI_BgHighlight }}"
+                  textcolor="{{ Theme.UI_SurfaceBgPrimary }}"
                   text="{{ partEmpty }}"
                   textsize="2"
           />
@@ -35,7 +35,7 @@
                     foreach="int i in Util.Range(parts)"
                     pos="{{ i*4 }} 0"
                     textfont="{{ Font.Regular }}"
-                    textcolor="{{ Theme.UI_BgPrimary }}"
+                    textcolor="{{ Theme.UI_SurfaceBgSecondary }}"
                     text="{{ partEmpty }}"
                     autoscale="0"
                     textsize="2"
