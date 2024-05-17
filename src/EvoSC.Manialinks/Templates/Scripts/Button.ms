@@ -28,7 +28,7 @@ Void HighlightButton(Text _Id, Boolean _Highlight, Boolean _IsSecondary) {
 ***
 if (Event.Control.HasClass("btn-btn")) {
     declare Text Id = Event.Control.DataAttributeGet("id");
-    declare Frame = (Page.MainFrame.GetFirstChild(Id) as CMlFrame);
+    declare Frame = (Page.MainFrame.GetFirstChild(Id ^ "-frame") as CMlFrame);
     HighlightButton(Id, True, Frame.DataAttributeGet("type") == "secondary");
 }
 ***
@@ -37,7 +37,7 @@ if (Event.Control.HasClass("btn-btn")) {
 ***
 if (Event.Control.HasClass("btn-btn")) {
     declare Text Id = Event.Control.DataAttributeGet("id");
-    declare Frame = (Page.MainFrame.GetFirstChild(Id) as CMlFrame);
+    declare Frame = (Page.MainFrame.GetFirstChild(Id ^ "-frame") as CMlFrame);
     HighlightButton(Id, False, Frame.DataAttributeGet("type") == "secondary");
 }
 ***

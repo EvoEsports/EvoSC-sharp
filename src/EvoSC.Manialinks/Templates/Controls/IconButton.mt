@@ -33,21 +33,27 @@
     
     <!-- Whether the button is disabled or not. If disabled, the button wont fire events. -->
     <property type="bool" name="disabled" default="false" />
+  
+    <property type="bool" name="hasText" default="false" />
+
+    <!-- Possible values: normal, round -->
+    <property type="string" name="style" default="normal" />
 
     <!-- The position of the icon relative to the button text. -->
     <property type="string" name="iconPos" default="left" />
 
     <template>
         <Button 
-                text='{{ (iconPos == "right" ? $"{text}{(text == "" ? "" : " ")}{icon}" : $"{icon}{(text == "" ? "" : " ")}{text}") }}'
+                text='{{ hasText ? (iconPos == "right" ? $"{text}{(text == "" ? "" : " ")}{icon}" : $"{icon}{(text == "" ? "" : " ")}{text}") : icon }}'
                 x="{{ x }}"
                 y="{{ y }}"
-                width="{{ width }}"
+                width='{{ hasText ? width : height }}'
                 height="{{ height }}"
                 id="{{ id }}"
                 type="{{ type }}"
                 action="{{ action }}"
                 disabled="{{ disabled }}"
+                style="{{ style }}"
         />
     </template>
 </component>

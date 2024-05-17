@@ -25,6 +25,9 @@
   <!-- The button style type, can be primary or secondary. -->
   <property type="string" name="type" default="primary" />
   
+  <!-- Possible values: normal, round -->
+  <property type="string" name="style" default="normal" />
+  
   <property type="string?" name="bgColor" default="null" />
   
   <!-- The action to call when clicking the button. This disables script events. -->
@@ -49,6 +52,7 @@
               pos="0.5 0"
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
+              if='style == "normal"'
       />
 
       <quad
@@ -57,6 +61,7 @@
               pos="0 -0.5"
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
+              if='style == "normal"'
       />
 
       <quad
@@ -65,11 +70,21 @@
               pos="{{ width-0.5 }} -0.5"
               data-id="{{ id }}"
               scriptevents="{{ disabled ? 0 : 1 }}"
+              if='style == "normal"'
+      />
+
+      <quad
+              class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
+              size="{{ width - height }} {{ height }}"
+              pos="{{ height/2.0 }} 0"
+              data-id="{{ id }}"
+              scriptevents="{{ disabled ? 0 : 1 }}"
+              if='style == "round"'
       />
 
       <QuarterCircle
               className="{{ id }}-surface"
-              radius="0.5"
+              radius='{{ style == "normal" ? 0.5 : height/2 }}'
               color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
               quadrant="TopLeft"
               scriptevents="{{ disabled ? 0 : 1 }}"
@@ -79,31 +94,31 @@
 
       <QuarterCircle
               className="{{ id }}-surface"
-              radius="0.5"
+              radius='{{ style == "normal" ? 0.5 : height/2 }}'
               color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
               quadrant="TopRight"
-              x="{{ width-0.5 }}"
+              x='{{ width-(style == "normal" ? 0.5 : height/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
               enableScriptEvents="true"
       />
       <QuarterCircle
               className="{{ id }}-surface"
-              radius="0.5"
+              radius='{{ style == "normal" ? 0.5 : height/2 }}'
               color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
               quadrant="BottomLeft"
-              y="{{ -height+0.5 }}"
+              y='{{ -height+(style == "normal" ? 0.5 : height/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
               enableScriptEvents="true"
       />
       <QuarterCircle
               className="{{ id }}-surface"
-              radius="0.5"
+              radius='{{ style == "normal" ? 0.5 : height/2 }}'
               color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
               quadrant="BottomRight"
-              x="{{ width-0.5 }}"
-              y="{{ -height+0.5 }}"
+              x='{{ width-(style == "normal" ? 0.5 : height/2) }}'
+              y='{{ -height+(style == "normal" ? 0.5 : height/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
               enableScriptEvents="true"
