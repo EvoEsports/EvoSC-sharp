@@ -13,4 +13,16 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
         var map = await mapService.GetMapByUidAsync(mapUid);
         await mapQueueService.EnqueueAsync(map);
     }
+    
+    public async Task DropMapAsync(string mapUid)
+    {
+        var map = await mapService.GetMapByUidAsync(mapUid);
+        await mapQueueService.DropAsync(map);
+    }
+
+    public Task FavoriteMapAsync(string mapUid)
+    {
+        Console.WriteLine("map favorited! (surely)");
+        return Task.CompletedTask;
+    }
 }

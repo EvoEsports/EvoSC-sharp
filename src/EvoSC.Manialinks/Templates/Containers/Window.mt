@@ -104,7 +104,7 @@ General purpose window that can hold any type of component. The window is design
                   y="-{{ 8+padding }}"
                   width="{{ width-padding*2 }}"
                   height="{{ height - (8+padding*2) }}"
-                  scrollable="false"
+                  scrollable="{{ scrollable }}"
           >
             <slot />
           </Container>

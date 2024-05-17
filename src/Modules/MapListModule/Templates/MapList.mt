@@ -1,12 +1,29 @@
 <component>
+  <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
+  <using namespace="System.Linq" />
+  
   <import component="EvoSC.Containers.Window" as="Window" />
+  <import component="EvoSC.Containers.Container" as="Container" />
   <import component="EvoSC.Style.UIStyle" as="UIStyle" />
+  <import component="MapListModule.Parts.MapRow" as="MapRow" />
+  
+  <property type="IEnumerable<IMapListMap>" name="maps" />
   
   <template>
     <UIStyle />
     
-    <Window title="Maps" icon="{{ Icons.Map }}">
-      
+    <Window title="Maps" 
+            icon="{{ Icons.Map }}"
+            width="100"
+            height="60"
+    >
+      <Container scrollable="true"
+                 scrollHeight="{{ maps.Count()*8 }}"
+                 width="96"
+                 height="60"
+      >
+        <MapRow foreach="IMapListMap map in maps" map="{{ map }}" y="{{ -__index*8 }}" width="94" index="{{ __index }}" />
+      </Container>
     </Window>
   </template>
   

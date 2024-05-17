@@ -12,6 +12,8 @@ public class MapListCommandController(IManialinkManager manialinks, IMapListServ
 {
     [ChatCommand("maplist", "Show a list of available maps.")]
     [CommandAlias("/maps")]
+    [CommandAlias("/tracklist")]
+    [CommandAlias("/tracks")]
     public async Task MapListAsync()
     {
         var maps = await mapList.GetCurrentMapsForPlayerAsync(Context.Player);
