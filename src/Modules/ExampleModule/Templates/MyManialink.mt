@@ -8,7 +8,7 @@
     <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
     <import component="EvoSC.Controls.RadioButton" as="RadioButton" />
     <import component="EvoSC.Controls.Alert" as="Alert" />
-    <import component="EvoSC.Window" as="Window" />
+    <import component="EvoSC.Containers.Window" as="Window" />
     <import component="EvoSC.Containers.Container" as="Container" />
     <import component="EvoSC.Controls.Panel" as="Panel" />
     <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />

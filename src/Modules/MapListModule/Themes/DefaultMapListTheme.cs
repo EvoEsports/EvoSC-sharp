@@ -12,8 +12,6 @@ public class DefaultMapListTheme(IThemeManager theme) : Theme<DefaultMapListThem
 
     public override Task ConfigureAsync()
     {
-        Set("MapListModule.MapListRow.Default.Bg").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
-        Set("MapListModule.MapListRow.Default.TagBg").To(ColorUtils.Lighten(_theme.UI_BgHighlight, 20));
 
         return Task.CompletedTask;
     }

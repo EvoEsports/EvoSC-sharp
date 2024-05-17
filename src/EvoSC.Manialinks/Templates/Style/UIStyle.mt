@@ -3,7 +3,7 @@
   <import component="EvoSC.Style.Controls.DropdownStyle" as="DropdownStyle" />
   <import component="EvoSC.Style.Controls.TextInputStyle" as="TextInputStyle" />
   <import component="EvoSC.Style.Controls.CheckboxStyle" as="CheckboxStyle" />
-  <import component="EvoSC.Style.WindowStyle" as="WindowStyle" />
+  <import component="EvoSC.Style.Containers.WindowStyle" as="WindowStyle" />
   
   <template>
     <stylesheet>

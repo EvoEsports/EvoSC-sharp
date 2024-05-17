@@ -3,7 +3,7 @@
     <using namespace="EvoSC.Common.Interfaces.Localization" />
     <import component="EvoSC.FormEntry" as="FormEntry" />
     <!-- <import component="EvoSC.FormSubmit" as="FormSubmit" /> -->
-    <import component="EvoSC.Window" as="Window" />
+    <import component="EvoSC.Containers.Window" as="Window" />
     <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="EvoSC.Controls.Button" as="Button" />
 

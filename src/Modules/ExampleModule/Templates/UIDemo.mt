@@ -13,7 +13,7 @@
   <import component="EvoSC.Controls.Chip" as="Chip" />
   <import component="EvoSC.Controls.Rating" as="Rating" />
   <import component="EvoSC.Controls.Separator" as="Separator" />
-  <import component="EvoSC.Window" as="Window" />
+  <import component="EvoSC.Containers.Window" as="Window" />
   <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   <import component="EvoSC.Drawing.Circle" as="Circle" />
   

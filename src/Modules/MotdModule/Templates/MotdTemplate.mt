@@ -1,5 +1,5 @@
 ﻿<component>
-    <import component="EvoSC.Window" as="Window" />
+    <import component="EvoSC.Containers.Window" as="Window" />
     <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
     <import component="EvoSC.Controls.Button" as="Button" />
