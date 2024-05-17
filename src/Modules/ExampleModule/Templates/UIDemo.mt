@@ -3,6 +3,7 @@
   <import component="EvoSC.Controls.Dropdown" as="Dropdown" />
   <import component="EvoSC.Controls.Button" as="Button" />
   <import component="EvoSC.Controls.IconButton" as="IconButton" />
+  <import component="EvoSC.Controls.LinkButton" as="LinkButton" />
   <import component="EvoSC.Controls.TextInput" as="TextInput" />
   <import component="EvoSC.Controls.Switch" as="Switch" />
   <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
@@ -25,6 +26,7 @@
               <Button id="btnSecondaryDisabled" text="Secondary Disabled" type="secondary" disabled="true" width="25" y="-18" />
               <IconButton id="btnIconLeft" text="Icon Button" width="25" y="-24" icon="" />
               <IconButton id="btnIconRight" text="Icon Button" width="25" y="-30" icon="" iconPos="right" />
+              <LinkButton id="btnLink" url="https://github.com/EvoEsports/EvoSC-sharp" text="Link Button" width="25" y="-36" />
           </frame>
           
           <label text="DROPDOWN:" class="text-primary" pos="30 -1" />
@@ -43,8 +45,8 @@
               <TextInput id="txtInputDemoPassword" isPassword="true" y="-6" x="27" width="30" />
           </frame>
 
-          <label text="SWITCH:" class="text-primary" pos="0 -41" />
-          <frame pos="15 -40">
+          <label text="SWITCH:" class="text-primary" pos="0 -46" />
+          <frame pos="15 -46">
               <Switch id="switchDemo" value="true" />
           </frame>
 

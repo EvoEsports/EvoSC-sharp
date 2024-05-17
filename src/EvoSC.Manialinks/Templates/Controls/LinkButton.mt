@@ -16,12 +16,15 @@
     <property type="double" name="y" default="0.0" />
 
     <!-- Width of the button background. -->
-    <property type="double" name="width" default="17.0" />
+    <property type="double" name="width" default="25.0" />
 
     <!-- Height of the button background. -->
-    <property type="double" name="height" default="3.0" />
+    <property type="double" name="height" default="5.0" />
 
     <property type="string?" name="bgColor" default="null" />
+
+  <!-- The button style type, can be primary or secondary. -->
+  <property type="string" name="type" default="primary" />
 
     <!-- The action to call when clicking the button. This disables script events. -->
     <property type="string" name="action" default="" />
@@ -43,6 +46,7 @@
                 disabled="{{ disabled }}"
                 className="{{ className }}"
                 bgColor="{{ bgColor }}"
+                type="{{ type }}"
         />
     </template>
     
