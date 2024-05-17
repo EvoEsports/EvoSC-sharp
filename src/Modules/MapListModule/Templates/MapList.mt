@@ -9,7 +9,7 @@
   <import component="EvoSC.Controls.Text" as="Text" />
   <import component="EvoSC.Controls.Select" as="Select" />
   <import component="EvoSC.Controls.SelectItem" as="SelectItem" />
-  <import component="EvoSC.Controls.Container" as="Container" />
+  <import component="EvoSC.Containers.Container" as="Container" />
   <import component="EvoSC.Controls.ScrollBar" as="ScrollBar" />
   <import component="MapListModule.Styles" as="MapListStyles" />
   

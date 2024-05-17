@@ -9,7 +9,7 @@
     <import component="EvoSC.Controls.RadioButton" as="RadioButton" />
     <import component="EvoSC.Controls.Alert" as="Alert" />
     <import component="EvoSC.Window" as="Window" />
-    <import component="EvoSC.Controls.Container" as="Container" />
+    <import component="EvoSC.Containers.Container" as="Container" />
     <import component="EvoSC.Controls.Panel" as="Panel" />
     <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />
     <import component="EvoSC.Controls.Chip" as="Chip" />

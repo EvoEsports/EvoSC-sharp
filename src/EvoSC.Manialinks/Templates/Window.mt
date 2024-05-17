@@ -2,7 +2,7 @@
 General purpose window that can hold any type of component. The window is designed to only be used once per Manialink.
 -->
 <component>
-    <import component="EvoSC.Controls.Container" as="Container" />
+    <import component="EvoSC.Containers.Container" as="Container" />
   
     <!-- The ID of the window. Default is 'evosc-window' -->
     <property type="string" name="id" default="evosc-window" />
