@@ -9,12 +9,13 @@
   <import component="EvoSC.Controls.RadioButton" as="RadioButton" />
   <import component="EvoSC.Controls.Alert" as="Alert" />
   <import component="EvoSC.Controls.Tag" as="Tag" />
+  <import component="EvoSC.Controls.Chip" as="Chip" />
   <import component="EvoSC.Window" as="Window" />
   <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   
   <template>
     <UIStyle />
-      <Window title="UI Demo" icon="" width="120" height="65" x="-60" y="30">
+      <Window title="UI Demo" icon="" width="150" height="65" x="-60" y="30">
           <label text="BUTTONS:" class="text-primary" />
           <frame pos="0 -4">
               <Button id="btnDefault" text="Default" />
@@ -36,9 +37,9 @@
           
           <frame pos="30 -6">
               <label text="TEXT INPUT:" class="text-primary" pos="0 -1.5" />
-              <TextInput id="txtInputDemo" x="27" />
+              <TextInput id="txtInputDemo" x="27" width="30" />
               <label text="PASSWORD INPUT:" class="text-primary" pos="0 -7" />
-              <TextInput id="txtInputDemoPassword" isPassword="true" y="-6" x="27" />
+              <TextInput id="txtInputDemoPassword" isPassword="true" y="-6" x="27" width="30" />
           </frame>
 
           <label text="SWITCH:" class="text-primary" pos="0 -41" />
@@ -60,22 +61,27 @@
               <RadioButton id="radioButton3" text="three" y="-12" />
           </frame>
           
-          <Button id="btnShowAlert" text="Show Alert" x="90" />
-          <Button id="btnHideAlert" text="Hide Alert" x="90" y="-6" />
+          <Button id="btnShowAlert" text="Show Alert" x="90" width="19" />
+          <Button id="btnHideAlert" text="Hide Alert" x="90" y="-6" width="19" />
         
-        <frame pos="85 -14">
+        <frame pos="90 -14">
           <Tag text="Tag" width="7"/>
           <Tag text="Tag" width="7" y="-4" severity="secondary" />
           <Tag text="Tag" width="7" y="-8" severity="success" />
           <Tag text="Tag" width="7" y="-12" severity="info" />
           <Tag text="Tag" width="7" y="-16" severity="warning" />
           <Tag text="Tag" width="7" y="-20" severity="danger" />
-          <Tag text="Tag" style="Round" x="8" width="7"/>
-          <Tag text="Tag" style="Round" x="8" width="7" y="-4" severity="secondary" />
-          <Tag text="Tag" style="Round" x="8" width="7" y="-8" severity="success" />
-          <Tag text="Tag" style="Round" x="8" width="7" y="-12" severity="info" />
-          <Tag text="Tag" style="Round" x="8" width="7" y="-16" severity="warning" />
-          <Tag text="Tag" style="Round" x="8" width="7" y="-20" severity="danger" />
+          <Tag text="Tag" style="Round" x="12" width="7"/>
+          <Tag text="Tag" style="Round" x="12" width="7" y="-4" severity="secondary" />
+          <Tag text="Tag" style="Round" x="12" width="7" y="-8" severity="success" />
+          <Tag text="Tag" style="Round" x="12" width="7" y="-12" severity="info" />
+          <Tag text="Tag" style="Round" x="12" width="7" y="-16" severity="warning" />
+          <Tag text="Tag" style="Round" x="12" width="7" y="-20" severity="danger" />
+        </frame>
+
+        <frame pos="90 -39">
+          <Chip id="chip1" text="Chip" closable="true" width="9"/>
+          <Chip id="chip2" text="Chip" closable="true" style="Round" x="10" width="9" severity="secondary" />
         </frame>
       </Window>
       
@@ -85,7 +91,6 @@
   <script>
       *** OnMouseClick ***
       ***
-          log(Event.Control.ControlId);
           if (Event.Control.ControlId == "btnShowAlert") {
               ShowAlert("myAlert");
           } else if (Event.Control.ControlId == "btnHideAlert") {

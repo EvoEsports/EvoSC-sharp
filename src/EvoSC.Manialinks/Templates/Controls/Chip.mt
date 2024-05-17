@@ -7,15 +7,14 @@
   <property type="double" name="y" default="0.0" />
   <property type="double" name="width" default="15" />
   <property type="string" name="style" default="Square" /> <!-- Styles: Round, Square -->
-  <property type="string" name="closable" default="false" />
+  <property type="bool" name="closable" default="false" />
   <property type="bool" name="hidden" default="false" />
   <property type="string" name="severity" default="primary" /> <!-- primary, secondary, success, info, warning, danger -->
-  <property type="string?" name="bgColor" default="null" />
-  <property type="string?" name="textColor" default="null" />
+  <property type="string?" name="bgColor" default="" />
+  <property type="string?" name="textColor" default="" />
   
   <template>
     <Tag 
-            custom="true" 
             id="{{ id }}"
             text="{{ text }}"
             x="{{ x }}"
@@ -27,13 +26,14 @@
             severity="{{ severity }}"
             bgColor="{{ bgColor }}"
             textColor="{{ textColor }}"
+            centerText="false"
     >
       <template slot="content">
         <label
                 text="{{ Icons.TimesCircle }}"
-                textcolor="{{ textColor == null ? Util.TypeToColorText(severity) : textColor }}"
+                textcolor="{{ string.IsNullOrEmpty(textColor) ? Util.TypeToColorText(severity) : textColor }}"
                 textsize="0.7"
-                pos="{{ width-3 }} -1.35"
+                pos="{{ width-2.7 }} -1.35"
                 valign="center"
                 scriptevents="1"
                 class="chip-btnClose"

@@ -16,8 +16,6 @@
         declare lastTime = Now;
         declare lastToolInfo = System.ExtraTool_Info;
         
-        log(System.ExtraTool_Info);
-        
         if (!{{ config.SignatureModeCheckEnabled }}) {
             // exit script
             return;

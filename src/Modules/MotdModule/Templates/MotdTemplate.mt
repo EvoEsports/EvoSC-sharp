@@ -33,7 +33,6 @@
         <!--
             *** OnMouseClick ***
             ***
-                log(Event.Control.ControlId);
                 if (Event.Control.ControlId == "closeBtn" || Event.Control.HasClass("evosc-window-closebtn")) {
                     CloseWindow("evosc-window");
             

@@ -22,20 +22,20 @@
             id="{{ id }}"
             width="{{ width }}"
             height="{{ height }}"
-            cornerRadius='{{ style == "Round" ? 1 : 0 }}'
+            cornerRadius='{{ style == "Round" ? 1.5 : 0 }}'
             bgColor='{{ string.IsNullOrEmpty(bgColor) ? Util.TypeToColorBg(severity) : bgColor }}'
             data="{{ closable }}"
             hidden="{{ hidden }}"
     >
       <label
               class="text-primary"
-              pos="{{ centerText ? width/2.0 : 0.4 }} {{ -height/2+0.2 }}"
+              pos="{{ centerText ? width/2.0 : 0.5 }} {{ -height/2+0.2 }}"
               textcolor="{{ string.IsNullOrEmpty(textColor) ? Util.TypeToColorText(severity) : textColor }}"
               size="{{ width }} 5"
               text="{{ text }}"
               textsize="0.4"
               valign="center"
-              halign="center"
+              halign='{{ centerText ? "center" : "left" }}'
       />
 
       <slot name="content" />

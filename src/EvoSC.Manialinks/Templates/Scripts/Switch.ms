@@ -4,17 +4,9 @@ Void SetSwitchState(Text idName, Boolean value) {
     declare SwitchValue for switchFrame = value;
     declare bg <=> switchFrame.Controls[0] as CMlQuad;
     
-    /* declare head <=> switchFrame.Controls[1] as CMlQuad;
-    declare icon <=> switchFrame.Controls[2] as CMlLabel; */
-    
     declare head <=> (Page.MainFrame.GetFirstChild(idName ^ "-head") as CMlQuad);
     declare icon <=> (Page.MainFrame.GetFirstChild(idName ^ "-icon") as CMlLabel);
     declare entry <=> switchFrame.Controls[2] as CMlEntry;
-    
-    log(idName ^ "-head");
-    log(head);
-    log(idName ^ "-icon");
-    log(icon);
     
     SwitchValue = value;
     
@@ -40,7 +32,6 @@ Void SetSwitchState(Text idName, Boolean value) {
     
     foreach (switchCtrl in Page.GetClassChildren_Result) {
         declare valueText = TextLib::ToLowerCase(switchCtrl.DataAttributeGet("value"));
-        log(switchCtrl.ControlId);
         SetSwitchState(switchCtrl.ControlId, valueText == "true");
     }
 }

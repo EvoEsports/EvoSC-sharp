@@ -1,7 +1,6 @@
 <!--
 
 Void HighlightButton(Text _Id, Boolean _Highlight, Boolean _IsSecondary) {
-    log(_IsSecondary);
     Page.GetClassChildren(_Id ^ "-surface", Page.MainFrame, True);
     
     foreach (buttonPart in Page.GetClassChildren_Result) {
