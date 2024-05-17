@@ -2,7 +2,7 @@
   <property type="double" name="x" default="0" />
   <property type="double" name="y" default="0" />
   <property type="double" name="length" default="10" />
-  <property type="double" name="thickness" default="0.2" />
+  <property type="double" name="thickness" default="0.5" />
   <property type="string" name="direction" default="horizontal" /> <!-- horizontal or vertical -->
   
   <template>

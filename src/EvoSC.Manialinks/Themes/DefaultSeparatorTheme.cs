@@ -14,7 +14,7 @@ public class DefaultSeparatorTheme(IThemeManager theme) : Theme<DefaultSeparator
     {
         var bgLuma = ColorUtils.Luma((string)_theme.UI_BgHighlight);
         
-        Set("UI.Separator.Default.Bg").To(ColorUtils.Lighten((string)_theme.UI_BgHighlight, bgLuma < 50 ? -40 : 40));
+        Set("UI.Separator.Default.Bg").To(_theme.UI_BgHighlight);
         
         return Task.CompletedTask;
     }

@@ -12,6 +12,7 @@
   <import component="EvoSC.Controls.Tag" as="Tag" />
   <import component="EvoSC.Controls.Chip" as="Chip" />
   <import component="EvoSC.Controls.Rating" as="Rating" />
+  <import component="EvoSC.Controls.Separator" as="Separator" />
   <import component="EvoSC.Window" as="Window" />
   <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   
@@ -45,7 +46,7 @@
               <TextInput id="txtInputDemoPassword" isPassword="true" y="-6" x="27" width="30" />
           </frame>
 
-          <label text="SWITCH:" class="text-primary" pos="0 -46" />
+          <label text="SWITCH:" class="text-primary" pos="0 -47" />
           <frame pos="15 -46">
               <Switch id="switchDemo" value="true" />
           </frame>
@@ -91,6 +92,12 @@
           <Rating value="0" />
           <Rating y="-4" value="100" />
           <Rating y="-8" value="70" />
+        </frame>
+        
+        <frame pos="30 -47">
+          <label text="SEPARATOR:" class="text-primary" />
+          <Separator x="19" length="5" y="-1.5" />
+          <Separator x="25" length="5" y="0.5" direction="vertical" />
         </frame>
       </Window>
       
