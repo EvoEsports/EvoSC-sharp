@@ -1,16 +1,40 @@
+<!--
+Chips can be used as a way to visualize multiple values in a field.
+-->
 <component>
   <import component="EvoSC.Controls.Tag" as="Tag" />
   
+  <!-- Unique identifier for the chip -->
   <property type="string" name="id" default="evosc_chip" />
+
+  <!-- Text to show on the chip -->
   <property type="string" name="text" default="" />
+
+  <!-- X Position of the chip -->
   <property type="double" name="x" default="0.0" />
+
+  <!-- Y position of the chip -->
   <property type="double" name="y" default="0.0" />
+
+  <!-- Width of the chip -->
   <property type="double" name="width" default="15" />
+
+  <!-- The layout style, can be: Round or Square -->
   <property type="string" name="style" default="Square" /> <!-- Styles: Round, Square -->
+
+  <!-- Whether this chip can be closed/removed/hidden. Shows a close button -->
   <property type="bool" name="closable" default="false" />
+
+  <!-- Whether to hide this chip by default -->
   <property type="bool" name="hidden" default="false" />
+
+  <!-- The severity color of the chip, can be: primary, secondary, success, info, warning, danger  -->
   <property type="string" name="severity" default="primary" /> <!-- primary, secondary, success, info, warning, danger -->
+
+  <!-- Custom background color of the chip -->
   <property type="string?" name="bgColor" default="" />
+
+  <!-- Custom text color of the chip -->
   <property type="string?" name="textColor" default="" />
   
   <template>

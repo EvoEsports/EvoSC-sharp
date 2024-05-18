@@ -3,6 +3,7 @@
   
   <import component="EvoSC.Controls.Panel" as="Panel" />
   <import component="EvoSC.Controls.IconButton" as="IconButton" />
+  <import component="EvoSC.Controls.Dropdown" as="Dropdown" />
   
   <property type="IMapListMap" name="map" />
   <property type="double" name="x" default="0.0" />
@@ -16,25 +17,32 @@
            width="{{ width }}" 
            height="{{ height }}"
            bgColor="{{ Theme.UI_BgHighlight }}"
+           overflow="true"
     >
       <label class="text-primary" text="{{ map.Map.Name }}" valign="center" pos="1 {{ -height/2.0+0.2 }}" />
       
       <label class="text-primary" text="{{ map.Map.Author.NickName }} " pos="{{ width/2 }} {{ -height/2.0+0.2 }}" halign="center" valign="center" />
+
+      <IconButton
+              icon="{{ Icons.Close }}"
+              y="{{ -(height-5)/2 }}"
+              x="{{ width-6 }}"
+              id="btnRemove{{ index }}"
+              type="secondary"
+              action="MapListManialinkController/RemoveMap/{{ map.Map.Uid }}" />
       
       <IconButton 
               icon="{{ Icons.PlayCircle }}" 
               y="{{ -(height-5)/2 }}" 
-              x="{{ width-6 }}" 
+              x="{{ width-12 }}" 
               id="btnQueue{{ index }}"
-              action="MapListManialinkController/QueueMap/{{ map.Map.Uid }}"
-      />
+              action="MapListManialinkController/QueueMap/{{ map.Map.Uid }}" />
       
       <IconButton icon="{{ Icons.HeartO }}"
                   y="{{ -(height-5)/2 }}" 
-                  x="{{ width-12 }}" 
+                  x="{{ width-18 }}" 
                   id="btnFavorite{{ index }}"
-                  action="MapListManialinkController/FavoriteMap/{{ map.Map.Uid }}"
-      />
+                  action="MapListManialinkController/FavoriteMap/{{ map.Map.Uid }}" />
     </Panel>
   </template>
 </component>

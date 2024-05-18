@@ -1,5 +1,5 @@
 ﻿<!--
-    Simple clickable button.
+    Generic clickable button.
 -->
 <component>
   <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />

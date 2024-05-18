@@ -1,22 +1,52 @@
+<!--
+Draws a rectangle.
+-->
 <component>
   <import component="EvoSC.Drawing.QuarterCircle" as="QuarterCircle" />
-  
+
+  <!-- Unique identifier of the rectangle -->
   <property type="string" name="id" default="evosc_rectangle" />
+
+  <!-- Corner radius of the rectangle for rounded corners -->
   <property type="double" name="cornerRadius" default="0" />
+
+  <!-- X location of the rectangle -->
   <property type="double" name="x" default="0.0" />
+
+  <!-- Y location of the rectangle -->
   <property type="double" name="y" default="0.0" />
+
+  <!-- Width of the rectangle -->
   <property type="double" name="width" />
+
+  <!-- Height of the rectangle -->
   <property type="double" name="height" />
+
+  <!-- Enable/disable script events of the rectangle -->
   <property type="bool" name="scriptEvents" default="false" />
+
+  <!-- Action to trigger when clicking the rectawngle -->
   <property type="string" name="action" default="" />
+
+  <!-- Background color of the rectangle -->
   <property type="string" name="bgColor" default="00000000" />
+
+  <!-- Z index of the rectangle -->
   <property type="double" name="zIndex" default="0" />
+
+  <!-- Whether to hide the rectangle by default -->
   <property type="bool" name="hidden" default="false" />
+
+  <!-- Rotation of the rectangle in degrees -->
   <property type="double" name="rotate" default="0" />
   
-  <!-- Possible values: TopLeft, TopRight, BottomLeft, BottomRight -->
+  <!-- Corners to round off, can be a combined comma-separated list of the following values: TopLeft, TopRight, BottomLeft or BottomRight -->
   <property type="string" name="corners" default="TopLeft,TopRight,BottomLeft,BottomRight" />
+
+  <!-- Styling class to pass to the rectangle -->
   <property type="string" name="className" default="" />
+  
+  <!-- Data Id attribute to set -->
   <property type="string" name="dataId" default="" />
   
   <template>

@@ -1,13 +1,29 @@
+<!--
+Draws a quarter of a circle from different quadrants.
+-->
 <component>
+  <!-- Radius of the quarter -->
   <property type="double" name="radius" />
+
+  <!-- X location of the quarter -->
   <property type="double" name="x" default="0.0" />
+
+  <!-- Y location of the quarter -->
   <property type="double" name="y" default="0.0" />
+
+  <!-- Background color of the quarter -->
   <property type="string" name="color" />
-  <property type="bool" name="enableScriptEvents" default="false" />
+
+  <!-- Enable/disable script events for the quarter -->
+  <property type="bool" name="scriptEvents" default="false" />
+
+  <!-- Action to trigger when mouse is clicked on the quarter -->
   <property type="string" name="action" default="" />
   
-  <!-- Possible values: TopLeft, TopRight, BottomLeft, BottomRight -->
+  <!-- The quadrant of the quarter, can be: TopLeft, TopRight, BottomLeft or BottomRight -->
   <property type="string" name="quadrant" />
+  
+  <!-- Styling class to pass to the quarter -->
   <property type="string" name="className" default="" />
   
   <template>
@@ -20,7 +36,7 @@
               if='quadrant == "TopLeft"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
       />
 
       <quad
@@ -31,7 +47,7 @@
               if='quadrant == "TopRight"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
       />
 
       <quad
@@ -42,7 +58,7 @@
               if='quadrant == "BottomLeft"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
       />
 
       <quad
@@ -53,7 +69,7 @@
               if='quadrant == "BottomRight"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ enableScriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptEvents ? 1 : 0 }}"
       />
     </frame>
   </template>

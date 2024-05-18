@@ -1,5 +1,6 @@
 <!--
-General purpose window that can hold any type of component. The window is designed to only be used once per Manialink.
+General purpose window that can hold any type of component.
+The window is designed to only be used once per Manialink.
 -->
 <component>
     <import component="EvoSC.Containers.Container" as="Container" />
@@ -14,13 +15,10 @@ General purpose window that can hold any type of component. The window is design
     <!-- The Y position of the window. -->
     <property type="double" name="y" default="30"/>
     
-    <!-- The overall width of the window. -->
+    <!-- The width of the window's outer bounds. -->
     <property type="double" name="width" default="100" />
     
-    <!-- 
-    The overall height of the window. Keep in mind that the titlebar is 
-    exactly 5 units high and is included in the overall height.
-     -->
+    <!-- The height of the window's outer bounds. -->
     <property type="double" name="height" default="60" />
     
     <!-- The text to show in the titlebar. -->
@@ -41,7 +39,10 @@ General purpose window that can hold any type of component. The window is design
     <!-- Whether the user can drag the window around. -->
     <property type="bool" name="canMove" default="true" />
   
+    <!-- Padding from the window border to the window contents -->
     <property type="double" name="padding" default="3" />
+  
+    <!-- Whether the contents of the window can be scrolled -->
     <property type="bool" name="scrollable" default="false" />
 
     <template>

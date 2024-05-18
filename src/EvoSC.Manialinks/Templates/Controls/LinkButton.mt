@@ -1,3 +1,6 @@
+<!--
+Opens a link in the user's web browser when clicked.
+-->
 <component>
   <import component="EvoSC.Controls.Button" as="Button" />
 
@@ -7,6 +10,7 @@
   <!-- Text to display in the button -->
   <property type="string" name="text" />
   
+  <!-- The URL to open in the player's default web browser -->
   <property type="string" name="url" />
 
   <!-- X position of the button. -->

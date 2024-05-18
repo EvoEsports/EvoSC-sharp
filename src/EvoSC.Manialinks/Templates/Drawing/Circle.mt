@@ -1,14 +1,35 @@
+<!--
+Draws a circle.
+-->
 <component>
+  <!-- Unique identifier of the circle -->
   <property type="string" name="id" default="evosc_rectangle" />
+
+  <!-- Radius of the circle -->
   <property type="double" name="radius" />
+
+  <!-- X location of the circle -->
   <property type="double" name="x" default="0.0" />
+
+  <!-- Y location of the circle -->
   <property type="double" name="y" default="0.0" />
+
+  <!-- Enable/disable script events for the circle -->
   <property type="bool" name="scriptEvents" default="false" />
+
+  <!-- Background color of the circle -->
   <property type="string" name="bgColor" default="00000000" />
+
+  <!-- Z index of the circle -->
   <property type="double" name="zIndex" default="0" />
+
+  <!-- Whether to hide the circle by default -->
   <property type="bool" name="hidden" default="false" />
-  
+
+  <!-- Styling class for the circle -->
   <property type="string" name="className" default="" />
+  
+  <!-- ID data attribute to pass to the circle -->
   <property type="string" name="dataId" default="" />
   
   <template>
