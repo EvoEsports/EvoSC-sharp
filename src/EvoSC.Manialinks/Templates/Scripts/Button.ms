@@ -1,6 +1,6 @@
 <!--
 
-Void HighlightButton(Text _Id, Boolean _Highlight, Boolean _IsSecondary) {
+Void HighlightButton(Text _Id, Boolean _Highlight, Text _ButtonType) {
     Page.GetClassChildren(_Id ^ "-surface", Page.MainFrame, True);
     
     foreach (buttonPart in Page.GetClassChildren_Result) {
@@ -9,9 +9,12 @@ Void HighlightButton(Text _Id, Boolean _Highlight, Boolean _IsSecondary) {
         declare ColorFocus = {{ Color.ToMlColor(Theme.UI_Button_Default_BgFocus) }};
         declare ColorNormal = {{ Color.ToMlColor(Theme.UI_Button_Default_Bg) }};
         
-        if (_IsSecondary) {
+        if (_ButtonType == "secondary") {
             ColorFocus = {{ Color.ToMlColor(Theme.UI_Button_Secondary_BgFocus) }};
             ColorNormal = {{ Color.ToMlColor(Theme.UI_Button_Secondary_Bg) }};
+        } else if (_ButtonType == "accent") {
+            ColorFocus = {{ Color.ToMlColor(Theme.UI_Button_Accent_BgFocus) }};
+            ColorNormal = {{ Color.ToMlColor(Theme.UI_Button_Accent_Bg) }};
         }
         
         if (_Highlight) {
@@ -29,7 +32,7 @@ Void HighlightButton(Text _Id, Boolean _Highlight, Boolean _IsSecondary) {
 if (Event.Control.HasClass("btn-btn")) {
     declare Text Id = Event.Control.DataAttributeGet("id");
     declare Frame = (Page.MainFrame.GetFirstChild(Id ^ "-frame") as CMlFrame);
-    HighlightButton(Id, True, Frame.DataAttributeGet("type") == "secondary");
+    HighlightButton(Id, True, TextLib::ToLowerCase(Frame.DataAttributeGet("type")));
 }
 ***
 
@@ -38,7 +41,7 @@ if (Event.Control.HasClass("btn-btn")) {
 if (Event.Control.HasClass("btn-btn")) {
     declare Text Id = Event.Control.DataAttributeGet("id");
     declare Frame = (Page.MainFrame.GetFirstChild(Id ^ "-frame") as CMlFrame);
-    HighlightButton(Id, False, Frame.DataAttributeGet("type") == "secondary");
+    HighlightButton(Id, False, TextLib::ToLowerCase(Frame.DataAttributeGet("type")));
 }
 ***
 

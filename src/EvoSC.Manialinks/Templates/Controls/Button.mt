@@ -19,15 +19,19 @@
   <!-- Width of the button background. -->
   <property type="double" name="width" default="17.0" />
   
-  <!-- Height of the button background. -->
+  <!-- Height of the button background, size must be set to "custom" to take effect. -->
   <property type="double" name="height" default="5.0" />
   
-  <!-- The button style type, can be primary or secondary. -->
+  <!-- Size of the button can be normal, small, big or custom. -->
+  <property type="string" name="size" default="normal" />
+  
+  <!-- The button style type, can be primary, secondary or accent. -->
   <property type="string" name="type" default="primary" />
   
   <!-- Possible values: normal, round -->
   <property type="string" name="style" default="normal" />
   
+  <!-- Set a custom background color for the button -->
   <property type="string?" name="bgColor" default="null" />
   
   <!-- The action to call when clicking the button. This disables script events. -->
@@ -39,6 +43,9 @@
   <!-- Custom style -->
   <property type="string" name="className" default="evosc-button" />
   
+  <!-- Custom data passed to the component -->
+  <property type="string" name="data" default="" />
+  
   <template>
     <frame
             id="{{ id }}-frame"
@@ -48,7 +55,7 @@
       <!-- Background -->
       <quad
               class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
-              size="{{ width-1 }} {{ height }}"
+              size="{{ width-1 }} {{ Theme.UI_Button_Size(size, height) }}"
               pos="0.5 0"
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
@@ -57,7 +64,7 @@
 
       <quad
               class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
-              size="{{ 0.5 }} {{ height-1 }}"
+              size="{{ 0.5 }} {{ Theme.UI_Button_Size(size, height)-1 }}"
               pos="0 -0.5"
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
@@ -66,7 +73,7 @@
 
       <quad
               class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
-              size="{{ 0.5 }} {{ height-1 }}"
+              size="{{ 0.5 }} {{ Theme.UI_Button_Size(size, height)-1 }}"
               pos="{{ width-0.5 }} -0.5"
               data-id="{{ id }}"
               scriptevents="{{ disabled ? 0 : 1 }}"
@@ -75,8 +82,8 @@
 
       <quad
               class='btn-bg-{{ disabled ? "disabled" : type }} {{ id }}-surface'
-              size="{{ width - height }} {{ height }}"
-              pos="{{ height/2.0 }} 0"
+              size="{{ width - Theme.UI_Button_Size(size, height) }} {{ Theme.UI_Button_Size(size, height) }}"
+              pos="{{ Theme.UI_Button_Size(size, height)/2.0 }} 0"
               data-id="{{ id }}"
               scriptevents="{{ disabled ? 0 : 1 }}"
               if='style == "round"'
@@ -84,8 +91,8 @@
 
       <QuarterCircle
               className="{{ id }}-surface"
-              radius='{{ style == "normal" ? 0.5 : height/2 }}'
-              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              radius='{{ style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2 }}'
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : Theme.UI_Button_Bg(type) }}'
               quadrant="TopLeft"
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
@@ -94,31 +101,33 @@
 
       <QuarterCircle
               className="{{ id }}-surface"
-              radius='{{ style == "normal" ? 0.5 : height/2 }}'
-              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              radius='{{ style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2 }}'
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : Theme.UI_Button_Bg(type) }}'
               quadrant="TopRight"
-              x='{{ width-(style == "normal" ? 0.5 : height/2) }}'
+              x='{{ width-(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
               enableScriptEvents="true"
       />
+      
       <QuarterCircle
               className="{{ id }}-surface"
-              radius='{{ style == "normal" ? 0.5 : height/2 }}'
-              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              radius='{{ style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2 }}'
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : Theme.UI_Button_Bg(type) }}'
               quadrant="BottomLeft"
-              y='{{ -height+(style == "normal" ? 0.5 : height/2) }}'
+              y='{{ -Theme.UI_Button_Size(size, height)+(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
               enableScriptEvents="true"
       />
+      
       <QuarterCircle
               className="{{ id }}-surface"
-              radius='{{ style == "normal" ? 0.5 : height/2 }}'
-              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : (type == "primary" ? Theme.UI_SurfaceBgSecondary : Theme.UI_SurfaceBgPrimary) }}'
+              radius='{{ style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2 }}'
+              color='{{ disabled ? Theme.UI_Button_Disabled_Bg : Theme.UI_Button_Bg(type) }}'
               quadrant="BottomRight"
-              x='{{ width-(style == "normal" ? 0.5 : height/2) }}'
-              y='{{ -height+(style == "normal" ? 0.5 : height/2) }}'
+              x='{{ width-(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
+              y='{{ -Theme.UI_Button_Size(size, height)+(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
               enableScriptEvents="true"
@@ -133,9 +142,10 @@
               text="{{ text.ToUpper() }}"
               valign="center"
               halign="center"
-              size="{{ width }} {{ height }}"
-              pos="{{ width/2 }} {{ -height/2+0.3 }}"
+              size="{{ width }} {{ Theme.UI_Button_Size(size, height) }}"
+              pos="{{ width/2 }} {{ -Theme.UI_Button_Size(size, height)/2+0.3 }}"
               data-id="{{ id }}"
+              data-data="{{ data }}"
               scriptevents="{{ disabled ? 0 : 1 }}"
               action="{{ action }}"
               id="{{ id }}"

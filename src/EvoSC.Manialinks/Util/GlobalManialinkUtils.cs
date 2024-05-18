@@ -26,6 +26,7 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
             "danger" => _theme.Red,
             "primary" => _theme.UI_SurfaceBgPrimary,
             "secondary" => _theme.UI_SurfaceBgSecondary,
+            "accent" => _theme.UI_AccentPrimary,
             _ => _theme.UI_BgPrimary
         };
 

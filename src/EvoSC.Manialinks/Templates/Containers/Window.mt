@@ -3,6 +3,7 @@ General purpose window that can hold any type of component. The window is design
 -->
 <component>
     <import component="EvoSC.Containers.Container" as="Container" />
+    <import component="EvoSC.Controls.IconButton" as="IconButton" />
   
     <!-- The ID of the window. Default is 'evosc-window' -->
     <property type="string" name="id" default="evosc-window" />
@@ -96,6 +97,18 @@ General purpose window that can hold any type of component. The window is design
                   valign="center"
                   text="{{ title.ToUpper() }}"
                   pos="10 -3.2"
+          />
+          
+          <IconButton className="evosc-window-closebtn"
+                      id="btnClose-{{ id }}"
+                      dataId="{{ id }}"
+                      icon="{{ Icons.Close }}" 
+                      style="round"
+                      type="accent"
+                      x="{{ width-4.5 }}"
+                      y="-1.6"
+                      data="{{ id }}"
+                      size="small"
           />
 
           <!-- Body Contents -->
