@@ -26,7 +26,7 @@
     <value>$&lt;{0}$&gt; changed their nickname to $&lt;{1}$&gt;</value>
   </data>
   <data name="UI.EditYourNickname" xml:space="preserve">
-    <value>Edit your nickname</value>
+    <value>Change name</value>
   </data>
   <data name="UI.Nickname" xml:space="preserve">
     <value>Nickname:</value>

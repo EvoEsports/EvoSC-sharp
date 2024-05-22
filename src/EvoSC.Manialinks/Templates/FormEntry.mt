@@ -13,7 +13,7 @@
     <property type="int" name="zIndex" default="0"/>
     <property type="string" name="label" default=""/>
     <property type="double" name="w" default="0.0"/>
-    <property type="double" name="h" default="9.0"/>
+    <property type="double" name="h" default="20.0"/>
     <property type="double" name="x" default="0.0"/>
     <property type="double" name="y" default="0.0"/>
     <property type="bool" name="isPassword" default="false"/>
@@ -23,10 +23,12 @@
         <frame pos="{{ x }} {{ y }}" size="{{ w }} {{ h }}">
             <Label
                     text="{{ label }}"
+                    class="text-primary"
                     x="0"
                     y="0"
                     textsize="1"
-                    halign="left" valign="top"
+                    halign="left" 
+                    valign="top"
             />
             <TextInput 
                     x="0"
@@ -34,17 +36,21 @@
                     id="{{ name }}"
                     value='{{ value ?? "" }}'
                     width="{{ w }}"
-                    height="3"
                     isPassword="{{ isPassword }}"
                     valueType="{{ valueType }}"
             />
-            <Label
-                    text='$s$F00 {{ validationResults?.FirstOrDefault(v => v.IsInvalid)?.Message ?? "Invalid input." }}'
-                    x="0"
-                    y="-6"
-                    textsize="0.5"
-                    halign="left" valign="top"
+            <Label 
                     if='validationResults?.Any(v => v.IsInvalid) ?? false'
+                    text='$s$e11 {{ validationResults?.FirstOrDefault(v => v.IsInvalid)?.Message ?? "Invalid input." }}'
+                    class="text-primary"
+                    x="0"
+                    y="-10"
+                    w="{{ w }}"
+                    h="10"
+                    autonewline="1"
+                    textsize="0.75"
+                    halign="left" 
+                    valign="top"
             />
         </frame>
     </template>
