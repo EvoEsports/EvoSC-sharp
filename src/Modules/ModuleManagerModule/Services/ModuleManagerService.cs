@@ -34,7 +34,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name), actor);
+                await server.SuccessMessageAsync(actor, _locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name));
             }
         }
         catch (Exception ex)
@@ -43,7 +43,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.ErrorMessageAsync(_locale.PlayerLanguage.FailedEnablingModule(ex.Message), actor);
+                await server.ErrorMessageAsync(actor, _locale.PlayerLanguage.FailedEnablingModule(ex.Message));
             }
             
             throw;
@@ -66,7 +66,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name), actor);
+                await server.SuccessMessageAsync(actor, _locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name));
             }
         }
         catch (Exception ex)
@@ -75,7 +75,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.ErrorMessageAsync(_locale.PlayerLanguage.FailedDisablingModule(ex.Message), actor);
+                await server.ErrorMessageAsync(actor, _locale.PlayerLanguage.FailedDisablingModule(ex.Message));
             }
             
             throw;
@@ -96,6 +96,6 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             message.AddText(", ");
         }
 
-        return server.InfoMessageAsync(message.ToString(), actor);
+        return server.InfoMessageAsync(actor, message.ToString());
     }
 }

@@ -55,9 +55,9 @@ public class ExampleManialinkController : ManialinkController
         await ShowAsync(Context.Player, "ExampleModule.DialogExample");
     }
 
-    public Task DialogActionAsync(bool confirmed)
+    public async Task DialogActionAsync(bool confirmed)
     {
+        await HideAsync(Context.Player, "ExampleModule.DialogExample");            
         _logger.LogInformation("Dialog confirm: {Confirmed}", confirmed);
-        return Task.CompletedTask;
     }
 }

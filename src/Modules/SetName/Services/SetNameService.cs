@@ -21,14 +21,14 @@ public class SetNameService(IServerClient server, IPlayerRepository playerReposi
     {
         if (player.NickName.Equals(newName, StringComparison.Ordinal))
         {
-            await server.ErrorMessageAsync(_locale.PlayerLanguage.DidNotChangeName, player);
+            await server.ErrorMessageAsync(player, _locale.PlayerLanguage.DidNotChangeName);
             return;
         }
         
         await playerRepository.UpdateNicknameAsync(player, newName);
         await playerCache.UpdatePlayerAsync(player);
         
-        await server.SuccessMessageAsync(_locale.PlayerLanguage.NameSuccessfullySet(newName), player);
+        await server.SuccessMessageAsync(player, _locale.PlayerLanguage.NameSuccessfullySet(newName));
         await server.InfoMessageAsync(_locale.PlayerChangedTheirName(player.NickName, newName));
         
         await events.RaiseAsync(SetNameEvents.NicknameUpdated, new NicknameUpdatedEventArgs

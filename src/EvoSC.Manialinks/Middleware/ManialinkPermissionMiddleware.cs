@@ -25,6 +25,6 @@ public class ManialinkPermissionMiddleware(ActionDelegate next, IPermissionManag
             return;
         }
 
-        await server.ErrorMessageAsync("Sorry, you don't have permission to do that.", mlContext.Player);
+        await server.ErrorMessageAsync(mlContext.Player, "Sorry, you don't have permission to do that.");
     }
 }

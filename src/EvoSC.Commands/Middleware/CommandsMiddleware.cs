@@ -30,12 +30,12 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
             }
 
             var message = $"Error: {cmdParserException.Message}";
-            await serverClient.SendChatMessageAsync($"Error: {message}", playerLogin);
+            await serverClient.SendChatMessageAsync(playerLogin, $"Error: {message}");
         }
 
         if (result.Exception is PlayerNotFoundException playerNotFoundException)
         {
-            await serverClient.SendChatMessageAsync($"Error: {playerNotFoundException.Message}", playerLogin);
+            await serverClient.SendChatMessageAsync(playerLogin, $"Error: {playerNotFoundException.Message}");
         }
         else
         {
@@ -66,7 +66,7 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
         }
         finally
         {
-            if (context.AuditEvent.Activated)
+            if (context.AuditEvent is { IsCanceled: false, Activated: true })
             {
                 // allow actor to be manually set, so avoid overwrite
                 if (context.AuditEvent.Actor == null)
@@ -76,7 +76,7 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
 
                 await context.AuditEvent.LogAsync();
             }
-            else if (cmd.Permission != null)
+            else if (!context.AuditEvent.IsCanceled && cmd.Permission != null)
             {
                 logger.LogWarning("Command '{Name}' has permissions set but does not activate an audit", cmd.Name);
             }

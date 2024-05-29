@@ -29,7 +29,7 @@
               x="{{ width-6 }}"
               id="btnRemove{{ index }}"
               type="secondary"
-              action="MapListManialinkController/RemoveMap/{{ map.Map.Uid }}" />
+              action="MapListManialinkController/DeleteMap/{{ map.Map.Uid }}" />
       
       <IconButton 
               icon="{{ Icons.PlayCircle }}" 

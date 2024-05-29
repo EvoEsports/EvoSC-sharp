@@ -130,7 +130,7 @@ public class PlayerServiceTests
         
         mock.Audit.Verify(m => m.Success(), Times.Once);
         mock.Server.Remote.Verify(m => m.KickAsync(PlayerLogin,""), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.SuccessMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class PlayerServiceTests
         await mock.PlayerService.KickAsync(mock.Player.Object, mock.Actor.Object);
 
         mock.ContextService.Verify(m => m.Audit(), Times.Never);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.ErrorMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -154,8 +154,8 @@ public class PlayerServiceTests
         
         mock.Audit.Verify(m => m.Success(), Times.Once);
         mock.Server.Remote.Verify(m => m.IgnoreAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.WarningMessageAsync(It.IsAny<string>(), mock.Player.Object), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.WarningMessageAsync(mock.Player.Object, It.IsAny<string>()), Times.Once);
+        mock.Server.Client.Verify(m => m.SuccessMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
     
     [Fact]
@@ -166,7 +166,7 @@ public class PlayerServiceTests
         await mock.PlayerService.MuteAsync(mock.Player.Object, mock.Actor.Object);
         
         mock.ContextService.Verify(m => m.Audit(), Times.Never);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.ErrorMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
     
     [Fact]
@@ -179,8 +179,8 @@ public class PlayerServiceTests
         
         mock.Audit.Verify(m => m.Success(), Times.Once);
         mock.Server.Remote.Verify(m => m.UnIgnoreAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>(), mock.Player.Object), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.InfoMessageAsync(mock.Player.Object, It.IsAny<string>()), Times.Once);
+        mock.Server.Client.Verify(m => m.SuccessMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
     
     [Fact]
@@ -191,7 +191,7 @@ public class PlayerServiceTests
         await mock.PlayerService.MuteAsync(mock.Player.Object, mock.Actor.Object);
         
         mock.ContextService.Verify(m => m.Audit(), Times.Never);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.ErrorMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -204,7 +204,7 @@ public class PlayerServiceTests
         mock.Server.Remote.Verify(m => m.BanAsync(PlayerLogin), Times.Once);
         mock.Server.Remote.Verify(m => m.BlackListAsync(PlayerLogin), Times.Once);
         mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.SuccessMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
     
     [Fact]
@@ -220,7 +220,7 @@ public class PlayerServiceTests
         mock.Logger.Verify(LogLevel.Trace, ex, null, Times.Once());
         mock.Server.Remote.Verify(m => m.BlackListAsync(PlayerLogin), Times.Once);
         mock.Audit.Verify(m => m.Success(), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), mock.Actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.SuccessMessageAsync(mock.Actor.Object, It.IsAny<string>()), Times.Once);
     }
     
     [Fact]
@@ -234,7 +234,7 @@ public class PlayerServiceTests
         
         mock.Server.Remote.Verify(m => m.UnBanAsync(PlayerLogin), Times.Once);
         mock.Server.Remote.Verify(m => m.UnBlackListAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Exactly(2));
+        mock.Server.Client.Verify(m => m.SuccessMessageAsync(_actor.Object, It.IsAny<string>()), Times.Exactly(2));
         mock.Audit.Verify(m => m.Success(), Times.Exactly(2));
     }
     
@@ -250,7 +250,7 @@ public class PlayerServiceTests
         
         mock.Server.Remote.Verify(m => m.UnBanAsync(PlayerLogin), Times.Once);
         mock.Server.Remote.Verify(m => m.UnBlackListAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
         mock.Audit.Verify(m => m.Success(), Times.Once);
         mock.Logger.Verify(LogLevel.Error, ex, null, Times.Once());
     }
@@ -267,7 +267,7 @@ public class PlayerServiceTests
         
         mock.Server.Remote.Verify(m => m.UnBanAsync(PlayerLogin), Times.Once);
         mock.Server.Remote.Verify(m => m.UnBlackListAsync(PlayerLogin), Times.Once);
-        mock.Server.Client.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
         mock.Audit.Verify(m => m.Success(), Times.Once);
         mock.Logger.Verify(LogLevel.Error, ex, null, Times.Once());
     }

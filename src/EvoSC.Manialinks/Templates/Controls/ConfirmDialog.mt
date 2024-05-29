@@ -15,10 +15,10 @@
   <property type="string" name="okButtonText" default="OK" />
   <property type="string" name="cancelButtonText" default="CANCEL" />
   
-  <property type="string" name="title" />
+  <property type="string" name="title" default="" />
   <property type="string" name="text" default="" />
   
-  <property type="string" name="action" />
+  <property type="string" name="action" default="" />
   <property type="bool" name="customBody" default="false" />
   
   <!-- info, success, warning, danger, primary, secondary -->
@@ -28,7 +28,7 @@
     <Backdrop>
       <frame class="evosc-dialog"
              pos="{{ -width/2 }} {{ height/2 }}"
-             id="{{ action }}"
+             id="containerFrame"
       >
         <quad class="bg-primary" 
               pos="1 0"
@@ -77,21 +77,29 @@
         
         <IconButton id="btnCancel" 
                     text="{{ cancelButtonText }}"
-                    width="{{ width/2-5 }}" 
+                    width="{{ Theme.UI_Dialog_BtnWidth(okButton, cancelButton, width) }}" 
                     x="3.5" 
                     y="{{ -height+8 }}" 
                     type="secondary" 
                     icon="{{ Icons.Times }}"
-                    hasText="true" />
+                    hasText="true"
+                    if="cancelButton"
+                    action='{{ (action == "" ? "" : action + "/False") }}'
+        />
         
         <IconButton id="btnOk" 
-                    text="{{ okButtonText }}" 
-                    width="{{ width/2-5 }}" 
-                    x="{{ width - (width/2-5) - 3.5 }}" 
+                    text="{{ okButtonText }}"
+                    width="{{ Theme.UI_Dialog_BtnWidth(okButton, cancelButton, width) }}"
+                    x="{{ Theme.UI_Dialog_OkX(cancelButton, width) }}" 
                     y="{{ -height+8 }}" 
                     icon="{{ Icons.Check }}" 
-                    hasText="true" />
+                    hasText="true"
+                    if="okButton"
+                    action='{{ (action == "" ? "" : action + "/True") }}'
+        />
       </frame>
     </Backdrop>
   </template>
+  
+  <script resource="EvoSC.Scripts.Dialog" />
 </component>

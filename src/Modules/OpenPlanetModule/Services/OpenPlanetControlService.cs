@@ -99,13 +99,13 @@ public class OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, 
         switch (reason)
         {
             case OpJailReason.InvalidVersion:
-                await server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedVersion, player);
+                await server.ErrorMessageAsync(player, _locale.PlayerLanguage.ProhibitedVersion);
                 break;
             case OpJailReason.InvalidSignatureMode:
-                await server.ErrorMessageAsync(_locale.PlayerLanguage.ProhibitedSignatureMode, player);
+                await server.ErrorMessageAsync(player, _locale.PlayerLanguage.ProhibitedSignatureMode);
                 break;
             case OpJailReason.OpenPlanetNotAllowed:
-                await server.ErrorMessageAsync(_locale.PlayerLanguage.OpenPlanetProhibited, player);
+                await server.ErrorMessageAsync(player, _locale.PlayerLanguage.OpenPlanetProhibited);
                 break;
         }
     }
@@ -120,6 +120,6 @@ public class OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, 
         scheduler.UnScheduleKickPlayer(player);
         await manialinks.HideManialinkAsync("OpenPlanetModule.WarningWindow");
         await server.Remote.ForceSpectatorAsync(player.GetLogin(), 0);
-        await server.SuccessMessageAsync(_locale.PlayerLanguage.CorrectSignatureMode, player);
+        await server.SuccessMessageAsync(player, _locale.PlayerLanguage.CorrectSignatureMode);
     }
 }

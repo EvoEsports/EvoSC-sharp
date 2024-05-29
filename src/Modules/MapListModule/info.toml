@@ -13,3 +13,4 @@ author = "Evo"
 [dependencies]
 RecordsModule = "1.0.0"
 MapQueueModule = "1.0.0"
+MapsModule = "1.0.0"

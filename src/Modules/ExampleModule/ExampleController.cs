@@ -52,7 +52,7 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     [ChatCommand("hey", "Say hey!")]
     public async Task TmxAddMap(string name)
     {
-        await _server.SendChatMessageAsync($"hello, {name}!", Context.Player);
+        await _server.SendChatMessageAsync(Context.Player, $"hello, {name}!");
     }
 
     [ChatCommand("ratemap", "Rate the current map.", "test")]
@@ -66,7 +66,7 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     {
         if (rating is < 0 or > 100)
         {
-            await _server.SendChatMessageAsync("Rating must be between 0 and 100 inclusively.", Context.Player);
+            await _server.SendChatMessageAsync(Context.Player, "Rating must be between 0 and 100 inclusively.");
         }
         else
         {
