@@ -49,4 +49,15 @@ public class ExampleManialinkController : ManialinkController
             await ShowAsync(Context.Player, "ExampleModule.MyManialink", new {myModel.Username, myModel.Password});
         }
     }
+
+    public async Task ShowDialogAsync()
+    {
+        await ShowAsync(Context.Player, "ExampleModule.DialogExample");
+    }
+
+    public Task DialogActionAsync(bool confirmed)
+    {
+        _logger.LogInformation("Dialog confirm: {Confirmed}", confirmed);
+        return Task.CompletedTask;
+    }
 }

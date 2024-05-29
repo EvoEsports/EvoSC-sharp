@@ -39,7 +39,7 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
         var luma = ColorUtils.Luma(bgColor);
         
         return luma <= 50 ? _theme.UI_TextPrimary : _theme.UI_TextSecondary;
-    } 
+    }
 
     /// <summary>
     /// Status type to an icon.

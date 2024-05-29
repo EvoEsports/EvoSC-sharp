@@ -16,6 +16,18 @@ public class ColorUtils
 
         return $"<{r}, {g}, {b}>";
     }
+
+    public string Opacity(string hexColor, double opacity)
+    {
+        var color = new Hex(hexColor).ToRgb();
+
+        var r = ((int)Math.Floor(color.R)).ToString("X2");
+        var g = ((int)Math.Floor(color.G)).ToString("X2");
+        var b = ((int)Math.Floor(color.B)).ToString("X2");
+        var a = ((int)Math.Floor(opacity / 100.0 * 255.0)).ToString("X2");
+        
+        return $"{r}{g}{b}{a}";
+    }
     
     /// <summary>
     /// Set the lightness for a color.

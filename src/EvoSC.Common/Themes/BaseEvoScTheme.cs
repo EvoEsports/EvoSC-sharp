@@ -32,7 +32,7 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
         Set(DefaultThemeOptions.UIFontSize).To(0.9);
         
         Set(DefaultThemeOptions.UIHeaderBg).To("28212F");
-        Set(DefaultThemeOptions.UIBgPrimary).To("28212F");
+        Set(DefaultThemeOptions.UIBgPrimary).To("2C2D34");
         Set(DefaultThemeOptions.UIBgHighlight).To("50515A");
         
         Set(DefaultThemeOptions.UIAccentPrimary).To("FF0058");
