@@ -54,8 +54,11 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
             Context.AuditEvent.Cancel();
             return;
         }
-
+        
         await mapListService.DeleteMapAsync(Context.Player, mapUid);
+        
+        Context.AuditEvent.WithEventName(AuditEvents.RemoveMap).Success();
+        
         await mapListService.ShowMapListAsync(Context.Player);
     }
 }

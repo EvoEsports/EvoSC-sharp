@@ -1,3 +1,6 @@
+<!--
+Show a row with map information along with action buttons.
+-->
 <component>
   <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
   

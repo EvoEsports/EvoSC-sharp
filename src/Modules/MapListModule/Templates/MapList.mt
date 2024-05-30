@@ -1,3 +1,6 @@
+<!--
+Shows a window with a list of maps available in the current match settings.
+-->
 <component>
   <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
   <using namespace="System.Linq" />

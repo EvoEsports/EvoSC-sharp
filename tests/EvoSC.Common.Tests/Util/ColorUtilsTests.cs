@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Util;
+﻿using System;
+using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
 using Xunit;
 
@@ -68,19 +69,19 @@ public class ColorUtilsTests
     }
     
     [Theory]
-    [InlineData("FFFFFF", 255)]
-    [InlineData("FF0058", 124)]
+    [InlineData("FFFFFF", 100)]
+    [InlineData("FF0058", 24)]
     [InlineData("000000", 0)]
     public void Luma_Calculated_For_Color(string inHex, double expectedLuma)
     {
-        var luma = ColorUtils.Luma(inHex);
+        var luma = Math.Round(ColorUtils.Luma(inHex));
         
         Assert.Equal(expectedLuma, luma);
     }
 
     [Theory]
     [InlineData("FFFFFF", "FFFFFF")]
-    [InlineData("FF0058", "7C7C7C")]
+    [InlineData("FF0058", "3D3D3D")]
     [InlineData("000000", "000000")]
     public void Color_Converted_To_Gray_Scale(string inHex, string expected)
     {

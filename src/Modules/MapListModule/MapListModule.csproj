@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Database\Repositories\" />
+      <Folder Include="Themes\" />
     </ItemGroup>
 
 </Project>

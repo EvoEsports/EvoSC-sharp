@@ -1,3 +1,6 @@
+<!--
+Shows a confirmation dialog when deleting a map from the leaderboard.
+-->
 <component>
   <import component="EvoSC.Controls.ConfirmDialog" as="ConfirmDialog" />
   <import component="EvoSC.Style.UIStyle" as="UIStyle" />
