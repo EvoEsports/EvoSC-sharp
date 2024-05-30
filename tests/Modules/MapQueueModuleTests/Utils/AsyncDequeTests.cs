@@ -77,11 +77,10 @@ public class AsyncDequeTests
         queue.Enqueue(new MyItemType { MyProp = "Item 1" });
         queue.Enqueue(new MyItemType { MyProp = "Item 2" });
         queue.Enqueue(new MyItemType { MyProp = "Item 3" });
-        
+
         queue.Clear();
-        
+
         Assert.Empty(queue);
-        Assert.Equal(0, queue.Count);
     }
 
     [Fact]
