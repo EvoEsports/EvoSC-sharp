@@ -11,7 +11,7 @@ using EvoSC.Modules.Official.MapsModule;
 namespace EvoSC.Modules.Official.MapListModule.Controllers;
 
 [Controller]
-public class MapListManialinkController(IMapService mapService, IMapQueueService mapQueueService, IServerClient server, IMapListService mapList) : ManialinkController
+public class MapListManialinkController(IMapService mapService, IMapQueueService mapQueueService, IMapListService mapListService) : ManialinkController
 {
     public async Task QueueMapAsync(string mapUid)
     {
@@ -27,6 +27,7 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
 
     public Task FavoriteMapAsync(string mapUid)
     {
+        // todo: favorite maps https://github.com/EvoEsports/EvoSC-sharp/issues/177
         Console.WriteLine("map favorited! (surely)");
         return Task.CompletedTask;
     }
@@ -35,12 +36,7 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
     public async Task DeleteMapAsync(string mapUid)
     {
         var map = await mapService.GetMapByUidAsync(mapUid);
-        
-        await ShowAsync(Context.Player, "MapListModule.Dialogs.ConfirmDeleteDialog", new
-        {
-            mapName = map.Name,
-            mapUid = map.Uid
-        });
+        await mapListService.ConfirmMapDeletionsAsync(Context.Player, map);
 
         Context.AuditEvent
             .WithEventName(AuditEvents.RemoveMapConfirm)
@@ -59,31 +55,7 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
             return;
         }
 
-        var map = await mapService.GetMapByUidAsync(mapUid);
-
-        Context.AuditEvent
-            .WithEventName(AuditEvents.RemoveMap)
-            .HavingProperties(new { map });
-        
-        try
-        {
-            await mapService.RemoveMapAsync(map.Id);
-
-            await server.SuccessMessageAsync(Context.Player, $"'{map.Name}' was removed from the map list.");
-            Context.AuditEvent.Success();
-
-            // todo: add this to a service instead
-            var maps = await mapList.GetCurrentMapsForPlayerAsync(Context.Player);
-        
-            await ShowAsync(Context.Player, "MapListModule.MapList", new
-            {
-                maps = maps
-            });
-        }
-        catch (Exception ex)
-        {
-            await server.ErrorMessageAsync(Context.Player, $"Failed to remove the map '{map.Name}'");
-            Context.AuditEvent.Error();
-        }
-    }       
+        await mapListService.DeleteMapAsync(Context.Player, mapUid);
+        await mapListService.ShowMapListAsync(Context.Player);
+    }
 }
