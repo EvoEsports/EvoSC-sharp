@@ -15,8 +15,4 @@
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <EmbeddedResource Include="Templates\**\*" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Templates\" />
-    </ItemGroup>
 </Project>

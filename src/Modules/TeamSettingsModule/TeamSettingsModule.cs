@@ -9,7 +9,6 @@ public class TeamSettingsModule : EvoScModule, IToggleable
     public Task EnableAsync()
     {
         //TODO: implement enable async
-        Console.WriteLine("Starting team settings");
 
         return Task.CompletedTask;
     }
