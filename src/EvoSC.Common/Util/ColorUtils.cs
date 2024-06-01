@@ -6,6 +6,11 @@ namespace EvoSC.Common.Util;
 
 public class ColorUtils
 {
+    /// <summary>
+    /// Renders a color code in ManiaScript.
+    /// </summary>
+    /// <param name="hexColor">Color to render.</param>
+    /// <returns></returns>
     public string ToMlColor(string hexColor)
     {
         var color = new Hex(hexColor).ToRgb();
@@ -17,14 +22,20 @@ public class ColorUtils
         return $"<{r}, {g}, {b}>";
     }
 
+    /// <summary>
+    /// Set the opacity of a color using the alpha channel (4th byte).
+    /// </summary>
+    /// <param name="hexColor">Color to set opacity to</param>
+    /// <param name="opacity">Opacity from 0-100</param>
+    /// <returns></returns>
     public string Opacity(string hexColor, double opacity)
     {
         var color = new Hex(hexColor).ToRgb();
 
-        var r = ((int)Math.Floor(color.R)).ToString("X2");
-        var g = ((int)Math.Floor(color.G)).ToString("X2");
-        var b = ((int)Math.Floor(color.B)).ToString("X2");
-        var a = ((int)Math.Floor(opacity / 100.0 * 255.0)).ToString("X2");
+        var r = ((int)Math.Floor(color.R)).ToString("X2", CultureInfo.InvariantCulture);
+        var g = ((int)Math.Floor(color.G)).ToString("X2", CultureInfo.InvariantCulture);
+        var b = ((int)Math.Floor(color.B)).ToString("X2", CultureInfo.InvariantCulture);
+        var a = ((int)Math.Floor(opacity / 100.0 * 255.0)).ToString("X2", CultureInfo.InvariantCulture);
         
         return $"{r}{g}{b}{a}";
     }

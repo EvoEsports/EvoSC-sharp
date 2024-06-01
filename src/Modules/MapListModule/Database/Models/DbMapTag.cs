@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.MapListModule.Interfaces.Models;
 using LinqToDB.Mapping;
 

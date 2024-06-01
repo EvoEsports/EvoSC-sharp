@@ -23,36 +23,6 @@ public interface DefaultThemeOptions
     public static readonly string UITextSecondary = "UI.TextSecondary";
     public static readonly string UITextMuted = "UI.TextMuted";
     
-    /* /// <summary>
-    /// Primary text color.
-    /// </summary>
-    public static readonly string UITextPrimary = "UI.TextPrimary";
-    
-    /// <summary>
-    /// Secondary text color.
-    /// </summary>
-    public static readonly string UITextSecondary = "UI.TextSecondary";
-    
-    /// <summary>
-    /// Primary background color.
-    /// </summary>
-    public static readonly string UIBgPrimary = "UI.BgPrimary";
-    
-    /// <summary>
-    /// Secondary background color.
-    /// </summary>
-    public static readonly string UIBgSecondary = "UI.BgSecondary";
-    
-    /// <summary>
-    /// Primary border color.
-    /// </summary>
-    public static readonly string UIBorderPrimary = "UI.BorderPrimary";
-    
-    /// <summary>
-    /// Secondary border color.
-    /// </summary>
-    public static readonly string UIBorderSecondary = "UI.BorderSecondary"; */
-    
     /// <summary>
     /// Dark version of the logo.
     /// </summary>

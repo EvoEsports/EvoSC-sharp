@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Configuration;
 using EvoSC.Modules.Official.MapQueueModule.Interfaces.Utils.AsyncDeque;
 
 namespace EvoSC.Modules.Official.MapQueueModule.Utils.AsyncDeque;

@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.MapListModule.Interfaces.Models;
-using EvoSC.Modules.Official.MapListModule.Models;
 
 namespace EvoSC.Modules.Official.MapListModule.Interfaces;
 

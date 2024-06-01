@@ -2,7 +2,6 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MapListModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MapListModule.Controllers;

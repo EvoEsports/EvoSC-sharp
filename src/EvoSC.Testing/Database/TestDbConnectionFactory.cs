@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Database;
 using LinqToDB;
-using LinqToDB.Configuration;
 
 namespace EvoSC.Testing.Database;
 

@@ -1,6 +1,4 @@
 ﻿using System.Globalization;
-using System.Text;
-using ColorMine.ColorSpaces;
 using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Util;
 
@@ -57,10 +55,10 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
         _ => _icons.ExclamationCircle
     };
 
-    public string RandomId(string id) => $"{id}_{new Guid().ToString()}";
+    public string RandomId(string id) => $"{id}_{Guid.NewGuid().ToString()}";
 
     public string DefaultOrRandomId(string defaultId, string id) =>
-        id == defaultId ? $"{id}_{new Guid().ToString()}" : id;
+        id == defaultId ? $"{id}_{Guid.NewGuid().ToString()}" : id;
 
     public double ColorOpacity(string color)
     {

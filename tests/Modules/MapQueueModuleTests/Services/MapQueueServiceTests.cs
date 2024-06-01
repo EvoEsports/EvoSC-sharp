@@ -1,12 +1,10 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Modules.Official.MapQueueModule.Events;
 using EvoSC.Modules.Official.MapQueueModule.Events.Args;
 using EvoSC.Modules.Official.MapQueueModule.Interfaces;
 using EvoSC.Modules.Official.MapQueueModule.Services;
-using EvoSC.Testing;
 using Moq;
 
 namespace EvoSC.Modules.Official.MapQueueModuleTests.Tests.Services;
