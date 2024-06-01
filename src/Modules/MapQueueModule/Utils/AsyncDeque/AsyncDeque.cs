@@ -111,6 +111,7 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
                     else if (node == _last)
                     {
                         _last = _last.Previous;
+                        _last.Next = null;
                     }
                     else
                     {

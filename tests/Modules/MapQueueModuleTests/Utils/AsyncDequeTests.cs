@@ -2,7 +2,7 @@
 using EvoSC.Modules.Official.MapQueueModule.Interfaces.Utils.AsyncDeque;
 using EvoSC.Modules.Official.MapQueueModule.Utils.AsyncDeque;
 
-namespace MapQueueModuleTests.Utils;
+namespace EvoSC.Modules.Official.MapQueueModuleTests.Tests.Utils;
 
 public class AsyncDequeTests
 {
