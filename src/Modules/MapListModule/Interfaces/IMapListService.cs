@@ -35,5 +35,5 @@ public interface IMapListService
     /// <param name="player">Player that needs to confirm the map deletion.</param>
     /// <param name="map">Map to be deleted.</param>
     /// <returns></returns>
-    public Task ConfirmMapDeletionsAsync(IPlayer player, IMap map);
+    public Task ConfirmMapDeletionAsync(IPlayer player, IMap map);
 }

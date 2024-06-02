@@ -52,7 +52,6 @@ Draws a circle.
                 modulatecolor="{{ bgColor }}"
                 class="{{ className }}"
                 opacity="{{ opacity }}"
-                
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
         />

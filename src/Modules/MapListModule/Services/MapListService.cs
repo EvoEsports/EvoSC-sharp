@@ -94,7 +94,7 @@ public class MapListService(
         await manialinkManager.SendManialinkAsync(player, "MapListModule.MapList", new { maps, canRemoveMaps });
     }
 
-    public Task ConfirmMapDeletionsAsync(IPlayer player, IMap map) => 
+    public Task ConfirmMapDeletionAsync(IPlayer player, IMap map) => 
         manialinkManager.SendManialinkAsync(player, "MapListModule.Dialogs.ConfirmDeleteDialog", new
         {
             mapName = map.Name,

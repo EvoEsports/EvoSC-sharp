@@ -183,7 +183,7 @@ public class MapListServiceTests
         var mock = NewMapListServiceMock();
         var map = new Map { Uid = "map", Name = "mapname"};
 
-        await mock.MapListService.ConfirmMapDeletionsAsync(mock.Player.Object, map);
+        await mock.MapListService.ConfirmMapDeletionAsync(mock.Player.Object, map);
 
         mock.ManialinkManager.Verify(m => m.SendManialinkAsync(
             mock.Player.Object,

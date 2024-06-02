@@ -35,7 +35,7 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
     public async Task DeleteMapAsync(string mapUid)
     {
         var map = await mapService.GetMapByUidAsync(mapUid);
-        await mapListService.ConfirmMapDeletionsAsync(Context.Player, map);
+        await mapListService.ConfirmMapDeletionAsync(Context.Player, map);
 
         Context.AuditEvent
             .WithEventName(AuditEvents.RemoveMapConfirm)

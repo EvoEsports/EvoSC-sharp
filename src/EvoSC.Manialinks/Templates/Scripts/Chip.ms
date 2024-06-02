@@ -3,8 +3,6 @@ Void CloseChip(Text ChipId) {
     declare CMlFrame ChipControl <=> (Page.MainFrame.GetFirstChild(ChipId) as CMlFrame);
     ChipControl.Hide();
     
-    log("hidden");
-    
     +++ OnChipClosed +++
 }
 

@@ -53,7 +53,7 @@ public class MapListManialinkControllerTests : ManialinkControllerTestBase<MapLi
 
         await Controller.DeleteMapAsync(map.Uid);
         
-        _mapListService.Verify(m => m.ConfirmMapDeletionsAsync(_player.Object, map));
+        _mapListService.Verify(m => m.ConfirmMapDeletionAsync(_player.Object, map));
         AuditEventBuilder.Verify(m => m.Success());
     }
 

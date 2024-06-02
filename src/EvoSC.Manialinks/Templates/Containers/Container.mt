@@ -27,7 +27,7 @@ to the container, along with various transforms and properties.
   <!-- Height of the scrollable area. This should be container <contents height> - <container height> -->
   <property type="double" name="scrollHeight" default="0.0" />
 
-  <!-- Width the scrollable area. This should be container <contents width> - <container width> -->
+  <!-- Width of the scrollable area. This should be container <contents width> - <container width> -->
   <property type="double" name="scrollWidth" default="0.0" />
 
   <!-- Intervals to snap the scrolling to for the X axis -->
