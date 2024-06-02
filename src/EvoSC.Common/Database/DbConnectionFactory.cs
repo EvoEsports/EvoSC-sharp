@@ -4,7 +4,6 @@ using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Extensions;
 using EvoSC.Common.Interfaces.Database;
 using LinqToDB;
-using LinqToDB.Configuration;
 using LinqToDB.Data;
 using Microsoft.Extensions.Logging;
 

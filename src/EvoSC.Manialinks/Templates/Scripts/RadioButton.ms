@@ -6,8 +6,8 @@ Boolean SetRadioButtonState(Text idName, Boolean value) {
     declare control <=> Page.MainFrame.GetFirstChild(idName) as CMlFrame;
     declare group = control.DataAttributeGet("group");
     
-    declare icon <=> control.Controls[0] as CMlLabel;
-    declare entry <=> control.Controls[2] as CMlEntry;
+    declare icon <=> control.Controls[1] as CMlFrame;
+    declare entry <=> control.Controls[3] as CMlEntry;
     
     declare IsChecked for control = value;
     
@@ -18,8 +18,7 @@ Boolean SetRadioButtonState(Text idName, Boolean value) {
     }
     
     if (IsChecked) {
-        icon.SetText("◉");
-        entry.SetText("True", False);
+        icon.Show();
         
         foreach (otherBtnId in RadioButtonGroupIds[RadioButtonGroups[group]]) {
             if (otherBtnId == idName) {
@@ -29,8 +28,7 @@ Boolean SetRadioButtonState(Text idName, Boolean value) {
             SetRadioButtonState(otherBtnId, False);
         }
     } else {
-        icon.SetText("○");
-        entry.SetText("False", False);
+        icon.Hide();
     }
     
     return True;

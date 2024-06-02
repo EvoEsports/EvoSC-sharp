@@ -1,6 +1,6 @@
 ﻿<component>
-    <import component="EvoSC.Window" as="Window" />
-    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Containers.Window" as="Window" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="EvoSC.Controls.Button" as="Button" />
     
     <property type="string" name="text" />
@@ -14,7 +14,7 @@
     <property type="double" name="h" default="90" />
     
     <template>
-        <Theme />
+        <UIStyle />
         <Window width="{{ w }}" height="{{ h }}" x="{{ -w/2 }}" y="{{ h/2 }}" title="Edit Message of the Day">
             <textedit class="text" name="Text" default="{{ text }}" autonewline="1" z-index="{{ zIndex + 1 }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
 

@@ -25,7 +25,8 @@ public class MapsController(
 {
     private readonly dynamic _locale = locale;
 
-    [ChatCommand("add", "[Commmand.Add]", MapsPermissions.AddMap)]
+    [ChatCommand("addmap", "[Commmand.Add]", MapsPermissions.AddMap)]
+    [CommandAlias("/am", true)]
     public async Task AddMapAsync(string mapId)
     {
         IMap? map;
@@ -35,18 +36,18 @@ public class MapsController(
         }
         catch (DuplicateNameException)
         {
-            await server.ErrorMessageAsync(_locale.PlayerLanguage.DuplicateMap(mapId), Context.Player);
+            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.DuplicateMap(mapId));
             return;
         }
         catch (Exception)
         {
-            await server.ErrorMessageAsync(_locale.PlayerLanguage.FailedAddingMap(mapId), Context.Player);
+            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.FailedAddingMap(mapId));
             throw;
         }
 
         if (map == null)
         {
-            await server.ErrorMessageAsync(_locale.PlayerLanguage.MapIdNotFound(mapId), Context.Player);
+            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.MapIdNotFound(mapId));
             return;
         }
 
@@ -55,18 +56,18 @@ public class MapsController(
             .HavingProperties(new { Map = map })
             .Comment(_locale.Audit_MapAdded);
 
-        await server.SuccessMessageAsync(_locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author?.NickName),
-            Context.Player);
+        await server.SuccessMessageAsync(Context.Player, _locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author?.NickName));
     }
 
-    [ChatCommand("remove", "[Command.Remove]", MapsPermissions.RemoveMap)]
+    [ChatCommand("removemap", "[Command.Remove]", MapsPermissions.RemoveMap)]
+    [CommandAlias("/rm", true)]
     public async Task RemoveMapAsync(long mapId)
     {
         var map = await mapService.GetMapByIdAsync(mapId);
 
         if (map == null)
         {
-            await server.ErrorMessageAsync(_locale.PlayerLanguage.MapIdNotFound(mapId), Context.Player);
+            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.MapIdNotFound(mapId));
             return;
         }
 
@@ -76,7 +77,7 @@ public class MapsController(
         }
         catch (Exception)
         {
-            await server.ErrorMessageAsync(_locale.PlayerLanguage.MapRemovedFailed(mapId), Context.Player);
+            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.MapRemovedFailed(mapId));
             throw;
         }
 
@@ -85,8 +86,7 @@ public class MapsController(
             .HavingProperties(new { Map = map })
             .Comment(_locale.Audit_MapRemoved);
 
-        await server.SuccessMessageAsync(_locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName),
-            Context.Player);
+        await server.SuccessMessageAsync(Context.Player, _locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName));
         logger.LogDebug("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }

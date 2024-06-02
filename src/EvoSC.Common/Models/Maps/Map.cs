@@ -14,6 +14,8 @@ public class Map: IMap
     public string? ExternalId { get; set; }
     public DateTime? ExternalVersion { get; set; }
     public MapProviders? ExternalMapProvider { get; set; }
+    
+    public IMapDetails? Details { get; set; }
 
     public Map()
     {
@@ -30,5 +32,35 @@ public class Map: IMap
         ExternalId = dbMap.ExternalId;
         ExternalVersion = dbMap.ExternalVersion;
         ExternalMapProvider = dbMap.ExternalMapProvider;
+        Details = dbMap.Details;
     }
+    
+    public bool Equals(IMap? other) => other != null && Uid.Equals(other.Uid, StringComparison.Ordinal);
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != this.GetType())
+        {
+            return false;
+        }
+
+        return Equals((IMap)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return Uid.GetHashCode();
+    }
+    
+    public static IParsedMap Parse(string baseDirectory, IMap map) => new ParsedMap(baseDirectory, map);
 }

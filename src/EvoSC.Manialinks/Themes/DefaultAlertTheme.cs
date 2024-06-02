@@ -12,7 +12,8 @@ public class DefaultAlertTheme(IThemeManager theme) : Theme<DefaultAlertTheme>
     public override Task ConfigureAsync()
     {
         Set("UI.Alert.Default.Text").To(_theme.UI_TextPrimary);
-        Set("UI.Alert.Default.BgSecondary").To(_theme.White);
+        Set("UI.Alert.Default.BgPrimary").To(_theme.UI_SurfaceBgPrimary);
+        Set("UI.Alert.Default.BgSecondary").To(_theme.UI_SurfaceBgSecondary);
 
         return Task.CompletedTask;
     }

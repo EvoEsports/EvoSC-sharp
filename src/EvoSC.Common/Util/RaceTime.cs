@@ -22,6 +22,10 @@ public class RaceTime(int milliseconds, int seconds, int minutes, int hours)
         return new RaceTime(milliseconds, seconds, minutes, hours);
     }
 
+    public static string FormatFromMilliseconds(int totalMilliseconds) =>
+        FromMilliseconds(totalMilliseconds)
+            .ToString() ?? "00:00.000";
+
     public override string ToString()
     {
         var milli = Milliseconds.ToString(CultureInfo.InvariantCulture).PadLeft(3, '0');

@@ -1,10 +1,45 @@
-﻿using ColorMine.ColorSpaces;
+﻿using System.Globalization;
+using ColorMine.ColorSpaces;
 using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Common.Util;
 
-public static class ColorUtils
+public class ColorUtils
 {
+    /// <summary>
+    /// Renders a color code in ManiaScript.
+    /// </summary>
+    /// <param name="hexColor">Color to render.</param>
+    /// <returns></returns>
+    public string ToMlColor(string hexColor)
+    {
+        var color = new Hex(hexColor).ToRgb();
+        
+        var r = (color.R / 255.0).ToString("0.0000000", new NumberFormatInfo());
+        var g = (color.G / 255.0).ToString("0.0000000", new NumberFormatInfo());
+        var b = (color.B / 255.0).ToString("0.0000000", new NumberFormatInfo());
+
+        return $"<{r}, {g}, {b}>";
+    }
+
+    /// <summary>
+    /// Set the opacity of a color using the alpha channel (4th byte).
+    /// </summary>
+    /// <param name="hexColor">Color to set opacity to</param>
+    /// <param name="opacity">Opacity from 0-100</param>
+    /// <returns></returns>
+    public string Opacity(string hexColor, double opacity)
+    {
+        var color = new Hex(hexColor).ToRgb();
+
+        var r = ((int)Math.Floor(color.R)).ToString("X2", CultureInfo.InvariantCulture);
+        var g = ((int)Math.Floor(color.G)).ToString("X2", CultureInfo.InvariantCulture);
+        var b = ((int)Math.Floor(color.B)).ToString("X2", CultureInfo.InvariantCulture);
+        var a = ((int)Math.Floor(opacity / 100.0 * 255.0)).ToString("X2", CultureInfo.InvariantCulture);
+        
+        return $"{r}{g}{b}{a}";
+    }
+    
     /// <summary>
     /// Set the lightness for a color.
     /// </summary>
@@ -112,7 +147,7 @@ public static class ColorUtils
     /// <param name="color">Color to calculate luma from.</param>
     /// <remarks>The following method uses the BT. 709 coefficients to calculate the luma.</remarks>
     /// <returns></returns>
-    public static double Luma(IRgb color) => Math.Round(color.R * 0.2126 + color.B * 0.7152 + color.B * 0.0722);
+    public static double Luma(IRgb color) => (color.R * 0.2126 + color.G * 0.7152 + color.B * 0.0722)/255*100;
     
     /// <summary>
     /// Get the luma of a color.
@@ -135,7 +170,7 @@ public static class ColorUtils
     /// <returns></returns>
     public static string GrayScale(string hexColor)
     {
-        var luma = Luma(hexColor);
+        var luma = Math.Round(Luma(hexColor)) / 100 * 255;
         return new Rgb { R = luma, G = luma, B = luma }
             .To<Hex>()
             .ToString()
@@ -149,7 +184,7 @@ public static class ColorUtils
     /// <returns></returns>
     public static string GrayScale(TextColor color)
     {
-        var luma = Luma(color);
+        var luma = Math.Round(Luma(color)) / 100 * 255;
         return new Rgb { R = luma, G = luma, B = luma }
             .To<Hex>()
             .ToString()

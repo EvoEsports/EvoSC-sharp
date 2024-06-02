@@ -1,5 +1,5 @@
 <component>
-    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="EvoSC.Controls.Switch" as="Switch" />
     
     <property type="bool" name="isReady" default="false" />
@@ -8,7 +8,7 @@
     <property type="bool" name="showButton" default="true" />
     
     <template>
-        <Theme />
+        <UIStyle />
 
         
         <frame pos="-20 60">

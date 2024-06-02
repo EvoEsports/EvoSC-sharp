@@ -17,7 +17,8 @@
       <PackageReference Include="Config.Net" Version="5.1.5" />
       <PackageReference Include="FluentMigrator" Version="3.3.2" />
       <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
-      <PackageReference Include="GBX.NET" Version="1.2.4" />
+      <PackageReference Include="GBX.NET" Version="1.2.6" />
+      <PackageReference Include="GBX.NET.LZO" Version="1.0.4" />
       <PackageReference Include="GbxRemote.Net" Version="5.0.0" />
       <PackageReference Include="Humanizer.Core" Version="2.14.1" />
       <PackageReference Include="linq2db" Version="5.3.2" />

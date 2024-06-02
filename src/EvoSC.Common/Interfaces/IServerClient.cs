@@ -38,9 +38,10 @@ public interface IServerClient
     /// <summary>
     /// Send an info message to a specific player.
     /// </summary>
+    /// <param name="player">Player to send the message to.</param>
     /// <param name="text">Text to send.</param>
     /// <returns></returns>
-    public Task InfoMessageAsync(string text, IPlayer player);
+    public Task InfoMessageAsync(IPlayer player, string text);
 
     /// <summary>
     /// Send a success message to the chat.
@@ -52,9 +53,10 @@ public interface IServerClient
     /// <summary>
     /// Send a success message to a specific player.
     /// </summary>
+    /// <param name="player">Player to send the message to.</param>
     /// <param name="text">Text to send.</param>
     /// <returns></returns>
-    public Task SuccessMessageAsync(string text, IPlayer player);
+    public Task SuccessMessageAsync(IPlayer player, string text);
     
     /// <summary>
     /// Send a warning message to the chat.
@@ -66,9 +68,10 @@ public interface IServerClient
     /// <summary>
     /// Send a warning message to a specific player.
     /// </summary>
+    /// <param name="player">Player to send the message to.</param>
     /// <param name="text">Text to send.</param>
     /// <returns></returns>
-    public Task WarningMessageAsync(string text, IPlayer player);
+    public Task WarningMessageAsync(IPlayer player, string text);
 
     /// <summary>
     /// Send a error message to the chat.
@@ -80,7 +83,12 @@ public interface IServerClient
     /// <summary>
     /// Send a error message to a specific player.
     /// </summary>
+    /// <param name="player">Player to send the message to.</param>
     /// <param name="text">Text to send.</param>
     /// <returns></returns>
-    public Task ErrorMessageAsync(string text, IPlayer player);
+    public Task ErrorMessageAsync(IPlayer player, string text);
+
+    public Task<string> GetMapsDirectoryAsync();
+    
+    public Task<bool> FileExistsAsync(string file);
 }

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>EvoSC.Modules.Official.MapQueueModule</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>MapQueueModule</AssemblyName>
+    <Title>Map Queue</Title>
+    <Description>Map priority management.</Description>
+    <Version>1.0.0</Version>
+    <Authors>Evo</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Localization.resx" />
+  </ItemGroup>
+  <ItemGroup>
+        <ProjectReference Include="../../EvoSC.Modules.SourceGeneration/EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="../../EvoSC.Modules/EvoSC.Modules.csproj" Private="true" />
+  </ItemGroup>
+  
+  </Project>

@@ -16,11 +16,11 @@ public class DefaultMatchRankingTheme(IThemeManager theme) : Theme<DefaultMatchR
         Set("MatchRankingModule.MatchRanking.Default.PositionText").To(_theme.UI_TextPrimary);
         Set("MatchRankingModule.MatchRanking.Default.BgHeaderGrad1").To(_theme.UI_BgPrimary);
         Set("MatchRankingModule.MatchRanking.Default.BgHeaderGrad2").To(ColorUtils.Darken(_theme.UI_BgPrimary));
-        Set("MatchRankingModule.MatchRanking.Default.BgContent").To(_theme.UI_BgSecondary);
-        Set("MatchRankingModule.MatchRanking.Default.BgRow").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
+        Set("MatchRankingModule.MatchRanking.Default.BgContent").To(_theme.UI_BgHighlight);
+        Set("MatchRankingModule.MatchRanking.Default.BgRow").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
         Set("MatchRankingModule.MatchRanking.Default.Logo").To(_theme.UI_LogoLight);
         
-        Set("MatchRankingModule.MatchRanking.Default.Bg").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
+        Set("MatchRankingModule.MatchRanking.Default.Bg").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
         
         return Task.CompletedTask;
     }

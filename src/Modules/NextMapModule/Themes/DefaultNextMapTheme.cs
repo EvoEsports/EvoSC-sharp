@@ -15,8 +15,8 @@ public class DefaultNextMapTheme(IThemeManager theme) : Theme<DefaultNextMapThem
         Set("NextMapModule.NextMap.Default.Text").To(_theme.UI_TextPrimary);
         Set("NextMapModule.NextMap.Default.BgHeaderGrad1").To(_theme.UI_BgPrimary);
         Set("NextMapModule.NextMap.Default.BgHeaderGrad2").To(ColorUtils.Darken(_theme.UI_BgPrimary));
-        Set("NextMapModule.NextMap.Default.BgContent").To(_theme.UI_BgSecondary);
-        Set("NextMapModule.NextMap.Default.BgRow").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
+        Set("NextMapModule.NextMap.Default.BgContent").To(_theme.UI_BgHighlight);
+        Set("NextMapModule.NextMap.Default.BgRow").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
         Set("NextMapModule.NextMap.Default.Logo").To(_theme.UI_LogoLight);
         
         return Task.CompletedTask;

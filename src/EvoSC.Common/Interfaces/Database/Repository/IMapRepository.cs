@@ -30,6 +30,14 @@ public interface IMapRepository
     /// <param name="filePath">The filepath where the map is stored.</param>
     /// <returns></returns>
     public Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath);
+
+    /// <summary>
+    /// Add details about a map to the database.
+    /// </summary>
+    /// <param name="mapDetails">Map details.</param>
+    /// <param name="map">Map associated with these details.</param>
+    /// <returns></returns>
+    public Task<IMapDetails> AddMapDetailsAsync(IMapDetails mapDetails, IMap map);
     
     /// <summary>
     /// Updates an already existing map.
@@ -50,5 +58,7 @@ public interface IMapRepository
     /// Gets a map from the database based on the external provider ID.
     /// </summary>
     /// <returns></returns>
-    Task<IMap?> GetMapByExternalIdAsync(string id);
+    public Task<IMap?> GetMapByExternalIdAsync(string id);
+
+    public Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids);
 }

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Util;
 
 namespace EvoSC.Manialinks.Util;
 
@@ -13,16 +14,30 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
     /// </summary>
     /// <param name="type">Name of the status.</param>
     /// <returns></returns>
-    public string TypeToColorBg(string type) => type.ToLower(CultureInfo.InvariantCulture) switch
+    public string TypeToColorBg(string type)
     {
-        "info" => _theme.Teal,
-        "success" => _theme.Green,
-        "warning" => _theme.Orange,
-        "danger" => _theme.Red,
-        "primary" => _theme.UI_BgPrimary,
-        "secondary" => _theme.UI_BgSecondary,
-        _ => _theme.UI_BgPrimary
-    };
+        var color = type.ToLower(CultureInfo.InvariantCulture) switch
+        {
+            "info" => _theme.Teal,
+            "success" => _theme.Green,
+            "warning" => _theme.Orange,
+            "danger" => _theme.Red,
+            "primary" => _theme.UI_SurfaceBgPrimary,
+            "secondary" => _theme.UI_SurfaceBgSecondary,
+            "accent" => _theme.UI_AccentPrimary,
+            _ => _theme.UI_BgPrimary
+        };
+
+        return color.ToString();
+    }
+
+    public string TypeToColorText(string type)
+    {
+        var bgColor = TypeToColorBg(type);
+        var luma = ColorUtils.Luma(bgColor);
+        
+        return luma <= 50 ? _theme.UI_TextPrimary : _theme.UI_TextSecondary;
+    }
 
     /// <summary>
     /// Status type to an icon.
@@ -39,4 +54,32 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
         "secondary" => _icons.ExclamationCircle,
         _ => _icons.ExclamationCircle
     };
+
+    public string RandomId(string id) => $"{id}_{Guid.NewGuid().ToString()}";
+
+    public string DefaultOrRandomId(string defaultId, string id) =>
+        id == defaultId ? $"{id}_{Guid.NewGuid().ToString()}" : id;
+
+    public double ColorOpacity(string color)
+    {
+        if (color.Length != 8)
+        {
+            return 1;
+        }
+
+        var opacity = Convert.FromHexString(color[6..]).First();
+
+        return Math.Round(opacity / 255.0, 2);
+
+    }
+
+    public int[] Range(int n) => Enumerable.Range(0, n).ToArray();
+
+    public bool HasItem(string items, string item, string splitter)
+    {
+        var itemsSplit = items.Split(splitter);
+        return itemsSplit.Contains(item);
+    }
+
+    public bool HasItem(string items, string item) => HasItem(items, item, ",");
 }

@@ -1,5 +1,6 @@
 ﻿<!--
 #Include "TextLib" as TextLib
+#Include "MathLib" as Math
 
 Void __DoNothing() {}
 

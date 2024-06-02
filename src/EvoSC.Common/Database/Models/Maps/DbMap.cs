@@ -46,6 +46,11 @@ public class DbMap : IMap
 
     public IPlayer? Author => DbAuthor;
     
+    [Association(ThisKey = nameof(Id), OtherKey = nameof(DbMapDetails.MapId))]
+    public DbMapDetails? DbDetails { get; set; }
+
+    public IMapDetails? Details => DbDetails;
+    
     public DbMap(){}
 
     public DbMap(IMap? map)
@@ -69,4 +74,30 @@ public class DbMap : IMap
         DbAuthor = new DbPlayer(map.Author);
     }
 
+    public bool Equals(IMap? other) => other != null && Uid.Equals(other.Uid, StringComparison.Ordinal);
+    
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != this.GetType())
+        {
+            return false;
+        }
+
+        return Equals((IMap)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return Uid.GetHashCode();
+    }
 }

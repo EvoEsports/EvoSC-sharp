@@ -22,7 +22,7 @@ public static class ServerChatMessageExtensions
     /// <param name="message">The message to send.</param>
     /// <param name="player">The player to send the message to.</param>
     /// <returns></returns>
-    public static Task SendChatMessageAsync(this IServerClient server, string message, IPlayer player) =>
+    public static Task SendChatMessageAsync(this IServerClient server, IPlayer player, string message) =>
         server.Remote.ChatSendServerMessageToLoginAsync(message, PlayerUtils.ConvertAccountIdToLogin(player.AccountId));
     
     /// <summary>
@@ -32,7 +32,7 @@ public static class ServerChatMessageExtensions
     /// <param name="message">The message to send.</param>
     /// <param name="login">Login of the player to send the message to.</param>
     /// <returns></returns>
-    public static Task SendChatMessageAsync(this IServerClient server, string message, string login) =>
+    public static Task SendChatMessageAsync(this IServerClient server, string login, string message) =>
         server.Remote.ChatSendServerMessageToLoginAsync(message, login);
 
     /// <summary>
@@ -51,8 +51,8 @@ public static class ServerChatMessageExtensions
     /// <param name="message">The text message to send.</param>
     /// <param name="player">The player to send the message to.</param>
     /// <returns></returns>
-    public static Task SendChatMessageAsync(this IServerClient server, TextFormatter message, IPlayer player) =>
-        server.SendChatMessageAsync(message.ToString(), player);
+    public static Task SendChatMessageAsync(this IServerClient server, IPlayer player, TextFormatter message) =>
+        server.SendChatMessageAsync(player, message.ToString());
     
     /// <summary>
     /// Send a chat message to a specific user by their login.
@@ -61,8 +61,8 @@ public static class ServerChatMessageExtensions
     /// <param name="message">The message to send.</param>
     /// <param name="login">Login of the player to send the message to.</param>
     /// <returns></returns>
-    public static Task SendChatMessageAsync(this IServerClient server, TextFormatter message, string login) =>
-        server.SendChatMessageAsync(message.ToString(), login);
+    public static Task SendChatMessageAsync(this IServerClient server, string login, TextFormatter message) =>
+        server.SendChatMessageAsync(login, message.ToString());
     
     /// <summary>
     /// Send formatted text to the chat using a builder action.
@@ -84,11 +84,11 @@ public static class ServerChatMessageExtensions
     /// <param name="messageBuilder">The text message to send.</param>
     /// <param name="player">The player to send the message to.</param>
     /// <returns></returns>
-    public static Task SendChatMessageAsync(this IServerClient server, Action<TextFormatter> messageBuilder, IPlayer player)
+    public static Task SendChatMessageAsync(this IServerClient server, IPlayer player, Action<TextFormatter> messageBuilder)
     {
         var message = new TextFormatter();
         messageBuilder(message);
-        return server.SendChatMessageAsync(message.ToString(), player);
+        return server.SendChatMessageAsync(player, message.ToString());
     }
     
     /// <summary>
@@ -98,10 +98,10 @@ public static class ServerChatMessageExtensions
     /// <param name="messageBuilder">The text message to send.</param>
     /// <param name="login">Login of the player to send the message to.</param>
     /// <returns></returns>
-    public static Task SendChatMessageAsync(this IServerClient server, Action<TextFormatter> messageBuilder, string login)
+    public static Task SendChatMessageAsync(this IServerClient server, string login, Action<TextFormatter> messageBuilder)
     {
         var message = new TextFormatter();
         messageBuilder(message);
-        return server.SendChatMessageAsync(message.ToString(), login);
+        return server.SendChatMessageAsync(login, message.ToString());
     }
 }

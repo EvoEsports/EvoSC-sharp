@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Util;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
-public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IEvoScBaseConfig config)
+public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IEvoScBaseConfig config, IMapService mapService)
     : IMatchSettingsService
 {
     public async Task SetCurrentScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
@@ -68,6 +69,57 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         }
     }
 
+    public Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
+    {
+        var builder = new MatchSettingsBuilder();
+        matchSettings(builder);
+
+        return SaveMatchSettingsAsync(name, builder);
+    }
+
+    public async Task<IMatchSettings> GetMatchSettingsAsync(string name)
+    {
+        var filePath = await GetFilePathAsync(name);
+        
+        var contents = await File.ReadAllTextAsync(filePath);
+        return await MatchSettingsXmlParser.ParseAsync(contents);
+    }
+
+    public async Task<IEnumerable<IMap>> GetCurrentMapListAsync()
+    {
+        var serverMapList = await server.Remote.GetMapListAsync(-1, 0);
+        var maps = await mapService.GetMapsByUidAsync(serverMapList.Select(m => m.UId));
+        
+        return maps;
+    }
+
+    public async Task EditMatchSettingsAsync(string name, Action<MatchSettingsBuilder> builderAction)
+    {
+        var currentMatchSettings = await GetMatchSettingsAsync(name);
+        var builder = new MatchSettingsBuilder(currentMatchSettings);
+        builderAction(builder);
+        await SaveMatchSettingsAsync(name, builder);
+    }
+
+    public async Task DeleteMatchSettingsAsync(string name)
+    {
+        var filePath = await GetFilePathAsync(name);
+        File.Delete(filePath);
+    }
+    
+    private async Task<string> GetFilePathAsync(string name)
+    {
+        var mapsDir = await server.GetMapsDirectoryAsync();
+        var filePath = Path.Combine(mapsDir, "MatchSettings", name + ".txt");
+
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("Failed to find the match settings with the provided name.", filePath);
+        }
+
+        return filePath;
+    }
+    
     private async Task<IMatchSettings> SaveMatchSettingsAsync(string name, MatchSettingsBuilder builder)
     {
         var builtMatchSettings = builder.Build();
@@ -100,62 +152,5 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
 
             throw;
         }
-    }
-
-    public Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
-    {
-        var builder = new MatchSettingsBuilder();
-        matchSettings(builder);
-
-        return SaveMatchSettingsAsync(name, builder);
-    }
-
-    private async Task<string> GetFilePathAsync(string name)
-    {
-        var mapsDir = config.Path.Maps;
-
-        if (mapsDir == string.Empty)
-        {
-            mapsDir = await server.Remote.GetMapsDirectoryAsync();
-        }
-
-        // if it's still empty and doesn't exist, we should throw an error
-        if (mapsDir == string.Empty && !Directory.Exists(mapsDir))
-        {
-            // we do this check to increase error tracking, even though file
-            // existence is checked later anyways
-            throw new DirectoryNotFoundException("Failed to find an existing maps directory.");
-        }
-
-        var filePath = Path.Combine(mapsDir, "MatchSettings", name + ".txt");
-
-        if (!File.Exists(filePath))
-        {
-            throw new FileNotFoundException("Failed to find the match settings with the provided name.", filePath);
-        }
-
-        return filePath;
-    }
-
-    public async Task<IMatchSettings> GetMatchSettingsAsync(string name)
-    {
-        var filePath = await GetFilePathAsync(name);
-        
-        var contents = await File.ReadAllTextAsync(filePath);
-        return await MatchSettingsXmlParser.ParseAsync(contents);
-    }
-
-    public async Task EditMatchSettingsAsync(string name, Action<MatchSettingsBuilder> builderAction)
-    {
-        var currentMatchSettings = await GetMatchSettingsAsync(name);
-        var builder = new MatchSettingsBuilder(currentMatchSettings);
-        builderAction(builder);
-        await SaveMatchSettingsAsync(name, builder);
-    }
-
-    public async Task DeleteMatchSettingsAsync(string name)
-    {
-        var filePath = await GetFilePathAsync(name);
-        File.Delete(filePath);
     }
 }

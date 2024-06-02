@@ -13,8 +13,8 @@ public class DefaultToggleSwitchTheme(IThemeManager theme) : Theme<DefaultToggle
     {
         Set("UI.ToggleSwitch.Default.OnText").To(_theme.UI_BgPrimary);
         Set("UI.ToggleSwitch.Default.OnBg").To(_theme.UI_BgPrimary);
-        Set("UI.ToggleSwitch.Default.OffText").To(_theme.UI_BgSecondary);
-        Set("UI.ToggleSwitch.Default.OffBg").To(_theme.UI_BgSecondary);
+        Set("UI.ToggleSwitch.Default.OffText").To(_theme.UI_BgHighlight);
+        Set("UI.ToggleSwitch.Default.OffBg").To(_theme.UI_BgHighlight);
         Set("UI.ToggleSwitch.Default.BgSecondary").To(_theme.White);
 
         return Task.CompletedTask;

@@ -119,4 +119,29 @@ public partial class ServerClient : IServerClient
         await _gbxRemote.SendHideManialinkPageAsync();  //hide all manialinks on disconnect
         await _gbxRemote.DisconnectAsync();
     }
+
+    public async Task<string> GetMapsDirectoryAsync()
+    {
+        var mapsDir = _config.Path.Maps;
+
+        if (mapsDir == string.Empty)
+        {
+            mapsDir = await Remote.GetMapsDirectoryAsync();
+        }
+
+        // if it's still empty and doesn't exist, we should throw an error
+        if (mapsDir == string.Empty && !Directory.Exists(mapsDir))
+        {
+            throw new DirectoryNotFoundException("Failed to find an existing maps directory.");
+        }
+
+        return mapsDir;
+    }
+
+    public async Task<bool> FileExistsAsync(string file)
+    {
+        var mapsDir = await GetMapsDirectoryAsync();
+
+        return File.Exists(Path.Combine(mapsDir, file));
+    }
 }

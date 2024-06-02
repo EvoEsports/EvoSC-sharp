@@ -3,31 +3,27 @@ Void SetSwitchState(Text idName, Boolean value) {
     declare switchFrame <=> Page.MainFrame.GetFirstChild(idName) as CMlFrame;
     declare SwitchValue for switchFrame = value;
     declare bg <=> switchFrame.Controls[0] as CMlQuad;
-    declare head <=> switchFrame.Controls[1] as CMlQuad;
-    declare icon <=> switchFrame.Controls[2] as CMlLabel;
-    declare entry <=> switchFrame.Controls[3] as CMlEntry;
-    declare onColor = TextLib::ToColor("{{ Theme.UI_ToggleSwitch_Default_OnBg }}");
-    declare offColor = TextLib::ToColor("{{ Theme.UI_ToggleSwitch_Default_OffBg }}" );
+    
+    declare head <=> (Page.MainFrame.GetFirstChild(idName ^ "-head") as CMlQuad);
+    declare icon <=> (Page.MainFrame.GetFirstChild(idName ^ "-icon") as CMlLabel);
+    declare entry <=> switchFrame.Controls[2] as CMlEntry;
     
     SwitchValue = value;
     
     if (value) {
-        bg.BgColor = onColor;
         icon.SetText("{{ Icons.Check }}");
         AnimMgr.Add(head, """<quad pos='5 0' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         AnimMgr.Add(icon, """<label pos='7.5 -2.1' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
-        icon.TextColor = onColor;
+        icon.TextColor = {{ Color.ToMlColor(Theme.Green) }};
         entry.SetText("True", False);
     } else {
-        bg.BgColor = offColor;
         AnimMgr.Add(head, """<quad pos='0 0' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         AnimMgr.Add(icon, """<label pos='2.5 -2.1' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         icon.SetText("{{ Icons.Close }}");
-        icon.TextColor = offColor;
+        icon.TextColor = {{ Color.ToMlColor(Theme.Red) }};
         entry.SetText("False", False);
     }
 }
-
 
 *** OnInitialization ***
 ***

@@ -55,8 +55,8 @@ if (Event.Control.HasClass("evosc-window-ctrlbtn")) {
 
 *** OnMouseClick ***
 ***
-if (Event.Control.HasClass("evosc-window-closebtn")) {
-    declare windowId = Event.Control.DataAttributeGet("id");
+if (Event.Control.HasClass("evosc-window-closebtn-btn")) {
+    declare windowId = Event.Control.DataAttributeGet("data");
     CloseWindow(windowId);
 }
 ***
@@ -70,7 +70,7 @@ if ({{ canMove }}) {
     DragStartPosition = WindowInstance.RelativePosition_V3;
     
     if (MouseX >= DragStartPosition.X && MouseX <= DragStartPosition.X + WindowInstance.Size.X
-        && MouseY <= DragStartPosition.Y && MouseY >= DragStartPosition.Y - 5) {
+        && MouseY <= DragStartPosition.Y && MouseY >= DragStartPosition.Y - 8) {
         IsFocused = True;
     }
     

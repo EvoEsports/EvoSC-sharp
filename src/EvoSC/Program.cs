@@ -1,5 +1,4 @@
-﻿
-using EvoSC;
+﻿using EvoSC;
 using EvoSC.CLI;
 
 return await new CliManager()

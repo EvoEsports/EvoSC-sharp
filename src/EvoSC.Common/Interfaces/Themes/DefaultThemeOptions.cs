@@ -12,35 +12,16 @@ public interface DefaultThemeOptions
     /// </summary>
     public static readonly string UIFontSize = "UI.FontSize";
     
-    /// <summary>
-    /// Primary text color.
-    /// </summary>
-    public static readonly string UITextPrimary = "UI.TextPrimary";
-    
-    /// <summary>
-    /// Secondary text color.
-    /// </summary>
-    public static readonly string UITextSecondary = "UI.TextSecondary";
-    
-    /// <summary>
-    /// Primary background color.
-    /// </summary>
+    public static readonly string UIHeaderBg = "UI.HeaderBg";
     public static readonly string UIBgPrimary = "UI.BgPrimary";
-    
-    /// <summary>
-    /// Secondary background color.
-    /// </summary>
-    public static readonly string UIBgSecondary = "UI.BgSecondary";
-    
-    /// <summary>
-    /// Primary border color.
-    /// </summary>
-    public static readonly string UIBorderPrimary = "UI.BorderPrimary";
-    
-    /// <summary>
-    /// Secondary border color.
-    /// </summary>
-    public static readonly string UIBorderSecondary = "UI.BorderSecondary";
+    public static readonly string UIBgHighlight = "UI.BgHighlight";
+    public static readonly string UIAccentPrimary = "UI.AccentPrimary";
+    public static readonly string UIAccentSecondary = "UI.AccentSecondary";
+    public static readonly string UISurfaceBgPrimary = "UI.SurfaceBgPrimary";
+    public static readonly string UISurfaceBgSecondary = "UI.SurfaceBgSecondary";
+    public static readonly string UITextPrimary = "UI.TextPrimary";
+    public static readonly string UITextSecondary = "UI.TextSecondary";
+    public static readonly string UITextMuted = "UI.TextMuted";
     
     /// <summary>
     /// Dark version of the logo.
@@ -85,6 +66,9 @@ public interface DefaultThemeOptions
     public static readonly string Red = "Red";
     public static readonly string Green = "Green";
     public static readonly string Blue = "Blue";
+    public static readonly string Pink = "Pink";
+    public static readonly string Gray = "Gray";
+    public static readonly string Orange = "Orange";
     public static readonly string Yellow = "Yellow";
     public static readonly string Teal = "Teal";
     public static readonly string Purple = "Purple";
@@ -92,11 +76,11 @@ public interface DefaultThemeOptions
     public static readonly string Silver = "Silver";
     public static readonly string Bronze = "Bronze";
     public static readonly string Grass = "Grass";
-    public static readonly string Orange = "Orange";
-    public static readonly string Gray = "Gray";
+    public static readonly string Dirt = "Dirt";
+    public static readonly string Tarmac = "Tarmac";
+    public static readonly string Ice = "Ice";
     public static readonly string Black = "Black";
     public static readonly string White = "White";
-    public static readonly string Pink = "Pink";
     
     /// <summary>
     /// Default info UI color.

@@ -26,6 +26,8 @@
         <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
         <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" />
         <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" />
+        <ProjectReference Include="..\Modules\MapListModule\MapListModule.csproj" />
+        <ProjectReference Include="..\Modules\MapQueueModule\MapQueueModule.csproj" />
         <ProjectReference Include="..\Modules\MatchRankingModule\MatchRankingModule.csproj" />
         <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
         <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />

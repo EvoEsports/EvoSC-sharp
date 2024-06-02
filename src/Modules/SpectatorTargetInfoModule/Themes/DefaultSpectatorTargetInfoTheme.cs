@@ -13,8 +13,8 @@ public class DefaultSpectatorTargetInfoTheme(IThemeManager theme) : Theme<Defaul
     public override Task ConfigureAsync()
     {
         Set("SpectatorTargetInfoModule.SpectatorTargetInfo.Bg").To(_theme.UI_BgPrimary);
-        Set("SpectatorTargetInfoModule.SpectatorTargetInfo.BgGrad1").To(ColorUtils.Lighten(_theme.UI_BgSecondary));
-        Set("SpectatorTargetInfoModule.SpectatorTargetInfo.BgGrad2").To(_theme.UI_BgSecondary);
+        Set("SpectatorTargetInfoModule.SpectatorTargetInfo.BgGrad1").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
+        Set("SpectatorTargetInfoModule.SpectatorTargetInfo.BgGrad2").To(_theme.UI_BgHighlight);
         
         Set("SpectatorTargetInfoModule.SpectatorTargetInfo.Bg").To(_theme.UI_BgPrimary);
         

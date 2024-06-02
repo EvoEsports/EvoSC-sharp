@@ -70,10 +70,15 @@ public class ManialinkManager : IManialinkManager
         themeManager.AddThemeAsync<DefaultTextInputTheme>();
         themeManager.AddThemeAsync<DefaultToggleSwitchTheme>();
         themeManager.AddThemeAsync<DefaultWindowTheme>();
+        themeManager.AddThemeAsync<DefaultChipTheme>();
+        themeManager.AddThemeAsync<DefaultSeparatorTheme>();
+        themeManager.AddThemeAsync<DefaultSelectTheme>();
+        themeManager.AddThemeAsync<DefaultDialogTheme>();
         
         _engine.GlobalVariables["Util"] = new GlobalManialinkUtils(themeManager);
         _engine.GlobalVariables["Icons"] = new GameIcons();
         _engine.GlobalVariables["Font"] = new FontManialinkHelper(themeManager);
+        _engine.GlobalVariables["Color"] = new ColorUtils();
     }
 
     public async Task AddDefaultTemplatesAsync()
@@ -299,7 +304,7 @@ public class ManialinkManager : IManialinkManager
             assembles.AddRange(s_defaultAssemblies);
             assembles.AddRange(template.Assemblies);
 
-            await _engine.PreProcessAsync(template.Name, assembles);
+           await _engine.PreProcessAsync(template.Name, assembles);
         }
     }
 

@@ -27,5 +27,6 @@ public class MatchSettingsCommandsController(IMatchManagerHandlerService matchHa
 
     [ChatCommand("scriptsetting", "[Command.ScriptSetting]", MatchManagerPermissions.SetLiveMode)]
     [CommandAlias("/ssetting", hide: true)]
+    [CommandAlias("/ss", hide: true)]
     public Task SetScriptSettingAsync(string name, string value) => matchHandler.SetScriptSettingAsync(name, value, Context.Player);
 }

@@ -48,7 +48,7 @@ public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPl
         EchoOptions.All => server.InfoMessageAsync(
             _locale.PlayerGotANewPb(record.Player.NickName, FormattingUtils.FormatTime(record.Score))),
         EchoOptions.Player => server.InfoMessageAsync(
-            _locale.PlayerLanguage.YouGotANewPb(FormattingUtils.FormatTime(record.Score)), record.Player),
+            _locale.PlayerLanguage.YouGotANewPb(record.Player, FormattingUtils.FormatTime(record.Score))),
         _ => Task.CompletedTask
     };
 
@@ -59,7 +59,7 @@ public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPl
 
         if (pb == null)
         {
-            await server.InfoMessageAsync(_locale.PlayerLanguage.YouHaveNotSetATime, player);
+            await server.InfoMessageAsync(player, _locale.PlayerLanguage.YouHaveNotSetATime);
             return;
         }
 
@@ -68,6 +68,6 @@ public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPl
         var m = pb.Score / 1000 / 60;
         var formattedTime = $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
 
-        await server.InfoMessageAsync(_locale.PlayerLanguage.YourCurrentPbIs(formattedTime), player);
+        await server.InfoMessageAsync(player, _locale.PlayerLanguage.YourCurrentPbIs(formattedTime));
     }
 }

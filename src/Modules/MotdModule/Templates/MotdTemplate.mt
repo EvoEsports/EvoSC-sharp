@@ -1,6 +1,6 @@
 ﻿<component>
-    <import component="EvoSC.Window" as="Window" />
-    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Containers.Window" as="Window" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
     <import component="EvoSC.Controls.Button" as="Button" />
 
@@ -16,7 +16,7 @@
     <property type="double" name="h" default="90" />
     
     <template>
-        <Theme />
+        <UIStyle />
         <Window height="{{ h }}" width="{{ w }}" x="{{ -w/2 }}" y="{{ h/2 }}" title="Message of the Day">
             <label class="text" autonewline="1" text="{{ text }}" pos="0 0" size="{{ w }} {{ h - (buttonBarHeight + titleBarHeight*2) }}" />
             <!-- ButtonBar -->
@@ -33,7 +33,6 @@
         <!--
             *** OnMouseClick ***
             ***
-                log(Event.Control.ControlId);
                 if (Event.Control.ControlId == "closeBtn" || Event.Control.HasClass("evosc-window-closebtn")) {
                     CloseWindow("evosc-window");
             

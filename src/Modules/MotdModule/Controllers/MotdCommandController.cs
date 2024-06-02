@@ -2,7 +2,6 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MotdModule.Controllers;

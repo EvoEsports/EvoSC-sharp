@@ -175,6 +175,46 @@ public static class Mocking
     }
 
     /// <summary>
+    /// Automatic setup of controller context and player object based on the provided controller context type.
+    /// </summary>
+    /// <typeparam name="T">Controller context type</typeparam>
+    /// <returns></returns>
+    public static (
+        Mock<IContextService> ContextService,
+        ControllerContextMock<T> ControllerContext,
+        Mock<IOnlinePlayer> Player ) NewContextServiceMock<T>() where T : class, IControllerContext
+    {
+        var controllerContext = NewControllerContextMock<T>();
+        var player = new Mock<IOnlinePlayer>();
+
+        return (
+            NewContextServiceMock(controllerContext.Context.Object, player.Object),
+            controllerContext,
+            player
+        );
+    }
+
+    /// <summary>
+    /// Creates a generic controller context of IControllerContext.
+    /// </summary>
+    /// <returns></returns>
+    public static (
+        Mock<IContextService> ContextService,
+        ControllerContextMock<IControllerContext> ControllerContext,
+        Mock<IOnlinePlayer> Player
+        ) NewGenericServiceMock()
+    {
+        var controllerContext = NewControllerContextMock<IControllerContext>();
+        var player = new Mock<IOnlinePlayer>();
+
+        return (
+            NewContextServiceMock(controllerContext.Context.Object, player.Object),
+            controllerContext,
+            player
+        );
+    }
+
+    /// <summary>
     /// Create a mocked instance of the locale manager. All localizations will return "Test_Locale_String".
     /// </summary>
     /// <param name="contextService">The context service to use for this localization manager.</param>

@@ -3,6 +3,8 @@
 -->
 <component>
     <import component="EvoSC.HiddenEntry" as="HiddenEntry" />
+    <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
+    <import component="EvoSC.Controls.Panel" as="Panel" />
 
     <!-- The ID of the switch. -->
     <property type="string" name="id" />
@@ -25,19 +27,36 @@
                 class="evosc-toggleswitch-frame"
                 data-value="{{ value }}"
         >
-            <quad 
-                    class='{{ value ? "toggleswitch-on-default" : "toggleswitch-off-default" }} evosc-toggleswitch'
+            <!-- <quad 
+                    class='evosc-toggleswitch'
+                    bgcolor="{{ Theme.UI_SurfaceBgPrimary }}"
                     size="10 5"
                     scriptevents="1"
                     data-id="{{ id }}"
-            />
-            <quad 
+            /> -->
+          <Rectangle className='evosc-toggleswitch'
+                     bgColor="{{ Theme.UI_SurfaceBgPrimary }}"
+                     width="10"
+                     height="5"
+                     scriptEvents="true"
+                     dataid="{{ id }}"
+                     cornerRadius="0.5"
+          />
+          <Panel className='evosc-toggleswitch'
+                 bgColor="{{ Theme.UI_SurfaceBgPrimary }}"
+                 width="10"
+                 height="5"
+                 scriptEvents="true"
+                 dataId="{{ id }}"
+                 cornerRadius="0.5">
+            <quad
                     bgcolor="{{ Theme.UI_ToggleSwitch_Default_BgSecondary }}"
                     pos="{{ value ? 5 : 0 }} 0"
                     size="5 5"
                     scriptevents="1"
                     class="evosc-toggleswitch"
                     data-id="{{ id }}"
+                    id="{{ id }}-head"
             />
             <label
                     class='{{ value ? "toggleswitch-on-default" : "toggleswitch-off-default" }} evosc-toggleswitch'
@@ -48,11 +67,14 @@
                     textsize="1.5"
                     scriptevents="1"
                     data-id="{{ id }}"
+                    id="{{ id }}-icon"
             />
-            <HiddenEntry 
-                    name="{{ id }}"
-                    value="{{ value }}"
-            />
+          </Panel>
+            
+          <HiddenEntry 
+                  name="{{ id }}"
+                  value="{{ value }}"
+          />
         </frame>
     </template>
 

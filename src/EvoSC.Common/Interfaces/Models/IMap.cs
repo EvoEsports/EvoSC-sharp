@@ -5,7 +5,7 @@ namespace EvoSC.Common.Interfaces.Models;
 /// <summary>
 /// Represents a map.
 /// </summary>
-public interface IMap
+public interface IMap : IEquatable<IMap>
 {
     /// <summary>
     /// The maps ID.
@@ -51,4 +51,6 @@ public interface IMap
     /// The maps external provider. E.g. trackmania.io.
     /// </summary>
     public MapProviders? ExternalMapProvider { get; set; }
+    
+    public IMapDetails? Details { get; }
 }

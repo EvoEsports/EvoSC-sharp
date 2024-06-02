@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Util;
+﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Util.MatchSettings.Builders;
 using GbxRemoteNet.Exceptions;
 
@@ -65,6 +66,12 @@ public interface IMatchSettingsService
     /// <exception cref="FileNotFoundException">Thrown if the match settings file was not found.</exception>
     /// <returns></returns>
     public Task<IMatchSettings> GetMatchSettingsAsync(string name);
+
+    /// <summary>
+    /// Get a list of maps loaded in the current live match settings.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IEnumerable<IMap>> GetCurrentMapListAsync();
     
     /// <summary>
     /// Edit an existing match settings file.

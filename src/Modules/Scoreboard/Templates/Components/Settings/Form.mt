@@ -1,12 +1,12 @@
 ﻿<component>
     <import component="EvoSC.Controls.Checkbox" as="Checkbox" />
-    <import component="EvoSC.Theme" as="Theme" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     
     <property type="double" name="w" default="140"/>
     <property type="double" name="h" default="80"/>
 
     <template>
-        <Theme />
+        <UIStyle />
       
         <label text="SCOREBOARD SETTINGS"
                textsize="5"
