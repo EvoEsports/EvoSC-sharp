@@ -103,6 +103,28 @@ public interface IManialinkManager
     public Task SendPersistentManialinkAsync(string name);
 
     /// <summary>
+    /// Send a manialink to all players which persists even if a player re-connects.
+    /// It will also automatically show for new players.
+    ///
+    /// This method allows for dynamic data updates by a callback method.
+    /// </summary>
+    /// <param name="name">Name of the template to show.</param>
+    /// <param name="setupData">Method that returns data to be sent.</param>
+    /// <returns></returns>
+    public Task SendPersistentManialinkAsync(string name, Func<Task<dynamic>> setupData);
+    
+    /// <summary>
+    /// Send a manialink to all players which persists even if a player re-connects.
+    /// It will also automatically show for new players.
+    ///
+    /// This method allows for dynamic data updates by a callback method.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="setupData">Method that returns data to be sent.</param>
+    /// <returns></returns>
+    public Task SendPersistentManialinkAsync(string name, Func<Task<IDictionary<string, object?>>> setupData);
+    
+    /// <summary>
     /// Render a template and send it to a specific player.
     /// </summary>
     /// <param name="player">The player to send to.</param>

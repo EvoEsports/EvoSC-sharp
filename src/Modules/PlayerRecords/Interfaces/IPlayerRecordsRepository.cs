@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.PlayerRecords.Database.Models;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Interfaces;
 
@@ -26,4 +27,7 @@ public interface IPlayerRecordsRepository
     /// <param name="record">The record to add.</param>
     /// <returns></returns>
     public Task<DbPlayerRecord> InsertRecordAsync(IPlayer player, IMap map, int score, IEnumerable<int> checkpoints);
+
+    public Task DeleteRecordAsync(IPlayer player, IMap map);
+    public Task DeleteRecordAsync(IPlayerRecord record);
 }

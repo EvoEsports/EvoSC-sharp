@@ -52,4 +52,9 @@ public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<
 
         return record;
     }
+
+    public Task DeleteRecordAsync(IPlayer player, IMap map) => Table<DbPlayerRecord>()
+        .DeleteAsync(r => r.MapId == map.Id && r.PlayerId == player.Id);
+
+    public Task DeleteRecordAsync(IPlayerRecord record) => Database.DeleteAsync(record);
 }

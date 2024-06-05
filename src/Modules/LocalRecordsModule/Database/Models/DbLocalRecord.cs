@@ -8,8 +8,11 @@ using LinqToDB.Mapping;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Database.Models;
 
+[Table(TableName)]
 public class DbLocalRecord : ILocalRecord
 {
+    public const string TableName = "LocalRecords";
+    
     [PrimaryKey, Identity]
     public long Id { get; set; }
     

@@ -9,3 +9,6 @@ summary = "Determine and display top records of a map from locally saved records
 version = "1.0.0"
 # The name of the author that created this module
 author = "Evo"
+
+[dependencies]
+RecordsModule = "1.0.0"

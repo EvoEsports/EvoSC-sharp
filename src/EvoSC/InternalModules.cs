@@ -5,6 +5,7 @@ using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCpModule;
 using EvoSC.Modules.Official.LiveRankingModule;
+using EvoSC.Modules.Official.LocalRecordsModule;
 using EvoSC.Modules.Official.MapListModule;
 using EvoSC.Modules.Official.MapQueueModule;
 using EvoSC.Modules.Official.MapsModule;
@@ -49,7 +50,8 @@ public static class InternalModules
         typeof(ASayModule),
         typeof(SpectatorTargetInfoModule),
         typeof(MapQueueModule),
-        typeof(MapListModule)
+        typeof(MapListModule),
+        typeof(LocalRecordsModule)
     };
 
     /// <summary>

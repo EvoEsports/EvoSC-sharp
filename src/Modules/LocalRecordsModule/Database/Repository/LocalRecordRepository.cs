@@ -3,19 +3,22 @@ using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Services.Attributes;
 using EvoSC.Modules.Official.LocalRecordsModule.Database.Models;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
+using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Database;
 using EvoSC.Modules.Official.PlayerRecords.Database.Models;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Database.Repository;
 
-public class LocalRecordRepository : DbRepository, ILocalRecordRepository
+[Service]
+public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRecordsRepository recordsRepository)
+    : DbRepository(dbConnFactory), ILocalRecordRepository
 {
-    protected LocalRecordRepository(IDbConnectionFactory dbConnFactory) : base(dbConnFactory)
-    {
-    }
+    private readonly IPlayerRecordsRepository _recordsRepository = recordsRepository;
 
     public async Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId) =>
         await NewLoadAll()
@@ -53,6 +56,8 @@ public class LocalRecordRepository : DbRepository, ILocalRecordRepository
             
             var id = await Database.InsertWithIdentityAsync(localRecord);
             localRecord.Id = Convert.ToInt64(id);
+
+            await transaction.CommitTransactionAsync();
         }
         catch (Exception ex)
         {
@@ -109,6 +114,38 @@ public class LocalRecordRepository : DbRepository, ILocalRecordRepository
     public async Task<DbLocalRecord?> GetRecordOfPlayerInMapAsync(IPlayer player, IMap map) =>
         await NewLoadAll()
             .FirstOrDefaultAsync(r => r.Record.Player.Id == player.Id);
+
+    public async Task DeleteRecordAsync(IPlayer player, IMap map)
+    {
+        var transaction = await Database.BeginTransactionAsync();
+
+        try
+        {
+            await Table<DbLocalRecord>().DeleteAsync(r => r.MapId == map.Id && r.Record.Player.Id == player.Id);
+            await recordsRepository.DeleteRecordAsync(player, map);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackTransactionAsync();
+            throw;
+        }
+    }
+
+    public async Task DeleteRecordAsync(ILocalRecord localRecord)
+    {
+        var transaction = await Database.BeginTransactionAsync();
+
+        try
+        {
+            await Database.DeleteAsync(localRecord);
+            await recordsRepository.DeleteRecordAsync(localRecord.Record);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackTransactionAsync();
+            throw;
+        }
+    }
 
     private ILoadWithQueryable<DbLocalRecord, IPlayer> NewLoadAll() => Table<DbLocalRecord>()
         .LoadWith(r => r.Map)
