@@ -22,8 +22,5 @@
         <ProjectReference Include="../../EvoSC.Modules/EvoSC.Modules.csproj" Private="true" />
         <ProjectReference Include="..\PlayerRecords\PlayerRecords.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
   
   </Project>

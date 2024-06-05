@@ -2,6 +2,5 @@
 
 public interface ILocalRecordsService
 {
-    public Task ShowWidgetAsync();
     public Task<IEnumerable<ILocalRecord>> GetLocalsOfCurrentMapAsync();
 }

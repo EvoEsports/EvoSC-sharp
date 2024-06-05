@@ -10,9 +10,4 @@ namespace EvoSC.Modules.Official.LocalRecordsModule.Controllers;
 [Controller]
 public class ShowWidgetController : EvoScController<IEventControllerContext>
 {
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs e)
-    {
-        
-    }
 }

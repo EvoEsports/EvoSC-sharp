@@ -2,15 +2,15 @@
   <property type="string" name="header" default="" />
   <property type="string" name="position" default="left" /> <!-- Values: left, right, top, bottom -->
   <property type="double" name="height" />
-  <property type="double" name="x" />
-  <property type="double" name="y" />
+  <property type="double" name="x" default="0" />
+  <property type="double" name="y" default="0" />
   <property type="string" name="style" default="normal" /> <!-- Values: normal, unstyled -->
   <property type="bool" name="ingrid" default="true" /> <!-- If true, position and size acts on the grid system -->
   <property type="double" name="gridsize" default="12" /> <!-- If true, position and size acts on the grid system -->
   <property type="double" name="cellsize" default="10" /> <!-- If true, position and size acts on the grid system -->
   
   <template>
-    <frame pos="{{ x*(cellsize + (160 - (160/gridsize - cellsize))/gridsize - cellsize) }} {{ y*(cellsize + (160 - (160/gridsize - cellsize))/gridsize - cellsize) }}">
+    <frame pos="">
       <frame if='header != ""'>
         <quad
                 bgcolor="28212F"

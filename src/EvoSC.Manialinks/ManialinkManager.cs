@@ -1,8 +1,10 @@
 ﻿using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
@@ -23,6 +25,8 @@ using GbxRemoteNet.Events;
 using ManiaTemplates;
 using ManiaTemplates.Lib;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EvoSC.Manialinks;
 
@@ -233,10 +237,17 @@ public class ManialinkManager : IManialinkManager
     public Task SendPersistentManialinkAsync(string name) => SendPersistentManialinkAsync(name, new { });
 
     public Task SendPersistentManialinkAsync(string name, Func<Task<dynamic>> setupData) =>
-        SendPersistentManialinkAsync(name, async () =>
+        SendPersistentManialinkAsync(name, async Task<IDictionary<string, object?>> () =>
         {
-            var data = await setupData();
-            return (IDictionary<string, object?>)data;
+            var rawData = await setupData();
+            IDictionary<string, object?> data = new ExpandoObject();
+
+            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(rawData.GetType()))
+            {
+                data.Add(prop.Name, prop.GetValue(rawData));
+            }
+            
+            return data;
         });
 
     public async Task SendPersistentManialinkAsync(string name, Func<Task<IDictionary<string, object?>>> setupData)
