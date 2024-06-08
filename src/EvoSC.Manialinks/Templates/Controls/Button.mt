@@ -96,7 +96,7 @@
               quadrant="TopLeft"
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
-              enableScriptEvents="true"
+              scriptEvents="true"
       />
 
       <QuarterCircle
@@ -107,7 +107,7 @@
               x='{{ width-(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
-              enableScriptEvents="true"
+              scriptEvents="true"
       />
       
       <QuarterCircle
@@ -118,7 +118,7 @@
               y='{{ -Theme.UI_Button_Size(size, height)+(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
-              enableScriptEvents="true"
+              scriptEvents="true"
       />
       
       <QuarterCircle
@@ -130,7 +130,7 @@
               y='{{ -Theme.UI_Button_Size(size, height)+(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ disabled ? 0 : 1 }}"
               data-id="{{ id }}"
-              enableScriptEvents="true"
+              scriptEvents="true"
       />
 
       <!-- Text -->
