@@ -14,13 +14,13 @@ Void SetSwitchState(Text idName, Boolean value) {
         icon.SetText("{{ Icons.Check }}");
         AnimMgr.Add(head, """<quad pos='5 0' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         AnimMgr.Add(icon, """<label pos='7.5 -2.1' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
-        icon.TextColor = {{ Color.ToMlColor(Theme.Green) }};
+        icon.TextColor = {! Color.ToMlColor(Theme.Green) !};
         entry.SetText("True", False);
     } else {
         AnimMgr.Add(head, """<quad pos='0 0' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         AnimMgr.Add(icon, """<label pos='2.5 -2.1' />""", 250, CAnimManager::EAnimManagerEasing::ExpOut);
         icon.SetText("{{ Icons.Close }}");
-        icon.TextColor = {{ Color.ToMlColor(Theme.Red) }};
+        icon.TextColor = {! Color.ToMlColor(Theme.Red) !};
         entry.SetText("False", False);
     }
 }
