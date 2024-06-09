@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Database.Models.Maps;
+﻿using System.Globalization;
+using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Exceptions.DatabaseExceptions;
 using EvoSC.Common.Interfaces.Database;
@@ -58,7 +59,7 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         {
             var id = await Database.InsertWithIdentityAsync(dbMap);
             await transaction.CommitTransactionAsync();
-            dbMap.Id = Convert.ToInt64(id);
+            dbMap.Id = Convert.ToInt64(id, CultureInfo.InvariantCulture);
         }
         catch (Exception e)
         {

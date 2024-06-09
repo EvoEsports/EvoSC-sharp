@@ -40,6 +40,6 @@ public class QueueCommandsController(IMapQueueService mapQueue, IMapService maps
             message.AddText(", ");
         }
 
-        await server.SendChatMessageAsync(message, Context.Player);
+        await server.SendChatMessageAsync(Context.Player, message);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MapQueueModule.Events;
@@ -12,7 +11,7 @@ using EvoSC.Modules.Official.MapQueueModule.Utils.AsyncDeque;
 namespace EvoSC.Modules.Official.MapQueueModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class MapQueueService(IEventManager events, IServerClient server, IMapService maps) : IMapQueueService
+public class MapQueueService(IEventManager events) : IMapQueueService
 {
     private readonly IAsyncDeque<IMap> _mapQueue = new AsyncDeque<IMap>();
 
@@ -22,13 +21,13 @@ public class MapQueueService(IEventManager events, IServerClient server, IMapSer
     public Task EnqueueAsync(IMap map)
     {
         _mapQueue.Enqueue(map);
-        return events.RaiseAsync(MapQueueEvents.MapQueued, new MapQueueEventArgs { QueuedMap = map });
+        return events.RaiseAsync(MapQueueEvents.MapQueued, new MapQueueEventArgs { Map = map });
     }
 
     public async Task<IMap> DequeueNextAsync()
     {
         var map = _mapQueue.Dequeue();
-        await events.RaiseAsync(MapQueueEvents.MapDequeued, new MapQueueEventArgs { QueuedMap = map });
+        await events.RaiseAsync(MapQueueEvents.MapDequeued, new MapQueueEventArgs { Map = map });
 
         return map;
     }
@@ -44,7 +43,7 @@ public class MapQueueService(IEventManager events, IServerClient server, IMapSer
         _mapQueue.Drop(map);
         return events.RaiseAsync(MapQueueEvents.MapDropped, new MapQueueMapDroppedEventArgs
         {
-            QueuedMap = map, 
+            Map = map, 
             WasNext = isNext 
         });
     }

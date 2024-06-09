@@ -18,6 +18,40 @@ public class ColorUtils
     }
     
     /// <summary>
+    /// Renders a color code in ManiaScript.
+    /// </summary>
+    /// <param name="hexColor">Color to render.</param>
+    /// <returns></returns>
+    public string ToMlColor(string hexColor)
+    {
+        var color = new Hex(hexColor).ToRgb();
+        
+        var r = (color.R / 255.0).ToString("0.0000000", new NumberFormatInfo());
+        var g = (color.G / 255.0).ToString("0.0000000", new NumberFormatInfo());
+        var b = (color.B / 255.0).ToString("0.0000000", new NumberFormatInfo());
+
+        return $"<{r}, {g}, {b}>";
+    }
+
+    /// <summary>
+    /// Set the opacity of a color using the alpha channel (4th byte).
+    /// </summary>
+    /// <param name="hexColor">Color to set opacity to</param>
+    /// <param name="opacity">Opacity from 0-100</param>
+    /// <returns></returns>
+    public string Opacity(string hexColor, double opacity)
+    {
+        var color = new Hex(hexColor).ToRgb();
+
+        var r = ((int)Math.Floor(color.R)).ToString("X2", CultureInfo.InvariantCulture);
+        var g = ((int)Math.Floor(color.G)).ToString("X2", CultureInfo.InvariantCulture);
+        var b = ((int)Math.Floor(color.B)).ToString("X2", CultureInfo.InvariantCulture);
+        var a = ((int)Math.Floor(opacity / 100.0 * 255.0)).ToString("X2", CultureInfo.InvariantCulture);
+        
+        return $"{r}{g}{b}{a}";
+    }
+    
+    /// <summary>
     /// Set the lightness for a color.
     /// </summary>
     /// <param name="hexColor">Hex color to set lightness for.</param>
@@ -147,7 +181,7 @@ public class ColorUtils
     /// <returns></returns>
     public static string GrayScale(string hexColor)
     {
-        var luma = Luma(hexColor);
+        var luma = Math.Round(Luma(hexColor)) / 100 * 255;
         return new Rgb { R = luma, G = luma, B = luma }
             .To<Hex>()
             .ToString()
@@ -161,7 +195,7 @@ public class ColorUtils
     /// <returns></returns>
     public static string GrayScale(TextColor color)
     {
-        var luma = Luma(color);
+        var luma = Math.Round(Luma(color)) / 100 * 255;
         return new Rgb { R = luma, G = luma, B = luma }
             .To<Hex>()
             .ToString()

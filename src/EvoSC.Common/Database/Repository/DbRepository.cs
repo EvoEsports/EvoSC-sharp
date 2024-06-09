@@ -1,5 +1,4 @@
-﻿
-using EvoSC.Common.Interfaces.Database;
+﻿using EvoSC.Common.Interfaces.Database;
 using LinqToDB;
 
 namespace EvoSC.Common.Database.Repository;

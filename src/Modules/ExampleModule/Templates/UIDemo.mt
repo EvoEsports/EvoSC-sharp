@@ -105,7 +105,7 @@
         <Separator x="25" length="5" y="0.5" direction="vertical" />
       </frame>
       
-      <frame pos="132">
+      <frame pos="132 0">
         <Circle radius="2" bgColor="{{ Theme.Red }}" /><label pos="5 -0.5" class="text-primary" text="RED" />
         <Circle radius="2" bgColor="{{ Theme.Green }}" y="-5" /><label pos="5 -5.5" class="text-primary" text="GREEN" />
         <Circle radius="2" bgColor="{{ Theme.Blue }}" y="-10" /><label pos="5 -10.5" class="text-primary" text="BLUE" />
@@ -123,8 +123,9 @@
         <Circle radius="2" bgColor="{{ Theme.Tarmac }}" y="-70" /><label pos="5 -70.5" class="text-primary" text="TARMAC" />
         <Circle radius="2" bgColor="{{ Theme.Ice }}" y="-75" /><label pos="5 -75.5" class="text-primary" text="ICE" />
       </frame>
-    </Window>
       
+      <Button id="btnShowDialog" text="Dialog" action="ExampleManialinkController/ShowDialog" x="90" y="-44" />
+    </Window>
     <Alert text="Hello there!" id="myAlert" y="70" type="primary" />
   </template>
   

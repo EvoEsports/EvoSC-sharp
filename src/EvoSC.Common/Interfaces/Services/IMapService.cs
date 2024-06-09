@@ -19,6 +19,11 @@ public interface IMapService
     /// <returns></returns>
     public Task<IMap?> GetMapByUidAsync(string uid);
     
+    /// <summary>
+    /// Get a set of maps by their UID's.
+    /// </summary>
+    /// <param name="mapUids">List of map UIDs.</param>
+    /// <returns></returns>
     public Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids);
 
     /// <summary>
@@ -75,5 +80,10 @@ public interface IMapService
     /// <returns></returns>
     public Task<IMap?> GetCurrentMapAsync();
 
+    /// <summary>
+    /// Get details of a map such as author time, environment, mood etc.
+    /// </summary>
+    /// <param name="map">Map to get details of.</param>
+    /// <returns></returns>
     public Task<IMapDetails> FetchMapDetailsAsync(IMap map);
 }

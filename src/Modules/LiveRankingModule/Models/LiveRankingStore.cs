@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using EvoSC.Common.Interfaces.Services;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Models;
 

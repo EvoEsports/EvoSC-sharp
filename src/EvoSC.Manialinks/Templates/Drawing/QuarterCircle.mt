@@ -15,7 +15,7 @@ Draws a quarter of a circle from different quadrants.
   <property type="string" name="color" />
 
   <!-- Enable/disable script events for the quarter -->
-  <property type="bool" name="scriptEvents" default="false" />
+  <property type="bool" name="scriptevents" default="false" />
 
   <!-- Action to trigger when mouse is clicked on the quarter -->
   <property type="string" name="action" default="" />
@@ -36,7 +36,7 @@ Draws a quarter of a circle from different quadrants.
               if='quadrant == "TopLeft"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptevents ? 1 : 0 }}"
       />
 
       <quad
@@ -47,7 +47,7 @@ Draws a quarter of a circle from different quadrants.
               if='quadrant == "TopRight"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptevents ? 1 : 0 }}"
       />
 
       <quad
@@ -58,7 +58,7 @@ Draws a quarter of a circle from different quadrants.
               if='quadrant == "BottomLeft"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptevents ? 1 : 0 }}"
       />
 
       <quad
@@ -69,7 +69,7 @@ Draws a quarter of a circle from different quadrants.
               if='quadrant == "BottomRight"'
               opacity="{{ Util.ColorOpacity(color) }}"
               class="{{ className }}"
-              scriptevents="{{ scriptEvents ? 1 : 0 }}"
+              scriptevents="{{ scriptevents ? 1 : 0 }}"
       />
     </frame>
   </template>

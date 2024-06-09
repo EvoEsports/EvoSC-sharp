@@ -20,7 +20,7 @@ General component to show text in the default style.
   <template>
     <label
             pos="{{ x }} {{ y }}"
-            text='{{ bold ? "$o" : "" }} {{ text }}'
+            text='{{ bold ? "$o" : "" }}{{ text }}'
             class="{{ className }}"
     />
   </template>

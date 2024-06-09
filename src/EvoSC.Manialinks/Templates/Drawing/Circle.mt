@@ -3,7 +3,7 @@ Draws a circle.
 -->
 <component>
   <!-- Unique identifier of the circle -->
-  <property type="string" name="id" default="evosc_rectangle" />
+  <property type="string" name="id" default="evosc_circle" />
 
   <!-- Radius of the circle -->
   <property type="double" name="radius" />
@@ -31,6 +31,9 @@ Draws a circle.
   
   <!-- ID data attribute to pass to the circle -->
   <property type="string" name="dataId" default="" />
+
+  <!-- Opacity of the background color -->
+  <property type="double" name="opacity" default="1" />
   
   <template>
     <frame pos="{{ x }} {{ y }}" 
@@ -48,7 +51,7 @@ Draws a circle.
                 image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
                 modulatecolor="{{ bgColor }}"
                 class="{{ className }}"
-                
+                opacity="{{ opacity }}"
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
         />

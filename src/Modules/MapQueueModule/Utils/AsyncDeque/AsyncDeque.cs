@@ -15,26 +15,9 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
     private readonly object _lock = new();
     private int _count = 0;
 
-    IEnumerator<TItem> IEnumerable<TItem>.GetEnumerator()
-    {
-        var node = _first;
+    IEnumerator<TItem> IEnumerable<TItem>.GetEnumerator() => GetEnumeratorInternal();
 
-        while (node != null)
-        {
-            yield return node.Item;
-            node = node.Next;
-        }
-    }
-
-    public IEnumerator GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    public void CopyTo(Array array, int index)
-    {
-        throw new NotSupportedException();
-    }
+    public void CopyTo(Array array, int index) => throw new NotSupportedException();
 
     public int Count
     {
@@ -127,6 +110,7 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
                     else if (node == _last)
                     {
                         _last = _last.Previous;
+                        _last.Next = null;
                     }
                     else
                     {
@@ -152,6 +136,19 @@ public class AsyncDeque<TItem> : IAsyncDeque<TItem>
             _first = null;
             _last = null;
             _count = 0;
+        }
+    }
+
+    public IEnumerator GetEnumerator() => GetEnumeratorInternal();
+
+    private IEnumerator<TItem> GetEnumeratorInternal()
+    {
+        var node = _first;
+
+        while (node != null)
+        {
+            yield return node.Item;
+            node = node.Next;
         }
     }
 }

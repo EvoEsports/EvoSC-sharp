@@ -1,3 +1,6 @@
+<!--
+Show a row with map information along with action buttons.
+-->
 <component>
   <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
   
@@ -6,6 +9,8 @@
   <import component="EvoSC.Controls.Dropdown" as="Dropdown" />
   
   <property type="IMapListMap" name="map" />
+  <property type="bool" name="canRemoveMaps" />
+  
   <property type="double" name="x" default="0.0" />
   <property type="double" name="y" default="0.0" />
   <property type="double" name="width" default="50" />
@@ -29,18 +34,20 @@
               x="{{ width-6 }}"
               id="btnRemove{{ index }}"
               type="secondary"
-              action="MapListManialinkController/RemoveMap/{{ map.Map.Uid }}" />
+              action="MapListManialinkController/DeleteMap/{{ map.Map.Uid }}"
+              if="canRemoveMaps"
+      />
       
       <IconButton 
               icon="{{ Icons.PlayCircle }}" 
               y="{{ -(height-5)/2 }}" 
-              x="{{ width-12 }}" 
+              x="{{ width-12 + (canRemoveMaps ? 0 : 6) }}" 
               id="btnQueue{{ index }}"
               action="MapListManialinkController/QueueMap/{{ map.Map.Uid }}" />
       
       <IconButton icon="{{ Icons.HeartO }}"
                   y="{{ -(height-5)/2 }}" 
-                  x="{{ width-18 }}" 
+                  x="{{ width-18 + (canRemoveMaps ? 0 : 6) }}" 
                   id="btnFavorite{{ index }}"
                   action="MapListManialinkController/FavoriteMap/{{ map.Map.Uid }}" />
     </Panel>

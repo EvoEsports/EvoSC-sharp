@@ -1,3 +1,6 @@
+<!--
+Shows a window with a list of maps available in the current match settings.
+-->
 <component>
   <using namespace="EvoSC.Modules.Official.MapListModule.Interfaces.Models" />
   <using namespace="System.Linq" />
@@ -8,6 +11,7 @@
   <import component="MapListModule.Parts.MapRow" as="MapRow" />
   
   <property type="IEnumerable<IMapListMap>" name="maps" />
+  <property type="bool" name="canRemoveMaps" />
   
   <template>
     <UIStyle />
@@ -22,7 +26,14 @@
                  width="96"
                  height="60"
       >
-        <MapRow foreach="IMapListMap map in maps" map="{{ map }}" y="{{ -__index*8 }}" width="94" index="{{ __index }}" />
+        <MapRow 
+                foreach="IMapListMap map in maps" 
+                map="{{ map }}" 
+                y="{{ -__index*8 }}" 
+                width="94" 
+                index="{{ __index }}" 
+                canRemoveMaps="{{ canRemoveMaps }}"
+        />
       </Container>
     </Window>
   </template>

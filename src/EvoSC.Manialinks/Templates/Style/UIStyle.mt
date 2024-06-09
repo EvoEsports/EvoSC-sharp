@@ -39,7 +39,7 @@
       <!-- Background -->
       <style
               class="bg-header"
-              bgcolor="{{ Theme.UI_BgPrimary }}"
+              bgcolor="{{ Theme.UI_HeaderBg }}"
               opacity="0.95"
       />
 

@@ -57,9 +57,7 @@ Basic text input control.
                 selecttext="{{ autoSelect }}"
                 maxlen="{{ maxLength }}"
                 z-index="0"
-
                 class="txtinput-text"
-                
                 size="{{ width-2 }} {{ height }}"
                 pos="{{ 1 }} {{ -height/4 }}"
         />

@@ -4,5 +4,8 @@ namespace EvoSC.Modules.Official.MapQueueModule.Events.Args;
 
 public class MapQueueEventArgs : EventArgs
 {
-    public IMap QueuedMap { get; init; }
+    /// <summary>
+    /// The map that was added or removed from the queue.
+    /// </summary>
+    public IMap Map { get; init; }
 }

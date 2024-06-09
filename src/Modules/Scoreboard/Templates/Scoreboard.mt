@@ -581,7 +581,7 @@
             CurrentScoreMode = -1;
             SettingsVisible = False;
             
-            {{ string.Join("\n", PositionColors.Select(pc => $"PositionColors[{pc.Key}] = \"{pc.Value}\";")) }}
+            {! string.Join("\n", PositionColors.Select(pc => $"PositionColors[{pc.Key}] = \"{pc.Value}\";")) !}
         ***
         
         *** OnLoop *** 

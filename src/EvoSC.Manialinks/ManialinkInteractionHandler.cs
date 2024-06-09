@@ -112,7 +112,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             }
             finally
             {
-                if (context.AuditEvent.Activated)
+                if (context.AuditEvent is { IsCanceled: false, Activated: true })
                 {
                     // allow actor to be manually set, so avoid overwrite
                     if (context.AuditEvent.Actor == null)
@@ -122,7 +122,7 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
 
                     await context.AuditEvent.LogAsync();
                 }
-                else if (action.Permission != null)
+                else if (!context.AuditEvent.IsCanceled && action.Permission != null)
                 {
                     _logger.LogWarning("Command '{Name}' has permissions set but does not activate an audit",
                         action.HandlerMethod.Name);

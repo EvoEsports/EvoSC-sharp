@@ -13,11 +13,8 @@
         <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
         <EmbeddedResource Include="Templates\**\*" />
         <ProjectReference Include="..\MapQueueModule\MapQueueModule.csproj" />
+        <ProjectReference Include="..\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\PlayerRecords\PlayerRecords.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Database\Repositories\" />
     </ItemGroup>
 
 </Project>
