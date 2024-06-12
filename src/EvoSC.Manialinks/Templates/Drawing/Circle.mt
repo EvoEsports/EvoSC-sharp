@@ -3,7 +3,7 @@ Draws a circle.
 -->
 <component>
   <!-- Unique identifier of the circle -->
-  <property type="string" name="id" default="evosc_rectangle" />
+  <property type="string" name="id" default="evosc_circle" />
 
   <!-- Radius of the circle -->
   <property type="double" name="radius" />

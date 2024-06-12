@@ -13,6 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ManiaTemplates" Version="0.0.22-alpha" />
+      <PackageReference Include="ManiaTemplates" Version="0.0.24-alpha" />
     </ItemGroup>
 </Project>

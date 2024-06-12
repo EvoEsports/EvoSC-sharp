@@ -102,7 +102,6 @@ The window is designed to only be used once per Manialink.
           
           <IconButton className="evosc-window-closebtn"
                       id="btnClose-{{ id }}"
-                      dataId="{{ id }}"
                       icon="{{ Icons.Close }}" 
                       style="round"
                       type="accent"

@@ -39,7 +39,7 @@
                      width="10"
                      height="5"
                      scriptEvents="true"
-                     dataid="{{ id }}"
+                     dataId="{{ id }}"
                      cornerRadius="0.5"
           />
           <Panel className='evosc-toggleswitch'
