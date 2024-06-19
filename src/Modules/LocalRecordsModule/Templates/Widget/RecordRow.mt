@@ -10,6 +10,7 @@
   <property type="int" name="pos" />
   <property type="string" name="name" />
   <property type="IRaceTime" name="time" />
+  <property type="bool" name="self" />
   
   <template>
     <frame pos="0 {{ y }}">
@@ -34,7 +35,13 @@
               textcolor="{{ Theme.Black }}"
       />
       
-      <Panel width="{{ width-4 }}" height="4" className="lr-body-primary" x="4.7" bgColor="">
+      <Panel 
+              width="{{ width-4 }}" 
+              height="4" 
+              className='{{ self ? "lr-body-highlight" : "lr-body-primary" }}'
+              x="4.7"
+              bgColor=""
+      >
         <label 
                 text="{{ name }}"
                 class="text-primary" 

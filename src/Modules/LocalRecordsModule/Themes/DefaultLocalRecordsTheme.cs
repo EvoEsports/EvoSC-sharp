@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
+using EvoSC.Common.Util;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Themes;
 
@@ -18,6 +19,9 @@ public class DefaultLocalRecordsTheme(IThemeManager theme) : Theme<DefaultLocalR
             3 => _theme.Bronze,
             _ => _theme.UI_AccentPrimary
         });
+
+        Set("UI.LocalRecordsModule.Widget.RowBg").To(_theme.UI_BgPrimary);
+        Set("UI.LocalRecordsModule.Widget.RowBgHighlight").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
 
         return Task.CompletedTask;
     }
