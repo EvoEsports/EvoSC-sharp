@@ -37,6 +37,9 @@ Basic text input control.
   <!-- Default text to show when empty -->
   <property type="string" name="placeholder" default="" />
   
+  <!-- Text to prepend inside the input -->
+  <property type="string" name="prefix" default="" />
+  
   <template>
     <frame pos="{{ x }} {{ y }}" id="{{ id }}">
       <Rectangle
@@ -51,6 +54,7 @@ Basic text input control.
                 focusareacolor1="00000000"
                 focusareacolor2="00000000"
                 textformat='{{ isPassword ? "Password" : "Basic" }}'
+                textprefix="{{ prefix }}"
                 name="{{ id }}"
                 data-id="{{ id }}"
                 default="{{ value }}"
