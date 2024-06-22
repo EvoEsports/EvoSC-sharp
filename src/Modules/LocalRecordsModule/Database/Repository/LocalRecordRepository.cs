@@ -1,5 +1,4 @@
 using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
@@ -21,6 +20,7 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
     public async Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId) =>
         await NewLoadAll()
             .Where(r => r.DbMap.Id == mapId)
+            .OrderBy(r => r.Position)
             .ToArrayAsync();
 
     public async Task<DbLocalRecord> AddOrUpdateRecordAsync(IMap map, IPlayerRecord record)

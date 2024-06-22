@@ -1,4 +1,5 @@
 <component>
+  <using namespace="EvoSC.Common.Interfaces.Models" />
   <using namespace="EvoSC.Common.Interfaces.Util" />
   <using namespace="EvoSC.Common.Util" />
   <using namespace="EvoSC.Modules.Official.LocalRecordsModule.Interfaces" />
@@ -12,6 +13,7 @@
   <import component="LocalRecordsModule.Style.LocalRecordsStyle" as="LocalRecordsStyle" />
   
   <property type="IEnumerable<ILocalRecord>" name="records" />
+  <property type="IPlayer" name="currentPlayer" />
   
   <template>
     <UIStyle />
@@ -19,12 +21,12 @@
       <Widget header="local records" height="20" bodyStyle="unstyled" y="80">
       <template slot="body">
         <RecordRow 
-                pos="{{ __index + 140 }}"
-                name="snixtho" 
+                pos="{{ record.Position }}"
+                name="{{ record.Record.Player.NickName }}" 
                 y="{{ -__index*(4+0.3) }}" 
                 foreach="ILocalRecord record in records"
-                time="{{ RaceTime.FromMilliseconds(45236) }}" 
-                self="{{ __index == 6 }}"
+                time="{{ RaceTime.FromMilliseconds(record.Record.Score) }}" 
+                self="{{ record.Record.Player.Id == currentPlayer.Id }}"
         />
         
         <frame if="records.Count() == 0">

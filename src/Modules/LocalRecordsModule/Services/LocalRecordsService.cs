@@ -18,6 +18,8 @@ public class LocalRecordsService(
     IManialinkManager manialinkManager,
     ILogger<LocalRecordsService> logger) : ILocalRecordsService
 {
+    private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
+    
     public async Task<IEnumerable<ILocalRecord>> GetLocalsOfCurrentMapAsync()
     {
         var currentMap = await mapService.GetCurrentMapAsync();
@@ -30,9 +32,10 @@ public class LocalRecordsService(
         return await localRecordRepository.GetLocalRecordsOfMapByIdAsync(currentMap.Id);
     }
 
-    public Task ShowWidgetAsync(IPlayer player)
+    public async Task ShowWidgetAsync(IPlayer player)
     {
-        throw new NotImplementedException();
+        var records = await GetLocalsOfCurrentMapAsync();
+        await manialinkManager.SendManialinkAsync(player, WidgetName, new { currentPlayer = player, records });
     }
 
     public async Task ShowWidgetToAllAsync()
@@ -45,11 +48,7 @@ public class LocalRecordsService(
         {
             foreach (var player in onlinePlayers)
             {
-                await transaction.SendManialinkAsync(player, "LocalRecordsModule.LocalRecordsWidget", new
-                {
-                    currentPlayer = player,
-                    records
-                });
+                await transaction.SendManialinkAsync(player, WidgetName, new { currentPlayer = player, records });
             }
             
             await transaction.CommitAsync();
