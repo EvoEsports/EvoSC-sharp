@@ -6,17 +6,6 @@ namespace EvoSC.Common.Util;
 
 public class ColorUtils
 {
-    public string ToMlColor(string hexColor)
-    {
-        var color = new Hex(hexColor).ToRgb();
-        
-        var r = (color.R / 255.0).ToString("0.0000000", new NumberFormatInfo());
-        var g = (color.G / 255.0).ToString("0.0000000", new NumberFormatInfo());
-        var b = (color.B / 255.0).ToString("0.0000000", new NumberFormatInfo());
-
-        return $"<{r}, {g}, {b}>";
-    }
-    
     /// <summary>
     /// Renders a color code in ManiaScript.
     /// </summary>

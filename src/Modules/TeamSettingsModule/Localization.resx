@@ -16,4 +16,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="UI.EditTeamInfo" xml:space="preserve">
+    <value>Edit team info</value>
+  </data>
+  <data name="UI.Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="UI.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="UI.Team.Color" xml:space="preserve">
+    <value>Team color</value>
+  </data>
+  <data name="UI.Team.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="UI.Team.Color.Choose" xml:space="preserve">
+    <value>Choose color</value>
+  </data>
+  <data name="UI.Team.Color.Primary" xml:space="preserve">
+    <value>Primary color</value>
+  </data>
+  <data name="UI.Team.Color.Secondary" xml:space="preserve">
+    <value>Secondary color</value>
+  </data>
+  <data name="UI.Team.Emblem.URL" xml:space="preserve">
+    <value>Logo URL</value>
+  </data>
+  <data name="UI.Team.One" xml:space="preserve">
+    <value>Team 1</value>
+  </data>
+  <data name="UI.Team.Two" xml:space="preserve">
+    <value>Team 2</value>
+  </data>
 </root>

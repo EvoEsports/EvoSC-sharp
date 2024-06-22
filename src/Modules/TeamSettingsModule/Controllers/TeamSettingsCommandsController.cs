@@ -2,25 +2,23 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Manialinks.Interfaces;
+using EvoSC.Common.Interfaces;
+using EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
+using EvoSC.Modules.Official.TeamSettingsModule.Models;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.Controllers;
 
 [Controller]
-public class TeamSettingsCommandsController(IManialinkManager manialinks, Locale locale) : EvoScController<ICommandInteractionContext>
+public class TeamSettingsCommandsController(IServerClient server, ITeamSettingsService teamSettingsService)
+    : EvoScController<ICommandInteractionContext>
 {
-    private readonly dynamic _locale = locale;
-    
     [ChatCommand("teams", "[Command.TeamSettings]")]
     public async Task EditTeamSettingsAsync()
     {
-        //TODO: get current settings
-        
-        await manialinks.SendManialinkAsync(Context.Player, "TeamSettings.EditTeamSettings",
-            new
-            {
-                Locale = _locale
-            });
-    } 
+        var team1Info = await server.Remote.GetTeamInfoAsync(1);
+        var team2Info = await server.Remote.GetTeamInfoAsync(2);
+        var teamInfos = new TeamSettingsModel { Team1Name = team1Info.Name, Team2Name = team2Info.Name, };
+
+        await teamSettingsService.ShowTeamSettingsAsync(Context.Player, teamInfos);
+    }
 }

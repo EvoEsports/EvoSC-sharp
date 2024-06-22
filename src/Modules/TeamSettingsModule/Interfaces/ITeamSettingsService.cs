@@ -1,16 +1,19 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Modules.Official.TeamSettingsModule.Models;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
 
 public interface ITeamSettingsService
 {
-    /// <summary>
-    /// Displays the team settings UI to the given player.
-    /// </summary>
-    public Task ShowTeamSettingsAsync(IPlayer player);
-    
-    /// <summary>
-    /// Updates the team settings.
-    /// </summary>
-    // public Task UpdateTeamSettingsAsync(IPlayer player, object settings);
+    public Task SetTeamSettingsAsync(TeamSettingsModel teamSettings);
+    // public Task SetTeamSettingsFallbackAsync(string teamOneName, string teamTwoName);
+
+    public Task<string> GetClubLinkUrl(
+        string teamName,
+        string primaryColor,
+        string? secondaryColor = null,
+        string? emblemUrl = null
+    );
+
+    public Task ShowTeamSettingsAsync(IPlayer player, TeamSettingsModel teamSettings);
 }
