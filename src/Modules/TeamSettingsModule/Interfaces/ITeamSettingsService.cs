@@ -10,8 +10,6 @@ public interface ITeamSettingsService
 
     public Task<NameValueCollection> ParseClubLinkUrl(string clubLinkUrl);
 
-    // public Task SetTeamSettingsFallbackAsync(string teamOneName, string teamTwoName);
-
     public Task<string> GetClubLinkUrl(
         string teamName,
         string primaryColor,

@@ -44,9 +44,9 @@
     <value>Logo URL</value>
   </data>
   <data name="UI.Team.One" xml:space="preserve">
-    <value>Team 1</value>
+    <value>Team One</value>
   </data>
   <data name="UI.Team.Two" xml:space="preserve">
-    <value>Team 2</value>
+    <value>Team Two</value>
   </data>
 </root>

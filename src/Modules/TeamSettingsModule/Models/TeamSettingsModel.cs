@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using EvoSC.Manialinks.Attributes;
+using EvoSC.Modules.Official.TeamSettingsModule.Services;
 using LinqToDB.Mapping;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.Models;
@@ -10,14 +11,14 @@ public class TeamSettingsModel
     /// <summary>
     /// The name of the team.
     /// </summary>
-    [Required(AllowEmptyStrings=false)]
-    public string Team1Name { get; set; }
+    [Required(AllowEmptyStrings = false)]
+    public string Team1Name { get; set; } = TeamSettingsService.DefaultTeam1Name;
 
     /// <summary>
     /// The primary color of the team.
     /// </summary>
     [Required, MinLength(3), MaxLength(6)]
-    public string Team1PrimaryColor { get; set; } = "0000ff";
+    public string Team1PrimaryColor { get; set; } = TeamSettingsService.DefaultTeam1Color;
 
     /// <summary>
     /// The secondary color of the team.
@@ -34,14 +35,14 @@ public class TeamSettingsModel
     /// <summary>
     /// The name of the team.
     /// </summary>
-    [Required(AllowEmptyStrings=false)]
-    public string Team2Name { get; set; }
+    [Required(AllowEmptyStrings = false)]
+    public string Team2Name { get; set; } = TeamSettingsService.DefaultTeam2Name;
 
     /// <summary>
     /// The color of the team.
     /// </summary>
     [Required, MinLength(3), MaxLength(6)]
-    public string Team2PrimaryColor { get; set; } = "ff0000";
+    public string Team2PrimaryColor { get; set; } = TeamSettingsService.DefaultTeam2Color;
 
     /// <summary>
     /// The color of the team.
