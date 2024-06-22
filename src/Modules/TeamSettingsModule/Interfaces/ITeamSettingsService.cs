@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using System.Collections.Specialized;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.TeamSettingsModule.Models;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
@@ -6,6 +7,9 @@ namespace EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
 public interface ITeamSettingsService
 {
     public Task SetTeamSettingsAsync(TeamSettingsModel teamSettings);
+
+    public Task<NameValueCollection> ParseClubLinkUrl(string clubLinkUrl);
+
     // public Task SetTeamSettingsFallbackAsync(string teamOneName, string teamTwoName);
 
     public Task<string> GetClubLinkUrl(

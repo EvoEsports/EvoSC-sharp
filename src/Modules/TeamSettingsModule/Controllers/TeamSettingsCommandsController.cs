@@ -17,7 +17,20 @@ public class TeamSettingsCommandsController(IServerClient server, ITeamSettingsS
     {
         var team1Info = await server.Remote.GetTeamInfoAsync(1);
         var team2Info = await server.Remote.GetTeamInfoAsync(2);
-        var teamInfos = new TeamSettingsModel { Team1Name = team1Info.Name, Team2Name = team2Info.Name, };
+        var info1 = await teamSettingsService.ParseClubLinkUrl(team1Info.ClubLinkUrl);
+        var info2 = await teamSettingsService.ParseClubLinkUrl(team2Info.ClubLinkUrl);
+
+        var teamInfos = new TeamSettingsModel
+        {
+            Team1Name = info1.Get("name") ?? "Blue",
+            Team1PrimaryColor = info1.Get("primary") ?? "00f",
+            Team1SecondaryColor = info1.Get("secondary"),
+            Team1EmblemUrl = info1.Get("emblem"),
+            Team2Name = info2.Get("name") ?? "Blue",
+            Team2PrimaryColor = info2.Get("primary") ?? "00f",
+            Team2SecondaryColor = info2.Get("secondary"),
+            Team2EmblemUrl = info2.Get("emblem"),
+        };
 
         await teamSettingsService.ShowTeamSettingsAsync(Context.Player, teamInfos);
     }

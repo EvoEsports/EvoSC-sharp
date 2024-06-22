@@ -127,7 +127,7 @@
                         type="secondary"
                         text="{{ Locale.PlayerLanguage.UI_Cancel }}"
                         action="TeamSettings/HideTeamSettings"
-                        x="83"
+                        x="86"
                 />
             </frame>
         </Window>

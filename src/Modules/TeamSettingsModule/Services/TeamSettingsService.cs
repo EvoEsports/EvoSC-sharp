@@ -1,4 +1,6 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using System.Collections.Specialized;
+using System.Web;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
@@ -6,18 +8,28 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Models;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
-public class TeamSettingsService(IServerClient server, IManialinkManager manialinks, Locale locale) : ITeamSettingsService
+public class TeamSettingsService(IServerClient server, IManialinkManager manialinks, Locale locale, ILogger<TeamSettingsService> logger) : ITeamSettingsService
 {
     public async Task SetTeamSettingsAsync(TeamSettingsModel teamSettings)
     {
-        await server.Remote.SetForcedClubLinksAsync(
-            await GetClubLinkUrl(teamSettings.Team1Name, teamSettings.Team1PrimaryColor, teamSettings.Team1SecondaryColor, teamSettings.Team1EmblemUrl),
-            await GetClubLinkUrl(teamSettings.Team2Name, teamSettings.Team2PrimaryColor, teamSettings.Team2SecondaryColor, teamSettings.Team2EmblemUrl)
-        );
+        var clubLinkTeam1 = await GetClubLinkUrl(teamSettings.Team1Name, teamSettings.Team1PrimaryColor, teamSettings.Team1SecondaryColor, teamSettings.Team1EmblemUrl);
+        var clubLinkTeam2 = await GetClubLinkUrl(teamSettings.Team2Name, teamSettings.Team2PrimaryColor, teamSettings.Team2SecondaryColor, teamSettings.Team2EmblemUrl);
+        
+        logger.LogInformation("Setting club link 1 to: {url}", clubLinkTeam1);
+        logger.LogInformation("Setting club link 2 to: {url}", clubLinkTeam2);
+        
+        await server.Remote.SetForcedClubLinksAsync(clubLinkTeam1, clubLinkTeam2);
+    }
+
+    public Task<NameValueCollection> ParseClubLinkUrl(string clubLinkUrl)
+    {
+        var url = new UriBuilder(clubLinkUrl);
+        return Task.FromResult(HttpUtility.ParseQueryString(url.Query));
     }
     
     public Task<string> GetClubLinkUrl(string teamName, string primaryColor, string? secondaryColor = null,
@@ -28,7 +40,7 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
             Query = $"name={Uri.EscapeDataString(teamName)}&primary={Uri.EscapeDataString(primaryColor)}"
         };
 
-        if (secondaryColor != null)
+        if (secondaryColor is { Length: > 0 })
         {
             url.Query += $"&secondary={Uri.EscapeDataString(secondaryColor)}";
         }
