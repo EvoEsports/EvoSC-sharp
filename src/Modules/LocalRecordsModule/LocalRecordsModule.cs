@@ -1,3 +1,4 @@
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
@@ -8,13 +9,7 @@ namespace EvoSC.Modules.Official.LocalRecordsModule;
 [Module(IsInternal = true)]
 public class LocalRecordsModule(IManialinkManager manialinkManager, ILocalRecordsService localRecordsService) : EvoScModule, IToggleable
 {
-    public Task EnableAsync() =>
-        manialinkManager.SendPersistentManialinkAsync("LocalRecordsModule.LocalRecordsWidget",
-            async () =>
-            {
-                var records = await localRecordsService.GetLocalsOfCurrentMapAsync();
-                return new { records };
-            });
+    public Task EnableAsync() => localRecordsService.ShowWidgetToAllAsync();
 
     public Task DisableAsync() => manialinkManager.HideManialinkAsync("LocalRecordsModule.LocalRecordsWidget");
 }

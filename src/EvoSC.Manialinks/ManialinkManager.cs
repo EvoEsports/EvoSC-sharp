@@ -1,10 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Dynamic;
 using System.Reflection;
-using System.Text;
-using System.Text.Json.Serialization;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
@@ -23,10 +20,7 @@ using EvoSC.Manialinks.Util;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
 using ManiaTemplates;
-using ManiaTemplates.Lib;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EvoSC.Manialinks;
 
@@ -266,6 +260,13 @@ public class ManialinkManager : IManialinkManager
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
     }
 
+    public Task RemovePersistentManialinkAsync(string name)
+    {
+        name = GetEffectiveName(name);
+        _persistentManialinks.TryRemove(name, out _);
+        return Task.CompletedTask;
+    }
+
     public async Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data)
     {
         name = GetEffectiveName(name);
@@ -307,7 +308,7 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
         _persistentManialinks.TryRemove(name, out _);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         return _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 3, true);
     }
 
@@ -315,21 +316,21 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
         _persistentManialinks.TryRemove(name, out _);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         return _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 3, true);
     }
 
     public Task HideManialinkAsync(string playerLogin, string name)
     {
         name = GetEffectiveName(name);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         return _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 3, true);
     }
 
     public Task HideManialinkAsync(IEnumerable<IPlayer> players, string name)
     {
         name = GetEffectiveName(name);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         var multiCall = new MultiCall();
 
         foreach (var player in players)
@@ -467,32 +468,22 @@ public class ManialinkManager : IManialinkManager
         return assemblies;
     }
 
-    private async Task<string> PrepareAndRenderAsync(string name, IDictionary<string, object?> data)
+    public async Task<string> PrepareAndRenderAsync(string name, IDictionary<string, object?> data)
     {
         var assemblies = PrepareRender(name);
         return await _engine.RenderAsync(name, data, assemblies);
     }
     
-    private async Task<string> PrepareAndRenderAsync(string name, dynamic data)
+    public async Task<string> PrepareAndRenderAsync(string name, dynamic data)
     {
         var assemblies = PrepareRender(name);
         return await _engine.RenderAsync(name, data, assemblies);
     }
-    
-    private string CreateHideManialink(string name)
-    {
-        var sb = new StringBuilder()
-            .Append("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>\n")
-            .Append("<manialink version=\"3\" id=\"")
-            .Append(ManialinkNameUtils.KeyToId(name))
-            .Append("\">\n")
-            .Append("</manialink>\n");
 
-        return sb.ToString();
-    }
-
-    private string GetEffectiveName(string name) =>
+    public string GetEffectiveName(string name) =>
         _themeManager.ComponentReplacements.TryGetValue(name, out var effectiveName)
             ? effectiveName
             : name;
+
+    public ManialinkTransaction CreateTransaction() => new(this, _server);
 }
