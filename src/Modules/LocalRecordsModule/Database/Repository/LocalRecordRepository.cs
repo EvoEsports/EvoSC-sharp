@@ -18,11 +18,9 @@ namespace EvoSC.Modules.Official.LocalRecordsModule.Database.Repository;
 public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRecordsRepository recordsRepository)
     : DbRepository(dbConnFactory), ILocalRecordRepository
 {
-    private readonly IPlayerRecordsRepository _recordsRepository = recordsRepository;
-
     public async Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId) =>
         await NewLoadAll()
-            .Where(r => r.Map.Id == mapId)
+            .Where(r => r.DbMap.Id == mapId)
             .ToArrayAsync();
 
     public async Task<DbLocalRecord> AddOrUpdateRecordAsync(IMap map, IPlayerRecord record)
@@ -72,7 +70,7 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
     public async Task RecalculatePositionsOfMapAsync(IMap map)
     {
         var locals = await GetLocalRecordsOfMapByIdAsync(map.Id);
-        var sorted = locals.OrderBy(r => r.Record.Score).ToArray();
+        var sorted = locals.OrderBy(r => r.DbRecord.Score).ToArray();
         var updated = new List<DbLocalRecord>();
         
         for (var i = 0; i < sorted.Length; i++)
@@ -108,12 +106,12 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
 
     public async Task<IEnumerable<DbLocalRecord>> GetRecordsByPlayerAsync(IPlayer player) =>
         await NewLoadAll()
-            .Where(r => r.Record.Player.Id == player.Id)
+            .Where(r => r.DbRecord.DbPlayer.Id == player.Id)
             .ToArrayAsync();
 
     public async Task<DbLocalRecord?> GetRecordOfPlayerInMapAsync(IPlayer player, IMap map) =>
         await NewLoadAll()
-            .FirstOrDefaultAsync(r => r.Record.Player.Id == player.Id);
+            .FirstOrDefaultAsync(r => r.DbRecord.DbPlayer.Id == player.Id);
 
     public async Task DeleteRecordAsync(IPlayer player, IMap map)
     {
@@ -121,7 +119,7 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
 
         try
         {
-            await Table<DbLocalRecord>().DeleteAsync(r => r.MapId == map.Id && r.Record.Player.Id == player.Id);
+            await Table<DbLocalRecord>().DeleteAsync(r => r.MapId == map.Id && r.DbRecord.Player.Id == player.Id);
             await recordsRepository.DeleteRecordAsync(player, map);
         }
         catch (Exception ex)
@@ -148,7 +146,7 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
     }
 
     private ILoadWithQueryable<DbLocalRecord, IPlayer> NewLoadAll() => Table<DbLocalRecord>()
-        .LoadWith(r => r.Map)
-        .LoadWith(r => r.Record)
-        .ThenLoad(r => r.Player);
+        .LoadWith(r => r.DbMap)
+        .LoadWith(r => r.DbRecord)
+        .ThenLoad(r => r.DbPlayer);
 }

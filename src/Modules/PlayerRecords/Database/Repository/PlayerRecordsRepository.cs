@@ -21,7 +21,7 @@ public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<
         Table<DbPlayerRecord>()
             .LoadWith(r => r.DbPlayer)
             .LoadWith(r => r.DbMap)
-            .SingleOrDefaultAsync(r => r.PlayerId == player.Id && r.MapId == map.Id);
+            .FirstOrDefaultAsync(r => r.PlayerId == player.Id && r.MapId == map.Id);
 
     public Task UpdateRecordAsync(DbPlayerRecord record) => Database.UpdateAsync(record);
 

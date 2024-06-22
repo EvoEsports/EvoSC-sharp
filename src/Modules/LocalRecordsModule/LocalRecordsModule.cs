@@ -12,7 +12,7 @@ public class LocalRecordsModule(IManialinkManager manialinkManager, ILocalRecord
         manialinkManager.SendPersistentManialinkAsync("LocalRecordsModule.LocalRecordsWidget",
             async () =>
             {
-                var records = localRecordsService.GetLocalsOfCurrentMapAsync();
+                var records = await localRecordsService.GetLocalsOfCurrentMapAsync();
                 return new { records };
             });
 
