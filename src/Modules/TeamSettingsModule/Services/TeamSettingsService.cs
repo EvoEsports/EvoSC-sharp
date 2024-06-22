@@ -33,6 +33,11 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
 
     public Task<NameValueCollection> ParseClubLinkUrl(string clubLinkUrl)
     {
+        if (string.IsNullOrEmpty(clubLinkUrl))
+        {
+            return Task.FromResult(new NameValueCollection());
+        }
+
         var url = new UriBuilder(clubLinkUrl);
         var queryValues = HttpUtility.ParseQueryString(url.Query);
 
