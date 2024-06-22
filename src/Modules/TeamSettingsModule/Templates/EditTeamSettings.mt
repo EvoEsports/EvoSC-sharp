@@ -1,7 +1,6 @@
 <component>
     <using namespace="EvoSC.Manialinks.Validation"/>
     <using namespace="EvoSC.Common.Interfaces.Localization"/>
-    <using namespace="GbxRemoteNet.Structs"/>
     <using namespace="EvoSC.Modules.Official.TeamSettingsModule.Models"/>
 
     <import component="EvoSC.FormEntry" as="FormEntry"/>
@@ -17,10 +16,10 @@
         <UIStyle/>
 
         <Window
-                width="110"
-                height="66"
-                x="-55"
-                y="33"
+                width="130"
+                height="84"
+                x="-65"
+                y="44"
                 title="{{ Locale.PlayerLanguage.UI_EditTeamInfo }}"
                 icon=""
         >
@@ -39,7 +38,7 @@
                         name="Team1Name"
                         value="{{ Settings.Team1Name }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
-                        w="49"
+                        w="60"
                         y="-5"
                 />
                 
@@ -48,8 +47,8 @@
                         name="Team1PrimaryColor"
                         value="{{ Settings.Team1PrimaryColor }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Color_Primary }}"
-                        w="44"
-                        y="-15"
+                        w="60"
+                        y="-20"
                 />
                 
                 <FormEntry
@@ -57,8 +56,8 @@
                         name="Team1SecondaryColor"
                         value="{{ Settings.Team1SecondaryColor }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Color_Secondary }}"
-                        w="44"
-                        y="-25"
+                        w="60"
+                        y="-35"
                 />
 
                 <FormEntry
@@ -66,13 +65,13 @@
                         name="Team1EmblemUrl"
                         value="{{ Settings.Team1EmblemUrl }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
-                        w="49"
-                        y="-35"
+                        w="60"
+                        y="-50"
                 />
             </frame>
 
             <!-- TEAM 2 -->
-            <frame pos="55 0">
+            <frame pos="65 0">
                 <Label
                         text="{{ Locale.PlayerLanguage.UI_Team_Two }}"
                         class="text-primary"
@@ -86,7 +85,7 @@
                         name="Team2Name"
                         value="{{ Settings.Team2Name }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
-                        w="49"
+                        w="60"
                         y="-5"
                 />
 
@@ -95,8 +94,8 @@
                         name="Team2PrimaryColor"
                         value="{{ Settings.Team2PrimaryColor }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Color_Primary }}"
-                        w="44"
-                        y="-15"
+                        w="60"
+                        y="-20"
                 />
 
                 <FormEntry
@@ -104,8 +103,8 @@
                         name="Team2SecondaryColor"
                         value="{{ Settings.Team2SecondaryColor }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Color_Secondary }}"
-                        w="44"
-                        y="-25"
+                        w="60"
+                        y="-35"
                 />
 
                 <FormEntry
@@ -113,12 +112,12 @@
                         name="Team2EmblemUrl"
                         value="{{ Settings.Team2EmblemUrl }}"
                         label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
-                        w="49"
-                        y="-35"
+                        w="60"
+                        y="-50"
                 />
             </frame>
 
-            <frame pos="0 -47">
+            <frame pos="0 -65">
                 <Button id="btnSubmit"
                         text="{{ Locale.PlayerLanguage.UI_Submit }}"
                         action="TeamSettings/SaveTeamSettings"
@@ -127,7 +126,7 @@
                         type="secondary"
                         text="{{ Locale.PlayerLanguage.UI_Cancel }}"
                         action="TeamSettings/HideTeamSettings"
-                        x="86"
+                        x="106"
                 />
             </frame>
         </Window>

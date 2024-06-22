@@ -1,5 +1,7 @@
 ﻿using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Manialinks;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Models;
 using Microsoft.Extensions.Logging;
@@ -7,7 +9,11 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.TeamSettingsModule.Controllers;
 
 [Controller]
-public class TeamSettingsController(ITeamSettingsService teamSettingsService, ILogger<TeamSettingsController> logger)
+public class TeamSettingsController(
+    ITeamSettingsService teamSettingsService,
+    IManialinkManager manialinks,
+    ILogger<TeamSettingsController> logger,
+    Locale locale)
     : ManialinkController
 {
     public async Task SaveTeamSettingsAsync(TeamSettingsModel input)
@@ -15,8 +21,12 @@ public class TeamSettingsController(ITeamSettingsService teamSettingsService, IL
         if (!IsModelValid)
         {
             //TODO: find out why validation errors are not shown in ManiaLink
-            
-            await teamSettingsService.ShowTeamSettingsAsync(Context.Player, input);
+
+            // await teamSettingsService.ShowTeamSettingsAsync(Context.Player, input);
+
+            await ShowAsync(Context.Player, "TeamSettings.EditTeamSettings",
+                new { Settings = input, Locale = locale }
+            );
             return;
         }
 
