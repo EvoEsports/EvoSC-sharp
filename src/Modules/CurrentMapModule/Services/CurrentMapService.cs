@@ -37,9 +37,9 @@ public class CurrentMapService(IManialinkManager manialinkManager, ILogger<Curre
     private async Task ShowManialinkAsync(string mapUId)
     {
         var dbMap = await mapRepository.GetMapByUidAsync(mapUId);
-        var author = "";
+        string author;
         var worldRecord = await worldRecordService.GetRecordAsync();
-        if (dbMap.Author.NickName == dbMap.Author.AccountId)
+        if (dbMap?.Author?.NickName == dbMap?.Author?.AccountId)
         {
             var serverMap = await client.Remote.GetCurrentMapInfoAsync();
             author = serverMap.AuthorNickname.Length > 0 ? serverMap.AuthorNickname : serverMap.Author;
