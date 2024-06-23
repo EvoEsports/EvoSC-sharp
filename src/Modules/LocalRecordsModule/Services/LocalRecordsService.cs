@@ -22,7 +22,7 @@ public class LocalRecordsService(
 {
     private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
     
-    public async Task<IEnumerable<ILocalRecord>> GetLocalsOfCurrentMapFromPosAsync()
+    public async Task<ILocalRecord[]> GetLocalsOfCurrentMapFromPosAsync()
     {
         var currentMap = await mapService.GetCurrentMapAsync();
 
@@ -30,15 +30,15 @@ public class LocalRecordsService(
         {
             throw new InvalidOperationException("Failed to get current map");
         }
-        
-        return await localRecordRepository.GetLocalRecordsOfMapByIdAsync(currentMap.Id);
+
+        var records = (IEnumerable<ILocalRecord>)await localRecordRepository.GetLocalRecordsOfMapByIdAsync(currentMap.Id);
+        return records.ToArray();
     }
 
     public async Task ShowWidgetAsync(IPlayer player)
     {
         var records = await GetLocalsOfCurrentMapFromPosAsync();
-        var topRecords = records.Take(Math.Min(settings.WidgetShowTop, settings.MaxWidgetRows));
-        var playerRecords = GetRecordsForPlayer(records, topRecords, player);
+        var playerRecords = GetRecordsWithPlayer(player, records);
         await manialinkManager.SendManialinkAsync(player, WidgetName,
             new { currentPlayer = player, records = playerRecords });
     }
@@ -46,7 +46,6 @@ public class LocalRecordsService(
     public async Task ShowWidgetToAllAsync()
     {
         var records = await GetLocalsOfCurrentMapFromPosAsync();
-        var topRecords = records.Take(Math.Min(settings.WidgetShowTop, settings.MaxWidgetRows));
         var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
         var transaction = manialinkManager.CreateTransaction();
 
@@ -54,7 +53,7 @@ public class LocalRecordsService(
         {
             foreach (var player in onlinePlayers)
             {
-                var playerRecords = GetRecordsForPlayer(records, topRecords, player);
+                var playerRecords = GetRecordsWithPlayer(player, records);
                 await transaction.SendManialinkAsync(player, WidgetName, new { currentPlayer = player, records = playerRecords });
             }
             
@@ -66,29 +65,48 @@ public class LocalRecordsService(
         }
     }
 
-    private IEnumerable<ILocalRecord> GetRecordsForPlayer(IEnumerable<ILocalRecord> records, IEnumerable<ILocalRecord> topRecords, IPlayer player)
+    private ILocalRecord[] GetRecordsWithPlayer(IPlayer player, ILocalRecord[] records)
     {
-        var recordsAroundPlayer = GetRecordsAroundPlayer(player, records);
-        return topRecords.UnionBy(recordsAroundPlayer, r => r.Position);
-    }
-    
-    private IEnumerable<ILocalRecord> GetRecordsAroundPlayer(IPlayer player, IEnumerable<ILocalRecord> records)
-    {
-        var maxAroundRange = Math.Max(settings.MaxWidgetRows - settings.WidgetShowTop, 0);
-        var nRecords = records.Count();
-        var playerRecord = records.FirstOrDefault(r => r.Record.Player.Id == player.Id);
-        var position = playerRecord?.Position ?? 0;
-
-        if (playerRecord?.Position > 0)
+        if (records.Length == 0)
         {
-            var lower = Math.Max(position - maxAroundRange / 2, 0);
-            var left = Math.Max(maxAroundRange - (nRecords - lower), 0);
-            var intersect = Math.Max(settings.WidgetShowTop - lower, 0);
-            return records
-                .Skip(Math.Min(Math.Max(lower - left, 0), nRecords - 1))
-                .Take(maxAroundRange + intersect);
+            return records;
+        }
+        
+        var playerRecord = records.FirstOrDefault(r => r.Record.Player.Id == player.Id);
+        var topMaxRows = Math.Min(settings.MaxWidgetRows, records.Length);
+
+        // if player doesn't exist, just return the top players
+        if (playerRecord == null)
+        {
+            return records[..topMaxRows];
         }
 
-        return Array.Empty<ILocalRecord>();
+        // if records around player overlaps with top players, just return first MaxRows records
+        if (playerRecord.Position <= settings.MaxWidgetRows)
+        {
+            return records[..topMaxRows];
+        }
+        
+        // return top records + records around the player
+        var topRecords = records[..Math.Min(settings.WidgetShowTop, records.Length)];
+
+        var maxRange = settings.MaxWidgetRows - settings.WidgetShowTop;
+        var half = maxRange / 2;
+        var r = maxRange % 2;
+
+        var lower = playerRecord.Position - half;
+        var upper = lower + maxRange;
+
+        // if the range is outside the upper bound, let's start from the last record instead
+        if (upper > records.Length)
+        {
+            lower -= upper - records.Length;
+            upper = records.Length;
+
+            lower++;
+            upper++;
+        }
+
+        return [..topRecords, ..records[(lower - 1)..(upper - 1)]];
     }
 }
