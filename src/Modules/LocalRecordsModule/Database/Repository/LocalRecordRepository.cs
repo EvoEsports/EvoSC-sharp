@@ -3,6 +3,7 @@ using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
+using EvoSC.Modules.Official.LocalRecordsModule.Config;
 using EvoSC.Modules.Official.LocalRecordsModule.Database.Models;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Database;
@@ -14,7 +15,10 @@ using LinqToDB;
 namespace EvoSC.Modules.Official.LocalRecordsModule.Database.Repository;
 
 [Service]
-public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRecordsRepository recordsRepository)
+public class LocalRecordRepository(
+    IDbConnectionFactory dbConnFactory,
+    IPlayerRecordsRepository recordsRepository,
+    ILocalRecordsSettings settings)
     : DbRepository(dbConnFactory), ILocalRecordRepository
 {
     public async Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId) =>
@@ -23,7 +27,7 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
             .OrderBy(r => r.Position)
             .ToArrayAsync();
 
-    public async Task<DbLocalRecord> AddOrUpdateRecordAsync(IMap map, IPlayerRecord record)
+    public async Task<DbLocalRecord?> AddOrUpdateRecordAsync(IMap map, IPlayerRecord record)
     {
         // check if old record is better or equal, and dont bother updating if so
         var oldRecord = await GetRecordOfPlayerInMapAsync(record.Player, map);
@@ -31,6 +35,16 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
         if (oldRecord != null && oldRecord.Record.CompareTo(record) <= 0)
         {
             return oldRecord;
+        }
+
+        var worstRecord = await NewLoadAll()
+            .Where(r => r.DbMap.Id == map.Id)
+            .OrderByDescending(r => r.Position)
+            .FirstOrDefaultAsync();
+
+        if (worstRecord != null && worstRecord.Record.CompareTo(record) < 0)
+        {
+            return null;
         }
 
         var localRecord = new DbLocalRecord
@@ -41,7 +55,7 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
             DbMap = new DbMap(map),
             DbRecord = new DbPlayerRecord(record)
         };
-        
+
         var transaction = await Database.BeginTransactionAsync();
 
         try
@@ -51,7 +65,7 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
             {
                 await Database.DeleteAsync(oldRecord);
             }
-            
+
             var id = await Database.InsertWithIdentityAsync(localRecord);
             localRecord.Id = Convert.ToInt64(id);
 
@@ -62,27 +76,37 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
             await transaction.RollbackTransactionAsync();
             throw;
         }
-        
-        await RecalculatePositionsOfMapAsync(map);
-        return localRecord;
+
+        var updated = await RecalculatePositionsOfMapAsync(map);
+        var updatedRecord = updated.FirstOrDefault(r => r.Id == localRecord.Id);
+        return updatedRecord;
     }
 
-    public async Task RecalculatePositionsOfMapAsync(IMap map)
+    public async Task<DbLocalRecord[]> RecalculatePositionsOfMapAsync(IMap map)
     {
         var locals = await GetLocalRecordsOfMapByIdAsync(map.Id);
         var sorted = locals.OrderBy(r => r.DbRecord.Score).ToArray();
         var updated = new List<DbLocalRecord>();
-        
+        var remove = new List<DbLocalRecord>();
+
+        var maxRecords = settings.MaxRecordsPerMap;
+
         for (var i = 0; i < sorted.Length; i++)
         {
+            if (i > maxRecords)
+            {
+                remove.Add(sorted[i]);
+                continue;
+            }
+
             var newPos = i + 1;
-            
+
             // don't update records that dont need it
             if (sorted[i].Position == newPos)
             {
                 continue;
             }
-            
+
             sorted[i].Position = newPos;
             updated.Add(sorted[i]);
         }
@@ -95,13 +119,20 @@ public class LocalRecordRepository(IDbConnectionFactory dbConnFactory, IPlayerRe
             {
                 await Database.UpdateAsync(record);
             }
-            
+
+            foreach (var toRemove in remove)
+            {
+                await Database.DeleteAsync(toRemove);
+            }
+
             await transaction.CommitTransactionAsync();
         }
         catch (Exception ex)
         {
             await transaction.RollbackTransactionAsync();
         }
+
+        return updated.ToArray();
     }
 
     public async Task<IEnumerable<DbLocalRecord>> GetRecordsByPlayerAsync(IPlayer player) =>

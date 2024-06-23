@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Services;
+using EvoSC.Modules.Official.PlayerRecords.Events;
 using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Controllers;
@@ -22,4 +23,7 @@ public class WidgetUpdateController(ILocalRecordsService localRecords, IPlayerMa
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public Task OnBeginMapAsync(object sender, MapGbxEventArgs args) => localRecords.ShowWidgetToAllAsync();
+
+    [Subscribe(PlayerRecordsEvent.PbRecord)]
+    public Task OnPbAsync(object sender, PbRecordUpdateEventArgs args) => localRecords.UpdatePbAsync(args.Record);
 }

@@ -1,12 +1,16 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Util;
+using EvoSC.Common.Util.TextFormatting;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.LocalRecordsModule.Config;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Database;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Services;
-using GbxRemoteNet;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Services;
@@ -18,7 +22,9 @@ public class LocalRecordsService(
     IPlayerManagerService playerManagerService,
     IManialinkManager manialinkManager,
     ILogger<LocalRecordsService> logger,
-    ILocalRecordsSettings settings) : ILocalRecordsService
+    ILocalRecordsSettings settings,
+    IServerClient server,
+    IThemeManager themeManager) : ILocalRecordsService
 {
     private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
     
@@ -62,6 +68,59 @@ public class LocalRecordsService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to send local records widget");
+        }
+    }
+
+    public async Task UpdatePbAsync(IPlayerRecord record)
+    {
+        var oldRecord = await localRecordRepository.GetRecordOfPlayerInMapAsync(record.Player, record.Map);
+        var localRecord = await localRecordRepository.AddOrUpdateRecordAsync(record.Map, record);
+
+        if (localRecord == null)
+        {
+            // player did not get a local record good enough to be registered
+            return;
+        }
+
+        if (oldRecord == null)
+        {
+            await server.InfoMessageAsync(new TextFormatter()
+                .AddText(record.Player.NickName)
+                .AddText(" gained their ")
+                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" local record ")
+                .AddText(RaceTime.FromMilliseconds(localRecord.Record.Score).ToString(), s => s.WithColor(themeManager.Theme.Info))
+                .ToString());
+            await ShowWidgetToAllAsync();
+            return;
+        }
+
+        if (record.Score < oldRecord.Record.Score)
+        {
+            await server.InfoMessageAsync(new TextFormatter()
+                .AddText(record.Player.NickName)
+                .AddText(" secured their ")
+                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" local record ")
+                .AddText(RaceTime.FromMilliseconds(localRecord.Record.Score).ToString(), s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" (")
+                .AddText($"{oldRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" - ")
+                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" )")
+                .ToString());
+            await ShowWidgetToAllAsync();
+        }
+        else if (record.Score == oldRecord.Record.Score)
+        {
+            await server.InfoMessageAsync(new TextFormatter()
+                .AddText(record.Player.NickName)
+                .AddText(" equaled their ")
+                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" local record ")
+                .AddText(RaceTime.FromMilliseconds(localRecord.Record.Score).ToString(),
+                    s => s.WithColor(themeManager.Theme.Info))
+                .ToString());
         }
     }
 

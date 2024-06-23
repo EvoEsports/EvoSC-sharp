@@ -21,9 +21,8 @@ public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<
         Table<DbPlayerRecord>()
             .LoadWith(r => r.DbPlayer)
             .LoadWith(r => r.DbMap)
+            .OrderBy(r => r.Score)
             .FirstOrDefaultAsync(r => r.PlayerId == player.Id && r.MapId == map.Id);
-
-    public Task UpdateRecordAsync(DbPlayerRecord record) => Database.UpdateAsync(record);
 
     public async Task<DbPlayerRecord> InsertRecordAsync(IPlayer player, IMap map, int score, IEnumerable<int> checkpoints)
     {
@@ -42,7 +41,8 @@ public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<
 
         try
         {
-            await Database.InsertAsync(record);
+            var id = await Database.InsertWithIdentityAsync(record);
+            record.Id = Convert.ToInt64(id);
         }
         catch (Exception ex)
         {

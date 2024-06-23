@@ -15,13 +15,6 @@ public interface IPlayerRecordsRepository
     public Task<DbPlayerRecord?> GetRecordAsync(IPlayer player, IMap map);
     
     /// <summary>
-    /// Update a record in the database.
-    /// </summary>
-    /// <param name="record">The record to update with new information.</param>
-    /// <returns></returns>
-    public Task UpdateRecordAsync(DbPlayerRecord record);
-    
-    /// <summary>
     /// Add a new record to the database.
     /// </summary>
     /// <param name="record">The record to add.</param>

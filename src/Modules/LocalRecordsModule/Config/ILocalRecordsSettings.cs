@@ -13,5 +13,8 @@ public interface ILocalRecordsSettings
     
     [Option(DefaultValue = 3), Description("Always show top N players in the widget.")]
     public int WidgetShowTop { get; }
+    
+    [Option(DefaultValue = 100), Description("Maximum number of local records to keep track of per map.")]
+    public int MaxRecordsPerMap { get; }
 }
 

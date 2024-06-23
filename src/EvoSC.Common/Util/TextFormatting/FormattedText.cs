@@ -9,7 +9,7 @@ namespace EvoSC.Common.Util.TextFormatting;
 public class FormattedText
 {
     public TextStyling? Style { get; set; }
-    public bool IsIsolated { get; set; }
+    public bool IsIsolated { get; set; } = true;
     public StringBuilder Text { get; set; } = new StringBuilder();
 
     public FormattedText(){}
@@ -127,9 +127,9 @@ public class FormattedText
     /// interfere with later text.
     /// </summary>
     /// <returns></returns>
-    public FormattedText AsIsolated()
+    public FormattedText AsNotIsolated()
     {
-        IsIsolated = true;
+        IsIsolated = false;
         return this;
     }
 
