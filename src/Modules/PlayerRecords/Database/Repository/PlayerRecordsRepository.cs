@@ -57,4 +57,12 @@ public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<
         .DeleteAsync(r => r.MapId == map.Id && r.PlayerId == player.Id);
 
     public Task DeleteRecordAsync(IPlayerRecord record) => Database.DeleteAsync(record);
+
+    public Task<DbPlayerRecord[]> GetRecordsOfMapAsync(long mapId) =>
+        Table<DbPlayerRecord>()
+            .LoadWith(r => r.DbMap)
+            .LoadWith(r => r.DbPlayer)
+            .Where(r => r.MapId == mapId)
+            .OrderBy(r => r.Score)
+            .ToArrayAsync();
 }

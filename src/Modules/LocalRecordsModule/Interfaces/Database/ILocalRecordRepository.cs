@@ -8,9 +8,11 @@ public interface ILocalRecordRepository
 {
     public Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId);
     public Task<DbLocalRecord?> AddOrUpdateRecordAsync(IMap map, IPlayerRecord record);
+    public Task AddRecordsAsync(IMap map, IEnumerable<IPlayerRecord> records);
     public Task<DbLocalRecord[]> RecalculatePositionsOfMapAsync(IMap map);
     public Task<IEnumerable<DbLocalRecord>> GetRecordsByPlayerAsync(IPlayer player);
     public Task<DbLocalRecord?> GetRecordOfPlayerInMapAsync(IPlayer player, IMap map);
     public Task DeleteRecordAsync(IPlayer player, IMap map);
     public Task DeleteRecordAsync(ILocalRecord localRecord);
+    public Task DeleteRecordsAsync(IMap map);
 }

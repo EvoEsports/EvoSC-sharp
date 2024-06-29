@@ -9,4 +9,6 @@ public interface ILocalRecordsService
     public Task ShowWidgetAsync(IPlayer player);
     public Task ShowWidgetToAllAsync();
     public Task UpdatePbAsync(IPlayerRecord record);
+
+    public Task ResetLocalRecordsAsync();
 }

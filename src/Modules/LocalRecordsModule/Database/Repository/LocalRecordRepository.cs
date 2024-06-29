@@ -88,6 +88,34 @@ public class LocalRecordRepository(
         return updatedRecord;
     }
 
+    public async Task AddRecordsAsync(IMap map, IEnumerable<IPlayerRecord> records)
+    {
+        var transaction = await Database.BeginTransactionAsync();
+
+        try
+        {
+            foreach (var record in records)
+            {
+                await Database.InsertWithIdentityAsync(new DbLocalRecord
+                {
+                    MapId = map.Id,
+                    RecordId = record.Id,
+                    Position = 0,
+                    DbMap = new DbMap(map),
+                    DbRecord = new DbPlayerRecord(record)
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackTransactionAsync();
+            throw;
+        }
+
+        await transaction.CommitTransactionAsync();
+        await RecalculatePositionsOfMapAsync(map);
+    }
+
     public async Task<DbLocalRecord[]> RecalculatePositionsOfMapAsync(IMap map)
     {
         var locals = await GetLocalRecordsOfMapByIdAsync(map.Id);
@@ -181,6 +209,10 @@ public class LocalRecordRepository(
             throw;
         }
     }
+
+    public Task DeleteRecordsAsync(IMap map) => Table<DbLocalRecord>()
+        .Where(r => r.MapId == map.Id)
+        .DeleteAsync();
 
     private ILoadWithQueryable<DbLocalRecord, IPlayer> NewLoadAll() => Table<DbLocalRecord>()
         .LoadWith(r => r.DbMap)

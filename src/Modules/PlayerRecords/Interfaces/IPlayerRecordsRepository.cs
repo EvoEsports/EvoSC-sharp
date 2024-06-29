@@ -23,4 +23,6 @@ public interface IPlayerRecordsRepository
 
     public Task DeleteRecordAsync(IPlayer player, IMap map);
     public Task DeleteRecordAsync(IPlayerRecord record);
+
+    public Task<DbPlayerRecord[]> GetRecordsOfMapAsync(long mapId);
 }

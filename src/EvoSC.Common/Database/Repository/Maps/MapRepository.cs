@@ -19,6 +19,11 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         .LoadWith(t => t.DbDetails)
         .SingleOrDefaultAsync(m => m.Id == id);
 
+    public async Task<IMap[]> GetMapsAsync() => await Table<DbMap>()
+        .LoadWith(m => m.DbAuthor)
+        .LoadWith(m => m.DbDetails)
+        .ToArrayAsync();
+
     public async Task<IMap?> GetMapByUidAsync(string uid) => await Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
         .LoadWith(t => t.DbDetails)

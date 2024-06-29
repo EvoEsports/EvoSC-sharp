@@ -10,6 +10,7 @@ using EvoSC.Modules.Official.LocalRecordsModule.Config;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Database;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Services;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +25,8 @@ public class LocalRecordsService(
     ILogger<LocalRecordsService> logger,
     ILocalRecordsSettings settings,
     IServerClient server,
-    IThemeManager themeManager) : ILocalRecordsService
+    IThemeManager themeManager,
+    IPlayerRecordsRepository playerRecordsRepository) : ILocalRecordsService
 {
     private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
     
@@ -127,6 +129,19 @@ public class LocalRecordsService(
                 .AddText(" local record ")
                 .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
                 .ToString());
+        }
+    }
+
+    public async Task ResetLocalRecordsAsync()
+    {
+        var maps = await mapService.GetCurrentMapListAsync();
+
+        foreach (var map in maps)
+        {
+            var mapPbs = await playerRecordsRepository.GetRecordsOfMapAsync(map.Id);
+
+            await localRecordRepository.DeleteRecordsAsync(map);
+            await localRecordRepository.AddRecordsAsync(map, mapPbs);
         }
     }
 
