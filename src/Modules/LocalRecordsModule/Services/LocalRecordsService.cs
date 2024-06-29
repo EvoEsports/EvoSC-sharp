@@ -81,15 +81,22 @@ public class LocalRecordsService(
             // player did not get a local record good enough to be registered
             return;
         }
+        
+        var localRaceTime = RaceTime.FromMilliseconds(localRecord.Record.Score).ToString();
+        
+        if (localRaceTime == null)
+        {
+            throw new InvalidOperationException($"Failed to convert {localRecord.Record.Score} to race time");
+        }
 
         if (oldRecord == null)
         {
             await server.InfoMessageAsync(new TextFormatter()
                 .AddText(record.Player.NickName)
-                .AddText(" gained their ")
+                .AddText(" gained the ")
                 .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
                 .AddText(" local record ")
-                .AddText(RaceTime.FromMilliseconds(localRecord.Record.Score).ToString(), s => s.WithColor(themeManager.Theme.Info))
+                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
                 .ToString());
             await ShowWidgetToAllAsync();
             return;
@@ -99,10 +106,10 @@ public class LocalRecordsService(
         {
             await server.InfoMessageAsync(new TextFormatter()
                 .AddText(record.Player.NickName)
-                .AddText(" secured their ")
+                .AddText(" improved the ")
                 .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
                 .AddText(" local record ")
-                .AddText(RaceTime.FromMilliseconds(localRecord.Record.Score).ToString(), s => s.WithColor(themeManager.Theme.Info))
+                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
                 .AddText(" (")
                 .AddText($"{oldRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
                 .AddText(" - ")
@@ -118,8 +125,7 @@ public class LocalRecordsService(
                 .AddText(" equaled their ")
                 .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
                 .AddText(" local record ")
-                .AddText(RaceTime.FromMilliseconds(localRecord.Record.Score).ToString(),
-                    s => s.WithColor(themeManager.Theme.Info))
+                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
                 .ToString());
         }
     }

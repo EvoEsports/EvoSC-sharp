@@ -11,6 +11,7 @@ using EvoSC.Modules.Official.PlayerRecords.Database.Models;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Database.Repository;
 
@@ -18,7 +19,8 @@ namespace EvoSC.Modules.Official.LocalRecordsModule.Database.Repository;
 public class LocalRecordRepository(
     IDbConnectionFactory dbConnFactory,
     IPlayerRecordsRepository recordsRepository,
-    ILocalRecordsSettings settings)
+    ILocalRecordsSettings settings,
+    ILogger<LocalRecordRepository> logger)
     : DbRepository(dbConnFactory), ILocalRecordRepository
 {
     public async Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId) =>
@@ -34,6 +36,7 @@ public class LocalRecordRepository(
 
         if (oldRecord != null && oldRecord.Record.CompareTo(record) <= 0)
         {
+            logger.LogDebug("Player has old record that is better or equal");
             return oldRecord;
         }
 
@@ -42,8 +45,9 @@ public class LocalRecordRepository(
             .OrderByDescending(r => r.Position)
             .FirstOrDefaultAsync();
 
-        if (worstRecord != null && worstRecord.Record.CompareTo(record) < 0)
+        if (worstRecord != null && worstRecord.Position >= settings.MaxRecordsPerMap && worstRecord.Record.CompareTo(record) < 0)
         {
+            logger.LogDebug("player got a new record that is worse than the worst local record of the map");
             return null;
         }
 
@@ -79,6 +83,8 @@ public class LocalRecordRepository(
 
         var updated = await RecalculatePositionsOfMapAsync(map);
         var updatedRecord = updated.FirstOrDefault(r => r.Id == localRecord.Id);
+        
+        logger.LogDebug("player got a new local record");
         return updatedRecord;
     }
 

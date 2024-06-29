@@ -87,7 +87,7 @@ public class DbPlayerRecord : IPlayerRecord
         // Compare time record type, lower is better
         int CompareTime() => Score switch
         {
-            _ when Score < other.Score => 1,
+            _ when Score < other.Score => -1,
             _ when Score > other.Score => 1,
             _ => 0
         };
@@ -95,7 +95,7 @@ public class DbPlayerRecord : IPlayerRecord
         // compare points record type, higher is better
         int ComparePoints() => Score switch
         {
-            _ when Score > other.Score => 1,
+            _ when Score > other.Score => -1,
             _ when Score < other.Score => 1,
             _ => 0
         };
