@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Manialinks.Interfaces.Models;
+﻿using EvoSC.Manialinks.Interfaces.Models;
 
 namespace EvoSC.Manialinks.Interfaces;
 
@@ -102,20 +101,66 @@ public interface IManialinkManager : IManialinkOperations
     ///
     /// This method allows for dynamic data updates by a callback method.
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="name">Name of the template to show.</param>
     /// <param name="setupData">Method that returns data to be sent.</param>
     /// <returns></returns>
     public Task SendPersistentManialinkAsync(string name, Func<Task<IDictionary<string, object?>>> setupData);
 
+    /// <summary>
+    /// Hides and removes a persistent mainalink.
+    /// </summary>
+    /// <param name="name">Name of the template to hide.</param>
+    /// <returns></returns>
     public Task RemovePersistentManialinkAsync(string name);
     
+    /// <summary>
+    /// Add a global variable that is accessible from all templates.
+    /// </summary>
+    /// <param name="name">Name of the variable.</param>
+    /// <param name="value">Value of the variable.</param>
+    /// <typeparam name="T">Variable type.</typeparam>
     public void AddGlobalVariable<T>(string name, T value);
+    
+    /// <summary>
+    /// Remove a global variable.
+    /// </summary>
+    /// <param name="name">Name of the variable to remove.</param>
     public void RemoveGlobalVariable(string name);
+    
+    /// <summary>
+    /// Remove all global variables.
+    /// </summary>
     public void ClearGlobalVariables();
 
+    /// <summary>
+    /// Get the rendered contents of a template.
+    /// </summary>
+    /// <param name="name">Name of the template.</param>
+    /// <param name="data">Data to send to the template.</param>
+    /// <returns></returns>
     public Task<string> PrepareAndRenderAsync(string name, IDictionary<string, object?> data);
+    
+    /// <summary>
+    /// Get the rendered contents of a template.
+    /// </summary>
+    /// <param name="name">Name of the template.</param>
+    /// <param name="data">Data to send to the template.</param>
+    /// <returns></returns>
     public Task<string> PrepareAndRenderAsync(string name, dynamic data);
+    
+    /// <summary>
+    /// Get the effective name of a template's name. This may change
+    /// depending on the theme.
+    /// </summary>
+    /// <param name="name">Original name of the template.</param>
+    /// <returns></returns>
     public string GetEffectiveName(string name);
 
+    /// <summary>
+    /// Create a new transaction for manialink operations.
+    /// Nothing is done until the transaction is committed,
+    /// and all operations are sent at once for speed.
+    /// </summary>
+    /// <returns></returns>
     public IManialinkTransaction CreateTransaction();
 }

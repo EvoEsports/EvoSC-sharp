@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Config.Net;
-using EvoSC.Common.Config.Models;
 using EvoSC.Modules.Attributes;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Config;

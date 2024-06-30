@@ -172,7 +172,6 @@ public class LocalRecordsService(
 
         var maxRange = settings.MaxWidgetRows - settings.WidgetShowTop;
         var half = maxRange / 2;
-        var r = maxRange % 2;
 
         var lower = playerRecord.Position - half;
         var upper = lower + maxRange;

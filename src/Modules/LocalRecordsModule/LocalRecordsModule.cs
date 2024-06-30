@@ -1,4 +1,3 @@
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;

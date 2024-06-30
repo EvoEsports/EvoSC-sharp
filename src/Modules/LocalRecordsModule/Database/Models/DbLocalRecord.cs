@@ -1,5 +1,4 @@
 using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Database.Models;

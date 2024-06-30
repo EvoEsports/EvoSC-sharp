@@ -108,7 +108,6 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
             .WithColor(time.Milliseconds + time.Seconds > 0 ? _theme.UI_TextPrimary : _theme.UI_TextMuted)
         );
 
-        Console.WriteLine(styledTime.ToString());
         return styledTime.ToString();
     }
 }

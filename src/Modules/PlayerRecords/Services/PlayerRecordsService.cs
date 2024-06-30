@@ -63,11 +63,6 @@ public class PlayerRecordsService(IPlayerRecordsRepository recordsRepo, IServerC
         {
             return (record, score > record.Score ? RecordUpdateStatus.NotUpdated : RecordUpdateStatus.Equal);
         }
-
-        /* record.Score = score;
-        record.Checkpoints = string.Join(',', checkpoints);
-        record.UpdatedAt = DateTime.UtcNow;
-        await recordsRepo.UpdateRecordAsync(record); */
         
         record = await recordsRepo.InsertRecordAsync(player, map, score, checkpoints);
 
