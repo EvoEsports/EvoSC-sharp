@@ -198,6 +198,8 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
         }
     }
 
+    public Task<IMap[]> GetCurrentMapListAsync() => mapRepository.GetMapsAsync();
+
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
     {
         return map.ExternalVersion == mapMetadata.ExternalVersion;

@@ -36,6 +36,17 @@ public class TextStyling
     /// </summary>
     /// <param name="color">The color to use.</param>
     /// <returns></returns>
+    public TextStyling WithColor(string color)
+    {
+        _color = new TextColor(color);
+        return this;
+    }
+    
+    /// <summary>
+    /// Set the color of this style.
+    /// </summary>
+    /// <param name="color">The color to use.</param>
+    /// <returns></returns>
     public TextStyling WithColor(Color color)
     {
         _color = new TextColor(color);

@@ -14,6 +14,12 @@ public interface IMapRepository
     /// <param name="id">The maps database ID.</param>
     /// <returns>a map if it exists in the database.</returns>
     public Task<IMap?> GetMapByIdAsync(long id);
+
+    /// <summary>
+    /// Get all maps in the database.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IMap[]> GetMapsAsync();
     
     /// <summary>
     /// Gets a map from the database based on the provided UID.

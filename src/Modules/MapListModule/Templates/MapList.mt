@@ -25,6 +25,7 @@ Shows a window with a list of maps available in the current match settings.
                  scrollHeight="{{ maps.Count()*8 }}"
                  width="96"
                  height="60"
+                 id="maplist-container"
       >
         <MapRow 
                 foreach="IMapListMap map in maps" 

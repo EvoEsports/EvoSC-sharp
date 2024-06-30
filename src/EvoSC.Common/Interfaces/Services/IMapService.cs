@@ -86,4 +86,10 @@ public interface IMapService
     /// <param name="map">Map to get details of.</param>
     /// <returns></returns>
     public Task<IMapDetails> FetchMapDetailsAsync(IMap map);
+
+    /// <summary>
+    /// Get all maps in the database.
+    /// </summary>
+    /// <returns></returns>
+    public Task<IMap[]> GetCurrentMapListAsync();
 }

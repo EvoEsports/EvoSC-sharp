@@ -49,9 +49,9 @@ public static class FormattingUtils
     {
         var formattedMessage = new TextFormatter()
             .AddText("[")
-            .AddText(text => text.AsIsolated().AddText(nickname))
+            .AddText(text => text.AddText(nickname))
             .AddText("] ")
-            .AddText(text => text.AsIsolated().AddText(message));
+            .AddText(text => text.AddText(message));
 
         return formattedMessage;
     }

@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Manialinks.Util;
 
@@ -82,4 +84,30 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
     }
 
     public bool HasItem(string items, string item) => HasItem(items, item, ",");
+
+    public string StyledTime(IRaceTime time)
+    {
+        var styledTime = new TextFormatter();
+
+        if (time.Hours > 0)
+        {
+            styledTime.AddText(time.Hours + ":", s => s.WithColor(_theme.UI_TextPrimary));
+        }
+
+        styledTime.AddText(time.Minutes.ToString().PadLeft(2, '0'), s => s
+            .WithColor(time.Minutes + time.Hours > 0 ? _theme.UI_TextPrimary : _theme.UI_TextMuted)
+        );
+
+        styledTime.AddText(":", s => s.WithColor(_theme.UI_TextPrimary));
+        styledTime.AddText(time.Seconds.ToString().PadLeft(2, '0'), s => s
+            .WithColor(time.Seconds + time.Minutes > 0 ? _theme.UI_TextPrimary : _theme.UI_TextMuted)
+        );
+        
+        styledTime.AddText(".", s => s.WithColor(_theme.UI_TextPrimary));
+        styledTime.AddText(time.Milliseconds.ToString().PadLeft(3, '0'), s => s
+            .WithColor(time.Milliseconds + time.Seconds > 0 ? _theme.UI_TextPrimary : _theme.UI_TextMuted)
+        );
+
+        return styledTime.ToString();
+    }
 }

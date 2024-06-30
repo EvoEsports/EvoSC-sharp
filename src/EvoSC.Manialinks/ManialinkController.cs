@@ -30,7 +30,7 @@ public class ManialinkController : EvoScController<IManialinkInteractionContext>
 
     public Task ShowAsync(IEnumerable<IOnlinePlayer> players, string maniaLink, object data) =>
         Context.ManialinkManager.SendManialinkAsync(players, maniaLink, PrepareManialinkData(data));
-
+    
     public Task ShowPersistentAsync(string name) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(new object()));
     
     public Task ShowPersistentAsync(string name, object data) => Context.ManialinkManager.SendPersistentManialinkAsync(name, PrepareManialinkData(data));
