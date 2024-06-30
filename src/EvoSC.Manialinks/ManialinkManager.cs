@@ -485,5 +485,5 @@ public class ManialinkManager : IManialinkManager
             ? effectiveName
             : name;
 
-    public ManialinkTransaction CreateTransaction() => new(this, _server);
+    public IManialinkTransaction CreateTransaction() => new ManialinkTransaction(this, _server);
 }

@@ -8,7 +8,7 @@ using GbxRemoteNet.Interfaces;
 
 namespace EvoSC.Manialinks;
 
-public class ManialinkTransaction(IManialinkManager manialinkManager, IServerClient server) : IManialinkOperations, IManialinkTransaction
+public class ManialinkTransaction(IManialinkManager manialinkManager, IServerClient server) : IManialinkTransaction
 {
     private readonly MultiCall _serverCalls = new MultiCall();
     private readonly HashSet<string> _persistentRemovals = [];

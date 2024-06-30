@@ -117,5 +117,5 @@ public interface IManialinkManager : IManialinkOperations
     public Task<string> PrepareAndRenderAsync(string name, dynamic data);
     public string GetEffectiveName(string name);
 
-    public ManialinkTransaction CreateTransaction();
+    public IManialinkTransaction CreateTransaction();
 }

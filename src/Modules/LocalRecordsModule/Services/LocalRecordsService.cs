@@ -30,7 +30,7 @@ public class LocalRecordsService(
 {
     private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
     
-    public async Task<ILocalRecord[]> GetLocalsOfCurrentMapFromPosAsync()
+    public async Task<ILocalRecord[]> GetLocalsOfCurrentMapAsync()
     {
         var currentMap = await mapService.GetCurrentMapAsync();
 
@@ -45,7 +45,7 @@ public class LocalRecordsService(
 
     public async Task ShowWidgetAsync(IPlayer player)
     {
-        var records = await GetLocalsOfCurrentMapFromPosAsync();
+        var records = await GetLocalsOfCurrentMapAsync();
         var playerRecords = GetRecordsWithPlayer(player, records);
         await manialinkManager.SendManialinkAsync(player, WidgetName,
             new { currentPlayer = player, records = playerRecords });
@@ -53,7 +53,7 @@ public class LocalRecordsService(
 
     public async Task ShowWidgetToAllAsync()
     {
-        var records = await GetLocalsOfCurrentMapFromPosAsync();
+        var records = await GetLocalsOfCurrentMapAsync();
         var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
         var transaction = manialinkManager.CreateTransaction();
 
