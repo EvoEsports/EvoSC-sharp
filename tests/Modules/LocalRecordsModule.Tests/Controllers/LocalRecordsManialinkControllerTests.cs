@@ -43,4 +43,14 @@ public class LocalRecordsManialinkControllerTests : ManialinkControllerTestBase<
         AuditEventBuilder.Verify(m => m.Success(), Times.Never);
         AuditEventBuilder.Verify(m => m.Error(), Times.Never);
     }
+
+    [Fact]
+    public async Task Reset_Records_Error_Is_Reported()
+    {
+        _localRecordsService.Setup(m => m.ResetLocalRecordsAsync()).Throws<Exception>();
+        
+        await Assert.ThrowsAsync<Exception>(() => Controller.ConfirmResetAsync(true));
+        _server.Server.Verify(m => m.ErrorMessageAsync(It.IsAny<string>()));
+        AuditEventBuilder.Verify(m => m.Error());
+    }
 }
