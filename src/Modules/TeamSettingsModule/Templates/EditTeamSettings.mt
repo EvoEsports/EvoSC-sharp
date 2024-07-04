@@ -17,9 +17,9 @@
         <UIStyle/>
 
         <Window
-                width="130"
+                width="132"
                 height="84"
-                x="-65"
+                x="-67"
                 y="44"
                 title="{{ Locale.PlayerLanguage.UI_EditTeamInfo }}"
                 icon=""
@@ -35,22 +35,14 @@
                 />
 
                 <FormEntry
-                        validationResults='{{ Validation?.GetResult("Team1Name") }}'
-                        name="Team1Name"
-                        value="{{ Settings.Team1Name }}"
-                        label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
+                        validationResults='{{ Validation?.GetResult("Team1EmblemUrl") }}'
+                        name="Team1EmblemUrl"
+                        value="{{ Settings.Team1EmblemUrl }}"
+                        label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
                         w="60"
-                        y="-5"
+                        y="-50"
                 />
-                
-                <ColorInput y="-20"
-                            width="60"
-                            name="Team1PrimaryColor"
-                            label="{{ Locale.PlayerLanguage.UI_Team_Color_Primary }}"
-                            value="{{ Settings.Team1PrimaryColor }}"
-                            validationResults='{{ Validation?.GetResult("Team1PrimaryColor") }}'
-                />
-                
+
                 <ColorInput y="-35"
                             width="60"
                             name="Team1SecondaryColor"
@@ -59,13 +51,21 @@
                             validationResults='{{ Validation?.GetResult("Team1SecondaryColor") }}'
                 />
 
+                <ColorInput y="-20"
+                            width="60"
+                            name="Team1PrimaryColor"
+                            label="{{ Locale.PlayerLanguage.UI_Team_Color_Primary }}"
+                            value="{{ Settings.Team1PrimaryColor }}"
+                            validationResults='{{ Validation?.GetResult("Team1PrimaryColor") }}'
+                />
+
                 <FormEntry
-                        validationResults='{{ Validation?.GetResult("Team1EmblemUrl") }}'
-                        name="Team1EmblemUrl"
-                        value="{{ Settings.Team1EmblemUrl }}"
-                        label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
+                        validationResults='{{ Validation?.GetResult("Team1Name") }}'
+                        name="Team1Name"
+                        value="{{ Settings.Team1Name }}"
+                        label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
                         w="60"
-                        y="-50"
+                        y="-5"
                 />
             </frame>
 
@@ -80,20 +80,12 @@
                 />
 
                 <FormEntry
-                        validationResults='{{ Validation?.GetResult("Team2Name") }}'
-                        name="Team2Name"
-                        value="{{ Settings.Team2Name }}"
-                        label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
+                        validationResults='{{ Validation?.GetResult("Team2EmblemUrl") }}'
+                        name="Team2EmblemUrl"
+                        value="{{ Settings.Team2EmblemUrl }}"
+                        label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
                         w="60"
-                        y="-5"
-                />
-
-                <ColorInput y="-20"
-                            width="60"
-                            name="Team2PrimaryColor"
-                            label="{{ Locale.PlayerLanguage.UI_Team_Color_Primary }}"
-                            value="{{ Settings.Team2PrimaryColor }}"
-                            validationResults='{{ Validation?.GetResult("Team2PrimaryColor") }}'
+                        y="-50"
                 />
 
                 <ColorInput y="-35"
@@ -104,13 +96,21 @@
                             validationResults='{{ Validation?.GetResult("Team2SecondaryColor") }}'
                 />
 
+                <ColorInput y="-20"
+                            width="60"
+                            name="Team2PrimaryColor"
+                            label="{{ Locale.PlayerLanguage.UI_Team_Color_Primary }}"
+                            value="{{ Settings.Team2PrimaryColor }}"
+                            validationResults='{{ Validation?.GetResult("Team2PrimaryColor") }}'
+                />
+
                 <FormEntry
-                        validationResults='{{ Validation?.GetResult("Team2EmblemUrl") }}'
-                        name="Team2EmblemUrl"
-                        value="{{ Settings.Team2EmblemUrl }}"
-                        label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
+                        validationResults='{{ Validation?.GetResult("Team2Name") }}'
+                        name="Team2Name"
+                        value="{{ Settings.Team2Name }}"
+                        label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
                         w="60"
-                        y="-50"
+                        y="-5"
                 />
             </frame>
 
