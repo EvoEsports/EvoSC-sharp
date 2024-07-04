@@ -34,14 +34,12 @@
             />
 
             <!-- Input FG -->
-            <!-- TODO: replace with sprite and modulate color -->
-            <Rectangle id="rectangleColorPreview"
-                    y="-4.0"
-                    x="1.0"
-                    width="{{ height - 2.0 }}"
-                    height="{{ height - 2.0 }}"
-                    bgColor='{{ value ?? "fff" }}'
-                    cornerRadius="0.5"
+            <quad id="rectangleColorPreview"
+                  size="{{ height - 2.0 }} {{ height - 2.0 }}"
+                  pos="4 -4"
+                  rot="90"
+                  modulatecolor='{{ value ?? "fff" }}'
+                  image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
             />
             <TextInput
                     x="{{ height - 1.0 }}"
@@ -49,6 +47,7 @@
                     id="{{ name }}"
                     value='{{ value ?? "" }}'
                     width="{{ width - height }}"
+                    classes="colorInput"
                     prefix="#"
             />
             <label id="labelPipette"
@@ -77,8 +76,8 @@
             />
 
             <!-- Color Picker -->
-            <frame id="frameColorPicker" 
-                   pos="{{ width - 32 }} {{ -height - 4.0 }}" 
+            <frame id="frameColorPicker"
+                   pos="{{ width - 32 }} {{ -height - 4.0 }}"
                    size="32 22"
                    z-index="5"
                    hidden="1"
@@ -101,6 +100,6 @@
             </frame>
         </frame>
     </template>
-    
-    <script resource="TeamSettings.Scripts.ColorInput" once="true" />
+
+    <script resource="TeamSettings.Scripts.ColorInput" once="true"/>
 </component>

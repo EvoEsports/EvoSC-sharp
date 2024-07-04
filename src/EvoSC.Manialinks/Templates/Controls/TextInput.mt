@@ -6,6 +6,9 @@ Basic text input control.
 
   <!-- The name of the control. -->
   <property type="string" name="id" />
+
+  <!-- Additional classes for the entry control. -->
+  <property type="string" name="classes" default="" />
   
   <!-- The X position of the control. -->
   <property type="double" name="x" default="0.0"/>
@@ -61,7 +64,7 @@ Basic text input control.
                 selecttext="{{ autoSelect }}"
                 maxlen="{{ maxLength }}"
                 z-index="0"
-                class="txtinput-text"
+                class="txtinput-text {{ classes }}"
                 size="{{ width-2 }} {{ height }}"
                 pos="{{ 1 }} {{ -height/4 }}"
         />
