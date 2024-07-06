@@ -40,11 +40,14 @@ if (Event.Control.ControlId == "picker") {
 }
 ***
 
-*** EntrySubmit ***
+*** OnEntrySubmit ***
 ***
 if (Event.Control.HasClass("colorInput")) {
     declare colorEntry <=> (Event.Control as CMlEntry);
-    log("color:" ^ colorEntry.Value);
+    declare colorInputFrame <=> (colorEntry.Parent.Parent as CMlFrame);
+    declare previewQuad <=> (colorInputFrame.GetFirstChild("rectangleColorPreview") as CMlQuad);
+    
+    previewQuad.ModulateColor = ColorLib::HexToRgb(colorEntry.Value);
 }
 ***
 

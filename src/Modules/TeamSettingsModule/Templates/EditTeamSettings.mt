@@ -41,6 +41,7 @@
                         label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
                         w="60"
                         y="-50"
+                        autoSelect="{{ true }}"
                 />
 
                 <ColorInput y="-35"
@@ -66,6 +67,7 @@
                         label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
                         w="60"
                         y="-5"
+                        autoSelect="{{ true }}"
                 />
             </frame>
 
@@ -86,6 +88,7 @@
                         label="{{ Locale.PlayerLanguage.UI_Team_Emblem_URL }}"
                         w="60"
                         y="-50"
+                        autoSelect="{{ true }}"
                 />
 
                 <ColorInput y="-35"
@@ -111,6 +114,7 @@
                         label="{{ Locale.PlayerLanguage.UI_Team_Name }}"
                         w="60"
                         y="-5"
+                        autoSelect="{{ true }}"
                 />
             </frame>
 

@@ -50,6 +50,7 @@
                     width="{{ width - height }}"
                     classes="colorInput"
                     prefix="#"
+                    autoSelect="{{ true }}"
             />
             <label id="labelPipette"
                    pos="{{ width - 3.0 }} {{ height / -2.0 - 3.0 }}"
