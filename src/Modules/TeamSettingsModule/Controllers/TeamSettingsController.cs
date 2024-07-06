@@ -20,14 +20,11 @@ public class TeamSettingsController(ITeamSettingsService teamSettingsService, Lo
         }
 
         await teamSettingsService.SetTeamSettingsAsync(input);
-        await HideTeamSettingsAsync();
+        await teamSettingsService.HideTeamSettingsAsync(Context.Player);
 
         Context.AuditEvent
             .Success()
             .WithEventName("EditTeamSettings")
             .HavingProperties(new { TeamSettings = input });
     }
-
-    public async Task HideTeamSettingsAsync()
-        => await HideAsync(Context.Player, "TeamSettings.EditTeamSettings");
 }

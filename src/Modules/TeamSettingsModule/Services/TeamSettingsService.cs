@@ -23,9 +23,9 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
 
     public async Task SetTeamSettingsAsync(TeamSettingsModel teamSettings)
     {
-        var clubLinkTeam1 = await GetClubLinkUrl(teamSettings.Team1Name, teamSettings.Team1PrimaryColor,
+        var clubLinkTeam1 = await GenerateClubLinkUrl(teamSettings.Team1Name, teamSettings.Team1PrimaryColor,
             teamSettings.Team1SecondaryColor, teamSettings.Team1EmblemUrl);
-        var clubLinkTeam2 = await GetClubLinkUrl(teamSettings.Team2Name, teamSettings.Team2PrimaryColor,
+        var clubLinkTeam2 = await GenerateClubLinkUrl(teamSettings.Team2Name, teamSettings.Team2PrimaryColor,
             teamSettings.Team2SecondaryColor, teamSettings.Team2EmblemUrl);
 
         await server.Remote.SetForcedClubLinksAsync(clubLinkTeam1, clubLinkTeam2);
@@ -44,7 +44,7 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
         return Task.FromResult(queryValues);
     }
 
-    public Task<string> GetClubLinkUrl(string teamName, string primaryColor, string? secondaryColor = null,
+    public Task<string> GenerateClubLinkUrl(string teamName, string primaryColor, string? secondaryColor = null,
         string? emblemUrl = null)
     {
         var url = new UriBuilder(ClubLinkGeneratorUrl)
@@ -71,4 +71,10 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
             new { Settings = teamSettings, Locale = locale }
         );
     }
+
+    public async Task HideTeamSettingsAsync(IPlayer player)
+        => await manialinks.HideManialinkAsync(player, "TeamSettings.EditTeamSettings");
+
+    public async Task HideTeamSettingsForEveryoneAsync() =>
+        await manialinks.HideManialinkAsync("TeamSettings.EditTeamSettings");
 }
