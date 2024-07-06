@@ -1,15 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.DataAnnotations;
 
-public class ColorCode : ValidationAttribute
+public partial class ColorCode : ValidationAttribute
 {
     public override bool IsValid(object? value)
     {
         var colorCode = value?.ToString() ?? "";
-        
-        //TODO: check for valid color code
 
-        return colorCode.Length is 3 or 6;
+        return ValidColorCodeRegex().IsMatch(colorCode);
     }
+
+    [GeneratedRegex("^(?:[0-9a-fA-F]{3}){1,2}$")]
+    private static partial Regex ValidColorCodeRegex();
 }
