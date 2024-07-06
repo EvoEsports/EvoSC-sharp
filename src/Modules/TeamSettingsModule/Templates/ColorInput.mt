@@ -36,10 +36,11 @@
             <!-- Input FG -->
             <quad id="rectangleColorPreview"
                   size="{{ height - 2.0 }} {{ height - 2.0 }}"
-                  pos="4 -4"
+                  pos="4 -4.26"
                   rot="90"
                   modulatecolor='{{ value ?? "fff" }}'
-                  image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
+                  image="file:///Media/Painter/Stencils/01-EllipseRound/Brush.tga"
+                  scale="0.8"
             />
             <TextInput
                     x="{{ height - 1.0 }}"
