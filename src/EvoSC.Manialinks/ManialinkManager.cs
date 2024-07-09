@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using System.ComponentModel;
+using System.Dynamic;
 using System.Reflection;
-using System.Text;
 using EvoSC.Common.Events;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
@@ -19,7 +20,6 @@ using EvoSC.Manialinks.Util;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
 using ManiaTemplates;
-using ManiaTemplates.Lib;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Manialinks;
@@ -33,7 +33,7 @@ public class ManialinkManager : IManialinkManager
     private readonly ManiaTemplateEngine _engine = new();
     private readonly Dictionary<string, IManialinkTemplateInfo> _templates = new();
     private readonly Dictionary<string, IManiaScriptInfo> _scripts = new();
-    private readonly ConcurrentDictionary<string, string> _persistentManialinks = new();
+    private readonly ConcurrentDictionary<string, IPersistentManialink> _persistentManialinks = new();
 
     private static IEnumerable<Assembly> s_defaultAssemblies = new[]
     {
@@ -207,7 +207,12 @@ public class ManialinkManager : IManialinkManager
         name = GetEffectiveName(name);
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
-        _persistentManialinks[name] = manialinkOutput;
+        _persistentManialinks[name] = new PersistentManialink
+        {
+            Name = name,
+            Type = PersistentManialinkType.Static,
+            CompiledOutput = manialinkOutput 
+        };
     }
 
     public async Task SendPersistentManialinkAsync(string name, dynamic data)
@@ -215,10 +220,52 @@ public class ManialinkManager : IManialinkManager
         name = GetEffectiveName(name);
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
-        _persistentManialinks[name] = manialinkOutput;
+        _persistentManialinks[name] = new PersistentManialink
+        {
+            Name = name,
+            Type = PersistentManialinkType.Static,
+            CompiledOutput = manialinkOutput 
+        };
     }
 
     public Task SendPersistentManialinkAsync(string name) => SendPersistentManialinkAsync(name, new { });
+
+    public Task SendPersistentManialinkAsync(string name, Func<Task<dynamic>> setupData) =>
+        SendPersistentManialinkAsync(name, async Task<IDictionary<string, object?>> () =>
+        {
+            var rawData = await setupData();
+            IDictionary<string, object?> data = new ExpandoObject();
+
+            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(rawData.GetType()))
+            {
+                data.Add(prop.Name, prop.GetValue(rawData));
+            }
+            
+            return data;
+        });
+
+    public async Task SendPersistentManialinkAsync(string name, Func<Task<IDictionary<string, object?>>> setupData)
+    {
+        name = GetEffectiveName(name);
+        
+        _persistentManialinks[name] = new PersistentManialink
+        {
+            Name = name,
+            Type = PersistentManialinkType.Static,
+            DynamicDataCallbackAsync = setupData
+        };
+
+        var data = await setupData();
+        var manialinkOutput = await PrepareAndRenderAsync(name, data);
+        await _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 0, false);
+    }
+
+    public Task RemovePersistentManialinkAsync(string name)
+    {
+        name = GetEffectiveName(name);
+        _persistentManialinks.TryRemove(name, out _);
+        return Task.CompletedTask;
+    }
 
     public async Task SendManialinkAsync(IPlayer player, string name, IDictionary<string, object?> data)
     {
@@ -261,7 +308,7 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
         _persistentManialinks.TryRemove(name, out _);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         return _server.Remote.SendDisplayManialinkPageAsync(manialinkOutput, 3, true);
     }
 
@@ -269,21 +316,21 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
         _persistentManialinks.TryRemove(name, out _);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         return _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), manialinkOutput, 3, true);
     }
 
     public Task HideManialinkAsync(string playerLogin, string name)
     {
         name = GetEffectiveName(name);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         return _server.Remote.SendDisplayManialinkPageToLoginAsync(playerLogin, manialinkOutput, 3, true);
     }
 
     public Task HideManialinkAsync(IEnumerable<IPlayer> players, string name)
     {
         name = GetEffectiveName(name);
-        var manialinkOutput = CreateHideManialink(name);
+        var manialinkOutput = ManialinkUtils.CreateHideManialink(name);
         var multiCall = new MultiCall();
 
         foreach (var player in players)
@@ -330,9 +377,37 @@ public class ManialinkManager : IManialinkManager
     {
         try
         {
-            foreach (var (_, output) in _persistentManialinks)
+            foreach (var (_, manialink) in _persistentManialinks)
             {
-                await _server.Remote.SendDisplayManialinkPageToLoginAsync(e.Login, output, 0, false);
+                string? output = null;
+                
+                switch (manialink.Type)
+                {
+                    case PersistentManialinkType.Static:
+                        output = manialink.CompiledOutput;
+                        break;
+                    case PersistentManialinkType.Dynamic:
+                        {
+                            var data = await manialink.DynamicDataCallbackAsync?.Invoke();
+                            output = await PrepareAndRenderAsync(manialink.Name, data);
+                        }
+                        break;
+                }
+
+                if (output == null)
+                {
+                    _logger.LogWarning("Failed to get output of persistent ({Type}) manialink: {Name}",
+                        manialink.Type switch
+                        {
+                            PersistentManialinkType.Dynamic => "Dynamic",
+                            PersistentManialinkType.Static => "Static",
+                            _ => "Unknown",
+                        },
+                        manialink.Name);
+                    continue;
+                }
+                
+                await _server.Remote.SendDisplayManialinkPageToLoginAsync(e.Login, manialink.CompiledOutput, 0, false);
             }
         }
         catch (Exception ex)
@@ -393,32 +468,22 @@ public class ManialinkManager : IManialinkManager
         return assemblies;
     }
 
-    private async Task<string> PrepareAndRenderAsync(string name, IDictionary<string, object?> data)
+    public async Task<string> PrepareAndRenderAsync(string name, IDictionary<string, object?> data)
     {
         var assemblies = PrepareRender(name);
         return await _engine.RenderAsync(name, data, assemblies);
     }
     
-    private async Task<string> PrepareAndRenderAsync(string name, dynamic data)
+    public async Task<string> PrepareAndRenderAsync(string name, dynamic data)
     {
         var assemblies = PrepareRender(name);
         return await _engine.RenderAsync(name, data, assemblies);
     }
-    
-    private string CreateHideManialink(string name)
-    {
-        var sb = new StringBuilder()
-            .Append("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>\n")
-            .Append("<manialink version=\"3\" id=\"")
-            .Append(ManialinkNameUtils.KeyToId(name))
-            .Append("\">\n")
-            .Append("</manialink>\n");
 
-        return sb.ToString();
-    }
-
-    private string GetEffectiveName(string name) =>
+    public string GetEffectiveName(string name) =>
         _themeManager.ComponentReplacements.TryGetValue(name, out var effectiveName)
             ? effectiveName
             : name;
+
+    public IManialinkTransaction CreateTransaction() => new ManialinkTransaction(this, _server);
 }

@@ -42,4 +42,62 @@ public class DbPlayerRecord : IPlayerRecord
     public DbMap DbMap;
 
     public IMap? Map => DbMap;
+
+    public DbPlayerRecord(){}
+
+    public DbPlayerRecord(IPlayerRecord? record)
+    {
+        if (record == null)
+        {
+            return;
+        }
+
+        Id = record.Id;
+        PlayerId = record.Player.Id;
+        MapId = record.Map.Id;
+        Score = record.Score;
+        RecordType = record.RecordType;
+        Checkpoints = record.Checkpoints;
+        CreatedAt = record.CreatedAt;
+        UpdatedAt = record.UpdatedAt;
+        DbPlayer = new DbPlayer(record.Player);
+        DbMap = new DbMap(record.Map);
+    }
+
+    public int CompareTo(IPlayerRecord? other)
+    {
+        if (other == null)
+        {
+            // better than "nothing"
+            return 1;
+        }
+        
+        if (RecordType != other.RecordType)
+        {
+            throw new InvalidOperationException("Cannot compare records of different types");
+        }
+
+        return RecordType switch
+        {
+            PlayerRecordType.Points => ComparePoints(),
+            PlayerRecordType.Time => CompareTime(),
+            _ => CompareTime()
+        };
+
+        // Compare time record type, lower is better
+        int CompareTime() => Score switch
+        {
+            _ when Score < other.Score => -1,
+            _ when Score > other.Score => 1,
+            _ => 0
+        };
+
+        // compare points record type, higher is better
+        int ComparePoints() => Score switch
+        {
+            _ when Score > other.Score => -1,
+            _ when Score < other.Score => 1,
+            _ => 0
+        };
+    }
 }

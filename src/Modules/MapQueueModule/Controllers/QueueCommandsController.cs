@@ -28,7 +28,7 @@ public class QueueCommandsController(IMapQueueService mapQueue, IMapService maps
         var message = new TextFormatter();
         var mapList = mapQueue.QueuedMaps
             .Select(m => new FormattedText(m.Name)
-                .AsIsolated()
+                .AsNotIsolated()
                 .WithStyle(style => style.WithColor(Color.Gray))
             );
 
