@@ -49,11 +49,4 @@ public interface ITeamSettingsService
     /// <param name="player">The player where team settings should be closed.</param>
     /// <returns></returns>
     public Task HideTeamSettingsAsync(IPlayer player);
-
-    /// <summary>
-    /// Hides the team settings for every player.
-    /// Only used when module is unloaded.
-    /// </summary>
-    /// <returns></returns>
-    public Task HideTeamSettingsForEveryoneAsync();
 }

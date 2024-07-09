@@ -11,7 +11,7 @@ using EvoSC.Modules.Official.TeamSettingsModule.Models;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Scoped)]
+[Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class TeamSettingsService(IServerClient server, IManialinkManager manialinks, Locale locale)
     : ITeamSettingsService
 {
@@ -74,7 +74,4 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
 
     public async Task HideTeamSettingsAsync(IPlayer player)
         => await manialinks.HideManialinkAsync(player, "TeamSettings.EditTeamSettings");
-
-    public async Task HideTeamSettingsForEveryoneAsync() =>
-        await manialinks.HideManialinkAsync("TeamSettings.EditTeamSettings");
 }
