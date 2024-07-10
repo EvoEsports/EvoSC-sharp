@@ -26,24 +26,30 @@ public class TeamSettingsServiceTests
         return teamSettingsService;
     }
 
-    [Fact]
-    public async Task Generates_Club_Link_URL()
+    [Theory]
+    [InlineData("TestTeam1", "000", null, null)]
+    [InlineData("TestTeam2", "f0f", "321", null)]
+    [InlineData("TestTeam3", "0f0", "123", "https://some.domain/image.png")]
+    [InlineData("TestTeam4", "0f0", null, "https://some.domain/image.png")]
+    [InlineData("TestTeam5", "000000", null, null)]
+    [InlineData("TestTeam6", "000000", "ffffff", null)]
+    public async Task Generates_And_Parses_Club_Link_URL(string teamName, string primaryColor, string? secondaryColor,
+        string? emblemUrl)
     {
         var teamSettingsService = TeamSettingsServiceMock();
-        var clubLinkUrl = await teamSettingsService.GenerateClubLinkUrl("testteam", "ff0066");
+        var clubLinkUrl = await teamSettingsService.GenerateClubLinkUrl(
+            teamName,
+            primaryColor,
+            secondaryColor,
+            emblemUrl
+        );
 
         Assert.True(Uri.IsWellFormedUriString(clubLinkUrl, UriKind.Absolute));
-    }
 
-    [Fact]
-    public async Task Team_Settings_Xml_Is_Generated()
-    {
-        //TODO: check that the returned XML is valid
-    }
-
-    [Fact]
-    public async Task Team_Settings_Is_Updated()
-    {
-        //TODO: check that event fired, after updating team settings
+        var parsedTeamSettings = await teamSettingsService.ParseClubLinkUrl(clubLinkUrl);
+        Assert.Equal(teamName, parsedTeamSettings.Get("name"));
+        Assert.Equal(primaryColor, parsedTeamSettings.Get("primary"));
+        Assert.Equal(secondaryColor, parsedTeamSettings.Get("secondary"));
+        Assert.Equal(emblemUrl, parsedTeamSettings.Get("emblem"));
     }
 }

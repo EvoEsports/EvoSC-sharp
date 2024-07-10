@@ -9,6 +9,12 @@ public interface ITeamSettingsService
     /// <summary>
     /// Applies the given team settings.
     /// </summary>
+    /// <returns>A TeamSettingsModel containing the currently used team settings.</returns>
+    public Task<TeamSettingsModel> GetCurrentTeamSettingsModel();
+    
+    /// <summary>
+    /// Applies the given team settings.
+    /// </summary>
     /// <param name="teamSettings">The TeamSettingsModel containing the settings.</param>
     /// <returns></returns>
     public Task SetTeamSettingsAsync(TeamSettingsModel teamSettings);

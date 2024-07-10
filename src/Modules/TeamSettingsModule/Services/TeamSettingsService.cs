@@ -21,14 +21,36 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
     public const string DefaultTeam1Color = "00f";
     public const string DefaultTeam2Color = "f00";
 
+    public async Task<TeamSettingsModel> GetCurrentTeamSettingsModel()
+    {
+        var team1Info = await server.Remote.GetTeamInfoAsync(1);
+        var team2Info = await server.Remote.GetTeamInfoAsync(2);
+        var info1 = await ParseClubLinkUrl(team1Info.ClubLinkUrl);
+        var info2 = await ParseClubLinkUrl(team2Info.ClubLinkUrl);
+
+        var teamInfos = new TeamSettingsModel
+        {
+            Team1Name = info1.Get("name") ?? DefaultTeam1Name,
+            Team1PrimaryColor = info1.Get("primary") ?? DefaultTeam1Color,
+            Team1SecondaryColor = info1.Get("secondary"),
+            Team1EmblemUrl = info1.Get("emblem"),
+            Team2Name = info2.Get("name") ?? DefaultTeam2Name,
+            Team2PrimaryColor = info2.Get("primary") ?? DefaultTeam2Color,
+            Team2SecondaryColor = info2.Get("secondary"),
+            Team2EmblemUrl = info2.Get("emblem"),
+        };
+
+        return teamInfos;
+    }
+
     public async Task SetTeamSettingsAsync(TeamSettingsModel teamSettings)
     {
-        var clubLinkTeam1 = await GenerateClubLinkUrl(teamSettings.Team1Name, teamSettings.Team1PrimaryColor,
+        var clubLinkUrlTeam1 = await GenerateClubLinkUrl(teamSettings.Team1Name, teamSettings.Team1PrimaryColor,
             teamSettings.Team1SecondaryColor, teamSettings.Team1EmblemUrl);
-        var clubLinkTeam2 = await GenerateClubLinkUrl(teamSettings.Team2Name, teamSettings.Team2PrimaryColor,
+        var clubLinkUrlTeam2 = await GenerateClubLinkUrl(teamSettings.Team2Name, teamSettings.Team2PrimaryColor,
             teamSettings.Team2SecondaryColor, teamSettings.Team2EmblemUrl);
 
-        await server.Remote.SetForcedClubLinksAsync(clubLinkTeam1, clubLinkTeam2);
+        await server.Remote.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2);
     }
 
     public Task<NameValueCollection> ParseClubLinkUrl(string clubLinkUrl)
