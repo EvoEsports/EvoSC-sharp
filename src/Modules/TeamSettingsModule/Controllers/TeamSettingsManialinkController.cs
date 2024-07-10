@@ -7,7 +7,7 @@ using EvoSC.Modules.Official.TeamSettingsModule.Models;
 namespace EvoSC.Modules.Official.TeamSettingsModule.Controllers;
 
 [Controller]
-public class TeamSettingsController(ITeamSettingsService teamSettingsService, Locale locale) : ManialinkController
+public class TeamSettingsManialinkController(ITeamSettingsService teamSettingsService, Locale locale) : ManialinkController
 {
     public async Task SaveTeamSettingsAsync(TeamSettingsModel input)
     {
