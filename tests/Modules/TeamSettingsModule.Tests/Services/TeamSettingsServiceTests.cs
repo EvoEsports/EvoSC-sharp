@@ -14,21 +14,20 @@ namespace EvoSC.Modules.Official.TeamSettingsModule.Tests.Services;
 
 public class TeamSettingsServiceTests
 {
+    private readonly Mock<IOnlinePlayer> _player = new();
+    private readonly Mock<IManialinkManager> _manialinkManager = new();
+
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
 
     private ITeamSettingsService TeamSettingsServiceMock()
     {
-        var player = new Mock<IOnlinePlayer>();
         var mlAction = new Mock<IManialinkActionContext>();
-        var mlManager = new Mock<IManialinkManager>();
-        var context = Mocking.NewManialinkInteractionContextMock(player.Object, mlAction.Object, mlManager.Object);
+        var context = Mocking.NewManialinkInteractionContextMock(_player.Object, mlAction.Object, _manialinkManager.Object);
         var contextService = Mocking.NewContextServiceMock(context.Context.Object, null);
         var locale = Mocking.NewLocaleMock(contextService.Object);
-        var manialinkManagerService = new Mock<IManialinkManager>();
-        var teamSettingsService = new TeamSettingsService(_server.Client.Object, manialinkManagerService.Object, locale);
-
-        return teamSettingsService;
+        
+        return new TeamSettingsService(_server.Client.Object, _manialinkManager.Object, locale);
     }
 
     [Theory]
@@ -52,7 +51,7 @@ public class TeamSettingsServiceTests
         Assert.True(Uri.IsWellFormedUriString(clubLinkUrl, UriKind.Absolute));
 
         var parsedTeamSettings = await teamSettingsService.ParseClubLinkUrl(clubLinkUrl);
-        
+
         Assert.Equal(teamName, parsedTeamSettings.Get("name"));
         Assert.Equal(primaryColor, parsedTeamSettings.Get("primary"));
         Assert.Equal(secondaryColor, parsedTeamSettings.Get("secondary"));
@@ -60,19 +59,44 @@ public class TeamSettingsServiceTests
     }
 
     [Fact]
+    public async Task Shows_Team_Settings()
+    {
+        var teamSettings = new TeamSettingsModel();
+
+        await TeamSettingsServiceMock().ShowTeamSettingsAsync(_player.Object, teamSettings);
+
+        _manialinkManager.Verify(m => m.SendManialinkAsync(_player.Object, "TeamSettingsModule.EditTeamSettings", It.IsAny<It.IsAnyType>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Hides_Team_Settings_Editor()
+    {
+        await TeamSettingsServiceMock().HideTeamSettingsAsync(_player.Object);
+
+        _manialinkManager.Verify(m => m.HideManialinkAsync(_player.Object, "TeamSettingsModule.EditTeamSettings"), Times.Once);
+    }
+
+    [Fact]
     public async Task Sets_Team_Settings()
     {
         var teamSettingsService = TeamSettingsServiceMock();
-        var teamSettings = new TeamSettingsModel
-        {
-            Team1Name = "Test1",
-            Team2Name = "Test2",
-        };
+        var teamSettings = new TeamSettingsModel { Team1Name = "Test1", Team2Name = "Test2", };
 
         await teamSettingsService.SetTeamSettingsAsync(teamSettings);
 
-        var clubLinkUrlTeam1 = await teamSettingsService.GenerateClubLinkUrl(teamSettings.Team1Name, teamSettings.Team1PrimaryColor, teamSettings.Team1SecondaryColor, teamSettings.Team1EmblemUrl);
-        var clubLinkUrlTeam2 = await teamSettingsService.GenerateClubLinkUrl(teamSettings.Team2Name, teamSettings.Team2PrimaryColor, teamSettings.Team2SecondaryColor, teamSettings.Team2EmblemUrl);
+        var clubLinkUrlTeam1 = await teamSettingsService.GenerateClubLinkUrl(
+            "Test1",
+            teamSettings.Team1PrimaryColor,
+            teamSettings.Team1SecondaryColor,
+            teamSettings.Team1EmblemUrl
+        );
+
+        var clubLinkUrlTeam2 = await teamSettingsService.GenerateClubLinkUrl(
+            "Test2",
+            teamSettings.Team2PrimaryColor,
+            teamSettings.Team2SecondaryColor,
+            teamSettings.Team2EmblemUrl
+        );
 
         _server.Remote.Verify(m => m.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2), Times.Once);
     }

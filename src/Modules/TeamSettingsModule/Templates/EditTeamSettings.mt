@@ -7,7 +7,7 @@
     <import component="EvoSC.Containers.Window" as="Window"/>
     <import component="EvoSC.Style.UIStyle" as="UIStyle"/>
     <import component="EvoSC.Controls.Button" as="Button"/>
-    <import component="TeamSettings.ColorInput" as="ColorInput"/>
+    <import component="TeamSettingsModule.ColorInput" as="ColorInput"/>
 
     <property type="FormValidationResult" name="Validation"/>
     <property type="TeamSettingsModel" name="Settings"/>

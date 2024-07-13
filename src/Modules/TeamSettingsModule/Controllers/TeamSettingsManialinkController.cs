@@ -13,7 +13,7 @@ public class TeamSettingsManialinkController(ITeamSettingsService teamSettingsSe
     {
         if (!IsModelValid)
         {
-            await ShowAsync(Context.Player, "TeamSettings.EditTeamSettings",
+            await ShowAsync(Context.Player, "TeamSettingsModule.EditTeamSettings",
                 new { Settings = input, Locale = locale }
             );
             return;

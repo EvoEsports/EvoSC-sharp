@@ -103,5 +103,5 @@
         </frame>
     </template>
 
-    <script resource="TeamSettings.Scripts.ColorInput" once="true"/>
+    <script resource="TeamSettingsModule.Scripts.ColorInput" once="true"/>
 </component>

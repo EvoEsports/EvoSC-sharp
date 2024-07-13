@@ -69,7 +69,7 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
     public Task<string> GenerateClubLinkUrl(string teamName, string primaryColor, string? secondaryColor = null,
         string? emblemUrl = null)
     {
-        var url = new UriBuilder(ClubLinkGeneratorUrl)
+        var url = new UriBuilder(new Uri(ClubLinkGeneratorUrl, UriKind.Absolute))
         {
             Query = $"name={Uri.EscapeDataString(teamName)}&primary={Uri.EscapeDataString(primaryColor)}"
         };
@@ -89,11 +89,11 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
 
     public async Task ShowTeamSettingsAsync(IPlayer player, TeamSettingsModel teamSettings)
     {
-        await manialinks.SendManialinkAsync(player, "TeamSettings.EditTeamSettings",
+        await manialinks.SendManialinkAsync(player, "TeamSettingsModule.EditTeamSettings",
             new { Settings = teamSettings, Locale = locale }
         );
     }
 
     public async Task HideTeamSettingsAsync(IPlayer player)
-        => await manialinks.HideManialinkAsync(player, "TeamSettings.EditTeamSettings");
+        => await manialinks.HideManialinkAsync(player, "TeamSettingsModule.EditTeamSettings");
 }

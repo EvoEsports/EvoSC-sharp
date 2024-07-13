@@ -76,6 +76,6 @@ public class TeamSettingsManialinkControllerTests : ManialinkControllerTestBase<
         
         _teamSettingsService.Verify(m => m.SetTeamSettingsAsync(teamSettings), Times.Never);
         _teamSettingsService.Verify(m => m.HideTeamSettingsAsync(_player.Object), Times.Never);
-        ManialinkManager.Verify(m => m.SendManialinkAsync(_player.Object, "TeamSettings.EditTeamSettings", It.IsAny<ExpandoObject>()), Times.Once);
+        ManialinkManager.Verify(m => m.SendManialinkAsync(_player.Object, "TeamSettingsModule.EditTeamSettings", It.IsAny<ExpandoObject>()), Times.Once);
     }
 }
