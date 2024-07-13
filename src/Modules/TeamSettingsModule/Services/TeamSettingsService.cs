@@ -53,14 +53,14 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
         await server.Remote.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2);
     }
 
-    public Task<NameValueCollection> ParseClubLinkUrl(string clubLinkUrl)
+    public Task<NameValueCollection> ParseClubLinkUrl(string? clubLinkUrl)
     {
         if (string.IsNullOrEmpty(clubLinkUrl))
         {
             return Task.FromResult(new NameValueCollection());
         }
 
-        var url = new UriBuilder(clubLinkUrl);
+        var url = new UriBuilder(new Uri(clubLinkUrl, UriKind.Absolute));
         var queryValues = HttpUtility.ParseQueryString(url.Query);
 
         return Task.FromResult(queryValues);

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using System.Collections.Specialized;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
@@ -7,6 +8,7 @@ using EvoSC.Modules.Official.TeamSettingsModule.Models;
 using EvoSC.Modules.Official.TeamSettingsModule.Services;
 using EvoSC.Testing;
 using GbxRemoteNet.Interfaces;
+using GbxRemoteNet.Structs;
 using Moq;
 using Xunit;
 
@@ -23,10 +25,11 @@ public class TeamSettingsServiceTests
     private ITeamSettingsService TeamSettingsServiceMock()
     {
         var mlAction = new Mock<IManialinkActionContext>();
-        var context = Mocking.NewManialinkInteractionContextMock(_player.Object, mlAction.Object, _manialinkManager.Object);
+        var context =
+            Mocking.NewManialinkInteractionContextMock(_player.Object, mlAction.Object, _manialinkManager.Object);
         var contextService = Mocking.NewContextServiceMock(context.Context.Object, null);
         var locale = Mocking.NewLocaleMock(contextService.Object);
-        
+
         return new TeamSettingsService(_server.Client.Object, _manialinkManager.Object, locale);
     }
 
@@ -58,6 +61,16 @@ public class TeamSettingsServiceTests
         Assert.Equal(emblemUrl, parsedTeamSettings.Get("emblem"));
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public async Task Returns_Default_Team_Settings_If_ClubLink_Is_Empty(string? clubLinkUrl)
+    {
+        var teamSettingsService = TeamSettingsServiceMock();
+
+        Assert.Equal([], await teamSettingsService.ParseClubLinkUrl(clubLinkUrl));
+    }
+
     [Fact]
     public async Task Shows_Team_Settings()
     {
@@ -65,7 +78,9 @@ public class TeamSettingsServiceTests
 
         await TeamSettingsServiceMock().ShowTeamSettingsAsync(_player.Object, teamSettings);
 
-        _manialinkManager.Verify(m => m.SendManialinkAsync(_player.Object, "TeamSettingsModule.EditTeamSettings", It.IsAny<It.IsAnyType>()), Times.Once);
+        _manialinkManager.Verify(
+            m => m.SendManialinkAsync(_player.Object, "TeamSettingsModule.EditTeamSettings", It.IsAny<It.IsAnyType>()),
+            Times.Once);
     }
 
     [Fact]
@@ -73,7 +88,8 @@ public class TeamSettingsServiceTests
     {
         await TeamSettingsServiceMock().HideTeamSettingsAsync(_player.Object);
 
-        _manialinkManager.Verify(m => m.HideManialinkAsync(_player.Object, "TeamSettingsModule.EditTeamSettings"), Times.Once);
+        _manialinkManager.Verify(m => m.HideManialinkAsync(_player.Object, "TeamSettingsModule.EditTeamSettings"),
+            Times.Once);
     }
 
     [Fact]
@@ -99,5 +115,28 @@ public class TeamSettingsServiceTests
         );
 
         _server.Remote.Verify(m => m.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2), Times.Once);
+    }
+
+    [Fact]
+    public async Task Gets_Current_Team_Settings()
+    {
+        var teamSettingsService = TeamSettingsServiceMock();
+        var team1Info = new TmTeamInfo { Name = "Blue" };
+        var team2Info = new TmTeamInfo { Name = "Red" };
+        var expectedTeamSettings = new TeamSettingsModel();
+
+        _server.Remote.Setup(m => m.GetTeamInfoAsync(1)).Returns(Task.FromResult(team1Info));
+        _server.Remote.Setup(m => m.GetTeamInfoAsync(2)).Returns(Task.FromResult(team2Info));
+
+        var retrievedTeamSettings = await teamSettingsService.GetCurrentTeamSettingsModel();
+
+        Assert.Equal(expectedTeamSettings.Team1Name, retrievedTeamSettings.Team1Name);
+        Assert.Equal(expectedTeamSettings.Team1PrimaryColor, retrievedTeamSettings.Team1PrimaryColor);
+        Assert.Equal(expectedTeamSettings.Team1SecondaryColor, retrievedTeamSettings.Team1SecondaryColor);
+        Assert.Equal(expectedTeamSettings.Team1EmblemUrl, retrievedTeamSettings.Team1EmblemUrl);
+        Assert.Equal(expectedTeamSettings.Team2Name, retrievedTeamSettings.Team2Name);
+        Assert.Equal(expectedTeamSettings.Team2PrimaryColor, retrievedTeamSettings.Team2PrimaryColor);
+        Assert.Equal(expectedTeamSettings.Team2SecondaryColor, retrievedTeamSettings.Team2SecondaryColor);
+        Assert.Equal(expectedTeamSettings.Team2EmblemUrl, retrievedTeamSettings.Team2EmblemUrl);
     }
 }

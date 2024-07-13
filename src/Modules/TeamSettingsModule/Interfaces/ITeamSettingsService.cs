@@ -24,7 +24,7 @@ public interface ITeamSettingsService
     /// </summary>
     /// <param name="clubLinkUrl">The club link URL.</param>
     /// <returns>A NameValueCollection containing the team settings from the given URL.</returns>
-    public Task<NameValueCollection> ParseClubLinkUrl(string clubLinkUrl);
+    public Task<NameValueCollection> ParseClubLinkUrl(string? clubLinkUrl);
 
     /// <summary>
     /// Generates a club link URL for the given values.
