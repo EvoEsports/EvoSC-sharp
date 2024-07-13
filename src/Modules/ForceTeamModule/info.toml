@@ -1,0 +1,11 @@
+[info]
+# A unique name for this module, this is used as a identifier
+name = "ForceTeamModule"
+# The title of the module
+title = "Force Team"
+# A short description of what the module is and does
+summary = "Moderator tool to switch players between teams."
+# The current version of this module, using SEMVER
+version = "1.0.0"
+# The name of the author that created this module
+author = "Evo"
