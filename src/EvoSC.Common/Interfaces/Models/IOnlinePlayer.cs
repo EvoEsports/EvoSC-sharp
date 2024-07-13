@@ -16,4 +16,6 @@ public interface IOnlinePlayer : IPlayer
     /// Flags assigned to the player.
     /// </summary>
     public IPlayerFlags Flags { get; }
+    
+    public PlayerTeam Team { get; }
 }
