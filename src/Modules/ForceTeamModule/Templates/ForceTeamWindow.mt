@@ -1,9 +1,11 @@
 <component>
   <using namespace="EvoSC.Common.Interfaces.Models" />
+  <using namespace="EvoSC.Common.Util" />
   <using namespace="System.Linq" />
   
   <import component="EvoSC.Style.UIStyle" as="UIStyle" />
   <import component="EvoSC.Containers.Window" as="Window" />
+  <import component="ForceTeamModule.Components.PlayerRow" as="PlayerRow" />
   
   <property type="IEnumerable<IOnlinePlayer>" name="players" />
   
@@ -11,8 +13,8 @@
     <UIStyle />
     
     <Window icon="{{ Icons.User }}" title="Teams">
-      <label foreach="IOnlinePlayer player in players.Where(p => p.Team == PlayerTeam.Team1)" text="{{ player.NickName }}" pos="0 {{ -__index*3 }}" class="text-primary" />
-      <label foreach="IOnlinePlayer player in players.Where(p => p.Team == PlayerTeam.Team2)" text="{{ player.NickName }}" pos="40 {{ -__index*3 }}" class="text-primary" />
+      <PlayerRow foreach="IOnlinePlayer player in players.Where(p => p.IsTeam1())" player="{{ player }}" x="0" y="{{ -__index*3 }}" />
+      <PlayerRow foreach="IOnlinePlayer player in players.Where(p => p.IsTeam2())" player="{{ player }}" x="40" y="{{ -__index*3 }}" />
     </Window>
   </template>
 
