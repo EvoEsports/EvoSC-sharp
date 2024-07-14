@@ -21,6 +21,7 @@ using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;
 using EvoSC.Modules.Official.SetName;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule;
+using EvoSC.Modules.Official.TeamSettingsModule;
 using EvoSC.Modules.Official.WorldRecordModule;
 using FluentMigrator.Runner.Exceptions;
 
@@ -51,7 +52,8 @@ public static class InternalModules
         typeof(SpectatorTargetInfoModule),
         typeof(MapQueueModule),
         typeof(MapListModule),
-        typeof(LocalRecordsModule)
+        typeof(LocalRecordsModule),
+        typeof(TeamSettingsModule)
     };
 
     /// <summary>

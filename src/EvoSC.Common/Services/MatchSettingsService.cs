@@ -1,8 +1,10 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util;
+using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Common.Util.MatchSettings.Builders;

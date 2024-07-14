@@ -15,24 +15,27 @@
       <UIStyle />
       
       <Window
-              width="50"
-              height="23"
+              width="55"
+              height="{{ (Validation != null && !Validation.IsValid) ? 40 : 30 }}"
               x="-25"
               y="11.5"
               title="{{ Locale.PlayerLanguage.UI_EditYourNickname }}"
+              icon=""
       >
         <FormEntry
                 validationResults='{{ Validation?.GetResult("Nickname") }}'
                 value='{{ Nickname }}'
                 name="Nickname"
                 label="{{ Locale.PlayerLanguage.UI_Nickname }}"
-                w="48"
+                w="49"
                 x="0"
                 y="0"
         />
         
-        <Button id="btnEdit" text="{{ Locale.PlayerLanguage.UI_Submit }}" action="SetName/EditName" x="14" y="-8" />
-        <Button id="btnCancel" text="{{ Locale.PlayerLanguage.UI_Cancel }}" action="SetName/Cancel" x="32" y="-8" type="secondary" />
+        <frame pos="0 {{ (Validation != null && !Validation.IsValid) ? -10 : 0 }}">
+            <Button id="btnEdit" text="{{ Locale.PlayerLanguage.UI_Submit }}" action="SetName/EditName" x="0"  y="-11" />
+            <Button id="btnCancel" text="{{ Locale.PlayerLanguage.UI_Cancel }}" action="SetName/Cancel" x="32" y="-11" type="secondary" />
+        </frame>
       </Window>
     </template>
 

@@ -1,6 +1,7 @@
 ﻿<!--
 #Include "TextLib" as TextLib
 #Include "MathLib" as Math
+#Include "ColorLib" as ColorLib
 
 Void __DoNothing() {}
 
