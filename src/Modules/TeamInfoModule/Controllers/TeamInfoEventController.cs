@@ -11,6 +11,8 @@ namespace EvoSC.Modules.Official.TeamInfoModule.Controllers;
 [Controller]
 public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScController<IEventControllerContext>
 {
+    //Subscribe to team info changed
+    
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
     {

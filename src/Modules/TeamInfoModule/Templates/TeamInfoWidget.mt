@@ -13,7 +13,7 @@
     <template>
         <UIStyle/>
 
-        <frame pos="0 80.0">
+        <frame pos="0 84.0">
             <BottomInfoBox y="-10.0"
                            text="test test test"
             />
@@ -21,20 +21,23 @@
             <RoundCounter roundNumber="{{ roundNumber }}"/>
 
             <!-- TEAM 1 -->
-            <EmblemBox x="-21.0"
+            <EmblemBox x="-22.0"
+                       teamInfo="{{ team1 }}"
                        halign="right"
             />
             <PointsBox x="-10.0"
+                       points="7"
                        color="{{ team1.RGB }}"
                        halign="right"
-                       points="7"
             />
 
             <!-- TEAM 2 -->
-            <EmblemBox x="21.0"/>
+            <EmblemBox x="22.0"
+                       teamInfo="{{ team2 }}"
+            />
             <PointsBox x="10.0"
-                       color="f06"
                        points="5"
+                       color="{{ team2.RGB }}"
             />
         </frame>
     </template>
