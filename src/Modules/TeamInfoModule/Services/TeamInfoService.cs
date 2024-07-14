@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -10,7 +9,7 @@ namespace EvoSC.Modules.Official.TeamInfoModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class TeamInfoService(IServerClient server, IManialinkManager manialinks) : ITeamInfoService
 {
-    const string WidgetTemplate = "TeamInfoModule.Widget";
+    const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
 
     public async Task SendTeamInfoWidgetAsync(string playerLogin)
     {
