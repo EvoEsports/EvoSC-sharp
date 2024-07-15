@@ -15,8 +15,8 @@
         <frame pos='{{ x - (halign=="right" ? width : 0) }} {{ y }}'>
             <Rectangle width="{{ width }}"
                        height="{{ height }}"
-                       bgColor="{{ Theme.UI_BgPrimary }}"
-                       cornerRadius="1.0"
+                       bgColor="{{ Theme.UI_HeaderBg }}ee"
+                       cornerRadius="0.75"
                        corners='{{ (halign=="right" ? "BottomLeft" : "BottomRight") }}'
             />
 

@@ -1,24 +1,27 @@
 <component>
     <import component="EvoSC.Drawing.Rectangle" as="Rectangle"/>
 
-    <property type="double" name="width" default="44.0"/>
+    <property type="double" name="width" default="12.0"/>
     <property type="double" name="height" default="4.5"/>
     <property type="double" name="x" default="0.0"/>
-    <property type="double" name="y" default="0.0"/>
-    <property type="string" name="text"/>
+    <property type="double" name="y" default="-10.3"/>
+    <property type="string" name="halign" default="left"/>
+    <property type="string" name="color" default="Theme.UI_BgPrimary"/>
+    <property type="int" name="gained" default="0"/>
 
     <template>
-        <frame pos="{{ x }} {{ y }}">
+        <frame pos='{{ x + (halign=="right" ? width/-2.0+0.3 : width/2.0) }} {{ y }}'>
             <Rectangle x="{{ width / -2.0 }}"
-                       width="{{ width }}"
+                       width="{{ width - 0.3 }}"
                        height="{{ height }}"
-                       bgColor="{{ Theme.UI_BgPrimary }}dd"
+                       bgColor="{{ color }}"
                        cornerRadius="0.75"
                        corners="BottomLeft,BottomRight"
             />
             
             <label pos="0 {{ height / -2.0 + 0.5 }}"
-                   text="{{ text }}"
+                   text="{{ gained }}"
+                   textprefix="{{ gained >= 0 ? '+' : '-' }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    textfont="{{ Font.Regular }}"
                    textsize="{{ Theme.UI_FontSize }}"

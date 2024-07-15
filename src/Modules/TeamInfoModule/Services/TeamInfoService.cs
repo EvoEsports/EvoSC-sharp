@@ -11,20 +11,24 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
 {
     const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
 
-    public async Task SendTeamInfoWidgetAsync(string playerLogin)
+    public async Task<dynamic> GetManialinkData()
     {
         var team1 = await server.Remote.GetTeamInfoAsync(1);
         var team2 = await server.Remote.GetTeamInfoAsync(2);
+        var roundNumber = 1;
+        var infoBoxText = "test test test";
 
-        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, new { team1, team2 });
+        return new { team1, team2, infoBoxText, roundNumber };
+    }
+    
+    public async Task SendTeamInfoWidgetAsync(string playerLogin)
+    {
+        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, await GetManialinkData());
     }
 
     public async Task SendTeamInfoWidgetEveryoneAsync()
     {
-        var team1 = await server.Remote.GetTeamInfoAsync(1);
-        var team2 = await server.Remote.GetTeamInfoAsync(2);
-
-        await manialinks.SendManialinkAsync(WidgetTemplate, new { team1, team2 });
+        await manialinks.SendManialinkAsync(WidgetTemplate, await GetManialinkData());
     }
 
     public async Task HideTeamInfoWidgetAsync(string playerLogin)
