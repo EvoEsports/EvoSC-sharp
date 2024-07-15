@@ -35,10 +35,10 @@
                        halign="right"
             />
             <MatchPointBox x="-34"/>
-            <GainedPoints x="-34"
-                          color="{{ team1.RGB }}"
-                          gained="0"
-            />
+<!--            <GainedPoints x="-34"-->
+<!--                          color="{{ team1.RGB }}"-->
+<!--                          gained="0"-->
+<!--            />-->
 
             <!-- TEAM 2 -->
             <EmblemBox x="22.0"
@@ -48,9 +48,9 @@
                        points="5"
                        color="{{ team2.RGB }}"
             />
-            <MatchPointBox x="34"
-                           halign="right"
-            />
+<!--            <MatchPointBox x="34"-->
+<!--                           halign="right"-->
+<!--            />-->
             <GainedPoints x="34"
                           color="{{ team2.RGB }}"
                           gained="1"

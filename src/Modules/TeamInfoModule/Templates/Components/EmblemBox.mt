@@ -7,7 +7,7 @@
     <property type="double" name="height" default="10.0"/>
     <property type="double" name="x" default="0.0"/>
     <property type="double" name="y" default="0.0"/>
-    <property type="double" name="logoPadding" default="4.0"/>
+    <property type="double" name="logoPadding" default="4.5"/>
     <property type="string" name="halign" default="left"/>
     <property type="TmTeamInfo" name="teamInfo"/>
 

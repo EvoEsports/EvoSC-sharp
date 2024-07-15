@@ -17,7 +17,7 @@
                        corners="BottomLeft,BottomRight"
             />
             
-            <label pos="0 {{ height / -2.0 + 0.5 }}"
+            <label pos="0 {{ height / -2.0 + 0.25 }}"
                    text="{{ text }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    textfont="{{ Font.Regular }}"

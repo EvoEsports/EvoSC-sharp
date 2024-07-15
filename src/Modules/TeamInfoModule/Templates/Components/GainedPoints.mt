@@ -16,14 +16,14 @@
                        height="{{ height }}"
                        bgColor="{{ color }}"
                        cornerRadius="0.75"
-                       corners="BottomLeft,BottomRight"
+                       corners='{{ halign=="right" ? "TopRight,BottomRight,BottomLeft" : "TopLeft,BottomLeft,BottomRight" }}'
             />
             
-            <label pos="0 {{ height / -2.0 + 0.5 }}"
+            <label pos='{{ halign=="right" ? 0 : -0.15 }} {{ height / -2.0 + 0.25 }}'
                    text="{{ gained }}"
                    textprefix="{{ gained >= 0 ? '+' : '-' }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
-                   textfont="{{ Font.Regular }}"
+                   textfont="{{ Font.Bold }}"
                    textsize="{{ Theme.UI_FontSize }}"
                    halign="center"
                    valign="center"

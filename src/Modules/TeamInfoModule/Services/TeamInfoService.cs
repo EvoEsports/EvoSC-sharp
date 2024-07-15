@@ -16,7 +16,7 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
         var team1 = await server.Remote.GetTeamInfoAsync(1);
         var team2 = await server.Remote.GetTeamInfoAsync(2);
         var roundNumber = 1;
-        var infoBoxText = "test test test";
+        var infoBoxText = "FIRST TO 7 (TENNIS MODE)";
 
         return new { team1, team2, infoBoxText, roundNumber };
     }
