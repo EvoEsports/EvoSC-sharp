@@ -35,7 +35,7 @@ if (Event.Control.ControlId == "picker") {
     declare entryFrame <=> (colorInputFrame.Controls[3] as CMlFrame);
     declare colorEntry <=> (entryFrame.Controls[1] as CMlEntry);
     
-    colorEntry.Value = ColorLib::RgbToHex(picker.Color);
+    colorEntry.Value = ColorLib::RgbToHex(picker.Color); //TODO: use 6 digit code for correct colors
     previewLabel.ModulateColor = picker.Color;
 }
 ***

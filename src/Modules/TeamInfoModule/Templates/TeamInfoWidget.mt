@@ -12,11 +12,16 @@
     <property type="TmTeamInfo" name="team2"/>
     <property type="string?" name="infoBoxText"/>
     <property type="int" name="roundNumber" default="-1"/>
+    <property type="int" name="mapPoint" default="0"/>
+    <property type="int" name="team1Points" default="0"/>
+    <property type="int" name="team2Points" default="0"/>
+    <property type="int" name="team1GainedPoints" default="0"/>
+    <property type="int" name="team2GainedPoints" default="0"/>
 
     <template>
         <UIStyle/>
 
-        <frame pos="0 82.0">
+        <frame pos="0 80.0">
             <BottomInfoBox if="infoBoxText != null"
                            y="-10.3"
                            text="{{ infoBoxText }}"
@@ -30,30 +35,35 @@
                        halign="right"
             />
             <PointsBox x="-10.0"
-                       points="7"
+                       points="{{ team1Points }}"
                        color="{{ team1.RGB }}"
                        halign="right"
             />
-            <MatchPointBox x="-34"/>
-<!--            <GainedPoints x="-34"-->
-<!--                          color="{{ team1.RGB }}"-->
-<!--                          gained="0"-->
-<!--            />-->
+            <MatchPointBox if="mapPoint == 1"
+                           x="-34"
+            />
+            <GainedPoints if="team1GainedPoints > 0"
+                          x="-34"
+                          color="{{ team1.RGB }}"
+                          gained="{{ team1GainedPoints }}"
+            />
 
             <!-- TEAM 2 -->
             <EmblemBox x="22.0"
                        teamInfo="{{ team2 }}"
             />
             <PointsBox x="10.0"
-                       points="5"
+                       points="{{ team2Points }}"
                        color="{{ team2.RGB }}"
             />
-<!--            <MatchPointBox x="34"-->
-<!--                           halign="right"-->
-<!--            />-->
-            <GainedPoints x="34"
+            <MatchPointBox if="mapPoint == 2"
+                           x="34"
+                           halign="right"
+            />
+            <GainedPoints if="team2GainedPoints > 0"
+                          x="34"
                           color="{{ team2.RGB }}"
-                          gained="1"
+                          gained="{{ team1GainedPoints }}"
                           halign="right"
             />
         </frame>
