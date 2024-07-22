@@ -19,12 +19,10 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<T
     public async Task OnScores(object data, ScoresEventArgs eventArgs)
     {
         var teamInfos = eventArgs.Teams.ToList();
-        logger.LogInformation("Section: {section}", eventArgs.Section.ToString());
-
         var team1Points = teamInfos[0]!.MatchPoints;
         var team2Points = teamInfos[1]!.MatchPoints;
-
-        logger.LogInformation("Points: {team1} - {team2}", team1Points, team2Points);
+        
+        logger.LogInformation("{section}: {team1} - {team2}", eventArgs.Section.ToString(), team1Points, team2Points); //TODO: remove logging
 
         if (eventArgs.Section is ModeScriptSection.EndRound or ModeScriptSection.Undefined)
         {
@@ -34,10 +32,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<T
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnRoundStart(object sender, RoundEventArgs args)
-    {
-        await teamInfoService.UpdateRoundNumber(args.Count);
-        await teamInfoService.RequestScoresFromServerAsync();
-    }
+        => await teamInfoService.UpdateRoundNumberAsync(args.Count);
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args)

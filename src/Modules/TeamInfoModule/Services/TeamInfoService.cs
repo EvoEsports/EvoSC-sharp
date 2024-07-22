@@ -4,13 +4,11 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
-    : ITeamInfoService
+public class TeamInfoService(IServerClient server, IManialinkManager manialinks) : ITeamInfoService
 {
     private const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
 
@@ -25,12 +23,12 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
         //TODO: check if teams mode is active -> Maniaplanet.Mode.GetUseTeams?
 
         // var getUseTeamsResponse = await server.Remote.TriggerModeScriptEventArrayAsync("Maniaplanet.Mode.GetUseTeams");
-        
+
         //TODO: get current round number
 
         if (_modeIsTeams)
         {
-            await RequestScoresFromServerAsync();
+            await server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.GetScores");
         }
         else
         {
@@ -131,23 +129,17 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
         await manialinks.HideManialinkAsync(WidgetTemplate);
     }
 
-    public Task UpdateRoundNumber(int round)
+    public async Task UpdateRoundNumberAsync(int round)
     {
         _currentRound = round;
-
-        return Task.CompletedTask;
-    }
-
-    public async Task RequestScoresFromServerAsync()
-    {
-        await server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.GetScores");
+        _widgetShouldBeDisplayed = true;
+        await SendTeamInfoWidgetEveryoneAsync();
     }
 
     public async Task UpdatePointsAsync(int team1Points, int team2Points)
     {
         _team1Points = team1Points;
         _team2Points = team2Points;
-
         await SendTeamInfoWidgetEveryoneAsync();
     }
 }
