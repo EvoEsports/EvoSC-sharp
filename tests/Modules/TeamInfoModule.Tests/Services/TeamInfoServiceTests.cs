@@ -35,7 +35,7 @@ public class TeamInfoServiceTests
     {
         Assert.Equal(
             shouldHaveMapPoint,
-            await TeamInfoServiceMock().DoesTeamHaveMapPoint(teamPoints, opponentPoints, pointsLimit, pointsGap)
+            await TeamInfoServiceMock().DoesTeamHaveMatchPoint(teamPoints, opponentPoints, pointsLimit, pointsGap)
         );
     }
 }

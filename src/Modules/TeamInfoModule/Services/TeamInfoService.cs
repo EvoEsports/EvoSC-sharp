@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.Official.TeamInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class TeamInfoService(IServerClient server, IManialinkManager manialinks, ILogger<TeamInfoService> logger)
+public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
     : ITeamInfoService
 {
     private const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
@@ -22,24 +22,18 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks,
 
     public async Task InitializeModuleAsync()
     {
-        //TODO: check if teams mode is active -> Maniaplanet.Mode.GetUseTeams
+        //TODO: check if teams mode is active -> Maniaplanet.Mode.GetUseTeams?
 
-        // var getUseTeamsResponse = await server.Remote.CallMethodAsync("Maniaplanet.Mode.GetUseTeams");
-        // logger.LogInformation("response: {response}", getUseTeamsResponse.ResponseData.ToString());
-
-        logger.LogInformation("Initializing...");
+        // var getUseTeamsResponse = await server.Remote.TriggerModeScriptEventArrayAsync("Maniaplanet.Mode.GetUseTeams");
+        
+        //TODO: get current round number
 
         if (_modeIsTeams)
         {
-            _widgetShouldBeDisplayed = true;
             await RequestScoresFromServerAsync();
-            // await SendTeamInfoWidgetEveryoneAsync();
-
-            logger.LogInformation("Mode is teams.");
         }
         else
         {
-            _widgetShouldBeDisplayed = false;
             await HideTeamInfoWidgetEveryoneAsync();
         }
     }
@@ -52,13 +46,13 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks,
         var infoBoxText = await GetInfoBoxText(modeScriptSettings);
         var mapPoint = 0;
 
-        if (await DoesTeamHaveMapPoint(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
+        if (await DoesTeamHaveMatchPoint(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
                 modeScriptSettings.PointsGap))
         {
             mapPoint = 1;
         }
 
-        if (await DoesTeamHaveMapPoint(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
+        if (await DoesTeamHaveMatchPoint(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
                 modeScriptSettings.PointsGap))
         {
             mapPoint = 2;
@@ -72,9 +66,7 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks,
             mapPoint,
             roundNumber = _currentRound,
             team1Points = _team1Points,
-            team2Points = _team2Points,
-            team1GainedPoints = 0,
-            team2GainedPoints = 0
+            team2Points = _team2Points
         };
     }
 
@@ -105,13 +97,13 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks,
         }
         else if (output.Length == 0)
         {
-            return null;
+            return Task.FromResult<string?>(null);
         }
 
-        return Task.FromResult(output.ToString().ToUpper());
+        return Task.FromResult<string?>(output.ToString().ToUpper());
     }
 
-    public Task<bool> DoesTeamHaveMapPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap)
+    public Task<bool> DoesTeamHaveMatchPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap)
     {
         return Task.FromResult(teamPoints >= pointsLimit - 1 &&
                                teamPoints - (pointsGap - 1) >= opponentPoints);
@@ -129,21 +121,13 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks,
 
     public async Task SendTeamInfoWidgetEveryoneAsync()
     {
-        if (!_widgetShouldBeDisplayed)
-        {
-            return;
-        }
-
+        _widgetShouldBeDisplayed = true;
         await manialinks.SendManialinkAsync(WidgetTemplate, await GetManialinkDataAsync());
-    }
-
-    public async Task HideTeamInfoWidgetAsync(string playerLogin)
-    {
-        await manialinks.HideManialinkAsync(playerLogin, WidgetTemplate);
     }
 
     public async Task HideTeamInfoWidgetEveryoneAsync()
     {
+        _widgetShouldBeDisplayed = false;
         await manialinks.HideManialinkAsync(WidgetTemplate);
     }
 
@@ -165,20 +149,5 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks,
         _team2Points = team2Points;
 
         await SendTeamInfoWidgetEveryoneAsync();
-    }
-
-    public async Task ClearPoints()
-    {
-        _team1Points = 0;
-        _team2Points = 0;
-
-        await SendTeamInfoWidgetEveryoneAsync();
-    }
-
-    public Task SetWidgetVisibility(bool visible)
-    {
-        _widgetShouldBeDisplayed = visible;
-
-        return Task.CompletedTask;
     }
 }

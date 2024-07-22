@@ -12,13 +12,11 @@ public interface ITeamInfoService
 
     public Task<string?> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings);
 
-    public Task<bool> DoesTeamHaveMapPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap);
+    public Task<bool> DoesTeamHaveMatchPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap);
     
     public Task SendTeamInfoWidgetAsync(string playerLogin);
 
     public Task SendTeamInfoWidgetEveryoneAsync();
-
-    public Task HideTeamInfoWidgetAsync(string playerLogin);
 
     public Task HideTeamInfoWidgetEveryoneAsync();
 
@@ -27,8 +25,4 @@ public interface ITeamInfoService
     public Task RequestScoresFromServerAsync();
     
     public Task UpdatePointsAsync(int team1Points, int team2Points);
-    
-    public Task ClearPoints();
-
-    public Task SetWidgetVisibility(bool visible);
 }
