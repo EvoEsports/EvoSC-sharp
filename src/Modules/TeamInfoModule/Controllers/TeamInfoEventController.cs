@@ -38,19 +38,21 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<T
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args)
     {
-        // await teamInfoService.SetWidgetVisibility(false);
+        await teamInfoService.SetWidgetVisibility(false);
         await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
     }
 
     [Subscribe(GbxRemoteEvent.EndMap)]
     public async Task OnEndMap(object sender, MapGbxEventArgs args)
     {
+        await teamInfoService.SetWidgetVisibility(false);
         await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnRoundStart(object sender, RoundEventArgs args)
     {
+        await teamInfoService.SetWidgetVisibility(true);
         await teamInfoService.UpdateRoundNumber(args.Count);
         await teamInfoService.RequestScoresFromServerAsync();
     }
