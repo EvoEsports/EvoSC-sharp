@@ -10,7 +10,7 @@ public interface ITeamInfoService
 
     public Task<ModeScriptTeamSettings> GetTeamModeSettingsAsync();
 
-    public Task<string> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings);
+    public Task<string?> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings);
 
     public Task<bool> DoesTeamHaveMapPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap);
     
@@ -27,8 +27,6 @@ public interface ITeamInfoService
     public Task RequestScoresFromServerAsync();
     
     public Task UpdatePointsAsync(int team1Points, int team2Points);
-    
-    public Task UpdateGainedPointsAsync(int team1Points, int team2Points);
     
     public Task ClearPoints();
 

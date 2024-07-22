@@ -24,16 +24,12 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<T
         logger.LogInformation("Team info length: {length}", teamInfos.Count);
         logger.LogInformation("Section: {section}", eventArgs.Section.ToString());
 
-        var team1Points = teamInfos[0]!.MapPoints;
-        var team2Points = teamInfos[1]!.MapPoints;
+        var team1Points = teamInfos[0]!.MatchPoints;
+        var team2Points = teamInfos[1]!.MatchPoints;
 
         logger.LogInformation("Points: {team1} - {team2}", team1Points, team2Points);
 
-        if (eventArgs.Section == ModeScriptSection.PreEndRound)
-        {
-            await teamInfoService.UpdateGainedPointsAsync(team1Points, team2Points);
-        }
-        else
+        if (eventArgs.Section != ModeScriptSection.EndMap)
         {
             await teamInfoService.UpdatePointsAsync(team1Points, team2Points);
         }
@@ -42,7 +38,13 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<T
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args)
     {
-        await teamInfoService.SetWidgetVisibility(false);
+        // await teamInfoService.SetWidgetVisibility(false);
+        await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    }
+
+    [Subscribe(GbxRemoteEvent.EndMap)]
+    public async Task OnEndMap(object sender, MapGbxEventArgs args)
+    {
         await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
     }
 
@@ -50,33 +52,12 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<T
     public async Task OnRoundStart(object sender, RoundEventArgs args)
     {
         await teamInfoService.UpdateRoundNumber(args.Count);
-        await teamInfoService.UpdateGainedPointsAsync(0, 0);
-        await teamInfoService.SetWidgetVisibility(true);
         await teamInfoService.RequestScoresFromServerAsync();
-        // await teamInfoService.SendTeamInfoWidgetEveryoneAsync();
     }
-
-    // [Subscribe(ModeScriptEvent.EndRoundEnd)]
-    // public async Task OnEndRoundEnd(object sender, RoundEventArgs args)
-    // {
-    //     //TODO: clear gained points
-    // }
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
     {
         await teamInfoService.SendTeamInfoWidgetAsync(args.Login);
-    }
-
-    // [Subscribe(GbxRemoteEvent.EndMap)]
-    // public async Task OnEndMap(object sender, MapGbxEventArgs args)
-    // {
-    //     await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
-    // }
-
-    [Subscribe(GbxRemoteEvent.BeginMap)]
-    public async Task OnBeginMap(object sender, MapGbxEventArgs args)
-    {
-        await teamInfoService.RequestScoresFromServerAsync();
     }
 }

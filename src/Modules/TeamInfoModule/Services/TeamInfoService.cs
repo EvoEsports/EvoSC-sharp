@@ -4,30 +4,38 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class TeamInfoService(IServerClient server, IManialinkManager manialinks) : ITeamInfoService
+public class TeamInfoService(IServerClient server, IManialinkManager manialinks, ILogger<TeamInfoService> logger)
+    : ITeamInfoService
 {
     private const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
 
-    private bool _widgetShouldBeDisplayed = false;
     private bool _modeIsTeams = true;
-    private int _currentRound = 0;
-    private int _team1Points = 0;
-    private int _team2Points = 0;
-    private int _team1GainedPoints = 0;
-    private int _team2GainedPoints = 0;
+    private bool _widgetShouldBeDisplayed;
+    private int _currentRound;
+    private int _team1Points;
+    private int _team2Points;
 
     public async Task InitializeModuleAsync()
     {
-        //TODO: check if teams mode is active
+        //TODO: check if teams mode is active -> Maniaplanet.Mode.GetUseTeams
+
+        // var getUseTeamsResponse = await server.Remote.CallMethodAsync("Maniaplanet.Mode.GetUseTeams");
+        // logger.LogInformation("response: {response}", getUseTeamsResponse.ResponseData.ToString());
+
+        logger.LogInformation("Initializing...");
 
         if (_modeIsTeams)
         {
             _widgetShouldBeDisplayed = true;
             await RequestScoresFromServerAsync();
+            // await SendTeamInfoWidgetEveryoneAsync();
+
+            logger.LogInformation("Mode is teams.");
         }
         else
         {
@@ -65,8 +73,8 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
             roundNumber = _currentRound,
             team1Points = _team1Points,
             team2Points = _team2Points,
-            team1GainedPoints = _team1GainedPoints,
-            team2GainedPoints = _team2GainedPoints
+            team1GainedPoints = 0,
+            team2GainedPoints = 0
         };
     }
 
@@ -82,13 +90,22 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
         };
     }
 
-    public Task<string> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings)
+    public Task<string?> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings)
     {
-        var output = new StringBuilder("First to " + modeScriptTeamSettings.PointsLimit);
+        var output = new StringBuilder();
 
-        if (modeScriptTeamSettings.IsTennisMode())
+        if (modeScriptTeamSettings.PointsLimit > 0)
         {
-            output.Append(' ').Append("(Tennis Mode)");
+            output.Append("FIRST TO " + modeScriptTeamSettings.PointsLimit);
+
+            if (modeScriptTeamSettings.IsTennisMode())
+            {
+                output.Append(' ').Append($"(TENNIS {modeScriptTeamSettings.PointsGap})");
+            }
+        }
+        else if (output.Length == 0)
+        {
+            return null;
         }
 
         return Task.FromResult(output.ToString().ToUpper());
@@ -139,23 +156,13 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
 
     public async Task RequestScoresFromServerAsync()
     {
-        await server.Remote.CallMethodAsync("Trackmania.GetScores");
+        await server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.GetScores");
     }
 
     public async Task UpdatePointsAsync(int team1Points, int team2Points)
     {
         _team1Points = team1Points;
         _team2Points = team2Points;
-        _team1GainedPoints = 0;
-        _team2GainedPoints = 0;
-
-        await SendTeamInfoWidgetEveryoneAsync();
-    }
-
-    public async Task UpdateGainedPointsAsync(int team1Points, int team2Points)
-    {
-        _team1GainedPoints = team1Points - _team1Points;
-        _team2GainedPoints = team2Points - _team2Points;
 
         await SendTeamInfoWidgetEveryoneAsync();
     }
