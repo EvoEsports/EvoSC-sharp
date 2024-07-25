@@ -6,6 +6,9 @@ Basic text input control.
 
   <!-- The name of the control. -->
   <property type="string" name="id" />
+
+  <!-- Additional classes for the entry control. -->
+  <property type="string" name="classes" default="" />
   
   <!-- The X position of the control. -->
   <property type="double" name="x" default="0.0"/>
@@ -37,6 +40,9 @@ Basic text input control.
   <!-- Default text to show when empty -->
   <property type="string" name="placeholder" default="" />
   
+  <!-- Text to prepend inside the input -->
+  <property type="string" name="prefix" default="" />
+  
   <template>
     <frame pos="{{ x }} {{ y }}" id="{{ id }}">
       <Rectangle
@@ -51,13 +57,14 @@ Basic text input control.
                 focusareacolor1="00000000"
                 focusareacolor2="00000000"
                 textformat='{{ isPassword ? "Password" : "Basic" }}'
+                textprefix="{{ prefix }}"
                 name="{{ id }}"
                 data-id="{{ id }}"
                 default="{{ value }}"
                 selecttext="{{ autoSelect }}"
                 maxlen="{{ maxLength }}"
                 z-index="0"
-                class="txtinput-text"
+                class="txtinput-text {{ classes }}"
                 size="{{ width-2 }} {{ height }}"
                 pos="{{ 1 }} {{ -height/4 }}"
         />
