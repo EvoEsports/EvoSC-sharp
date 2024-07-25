@@ -2,6 +2,7 @@
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.ForceTeamModule.Interfaces;
 
@@ -17,4 +18,20 @@ public class ForceTeamService(IManialinkManager manialinkManager, IPlayerManager
     }
 
     public Task BalanceTeamsAsync() => server.Remote.AutoTeamBalanceAsync();
+    
+    public async Task<PlayerTeam> SwitchPlayerAsync(IOnlinePlayer player)
+    {
+        if (player.IsTeam1())
+        {
+            await server.Remote.ForcePlayerTeamAsync(player.GetLogin(), 1);
+            return PlayerTeam.Team2;
+        }
+        else if (player.IsTeam2())
+        {
+            await server.Remote.ForcePlayerTeamAsync(player.GetLogin(), 0);
+            return PlayerTeam.Team1;
+        }
+
+        return PlayerTeam.Unknown;
+    }
 }

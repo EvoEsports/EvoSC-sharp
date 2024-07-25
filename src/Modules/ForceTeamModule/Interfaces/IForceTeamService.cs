@@ -7,4 +7,5 @@ public interface IForceTeamService
     public Task ShowWindowAsync(IPlayer player);
     
     public Task BalanceTeamsAsync();
+    public Task<PlayerTeam> SwitchPlayerAsync(IOnlinePlayer player);
 }
