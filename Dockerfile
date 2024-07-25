@@ -22,6 +22,9 @@ ARG VERSION \
     BUILD_DATE \
     REVISION
 
+# Disable invariant mode which is enabled on alpine to make localization work
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
 LABEL org.opencontainers.image.title="EvoSC#" \
       org.opencontainers.image.description="Next-generation server controller for Trackmania." \
       org.opencontainers.image.authors="Evo" \
@@ -35,6 +38,7 @@ WORKDIR /app
 COPY --from=run-chown /app .
 
 RUN true \
+    && apk add --no-cache icu-libs \
     && adduser --disabled-password --home /app -u 9999 evosc \
     && true \
 
