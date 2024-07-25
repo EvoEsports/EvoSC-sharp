@@ -21,6 +21,22 @@ public class ColorUtils
 
         return $"<{r}, {g}, {b}>";
     }
+    
+    /// <summary>
+    /// Renders a color code in ManiaScript.
+    /// </summary>
+    /// <param name="hexColor">Color to render.</param>
+    /// <returns></returns>
+    public string ToTextColor(string hexColor)
+    {
+        var color = new Hex(hexColor).ToRgb();
+
+        var r = ((int)Math.Round(color.R / 255 * 15)).ToString("X");
+        var g = ((int)Math.Round(color.G / 255 * 15)).ToString("X");
+        var b = ((int)Math.Round(color.B / 255 * 15)).ToString("X");
+
+        return $"${r}{g}{b}";
+    }
 
     /// <summary>
     /// Set the opacity of a color using the alpha channel (4th byte).

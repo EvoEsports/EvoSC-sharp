@@ -13,8 +13,12 @@ public class ForceTeamService(IManialinkManager manialinkManager, IPlayerManager
 {
     public async Task ShowWindowAsync(IPlayer player)
     {
+        var team1Info = await server.Remote.GetTeamInfoAsync(1);
+        var team2Info = await server.Remote.GetTeamInfoAsync(2);
         var players = await playerManagerService.GetOnlinePlayersAsync();
-        await manialinkManager.SendManialinkAsync(player, "ForceTeamModule.ForceTeamWindow", new { players });
+        
+        await manialinkManager.SendManialinkAsync(player, "ForceTeamModule.ForceTeamWindow",
+            new { players, team1 = team1Info, team2 = team2Info });
     }
 
     public Task BalanceTeamsAsync() => server.Remote.AutoTeamBalanceAsync();

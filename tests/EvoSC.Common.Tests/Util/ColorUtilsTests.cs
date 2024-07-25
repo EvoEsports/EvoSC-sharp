@@ -89,4 +89,15 @@ public class ColorUtilsTests
         
         Assert.Equal(expected, newColor);
     }
+    
+    [Theory]
+    [InlineData("FFFFFF", "$FFF")]
+    [InlineData("FF0058", "$F05")]
+    [InlineData("000000", "$000")]
+    public void Color_Converted_To_Text_Color_Code(string inHex, string expected)
+    {
+        var textColor = new ColorUtils().ToTextColor(inHex);
+        
+        Assert.Equal(expected, textColor);
+    }
 }
