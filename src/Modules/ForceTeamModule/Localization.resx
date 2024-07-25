@@ -16,4 +16,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Permission.ForcePlayerTeam" xml:space="preserve">
+    <value>Switch players between teams.</value>
+  </data>
+  <data name="Permission.AutoTeamBalance" xml:space="preserve">
+    <value>Force auto balance of the teams.</value>
+  </data>
+  <data name="UI.WindowTitle" xml:space="preserve">
+    <value>Force Teams</value>
+  </data>
 </root>

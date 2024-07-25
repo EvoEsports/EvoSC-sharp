@@ -13,11 +13,12 @@
   <property type="IEnumerable<IOnlinePlayer>" name="players" />
   <property type="TmTeamInfo" name="team1" />
   <property type="TmTeamInfo" name="team2" />
+  <property type="dynamic" name="Locale"/>
   
   <template>
     <UIStyle />
     
-    <Window icon="{{ Icons.Users }}" title="Force Teams" width="91" height="{{ 14 + Math.Max(players.Where(p => p.IsTeam1()).Count(), players.Where(p => p.IsTeam2()).Count())*5 + 8 }}">
+    <Window icon="{{ Icons.Users }}" title="{{ Locale.PlayerLanguage.UI_WindowTitle }}" width="91" height="{{ 14 + Math.Max(players.Where(p => p.IsTeam1()).Count(), players.Where(p => p.IsTeam2()).Count())*5 + 8 }}">
       <label text="$s{{ team1.Name }}" textcolor="{{ team1.RGB }}" halign="center" pos="20 0" class="text-xl text-primary" />
       <label text="$s{{ team2.Name }}" textcolor="{{ team2.RGB }}" halign="center" pos="65 0" class="text-xl text-primary" />
       
