@@ -28,7 +28,6 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
 
             _document = CreateDefaultConfig();
             File.WriteAllText(path, _document.SerializedValue);
-
         }
         else
         {
@@ -41,6 +40,7 @@ public class TomlConfigStore<TConfig> : IConfigStore where TConfig : class
     {
         var rootType = typeof(TConfig);
         var document = BuildSubDocument(TomlDocument.CreateEmpty(), rootType, "");
+        document.Put("Theme", new TomlTable());
 
         // avoid inline writing which is more human readable
         document.ForceNoInline = false;

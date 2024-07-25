@@ -63,5 +63,9 @@
     <ItemGroup>
       <Content Include="bin\Debug\net8.0\config\main.toml" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\net8.0\config\" />
+    </ItemGroup>
     
 </Project>

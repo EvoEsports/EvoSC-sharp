@@ -81,7 +81,7 @@ public static class ApplicationSetup
 
             .Services(AppFeature.Manialinks, s => s.AddEvoScManialinks())
                 
-                .Services(AppFeature.Themes, s => s.AddEvoScThemes())
+            .Services(AppFeature.Themes, s => s.AddEvoScThemes())
 
                 // initialize the application
             .Action("ActionMigrateDatabase", MigrateDatabase)
