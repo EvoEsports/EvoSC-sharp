@@ -14,7 +14,6 @@ namespace ForceTeamModule.Tests.Controllers;
 public class ForceTeamManialinkControllerTests : ManialinkControllerTestBase<ForceTeamManialinkController>
 {
     private const string PlayerAccountId = "a467a996-eba5-44bf-9e2b-8543b50f39ae";
-    private const string PlayerLogin = "pGepluulRL-eK4VDtQ85rg";
     
     private readonly Mock<IForceTeamService> _forceTeamService = new();
     private readonly Mock<IPlayerManagerService> _playerManagerService = new();
