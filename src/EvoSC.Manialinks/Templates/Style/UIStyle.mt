@@ -36,6 +36,46 @@
               textsize="3"
       />
 
+      <style
+              class="text-xs"
+              textsize="{{ Theme.UI_FontSize*0.8 }}"
+      />
+
+      <style
+              class="text-normal"
+              textsize="{{ Theme.UI_FontSize }}"
+      />
+
+      <style
+              class="text-md"
+              textsize="{{ Theme.UI_FontSize*1.2 }}"
+      />
+
+      <style
+              class="text-lg"
+              textsize="{{ Theme.UI_FontSize*1.5 }}"
+      />
+
+      <style
+              class="text-xl"
+              textsize="{{ Theme.UI_FontSize*2 }}"
+      />
+
+      <style
+              class="text-2xl"
+              textsize="{{ Theme.UI_FontSize*4 }}"
+      />
+
+      <style
+              class="text-3xl"
+              textsize="{{ Theme.UI_FontSize*6 }}"
+      />
+
+      <style
+              class="text-4xl"
+              textsize="{{ Theme.UI_FontSize*8 }}"
+      />
+
       <!-- Background -->
       <style
               class="bg-header"

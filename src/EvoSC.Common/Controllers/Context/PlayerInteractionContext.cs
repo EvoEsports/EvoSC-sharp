@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 
 namespace EvoSC.Common.Controllers.Context;
@@ -14,9 +15,12 @@ public class PlayerInteractionContext : GenericControllerContext, IPlayerInterac
     /// </summary>
     public IOnlinePlayer Player { get; }
 
-    public PlayerInteractionContext(IOnlinePlayer player, IControllerContext context) : base(context)
+    public IServerClient Server { get; }
+
+    public PlayerInteractionContext(IOnlinePlayer player, IServerClient server, IControllerContext context) : base(context)
     {
         Player = player;
+        Server = server;
         AuditEvent.CausedBy(player);
     }
 }

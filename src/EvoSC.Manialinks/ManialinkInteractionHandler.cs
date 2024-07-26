@@ -81,12 +81,13 @@ public class ManialinkInteractionHandler : IManialinkInteractionHandler
             
             var player = await GetPlayerAsync(args.Login);
             var manialinkManager = context.ServiceScope.Container.GetRequiredService<IManialinkManager>();
+            var serverClient = context.ServiceScope.Container.GetRequiredService<IServerClient>();
 
             var (actionParams, entryModel, validationResults) =
                 await ConvertRequestParametersAsync(action.FirstParameter, path, args.Entries,
                     context.ServiceScope.Container);
 
-            var manialinkInteractionContext = new ManialinkInteractionContext(player, context)
+            var manialinkInteractionContext = new ManialinkInteractionContext(player, serverClient, context)
             {
                 ManialinkAction = new ManialinkActionContext {Action = action, EntryModel = entryModel},
                 ManialinkManager = manialinkManager

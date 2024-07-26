@@ -174,10 +174,11 @@ public class PlayerCacheService : IPlayerCacheService
             throw new PlayerNotFoundException(accountId, "Failed to fetch or create player in the database.");
         }
 
-       return new OnlinePlayer(player)
+        return new OnlinePlayer(player)
         {
             State = onlinePlayerDetails.GetState(),
-            Flags = onlinePlayerInfo.GetFlags()
+            Flags = onlinePlayerInfo.GetFlags(),
+            Team = onlinePlayerDetails.TeamId == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2
         };
     }
 
@@ -240,11 +241,12 @@ public class PlayerCacheService : IPlayerCacheService
             {
                 throw new PlayerNotFoundException(accountId, "Failed to fetch or create player in the database.");
             }
-            
+
             var onlinePlayer = new OnlinePlayer(player)
             {
                 State = onlinePlayerDetails.GetState(),
-                Flags = onlinePlayerInfo.GetFlags()
+                Flags = onlinePlayerInfo.GetFlags(),
+                Team = onlinePlayerDetails.TeamId == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2
             };
 
             lock (_onlinePlayersMutex)

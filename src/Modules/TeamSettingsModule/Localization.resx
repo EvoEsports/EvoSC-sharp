@@ -49,4 +49,7 @@
   <data name="UI.Team.Two" xml:space="preserve">
     <value>Team Two</value>
   </data>
+  <data name="Permission.EditTeamSettings" xml:space="preserve">
+    <value>Can edit team settings.</value>
+  </data>
 </root>

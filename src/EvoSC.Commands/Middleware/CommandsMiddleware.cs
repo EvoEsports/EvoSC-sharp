@@ -10,6 +10,7 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Remote.ChatRouter;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.ServerUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Commands.Middleware;
@@ -47,7 +48,14 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
     {
         var (controller, context) = controllers.CreateInstance(cmd.ControllerType);
 
-        var playerInteractionContext = new CommandInteractionContext((IOnlinePlayer)routerContext.Player, context)
+        if (context.ServiceScope.Container == null)
+        {
+            throw new InvalidOperationException("Failed to instantiate controller context as the service container is null");
+        }
+        
+        var contextServerClient = context.ServiceScope.Container.GetRequiredService<IServerClient>();
+
+        var playerInteractionContext = new CommandInteractionContext((IOnlinePlayer)routerContext.Player, contextServerClient, context)
         {
             CommandExecuted = cmd
         };

@@ -13,6 +13,7 @@ public class OnlinePlayer : IOnlinePlayer
     public IPlayerSettings Settings { get; set; }
     public required PlayerState State { get; set; }
     public IPlayerFlags Flags { get; set; }
+    public PlayerTeam Team { get; set; }
 
     public OnlinePlayer(){}
 
