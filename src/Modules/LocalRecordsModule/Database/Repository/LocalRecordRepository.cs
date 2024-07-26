@@ -176,7 +176,7 @@ public class LocalRecordRepository(
 
     public async Task<DbLocalRecord?> GetRecordOfPlayerInMapAsync(IPlayer player, IMap map) =>
         await NewLoadAll()
-            .FirstOrDefaultAsync(r => r.DbRecord.DbPlayer.Id == player.Id);
+            .FirstOrDefaultAsync(r => r.DbRecord.DbPlayer.Id == player.Id && r.DbMap.Id == map.Id);
 
     public async Task DeleteRecordAsync(IPlayer player, IMap map)
     {
