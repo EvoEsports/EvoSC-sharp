@@ -1,4 +1,4 @@
 dotnet:
   solution: EvoSC.sln
 
-bootstrap: dotnet build; dotnet add package coverlet.msbuild && dotnet test /p:CollectCoverage=true /p:.qodana/code-coverage /p:CoverletOutputFormat=lcov EvoSC.sln
+bootstrap: dotnet build; dotnet test /p:CollectCoverage=true /p:CoverletOutput=.qodana/code-coverage /p:CoverletOutputFormat=lcov
