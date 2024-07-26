@@ -109,6 +109,7 @@ The window is designed to only be used once per Manialink.
                       y="-1.6"
                       data="{{ id }}"
                       size="small"
+                      if="canClose"
           />
 
           <!-- Body Contents -->
@@ -121,69 +122,6 @@ The window is designed to only be used once per Manialink.
           >
             <slot />
           </Container>
-          
-          <!-- Window Header -->
-            <!-- <quad
-                    class="window-bg"
-                    size="{{ width }} {{ height }}"
-                    scriptevents="1"
-            />
-            
-            <quad 
-                    class="window-header evosc-window-header evosc-window"
-                    size="{{ width }} {{ 5 }}"
-                    if="hasTitlebar"
-            />
-
-            <label
-                    class="window-title evosc-window"
-                    valign="center"
-                    text="{{ icon }}"
-                    size="{{ width-1.5 }} 5"
-                    pos="1.5 -2.2"
-                    if='hasTitlebar &amp;&amp; icon != ""'
-            />
-            
-            <label 
-                    class="window-title-{{ style }} evosc-window"
-                    valign="center"
-                    text="{{ title.ToUpper() }}"
-                    size='{{ width-1.5 }} 5'
-                    pos='{{ icon != "" ? 5.5 : 1.5 }} -2.2'
-                    if="hasTitlebar"
-            />
-            
-            <label
-                    class="window-closebtn-{{ style }} evosc-window-closebtn evosc-window-ctrlbtn"
-                    data-id="{{ id }}"
-                    valign="center"
-                    text="❌"
-                    size="5 5"
-                    pos="{{ width-4.5 }} -2.2"
-                    scriptevents="1"
-                    if="hasTitlebar &amp;&amp; canClose"
-            />
-
-            <label
-                    class="window-minimizebtn-{{ style }} evosc-window-minimizebtn evosc-window-ctrlbtn"
-                    data-id="{{ id }}"
-                    valign="center"
-                    text="—"
-                    size="5 5"
-                    pos="{{ width - 4.5 - (canClose ? 4 : 0) }} -2.2"
-                    scriptevents="1"
-                    if="hasTitlebar &amp;&amp; canMinimize"
-            />
-
-            <Container
-                    x="{{ padding }}"
-                    y="-{{ hasTitlebar ? 5+padding : padding }}"
-                    width="{{ width-padding*2 }}"
-                    height="{{ height-(hasTitlebar ? 5+padding*2 : padding*2) }}"
-                    scrollable="false"
-            >
-                <slot />
-            </Container> -->
         </frame>
     </template>
 

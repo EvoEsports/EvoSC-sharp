@@ -30,6 +30,7 @@ public class OpenPlanetControlServiceTests
         Mock<IManialinkManager> Manialinks,
         (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
         Mock<IOpenPlanetScheduler> Scheduler,
+        Mock<IAuditService> AuditService,
         ControllerContextMock<IManialinkInteractionContext> Context
         ) NewServiceMock()
     {
@@ -40,6 +41,7 @@ public class OpenPlanetControlServiceTests
         var manialinks = new Mock<IManialinkManager>();
         var server = Mocking.NewServerClientMock();
         var scheduler = new Mock<IOpenPlanetScheduler>();
+        var auditService = new Mock<IAuditService>();
 
         var actionContext = new Mock<IManialinkActionContext>();
         var context =
@@ -48,7 +50,7 @@ public class OpenPlanetControlServiceTests
         var locale = Mocking.NewLocaleMock(contextService.Object);
 
         var controlService = new OpenPlanetControlService(logger.Object, permissions.Object, settings.Object,
-            manialinks.Object, server.Client.Object, scheduler.Object, locale);
+            manialinks.Object, server.Client.Object, scheduler.Object, locale, auditService.Object);
 
         player.Setup(m => m.AccountId).Returns(PlayerAccountId);
         
@@ -61,6 +63,7 @@ public class OpenPlanetControlServiceTests
             manialinks,
             server,
             scheduler,
+            auditService,
             context
         );
     }
