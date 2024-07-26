@@ -29,6 +29,6 @@ public interface IOpenPlanetControlSettings
     [Option(DefaultValue = true), Description("Allow the use of openplanet. If false, no signature mode is allowed.")]
     public bool AllowOpenplanet { get; set; }
     
-    [Option(DefaultValue = "1.25.45"), Description("The minimum required OpenPlanet version to play on this server.")]
+    [Option(DefaultValue = "1.26.25"), Description("The minimum required OpenPlanet version to play on this server.")]
     public Version MinimumRequiredVersion { get; set; }
 }
