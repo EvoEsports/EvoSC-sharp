@@ -31,8 +31,11 @@
         
         *** OnLoop ***
         ***
-        if (lastTime + {{ config.CheckInterval }} <= Now && lastToolInfo != System.ExtraTool_Info) {
-            CheckOpenPlanet();
+        if (lastTime + {{ config.CheckInterval }} <= Now) {
+            if (lastToolInfo != System.ExtraTool_Info) {
+              CheckOpenPlanet();
+            }
+            
             lastTime = Now;
             lastToolInfo = System.ExtraTool_Info;
         }

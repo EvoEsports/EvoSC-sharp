@@ -16,7 +16,7 @@ public interface IAuditService
     /// <param name="comment">A comment or description of the event.</param>
     /// <param name="properties">Any properties or values associated with the event.</param>
     /// <returns></returns>
-    internal Task LogAsync(string eventName, AuditEventStatus status, IPlayer actor, string comment,
+    internal Task LogAsync(string eventName, AuditEventStatus status, IPlayer? actor, string comment,
         dynamic? properties);
     
     /// <summary>

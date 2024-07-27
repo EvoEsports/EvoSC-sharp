@@ -31,9 +31,9 @@ namespace EvoSC;
 public static class InternalModules
 {
     public static readonly Type[] Modules =
-    {
+    [
+        //typeof(ExampleModule),
         typeof(PlayerModule),
-        typeof(ExampleModule),
         typeof(MapsModule),
         typeof(WorldRecordModule),
         typeof(PlayerRecordsModule),
@@ -56,7 +56,7 @@ public static class InternalModules
         typeof(LocalRecordsModule),
         typeof(ForceTeamModule),
         typeof(TeamSettingsModule)
-    };
+    ];
 
     /// <summary>
     /// Run any migrations from all the modules.

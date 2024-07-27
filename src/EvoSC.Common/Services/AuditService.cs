@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Models.Audit;
+using EvoSC.Common.Util;
 using EvoSC.Common.Util.Auditing;
 using EvoSC.Common.Util.EnumIdentifier;
 using Microsoft.Extensions.Logging;
@@ -37,7 +38,7 @@ public class AuditService(ILogger<AuditService> logger, IAuditRepository auditRe
         );
     }
 
-    async Task IAuditService.LogAsync(string eventName, AuditEventStatus status, IPlayer actor, string comment,
+    async Task IAuditService.LogAsync(string eventName, AuditEventStatus status, IPlayer? actor, string comment,
         dynamic? properties)
     {
         var serializedData = properties != null ? JsonSerializer.Serialize(properties) : null;
@@ -45,9 +46,9 @@ public class AuditService(ILogger<AuditService> logger, IAuditRepository auditRe
         var auditRecord = new DbAuditRecord
         {
             Status = status,
-            Actor = new DbPlayer(actor),
+            Actor = actor == null ? null : new DbPlayer(actor),
             CreatedAt = DateTime.UtcNow,
-            ActorId = actor.Id,
+            ActorId = actor?.Id ?? 0,
             EventName = eventName,
             Comment = comment,
             Properties = serializedData

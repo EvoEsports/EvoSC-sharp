@@ -20,12 +20,13 @@ public class OpenPlanetControlManialinkControllerTests : ManialinkControllerTest
     private readonly Mock<IOpenPlanetControlService> _controlService = new();
     private readonly (Mock<IServerClient> Server, Mock<IGbxRemoteClient> Client) _server = Mocking.NewServerClientMock();
     private readonly Mock<IOpenPlanetTrackerService> _trackerService = new();
+    private readonly Mock<IOpenPlanetScheduler> _scheduler = new();
 
     public OpenPlanetControlManialinkControllerTests()
     {
         _player.Setup(p => p.AccountId).Returns(PlayerAccountId);
         
-        InitMock(_player.Object, _actionContext.Object, _controlService, _server.Item1, _trackerService);
+        InitMock(_player.Object, _actionContext.Object, _controlService, _server.Item1, _trackerService, _scheduler);
     }
 
     [Fact]
