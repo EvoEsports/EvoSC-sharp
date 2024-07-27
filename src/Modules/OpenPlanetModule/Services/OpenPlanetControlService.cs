@@ -7,6 +7,7 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule.Config;
+using EvoSC.Modules.Official.OpenPlanetModule.Events;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Models;
@@ -18,7 +19,7 @@ namespace EvoSC.Modules.Official.OpenPlanetModule.Services;
 public class OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, IPermissionManager permissions,
         IOpenPlanetControlSettings opcSettings, IManialinkManager manialinks, IServerClient server,
         IOpenPlanetScheduler scheduler,
-        Locale locale)
+        Locale locale, IAuditService auditService)
     : IOpenPlanetControlService
 {
     private readonly dynamic _locale = locale;
@@ -27,6 +28,15 @@ public class OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, 
     {
         logger.LogDebug("Verifying OpenPlanet for Player {Player}", player.AccountId);
 
+        if (opcSettings.AuditAllChecks)
+        {
+            await auditService.NewEvent(OpAuditEvents.SignatureModeCheck)
+                .HavingProperties(new { Player = player, OpenPlanetData = playerOpInfo })
+                .Comment("OpenPlanet state checked for player.")
+                .Info()
+                .LogAsync();
+        }
+        
         if (!playerOpInfo.IsOpenPlanet)
         {
             await ReleasePlayerAsync(player);
@@ -74,6 +84,14 @@ public class OpenPlanetControlService(ILogger<OpenPlanetControlService> logger, 
     
     private async Task JailPlayerAsync(IPlayer player, OpJailReason reason)
     {
+        if (opcSettings.AuditJails)
+        {
+            await auditService.NewEvent(OpAuditEvents.PlayerJailed)
+                .HavingProperties(new { Player = player, Reason = reason })
+                .Success()
+                .LogAsync("Player jailed.");
+        }
+        
         if (scheduler.PlayerIsScheduledForKick(player))
         {
             return;

@@ -120,7 +120,7 @@ public class LocalRecordsService(
                 .ToString());
             await ShowWidgetToAllAsync();
         }
-        else if (record.Score == oldRecord.Record.Score)
+        else if (record.Score == localRecord.Record.Score)
         {
             await server.InfoMessageAsync(new TextFormatter()
                 .AddText(record.Player.NickName)

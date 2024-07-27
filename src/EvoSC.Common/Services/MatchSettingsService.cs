@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Common.Util.MatchSettings.Builders;
 using GbxRemoteNet.Exceptions;
@@ -108,7 +109,19 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         var filePath = await GetFilePathAsync(name);
         File.Delete(filePath);
     }
-    
+
+    public async Task<string> GetCurrentScriptNameAsync()
+    {
+        var scriptInfo = await server.Remote.GetModeScriptInfoAsync();
+        return scriptInfo.Name;
+    }
+
+    public async Task<DefaultModeScriptName> GetCurrentModeAsync()
+    {
+        var scriptName = await GetCurrentScriptNameAsync();
+        return scriptName.ToEnumValue<DefaultModeScriptName>() ?? DefaultModeScriptName.Unknown;
+    }
+
     private async Task<string> GetFilePathAsync(string name)
     {
         var mapsDir = await server.GetMapsDirectoryAsync();

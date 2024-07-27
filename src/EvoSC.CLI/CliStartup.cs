@@ -12,6 +12,7 @@ using EvoSC.Common.Middleware;
 using EvoSC.Common.Permissions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Services;
+using EvoSC.Common.Themes;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
@@ -43,7 +44,7 @@ public static class CliStartup
 
             .Services(AppFeature.GbxRemoteClient, s => s
                     .AddGbxRemoteClient()
-                , "Logging", "Config", "Events", "ActionPipelines", "InitializeGbxRemoteConnection")
+                , "Logging", "Config", "Events", "ActionPipelines", "InitializeGbxRemoteConnection", "Themes")
 
             .Services(AppFeature.Modules, s => s
                     .AddEvoScModules()
@@ -94,6 +95,8 @@ public static class CliStartup
                     .AddEvoScManialinks()
                 , "Logging", "Events", "PlayerManager", "ControllerManager", "ActionPipelines", "GbxRemoteClient", "ActionInitializeTemplates")
 
+            .Services(AppFeature.Themes, s => s.AddEvoScThemes())
+                
                 // initialization of features
             .Action("ActionMigrateDatabase", MigrateDatabase)
 

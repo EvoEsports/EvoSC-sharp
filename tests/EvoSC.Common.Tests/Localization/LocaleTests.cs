@@ -12,6 +12,7 @@ using EvoSC.Common.Localization;
 using EvoSC.Common.Models.Audit;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util.Auditing;
+using EvoSC.Testing;
 using Moq;
 using Xunit;
 
@@ -44,6 +45,8 @@ public class LocaleTests
             Controller = null, 
             AuditEvent = new AuditEventBuilder(auditService.Object)
         };
+
+        var serverMock = Mocking.NewServerClientMock();
         
         _contextService = new Mock<IContextService>();
         _contextService.Setup(c => c.GetContext())
@@ -61,7 +64,7 @@ public class LocaleTests
                 },
                 State = PlayerState.Spectating,
                 Flags = null
-            }, baseContext) {Controller = null, AuditEvent = null});
+            },serverMock.Client.Object, baseContext) {Controller = null, AuditEvent = null});
         
         _config = new Mock<IEvoScBaseConfig>();
         _config.Setup(c => c.Locale)

@@ -54,7 +54,7 @@
                 
                 <label class="text" text="$iYou will be automatically kicked in {{ Config.KickTimeout }} seconds." halign="center" pos="100 -73" id="countdownText" />
                 
-                <IconButton icon="{{ Icons.SignIn }}" text="Disconnect Now" width="30" y="-78" x="84" id="btnDisconnect" action="ManialinkActions/Disconnect" />
+                <IconButton icon="{{ Icons.SignIn }}" text="Disconnect Now" hasText="true" width="30" y="-78" x="84" id="btnDisconnect" action="ManialinkActions/Disconnect" />
             </frame>
         </Window>
     </template>

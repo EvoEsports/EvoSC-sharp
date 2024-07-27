@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
+using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Common.Util.MatchSettings.Builders;
 using GbxRemoteNet.Exceptions;
 
@@ -90,4 +91,16 @@ public interface IMatchSettingsService
     /// <exception cref="FileNotFoundException">Thrown if the match settings file was not found.</exception>
     /// <returns></returns>
     public Task DeleteMatchSettingsAsync(string name);
+
+    /// <summary>
+    /// Get the name of the current mode script.
+    /// </summary>
+    /// <returns></returns>
+    public Task<string> GetCurrentScriptNameAsync();
+    
+    /// <summary>
+    /// Get the mode of the current match settings.
+    /// </summary>
+    /// <returns></returns>
+    public Task<DefaultModeScriptName> GetCurrentModeAsync();
 }

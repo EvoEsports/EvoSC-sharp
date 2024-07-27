@@ -4,6 +4,7 @@ using EvoSC.Modules.Official.ASayModule;
 using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCpModule;
+using EvoSC.Modules.Official.ForceTeamModule;
 using EvoSC.Modules.Official.LiveRankingModule;
 using EvoSC.Modules.Official.LocalRecordsModule;
 using EvoSC.Modules.Official.MapListModule;
@@ -31,9 +32,9 @@ namespace EvoSC;
 public static class InternalModules
 {
     public static readonly Type[] Modules =
-    {
+    [
+        //typeof(ExampleModule),
         typeof(PlayerModule),
-        typeof(ExampleModule),
         typeof(MapsModule),
         typeof(WorldRecordModule),
         typeof(PlayerRecordsModule),
@@ -54,9 +55,12 @@ public static class InternalModules
         typeof(MapQueueModule),
         typeof(MapListModule),
         typeof(LocalRecordsModule),
+        typeof(ForceTeamModule),
+        typeof(TeamSettingsModule),
+        typeof(LocalRecordsModule),
         typeof(TeamSettingsModule),
         typeof(TeamInfoModule)
-    };
+    ];
 
     /// <summary>
     /// Run any migrations from all the modules.
@@ -77,7 +81,7 @@ public static class InternalModules
             }
         }
     }
-    
+
     /// <summary>
     /// Load all internal modules.
     /// </summary>

@@ -1,7 +1,9 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using SpectatorTargetInfo.Interfaces;
 
@@ -9,7 +11,7 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class SpectatorTargetInfoService
-    (IManialinkManager manialinks, IServerClient server) : ISpectatorTargetInfoService
+    (IManialinkManager manialinks, IServerClient server, IPlayerManagerService playerManagerService) : ISpectatorTargetInfoService
 {
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
@@ -17,8 +19,11 @@ public class SpectatorTargetInfoService
         await manialinks.SendManialinkAsync(WidgetTemplate);
 
 
-    public async Task SendManiaLinkAsync(string playerLogin) =>
-        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate);
+    public async Task SendManiaLinkAsync(string playerLogin)
+    {
+        var player = await playerManagerService.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin));
+        await manialinks.SendManialinkAsync(player, WidgetTemplate);
+    }
 
     public async Task HideManiaLinkAsync() =>
         await manialinks.HideManialinkAsync(WidgetTemplate);

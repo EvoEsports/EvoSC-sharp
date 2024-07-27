@@ -77,13 +77,9 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var mapList = await _server.Remote.GetMapListAsync(-1, 0);
-
-        var maps = new List<IMap>();
-        foreach (var map in mapList)
-        {
-            maps.Add(await _mapService.GetMapByUidAsync(map.UId));
-        }
+        var mode = await _matchSettings.GetCurrentModeAsync();
+        
+        Console.WriteLine(mode);
     }
 
     [ChatCommand("rejoin", "Simulates the player joining the server.")]

@@ -24,9 +24,11 @@ public enum DefaultModeScriptName
     Laps,
     
     [Identifier(Name = "Trackmania/TM_Knockout_Online.Script.txt", NoPrefix = true)]
+    [Alias(Name = "ko")]
     Knockout,
 
     [Identifier(Name = "Trackmania/TM_TMWTTeams_Online.Script.txt", NoPrefix = true)]
+    [Alias(Name = "tmwt")]
     TmwtTeams,
     
     /// <summary>

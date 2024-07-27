@@ -25,5 +25,13 @@ public class WidgetUpdateController(ILocalRecordsService localRecords, IPlayerMa
     public Task OnBeginMapAsync(object sender, MapGbxEventArgs args) => localRecords.ShowWidgetToAllAsync();
 
     [Subscribe(PlayerRecordsEvent.PbRecord)]
-    public Task OnPbAsync(object sender, PbRecordUpdateEventArgs args) => localRecords.UpdatePbAsync(args.Record);
+    public Task OnPbAsync(object sender, PbRecordUpdateEventArgs args)
+    {
+        if (args.Status == RecordUpdateStatus.NotUpdated)
+        {
+            return Task.CompletedTask;
+        }
+
+        return localRecords.UpdatePbAsync(args.Record);
+    }
 }

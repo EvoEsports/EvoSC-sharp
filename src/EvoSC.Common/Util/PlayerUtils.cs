@@ -201,4 +201,18 @@ public static class PlayerUtils
     /// <returns></returns>
     public static string GetLogin(this IPlayer player) =>
         ConvertAccountIdToLogin(player.AccountId);
+
+    /// <summary>
+    /// Returns true if the player is part of team 1.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    public static bool IsTeam1(this IOnlinePlayer player) => player.Team == PlayerTeam.Team1;
+    
+    /// <summary>
+    /// Returns true if player is part of team 2.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    public static bool IsTeam2(this IOnlinePlayer player) => player.Team == PlayerTeam.Team2;
 }

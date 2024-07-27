@@ -25,6 +25,7 @@
         <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
         <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
         <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" />
+        <ProjectReference Include="..\Modules\ForceTeamModule\ForceTeamModule.csproj" />
         <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" />
         <ProjectReference Include="..\Modules\LocalRecordsModule\LocalRecordsModule.csproj" />
         <ProjectReference Include="..\Modules\MapListModule\MapListModule.csproj" />
@@ -64,5 +65,8 @@
     <ItemGroup>
       <Content Include="bin\Debug\net8.0\config\main.toml" />
     </ItemGroup>
-    
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\net8.0\config\" />
+    </ItemGroup>
 </Project>

@@ -1,0 +1,40 @@
+services:
+  trackmania:
+    image: evotm/trackmania
+    restart: always
+    ports:
+      - 2350:2350/udp
+      - 2350:2350/tcp
+    environment:
+      - MASTER_LOGIN=
+      - MASTER_PASSWORD=
+      - XMLRPC_ALLOWREMOTE=True
+    volumes:
+      - UserData:/server/UserData
+    
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=evosc_sharp
+      - POSTGRES_USER=evosc_sharp
+      - POSTGRES_DB=evosc_sharp
+  
+  evosc_sharp:
+    image: evoscsharp:latest
+    restart: always
+    depends_on:
+      - trackmania
+      - postgres
+    environment:
+      - EVOSC_DATABASE_HOST=postgres
+      - EVOSC_DATABASE_NAME=evosc_sharp
+      - EVOSC_DATABASE_USERNAME=evosc_sharp
+      - EVOSC_DATABASE_PASSWORD=evosc_sharp
+      - EVOSC_SERVER_HOST=trackmania
+    volumes:
+      - UserData:/server/UserData
+
+volumes:
+  PostgresData: null
+  UserData: null
