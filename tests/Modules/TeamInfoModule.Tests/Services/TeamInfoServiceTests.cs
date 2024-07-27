@@ -154,31 +154,12 @@ public class TeamInfoServiceTests
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
             .Returns(Task.FromResult(mockModeSettings));
 
-        await teamInfoService.SetWidgetVisibilityAsync(true);
         await teamInfoService.SendTeamInfoWidgetAsync(playerLogin);
 
         _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Once);
         _manialinkManager.Verify(
             m => m.SendManialinkAsync(playerLogin, "TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
             Times.Once);
-    }
-
-    [Fact]
-    public async Task Does_Not_Send_Widget_To_Player_If_Hidden()
-    {
-        var playerLogin = "unittest";
-        var teamInfoService = TeamInfoServiceMock();
-
-        _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
-            .Returns(Task.FromResult(new GbxDynamicObject()));
-
-        await teamInfoService.SetWidgetVisibilityAsync(false);
-        await teamInfoService.SendTeamInfoWidgetAsync(playerLogin);
-
-        _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Never);
-        _manialinkManager.Verify(
-            m => m.SendManialinkAsync(playerLogin, "TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
-            Times.Never);
     }
 
     [Fact]

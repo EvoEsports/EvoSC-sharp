@@ -48,17 +48,45 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnRoundStart(object sender, RoundEventArgs args)
-        => await teamInfoService.UpdateRoundNumberAsync(args.Count);
+    {
+        if (!await teamInfoService.GetModeIsTeams())
+        {
+            return;
+        }
+
+        await teamInfoService.UpdateRoundNumberAsync(args.Count);
+    }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
     public async Task OnPodiumStart(object sender, PodiumEventArgs args)
-        => await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    {
+        if (!await teamInfoService.GetModeIsTeams())
+        {
+            return;
+        }
+
+        await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    }
 
     [Subscribe(GbxRemoteEvent.EndMap)]
     public async Task OnEndMap(object sender, MapGbxEventArgs args)
-        => await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    {
+        if (!await teamInfoService.GetModeIsTeams())
+        {
+            return;
+        }
+
+        await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    }
 
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public async Task OnPlayerConnect(object sender, PlayerConnectGbxEventArgs args)
-        => await teamInfoService.SendTeamInfoWidgetAsync(args.Login);
+    {
+        if (!await teamInfoService.GetModeIsTeams() || !await teamInfoService.GetWidgetVisibilityAsync())
+        {
+            return;
+        }
+
+        await teamInfoService.SendTeamInfoWidgetAsync(args.Login);
+    }
 }

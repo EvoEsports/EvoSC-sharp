@@ -143,11 +143,6 @@ public class TeamInfoService(
 
     public async Task SendTeamInfoWidgetAsync(string playerLogin)
     {
-        if (!_widgetShouldBeDisplayed)
-        {
-            return;
-        }
-
         await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, await GetWidgetDataAsync());
     }
 
@@ -197,6 +192,8 @@ public class TeamInfoService(
     public Task SetModeIsTeams(bool modeIsTeams)
     {
         _modeIsTeams = modeIsTeams;
+        _widgetShouldBeDisplayed = modeIsTeams;
+        
         return Task.CompletedTask;
     }
 }

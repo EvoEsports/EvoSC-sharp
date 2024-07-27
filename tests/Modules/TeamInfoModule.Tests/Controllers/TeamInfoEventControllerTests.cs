@@ -100,16 +100,32 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
     }
 
     [Fact]
-    public async Task Updated_Round_Number_On_New_Round()
+    public async Task Updates_Round_Number_On_New_Round()
     {
+        _teamInfoService.Setup(s => s.GetModeIsTeams())
+            .Returns(Task.FromResult(true));
+        
         var roundNumber = 777;
         await Controller.OnRoundStart(null, new RoundEventArgs { Count = roundNumber, Time = 0 });
         _teamInfoService.Verify(s => s.UpdateRoundNumberAsync(roundNumber), Times.Once);
     }
 
     [Fact]
+    public async Task Doesnt_Update_Round_Number_On_New_Round_If_Mode_Is_Not_Teams()
+    {
+        _teamInfoService.Setup(s => s.GetModeIsTeams())
+            .Returns(Task.FromResult(false));
+        
+        await Controller.OnRoundStart(null, new RoundEventArgs { Count = 0, Time = 0 });
+        _teamInfoService.Verify(s => s.UpdateRoundNumberAsync(0), Times.Never);
+    }
+
+    [Fact]
     public async Task Hides_Widget_On_Podium_Start()
     {
+        _teamInfoService.Setup(s => s.GetModeIsTeams())
+            .Returns(Task.FromResult(true));
+        
         await Controller.OnPodiumStart(null, new PodiumEventArgs { Time = 0 });
         _teamInfoService.Verify(s => s.HideTeamInfoWidgetEveryoneAsync(), Times.Once);
     }
@@ -117,6 +133,9 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
     [Fact]
     public async Task Hides_Widget_On_End_Map()
     {
+        _teamInfoService.Setup(s => s.GetModeIsTeams())
+            .Returns(Task.FromResult(true));
+        
         await Controller.OnEndMap(null, new MapGbxEventArgs());
         _teamInfoService.Verify(s => s.HideTeamInfoWidgetEveryoneAsync(), Times.Once);
     }
@@ -124,8 +143,37 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
     [Fact]
     public async Task Sends_Widget_To_Connecting_Player()
     {
+        _teamInfoService.Setup(s => s.GetModeIsTeams())
+            .Returns(Task.FromResult(true));
+        _teamInfoService.Setup(s => s.GetWidgetVisibilityAsync())
+            .Returns(Task.FromResult(true));
+        
         var playerLogin = "unittest";
         await Controller.OnPlayerConnect(null, new PlayerConnectGbxEventArgs { Login = playerLogin });
         _teamInfoService.Verify(s => s.SendTeamInfoWidgetAsync(playerLogin), Times.Once);
+    }
+
+    [Fact]
+    public async Task Does_Not_Send_Widget_To_Connecting_Player_If_Mode_Is_Not_Teams()
+    {
+        _teamInfoService.Setup(s => s.GetModeIsTeams())
+            .Returns(Task.FromResult(false));
+        _teamInfoService.Setup(s => s.GetWidgetVisibilityAsync())
+            .Returns(Task.FromResult(false));
+        
+        await Controller.OnPlayerConnect(null, new PlayerConnectGbxEventArgs());
+        _teamInfoService.Verify(s => s.SendTeamInfoWidgetAsync(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Does_Not_Send_Widget_To_Connecting_Player_When_Widget_Is_Hidden()
+    {
+        _teamInfoService.Setup(s => s.GetModeIsTeams())
+            .Returns(Task.FromResult(true));
+        _teamInfoService.Setup(s => s.GetWidgetVisibilityAsync())
+            .Returns(Task.FromResult(false));
+        
+        await Controller.OnPlayerConnect(null, new PlayerConnectGbxEventArgs());
+        _teamInfoService.Verify(s => s.SendTeamInfoWidgetAsync(It.IsAny<string>()), Times.Never);
     }
 }
