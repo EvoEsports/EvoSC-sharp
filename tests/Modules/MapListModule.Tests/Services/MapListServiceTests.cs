@@ -40,7 +40,7 @@ public class MapListServiceTests
         var playerRecordsService = new Mock<IPlayerRecordsService>();
         var context = Mocking.NewGenericServiceMock();
         var mapService = new Mock<IMapService>();
-        var logger = LoggerSetup.CreateLogger<MapListService>();
+        var logger = TestLoggerSetup.CreateLogger<MapListService>();
         var server = Mocking.NewServerClientMock();
         var manialinkManagerService = new Mock<IManialinkManager>();
         var permissionManagerService = new Mock<IPermissionManager>();

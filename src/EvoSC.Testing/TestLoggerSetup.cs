@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace EvoSC.Common.Tests;
+namespace EvoSC.Testing;
 
-public static class LoggerSetup
+public static class TestLoggerSetup
 {
     /// <summary>
     /// Create a new logger.
