@@ -57,8 +57,6 @@ public static class InternalModules
         typeof(LocalRecordsModule),
         typeof(ForceTeamModule),
         typeof(TeamSettingsModule),
-        typeof(LocalRecordsModule),
-        typeof(TeamSettingsModule),
         typeof(TeamInfoModule)
     ];
 
