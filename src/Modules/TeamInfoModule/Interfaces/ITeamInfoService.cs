@@ -27,7 +27,7 @@ public interface ITeamInfoService
     /// Gets all necessary data for the widget.
     /// </summary>
     /// <returns></returns>
-    public Task<dynamic> GetManialinkDataAsync();
+    public Task<dynamic> GetWidgetDataAsync();
 
     /// <summary>
     /// Determines whether a team has match point.

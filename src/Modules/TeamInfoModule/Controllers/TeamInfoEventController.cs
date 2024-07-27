@@ -7,22 +7,38 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 using GbxRemoteNet.Events;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Controllers;
 
 [Controller]
-public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<TeamInfoEventController> logger)
-    : EvoScController<IEventControllerContext>
+public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScController<IEventControllerContext>
 {
     [Subscribe(ModeScriptEvent.Scores)]
-    public async Task OnScores(object data, ScoresEventArgs eventArgs)
+    public async Task OnScores(object sender, ScoresEventArgs eventArgs)
     {
+        var isTeamsModeActive = await teamInfoService.GetModeIsTeams();
+
+        if (!eventArgs.UseTeams)
+        {
+            if (!isTeamsModeActive)
+            {
+                return;
+            }
+
+            await teamInfoService.SetModeIsTeams(false);
+            await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+
+            return;
+        }
+
+        if (!isTeamsModeActive)
+        {
+            await teamInfoService.SetModeIsTeams(true);
+        }
+
         var teamInfos = eventArgs.Teams.ToList();
         var team1Points = teamInfos[0]!.MatchPoints;
         var team2Points = teamInfos[1]!.MatchPoints;
-        
-        logger.LogInformation("{section}: {team1} - {team2}", eventArgs.Section.ToString(), team1Points, team2Points); //TODO: remove logging
 
         if (eventArgs.Section is ModeScriptSection.EndRound or ModeScriptSection.Undefined)
         {

@@ -18,7 +18,7 @@ public class TeamInfoService(
 {
     private const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
 
-    private bool _modeIsTeams = true;
+    private bool _modeIsTeams;
     private bool _widgetShouldBeDisplayed;
     private int _currentRound;
     private int _team1Points;
@@ -26,42 +26,19 @@ public class TeamInfoService(
 
     public async Task InitializeModuleAsync()
     {
-        //TODO: check if teams mode is active -> Maniaplanet.Mode.GetUseTeams?
-
-        // var getUseTeamsResponse = await server.Remote.TriggerModeScriptEventArrayAsync("Maniaplanet.Mode.GetUseTeams");
-
-        //TODO: get current round number
-
-        if (_modeIsTeams)
-        {
-            await server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.GetScores");
-        }
-        else
-        {
-            await HideTeamInfoWidgetEveryoneAsync();
-        }
+        await server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.GetScores");
     }
 
-    public async Task<dynamic> GetManialinkDataAsync()
+    public async Task<dynamic> GetWidgetDataAsync()
     {
+        var modeScriptSettings = await GetModeScriptTeamSettings();
+        var infoBoxText = await GetInfoBoxText(modeScriptSettings);
         var team1 = await server.Remote.GetTeamInfoAsync(1);
         var team2 = await server.Remote.GetTeamInfoAsync(2);
-        var modeScriptSettings = await GetTeamModeSettingsAsync();
-        var infoBoxText = await GetInfoBoxText(modeScriptSettings);
-        var team1MatchPoint = false;
-        var team2MatchPoint = false;
-
-        if (await DoesTeamHaveMatchPoint(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
-                modeScriptSettings.PointsGap))
-        {
-            team1MatchPoint = true;
-        }
-
-        if (await DoesTeamHaveMatchPoint(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
-                modeScriptSettings.PointsGap))
-        {
-            team2MatchPoint = true;
-        }
+        var team1MatchPoint = await DoesTeamHaveMatchPoint(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
+            modeScriptSettings.PointsGap);
+        var team2MatchPoint = await DoesTeamHaveMatchPoint(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
+            modeScriptSettings.PointsGap);
 
         return new
         {
@@ -77,24 +54,60 @@ public class TeamInfoService(
         };
     }
 
-    public async Task<ModeScriptTeamSettings> GetTeamModeSettingsAsync()
+    public async Task<ModeScriptTeamSettings> GetModeScriptTeamSettings()
     {
         var modeScriptSettings = await server.Remote.GetModeScriptSettingsAsync();
+        var defaultSettings = new ModeScriptTeamSettings();
 
         return new ModeScriptTeamSettings
         {
-            PointsLimit = (int)modeScriptSettings["S_PointsLimit"],
-            FinishTimeout = (int)modeScriptSettings["S_FinishTimeout"],
-            MaxPointsPerRound = (int)modeScriptSettings["S_MaxPointsPerRound"],
-            PointsGap = (int)modeScriptSettings["S_PointsGap"],
-            UseCustomPointsRepartition = (bool)modeScriptSettings["S_UseCustomPointsRepartition"],
-            CumulatePoints = (bool)modeScriptSettings["S_CumulatePoints"],
-            RoundsPerMap = (int)modeScriptSettings["S_RoundsPerMap"],
-            MapsPerMatch = (int)modeScriptSettings["S_MapsPerMatch"],
-            UseTieBreak = (bool)modeScriptSettings["S_UseTieBreak"],
-            WarmUpNb = (int)modeScriptSettings["S_WarmUpNb"],
-            WarmUpDuration = (int)modeScriptSettings["S_WarmUpDuration"],
-            UseAlternateRules = (bool)modeScriptSettings["S_UseAlternateRules"]
+            PointsLimit =
+                modeScriptSettings.TryGetValue("S_PointsLimit", out var pointsLimit)
+                    ? (int)pointsLimit
+                    : defaultSettings.PointsLimit,
+            FinishTimeout =
+                modeScriptSettings.TryGetValue("S_FinishTimeout", out var finishTimeout)
+                    ? (int)finishTimeout
+                    : defaultSettings.FinishTimeout,
+            MaxPointsPerRound =
+                modeScriptSettings.TryGetValue("S_MaxPointsPerRound", out var maxPointsPerRound)
+                    ? (int)maxPointsPerRound
+                    : defaultSettings.MaxPointsPerRound,
+            PointsGap =
+                modeScriptSettings.TryGetValue("S_PointsGap", out var pointsGap)
+                    ? (int)pointsGap
+                    : defaultSettings.PointsGap,
+            UseCustomPointsRepartition =
+                modeScriptSettings.TryGetValue("S_UseCustomPointsRepartition", out var useCustomPointsRepartition)
+                    ? (bool)useCustomPointsRepartition
+                    : defaultSettings.UseCustomPointsRepartition,
+            CumulatePoints =
+                modeScriptSettings.TryGetValue("S_CumulatePoints", out var cumulatePoints)
+                    ? (bool)cumulatePoints
+                    : defaultSettings.CumulatePoints,
+            RoundsPerMap =
+                modeScriptSettings.TryGetValue("S_RoundsPerMap", out var roundsPerMap)
+                    ? (int)roundsPerMap
+                    : defaultSettings.RoundsPerMap,
+            MapsPerMatch =
+                modeScriptSettings.TryGetValue("S_MapsPerMatch", out var mapsPerMatch)
+                    ? (int)mapsPerMatch
+                    : defaultSettings.MapsPerMatch,
+            UseTieBreak =
+                modeScriptSettings.TryGetValue("S_UseTieBreak", out var useTieBreak)
+                    ? (bool)useTieBreak
+                    : defaultSettings.UseTieBreak,
+            WarmUpNb =
+                modeScriptSettings.TryGetValue("S_WarmUpNb", out var warmupNb)
+                    ? (int)warmupNb
+                    : defaultSettings.WarmUpNb,
+            WarmUpDuration =
+                modeScriptSettings.TryGetValue("S_WarmUpDuration", out var warmupDuration)
+                    ? (int)warmupDuration
+                    : defaultSettings.WarmUpDuration,
+            UseAlternateRules = modeScriptSettings.TryGetValue("S_UseAlternateRules", out var useAlternateRules)
+                ? (bool)useAlternateRules
+                : defaultSettings.UseAlternateRules,
         };
     }
 
@@ -102,25 +115,24 @@ public class TeamInfoService(
     {
         var infoBoxText = new List<string>();
 
+        //Add point limit and gap
         if (modeScriptTeamSettings.PointsLimit > 0)
         {
             infoBoxText.Add("FIRST TO " + modeScriptTeamSettings.PointsLimit);
 
             if (modeScriptTeamSettings.PointsGap > 1)
             {
-                infoBoxText.Add($"(TENNIS {modeScriptTeamSettings.PointsGap})");
+                infoBoxText.Add($"GAP {modeScriptTeamSettings.PointsGap}");
             }
         }
-        else if (modeScriptTeamSettings.RoundsPerMap > 0)
+
+        //Add rounds per map
+        if (modeScriptTeamSettings.RoundsPerMap > 0)
         {
-            infoBoxText.Add($"{modeScriptTeamSettings.RoundsPerMap} ROUNDS PER MAP");
-        }
-        else if (infoBoxText.IsNullOrEmpty())
-        {
-            return Task.FromResult<string?>(null);
+            infoBoxText.Add($"{modeScriptTeamSettings.RoundsPerMap} ROUNDS/MAP");
         }
 
-        return Task.FromResult<string?>(string.Join(' ', infoBoxText));
+        return Task.FromResult(infoBoxText.IsNullOrEmpty() ? null : string.Join(" | ", infoBoxText));
     }
 
     public Task<bool> DoesTeamHaveMatchPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap)
@@ -136,25 +148,25 @@ public class TeamInfoService(
             return;
         }
 
-        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, await GetManialinkDataAsync());
+        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, await GetWidgetDataAsync());
     }
 
     public async Task SendTeamInfoWidgetEveryoneAsync()
     {
-        _widgetShouldBeDisplayed = true;
-        await manialinks.SendManialinkAsync(WidgetTemplate, await GetManialinkDataAsync());
+        await SetWidgetVisibilityAsync(true);
+        await manialinks.SendManialinkAsync(WidgetTemplate, await GetWidgetDataAsync());
     }
 
     public async Task HideTeamInfoWidgetEveryoneAsync()
     {
-        _widgetShouldBeDisplayed = false;
+        await SetWidgetVisibilityAsync(false);
         await manialinks.HideManialinkAsync(WidgetTemplate);
     }
 
     public async Task UpdateRoundNumberAsync(int round)
     {
         _currentRound = round;
-        _widgetShouldBeDisplayed = true;
+        await SetWidgetVisibilityAsync(true);
         await SendTeamInfoWidgetEveryoneAsync();
     }
 
@@ -163,5 +175,28 @@ public class TeamInfoService(
         _team1Points = team1Points;
         _team2Points = team2Points;
         await SendTeamInfoWidgetEveryoneAsync();
+    }
+
+    public Task<bool> GetWidgetVisibilityAsync()
+    {
+        return Task.FromResult(_widgetShouldBeDisplayed);
+    }
+
+    public Task SetWidgetVisibilityAsync(bool visible)
+    {
+        _widgetShouldBeDisplayed = visible;
+
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> GetModeIsTeams()
+    {
+        return Task.FromResult(_modeIsTeams);
+    }
+
+    public Task SetModeIsTeams(bool modeIsTeams)
+    {
+        _modeIsTeams = modeIsTeams;
+        return Task.CompletedTask;
     }
 }

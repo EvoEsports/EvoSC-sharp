@@ -18,6 +18,7 @@
             />
             
             <label pos="0 {{ height / -2.0 + 0.25 }}"
+                   size="{{ width -2.0 }} {{ height - 1.0 }}"
                    text="{{ text }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    textfont="{{ Font.Regular }}"
