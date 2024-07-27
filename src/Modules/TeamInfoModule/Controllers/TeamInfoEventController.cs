@@ -69,7 +69,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
     }
 
     [Subscribe(GbxRemoteEvent.EndMap)]
-    public async Task OnEndMap(object sender, MapGbxEventArgs args)
+    public async Task OnEndMapAsync(object sender, MapGbxEventArgs args)
     {
         if (!await teamInfoService.GetModeIsTeamsAsync())
         {

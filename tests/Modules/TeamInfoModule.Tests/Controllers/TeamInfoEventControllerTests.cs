@@ -136,7 +136,7 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
         _teamInfoService.Setup(s => s.GetModeIsTeamsAsync())
             .Returns(Task.FromResult(true));
         
-        await Controller.OnEndMap(null, new MapGbxEventArgs());
+        await Controller.OnEndMapAsync(null, new MapGbxEventArgs());
         _teamInfoService.Verify(s => s.HideTeamInfoWidgetEveryoneAsync(), Times.Once);
     }
 
