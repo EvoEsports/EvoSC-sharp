@@ -27,7 +27,7 @@
 
         <frame pos="{{ settings.X }} {{ settings.Y }}">
             <BottomInfoBox if="infoBoxText != null"
-                           y="-10.3"
+                           y="-10"
                            text="{{ infoBoxText }}"
             />
 

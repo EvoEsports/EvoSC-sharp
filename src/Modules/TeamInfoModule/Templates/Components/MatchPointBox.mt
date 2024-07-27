@@ -7,7 +7,7 @@
     <property type="string" name="text" default="Map Point"/>
 
     <template>
-        <frame pos='{{ x - (halign=="right" ? width : 0) }} {{ y + height + 0.3 }}'>
+        <frame pos='{{ x - (halign=="right" ? width : 0) }} {{ y + height }}'>
             <quad pos='{{ (halign=="right" ? width - 0.7 : 0) }}'
                   size="0.7 {{ height }}"
                   bgcolor="{{ Theme.UI_AccentPrimary }}"
