@@ -44,8 +44,9 @@
                           teamInfo="{{ team1 }}"
                           halign="right"
             />
-            <frame pos="{{ settings.CompactMode ? 0.0 : -40.0 }} 0">
-                <EmblemBox x="-22.0"
+            <frame pos="{{ settings.CompactMode ? 0.0 : -45.0 }} 0">
+                <EmblemBox if="!string.IsNullOrEmpty(team1.EmblemUrl)"
+                           x="-22.0"
                            teamInfo="{{ team1 }}"
                            halign="right"
                 />
@@ -68,8 +69,9 @@
                           x="22.0"
                           teamInfo="{{ team2 }}"
             />
-            <frame pos="{{ settings.CompactMode ? 0.0 : 40.0 }} 0">
-                <EmblemBox x="22.0"
+            <frame pos="{{ settings.CompactMode ? 0.0 : 45.0 }} 0">
+                <EmblemBox if="!string.IsNullOrEmpty(team2.EmblemUrl)"
+                           x="22.0"
                            teamInfo="{{ team2 }}"
                 />
                 <MatchPointBox if="team2MatchPoint"

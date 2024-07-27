@@ -1,8 +1,10 @@
 <component>
     <using namespace="GbxRemoteNet.Structs"/>
 
+    <import component="EvoSC.Drawing.Rectangle" as="Rectangle"/>
+
     <property type="TmTeamInfo" name="teamInfo"/>
-    <property type="double" name="width" default="40.0"/>
+    <property type="double" name="width" default="45.0"/>
     <property type="double" name="height" default="10.0"/>
     <property type="double" name="barHeight" default="1.0"/>
     <property type="double" name="x" default="0.0"/>
@@ -11,8 +13,11 @@
 
     <template>
         <frame pos='{{ x - (halign=="right" ? width : 0) }} {{ y }}'>
-            <quad size="{{ width }} {{ height }}"
-                  bgcolor="{{ teamInfo.RGB }}"
+            <Rectangle width="{{ width }}"
+                       height="{{ height }}"
+                       bgColor="{{ teamInfo.RGB }}"
+                       cornerRadius="0.75"
+                       corners='{{ string.IsNullOrEmpty(teamInfo.EmblemUrl) ? (halign=="right" ? "BottomLeft" : "BottomRight") : "" }}'
             />
             <quad pos='{{ halign=="right" ? 0 : width }} {{ halign=="right" ? -height : -barHeight }}'
                   rot='{{ halign=="right" ? -90 : 90 }}'
