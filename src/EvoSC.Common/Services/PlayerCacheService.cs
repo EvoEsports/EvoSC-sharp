@@ -19,7 +19,7 @@ public class PlayerCacheService : IPlayerCacheService
     private readonly IServerClient _server;
     private readonly ILogger<PlayerCacheService> _logger;
     private readonly IPlayerRepository _playerRepository;
-    
+    private readonly IPermissionRepository _permissionRepository;
     
     private readonly Dictionary<string, IOnlinePlayer> _onlinePlayers = new();
     private readonly object _onlinePlayersMutex = new();
@@ -36,11 +36,12 @@ public class PlayerCacheService : IPlayerCacheService
     }
 
     public PlayerCacheService(IEventManager events, IServerClient server, ILogger<PlayerCacheService> logger,
-        IPlayerRepository playerRepository)
+        IPlayerRepository playerRepository, IPermissionRepository permissionRepository)
     {
         _server = server;
         _logger = logger;
         _playerRepository = playerRepository;
+        _permissionRepository = permissionRepository;
 
         SetupEvents(events);
     }
@@ -259,4 +260,17 @@ public class PlayerCacheService : IPlayerCacheService
     }
 
     public Task UpdatePlayerAsync(IPlayer player) => ForceUpdatePlayerInternalAsync(player.AccountId);
+
+    public Task InvalidatePlayerStateAsync(IPlayer player)
+    {
+        lock (_onlinePlayersMutex)
+        {
+            if (_onlinePlayers.ContainsKey(player.AccountId))
+            {
+                _onlinePlayers.Remove(player.AccountId);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
 }
