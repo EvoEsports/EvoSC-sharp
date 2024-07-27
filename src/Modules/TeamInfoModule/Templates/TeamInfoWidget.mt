@@ -1,5 +1,6 @@
 <component>
     <using namespace="GbxRemoteNet.Structs"/>
+    <using namespace="EvoSC.Modules.Official.TeamInfoModule.Config"/>
 
     <import component="TeamInfoModule.Components.RoundCounter" as="RoundCounter"/>
     <import component="TeamInfoModule.Components.PointsBox" as="PointsBox"/>
@@ -8,20 +9,22 @@
     <import component="TeamInfoModule.Components.EmblemBox" as="EmblemBox"/>
     <import component="TeamInfoModule.Components.MatchPointBox" as="MatchPointBox"/>
 
+    <property type="ITeamInfoSettings" name="settings"/>
     <property type="TmTeamInfo" name="team1"/>
     <property type="TmTeamInfo" name="team2"/>
     <property type="string?" name="infoBoxText"/>
     <property type="int" name="roundNumber" default="-1"/>
-    <property type="int" name="matchPoint" default="0"/>
     <property type="int" name="team1Points" default="0"/>
     <property type="int" name="team2Points" default="0"/>
+    <property type="bool" name="team1MatchPoint" default="false"/>
+    <property type="bool" name="team2MatchPoint" default="false"/>
     <property type="int" name="team1GainedPoints" default="0"/>
     <property type="int" name="team2GainedPoints" default="0"/>
 
     <template>
         <UIStyle/>
 
-        <frame pos="0 80.0">
+        <frame pos="{{ settings.X }} {{ settings.Y }}">
             <BottomInfoBox if="infoBoxText != null"
                            y="-10.3"
                            text="{{ infoBoxText }}"
@@ -39,7 +42,7 @@
                        color="{{ team1.RGB }}"
                        halign="right"
             />
-            <MatchPointBox if="matchPoint == 1"
+            <MatchPointBox if="team1MatchPoint"
                            x="-34"
             />
             <GainedPoints if="team1GainedPoints > 0"
@@ -56,7 +59,7 @@
                        points="{{ team2Points }}"
                        color="{{ team2.RGB }}"
             />
-            <MatchPointBox if="matchPoint == 2"
+            <MatchPointBox if="team2MatchPoint"
                            x="34"
                            halign="right"
             />

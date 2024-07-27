@@ -2,6 +2,7 @@
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.TeamInfoModule.Config;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Models;
 using LinqToDB.Common;
@@ -9,7 +10,11 @@ using LinqToDB.Common;
 namespace EvoSC.Modules.Official.TeamInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class TeamInfoService(IServerClient server, IManialinkManager manialinks) : ITeamInfoService
+public class TeamInfoService(
+    IServerClient server,
+    IManialinkManager manialinks,
+    ITeamInfoSettings settings
+) : ITeamInfoService
 {
     private const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
 
@@ -43,18 +48,19 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
         var team2 = await server.Remote.GetTeamInfoAsync(2);
         var modeScriptSettings = await GetTeamModeSettingsAsync();
         var infoBoxText = await GetInfoBoxText(modeScriptSettings);
-        var matchPoint = 0;
+        var team1MatchPoint = false;
+        var team2MatchPoint = false;
 
         if (await DoesTeamHaveMatchPoint(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
                 modeScriptSettings.PointsGap))
         {
-            matchPoint = 1;
+            team1MatchPoint = true;
         }
 
         if (await DoesTeamHaveMatchPoint(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
                 modeScriptSettings.PointsGap))
         {
-            matchPoint = 2;
+            team2MatchPoint = true;
         }
 
         return new
@@ -62,7 +68,9 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
             team1,
             team2,
             infoBoxText,
-            mapPoint = matchPoint,
+            team1MatchPoint,
+            team2MatchPoint,
+            settings,
             roundNumber = _currentRound,
             team1Points = _team1Points,
             team2Points = _team2Points
