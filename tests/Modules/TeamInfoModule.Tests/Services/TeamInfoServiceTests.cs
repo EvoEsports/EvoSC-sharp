@@ -93,6 +93,7 @@ public class TeamInfoServiceTests
             ["S_WarmUpNb"] = 10,
             ["S_WarmUpDuration"] = 11,
             ["S_UseAlternateRules"] = false,
+            ["S_NeutralEmblemUrl"] = "https://domain.tld/image.png",
         };
 
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
@@ -114,6 +115,7 @@ public class TeamInfoServiceTests
         Assert.Equal(10, modeScriptTeamSettings.WarmUpNb);
         Assert.Equal(11, modeScriptTeamSettings.WarmUpDuration);
         Assert.False(modeScriptTeamSettings.UseAlternateRules);
+        Assert.Equal("https://domain.tld/image.png", modeScriptTeamSettings.NeutralEmblemUrl);
     }
 
     [Fact]
@@ -142,6 +144,7 @@ public class TeamInfoServiceTests
         Assert.Equal(defaultModeSettings.WarmUpNb, modeScriptTeamSettings.WarmUpNb);
         Assert.Equal(defaultModeSettings.WarmUpDuration, modeScriptTeamSettings.WarmUpDuration);
         Assert.Equal(defaultModeSettings.UseAlternateRules, modeScriptTeamSettings.UseAlternateRules);
+        Assert.Equal(defaultModeSettings.NeutralEmblemUrl, modeScriptTeamSettings.NeutralEmblemUrl);
     }
 
     [Fact]
@@ -312,5 +315,9 @@ public class TeamInfoServiceTests
         var team2PointsProperty = widgetData.GetType().GetProperty("team2Points");
         var returnedTeam2Points = team2PointsProperty.GetValue(widgetData, null);
         Assert.Equal(expectedTeam2Points, returnedTeam2Points);
+
+        var neutralEmblemUrlProperty = widgetData.GetType().GetProperty("neutralEmblemUrl");
+        var returnedNeutralEmblemUrl = neutralEmblemUrlProperty.GetValue(widgetData, null);
+        Assert.Empty(returnedNeutralEmblemUrl);
     }
 }

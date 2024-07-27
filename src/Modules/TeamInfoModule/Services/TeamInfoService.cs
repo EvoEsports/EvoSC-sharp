@@ -50,7 +50,8 @@ public class TeamInfoService(
             settings,
             roundNumber = _currentRound,
             team1Points = _team1Points,
-            team2Points = _team2Points
+            team2Points = _team2Points,
+            neutralEmblemUrl = modeScriptSettings.NeutralEmblemUrl
         };
     }
 
@@ -108,6 +109,9 @@ public class TeamInfoService(
             UseAlternateRules = modeScriptSettings.TryGetValue("S_UseAlternateRules", out var useAlternateRules)
                 ? (bool)useAlternateRules
                 : defaultSettings.UseAlternateRules,
+            NeutralEmblemUrl = modeScriptSettings.TryGetValue("S_NeutralEmblemUrl", out var neutralEmblemUrl)
+                ? (string)neutralEmblemUrl
+                : defaultSettings.NeutralEmblemUrl,
         };
     }
 

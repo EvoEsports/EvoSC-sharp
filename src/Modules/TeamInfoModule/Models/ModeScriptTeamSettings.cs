@@ -62,4 +62,9 @@ public class ModeScriptTeamSettings
     /// Use alternate rules.
     /// </summary>
     public bool UseAlternateRules { init; get; } = true;
+    
+    /// <summary>
+    /// Neutral emblem URL.
+    /// </summary>
+    public string NeutralEmblemUrl { init; get; } = "";
 }

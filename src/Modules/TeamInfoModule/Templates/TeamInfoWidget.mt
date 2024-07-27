@@ -11,6 +11,7 @@
     <import component="TeamInfoModule.Components.TeamFullName" as="TeamFullName"/>
 
     <property type="ITeamInfoSettings" name="settings"/>
+    <property type="string" name="neutralEmblemUrl" default=""/>
     <property type="TmTeamInfo" name="team1"/>
     <property type="TmTeamInfo" name="team2"/>
     <property type="string?" name="infoBoxText"/>
@@ -45,9 +46,10 @@
                           halign="right"
             />
             <frame pos="{{ settings.CompactMode ? 0.0 : -45.0 }} 0">
-                <EmblemBox if="!string.IsNullOrEmpty(team1.EmblemUrl)"
+                <EmblemBox if="!string.IsNullOrEmpty(team1.EmblemUrl + neutralEmblemUrl)"
                            x="-22.0"
                            teamInfo="{{ team1 }}"
+                           neutralEmblemUrl="{{ neutralEmblemUrl }}"
                            halign="right"
                 />
                 <MatchPointBox if="team1MatchPoint"
@@ -70,9 +72,10 @@
                           teamInfo="{{ team2 }}"
             />
             <frame pos="{{ settings.CompactMode ? 0.0 : 45.0 }} 0">
-                <EmblemBox if="!string.IsNullOrEmpty(team2.EmblemUrl)"
+                <EmblemBox if="!string.IsNullOrEmpty(team2.EmblemUrl + neutralEmblemUrl)"
                            x="22.0"
                            teamInfo="{{ team2 }}"
+                           neutralEmblemUrl="{{ neutralEmblemUrl }}"
                 />
                 <MatchPointBox if="team2MatchPoint"
                                x="34"

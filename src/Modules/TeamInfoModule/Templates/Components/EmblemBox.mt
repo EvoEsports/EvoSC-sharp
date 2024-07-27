@@ -10,6 +10,7 @@
     <property type="double" name="logoPadding" default="4.5"/>
     <property type="string" name="halign" default="left"/>
     <property type="TmTeamInfo" name="teamInfo"/>
+    <property type="string" name="neutralEmblemUrl" default=""/>
 
     <template>
         <frame pos='{{ x - (halign=="right" ? width : 0) }} {{ y }}'>
@@ -20,22 +21,22 @@
                        corners='{{ (halign=="right" ? "BottomLeft" : "BottomRight") }}'
             />
 
-            <quad if="!string.IsNullOrEmpty(teamInfo.EmblemUrl)"
+            <quad if="!string.IsNullOrEmpty(teamInfo.EmblemUrl + neutralEmblemUrl)"
                   pos="{{ width / 2.0 }} {{ height / -2.0 }}"
                   size="{{ width - logoPadding }} {{ height - logoPadding }}"
                   halign="center"
                   valign="center"
                   keepratio="Fit"
-                  image="{{ teamInfo.EmblemUrl }}"
+                  image='{{ teamInfo.EmblemUrl == "" ? neutralEmblemUrl : teamInfo.EmblemUrl }}'
             />
 
-            <label if="string.IsNullOrEmpty(teamInfo.EmblemUrl)"
+            <label if="string.IsNullOrEmpty(teamInfo.EmblemUrl + neutralEmblemUrl)"
                    pos="{{ width / 2.0 }} {{ height / -2.0 + 0.5 }}"
                    size="{{ width - logoPadding }} {{ height - logoPadding }}"
-                   text="{{ teamInfo.Name }}"
+                   text="{{ teamInfo.Name.ToUpper()[0] }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    textfont="{{ Font.Bold }}"
-                   textsize="{{ Theme.UI_FontSize * 2.0 }}"
+                   textsize="{{ Theme.UI_FontSize * 4.0 }}"
                    halign="center"
                    valign="center"
             />

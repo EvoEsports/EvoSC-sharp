@@ -16,8 +16,6 @@
             <Rectangle width="{{ width }}"
                        height="{{ height }}"
                        bgColor="{{ teamInfo.RGB }}"
-                       cornerRadius="0.75"
-                       corners='{{ string.IsNullOrEmpty(teamInfo.EmblemUrl) ? (halign=="right" ? "BottomLeft" : "BottomRight") : "" }}'
             />
             <quad pos='{{ halign=="right" ? 0 : width }} {{ halign=="right" ? -height : -barHeight }}'
                   rot='{{ halign=="right" ? -90 : 90 }}'
