@@ -12,7 +12,7 @@
     <property type="TmTeamInfo" name="team2"/>
     <property type="string?" name="infoBoxText"/>
     <property type="int" name="roundNumber" default="-1"/>
-    <property type="int" name="mapPoint" default="0"/>
+    <property type="int" name="matchPoint" default="0"/>
     <property type="int" name="team1Points" default="0"/>
     <property type="int" name="team2Points" default="0"/>
     <property type="int" name="team1GainedPoints" default="0"/>
@@ -39,7 +39,7 @@
                        color="{{ team1.RGB }}"
                        halign="right"
             />
-            <MatchPointBox if="mapPoint == 1"
+            <MatchPointBox if="matchPoint == 1"
                            x="-34"
             />
             <GainedPoints if="team1GainedPoints > 0"
@@ -56,7 +56,7 @@
                        points="{{ team2Points }}"
                        color="{{ team2.RGB }}"
             />
-            <MatchPointBox if="mapPoint == 2"
+            <MatchPointBox if="matchPoint == 2"
                            x="34"
                            halign="right"
             />

@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Modules.Official.TeamInfoModule.Interfaces;
+﻿using EvoSC.Modules.Official.TeamInfoModule.Models;
+
+namespace EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 
 public interface ITeamInfoService
 {

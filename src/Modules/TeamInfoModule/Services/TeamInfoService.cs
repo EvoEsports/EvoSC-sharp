@@ -1,9 +1,10 @@
-﻿using System.Text;
-using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
+using EvoSC.Modules.Official.TeamInfoModule.Models;
+using LinqToDB.Common;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Services;
 
@@ -42,18 +43,18 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
         var team2 = await server.Remote.GetTeamInfoAsync(2);
         var modeScriptSettings = await GetTeamModeSettingsAsync();
         var infoBoxText = await GetInfoBoxText(modeScriptSettings);
-        var mapPoint = 0;
+        var matchPoint = 0;
 
         if (await DoesTeamHaveMatchPoint(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
                 modeScriptSettings.PointsGap))
         {
-            mapPoint = 1;
+            matchPoint = 1;
         }
 
         if (await DoesTeamHaveMatchPoint(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
                 modeScriptSettings.PointsGap))
         {
-            mapPoint = 2;
+            matchPoint = 2;
         }
 
         return new
@@ -61,7 +62,7 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
             team1,
             team2,
             infoBoxText,
-            mapPoint,
+            mapPoint = matchPoint,
             roundNumber = _currentRound,
             team1Points = _team1Points,
             team2Points = _team2Points
@@ -75,30 +76,43 @@ public class TeamInfoService(IServerClient server, IManialinkManager manialinks)
         return new ModeScriptTeamSettings
         {
             PointsLimit = (int)modeScriptSettings["S_PointsLimit"],
+            FinishTimeout = (int)modeScriptSettings["S_FinishTimeout"],
+            MaxPointsPerRound = (int)modeScriptSettings["S_MaxPointsPerRound"],
             PointsGap = (int)modeScriptSettings["S_PointsGap"],
-            RoundsPerMap = (int)modeScriptSettings["S_RoundsPerMap"]
+            UseCustomPointsRepartition = (bool)modeScriptSettings["S_UseCustomPointsRepartition"],
+            CumulatePoints = (bool)modeScriptSettings["S_CumulatePoints"],
+            RoundsPerMap = (int)modeScriptSettings["S_RoundsPerMap"],
+            MapsPerMatch = (int)modeScriptSettings["S_MapsPerMatch"],
+            UseTieBreak = (bool)modeScriptSettings["S_UseTieBreak"],
+            WarmUpNb = (int)modeScriptSettings["S_WarmUpNb"],
+            WarmUpDuration = (int)modeScriptSettings["S_WarmUpDuration"],
+            UseAlternateRules = (bool)modeScriptSettings["S_UseAlternateRules"]
         };
     }
 
     public Task<string?> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings)
     {
-        var output = new StringBuilder();
+        var infoBoxText = new List<string>();
 
         if (modeScriptTeamSettings.PointsLimit > 0)
         {
-            output.Append("FIRST TO " + modeScriptTeamSettings.PointsLimit);
+            infoBoxText.Add("FIRST TO " + modeScriptTeamSettings.PointsLimit);
 
-            if (modeScriptTeamSettings.IsTennisMode())
+            if (modeScriptTeamSettings.PointsGap > 1)
             {
-                output.Append(' ').Append($"(TENNIS {modeScriptTeamSettings.PointsGap})");
+                infoBoxText.Add($"(TENNIS {modeScriptTeamSettings.PointsGap})");
             }
         }
-        else if (output.Length == 0)
+        else if (modeScriptTeamSettings.RoundsPerMap > 0)
+        {
+            infoBoxText.Add($"{modeScriptTeamSettings.RoundsPerMap} ROUNDS PER MAP");
+        }
+        else if (infoBoxText.IsNullOrEmpty())
         {
             return Task.FromResult<string?>(null);
         }
 
-        return Task.FromResult<string?>(output.ToString().ToUpper());
+        return Task.FromResult<string?>(string.Join(' ', infoBoxText));
     }
 
     public Task<bool> DoesTeamHaveMatchPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap)
