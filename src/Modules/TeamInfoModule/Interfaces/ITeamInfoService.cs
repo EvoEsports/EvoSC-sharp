@@ -14,14 +14,14 @@ public interface ITeamInfoService
     /// Gets the current mode script settings for teams mode.
     /// </summary>
     /// <returns></returns>
-    public Task<ModeScriptTeamSettings> GetModeScriptTeamSettings();
+    public Task<ModeScriptTeamSettings> GetModeScriptTeamSettingsAsync();
 
     /// <summary>
     /// Get the text displayed at the bottom of the team info widget.
     /// </summary>
     /// <param name="modeScriptTeamSettings"></param>
     /// <returns></returns>
-    public Task<string?> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings);
+    public Task<string?> GetInfoBoxTextAsync(ModeScriptTeamSettings modeScriptTeamSettings);
 
     /// <summary>
     /// Gets all necessary data for the widget.
@@ -37,7 +37,7 @@ public interface ITeamInfoService
     /// <param name="pointsLimit"></param>
     /// <param name="pointsGap"></param>
     /// <returns></returns>
-    public Task<bool> DoesTeamHaveMatchPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap);
+    public Task<bool> DoesTeamHaveMatchPointAsync(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap);
 
     /// <summary>
     /// Sends the team info widget to the given player.
@@ -89,12 +89,12 @@ public interface ITeamInfoService
     /// Tells whether the service is currently active for teams mode.
     /// </summary>
     /// <returns></returns>
-    public Task<bool> GetModeIsTeams();
+    public Task<bool> GetModeIsTeamsAsync();
     
     /// <summary>
     /// Sets whether the service is active for teams mode or not.
     /// </summary>
     /// <param name="modeIsTeams"></param>
     /// <returns></returns>
-    public Task SetModeIsTeams(bool modeIsTeams);
+    public Task SetModeIsTeamsAsync(bool modeIsTeams);
 }

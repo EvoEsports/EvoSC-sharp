@@ -49,7 +49,7 @@ public class TeamInfoServiceTests
     {
         Assert.Equal(
             shouldHaveMapPoint,
-            await TeamInfoServiceMock().DoesTeamHaveMatchPoint(teamPoints, opponentPoints, pointsLimit, pointsGap)
+            await TeamInfoServiceMock().DoesTeamHaveMatchPointAsync(teamPoints, opponentPoints, pointsLimit, pointsGap)
         );
     }
 
@@ -70,9 +70,9 @@ public class TeamInfoServiceTests
     public async Task Sets_And_Gets_Mode_Is_Teams(bool isTeamsMode)
     {
         var teamInfoService = TeamInfoServiceMock();
-        await teamInfoService.SetModeIsTeams(isTeamsMode);
+        await teamInfoService.SetModeIsTeamsAsync(isTeamsMode);
 
-        Assert.Equal(isTeamsMode, await teamInfoService.GetModeIsTeams());
+        Assert.Equal(isTeamsMode, await teamInfoService.GetModeIsTeamsAsync());
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class TeamInfoServiceTests
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
             .Returns(Task.FromResult(mockModeSettings));
 
-        var modeScriptTeamSettings = await teamInfoService.GetModeScriptTeamSettings();
+        var modeScriptTeamSettings = await teamInfoService.GetModeScriptTeamSettingsAsync();
 
         _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Once);
 
@@ -106,14 +106,14 @@ public class TeamInfoServiceTests
         Assert.Equal(2, modeScriptTeamSettings.FinishTimeout);
         Assert.Equal(3, modeScriptTeamSettings.MaxPointsPerRound);
         Assert.Equal(4, modeScriptTeamSettings.PointsGap);
-        Assert.Equal(false, modeScriptTeamSettings.UseCustomPointsRepartition);
-        Assert.Equal(false, modeScriptTeamSettings.CumulatePoints);
+        Assert.False(modeScriptTeamSettings.UseCustomPointsRepartition);
+        Assert.False(modeScriptTeamSettings.CumulatePoints);
         Assert.Equal(7, modeScriptTeamSettings.RoundsPerMap);
         Assert.Equal(8, modeScriptTeamSettings.MapsPerMatch);
-        Assert.Equal(true, modeScriptTeamSettings.UseTieBreak);
+        Assert.True(modeScriptTeamSettings.UseTieBreak);
         Assert.Equal(10, modeScriptTeamSettings.WarmUpNb);
         Assert.Equal(11, modeScriptTeamSettings.WarmUpDuration);
-        Assert.Equal(false, modeScriptTeamSettings.UseAlternateRules);
+        Assert.False(modeScriptTeamSettings.UseAlternateRules);
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public class TeamInfoServiceTests
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
             .Returns(Task.FromResult(mockModeSettings));
 
-        var modeScriptTeamSettings = await teamInfoService.GetModeScriptTeamSettings();
+        var modeScriptTeamSettings = await teamInfoService.GetModeScriptTeamSettingsAsync();
 
         _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Once);
 
@@ -248,7 +248,7 @@ public class TeamInfoServiceTests
             PointsLimit = pointsLimit, PointsGap = pointsGap, RoundsPerMap = roundsPerMap
         };
 
-        Assert.Equal(expected, await teamInfoService.GetInfoBoxText(modeScriptTeamSettings));
+        Assert.Equal(expected, await teamInfoService.GetInfoBoxTextAsync(modeScriptTeamSettings));
     }
 
     [Fact]
@@ -289,7 +289,7 @@ public class TeamInfoServiceTests
 
         var infoBoxText = widgetData.GetType().GetProperty("infoBoxText");
         var returnedInfoBoxText = infoBoxText.GetValue(widgetData, null);
-        Assert.Equal(await teamInfoService.GetInfoBoxText(defaultTeamSettings), returnedInfoBoxText);
+        Assert.Equal(await teamInfoService.GetInfoBoxTextAsync(defaultTeamSettings), returnedInfoBoxText);
 
         var team1MatchPointProperty = widgetData.GetType().GetProperty("team1MatchPoint");
         var returnedTeam1MatchPoint = team1MatchPointProperty.GetValue(widgetData, null);

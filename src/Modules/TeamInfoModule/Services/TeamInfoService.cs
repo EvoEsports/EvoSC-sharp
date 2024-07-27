@@ -31,13 +31,13 @@ public class TeamInfoService(
 
     public async Task<dynamic> GetWidgetDataAsync()
     {
-        var modeScriptSettings = await GetModeScriptTeamSettings();
-        var infoBoxText = await GetInfoBoxText(modeScriptSettings);
+        var modeScriptSettings = await GetModeScriptTeamSettingsAsync();
+        var infoBoxText = await GetInfoBoxTextAsync(modeScriptSettings);
         var team1 = await server.Remote.GetTeamInfoAsync(1);
         var team2 = await server.Remote.GetTeamInfoAsync(2);
-        var team1MatchPoint = await DoesTeamHaveMatchPoint(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
+        var team1MatchPoint = await DoesTeamHaveMatchPointAsync(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
             modeScriptSettings.PointsGap);
-        var team2MatchPoint = await DoesTeamHaveMatchPoint(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
+        var team2MatchPoint = await DoesTeamHaveMatchPointAsync(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
             modeScriptSettings.PointsGap);
 
         return new
@@ -54,7 +54,7 @@ public class TeamInfoService(
         };
     }
 
-    public async Task<ModeScriptTeamSettings> GetModeScriptTeamSettings()
+    public async Task<ModeScriptTeamSettings> GetModeScriptTeamSettingsAsync()
     {
         var modeScriptSettings = await server.Remote.GetModeScriptSettingsAsync();
         var defaultSettings = new ModeScriptTeamSettings();
@@ -111,7 +111,7 @@ public class TeamInfoService(
         };
     }
 
-    public Task<string?> GetInfoBoxText(ModeScriptTeamSettings modeScriptTeamSettings)
+    public Task<string?> GetInfoBoxTextAsync(ModeScriptTeamSettings modeScriptTeamSettings)
     {
         var infoBoxText = new List<string>();
 
@@ -135,7 +135,7 @@ public class TeamInfoService(
         return Task.FromResult(infoBoxText.IsNullOrEmpty() ? null : string.Join(" | ", infoBoxText));
     }
 
-    public Task<bool> DoesTeamHaveMatchPoint(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap)
+    public Task<bool> DoesTeamHaveMatchPointAsync(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap)
     {
         return Task.FromResult(teamPoints >= pointsLimit - 1 &&
                                teamPoints - (pointsGap - 1) >= opponentPoints);
@@ -184,12 +184,12 @@ public class TeamInfoService(
         return Task.CompletedTask;
     }
 
-    public Task<bool> GetModeIsTeams()
+    public Task<bool> GetModeIsTeamsAsync()
     {
         return Task.FromResult(_modeIsTeams);
     }
 
-    public Task SetModeIsTeams(bool modeIsTeams)
+    public Task SetModeIsTeamsAsync(bool modeIsTeams)
     {
         _modeIsTeams = modeIsTeams;
         _widgetShouldBeDisplayed = modeIsTeams;
