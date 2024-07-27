@@ -8,6 +8,7 @@
     <import component="TeamInfoModule.Components.GainedPoints" as="GainedPoints"/>
     <import component="TeamInfoModule.Components.EmblemBox" as="EmblemBox"/>
     <import component="TeamInfoModule.Components.MatchPointBox" as="MatchPointBox"/>
+    <import component="TeamInfoModule.Components.TeamFullName" as="TeamFullName"/>
 
     <property type="ITeamInfoSettings" name="settings"/>
     <property type="TmTeamInfo" name="team1"/>
@@ -33,42 +34,55 @@
             <RoundCounter roundNumber="{{ roundNumber }}"/>
 
             <!-- TEAM 1 -->
-            <EmblemBox x="-22.0"
-                       teamInfo="{{ team1 }}"
-                       halign="right"
-            />
             <PointsBox x="-10.0"
                        points="{{ team1Points }}"
                        color="{{ team1.RGB }}"
                        halign="right"
             />
-            <MatchPointBox if="team1MatchPoint"
-                           x="-34"
+            <TeamFullName if="!settings.CompactMode"
+                          x="-22.0"
+                          teamInfo="{{ team1 }}"
+                          halign="right"
             />
-            <GainedPoints if="team1GainedPoints > 0"
-                          x="-34"
-                          color="{{ team1.RGB }}"
-                          gained="{{ team1GainedPoints }}"
-            />
+            <frame pos="{{ settings.CompactMode ? 0.0 : -40.0 }} 0">
+                <EmblemBox x="-22.0"
+                           teamInfo="{{ team1 }}"
+                           halign="right"
+                />
+                <MatchPointBox if="team1MatchPoint"
+                               x="-34"
+                />
+                <GainedPoints if="team1GainedPoints > 0"
+                              x="-34"
+                              color="{{ team1.RGB }}"
+                              gained="{{ team1GainedPoints }}"
+                />
+            </frame>
 
             <!-- TEAM 2 -->
-            <EmblemBox x="22.0"
-                       teamInfo="{{ team2 }}"
-            />
             <PointsBox x="10.0"
                        points="{{ team2Points }}"
                        color="{{ team2.RGB }}"
             />
-            <MatchPointBox if="team2MatchPoint"
-                           x="34"
-                           halign="right"
+            <TeamFullName if="!settings.CompactMode"
+                          x="22.0"
+                          teamInfo="{{ team2 }}"
             />
-            <GainedPoints if="team2GainedPoints > 0"
-                          x="34"
-                          color="{{ team2.RGB }}"
-                          gained="{{ team1GainedPoints }}"
-                          halign="right"
-            />
+            <frame pos="{{ settings.CompactMode ? 0.0 : 40.0 }} 0">
+                <EmblemBox x="22.0"
+                           teamInfo="{{ team2 }}"
+                />
+                <MatchPointBox if="team2MatchPoint"
+                               x="34"
+                               halign="right"
+                />
+                <GainedPoints if="team2GainedPoints > 0"
+                              x="34"
+                              color="{{ team2.RGB }}"
+                              gained="{{ team1GainedPoints }}"
+                              halign="right"
+                />
+            </frame>
         </frame>
     </template>
 </component>
