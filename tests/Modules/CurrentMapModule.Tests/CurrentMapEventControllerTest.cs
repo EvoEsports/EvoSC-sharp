@@ -17,7 +17,7 @@ public class CurrentMapEventControllerTest
     }
 
     [Fact]
-    private async void Should_On_Begin_Match_Async()
+    private async Task Should_On_Begin_Match_Async()
     {
         await _eventController.OnBeginMatchAsync(new object(), EventArgs.Empty);
 
@@ -25,7 +25,7 @@ public class CurrentMapEventControllerTest
     }
 
     [Fact]
-    private async void Should_On_Begin_Map_Async()
+    private async Task Should_On_Begin_Map_Async()
     {
         var args = new MapGbxEventArgs();
         await _eventController.OnBeginMapAsync(new object(), args);
@@ -34,7 +34,7 @@ public class CurrentMapEventControllerTest
     }
 
     [Fact]
-    private async void Should_On_Podium_Start_Async()
+    private async Task Should_On_Podium_Start_Async()
     {
         var args = new PodiumEventArgs { Time = 0 };
         await _eventController.OnPodiumStartAsync(new object(), args);
