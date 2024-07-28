@@ -78,15 +78,4 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
 
         await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
     }
-
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args)
-    {
-        if (!await teamInfoService.GetModeIsTeamsAsync() || !await teamInfoService.GetWidgetVisibilityAsync())
-        {
-            return;
-        }
-
-        await teamInfoService.SendTeamInfoWidgetAsync(args.Login);
-    }
 }

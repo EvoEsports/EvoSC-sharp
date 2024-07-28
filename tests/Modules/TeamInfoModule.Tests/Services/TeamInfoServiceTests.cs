@@ -56,17 +56,6 @@ public class TeamInfoServiceTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async Task Sets_And_Gets_Widget_Visibility(bool shouldBeVisible)
-    {
-        var teamInfoService = TeamInfoServiceMock();
-        await teamInfoService.SetWidgetVisibilityAsync(shouldBeVisible);
-
-        Assert.Equal(shouldBeVisible, await teamInfoService.GetWidgetVisibilityAsync());
-    }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
     public async Task Sets_And_Gets_Mode_Is_Teams(bool isTeamsMode)
     {
         var teamInfoService = TeamInfoServiceMock();
@@ -148,24 +137,6 @@ public class TeamInfoServiceTests
     }
 
     [Fact]
-    public async Task Sends_Widget_To_Player()
-    {
-        var playerLogin = "unittest";
-        var teamInfoService = TeamInfoServiceMock();
-        var mockModeSettings = new GbxDynamicObject();
-
-        _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
-            .Returns(Task.FromResult(mockModeSettings));
-
-        await teamInfoService.SendTeamInfoWidgetAsync(playerLogin);
-
-        _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Once);
-        _manialinkManager.Verify(
-            m => m.SendManialinkAsync(playerLogin, "TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
-            Times.Once);
-    }
-
-    [Fact]
     public async Task Sends_Widget_To_Everyone()
     {
         var teamInfoService = TeamInfoServiceMock();
@@ -173,30 +144,22 @@ public class TeamInfoServiceTests
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
             .Returns(Task.FromResult(new GbxDynamicObject()));
 
-        await teamInfoService.SetWidgetVisibilityAsync(false);
         await teamInfoService.SendTeamInfoWidgetEveryoneAsync();
 
         _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Once);
         _manialinkManager.Verify(
-            m => m.SendManialinkAsync("TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
+            m => m.SendPersistentManialinkAsync("TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
             Times.Once);
-
-        Assert.True(await teamInfoService.GetWidgetVisibilityAsync());
     }
 
     [Fact]
     public async Task Hides_Widget_For_Everyone()
     {
-        var teamInfoService = TeamInfoServiceMock();
-
-        await teamInfoService.SetWidgetVisibilityAsync(true);
-        await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+        await TeamInfoServiceMock().HideTeamInfoWidgetEveryoneAsync();
 
         _manialinkManager.Verify(
             m => m.HideManialinkAsync("TeamInfoModule.TeamInfoWidget"),
             Times.Once);
-
-        Assert.False(await teamInfoService.GetWidgetVisibilityAsync());
     }
 
     [Fact]
@@ -207,14 +170,11 @@ public class TeamInfoServiceTests
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
             .Returns(Task.FromResult(new GbxDynamicObject()));
 
-        await teamInfoService.SetWidgetVisibilityAsync(false);
         await teamInfoService.UpdateRoundNumberAsync(777);
 
         _manialinkManager.Verify(
-            m => m.SendManialinkAsync("TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
+            m => m.SendPersistentManialinkAsync("TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
             Times.Once);
-
-        Assert.True(await teamInfoService.GetWidgetVisibilityAsync());
     }
 
     [Fact]
@@ -225,14 +185,11 @@ public class TeamInfoServiceTests
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
             .Returns(Task.FromResult(new GbxDynamicObject()));
 
-        await teamInfoService.SetWidgetVisibilityAsync(false);
         await teamInfoService.UpdatePointsAsync(4, 5);
 
         _manialinkManager.Verify(
-            m => m.SendManialinkAsync("TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
+            m => m.SendPersistentManialinkAsync("TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
             Times.Once);
-
-        Assert.True(await teamInfoService.GetWidgetVisibilityAsync());
     }
 
     [Theory]

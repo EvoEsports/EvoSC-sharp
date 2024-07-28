@@ -19,7 +19,6 @@ public class TeamInfoService(
     private const string WidgetTemplate = "TeamInfoModule.TeamInfoWidget";
 
     private bool _modeIsTeams;
-    private bool _widgetShouldBeDisplayed;
     private int _currentRound;
     private int _team1Points;
     private int _team2Points;
@@ -145,27 +144,19 @@ public class TeamInfoService(
                                teamPoints - (pointsGap - 1) >= opponentPoints);
     }
 
-    public async Task SendTeamInfoWidgetAsync(string playerLogin)
-    {
-        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, await GetWidgetDataAsync());
-    }
-
     public async Task SendTeamInfoWidgetEveryoneAsync()
     {
-        await SetWidgetVisibilityAsync(true);
-        await manialinks.SendManialinkAsync(WidgetTemplate, await GetWidgetDataAsync());
+        await manialinks.SendPersistentManialinkAsync(WidgetTemplate, await GetWidgetDataAsync());
     }
 
     public async Task HideTeamInfoWidgetEveryoneAsync()
     {
-        await SetWidgetVisibilityAsync(false);
         await manialinks.HideManialinkAsync(WidgetTemplate);
     }
 
     public async Task UpdateRoundNumberAsync(int round)
     {
         _currentRound = round;
-        await SetWidgetVisibilityAsync(true);
         await SendTeamInfoWidgetEveryoneAsync();
     }
 
@@ -176,18 +167,6 @@ public class TeamInfoService(
         await SendTeamInfoWidgetEveryoneAsync();
     }
 
-    public Task<bool> GetWidgetVisibilityAsync()
-    {
-        return Task.FromResult(_widgetShouldBeDisplayed);
-    }
-
-    public Task SetWidgetVisibilityAsync(bool visible)
-    {
-        _widgetShouldBeDisplayed = visible;
-
-        return Task.CompletedTask;
-    }
-
     public Task<bool> GetModeIsTeamsAsync()
     {
         return Task.FromResult(_modeIsTeams);
@@ -196,7 +175,6 @@ public class TeamInfoService(
     public Task SetModeIsTeamsAsync(bool modeIsTeams)
     {
         _modeIsTeams = modeIsTeams;
-        _widgetShouldBeDisplayed = modeIsTeams;
         
         return Task.CompletedTask;
     }

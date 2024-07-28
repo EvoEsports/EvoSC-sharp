@@ -40,13 +40,6 @@ public interface ITeamInfoService
     public Task<bool> DoesTeamHaveMatchPointAsync(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap);
 
     /// <summary>
-    /// Sends the team info widget to the given player.
-    /// </summary>
-    /// <param name="playerLogin"></param>
-    /// <returns></returns>
-    public Task SendTeamInfoWidgetAsync(string playerLogin);
-
-    /// <summary>
     /// Sends the team info widget to all players.
     /// </summary>
     /// <returns></returns>
@@ -72,18 +65,6 @@ public interface ITeamInfoService
     /// <param name="team2Points"></param>
     /// <returns></returns>
     public Task UpdatePointsAsync(int team1Points, int team2Points);
-    
-    /// <summary>
-    /// Gets whether the widget should be displayed to players.
-    /// </summary>
-    /// <returns></returns>
-    public Task<bool> GetWidgetVisibilityAsync();
-    
-    /// <summary>
-    /// Sets whether the widget should be displayed to players.
-    /// </summary>
-    /// <returns></returns>
-    public Task SetWidgetVisibilityAsync(bool visible);
     
     /// <summary>
     /// Tells whether the service is currently active for teams mode.
