@@ -40,18 +40,19 @@ public class CurrentMapService(
 
     private async Task ShowManialinkAsync(string mapUId)
     {
-        string author;
-
         var dbMap = await mapRepository.GetMapByUidAsync(mapUId);
 
-        if (dbMap?.Author?.NickName == dbMap?.Author?.AccountId)
+        if (dbMap == null)
+        {
+            return;
+        }
+        
+        var author = dbMap.Author?.NickName;
+
+        if (dbMap.Author?.NickName == dbMap.Author?.AccountId)
         {
             var serverMap = await client.Remote.GetCurrentMapInfoAsync();
             author = serverMap.AuthorNickname.Length > 0 ? serverMap.AuthorNickname : serverMap.Author;
-        }
-        else
-        {
-            author = dbMap.Author?.NickName;
         }
 
         await manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
