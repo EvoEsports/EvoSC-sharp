@@ -15,7 +15,8 @@ namespace EvoSC.Modules.Official.NextMapModule.Controllers;
 public class NextMapEventController(
     INextMapService nextMapService,
     IManialinkManager manialinkManager,
-    INextMapSettings settings) : EvoScController<IEventControllerContext>
+    INextMapSettings settings
+) : EvoScController<IEventControllerContext>
 {
     private const string Template = "NextMapModule.NextMap";
 
@@ -28,7 +29,7 @@ public class NextMapEventController(
     }
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public async Task HideNextMapOnMapStartAsync(object sender, MapGbxEventArgs args)
+    public async Task HideNextMapOnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
         await manialinkManager.HideManialinkAsync(Template);
     }

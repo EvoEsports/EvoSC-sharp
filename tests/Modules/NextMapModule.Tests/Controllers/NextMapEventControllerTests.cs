@@ -3,9 +3,11 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.NextMapModule.Config;
 using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing.Controllers;
+using GbxRemoteNet.Events;
 using Moq;
 using Xunit;
 
@@ -17,12 +19,12 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
 
     private readonly Mock<INextMapService> _nextMapService = new();
     private readonly Mock<IManialinkManager> _manialinkManager = new();
+    private readonly Mock<INextMapSettings> _settings = new();
 
     public NextMapEventControllerTests()
     {
-        InitMock(_nextMapService, _manialinkManager);
+        InitMock(_nextMapService, _manialinkManager, _settings);
     }
-
 
     [Fact]
     public async Task OnPodiumStart_Shows_Next_Map()
@@ -47,7 +49,7 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
     }
 
     [Fact]
-    public async Task OnPodiumEnd_Hides_Next_Map()
+    public async Task OnBeginMap_Hides_Next_Map()
     {
         var map = new DbMap
         {
@@ -60,7 +62,7 @@ public class NextMapEventControllerTests : ControllerMock<NextMapEventController
         };
         _nextMapService.Setup(r => r.GetNextMapAsync()).Returns(Task.FromResult((IMap) map));
         
-        await Controller.HideNextMapOnPodiumEndAsync(new(), null);
+        await Controller.HideNextMapOnBeginMapAsync(null, new MapGbxEventArgs());
         _manialinkManager.Verify(r => r.HideManialinkAsync(Template), Times.Once);
     }
 }

@@ -17,7 +17,8 @@ public class CurrentMapService(
     ILogger<CurrentMapService> logger,
     IMapRepository mapRepository,
     IServerClient client,
-    ICurrentMapSettings settings)
+    ICurrentMapSettings settings
+)
     : ICurrentMapService
 {
     [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]
@@ -46,7 +47,7 @@ public class CurrentMapService(
         {
             return;
         }
-        
+
         var author = dbMap.Author?.NickName;
 
         if (dbMap.Author?.NickName == dbMap.Author?.AccountId)
