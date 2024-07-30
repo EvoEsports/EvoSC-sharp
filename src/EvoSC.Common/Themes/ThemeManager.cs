@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Reflection;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
@@ -137,6 +138,26 @@ public class ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplica
             themeOptions[option.Key] = option.Value;
         }
         
+        // override any options set as an envi
+        foreach (DictionaryEntry enviObject in Environment.GetEnvironmentVariables())
+        {
+            var key = enviObject.Key as string;
+            if (key == null || enviObject.Value == null || !key.StartsWith("EVOSC_THEME_"))
+            {
+                continue;
+            }
+
+            foreach (var option in themeOptions)
+            {
+                var enviKey = $"EVOSC_THEME_{option.Key.Replace('.', '_').ToUpper()}";
+
+                if (enviKey == key)
+                {
+                    themeOptions[option.Key] = enviObject.Value;
+                }
+            }
+        }
+        
         _themeOptionsCache = themeOptions;
         return themeOptions;
     }
@@ -158,7 +179,7 @@ public class ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplica
             var key = defaultOption.Key.StartsWith("Theme.", StringComparison.Ordinal)
                 ? defaultOption.Key[6..]
                 : defaultOption.Key;
-            
+
             themeOptions[key] = defaultOption.Value;
         }
 
