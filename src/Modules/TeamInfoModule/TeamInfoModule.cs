@@ -9,5 +9,5 @@ public class TeamInfoModule(ITeamInfoService teamInfoService) : EvoScModule, ITo
 {
     public Task EnableAsync() => teamInfoService.InitializeModuleAsync();
 
-    public Task DisableAsync() => teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    public Task DisableAsync() => Task.CompletedTask;
 }
