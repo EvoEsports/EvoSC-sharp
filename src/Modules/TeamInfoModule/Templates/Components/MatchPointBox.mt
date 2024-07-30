@@ -18,9 +18,7 @@
             />
             <label pos='{{ (halign=="right" ? width-2 : 2) }} {{ height / -2.0 + 0.25 }}'
                    text="{{ text.ToUpper() }}"
-                   textcolor="{{ Theme.UI_TextPrimary }}"
-                   textfont="{{ Font.Regular }}"
-                   textsize="{{ Theme.UI_FontSize }}"
+                   class="text-primary"
                    valign="center"
                    halign="{{ halign }}"
             />
