@@ -4,16 +4,21 @@ using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.CurrentMapModule.Config;
 using EvoSC.Modules.Official.CurrentMapModule.Interfaces;
-using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.CurrentMapModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class CurrentMapService(IManialinkManager manialinkManager, ILogger<CurrentMapService> logger,
-        IMapRepository mapRepository, IServerClient client, IWorldRecordService worldRecordService)
+public class CurrentMapService(
+    IManialinkManager manialinkManager,
+    ILogger<CurrentMapService> logger,
+    IMapRepository mapRepository,
+    IServerClient client,
+    ICurrentMapSettings settings
+)
     : ICurrentMapService
 {
     [ExcludeFromCodeCoverage(Justification = "GBXRemoteClient cannot be mocked.")]
@@ -37,24 +42,22 @@ public class CurrentMapService(IManialinkManager manialinkManager, ILogger<Curre
     private async Task ShowManialinkAsync(string mapUId)
     {
         var dbMap = await mapRepository.GetMapByUidAsync(mapUId);
-        string author;
-        var worldRecord = await worldRecordService.GetRecordAsync();
-        if (dbMap?.Author?.NickName == dbMap?.Author?.AccountId)
+
+        if (dbMap == null)
+        {
+            return;
+        }
+
+        var author = dbMap.Author?.NickName;
+
+        if (dbMap.Author?.NickName == dbMap.Author?.AccountId)
         {
             var serverMap = await client.Remote.GetCurrentMapInfoAsync();
             author = serverMap.AuthorNickname.Length > 0 ? serverMap.AuthorNickname : serverMap.Author;
         }
-        else
-        {
-            author = dbMap.Author?.NickName;
-        }
+
         await manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
-            new
-            {
-                map = dbMap,
-                mapauthor = author,
-                record = worldRecord
-            });
+            new { map = dbMap, mapAuthor = author, settings });
         logger.LogDebug("Showing current map widget");
     }
 }

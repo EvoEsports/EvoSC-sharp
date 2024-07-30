@@ -5,13 +5,18 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.NextMapModule.Config;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
+using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.NextMapModule.Controllers;
 
 [Controller]
-public class NextMapEventController(INextMapService nextMapService, IManialinkManager manialinkManager)
-    : EvoScController<IEventControllerContext>
+public class NextMapEventController(
+    INextMapService nextMapService,
+    IManialinkManager manialinkManager,
+    INextMapSettings settings
+) : EvoScController<IEventControllerContext>
 {
     private const string Template = "NextMapModule.NextMap";
 
@@ -20,27 +25,11 @@ public class NextMapEventController(INextMapService nextMapService, IManialinkMa
     {
         var nextMap = await nextMapService.GetNextMapAsync();
         await manialinkManager.SendManialinkAsync(Template,
-            new
-            {
-                mapName = nextMap.Name, 
-                author = nextMap.Author?.NickName
-            });
+            new { mapName = nextMap.Name, author = nextMap.Author?.NickName, settings });
     }
 
-    [Subscribe(ModeScriptEvent.PodiumEnd)]
-    public async Task HideNextMapOnPodiumEndAsync(object sender, PodiumEventArgs args)
-    {
-        await manialinkManager.HideManialinkAsync(Template);
-    }
-
-    [Subscribe(ModeScriptEvent.StartMapStart)]
-    public async Task HideNextMapOnMapStartAsync(object sender, MapEventArgs args)
-    {
-        await manialinkManager.HideManialinkAsync(Template);
-    }
-
-    [Subscribe(ModeScriptEvent.EndMapEnd)]
-    public async Task HideNextMapOnMapEndAsync(object sender, MapEventArgs args)
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public async Task HideNextMapOnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
         await manialinkManager.HideManialinkAsync(Template);
     }
