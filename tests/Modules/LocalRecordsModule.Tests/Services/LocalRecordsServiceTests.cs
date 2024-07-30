@@ -48,7 +48,7 @@ public class LocalRecordsServiceTests
         var localRecordRepository = new Mock<ILocalRecordRepository>();
         var playerManager = new Mock<IPlayerManagerService>();
         var manialinkManager = new Mock<IManialinkManager>();
-        var logger = LoggerSetup.CreateLogger<LocalRecordsService>();
+        var logger = TestLoggerSetup.CreateLogger<LocalRecordsService>();
         var settings = new Mock<ILocalRecordsSettings>();
         var server = Mocking.NewServerClientMock();
         var themeManager = new Mock<IThemeManager>();

@@ -4,7 +4,7 @@ using EvoSC.Common.Interfaces.Services;
 
 namespace EvoSC.Common.Permissions;
 
-public class PermissionManager(IPermissionRepository permissionRepository) : IPermissionManager
+public class PermissionManager(IPermissionRepository permissionRepository, IPlayerCacheService playerCache) : IPermissionManager
 {
     public async Task<bool> HasPermissionAsync(IPlayer player, string permission)
     {
@@ -73,11 +73,17 @@ public class PermissionManager(IPermissionRepository permissionRepository) : IPe
 
     public async Task<IGroup?> GetGroupAsync(int id) => await permissionRepository.GetGroupAsync(id);
 
-    public async Task AddPlayerToGroupAsync(IPlayer player, IGroup group) =>
+    public async Task AddPlayerToGroupAsync(IPlayer player, IGroup group)
+    {
         await permissionRepository.AddPlayerToGroupAsync(player.Id, group.Id);
+        await playerCache.InvalidatePlayerStateAsync(player);
+    }
 
-    public async Task RemovePlayerFromGroupAsync(IPlayer player, IGroup group) =>
+    public async Task RemovePlayerFromGroupAsync(IPlayer player, IGroup group)
+    {
         await permissionRepository.RemovePlayerFromGroupAsync(player.Id, group.Id);
+        await playerCache.InvalidatePlayerStateAsync(player);
+    }
 
     public async Task AddPermissionToGroupAsync(IGroup group, IPermission permission) =>
         await permissionRepository.AddPermissionToGroupAsync(group.Id, permission.Id);

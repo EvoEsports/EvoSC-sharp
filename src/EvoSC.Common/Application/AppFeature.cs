@@ -121,5 +121,5 @@ public enum AppFeature
     /// Add, remove and manage themes using the theme manager.
     /// </summary>
     [Identifier(NoPrefix = true)]
-    Themes
+    Themes,
 }

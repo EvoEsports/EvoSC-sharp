@@ -11,6 +11,8 @@ public class OnlinePlayer : IOnlinePlayer
     public string UbisoftName { get; set; }
     public string Zone { get; set; }
     public IPlayerSettings Settings { get; set; }
+    public IEnumerable<IGroup> Groups { get; set; }
+    public IGroup? DisplayGroup { get; set; }
     public required PlayerState State { get; set; }
     public IPlayerFlags Flags { get; set; }
     public PlayerTeam Team { get; set; }
@@ -25,6 +27,8 @@ public class OnlinePlayer : IOnlinePlayer
         UbisoftName = player.UbisoftName;
         Zone = player.Zone;
         Settings = player.Settings;
+        Groups = player.Groups;
+        DisplayGroup = player.DisplayGroup;
     }
     
     public bool Equals(IPlayer? other) => other != null && AccountId.Equals(other.AccountId, StringComparison.Ordinal);

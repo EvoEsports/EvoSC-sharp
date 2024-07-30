@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Util.TextFormatting;
 
 namespace EvoSC.Common.Util;
@@ -45,11 +46,17 @@ public static class FormattingUtils
         return $"+ {s:0}.{ms:000}";
     }
 
-    public static TextFormatter FormatPlayerChatMessage(string nickname, string message)
+    public static TextFormatter FormatPlayerChatMessage(IPlayer player, string message)
     {
-        var formattedMessage = new TextFormatter()
-            .AddText("[")
-            .AddText(text => text.AddText(nickname))
+        var formattedMessage = new TextFormatter();
+
+        if (player.DisplayGroup?.Icon != null)
+        {
+            formattedMessage.AddText(player.DisplayGroup.Icon, s => s.WithColor(player.DisplayGroup.Color ?? "FFF"));
+        }
+        
+        formattedMessage.AddText("[")
+            .AddText(text => text.AddText(player.NickName))
             .AddText("] ")
             .AddText(text => text.AddText(message));
 

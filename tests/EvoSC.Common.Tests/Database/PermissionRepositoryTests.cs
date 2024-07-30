@@ -6,6 +6,7 @@ using EvoSC.Common.Database.Repository.Permissions;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Permissions.Models;
+using EvoSC.Testing;
 using EvoSC.Testing.Database;
 using LinqToDB;
 using Xunit;
@@ -17,7 +18,7 @@ public class PermissionRepositoryTests
     private static (PermissionRepository, IDbConnectionFactory) CreateNewRepository()
     {
         var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
-        return (new PermissionRepository(factory, LoggerSetup.CreateLogger<PermissionRepository>()), factory);
+        return (new PermissionRepository(factory, TestLoggerSetup.CreateLogger<PermissionRepository>()), factory);
     }
 
     [Fact]

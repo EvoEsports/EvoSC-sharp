@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet.Structs;
 
 namespace EvoSC.Common.Interfaces.Database.Repository;
@@ -10,7 +11,7 @@ public interface IPlayerRepository
     /// </summary>
     /// <param name="accountId">The account ID of the player.</param>
     /// <returns></returns>
-    public Task<IPlayer?> GetPlayerByAccountIdAsync(string accountId);
+    public Task<DbPlayer?> GetPlayerByAccountIdAsync(string accountId);
     
     /// <summary>
     /// Add a new player to the database.

@@ -11,6 +11,8 @@ public class Player : IPlayer
     public string UbisoftName { get; init; }
     public string? Zone { get; init; }
     public IPlayerSettings Settings { get; set; }
+    public IEnumerable<IGroup> Groups { get; set; }
+    public IGroup? DisplayGroup { get; set; }
 
     public Player()
     {
@@ -24,6 +26,8 @@ public class Player : IPlayer
         UbisoftName = dbPlayer.UbisoftName;
         Zone = dbPlayer.Zone;
         Settings = dbPlayer.Settings;
+        Groups = dbPlayer.Groups;
+        DisplayGroup = dbPlayer.DisplayGroup;
     }
     
     public bool Equals(IPlayer? other) => other != null && AccountId.Equals(other.AccountId, StringComparison.Ordinal);
