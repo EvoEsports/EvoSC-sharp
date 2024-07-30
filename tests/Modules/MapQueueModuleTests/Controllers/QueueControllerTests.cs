@@ -23,7 +23,7 @@ public class QueueControllerTests : EventControllerTestBase<QueueController>
     
     public QueueControllerTests()
     {
-        InitMock(_mapQueueServiceMock, _server.Client, _mapServiceMock, LoggerSetup.CreateLogger<QueueController>());
+        InitMock(_mapQueueServiceMock, _server.Client, _mapServiceMock, TestLoggerSetup.CreateLogger<QueueController>());
     }
 
     [Fact]

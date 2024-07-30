@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using EvoSC.Common.Database.Migrations;
 using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Database.Repository.Permissions;
 using EvoSC.Common.Database.Repository.Players;
+using EvoSC.Testing;
 using EvoSC.Testing.Database;
 using GbxRemoteNet.Structs;
 using LinqToDB;
@@ -16,7 +18,9 @@ public class PlayerRepositoryTests
     {
         var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         var db = factory.GetConnection();
-        var playerRepo = new PlayerRepository(factory);
+        var logger = TestLoggerSetup.CreateLogger<PermissionRepository>();
+        var permissionRepo = new PermissionRepository(factory, logger);
+        var playerRepo = new PlayerRepository(factory, permissionRepo);
 
         await playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
         {
@@ -36,7 +40,9 @@ public class PlayerRepositoryTests
     public void Player_With_Same_Account_ID_Fails()
     {
         var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
-        var playerRepo = new PlayerRepository(factory);
+        var logger = TestLoggerSetup.CreateLogger<PermissionRepository>();
+        var permissionRepo = new PermissionRepository(factory, logger);
+        var playerRepo = new PlayerRepository(factory, permissionRepo);
 
         Assert.Throws<System.Data.SQLite.SQLiteException>(() =>
         {
@@ -58,7 +64,9 @@ public class PlayerRepositoryTests
     public async Task Get_Player_By_Account_ID_Returns_Correct()
     {
         var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
-        var playerRepo = new PlayerRepository(factory);
+        var logger = TestLoggerSetup.CreateLogger<PermissionRepository>();
+        var permissionRepo = new PermissionRepository(factory, logger);
+        var playerRepo = new PlayerRepository(factory, permissionRepo);
 
         await playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
         {
@@ -76,7 +84,9 @@ public class PlayerRepositoryTests
     {
         var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
         var db = factory.GetConnection();
-        var playerRepo = new PlayerRepository(factory);
+        var logger = TestLoggerSetup.CreateLogger<PermissionRepository>();
+        var permissionRepo = new PermissionRepository(factory, logger);
+        var playerRepo = new PlayerRepository(factory, permissionRepo);
 
         var player = await playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
         {

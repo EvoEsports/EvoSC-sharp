@@ -31,4 +31,5 @@ public interface IPlayerCacheService
     public Task UpdatePlayerListAsync();
 
     public Task UpdatePlayerAsync(IPlayer player);
+    public Task InvalidatePlayerStateAsync(IPlayer player);
 }
