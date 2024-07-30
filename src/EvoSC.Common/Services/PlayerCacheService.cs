@@ -19,7 +19,6 @@ public class PlayerCacheService : IPlayerCacheService
     private readonly IServerClient _server;
     private readonly ILogger<PlayerCacheService> _logger;
     private readonly IPlayerRepository _playerRepository;
-    private readonly IPermissionRepository _permissionRepository;
     
     private readonly Dictionary<string, IOnlinePlayer> _onlinePlayers = new();
     private readonly object _onlinePlayersMutex = new();
@@ -36,12 +35,11 @@ public class PlayerCacheService : IPlayerCacheService
     }
 
     public PlayerCacheService(IEventManager events, IServerClient server, ILogger<PlayerCacheService> logger,
-        IPlayerRepository playerRepository, IPermissionRepository permissionRepository)
+        IPlayerRepository playerRepository)
     {
         _server = server;
         _logger = logger;
         _playerRepository = playerRepository;
-        _permissionRepository = permissionRepository;
 
         SetupEvents(events);
     }

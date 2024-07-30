@@ -142,7 +142,7 @@ public class ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplica
         foreach (DictionaryEntry enviObject in Environment.GetEnvironmentVariables())
         {
             var key = enviObject.Key as string;
-            if (key == null || enviObject.Value == null || !key.StartsWith("EVOSC_THEME_"))
+            if (key == null || enviObject.Value == null || !key.StartsWith("EVOSC_THEME_", StringComparison.Ordinal))
             {
                 continue;
             }

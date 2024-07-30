@@ -2,7 +2,6 @@
 using EvoSC.CLI.Interfaces;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
-using EvoSC.Common.Util.EnumIdentifier;
 
 namespace EvoSC.CliCommands;
 
