@@ -2,6 +2,7 @@
     <using namespace="GbxRemoteNet.Structs"/>
     <using namespace="EvoSC.Modules.Official.TeamInfoModule.Config"/>
 
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
     <import component="TeamInfoModule.Components.RoundCounter" as="RoundCounter"/>
     <import component="TeamInfoModule.Components.PointsBox" as="PointsBox"/>
     <import component="TeamInfoModule.Components.BottomInfoBox" as="BottomInfoBox"/>
