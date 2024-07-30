@@ -1,4 +1,4 @@
-﻿using EvoSC.Modules.Official.TeamInfoModule.Models;
+﻿using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 
@@ -14,14 +14,14 @@ public interface ITeamInfoService
     /// Gets the current mode script settings for teams mode.
     /// </summary>
     /// <returns></returns>
-    public Task<ModeScriptTeamSettings> GetModeScriptTeamSettingsAsync();
+    public Task<TeamsModeScriptSettings> GetModeScriptTeamSettingsAsync();
 
     /// <summary>
     /// Get the text displayed at the bottom of the team info widget.
     /// </summary>
     /// <param name="modeScriptTeamSettings"></param>
     /// <returns></returns>
-    public Task<string?> GetInfoBoxTextAsync(ModeScriptTeamSettings modeScriptTeamSettings);
+    public Task<string?> GetInfoBoxTextAsync(TeamsModeScriptSettings modeScriptTeamSettings);
 
     /// <summary>
     /// Gets all necessary data for the widget.
@@ -37,7 +37,7 @@ public interface ITeamInfoService
     /// <param name="pointsLimit"></param>
     /// <param name="pointsGap"></param>
     /// <returns></returns>
-    public Task<bool> DoesTeamHaveMatchPointAsync(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap);
+    public Task<bool> DoesTeamHaveMatchPointAsync(int teamPoints, int opponentPoints, int? pointsLimit, int? pointsGap);
 
     /// <summary>
     /// Sends the team info widget to all players.

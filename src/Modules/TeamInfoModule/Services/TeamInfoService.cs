@@ -1,10 +1,10 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Config;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
-using EvoSC.Modules.Official.TeamInfoModule.Models;
 using LinqToDB.Common;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Services;
@@ -34,9 +34,11 @@ public class TeamInfoService(
         var infoBoxText = await GetInfoBoxTextAsync(modeScriptSettings);
         var team1 = await server.Remote.GetTeamInfoAsync(1);
         var team2 = await server.Remote.GetTeamInfoAsync(2);
-        var team1MatchPoint = await DoesTeamHaveMatchPointAsync(_team1Points, _team2Points, modeScriptSettings.PointsLimit,
+        var team1MatchPoint = await DoesTeamHaveMatchPointAsync(_team1Points, _team2Points,
+            modeScriptSettings.PointsLimit,
             modeScriptSettings.PointsGap);
-        var team2MatchPoint = await DoesTeamHaveMatchPointAsync(_team2Points, _team1Points, modeScriptSettings.PointsLimit,
+        var team2MatchPoint = await DoesTeamHaveMatchPointAsync(_team2Points, _team1Points,
+            modeScriptSettings.PointsLimit,
             modeScriptSettings.PointsGap);
 
         return new
@@ -54,67 +56,23 @@ public class TeamInfoService(
         };
     }
 
-    public async Task<ModeScriptTeamSettings> GetModeScriptTeamSettingsAsync()
+    public async Task<TeamsModeScriptSettings> GetModeScriptTeamSettingsAsync()
     {
         var modeScriptSettings = await server.Remote.GetModeScriptSettingsAsync();
-        var defaultSettings = new ModeScriptTeamSettings();
 
-        return new ModeScriptTeamSettings
+        return new TeamsModeScriptSettings
         {
-            PointsLimit =
-                modeScriptSettings.TryGetValue("S_PointsLimit", out var pointsLimit)
-                    ? (int)pointsLimit
-                    : defaultSettings.PointsLimit,
-            FinishTimeout =
-                modeScriptSettings.TryGetValue("S_FinishTimeout", out var finishTimeout)
-                    ? (int)finishTimeout
-                    : defaultSettings.FinishTimeout,
-            MaxPointsPerRound =
-                modeScriptSettings.TryGetValue("S_MaxPointsPerRound", out var maxPointsPerRound)
-                    ? (int)maxPointsPerRound
-                    : defaultSettings.MaxPointsPerRound,
-            PointsGap =
-                modeScriptSettings.TryGetValue("S_PointsGap", out var pointsGap)
-                    ? (int)pointsGap
-                    : defaultSettings.PointsGap,
-            UseCustomPointsRepartition =
-                modeScriptSettings.TryGetValue("S_UseCustomPointsRepartition", out var useCustomPointsRepartition)
-                    ? (bool)useCustomPointsRepartition
-                    : defaultSettings.UseCustomPointsRepartition,
-            CumulatePoints =
-                modeScriptSettings.TryGetValue("S_CumulatePoints", out var cumulatePoints)
-                    ? (bool)cumulatePoints
-                    : defaultSettings.CumulatePoints,
-            RoundsPerMap =
-                modeScriptSettings.TryGetValue("S_RoundsPerMap", out var roundsPerMap)
-                    ? (int)roundsPerMap
-                    : defaultSettings.RoundsPerMap,
-            MapsPerMatch =
-                modeScriptSettings.TryGetValue("S_MapsPerMatch", out var mapsPerMatch)
-                    ? (int)mapsPerMatch
-                    : defaultSettings.MapsPerMatch,
-            UseTieBreak =
-                modeScriptSettings.TryGetValue("S_UseTieBreak", out var useTieBreak)
-                    ? (bool)useTieBreak
-                    : defaultSettings.UseTieBreak,
-            WarmUpNb =
-                modeScriptSettings.TryGetValue("S_WarmUpNb", out var warmupNb)
-                    ? (int)warmupNb
-                    : defaultSettings.WarmUpNb,
-            WarmUpDuration =
-                modeScriptSettings.TryGetValue("S_WarmUpDuration", out var warmupDuration)
-                    ? (int)warmupDuration
-                    : defaultSettings.WarmUpDuration,
-            UseAlternateRules = modeScriptSettings.TryGetValue("S_UseAlternateRules", out var useAlternateRules)
-                ? (bool)useAlternateRules
-                : defaultSettings.UseAlternateRules,
-            NeutralEmblemUrl = modeScriptSettings.TryGetValue("S_NeutralEmblemUrl", out var neutralEmblemUrl)
-                ? (string)neutralEmblemUrl
-                : defaultSettings.NeutralEmblemUrl,
+            PointsLimit = (int)modeScriptSettings.GetValueOrDefault("S_PointsLimit", 5),
+            FinishTimeout = (int)modeScriptSettings.GetValueOrDefault("S_FinishTimeout", -1),
+            MaxPointsPerRound = (int)modeScriptSettings.GetValueOrDefault("S_MaxPointsPerRound", 6),
+            PointsGap = (int)modeScriptSettings.GetValueOrDefault("S_PointsGap", 1),
+            RoundsPerMap = (int)modeScriptSettings.GetValueOrDefault("S_RoundsPerMap", -1),
+            MapsPerMatch = (int)modeScriptSettings.GetValueOrDefault("S_MapsPerMatch", -1),
+            NeutralEmblemUrl = (string)modeScriptSettings.GetValueOrDefault("S_NeutralEmblemUrl", "")
         };
     }
 
-    public Task<string?> GetInfoBoxTextAsync(ModeScriptTeamSettings modeScriptTeamSettings)
+    public Task<string?> GetInfoBoxTextAsync(TeamsModeScriptSettings modeScriptTeamSettings)
     {
         var infoBoxText = new List<string>();
 
@@ -138,8 +96,15 @@ public class TeamInfoService(
         return Task.FromResult(infoBoxText.IsNullOrEmpty() ? null : string.Join(" | ", infoBoxText));
     }
 
-    public Task<bool> DoesTeamHaveMatchPointAsync(int teamPoints, int opponentPoints, int pointsLimit, int pointsGap)
+    public Task<bool> DoesTeamHaveMatchPointAsync(int teamPoints, int opponentPoints, int? pointsLimit, int? pointsGap)
     {
+        if (pointsLimit == null)
+        {
+            return Task.FromResult(false);
+        }
+
+        pointsGap ??= 1;
+
         return Task.FromResult(teamPoints >= pointsLimit - 1 &&
                                teamPoints - (pointsGap - 1) >= opponentPoints);
     }
@@ -175,7 +140,7 @@ public class TeamInfoService(
     public Task SetModeIsTeamsAsync(bool modeIsTeams)
     {
         _modeIsTeams = modeIsTeams;
-        
+
         return Task.CompletedTask;
     }
 }

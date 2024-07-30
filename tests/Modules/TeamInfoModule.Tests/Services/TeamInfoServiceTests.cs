@@ -1,8 +1,8 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Config;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
-using EvoSC.Modules.Official.TeamInfoModule.Models;
 using EvoSC.Modules.Official.TeamInfoModule.Services;
 using EvoSC.Testing;
 using GbxRemoteNet.Interfaces;
@@ -39,12 +39,14 @@ public class TeamInfoServiceTests
     [InlineData(7, 6, 5, 1, true)]
     [InlineData(7, 6, 6, 1, true)]
     [InlineData(7, 0, 0, 1, false)]
+    [InlineData(7, 0, 0, null, false)]
     [InlineData(7, 5, 0, 1, false)]
     [InlineData(7, 6, 5, 2, true)]
     [InlineData(7, 7, 6, 2, true)]
     [InlineData(7, 6, 6, 2, false)]
     [InlineData(7, 7, 7, 2, false)]
-    public async Task Detects_Map_Point(int pointsLimit, int teamPoints, int opponentPoints, int pointsGap,
+    [InlineData(null, 7, 7, 2, false)]
+    public async Task Detects_Map_Point(int? pointsLimit, int teamPoints, int opponentPoints, int? pointsGap,
         bool shouldHaveMapPoint)
     {
         Assert.Equal(
@@ -74,14 +76,8 @@ public class TeamInfoServiceTests
             ["S_FinishTimeout"] = 2,
             ["S_MaxPointsPerRound"] = 3,
             ["S_PointsGap"] = 4,
-            ["S_UseCustomPointsRepartition"] = false,
-            ["S_CumulatePoints"] = false,
-            ["S_RoundsPerMap"] = 7,
-            ["S_MapsPerMatch"] = 8,
-            ["S_UseTieBreak"] = true,
-            ["S_WarmUpNb"] = 10,
-            ["S_WarmUpDuration"] = 11,
-            ["S_UseAlternateRules"] = false,
+            ["S_RoundsPerMap"] = 5,
+            ["S_MapsPerMatch"] = 6,
             ["S_NeutralEmblemUrl"] = "https://domain.tld/image.png",
         };
 
@@ -96,14 +92,8 @@ public class TeamInfoServiceTests
         Assert.Equal(2, modeScriptTeamSettings.FinishTimeout);
         Assert.Equal(3, modeScriptTeamSettings.MaxPointsPerRound);
         Assert.Equal(4, modeScriptTeamSettings.PointsGap);
-        Assert.False(modeScriptTeamSettings.UseCustomPointsRepartition);
-        Assert.False(modeScriptTeamSettings.CumulatePoints);
-        Assert.Equal(7, modeScriptTeamSettings.RoundsPerMap);
-        Assert.Equal(8, modeScriptTeamSettings.MapsPerMatch);
-        Assert.True(modeScriptTeamSettings.UseTieBreak);
-        Assert.Equal(10, modeScriptTeamSettings.WarmUpNb);
-        Assert.Equal(11, modeScriptTeamSettings.WarmUpDuration);
-        Assert.False(modeScriptTeamSettings.UseAlternateRules);
+        Assert.Equal(5, modeScriptTeamSettings.RoundsPerMap);
+        Assert.Equal(6, modeScriptTeamSettings.MapsPerMatch);
         Assert.Equal("https://domain.tld/image.png", modeScriptTeamSettings.NeutralEmblemUrl);
     }
 
@@ -111,7 +101,6 @@ public class TeamInfoServiceTests
     public async Task Returns_Default_Mode_Script_Team_Settings_For_Unset_Settings()
     {
         var teamInfoService = TeamInfoServiceMock();
-        var defaultModeSettings = new ModeScriptTeamSettings();
         var mockModeSettings = new GbxDynamicObject();
 
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
@@ -121,19 +110,13 @@ public class TeamInfoServiceTests
 
         _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Once);
 
-        Assert.Equal(defaultModeSettings.PointsLimit, modeScriptTeamSettings.PointsLimit);
-        Assert.Equal(defaultModeSettings.FinishTimeout, modeScriptTeamSettings.FinishTimeout);
-        Assert.Equal(defaultModeSettings.MaxPointsPerRound, modeScriptTeamSettings.MaxPointsPerRound);
-        Assert.Equal(defaultModeSettings.PointsGap, modeScriptTeamSettings.PointsGap);
-        Assert.Equal(defaultModeSettings.UseCustomPointsRepartition, modeScriptTeamSettings.UseCustomPointsRepartition);
-        Assert.Equal(defaultModeSettings.CumulatePoints, modeScriptTeamSettings.CumulatePoints);
-        Assert.Equal(defaultModeSettings.RoundsPerMap, modeScriptTeamSettings.RoundsPerMap);
-        Assert.Equal(defaultModeSettings.MapsPerMatch, modeScriptTeamSettings.MapsPerMatch);
-        Assert.Equal(defaultModeSettings.UseTieBreak, modeScriptTeamSettings.UseTieBreak);
-        Assert.Equal(defaultModeSettings.WarmUpNb, modeScriptTeamSettings.WarmUpNb);
-        Assert.Equal(defaultModeSettings.WarmUpDuration, modeScriptTeamSettings.WarmUpDuration);
-        Assert.Equal(defaultModeSettings.UseAlternateRules, modeScriptTeamSettings.UseAlternateRules);
-        Assert.Equal(defaultModeSettings.NeutralEmblemUrl, modeScriptTeamSettings.NeutralEmblemUrl);
+        Assert.Equal(5, modeScriptTeamSettings.PointsLimit);
+        Assert.Equal(-1, modeScriptTeamSettings.FinishTimeout);
+        Assert.Equal(6, modeScriptTeamSettings.MaxPointsPerRound);
+        Assert.Equal(1, modeScriptTeamSettings.PointsGap);
+        Assert.Equal(-1, modeScriptTeamSettings.RoundsPerMap);
+        Assert.Equal(-1, modeScriptTeamSettings.MapsPerMatch);
+        Assert.Equal("", modeScriptTeamSettings.NeutralEmblemUrl);
     }
 
     [Fact]
@@ -203,7 +186,7 @@ public class TeamInfoServiceTests
     public async Task Generates_Info_Box_Text(int pointsLimit, int pointsGap, int roundsPerMap, string? expected)
     {
         var teamInfoService = TeamInfoServiceMock();
-        var modeScriptTeamSettings = new ModeScriptTeamSettings
+        var modeScriptTeamSettings = new TeamsModeScriptSettings
         {
             PointsLimit = pointsLimit, PointsGap = pointsGap, RoundsPerMap = roundsPerMap
         };
@@ -215,10 +198,9 @@ public class TeamInfoServiceTests
     public async Task Gets_Widget_Data()
     {
         var teamInfoService = TeamInfoServiceMock();
-        var defaultTeamSettings = new ModeScriptTeamSettings();
         var team1Info = new TmTeamInfo { Name = "unit1" };
         var team2Info = new TmTeamInfo { Name = "unit2" };
-        var expectedTeam1Points = defaultTeamSettings.PointsLimit - 1;
+        var expectedTeam1Points = 4;
         var expectedTeam2Points = 0;
         var expectedRoundNumber = 777;
 
@@ -249,7 +231,7 @@ public class TeamInfoServiceTests
 
         var infoBoxText = widgetData.GetType().GetProperty("infoBoxText");
         var returnedInfoBoxText = infoBoxText.GetValue(widgetData, null);
-        Assert.Equal(await teamInfoService.GetInfoBoxTextAsync(defaultTeamSettings), returnedInfoBoxText);
+        Assert.Equal("FIRST TO 5", returnedInfoBoxText);
 
         var team1MatchPointProperty = widgetData.GetType().GetProperty("team1MatchPoint");
         var returnedTeam1MatchPoint = team1MatchPointProperty.GetValue(widgetData, null);
