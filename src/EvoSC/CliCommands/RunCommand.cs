@@ -9,7 +9,7 @@ namespace EvoSC.CliCommands;
 [RequiredFeatures(AppFeature.Config)]
 public class RunCommand(IEvoScBaseConfig config)
 {
-    public async Task ExecuteAsync([Alias(Name = "-s")]int something)
+    public async Task ExecuteAsync()
     {
         var app = new Application(config);
         await app.RunAsync();
