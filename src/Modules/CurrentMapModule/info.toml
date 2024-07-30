@@ -2,5 +2,5 @@
 name = "CurrentMapModule"
 title = "Current Map Module"
 summary = "A module for showing the current map"
-version = "1.0.0"
+version = "1.0.1"
 author = "Evo"
