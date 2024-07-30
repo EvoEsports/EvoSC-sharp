@@ -20,7 +20,7 @@ public static class Configuration
         ConfigMapper.SetupDefaultMappers();
 
         var baseConfig = new ConfigurationBuilder<IEvoScBaseConfig>()
-            .UseEvoScConfig(MainConfigFile, cliOptions)
+            .UseEvoScConfig(configFile, cliOptions)
             .UseTypeParser(new TextColorTypeParser())
             .UseTypeParser(new VersionParser())
             .UseTypeParser(new ThemeOptionsParser())
