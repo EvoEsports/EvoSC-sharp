@@ -10,7 +10,7 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.CurrentMapModule.Controllers;
 
 [Controller]
-public class CurrentMapController(ICurrentMapService service) : EvoScController<IEventControllerContext>
+public class CurrentMapEventController(ICurrentMapService service) : EvoScController<IEventControllerContext>
 {
     [Subscribe(GbxRemoteEvent.BeginMatch)]
     public Task OnBeginMatchAsync(object sender, EventArgs args)
