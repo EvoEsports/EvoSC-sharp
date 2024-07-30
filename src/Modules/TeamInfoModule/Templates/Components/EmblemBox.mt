@@ -34,9 +34,9 @@
                    pos="{{ width / 2.0 }} {{ height / -2.0 + 0.5 }}"
                    size="{{ width - logoPadding }} {{ height - logoPadding }}"
                    text="{{ teamInfo.Name.ToUpper()[0] }}"
+                   class="text-2xl"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    textfont="{{ Font.Bold }}"
-                   textsize="{{ Theme.UI_FontSize * 4.0 }}"
                    halign="center"
                    valign="center"
             />

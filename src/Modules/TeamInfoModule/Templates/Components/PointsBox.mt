@@ -15,9 +15,9 @@
 
             <label pos="{{ width / 2.0 }} {{ height / -2.0 + 0.5 }}"
                    text="{{ points }}"
+                   class="text-3xl"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    textfont="{{ Font.Bold }}"
-                   textsize="{{ Theme.UI_FontSize * 6.0 }}"
                    valign="center"
                    halign="center"
             />

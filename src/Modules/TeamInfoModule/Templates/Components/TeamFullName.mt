@@ -27,9 +27,9 @@
             <label pos='{{ width/2.0 }} {{ height / -2.0 }}'
                    size="{{ width - 4.0 }} {{ height - barHeight - 2.0 }}"
                    text="{{ teamInfo.Name.ToUpper() }}"
+                   class="text-xl"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    textfont="{{ Font.Bold }}"
-                   textsize="{{ Theme.UI_FontSize * 2.0 }}"
                    halign="center"
                    valign="center"
             />
