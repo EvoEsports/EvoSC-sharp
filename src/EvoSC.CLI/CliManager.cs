@@ -94,6 +94,7 @@ public class CliManager : ICliManager, IEvoSCApplication
         var startupPipeline = new StartupPipeline(config);
         startupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();
         startupPipeline.SetupBasePipeline(config);
+        startupPipeline.Services("CliContext", s => s.RegisterInstance<ICliContext>(new CliContext(context)));
         startupPipeline.Services("Application", s => s.RegisterInstance<IEvoSCApplication>(this));
 
         await startupPipeline.ExecuteAsync(command.RequiredFeatures
