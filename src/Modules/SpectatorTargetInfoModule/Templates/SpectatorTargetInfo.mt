@@ -1,5 +1,5 @@
 ﻿<component>
-    <import component="Scoreboard.Components.PlayerRow.ClubTag" as="ClubTag"/>
+    <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
     
     <property type="string" name="backgroundColor"/>
     <property type="string" name="headerColor"/>
@@ -78,7 +78,7 @@
             
             <frame id="name_box" pos="0 {{ h / -2.0 }}">
                 <ClubTag h="{{ h / 2.0 }}" 
-                         hidden="{{ 1 }}"
+                         hidden="{{ true }}"
                 />
                 <label id="name_label"
                        size="{{ centerBoxWidth - 10.0 }} {{ h }}"
