@@ -1,16 +1,16 @@
 ﻿<component>
     <property type="double" name="h" />
-    <property type="int" name="hidden" default="0" />
+    <property type="bool" name="hidden" default="false" />
     
     <template>
         <!-- Club Tag Background -->
         <quad id="club_bg"
               size="{{ h * 2 }} {{ h }}"
               valign="center"
-              modulatecolor="{{ Theme.ScoreboardModule_ClubTag_Bg }}"
+              modulatecolor="{{ Theme.UI_ClubTag_Bg }}"
               image="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
               alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
-              hidden="{{ hidden }}"
+              hidden="{{ hidden ? 1 : 0 }}"
         />
 
         <!-- Club Tag Text -->
@@ -21,8 +21,8 @@
                halign="center"
                textsize="0.9"
                textfont="{{ Font.Regular }}"
-               hidden="{{ hidden }}"
-               textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"
+               hidden="{{ hidden ? 1 : 0 }}"
+               textcolor="{{ Theme.UI_TextPrimary }}"
         />
     </template>
 </component>
