@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using EvoSC.Common.Database.Models.AuditLog;
+using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -6,11 +7,9 @@ namespace EvoSC.Common.Database.Migrations;
 [Migration(1675849925)]
 public class AddAuditLogTable : Migration
 {
-    public const string AuditLog = "AuditLog";
-    
     public override void Up()
     {
-        Create.Table(AuditLog)
+        Create.Table(DbAuditRecord.TableName)
             .WithColumn("Id").AsInt64().PrimaryKey().Identity()
             .WithColumn("Status").AsInt16()
             .WithColumn("EventName").AsString().Indexed()
@@ -22,6 +21,6 @@ public class AddAuditLogTable : Migration
 
     public override void Down()
     {
-        Delete.Table(AuditLog);
+        Delete.Table(DbAuditRecord.TableName);
     }
 }

@@ -3,9 +3,11 @@ using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Player;
 
-[Table("PlayerSettings")]
+[Table(TableName)]
 public class DbPlayerSettings : IPlayerSettings
 {
+    public const string TableName = "PlayerSettings";
+    
     [Column]
     public long PlayerId { get; set; }
     
