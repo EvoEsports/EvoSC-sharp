@@ -3,6 +3,8 @@
 #Include "MathLib" as Math
 #Include "ColorLib" as ColorLib
 
+declare Boolean ScriptRunning;
+
 Void __DoNothing() {}
 
 main() {
@@ -11,7 +13,6 @@ main() {
     declare Vec2 MouseDragStart = <0., 0.>;
 
     // set to true before initialization if scripts wants to terminate immediately
-    declare Boolean ScriptRunning for This = False;
     ScriptRunning = True;
 
     +++ OnInitialization +++

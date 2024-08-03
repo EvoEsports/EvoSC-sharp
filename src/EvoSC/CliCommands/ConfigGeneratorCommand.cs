@@ -21,7 +21,7 @@ public class ConfigGeneratorCommand(IModuleManager modules)
         [Alias(Name = "-t"), Description("The output format, supported types: ENV")]
         string formatType, 
         [Alias(Name = "-f"), Description("The file to write to.")]
-        string fileName
+        string? fileName
         )
     {
         if (formatType.ToUpper(CultureInfo.InvariantCulture) != "ENV")
@@ -47,12 +47,12 @@ public class ConfigGeneratorCommand(IModuleManager modules)
         output.AppendLine();
         GenerateModuleConfig(ConfigGenFormatType.ENV, output);
         
-        File.WriteAllText(fileName, output.ToString());
+        File.WriteAllText(fileName ?? ".env", output.ToString());
     }
 
     private void GenerateBaseConfig(ConfigGenFormatType formatType, StringBuilder sb)
     {
-        GeneratePropertiesRecursiveEnv(sb, typeof(IEvoScBaseConfig), null);
+        GeneratePropertiesRecursiveEnv(sb, typeof(IEvoScBaseConfig), null, null);
     }
 
     private void GenerateModuleConfig(ConfigGenFormatType formatType, StringBuilder sb)
@@ -88,22 +88,23 @@ public class ConfigGeneratorCommand(IModuleManager modules)
         {
             foreach (var type in assembly.AssemblyTypesWithAttribute<SettingsAttribute>())
             {
+                var prefix = type.Name[0] == 'I' ? type.Name.Substring(1) : type.Name;
                 if (lastModuleName != name)
                 {
                     sb.AppendLine();
-                    sb.AppendLine($"## Module \"{name}\" v{version} ##");
+                    sb.AppendLine($"## Module \"{name}\"  v{version} with Settings \"{prefix}\" ##");
                     sb.AppendLine();
                     lastModuleName = name;
                 }
 
-                GeneratePropertiesRecursiveEnv(sb, type, name);
+                GeneratePropertiesRecursiveEnv(sb, type, name, prefix);
                 
                 sb.AppendLine();
             }
         }
     }
 
-    private void GeneratePropertiesRecursiveEnv(StringBuilder sb, Type type, string? name)
+    private void GeneratePropertiesRecursiveEnv(StringBuilder sb, Type type, string? name, string? prefix)
     {
         foreach (var property in type.GetProperties())
         {
@@ -114,7 +115,7 @@ public class ConfigGeneratorCommand(IModuleManager modules)
 
             if (property.PropertyType.IsInterface)
             {
-                GeneratePropertiesRecursiveEnv(sb, property.PropertyType, keyName);
+                GeneratePropertiesRecursiveEnv(sb, property.PropertyType, keyName, prefix);
             }
             else
             {
@@ -123,7 +124,14 @@ public class ConfigGeneratorCommand(IModuleManager modules)
                     sb.AppendLine($"# {descAttr.Description}");
                 }
 
-                sb.Append($"EVOSC_{keyName.ToUpper(CultureInfo.InvariantCulture)}");
+                sb.Append($"EVOSC_");
+
+                if (!string.IsNullOrEmpty(prefix))
+                {
+                    sb.Append($"{prefix.ToUpper()}_");
+                }
+                
+                sb.Append(keyName.ToUpper(CultureInfo.InvariantCulture));
                 sb.Append("=");
                 sb.AppendLine(optionAttr?.DefaultValue?.ToString() ?? "");
                 sb.AppendLine();
