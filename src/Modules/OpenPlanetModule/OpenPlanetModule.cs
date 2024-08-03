@@ -15,11 +15,8 @@ public class OpenPlanetModule(IManialinkManager manialinks, IOpenPlanetControlSe
     public Task EnableAsync()
     {
         manialinkInteractions.ValueReader.AddReader(new OpenPlanetInfoValueReader());
-        
-        manialinks.SendPersistentManialinkAsync("OpenPlanetModule.DetectOP", new
-        {
-            config = settings
-        });
+
+        manialinks.SendPersistentManialinkAsync("OpenPlanetModule.DetectOP", new { config = settings });
 
         return Task.CompletedTask;
     }
