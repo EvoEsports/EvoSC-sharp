@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using EvoSC.Common.Database.Models.Permissions;
+using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -8,7 +9,7 @@ public class AddUserPermissionTables : Migration
 {
     public override void Up()
     {
-        Create.Table("Groups")
+        Create.Table(DbGroup.TableName)
             .WithColumn("Id").AsInt32().PrimaryKey().Identity()
             .WithColumn("Title").AsString()
             .WithColumn("Description").AsString()
@@ -16,16 +17,16 @@ public class AddUserPermissionTables : Migration
             .WithColumn("Color").AsString().Nullable()
             .WithColumn("Unrestricted").AsBoolean();
 
-        Create.Table("Permissions")
+        Create.Table(DbPermission.TableName)
             .WithColumn("Id").AsInt32().PrimaryKey().Identity()
             .WithColumn("Name").AsString().Unique()
             .WithColumn("Description").AsString();
 
-        Create.Table("GroupPermissions")
+        Create.Table(DbGroupPermission.TableName)
             .WithColumn("GroupId").AsInt32().Indexed()
             .WithColumn("PermissionId").AsInt32().Indexed();
 
-        Create.Table("UserGroups")
+        Create.Table(DbUserGroup.TableName)
             .WithColumn("UserId").AsInt64().Indexed()
             .WithColumn("GroupId").AsInt32().Indexed()
             .WithColumn("Display").AsBoolean();
@@ -33,9 +34,9 @@ public class AddUserPermissionTables : Migration
 
     public override void Down()
     {
-        Delete.Table("Groups");
-        Delete.Table("Permissions");
-        Delete.Table("GroupPermissions");
-        Delete.Table("UserGroups");
+        Delete.Table(DbGroup.TableName);
+        Delete.Table(DbPermission.TableName);
+        Delete.Table(DbGroupPermission.TableName);
+        Delete.Table(DbUserGroup.TableName);
     }
 }
