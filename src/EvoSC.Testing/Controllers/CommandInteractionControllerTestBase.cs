@@ -1,12 +1,18 @@
 ﻿using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using GbxRemoteNet.Interfaces;
+using Moq;
 
 namespace EvoSC.Testing.Controllers;
 
 public class CommandInteractionControllerTestBase<TController> : ControllerMock<TController, ICommandInteractionContext>
     where TController : class, IController
 {
+    protected readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server =
+        Mocking.NewServerClientMock();
+    
     /// <summary>
     /// Initialize this controller mock.
     /// </summary>
@@ -15,7 +21,7 @@ public class CommandInteractionControllerTestBase<TController> : ControllerMock<
     protected void InitMock(IOnlinePlayer actor, params object[] services)
     {
         base.InitMock(services);
-        this.SetupMock(actor);
+        this.SetupMock(Server.Client, actor);
     }
 }
 

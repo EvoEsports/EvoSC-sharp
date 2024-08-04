@@ -25,11 +25,13 @@ public class PlayerServiceTests
     private Mock<IOnlinePlayer> _actor = new();
     private ControllerContextMock<IEventControllerContext> _eventContext;
     private ControllerContextMock<ICommandInteractionContext> _commandContext;
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _serverClient =
+        Mocking.NewServerClientMock();
 
     public PlayerServiceTests()
     {
         _eventContext = Mocking.NewControllerContextMock<IEventControllerContext>();
-        _commandContext = Mocking.NewCommandInteractionContextMock(_actor.Object);
+        _commandContext = Mocking.NewCommandInteractionContextMock(_serverClient.Client, _actor.Object);
 
         _actor.Setup(m => m.NickName).Returns(PlayerNickName);
         _actor.Setup(m => m.AccountId).Returns(PlayerAccountId);

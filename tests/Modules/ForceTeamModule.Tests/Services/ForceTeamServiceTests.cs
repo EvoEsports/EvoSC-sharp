@@ -24,8 +24,9 @@ public class ForceTeamServiceTests
         var server = Mocking.NewServerClientMock();
         var playerManager = new Mock<IPlayerManagerService>();
 
+        var serverClient = Mocking.NewServerClientMock();
         var player = new Mock<IOnlinePlayer>();
-        var context = Mocking.NewPlayerInteractionContextMock(player.Object);
+        var context = Mocking.NewPlayerInteractionContextMock(serverClient.Client, player.Object);
         var contextServiceMock = Mocking.NewContextServiceMock(context.Context.Object, player.Object);
         var locale = Mocking.NewLocaleMock(contextServiceMock.Object);
 

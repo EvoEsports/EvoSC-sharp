@@ -48,6 +48,7 @@
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
+        <ProjectReference Include="..\Modules\ServerManagementModule\ServerManagementModule.csproj" />
         <ProjectReference Include="..\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj" />
         <ProjectReference Include="..\Modules\TeamSettingsModule\TeamSettingsModule.csproj" />
         <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
