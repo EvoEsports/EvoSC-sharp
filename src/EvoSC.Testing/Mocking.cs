@@ -36,9 +36,10 @@ public static class Mocking
     /// <param name="actor">The mocked actor that triggered this action.</param>
     /// <returns></returns>
     public static ControllerContextMock<IPlayerInteractionContext> SetupMock(
-        this ControllerContextMock<IPlayerInteractionContext> mock, IOnlinePlayer actor)
+        this ControllerContextMock<IPlayerInteractionContext> mock, Mock<IServerClient> serverClient, IOnlinePlayer actor)
     {
         mock.Context.Setup(c => c.Player).Returns(actor);
+        mock.Context.Setup(c => c.Server).Returns(serverClient.Object);
         mock.Context.Object.AuditEvent.CausedBy(actor);
 
         return mock;
@@ -50,8 +51,8 @@ public static class Mocking
     /// <param name="actor">The mocked actor that triggered this action.</param>
     /// <returns></returns>
     public static ControllerContextMock<IPlayerInteractionContext>
-        NewPlayerInteractionContextMock(IOnlinePlayer actor) =>
-        new ControllerContextMock<IPlayerInteractionContext>().SetupMock(actor);
+        NewPlayerInteractionContextMock(Mock<IServerClient> serverClient, IOnlinePlayer actor) =>
+        new ControllerContextMock<IPlayerInteractionContext>().SetupMock(serverClient, actor);
 
     /// <summary>
     /// Set up a command interaction context mock.
@@ -60,9 +61,10 @@ public static class Mocking
     /// <param name="actor">The mocked actor that triggered this command.</param>
     /// <returns></returns>
     public static ControllerContextMock<ICommandInteractionContext> SetupMock(
-        this ControllerContextMock<ICommandInteractionContext> mock, IOnlinePlayer actor)
+        this ControllerContextMock<ICommandInteractionContext> mock, Mock<IServerClient> serverClient, IOnlinePlayer actor)
     {
         mock.Context.Setup(c => c.Player).Returns(actor);
+        mock.Context.Setup(c => c.Server).Returns(serverClient.Object);
         mock.Context.Object.AuditEvent.CausedBy(actor);
 
         return mock;
@@ -74,8 +76,8 @@ public static class Mocking
     /// <param name="actor">The mocked actor that triggered this command.</param>
     /// <returns></returns>
     public static ControllerContextMock<ICommandInteractionContext>
-        NewCommandInteractionContextMock(IOnlinePlayer actor) =>
-        new ControllerContextMock<ICommandInteractionContext>().SetupMock(actor);
+        NewCommandInteractionContextMock(Mock<IServerClient> serverClient, IOnlinePlayer actor) =>
+        new ControllerContextMock<ICommandInteractionContext>().SetupMock(serverClient, actor);
 
     /// <summary>
     /// Set up a new Manialink context mock.

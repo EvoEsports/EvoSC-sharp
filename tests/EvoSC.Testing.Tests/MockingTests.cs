@@ -29,8 +29,9 @@ public class MockingTests
     public void SetupMock_For_PlayerInteraction_Sets_Up_Correctly()
     {
         var mock = Mocking.NewControllerContextMock<IPlayerInteractionContext>();
+        var serverClient = Mocking.NewServerClientMock();
         var player = new Mock<IOnlinePlayer>();
-        mock.SetupMock(player.Object);
+        mock.SetupMock(serverClient.Client, player.Object);
         
         Assert.Equal(player.Object, mock.Context.Object.Player);
         mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
@@ -39,8 +40,9 @@ public class MockingTests
     [Fact]
     public void NewPlayerInteractionContextMock_Returns_Correct_Mock()
     {
+        var serverClient = Mocking.NewServerClientMock();
         var player = new Mock<IOnlinePlayer>();
-        var mock = Mocking.NewPlayerInteractionContextMock(player.Object);
+        var mock = Mocking.NewPlayerInteractionContextMock(serverClient.Client, player.Object);
         
         Assert.Equal(player.Object, mock.Context.Object.Player);
         mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
@@ -50,8 +52,9 @@ public class MockingTests
     public void SetupMock_For_CommandInteraction_Sets_Up_Correctly()
     {
         var mock = Mocking.NewControllerContextMock<ICommandInteractionContext>();
+        var serverClient = Mocking.NewServerClientMock();
         var player = new Mock<IOnlinePlayer>();
-        mock.SetupMock(player.Object);
+        mock.SetupMock(serverClient.Client, player.Object);
         
         Assert.Equal(player.Object, mock.Context.Object.Player);
         mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
@@ -60,13 +63,13 @@ public class MockingTests
     [Fact]
     public void NewCommandInteractionContextMock_Returns_Correct_Mock()
     {
+        var server = Mocking.NewServerClientMock();
         var player = new Mock<IOnlinePlayer>();
-        var mock = Mocking.NewCommandInteractionContextMock(player.Object);
+        var mock = Mocking.NewCommandInteractionContextMock(server.Client, player.Object);
         
         Assert.Equal(player.Object, mock.Context.Object.Player);
         mock.AuditEventBuilder.Verify(m => m.CausedBy(player.Object), Times.Once);
     }
-    
     
     [Fact]
     public void SetupMock_For_ManialinkInteraction_Sets_Up_Correctly()
