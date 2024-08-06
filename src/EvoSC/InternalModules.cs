@@ -25,6 +25,7 @@ using EvoSC.Modules.Official.SetName;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.TeamInfoModule;
 using EvoSC.Modules.Official.TeamSettingsModule;
+using EvoSC.Modules.Official.UIModule;
 using EvoSC.Modules.Official.WorldRecordModule;
 using FluentMigrator.Runner.Exceptions;
 
@@ -41,7 +42,7 @@ public static class InternalModules
         typeof(PlayerRecordsModule),
         typeof(MatchManagerModule),
         typeof(SetNameModule),
-        typeof(ScoreboardModule),
+        // typeof(ScoreboardModule),
         typeof(FastestCpModule),
         typeof(CurrentMapModule),
         typeof(MotdModule),
@@ -49,8 +50,8 @@ public static class InternalModules
         typeof(MatchTrackerModule),
         typeof(MatchReadyModule),
         typeof(NextMapModule),
-        typeof(LiveRankingModule),
-        typeof(MatchRankingModule),
+        // typeof(LiveRankingModule),
+        // typeof(MatchRankingModule),
         typeof(ASayModule),
         typeof(SpectatorTargetInfoModule),
         typeof(MapQueueModule),
@@ -59,7 +60,8 @@ public static class InternalModules
         typeof(ForceTeamModule),
         typeof(TeamSettingsModule),
         typeof(ServerManagementModule),
-        typeof(TeamInfoModule)
+        typeof(TeamInfoModule),
+        typeof(UiModule)
     ];
 
     /// <summary>
