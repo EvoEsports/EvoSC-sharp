@@ -8,7 +8,8 @@ using Newtonsoft.Json;
 namespace EvoSC.Modules.Official.GameModeUiModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings) : IGameModeUiModuleService
+public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings)
+    : IGameModeUiModuleService
 {
     public async Task ApplyConfigurationAsync()
     {
@@ -22,26 +23,117 @@ public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSett
         {
             uimodules = new List<dynamic>
             {
-                await GeneratePropertyObject("Race_Chrono", settings.ChronoVisible, settings.ChronoX, settings.ChronoY, settings.ChronoScale),
-                await GeneratePropertyObject("Race_RespawnHelper", settings.RespawnHelperVisible, settings.RespawnHelperX, settings.RespawnHelperY, settings.RespawnHelperScale),
-                await GeneratePropertyObject("Race_Checkpoint", settings.CheckpointVisible, settings.CheckpointX, settings.CheckpointY, settings.CheckpointScale),
-                await GeneratePropertyObject("Race_LapsCounter", settings.LapsCounterVisible, settings.LapsCounterX, settings.LapsCounterY, settings.LapsCounterScale),
-                await GeneratePropertyObject("Race_TimeGap", settings.TimeGapVisible, settings.TimeGapX, settings.TimeGapY, settings.TimeGapScale),
-                await GeneratePropertyObject("Race_ScoresTable", settings.ScoresTableVisible, settings.ScoresTableX, settings.ScoresTableY, settings.ScoresTableScale),
-                await GeneratePropertyObject("Race_DisplayMessage", settings.DisplayMessageVisible, settings.DisplayMessageX, settings.DisplayMessageY, settings.DisplayMessageScale),
-                await GeneratePropertyObject("Race_Countdown", settings.CountdownVisible, settings.CountdownX, settings.CountdownY, settings.CountdownScale),
-                await GeneratePropertyObject("Race_SpectatorBase_Name", settings.SpectatorBaseNameVisible, settings.SpectatorBaseNameX, settings.SpectatorBaseNameY, settings.SpectatorBaseNameScale),
-                await GeneratePropertyObject("Race_SpectatorBase_Commands", settings.SpectatorBaseCommandsVisible, settings.SpectatorBaseCommandsX, settings.SpectatorBaseCommandsY, settings.SpectatorBaseCommandsScale),
-                await GeneratePropertyObject("Race_Record", settings.RecordVisible, settings.RecordX, settings.RecordY, settings.RecordScale),
-                await GeneratePropertyObject("Race_BigMessage", settings.BigMessageVisible, settings.BigMessageX, settings.BigMessageY, settings.BigMessageScale),
-                await GeneratePropertyObject("Race_BlockHelper", settings.BlockHelperVisible, settings.BlockHelperX, settings.BlockHelperY, settings.BlockHelperScale),
-                await GeneratePropertyObject("Race_WarmUp", settings.WarmUpVisible, settings.WarmUpX, settings.WarmUpY, settings.WarmUpScale),
-                await GeneratePropertyObject("Race_BestRaceViewer", settings.BestRaceViewerVisible, settings.BestRaceViewerX, settings.BestRaceViewerY, settings.BestRaceViewerScale),
+                await GeneratePropertyObjectAsync(
+                    "Race_Chrono",
+                    settings.ChronoVisible,
+                    settings.ChronoX,
+                    settings.ChronoY,
+                    settings.ChronoScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_RespawnHelper",
+                    settings.RespawnHelperVisible,
+                    settings.RespawnHelperX,
+                    settings.RespawnHelperY,
+                    settings.RespawnHelperScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_Checkpoint",
+                    settings.CheckpointVisible,
+                    settings.CheckpointX,
+                    settings.CheckpointY,
+                    settings.CheckpointScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_LapsCounter",
+                    settings.LapsCounterVisible,
+                    settings.LapsCounterX,
+                    settings.LapsCounterY,
+                    settings.LapsCounterScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_TimeGap",
+                    settings.TimeGapVisible,
+                    settings.TimeGapX,
+                    settings.TimeGapY,
+                    settings.TimeGapScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_ScoresTable",
+                    settings.ScoresTableVisible,
+                    settings.ScoresTableX,
+                    settings.ScoresTableY,
+                    settings.ScoresTableScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_DisplayMessage",
+                    settings.DisplayMessageVisible,
+                    settings.DisplayMessageX,
+                    settings.DisplayMessageY,
+                    settings.DisplayMessageScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_Countdown",
+                    settings.CountdownVisible,
+                    settings.CountdownX,
+                    settings.CountdownY,
+                    settings.CountdownScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_SpectatorBase_Name",
+                    settings.SpectatorBaseNameVisible,
+                    settings.SpectatorBaseNameX,
+                    settings.SpectatorBaseNameY,
+                    settings.SpectatorBaseNameScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_SpectatorBase_Commands",
+                    settings.SpectatorBaseCommandsVisible,
+                    settings.SpectatorBaseCommandsX,
+                    settings.SpectatorBaseCommandsY,
+                    settings.SpectatorBaseCommandsScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_Record",
+                    settings.RecordVisible,
+                    settings.RecordX,
+                    settings.RecordY,
+                    settings.RecordScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_BigMessage",
+                    settings.BigMessageVisible,
+                    settings.BigMessageX,
+                    settings.BigMessageY,
+                    settings.BigMessageScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_BlockHelper",
+                    settings.BlockHelperVisible,
+                    settings.BlockHelperX,
+                    settings.BlockHelperY,
+                    settings.BlockHelperScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_WarmUp",
+                    settings.WarmUpVisible,
+                    settings.WarmUpX,
+                    settings.WarmUpY,
+                    settings.WarmUpScale
+                ),
+                await GeneratePropertyObjectAsync(
+                    "Race_BestRaceViewer",
+                    settings.BestRaceViewerVisible,
+                    settings.BestRaceViewerX,
+                    settings.BestRaceViewerY,
+                    settings.BestRaceViewerScale
+                ),
             }
         });
     }
 
-    public Task<dynamic> GeneratePropertyObject(string uiModuleName, bool visible, double x, double y, double scale)
+    public Task<dynamic> GeneratePropertyObjectAsync(string uiModuleName, bool visible, double x, double y,
+        double scale)
     {
         return Task.FromResult<dynamic>(new
         {

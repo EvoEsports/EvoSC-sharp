@@ -23,5 +23,5 @@ public interface IGameModeUiModuleService
     /// <param name="y"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    public Task<dynamic> GeneratePropertyObject(string uiModuleName, bool visible, double x, double y, double scale);
+    public Task<dynamic> GeneratePropertyObjectAsync(string uiModuleName, bool visible, double x, double y, double scale);
 }

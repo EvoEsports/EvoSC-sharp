@@ -29,7 +29,7 @@ public class GameModeUiModuleServiceTests
     public async Task Generates_Property_Object(string id, bool visible, double x, double y, double scale)
     {
         var uiModuleService = UiModuleServiceMock();
-        var uiModulePropertyObject = await uiModuleService.GeneratePropertyObject(id, visible, x, y, scale);
+        var uiModulePropertyObject = await uiModuleService.GeneratePropertyObjectAsync(id, visible, x, y, scale);
 
         var idProperty = uiModulePropertyObject.GetType().GetProperty("id");
         Assert.Equal(id, idProperty.GetValue(uiModulePropertyObject, null));
@@ -62,6 +62,7 @@ public class GameModeUiModuleServiceTests
         var uiModuleService = UiModuleServiceMock();
         var uiModuleProperties = await uiModuleService.GetUiModulesPropertiesJsonAsync();
 
+        Assert.IsType<string>(uiModuleProperties);
         JToken.Parse(uiModuleProperties);
     }
 
