@@ -132,7 +132,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManagementModule", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManagementModule.Tests", "tests\Modules\ServerManagementModule.Tests\ServerManagementModule.Tests.csproj", "{F8C7FE5E-B389-4BA8-B0DF-6D9D0A9B0949}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIModule", "src\Modules\UIModule\UIModule.csproj", "{5BA1FF1B-8CB0-4FF5-B6C0-4E2E323D446E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameModeUiModule", "src\Modules\GameModeUiModule\GameModeUiModule.csproj", "{5BA1FF1B-8CB0-4FF5-B6C0-4E2E323D446E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameModeUiModule.Tests", "tests\Modules\GameModeUiModule.Tests\GameModeUiModule.Tests.csproj", "{5B515690-0F0B-44D1-B644-3524A83A17CE}"
 EndProject
 
 
@@ -397,6 +399,10 @@ Global
 		{5BA1FF1B-8CB0-4FF5-B6C0-4E2E323D446E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BA1FF1B-8CB0-4FF5-B6C0-4E2E323D446E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BA1FF1B-8CB0-4FF5-B6C0-4E2E323D446E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B515690-0F0B-44D1-B644-3524A83A17CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B515690-0F0B-44D1-B644-3524A83A17CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B515690-0F0B-44D1-B644-3524A83A17CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B515690-0F0B-44D1-B644-3524A83A17CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -460,5 +466,6 @@ Global
 		{AAE1AC39-4C4B-48A9-8B7B-08D2CD461FC1} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{F8C7FE5E-B389-4BA8-B0DF-6D9D0A9B0949} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{5BA1FF1B-8CB0-4FF5-B6C0-4E2E323D446E} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
+		{5B515690-0F0B-44D1-B644-3524A83A17CE} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 	EndGlobalSection
 EndGlobal

@@ -23,5 +23,5 @@ public interface IUiModuleService
     /// <param name="y"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    public dynamic GeneratePropertyObject(string uiModuleName, bool visible, double x, double y, double scale);
+    public Task<dynamic> GeneratePropertyObject(string uiModuleName, bool visible, double x, double y, double scale);
 }
