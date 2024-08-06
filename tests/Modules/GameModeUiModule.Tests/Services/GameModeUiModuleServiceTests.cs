@@ -1,25 +1,25 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Modules.Official.UIModule.Config;
-using EvoSC.Modules.Official.UIModule.Interfaces;
-using EvoSC.Modules.Official.UIModule.Services;
+using EvoSC.Modules.Official.GameModeUiModule.Config;
+using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Services;
 using EvoSC.Testing;
 using GbxRemoteNet.Interfaces;
 using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace EvoSC.Modules.Official.UiModule.Tests.Services;
+namespace EvoSC.Modules.Official.GameModeUiModule.Tests.Services;
 
-public class UiModuleServiceTests
+public class GameModeUiModuleServiceTests
 {
-    private readonly Mock<IUiModuleSettings> _settings = new();
+    private readonly Mock<IGameModeUiModuleSettings> _settings = new();
 
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
 
-    private IUiModuleService UiModuleServiceMock()
+    private IGameModeUiModuleService UiModuleServiceMock()
     {
-        return new UiModuleService(_server.Client.Object, _settings.Object);
+        return new GameModeUiModuleService(_server.Client.Object, _settings.Object);
     }
 
     [Theory]

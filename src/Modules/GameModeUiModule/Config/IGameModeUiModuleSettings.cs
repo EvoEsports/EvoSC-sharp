@@ -2,10 +2,10 @@
 using Config.Net;
 using EvoSC.Modules.Attributes;
 
-namespace EvoSC.Modules.Official.UIModule.Config;
+namespace EvoSC.Modules.Official.GameModeUiModule.Config;
 
 [Settings]
-public interface IUiModuleSettings
+public interface IGameModeUiModuleSettings
 {
     /*
      * Settings for Race_Chrono

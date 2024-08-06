@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>EvoSC.Modules.Official.UiModule.Tests</RootNamespace>
+        <RootNamespace>EvoSC.Modules.Official.GameModeUiModule.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

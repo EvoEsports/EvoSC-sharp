@@ -1,6 +1,6 @@
-﻿namespace EvoSC.Modules.Official.UIModule.Interfaces;
+﻿namespace EvoSC.Modules.Official.GameModeUiModule.Interfaces;
 
-public interface IUiModuleService
+public interface IGameModeUiModuleService
 {
     /// <summary>
     /// Applies the configured UI modules property values.

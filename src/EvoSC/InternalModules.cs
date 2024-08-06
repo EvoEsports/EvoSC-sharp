@@ -5,6 +5,7 @@ using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCpModule;
 using EvoSC.Modules.Official.ForceTeamModule;
+using EvoSC.Modules.Official.GameModeUiModule;
 using EvoSC.Modules.Official.LiveRankingModule;
 using EvoSC.Modules.Official.LocalRecordsModule;
 using EvoSC.Modules.Official.MapListModule;
@@ -25,7 +26,6 @@ using EvoSC.Modules.Official.SetName;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.TeamInfoModule;
 using EvoSC.Modules.Official.TeamSettingsModule;
-using EvoSC.Modules.Official.UIModule;
 using EvoSC.Modules.Official.WorldRecordModule;
 using FluentMigrator.Runner.Exceptions;
 
@@ -61,7 +61,7 @@ public static class InternalModules
         typeof(TeamSettingsModule),
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
-        typeof(UiModule)
+        typeof(GameModeUiModule)
     ];
 
     /// <summary>

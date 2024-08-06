@@ -1,14 +1,14 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Modules.Official.UIModule.Config;
-using EvoSC.Modules.Official.UIModule.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Config;
+using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
 using Newtonsoft.Json;
 
-namespace EvoSC.Modules.Official.UIModule.Services;
+namespace EvoSC.Modules.Official.GameModeUiModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class UiModuleService(IServerClient server, IUiModuleSettings settings) : IUiModuleService
+public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings) : IGameModeUiModuleService
 {
     public async Task ApplyConfigurationAsync()
     {
