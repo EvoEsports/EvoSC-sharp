@@ -13,19 +13,19 @@
   <property type="double" name="cellsize" default="10" /> <!-- If true, position and size acts on the grid system -->
   
   <template>
-    <frame pos='{{ (position == "left" ? -160 + padding : 160-width - padding ) }} {{ y }}'>
+    <frame pos='{{ (position == "left" ? -160 + padding : 160-width - padding - 0.7 ) }} {{ y }}'>
       <frame if='header != ""'>
         <quad
                 bgcolor="{{ Theme.UI_HeaderBg }}"
                 size="{{ width }} 4.5"
                 opacity="0.95"
-                pos="0.7 0"
+                pos='{{ position == "left" ? 0.7 : 0 }} 0'
                 if='headerStyle.ToLower() == "normal"'
         />
         <quad
                 bgcolor="{{ Theme.UI_AccentPrimary }}"
                 size="0.7 4.5"
-                pos="0 0"
+                pos='{{ position == "left" ? 0 : width }} 0'
                 if='headerStyle.ToLower() == "normal"'
         />
         <label 
@@ -42,15 +42,15 @@
       <frame pos='0 {{ -4.5 - (header == "" ? 0 : 0.3) }}'>
         <quad
                 size="{{ width }} {{ height }}"
-                bgcolor="2C2D34"
+                bgcolor="{{ Theme.UI_BgPrimary }}"
                 opacity="0.9"
-                pos="1 0"
+                pos='{{ position == "left" ? 0.7 : 0 }} 0'
                 if='bodyStyle.ToLower() == "normal"'
         />
         <quad
-                size="1 {{ height }}"
-                pos="0 0"
-                bgcolor="ff0058"
+                size="0.7 {{ height }}"
+                pos='{{ position == "left" ? 0 : width }} 0'
+                bgcolor="{{ Theme.UI_AccentPrimary }}"
                 if='bodyStyle.ToLower() == "normal"'
         />
         <slot name="body" />

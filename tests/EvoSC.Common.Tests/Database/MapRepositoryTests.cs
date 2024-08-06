@@ -6,6 +6,7 @@ using EvoSC.Common.Database.Repository.Maps;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
+using EvoSC.Testing;
 using EvoSC.Testing.Database;
 using LinqToDB;
 using Xunit;
@@ -17,13 +18,13 @@ public class MapRepositoryTests
     private static (MapRepository, IDbConnectionFactory) CreateNewRepository()
     {
         var factory = TestDbSetup.CreateDb(typeof(AddPlayersTable).Assembly);
-        return (new MapRepository(factory, LoggerSetup.CreateLogger<MapRepository>()), factory);
+        return (new MapRepository(factory, TestLoggerSetup.CreateLogger<MapRepository>()), factory);
     }
 
     private static async Task<IMap> AddTestMap(IDbConnectionFactory dbFactory)
     {
         var player = await DbTestHelper.AddTestPlayer(dbFactory);
-        var mapRepo = new MapRepository(dbFactory, LoggerSetup.CreateLogger<MapRepository>());
+        var mapRepo = new MapRepository(dbFactory, TestLoggerSetup.CreateLogger<MapRepository>());
         return await mapRepo.AddMapAsync(
             new MapMetadata
             {

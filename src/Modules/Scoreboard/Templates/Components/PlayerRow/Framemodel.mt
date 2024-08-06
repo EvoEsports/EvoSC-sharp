@@ -4,7 +4,7 @@
     <import component="Scoreboard.Components.PlayerRow.PointsBox" as="PointsBox"/>
     <import component="Scoreboard.Components.PlayerRow.PositionBox" as="Position"/>
     <import component="Scoreboard.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
-    <import component="Scoreboard.Components.PlayerRow.ClubTag" as="ClubTag"/>
+    <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
 
     <property type="double" name="w"/>
     <property type="double" name="padding"/>

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Application;
+﻿using EvoSC.CLI.Interfaces;
+using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Services;
@@ -20,13 +21,14 @@ public sealed class Application : IEvoSCApplication, IDisposable
     public CancellationToken MainCancellationToken => _runningToken.Token;
     public Container Services => StartupPipeline.ServiceContainer;
 
-    public Application(IEvoScBaseConfig config)
+    public Application(IEvoScBaseConfig config, ICliContext cliContext)
     {
         _config = config;
         _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
         StartupPipeline = new StartupPipeline(_config);
 
         StartupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();
+        StartupPipeline.Services("CliContext", s => s.RegisterInstance(cliContext));
         StartupPipeline.Services("Application", s => s.RegisterInstance<IEvoSCApplication>(this));
     }
 

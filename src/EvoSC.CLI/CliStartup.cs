@@ -25,8 +25,10 @@ public static class CliStartup
     public static void SetupBasePipeline(this IStartupPipeline pipeline, IEvoScBaseConfig config)
     {
         pipeline
-                // Set up service container
-            .Services(AppFeature.Config, s => s.RegisterInstance(config))
+            // Set up service container
+            .Services(AppFeature.Config, s =>
+                    s.RegisterInstance(config)
+                , "CliContext")
 
             .Services(AppFeature.Logging, s => s.AddEvoScLogging(config.Logging))
 
@@ -93,11 +95,12 @@ public static class CliStartup
 
             .Services(AppFeature.Manialinks, s => s
                     .AddEvoScManialinks()
-                , "Logging", "Events", "PlayerManager", "ControllerManager", "ActionPipelines", "GbxRemoteClient", "ActionInitializeTemplates")
+                , "Logging", "Events", "PlayerManager", "ControllerManager", "ActionPipelines", "GbxRemoteClient",
+                "ActionInitializeTemplates")
 
             .Services(AppFeature.Themes, s => s.AddEvoScThemes())
-                
-                // initialization of features
+
+            // initialization of features
             .Action("ActionMigrateDatabase", MigrateDatabase)
 
             .Action("ActionInitializeEventManager", s => s
@@ -113,7 +116,8 @@ public static class CliStartup
                 , "ActionInitializeEventManager", "ActionInitializePlayerCache")
 
             .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync
-                , "ActionInitializeEventManager", "ActionInitializePlayerCache", "ActionInitializeManialinkInteractionHandler")
+                , "ActionInitializeEventManager", "ActionInitializePlayerCache",
+                "ActionInitializeManialinkInteractionHandler")
 
             .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync);
     }

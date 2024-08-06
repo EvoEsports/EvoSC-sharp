@@ -20,6 +20,7 @@ using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;
+using EvoSC.Modules.Official.ServerManagementModule;
 using EvoSC.Modules.Official.SetName;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.TeamInfoModule;
@@ -57,6 +58,7 @@ public static class InternalModules
         typeof(LocalRecordsModule),
         typeof(ForceTeamModule),
         typeof(TeamSettingsModule),
+        typeof(ServerManagementModule),
         typeof(TeamInfoModule)
     ];
 
@@ -79,7 +81,7 @@ public static class InternalModules
             }
         }
     }
-
+    
     /// <summary>
     /// Load all internal modules.
     /// </summary>

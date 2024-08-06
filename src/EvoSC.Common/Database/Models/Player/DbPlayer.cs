@@ -43,6 +43,8 @@ public class DbPlayer : IPlayer
     public string? Zone { get; set; }
 
     public IPlayerSettings Settings => DbSettings;
+    public IEnumerable<IGroup> Groups { get; set; }
+    public IGroup? DisplayGroup { get; set; }
 
     [Association(ThisKey = nameof(Id), OtherKey = nameof(DbPlayerSettings.PlayerId))]
     public DbPlayerSettings DbSettings { get; set; }
@@ -64,6 +66,8 @@ public class DbPlayer : IPlayer
         NickName = player.NickName;
         UbisoftName = player.UbisoftName;
         Zone = player.Zone;
+        Groups = player.Groups;
+        DisplayGroup = player.DisplayGroup;
     }
     
     public bool Equals(IPlayer? other) => other != null && AccountId.Equals(other.AccountId, StringComparison.Ordinal);

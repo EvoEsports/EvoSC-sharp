@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Database.Repository.Players;
+﻿using EvoSC.Common.Database.Repository.Permissions;
+using EvoSC.Common.Database.Repository.Players;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet.Structs;
@@ -9,7 +10,9 @@ public static class DbTestHelper
 {
     public static async Task<IPlayer> AddTestPlayer(IDbConnectionFactory factory, string accountId)
     {
-        var playerRepo = new PlayerRepository(factory);
+        var logger = TestLoggerSetup.CreateLogger<PermissionRepository>();
+        var permissionRepo = new PermissionRepository(factory, logger);
+        var playerRepo = new PlayerRepository(factory, permissionRepo);
         
         return await playerRepo.AddPlayerAsync(accountId, new TmPlayerDetailedInfo
         {

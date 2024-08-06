@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using EvoSC.Common.Database.Models.Permissions;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -8,11 +9,33 @@ using LinqToDB;
 
 namespace EvoSC.Common.Database.Repository.Players;
 
-public class PlayerRepository(IDbConnectionFactory dbConnFactory) : DbRepository(dbConnFactory), IPlayerRepository
+public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRepository permissionRepository) : DbRepository(dbConnFactory), IPlayerRepository
 {
-    public async Task<IPlayer?> GetPlayerByAccountIdAsync(string accountId) => await Table<DbPlayer>()
-        .LoadWith(p => p.DbSettings)
-        .SingleOrDefaultAsync(t => t.AccountId == accountId);
+    public async Task<DbPlayer?> GetPlayerByAccountIdAsync(string accountId)
+    {
+        var player = await Table<DbPlayer>()
+            .LoadWith(p => p.DbSettings)
+            .SingleOrDefaultAsync(t => t.AccountId == accountId);
+
+        if (player == null)
+        {
+            return null;
+        }
+
+        var groups = await permissionRepository.GetGroupsAsync(player.Id);
+        player.Groups = groups;
+
+        var displayGroup = await (
+            from g in Table<DbGroup>()
+            join ug in Table<DbUserGroup>() on g.Id equals ug.GroupId
+            where ug.UserId == player.Id && ug.Display
+            select g
+        ).FirstOrDefaultAsync();
+
+        player.DisplayGroup = displayGroup;
+
+        return player;
+    }
 
     public async Task<IPlayer> AddPlayerAsync(string accountId, TmPlayerDetailedInfo playerInfo)
     {
@@ -23,7 +46,8 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory) : DbRepository
             AccountId = accountId.ToLower(CultureInfo.InvariantCulture),
             NickName = playerInfo.NickName ?? accountId,
             UbisoftName = playerInfo.NickName ?? accountId,
-            Zone = playerInfo.Path ?? "World"
+            Zone = playerInfo.Path ?? "World",
+            Groups = Array.Empty<IGroup>()
         };
 
         var id = await Database.InsertWithIdentityAsync(player);
@@ -33,7 +57,6 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory) : DbRepository
         {
             PlayerId = player.Id, 
             DisplayLanguage = "en"
-            
         };
 
         await Database.InsertAsync(playerSettings);

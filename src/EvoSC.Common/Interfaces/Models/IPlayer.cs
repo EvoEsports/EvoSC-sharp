@@ -38,4 +38,7 @@ public interface IPlayer : IEquatable<IPlayer>
     public string? Zone { get; }
     
     public IPlayerSettings Settings { get; }
+    
+    public IEnumerable<IGroup> Groups { get; }
+    public IGroup? DisplayGroup { get; }
 }
