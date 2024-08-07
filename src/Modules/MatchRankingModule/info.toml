@@ -9,6 +9,3 @@ summary = "A module to display the scores of the current match."
 version = "1.0.0"
 # The name of the author that created this module
 author = "Evo"
-
-[dependencies]
-LiveRankingModule = "1.0.0"

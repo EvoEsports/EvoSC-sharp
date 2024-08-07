@@ -3,7 +3,6 @@ using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
-using EvoSC.Modules.Official.LiveRankingModule.Models;
 using EvoSC.Modules.Official.WorldRecordModule.Events;
 using EvoSC.Modules.Official.WorldRecordModule.Interfaces;
 using EvoSC.Modules.Official.WorldRecordModule.Models;

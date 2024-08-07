@@ -7,8 +7,7 @@ namespace EvoSC.Modules.Official.LiveRankingModule;
 [Module(IsInternal = true)]
 public class LiveRankingModule(ILiveRankingService service) : EvoScModule, IToggleable
 {
-    public Task EnableAsync() => service.OnEnableAsync();
+    public Task EnableAsync() => service.Initialize();
 
-    // if no cleaning for the classes needed to be done, return here a completed task, otherwise clean the classes, and then complete the task. 
-    public Task DisableAsync() => service.OnDisableAsync();
+    public Task DisableAsync() => Task.CompletedTask;
 }

@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Modules.Official.LiveRankingModule.Models;
+﻿namespace EvoSC.Modules.Official.WorldRecordModule.Models;
 
 public class Parent
 {

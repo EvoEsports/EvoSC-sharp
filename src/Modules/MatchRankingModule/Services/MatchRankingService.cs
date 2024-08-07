@@ -6,7 +6,6 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.LiveRankingModule.Models;
 using EvoSC.Modules.Official.MatchRankingModule.Interfaces;
 using EvoSC.Modules.Official.MatchRankingModule.Models;
 using Microsoft.Extensions.Logging;
