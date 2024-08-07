@@ -1,6 +1,5 @@
 ﻿<component>
     <using namespace="EvoSC.Modules.Official.MatchRankingModule.Models"/>
-    <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
     <using namespace="System.Linq"/>
     
     <import component="MatchRankingModule.Components.PlayerScore" as="PlayerScore"/>

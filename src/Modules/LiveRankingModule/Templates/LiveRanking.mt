@@ -1,7 +1,6 @@
 ﻿<component>
-    <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
-    <using namespace="EvoSC.Common.Models.Callbacks"/>
     <using namespace="EvoSC.Modules.Official.LiveRankingModule.Config"/>
+    <using namespace="EvoSC.Common.Models.Callbacks"/>
     <using namespace="System.Linq"/>
 
     <import component="EvoSC.Containers.Widget" as="Widget"/>
