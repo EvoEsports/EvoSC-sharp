@@ -1,5 +1,6 @@
 ﻿<component>
     <using namespace="EvoSC.Modules.Official.LiveRankingModule.Config"/>
+    <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
     <using namespace="EvoSC.Common.Models.Callbacks"/>
     <using namespace="System.Linq"/>
 
@@ -8,7 +9,7 @@
     <import component="LiveRankingModule.Components.RecordRow" as="RecordRow" />
 
     <property type="ILiveRankingSettings" name="settings"/>
-    <property type="IEnumerable<PlayerScore>" name="scores"/>
+    <property type="IEnumerable<LiveRankingPosition>" name="scores"/>
     <property type="bool" name="isTeamsMode"/>
     <property type="bool" name="isPointsBased"/>
 
@@ -34,12 +35,12 @@
                 y="{{ settings.Y }}"
         >
             <template slot="body">
-                <RecordRow foreach="PlayerScore score in scores"
+                <RecordRow foreach="LiveRankingPosition score in scores"
                            y="{{ -__index*(4+0.3) }}"
                            pos="{{ __index + 1 }}"
                            name="{{ score.Name }}"
-                           time="{{ RaceTime.FromMilliseconds(score.BestRaceTime) }}"
-                           points="{{ score.MatchPoints }}"
+                           time="{{ RaceTime.FromMilliseconds(score.Time) }}"
+                           points="{{ score.Points }}"
                            usePoints="{{ isPointsBased }}"
                 />
             </template>
