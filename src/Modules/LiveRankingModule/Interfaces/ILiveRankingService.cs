@@ -19,11 +19,18 @@ public interface ILiveRankingService
     public Task RequestScoresAsync();
 
     /// <summary>
-    /// Maps the given scores and displays the widget.
+    /// Maps the scores and displays the widget.
     /// </summary>
     /// <param name="scores"></param>
     /// <returns></returns>
     public Task MapScoresAndSendWidgetAsync(ScoresEventArgs scores);
+
+    /// <summary>
+    /// Maps the given ScoresEventArgs to LiveRankingPositions.
+    /// </summary>
+    /// <param name="scores"></param>
+    /// <returns></returns>
+    public Task<IEnumerable<LiveRankingPosition>> MapScores(ScoresEventArgs scores);
 
     /// <summary>
     /// Hides the live ranking widget for everyone.

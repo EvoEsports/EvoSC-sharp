@@ -11,11 +11,11 @@ using Xunit;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Tests.Controllers;
 
-public class LiveRankingControllerTests : ControllerMock<LiveRankingEventController, IEventControllerContext>
+public class LiveRankingEventControllerTests : ControllerMock<LiveRankingEventController, IEventControllerContext>
 {
     private Mock<ILiveRankingService> _liveRankingService = new();
 
-    public LiveRankingControllerTests()
+    public LiveRankingEventControllerTests()
     {
         InitMock(_liveRankingService);
     }

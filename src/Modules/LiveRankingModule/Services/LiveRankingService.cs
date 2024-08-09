@@ -35,14 +35,19 @@ public class LiveRankingService(
 
     public async Task MapScoresAndSendWidgetAsync(ScoresEventArgs scores)
     {
-        var liveRankingPositions = scores.Players.Take(settings.MaxWidgetRows)
-            .Where(score => score != null)
-            .OfType<PlayerScore>()
-            .Where(score => ScoreShouldBeDisplayedAsync(score).Result)
-            .Select(score => PlayerScoreToLiveRankingPositionAsync(score).Result);
-
         await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate,
-            new { settings, isPointsBased = _isPointsBased, scores = liveRankingPositions });
+            new { settings, isPointsBased = _isPointsBased, scores = await MapScores(scores) });
+    }
+
+    public Task<IEnumerable<LiveRankingPosition>> MapScores(ScoresEventArgs scores)
+    {
+        return Task.FromResult(
+            scores.Players.Take(settings.MaxWidgetRows)
+                .Where(score => score != null)
+                .OfType<PlayerScore>()
+                .Where(score => ScoreShouldBeDisplayedAsync(score).Result)
+                .Select(score => PlayerScoreToLiveRankingPositionAsync(score).Result)
+        );
     }
 
     public Task HideWidgetAsync()
