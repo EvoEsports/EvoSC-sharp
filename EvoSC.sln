@@ -132,6 +132,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManagementModule", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManagementModule.Tests", "tests\Modules\ServerManagementModule.Tests\ServerManagementModule.Tests.csproj", "{F8C7FE5E-B389-4BA8-B0DF-6D9D0A9B0949}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRankingModule.Tests", "tests\Modules\LiveRankingModule.Tests\LiveRankingModule.Tests.csproj", "{4AA1890A-1423-4831-95B2-E29B9A7A58D1}"
+EndProject
 
 
 
@@ -391,6 +393,10 @@ Global
 		{71D8BDA5-6787-471A-8064-CEEE4203EBEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71D8BDA5-6787-471A-8064-CEEE4203EBEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71D8BDA5-6787-471A-8064-CEEE4203EBEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AA1890A-1423-4831-95B2-E29B9A7A58D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA1890A-1423-4831-95B2-E29B9A7A58D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA1890A-1423-4831-95B2-E29B9A7A58D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA1890A-1423-4831-95B2-E29B9A7A58D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -453,5 +459,6 @@ Global
 		{DE9532E8-F0ED-400B-9592-AF8F74BC83EB} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 		{AAE1AC39-4C4B-48A9-8B7B-08D2CD461FC1} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{F8C7FE5E-B389-4BA8-B0DF-6D9D0A9B0949} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
+		{4AA1890A-1423-4831-95B2-E29B9A7A58D1} = {6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}
 	EndGlobalSection
 EndGlobal
