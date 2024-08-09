@@ -36,10 +36,10 @@ public class LiveRankingService(
     public async Task MapScoresAndSendWidgetAsync(ScoresEventArgs scores)
     {
         await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate,
-            new { settings, isPointsBased = _isPointsBased, scores = await MapScores(scores) });
+            new { settings, isPointsBased = _isPointsBased, scores = await MapScoresAsync(scores) });
     }
 
-    public Task<IEnumerable<LiveRankingPosition>> MapScores(ScoresEventArgs scores)
+    public Task<IEnumerable<LiveRankingPosition>> MapScoresAsync(ScoresEventArgs scores)
     {
         return Task.FromResult(
             scores.Players.Take(settings.MaxWidgetRows)

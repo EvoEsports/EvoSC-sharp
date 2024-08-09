@@ -120,7 +120,7 @@ public class LiveRankingServiceTests
             Assert.False(await liveRankingService.ScoreShouldBeDisplayedAsync(scoresEventArgs.Players.First()));
         }
         
-        var mappedScores = await liveRankingService.MapScores(scoresEventArgs);
+        var mappedScores = await liveRankingService.MapScoresAsync(scoresEventArgs);
 
         Assert.IsAssignableFrom<IEnumerable<LiveRankingPosition>>(mappedScores);
     }

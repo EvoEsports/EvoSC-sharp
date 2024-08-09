@@ -30,7 +30,7 @@ public interface ILiveRankingService
     /// </summary>
     /// <param name="scores"></param>
     /// <returns></returns>
-    public Task<IEnumerable<LiveRankingPosition>> MapScores(ScoresEventArgs scores);
+    public Task<IEnumerable<LiveRankingPosition>> MapScoresAsync(ScoresEventArgs scores);
 
     /// <summary>
     /// Hides the live ranking widget for everyone.
