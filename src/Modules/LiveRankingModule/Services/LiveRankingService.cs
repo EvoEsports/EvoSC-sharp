@@ -4,11 +4,11 @@ using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Config;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Services;
 
@@ -18,35 +18,41 @@ public class LiveRankingService(
     IServerClient server,
     ILiveRankingSettings settings,
     IPlayerManagerService playerManager,
-    ILogger<LiveRankingService> logger
+    IMatchSettingsService matchSettingsService
 ) : ILiveRankingService
 {
     private const string WidgetTemplate = "LiveRankingModule.LiveRanking";
+    private bool _isPointsBased;
 
-    public async Task InitializeAsync()
+    public async Task DetectModeAndRequestScoreAsync()
     {
-        await server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.GetScores");
+        _isPointsBased = await matchSettingsService.GetCurrentModeAsync() is not DefaultModeScriptName.TimeAttack;
+        await RequestScoresAsync();
     }
 
-    public async Task HandleScoresAsync(ScoresEventArgs scores)
-    {
-        var isTeamsMode = scores.UseTeams;
-        var isPointsBased = isTeamsMode || scores.UseTeams; //TODO: detect rounds properly
+    public Task RequestScoresAsync()
+        => server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.GetScores");
 
+    public async Task MapScoresAndSendWidgetAsync(ScoresEventArgs scores)
+    {
         var liveRankingPositions = scores.Players.Take(settings.MaxWidgetRows)
             .Where(score => score != null)
             .OfType<PlayerScore>()
-            .Where(score => ScoreShouldBeDisplayedAsync(score, isPointsBased).Result)
+            .Where(score => ScoreShouldBeDisplayedAsync(score).Result)
             .Select(score => PlayerScoreToLiveRankingPositionAsync(score).Result);
 
         await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate,
-            new { settings, isPointsBased, isTeamsMode, scores = liveRankingPositions });
+            new { settings, isPointsBased = _isPointsBased, scores = liveRankingPositions });
     }
 
-    public Task<bool> ScoreShouldBeDisplayedAsync(PlayerScore score, bool isPointsBased)
-    {
-        return Task.FromResult((isPointsBased ? score.MatchPoints : score.BestRaceTime) > 0);
-    }
+    public Task HideWidgetAsync()
+        => manialinkManager.HideManialinkAsync(WidgetTemplate);
+
+    public Task<bool> ScoreShouldBeDisplayedAsync(PlayerScore score) =>
+        Task.FromResult((_isPointsBased ? score.MatchPoints : score.BestRaceTime) > 0);
+
+    public Task<bool> CurrentModeIsPointsBasedAsync()
+        => Task.FromResult(_isPointsBased);
 
     public async Task<LiveRankingPosition> PlayerScoreToLiveRankingPositionAsync(PlayerScore score)
     {
@@ -66,7 +72,4 @@ public class LiveRankingService(
             score.MatchPoints
         );
     }
-
-    public Task HideWidgetAsync()
-        => manialinkManager.HideManialinkAsync(WidgetTemplate);
 }

@@ -7,7 +7,7 @@ namespace EvoSC.Modules.Official.LiveRankingModule;
 [Module(IsInternal = true)]
 public class LiveRankingModule(ILiveRankingService service) : EvoScModule, IToggleable
 {
-    public Task EnableAsync() => service.InitializeAsync();
+    public Task EnableAsync() => service.DetectModeAndRequestScoreAsync();
 
     public Task DisableAsync() => Task.CompletedTask;
 }

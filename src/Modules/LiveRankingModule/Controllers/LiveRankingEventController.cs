@@ -13,6 +13,10 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Controllers;
 [Controller]
 public class LiveRankingEventController(ILiveRankingService service) : EvoScController<IEventControllerContext>
 {
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public Task OnBeginMap(object sender, MapGbxEventArgs args)
+        => service.DetectModeAndRequestScoreAsync();
+    
     [Subscribe(ModeScriptEvent.Scores)]
     public async Task OnScores(object sender, ScoresEventArgs args)
     {
@@ -21,14 +25,26 @@ public class LiveRankingEventController(ILiveRankingService service) : EvoScCont
             return;
         }
 
-        await service.HandleScoresAsync(args);
+        await service.MapScoresAndSendWidgetAsync(args);
     }
 
-    [Subscribe(GbxRemoteEvent.BeginMap)]
-    public Task OnBeginMap(object sender, MapGbxEventArgs args)
-        => service.InitializeAsync();
-
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public Task HideWidgetOnPodium(object sender, PodiumEventArgs args)
+    public Task OnPodiumStart(object sender, PodiumEventArgs args)
         => service.HideWidgetAsync();
+
+    [Subscribe(ModeScriptEvent.WayPoint)]
+    public async Task OnWayPoint(object sender, WayPointEventArgs args)
+    {
+        if (!args.IsEndLap)
+        {
+            return;
+        }
+
+        if (await service.CurrentModeIsPointsBasedAsync())
+        {
+            return;
+        }
+
+        await service.RequestScoresAsync();
+    }
 }

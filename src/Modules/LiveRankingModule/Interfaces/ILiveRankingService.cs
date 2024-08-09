@@ -6,13 +6,17 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 
 public interface ILiveRankingService
 {
-    public Task InitializeAsync();
+    public Task DetectModeAndRequestScoreAsync();
 
-    public Task HandleScoresAsync(ScoresEventArgs scores);
+    public Task RequestScoresAsync();
 
-    public Task<LiveRankingPosition> PlayerScoreToLiveRankingPositionAsync(PlayerScore score);
-
-    public Task<bool> ScoreShouldBeDisplayedAsync(PlayerScore score, bool isPointsBased);
+    public Task MapScoresAndSendWidgetAsync(ScoresEventArgs scores);
 
     public Task HideWidgetAsync();
+
+    public Task<bool> ScoreShouldBeDisplayedAsync(PlayerScore score);
+
+    public Task<bool> CurrentModeIsPointsBasedAsync();
+
+    public Task<LiveRankingPosition> PlayerScoreToLiveRankingPositionAsync(PlayerScore score);
 }

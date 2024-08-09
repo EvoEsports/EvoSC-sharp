@@ -10,7 +10,6 @@
 
     <property type="ILiveRankingSettings" name="settings"/>
     <property type="IEnumerable<LiveRankingPosition>" name="scores"/>
-    <property type="bool" name="isTeamsMode"/>
     <property type="bool" name="isPointsBased"/>
 
     <template>
