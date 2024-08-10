@@ -113,11 +113,11 @@ public class LiveRankingServiceTests
 
         if (expectedLiveRankingPositionCount > 0)
         {
-            Assert.True(await liveRankingService.ScoreShouldBeDisplayedAsync(scoresEventArgs.Players.First()));
+            Assert.True(liveRankingService.ScoreShouldBeDisplayed(scoresEventArgs.Players.First()));
         }
         else
         {
-            Assert.False(await liveRankingService.ScoreShouldBeDisplayedAsync(scoresEventArgs.Players.First()));
+            Assert.False(liveRankingService.ScoreShouldBeDisplayed(scoresEventArgs.Players.First()));
         }
         
         var mappedScores = await liveRankingService.MapScoresAsync(scoresEventArgs);
@@ -145,5 +145,86 @@ public class LiveRankingServiceTests
             m => m.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", It.IsAny<object>()),
             Times.Once
         );
+    }
+
+    [Fact]
+    public Task Maps_Player_Score_To_Live_Ranking_Position()
+    {
+        var liveRankingService = LiveRankingServiceMock();
+        var player = new Player { AccountId = "UnitTest", NickName = "unit_test", UbisoftName = "unittest"};
+
+        _playerManagerService.Setup(s => s.GetPlayerAsync(player.AccountId))
+            .Returns(Task.FromResult((IPlayer?)player));
+        
+        var liveRankingPosition = liveRankingService.PlayerScoreToLiveRankingPosition(new()
+        {
+            AccountId = player.AccountId,
+            Name = player.UbisoftName,
+            BestRaceTime = 1234,
+            MatchPoints = 3,
+            Rank = 7
+        });
+        
+        Assert.Equal("UnitTest", liveRankingPosition.AccountId);
+        Assert.Equal("unit_test", liveRankingPosition.Name);
+        Assert.Equal(1234, liveRankingPosition.Time);
+        Assert.Equal(3, liveRankingPosition.Points);
+        Assert.Equal(7, liveRankingPosition.Position);
+        
+        return Task.CompletedTask;
+    }
+
+    [Fact]
+    public Task Maps_Player_Score_To_Live_Ranking_Position_Where_Player_Is_Unknown()
+    {
+        var liveRankingService = LiveRankingServiceMock();
+        var player = new Player { AccountId = "UnitTest", NickName = "unit_test", UbisoftName = "unittest"};
+
+        _playerManagerService.Setup(s => s.GetPlayerAsync(player.AccountId))
+            .Returns(Task.FromResult((IPlayer?)null));
+        
+        var liveRankingPosition = liveRankingService.PlayerScoreToLiveRankingPosition(new()
+        {
+            AccountId = player.AccountId,
+            Name = player.UbisoftName,
+            BestRaceTime = 1234,
+            MatchPoints = 3,
+            Rank = 7
+        });
+        
+        Assert.Equal("UnitTest", liveRankingPosition.AccountId);
+        Assert.Equal("unittest", liveRankingPosition.Name);
+        Assert.Equal(1234, liveRankingPosition.Time);
+        Assert.Equal(3, liveRankingPosition.Points);
+        Assert.Equal(7, liveRankingPosition.Position);
+        
+        return Task.CompletedTask;
+    }
+
+    [Theory]
+    [InlineData(DefaultModeScriptName.Rounds, 0, 0, false)]
+    [InlineData(DefaultModeScriptName.Rounds, 0, 1, true)]
+    [InlineData(DefaultModeScriptName.Rounds, 1, 0, false)]
+    [InlineData(DefaultModeScriptName.TimeAttack, 0, 0, false)]
+    [InlineData(DefaultModeScriptName.TimeAttack, 0, 1, false)]
+    [InlineData(DefaultModeScriptName.TimeAttack, 1, 0, true)]
+    public Task Determines_Whether_Score_Should_Be_Send_To_Widget(DefaultModeScriptName modeScriptName, int time, int points, bool expected)
+    {
+        var liveRankingService = LiveRankingServiceMock();
+        
+        _matchSettingsService.Setup(s => s.GetCurrentModeAsync())
+            .Returns(Task.FromResult(modeScriptName));
+
+        liveRankingService.DetectModeAndRequestScoreAsync();
+
+        var shouldBeDisplayed = liveRankingService.ScoreShouldBeDisplayed(new PlayerScore
+        {
+            BestRaceTime = time,
+            MatchPoints = points
+        });
+        
+        Assert.Equal(expected, shouldBeDisplayed);
+        
+        return Task.CompletedTask;
     }
 }

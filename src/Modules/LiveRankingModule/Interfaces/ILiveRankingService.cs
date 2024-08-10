@@ -39,22 +39,22 @@ public interface ILiveRankingService
     public Task HideWidgetAsync();
 
     /// <summary>
-    /// Determines whether a score should be displayed in the widget.
-    /// </summary>
-    /// <param name="score"></param>
-    /// <returns></returns>
-    public Task<bool> ScoreShouldBeDisplayedAsync(PlayerScore score);
-
-    /// <summary>
     /// Returns whether the current mode is points based.
     /// </summary>
     /// <returns></returns>
     public Task<bool> CurrentModeIsPointsBasedAsync();
 
     /// <summary>
+    /// Determines whether a score should be displayed in the widget.
+    /// </summary>
+    /// <param name="score"></param>
+    /// <returns></returns>
+    public bool ScoreShouldBeDisplayed(PlayerScore score);
+
+    /// <summary>
     /// Converts a PlayerScore to a LiveRankingPosition object.
     /// </summary>
     /// <param name="score"></param>
     /// <returns></returns>
-    public Task<LiveRankingPosition> PlayerScoreToLiveRankingPositionAsync(PlayerScore score);
+    public LiveRankingPosition PlayerScoreToLiveRankingPosition(PlayerScore score);
 }

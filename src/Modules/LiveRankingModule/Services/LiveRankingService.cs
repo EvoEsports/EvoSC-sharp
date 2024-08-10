@@ -45,23 +45,30 @@ public class LiveRankingService(
             scores.Players.Take(settings.MaxWidgetRows)
                 .Where(score => score != null)
                 .OfType<PlayerScore>()
-                .Where(score => ScoreShouldBeDisplayedAsync(score).Result)
-                .Select(score => PlayerScoreToLiveRankingPositionAsync(score).Result)
+                .Where(ScoreShouldBeDisplayed)
+                .Select(PlayerScoreToLiveRankingPosition)
         );
     }
 
     public Task HideWidgetAsync()
         => manialinkManager.HideManialinkAsync(WidgetTemplate);
 
-    public Task<bool> ScoreShouldBeDisplayedAsync(PlayerScore score) =>
-        Task.FromResult((_isPointsBased ? score.MatchPoints : score.BestRaceTime) > 0);
-
     public Task<bool> CurrentModeIsPointsBasedAsync()
         => Task.FromResult(_isPointsBased);
 
-    public async Task<LiveRankingPosition> PlayerScoreToLiveRankingPositionAsync(PlayerScore score)
+    public bool ScoreShouldBeDisplayed(PlayerScore score)
     {
-        var player = await playerManager.GetPlayerAsync(score.AccountId);
+        if (_isPointsBased)
+        {
+            return score.MatchPoints > 0;
+        }
+
+        return score.BestRaceTime > 0;
+    }
+
+    public LiveRankingPosition PlayerScoreToLiveRankingPosition(PlayerScore score)
+    {
+        var player = playerManager.GetPlayerAsync(score.AccountId).Result;
         var nickname = score.Name;
 
         if (player != null)
