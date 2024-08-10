@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Config.Net;
+using EvoSC.Common.Util.Manialinks;
 using EvoSC.Modules.Attributes;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Config;
@@ -17,5 +18,5 @@ public interface ILiveRankingSettings
     public double Width { get; set; }
     
     [Option(DefaultValue = "right"), Description("Specifies on which side the widget is displayed.")]
-    public string Position { get; set; }
+    public WidgetPosition Position { get; set; }
 }

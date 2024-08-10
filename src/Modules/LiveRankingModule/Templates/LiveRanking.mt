@@ -1,6 +1,7 @@
 ﻿<component>
     <using namespace="EvoSC.Modules.Official.LiveRankingModule.Config"/>
     <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
+    <using namespace="EvoSC.Common.Util.Manialinks"/>
     <using namespace="EvoSC.Common.Models.Callbacks"/>
     <using namespace="System.Linq"/>
 
@@ -19,7 +20,7 @@
         <Widget header="Live Ranking"
                 height="10"
                 bodyStyle="unstyled"
-                position="{{ settings.Position }}"
+                position='{{ settings.Position == WidgetPosition.Right ? "right" : "left" }}'
                 y="{{ settings.Y }}"
         >
             <template slot="body">
