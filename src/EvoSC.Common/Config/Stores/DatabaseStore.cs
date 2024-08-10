@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 using Config.Net;
 using EvoSC.Common.Database.Models.Config;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -65,6 +66,14 @@ public class DatabaseStore(string prefix, Type type, IConfigStoreRepository conf
 
     public string? Read(string key)
     {
+        var enviName = GetEnviName(key);
+        var enviValue = Environment.GetEnvironmentVariable(enviName);
+
+        if (enviValue != null)
+        {
+            return enviValue;
+        }
+        
         var dbKey = $"{_prefix}.{key}";
         var option = configStoreRepository.GetConfigOptionsByKeyAsync(dbKey).GetAwaiter().GetResult();
 
@@ -100,4 +109,10 @@ public class DatabaseStore(string prefix, Type type, IConfigStoreRepository conf
 
     public bool CanRead => true;
     public bool CanWrite => true;
+
+    private string GetEnviName(string key)
+    {
+        var fullKey = $"EvoSC.{_prefix}.{key}";
+        return fullKey.Replace(".", "_", StringComparison.Ordinal).ToUpper(CultureInfo.InvariantCulture);
+    }
 }

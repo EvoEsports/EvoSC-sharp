@@ -16,6 +16,7 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Manialinks.Models;
 using EvoSC.Manialinks.Themes;
+using EvoSC.Manialinks.Themes.AdvancedComponents;
 using EvoSC.Manialinks.Util;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
@@ -74,6 +75,7 @@ public class ManialinkManager : IManialinkManager
         themeManager.AddThemeAsync<DefaultSeparatorTheme>();
         themeManager.AddThemeAsync<DefaultSelectTheme>();
         themeManager.AddThemeAsync<DefaultDialogTheme>();
+        themeManager.AddThemeAsync<DefaultClubTagTheme>();
         
         _engine.GlobalVariables["Util"] = new GlobalManialinkUtils(themeManager);
         _engine.GlobalVariables["Icons"] = new GameIcons();
