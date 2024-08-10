@@ -19,7 +19,7 @@ public interface IPlayerService
     /// <param name="login">Login of the player that just joined.</param>
     /// <param name="dontGreet">Don't send a greeting message, useful for internal operations.</param>
     /// <returns></returns>
-    public Task SetupPlayerAsync(IPlayer player, bool dontGreet);
+    public Task SetupPlayerAsync(IPlayer player);
     
     /// <summary>
     /// Kick a player from the server.

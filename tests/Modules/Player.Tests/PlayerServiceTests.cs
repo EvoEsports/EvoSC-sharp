@@ -85,21 +85,18 @@ public class PlayerServiceTests
     }
 
     [Theory]
-    [InlineData(false, false, 0, 1)]
-    [InlineData(false, true, 1, 1)]
-    [InlineData(true, false, 0, 0)]
-    [InlineData(true, true, 1, 0)]
-    public async Task SetupPlayer_Adds_To_Default_Group_And_Greets_Player(bool dontGreet, bool addToGroup, int setGroupCalled, int greetCalled)
+    [InlineData(false, 0)]
+    [InlineData(true, 1)]
+    public async Task SetupPlayer_Adds_To_Default_Group(bool addToGroup, int setGroupCalled)
     {
         var mock = NewPlayerServiceMock();
         
         mock.PlayerModuleSettings.Setup(m => m.DefaultGroupId).Returns(1337);
         mock.PlayerModuleSettings.Setup(m => m.AddToDefaultGroup).Returns(addToGroup);
 
-        await mock.PlayerService.SetupPlayerAsync(mock.Player.Object, dontGreet);
+        await mock.PlayerService.SetupPlayerAsync(mock.Player.Object);
         
         mock.PermissionManager.Verify(m => m.SetDisplayGroupAsync(mock.Player.Object, 1337), Times.Exactly(setGroupCalled));
-        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>()), Times.Exactly(greetCalled));
     }
 
     [Fact]

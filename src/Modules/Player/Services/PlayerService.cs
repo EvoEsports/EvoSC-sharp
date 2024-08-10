@@ -26,20 +26,13 @@ public class PlayerService(IPlayerManagerService playerManager, IServerClient se
         await playerManager.UpdateLastVisitAsync(player);
     }
 
-    public async Task SetupPlayerAsync(IPlayer player, bool dontGreet)
+    public async Task SetupPlayerAsync(IPlayer player)
     {
         // assign the player to the default group
         if (playerModuleSettings.AddToDefaultGroup)
         {
             await permissions.SetDisplayGroupAsync(player, playerModuleSettings.DefaultGroupId);
         }
-
-        if (dontGreet)
-        {
-            return;
-        }
-        
-        await server.InfoMessageAsync(_locale.PlayerFirstJoined(player.NickName));
     }
 
 

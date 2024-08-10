@@ -22,7 +22,8 @@ public class PlayerCacheService : IPlayerCacheService
     private readonly ILogger<PlayerCacheService> _logger;
     private readonly IPlayerRepository _playerRepository;
     private readonly IEventManager _events;
-    
+
+    private readonly HashSet<string> _newPlayers = new();
     private readonly Dictionary<string, IOnlinePlayer> _onlinePlayers = new();
     private readonly object _onlinePlayersMutex = new();
     private readonly SemaphoreSlim _updatePlayerSem = new(1, 1);
@@ -74,27 +75,20 @@ public class PlayerCacheService : IPlayerCacheService
             .WithHandlerMethod<PlayerInfoChangedGbxEventArgs>(OnPlayerInfoChangedAsync)
             .WithPriority(EventPriority.High)
         );
-
-        _server.Remote.OnConnected += OnServerConnectedAsync;
-    }
-
-    private async Task OnServerConnectedAsync()
-    {
-        try
-        {
-            await UpdatePlayerListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to update player list cache");
-            throw;
-        }
     }
 
     private async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedGbxEventArgs e)
     {
         var accountId = PlayerUtils.ConvertLoginToAccountId(e.PlayerInfo.Login);
-        await ForceUpdatePlayerInternalAsync(accountId);
+        var player = await ForceUpdatePlayerInternalAsync(accountId);
+
+        if (player.NewPlayer)
+        {
+            lock (_onlinePlayersMutex)
+            {
+                _newPlayers.Add(player.Player.AccountId);
+            }
+        }
     }
 
     private Task OnPlayerDisconnectAsync(object sender, PlayerDisconnectGbxEventArgs e)
@@ -120,14 +114,19 @@ public class PlayerCacheService : IPlayerCacheService
         {
             var player = await ForceUpdatePlayerInternalAsync(accountId);
 
-            if (!player.NewPlayer)
+            bool isNew;
+            lock (_onlinePlayersMutex)
             {
-                await _events.RaiseAsync(PlayerEvents.PlayerJoined,
-                    new PlayerJoinedEventArgs
-                    {
-                        Player = player.Player, IsPlayerListUpdate = false, IsNewPlayer = player.NewPlayer
-                    });
+                isNew = player.NewPlayer || _newPlayers.Contains(player.Player.AccountId);
+
+                if (_newPlayers.Contains(player.Player.AccountId))
+                {
+                    _newPlayers.Remove(player.Player.AccountId);
+                }
             }
+
+            await _events.RaiseAsync(PlayerEvents.PlayerJoined,
+                new PlayerJoinedEventArgs { Player = player.Player, IsNewPlayer = isNew });
         }
         catch (Exception ex)
         {
@@ -213,11 +212,10 @@ public class PlayerCacheService : IPlayerCacheService
         {
             _onlinePlayers[accountId] = onlinePlayer;
         }
-
+        
         if (isNewPlayer)
         {
-            await _events.RaiseAsync(PlayerEvents.PlayerJoined,
-                new PlayerJoinedEventArgs { Player = onlinePlayer, IsPlayerListUpdate = false, IsNewPlayer = true });
+            await _events.RaiseAsync(PlayerEvents.NewPlayerAdded, new NewPlayerAddedEventArgs { Player = player });
         }
         
         return (onlinePlayer, isNewPlayer);
@@ -298,8 +296,7 @@ public class PlayerCacheService : IPlayerCacheService
 
             if (player.IsNew)
             {
-                await _events.RaiseAsync(PlayerEvents.PlayerJoined,
-                    new PlayerJoinedEventArgs { Player = onlinePlayer, IsPlayerListUpdate = true, IsNewPlayer = true });
+                await _events.RaiseAsync(PlayerEvents.NewPlayerAdded, new NewPlayerAddedEventArgs { Player = player.Player });
             }
             
             _logger.LogDebug("Cached online player '{AccountId}'", accountId);

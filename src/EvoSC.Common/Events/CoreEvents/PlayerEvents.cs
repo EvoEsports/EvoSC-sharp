@@ -2,5 +2,6 @@
 
 public enum PlayerEvents
 {
-    PlayerJoined
+    PlayerJoined,
+    NewPlayerAdded
 }

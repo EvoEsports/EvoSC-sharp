@@ -3,6 +3,7 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.Player.Controllers;
 using EvoSC.Modules.Official.Player.Interfaces;
+using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;
 using Moq;
@@ -15,7 +16,9 @@ public class PlayerEventControllerTests : ControllerMock<PlayerEventController, 
 
     public PlayerEventControllerTests()
     {
-        InitMock(_playerService);
+        var locale = Mocking.NewLocaleMock(ContextService.Object);
+        var server = Mocking.NewServerClientMock();
+        InitMock(_playerService, locale, server.Client);
     }
 
     [Fact]
@@ -25,11 +28,10 @@ public class PlayerEventControllerTests : ControllerMock<PlayerEventController, 
         var args = new PlayerJoinedEventArgs
         {
             Player = player.Object,
-            IsPlayerListUpdate = false,
             IsNewPlayer = false
         };
         
-        await Controller.OnPlayerJoined(null, args);
+        await Controller.OnPlayerJoinedAsync(null, args);
 
         _playerService.Verify(s => s.GreetPlayerAsync(player.Object));
     }
@@ -38,15 +40,13 @@ public class PlayerEventControllerTests : ControllerMock<PlayerEventController, 
     public async Task Player_Is_Setup_On_First_Join()
     {
         var player = new Mock<IOnlinePlayer>();
-        var args = new PlayerJoinedEventArgs
+        var args = new NewPlayerAddedEventArgs()
         {
-            Player = player.Object,
-            IsPlayerListUpdate = false,
-            IsNewPlayer = true
+            Player = player.Object
         };
         
-        await Controller.OnPlayerJoined(null, args);
+        await Controller.OnNewPlayerAddedAsync(null, args);
 
-        _playerService.Verify(s => s.SetupPlayerAsync(player.Object, false));
+        _playerService.Verify(s => s.SetupPlayerAsync(player.Object));
     }
 }
