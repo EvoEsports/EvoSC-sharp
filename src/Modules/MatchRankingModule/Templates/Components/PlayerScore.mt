@@ -1,7 +1,7 @@
 ﻿<component>
-    <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
-
-    <property type="LiveRankingWidgetPosition?" name="ranking" default="null"/>
+    <using namespace="EvoSC.Modules.Official.MatchRankingModule.Models"/>
+    
+    <property type="MatchRankingWidgetPosition?" name="ranking" default="null"/>
 
     <property type="double" name="y" default="0.0"/>
     <property type="double" name="w" default="66.0"/>

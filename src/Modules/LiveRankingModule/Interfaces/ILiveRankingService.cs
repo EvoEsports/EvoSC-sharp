@@ -1,92 +1,60 @@
-﻿using EvoSC.Common.Remote.EventArgsModels;
+﻿using EvoSC.Common.Models.Callbacks;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
-using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 
 public interface ILiveRankingService
 {
     /// <summary>
-    /// Called on when module is enabled
+    /// Determines if current mode is points based and requests scores.
     /// </summary>
     /// <returns></returns>
-    Task OnEnableAsync();
+    public Task DetectModeAndRequestScoreAsync();
 
     /// <summary>
-    /// Called on when module is disabled
+    /// Requests scores from the game mode.
     /// </summary>
     /// <returns></returns>
-    Task OnDisableAsync();
+    public Task RequestScoresAsync();
 
     /// <summary>
-    /// Called when a player passes a checkpoint.
+    /// Maps the scores and displays the widget.
     /// </summary>
+    /// <param name="scores"></param>
     /// <returns></returns>
-    Task OnPlayerWaypointAsync(WayPointEventArgs args);
+    public Task MapScoresAndSendWidgetAsync(ScoresEventArgs scores);
 
     /// <summary>
-    /// Called when a player retires from the current round.
+    /// Maps the given ScoresEventArgs to LiveRankingPositions.
     /// </summary>
+    /// <param name="scores"></param>
     /// <returns></returns>
-    Task OnPlayerGiveupAsync(PlayerUpdateEventArgs args);
+    public Task<IEnumerable<LiveRankingPosition>> MapScoresAsync(ScoresEventArgs scores);
 
     /// <summary>
-    /// Called when a new map starts.
+    /// Hides the live ranking widget for everyone.
     /// </summary>
     /// <returns></returns>
-    Task OnBeginMapAsync(MapEventArgs args);
+    public Task HideWidgetAsync();
 
     /// <summary>
-    /// Called when a map ends.
+    /// Returns whether the current mode is points based.
     /// </summary>
     /// <returns></returns>
-    Task OnEndMapAsync(MapEventArgs args);
+    public Task<bool> CurrentModeIsPointsBasedAsync();
 
     /// <summary>
-    /// Called when a round ends.
+    /// Determines whether a score should be displayed in the widget.
     /// </summary>
+    /// <param name="score"></param>
     /// <returns></returns>
-    Task OnEndRoundAsync(RoundEventArgs args);
+    public bool ScoreShouldBeDisplayed(PlayerScore score);
 
     /// <summary>
-    /// Called when a new round starts.
+    /// Converts a PlayerScore to a LiveRankingPosition object.
     /// </summary>
+    /// <param name="score"></param>
     /// <returns></returns>
-    Task OnStartRoundAsync(RoundEventArgs args);
-
-    /// <summary>
-    /// Called when the podium sequence starts.
-    /// </summary>
-    /// <returns></returns>
-    Task OnPodiumStartAsync(PodiumEventArgs args);
-
-    /// <summary>
-    /// Sends a manialink.
-    /// </summary>
-    /// <returns></returns>
-    Task SendManialinkAsync();
-
-    /// <summary>
-    /// Called when a new match starts.
-    /// </summary>
-    /// <returns></returns>
-    Task OnBeginMatchAsync();
-
-    /// <summary>
-    /// Called when a match ends.
-    /// </summary>
-    /// <returns></returns>
-    Task OnEndMatchAsync(EndMatchGbxEventArgs args);
-    
-    /// <summary>
-    /// Calculates and sets the diffs of given live ranking positions.
-    /// </summary>
-    /// <returns></returns>
-    Task CalculateDiffsAsync(List<ExpandedLiveRankingPosition> rankings);
-    
-    /// <summary>
-    /// Resets the live ranking data.
-    /// </summary>
-    /// <returns></returns>
-    Task ResetLiveRankingAsync();
+    public LiveRankingPosition PlayerScoreToLiveRankingPosition(PlayerScore score);
 }

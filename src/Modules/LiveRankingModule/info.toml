@@ -1,11 +1,11 @@
 ﻿[info]
-# A unique name for this module, this is used as a identifier
+# A unique name for this module, this is used as an identifier
 name = "LiveRankingModule"
 # The title of the module
 title = "LiveRanking Module"
 # A short description of what the module is and does
-summary = "Shows chekpoint positions and times of leading players, for the ongoing round."
+summary = "Shows a widget with the best scores of the running match."
 # The current version of this module, using SEMVER
-version = "1.0.0"
+version = "2.0.0"
 # The name of the author that created this module
 author = "Evo"

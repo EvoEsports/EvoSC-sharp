@@ -2,6 +2,7 @@
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
@@ -12,30 +13,38 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Controllers;
 [Controller]
 public class LiveRankingEventController(ILiveRankingService service) : EvoScController<IEventControllerContext>
 {
-    [Subscribe(ModeScriptEvent.WayPoint)]
-    public Task OnPlayerWaypointAsync(object sender, WayPointEventArgs args) => service.OnPlayerWaypointAsync(args);
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
+        => service.DetectModeAndRequestScoreAsync();
+    
+    [Subscribe(ModeScriptEvent.Scores)]
+    public async Task OnScoresAsync(object sender, ScoresEventArgs args)
+    {
+        if (args.Section is not (ModeScriptSection.EndRound or ModeScriptSection.Undefined))
+        {
+            return;
+        }
 
-    [Subscribe(ModeScriptEvent.GiveUp)]
-    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args) => service.OnPlayerGiveupAsync(args);
-
-    [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public Task OnStartRoundAsync(object sender, RoundEventArgs args) => service.OnStartRoundAsync(args);
-
-    [Subscribe(ModeScriptEvent.EndMapStart)]
-    public Task OnEndMapAsync(object sender, MapEventArgs args) => service.OnEndMapAsync(args);
+        await service.MapScoresAndSendWidgetAsync(args);
+    }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args) => service.OnPodiumStartAsync(args);
+    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args)
+        => service.HideWidgetAsync();
 
-    [Subscribe(ModeScriptEvent.EndRoundStart)]
-    public Task OnEndRoundAsync(object sender, RoundEventArgs args) => service.OnEndRoundAsync(args);
+    [Subscribe(ModeScriptEvent.WayPoint)]
+    public async Task OnWayPointAsync(object sender, WayPointEventArgs args)
+    {
+        if (!args.IsEndLap)
+        {
+            return;
+        }
 
-    [Subscribe(GbxRemoteEvent.BeginMatch)]
-    public Task OnBeginMatchAsync(object sender, EventArgs args) => service.OnBeginMatchAsync();
+        if (await service.CurrentModeIsPointsBasedAsync())
+        {
+            return;
+        }
 
-    [Subscribe(GbxRemoteEvent.EndMatch)]
-    public Task OnEndMatchAsync(object sender, EndMatchGbxEventArgs args) => service.OnEndMatchAsync(args);
-
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnectAsync(object sender, PlayerConnectGbxEventArgs args) => service.SendManialinkAsync();
+        await service.RequestScoresAsync();
+    }
 }

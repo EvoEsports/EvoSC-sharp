@@ -6,7 +6,6 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.LiveRankingModule.Models;
 using EvoSC.Modules.Official.MatchRankingModule.Interfaces;
 using EvoSC.Modules.Official.MatchRankingModule.Models;
 using Microsoft.Extensions.Logging;
@@ -89,14 +88,14 @@ public class MatchRankingService(IManialinkManager manialinkManager, IPlayerMana
         await manialinkManager.SendManialinkAsync(player, Template, await GetWidgetDataAsync());
     }
 
-    private async Task<IEnumerable<LiveRankingWidgetPosition>> MapScoresForWidgetAsync(ScoresEventArgs? scores)
+    private async Task<IEnumerable<MatchRankingWidgetPosition>> MapScoresForWidgetAsync(ScoresEventArgs? scores)
     {
         if (scores == null)
         {
-            return new List<LiveRankingWidgetPosition>();
+            return new List<MatchRankingWidgetPosition>();
         }
 
-        var playerScores = new List<LiveRankingWidgetPosition>();
+        var playerScores = new List<MatchRankingWidgetPosition>();
         foreach (var score in scores.Players)
         {
             if (score == null)
@@ -111,7 +110,7 @@ public class MatchRankingService(IManialinkManager manialinkManager, IPlayerMana
                 continue;
             }
 
-            playerScores.Add(new LiveRankingWidgetPosition(
+            playerScores.Add(new MatchRankingWidgetPosition(
                 score.Rank,
                 player,
                 player.GetLogin(),

@@ -1,11 +1,10 @@
 ﻿<component>
     <using namespace="EvoSC.Modules.Official.MatchRankingModule.Models"/>
-    <using namespace="EvoSC.Modules.Official.LiveRankingModule.Models"/>
     <using namespace="System.Linq"/>
     
     <import component="MatchRankingModule.Components.PlayerScore" as="PlayerScore"/>
 
-    <property type="List<LiveRankingWidgetPosition>" name="Scores"/>
+    <property type="List<MatchRankingWidgetPosition>" name="Scores"/>
 
     <property type="double" name="scale" default="0.9"/>
     <property type="double" name="w" default="68.0"/>
@@ -72,7 +71,7 @@
 
             <!-- CONTENT -->
             <frame id="players" pos="0 {{ -headerHeight - rowSpacing * 2.0 }}" size="{{ w }} 999" z-index="10">
-                <PlayerScore foreach="LiveRankingWidgetPosition position in Scores"
+                <PlayerScore foreach="MatchRankingWidgetPosition position in Scores"
                              y="{{ (position.Position - 1) * (rowHeight + rowSpacing) * -1.0 }}"
                              w="{{ w - 8.0 }}"
                              h="{{ rowHeight }}"
