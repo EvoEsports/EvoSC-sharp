@@ -13,5 +13,8 @@ public enum ModPermissions
     BanPlayer,
     
     [Description("[Permission.MutePlayer]")]
-    MutePlayer
+    MutePlayer,
+    
+    [Description("[Permission.ForceSpectator]")]
+    ForceSpectator
 }

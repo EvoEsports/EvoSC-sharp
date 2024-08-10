@@ -21,4 +21,7 @@ public enum AuditEvents
     
     [Identifier(Name = "Players:PlayerUnblacklisted")]
     PlayerUnblacklisted,
+    
+    [Identifier(Name = "Players:PlayerForcedToSpectator")]
+    PlayerForcedToSpectator
 }

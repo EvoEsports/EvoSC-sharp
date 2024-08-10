@@ -149,4 +149,6 @@ public class PlayerService(IPlayerManagerService playerManager, IServerClient se
             await server.ErrorMessageAsync(actor, _locale.PlayerLanguage.PlayerUnblacklistingFailed(login));
         }
     }
+
+    public Task ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 3);
 }

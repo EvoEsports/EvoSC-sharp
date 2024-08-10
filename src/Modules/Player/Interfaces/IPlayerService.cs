@@ -60,4 +60,11 @@ public interface IPlayerService
     /// <param name="actor">The player that triggered the action.</param>
     /// <returns></returns>
     public Task UnbanAsync(string login, IPlayer actor);
+
+    /// <summary>
+    /// Force a player to spectator.
+    /// </summary>
+    /// <param name="player">The player to force to spectator.</param>
+    /// <returns></returns>
+    public Task ForceSpectatorAsync(IPlayer player);
 }

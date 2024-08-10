@@ -266,4 +266,16 @@ public class PlayerServiceTests
         mock.Audit.Verify(m => m.Success(), Times.Once);
         mock.Logger.Verify(LogLevel.Error, ex, null, Times.Once());
     }
+
+    [Fact]
+    public async Task ForceSpectator_Calls_Correct_Remote_Method()
+    {
+        var mock = NewPlayerServiceMock();
+        var player = new Mock<IPlayer>();
+        player.Setup(m => m.AccountId).Returns("a467a996-eba5-44bf-9e2b-8543b50f39ae");
+
+        await mock.PlayerService.ForceSpectatorAsync(player.Object);
+        
+        mock.Server.Remote.Verify(m => m.ForceSpectatorAsync("pGepluulRL-eK4VDtQ85rg", 3));
+    }
 }
