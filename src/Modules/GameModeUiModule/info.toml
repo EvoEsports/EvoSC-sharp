@@ -1,8 +1,8 @@
 ﻿[info]
 # A unique name for this module, this is used as a identifier
-name = "UIModule"
+name = "GameModeUiModule"
 # The title of the module
-title = "UI Module"
+title = "GameMode UI"
 # A short description of what the module is and does
 summary = "Change appearance of UI modules provided by the gamemodes."
 # The current version of this module, using SEMVER
