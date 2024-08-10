@@ -4,6 +4,7 @@ using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Permissions;
@@ -69,5 +70,58 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.SkipMap)
             .Comment(_locale.Audit_MapSkipped);
+    }
+
+    [ChatCommand("setteamroundpoints", "Set the round points of a team.", MatchControlPermissions.SetTeamPoints)]
+    public async Task SetRoundPointsAsync(int team, int points)
+    {
+        var playerTeam = team == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2;
+        await matchControl.SetTeamRoundPointsAsync(playerTeam, points);
+
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.TeamRoundPointsSet)
+            .HavingProperties(new { Points = points, Team = playerTeam });
+
+        await server.SuccessMessageAsync(Context.Player, $"Round points for team {playerTeam} was set to {points}.");
+    }
+    
+    [ChatCommand("setteammappoints", "Set the map points of a team.", MatchControlPermissions.SetTeamPoints)]
+    public async Task SetMapPointsAsync(int team, int points)
+    {
+        var playerTeam = team == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2;
+        await matchControl.SetTeamMapPointsAsync(playerTeam, points);
+
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.TeamMapPointsSet)
+            .HavingProperties(new { Points = points, Team = playerTeam });
+        
+        await server.SuccessMessageAsync(Context.Player, $"Map points for team {playerTeam} was set to {points}.");
+    }
+    
+    [ChatCommand("setteammatchpoints", "Set the match points of a team.", MatchControlPermissions.SetTeamPoints)]
+    public async Task SetMatchPointsAsync(int team, int points)
+    {
+        var playerTeam = team == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2;
+        await matchControl.SetTeamMatchPointsAsync(playerTeam, points);
+
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.TeamMatchPointsSet)
+            .HavingProperties(new { Points = points, Team = playerTeam });
+        
+        await server.SuccessMessageAsync(Context.Player, $"Match points for team {playerTeam} was set to {points}.");
+    }
+
+    [ChatCommand("pause", "Pause the current match.", MatchControlPermissions.PauseMatch)]
+    public async Task PauseMatchAsync()
+    {
+        await matchControl.PauseMatchAsync();
+        Context.AuditEvent.Success().WithEventName(AuditEvents.MatchPaused);
+    }
+    
+    [ChatCommand("unpause", "Unpause the current match.", MatchControlPermissions.PauseMatch)]
+    public async Task UnpauseMatchAsync()
+    {
+        await matchControl.UnpauseMatchAsync();
+        Context.AuditEvent.Success().WithEventName(AuditEvents.MatchUnpaused);
     }
 }

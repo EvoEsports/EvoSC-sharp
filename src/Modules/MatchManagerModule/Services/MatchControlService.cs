@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
@@ -42,4 +43,19 @@ public class MatchControlService(IServerClient server, IEventManager events) : I
         
         await events.RaiseAsync(FlowControlEvent.MapSkipped, EventArgs.Empty);
     }
+
+    public Task SetTeamRoundPointsAsync(PlayerTeam team, int points) =>
+        server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.SetTeamPoints", ((int)team).ToString(), points.ToString(), "", "");
+
+    public Task SetTeamMapPointsAsync(PlayerTeam team, int points) =>
+        server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.SetTeamPoints", ((int)team).ToString(), "", points.ToString(), "");
+
+    public Task SetTeamMatchPointsAsync(PlayerTeam team, int points) =>
+        server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.SetTeamPoints", ((int)team).ToString(), "", "", points.ToString());
+
+    public Task PauseMatchAsync() =>
+        server.Remote.TriggerModeScriptEventArrayAsync("Maniaplanet.Pause.SetActive", "true");
+
+    public Task UnpauseMatchAsync() =>
+        server.Remote.TriggerModeScriptEventArrayAsync("Maniaplanet.Pause.SetActive", "false");
 }
