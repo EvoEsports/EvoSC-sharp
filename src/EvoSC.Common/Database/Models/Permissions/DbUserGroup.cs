@@ -3,9 +3,11 @@ using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Table("UserGroups")]
+[Table(TableName)]
 public class DbUserGroup
 {
+    public const string TableName = "UserGroups";
+    
     [Column]
     public long UserId { get; set; }
     

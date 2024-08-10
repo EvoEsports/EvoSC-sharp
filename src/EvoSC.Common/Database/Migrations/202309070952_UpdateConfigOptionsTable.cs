@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using EvoSC.Common.Database.Models.Config;
+using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -8,7 +9,7 @@ public class UpdateConfigOptionsTable : Migration
 {
     public override void Up()
     {
-        Alter.Column("Value").OnTable(AddConfigOptionsTable.ConfigOptions)
+        Alter.Column("Value").OnTable(DbConfigOption.TableName)
             .AsCustom("TEXT");
     }
 

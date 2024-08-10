@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using EvoSC.Common.Database.Models.Maps;
+using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -8,7 +9,7 @@ public class AddMapsTable : Migration
 {
     public override void Up()
     {
-        Create.Table("Maps")
+        Create.Table(DbMap.TableName)
             .WithColumn("Id").AsInt32().PrimaryKey().Identity()
             .WithColumn("Uid").AsString().Unique()
             .WithColumn("AuthorId").AsInt32()
@@ -28,6 +29,6 @@ public class AddMapsTable : Migration
 
     public override void Down()
     {
-        Delete.Table("Maps");
+        Delete.Table(DbMap.TableName);
     }
 }
