@@ -173,7 +173,7 @@ public class PermissionRepositoryTests
             Unrestricted = true
         });
 
-        var group = await dbFactory.GetConnection().GetTable<DbGroup>().FirstOrDefaultAsync();
+        var group = await dbFactory.GetConnection().GetTable<DbGroup>().Skip(2).FirstOrDefaultAsync();
         
         Assert.NotNull(group);
         Assert.Equal("MyGroup", group.Title);
@@ -206,7 +206,7 @@ public class PermissionRepositoryTests
 
         await repo.UpdateGroupAsync(group);
         
-        var updatedGroup = await dbFactory.GetConnection().GetTable<DbGroup>().FirstOrDefaultAsync();
+        var updatedGroup = await dbFactory.GetConnection().GetTable<DbGroup>().Skip(2).FirstOrDefaultAsync();
         
         Assert.NotNull(updatedGroup);
         Assert.Equal("MyUpdatedGroup", updatedGroup.Title);

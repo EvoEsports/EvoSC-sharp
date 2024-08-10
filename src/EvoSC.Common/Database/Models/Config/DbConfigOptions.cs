@@ -2,9 +2,11 @@
 
 namespace EvoSC.Common.Database.Models.Config;
 
-[Table("ConfigOptions")]
+[Table(TableName)]
 public class DbConfigOption
 {
+    public const string TableName = "ConfigOptions";
+    
     [PrimaryKey]
     public string Key { get; set; }
     

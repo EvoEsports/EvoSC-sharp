@@ -14,7 +14,7 @@ public interface IPlayerCacheService
     /// </summary>
     /// <param name="accountId">The account ID of the player to get.</param>
     /// <returns></returns>
-    public Task<IOnlinePlayer?> GetOnlinePlayerCachedAsync(string accountId);
+    public Task<(IOnlinePlayer? Player, bool NewPlayer)> GetOnlinePlayerCachedAsync(string accountId);
     
     /// <summary>
     /// Get an online player from the cache, and update the cache if not found.
@@ -22,7 +22,7 @@ public interface IPlayerCacheService
     /// <param name="accountId">The account ID of the player to get.</param>
     /// <param name="forceUpdate">Force update the cache.</param>
     /// <returns></returns>
-    public Task<IOnlinePlayer?> GetOnlinePlayerCachedAsync(string accountId, bool forceUpdate);
+    public Task<(IOnlinePlayer? Player, bool NewPlayer)> GetOnlinePlayerCachedAsync(string accountId, bool forceUpdate);
 
     /// <summary>
     /// Update the whole player list cache.
