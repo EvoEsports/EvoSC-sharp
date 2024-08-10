@@ -10,7 +10,7 @@ public class AddDefaultUserGroups : Migration
     public override void Up()
     {
         Insert.IntoTable(DbGroup.TableName)
-            .Row(new DbGroup
+            .Row(new
             {
                 Id = 1,
                 Title = "Super Admin",
@@ -19,9 +19,9 @@ public class AddDefaultUserGroups : Migration
                 Color = "F00",
                 Unrestricted = true
             });
-        
+
         Insert.IntoTable(DbGroup.TableName)
-            .Row(new DbGroup
+            .Row(new
             {
                 Id = 2,
                 Title = "Player",

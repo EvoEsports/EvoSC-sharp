@@ -62,13 +62,13 @@ public class PlayerManagerService(IPlayerRepository playerRepository, IPlayerCac
     {
         var player = await playerCache.GetOnlinePlayerCachedAsync(accountId);
 
-        if (player == null)
+        if (player.Player == null)
         {
             throw new InvalidOperationException(
                 $"Failed to get online player with account ID '{accountId}' from cache. Player object is null.");
         }
 
-        return player;
+        return player.Player;
     }
 
     public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player) => GetOnlinePlayerAsync(player.AccountId);

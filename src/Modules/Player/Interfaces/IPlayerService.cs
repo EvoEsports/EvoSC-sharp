@@ -10,7 +10,16 @@ public interface IPlayerService
     /// </summary>
     /// <param name="login">Login of the player that just joined.</param>
     /// <returns></returns>
-    public Task UpdateAndGreetPlayerAsync(string login);
+    public Task GreetPlayerAsync(IPlayer player);
+    
+    /// <summary>
+    /// Greets a new player and adds them to the default group if configured
+    /// so.
+    /// </summary>
+    /// <param name="login">Login of the player that just joined.</param>
+    /// <param name="dontGreet">Don't send a greeting message, useful for internal operations.</param>
+    /// <returns></returns>
+    public Task SetupPlayerAsync(IPlayer player, bool dontGreet);
     
     /// <summary>
     /// Kick a player from the server.

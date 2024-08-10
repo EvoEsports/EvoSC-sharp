@@ -1,4 +1,6 @@
 ﻿using EvoSC.Common.Events;
+using EvoSC.Common.Events.Arguments;
+using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -19,9 +21,11 @@ public class PlayerCacheService : IPlayerCacheService
     private readonly IServerClient _server;
     private readonly ILogger<PlayerCacheService> _logger;
     private readonly IPlayerRepository _playerRepository;
+    private readonly IEventManager _events;
     
     private readonly Dictionary<string, IOnlinePlayer> _onlinePlayers = new();
     private readonly object _onlinePlayersMutex = new();
+    private readonly SemaphoreSlim _updatePlayerSem = new(1, 1);
 
     public IEnumerable<IOnlinePlayer> OnlinePlayers
     {
@@ -40,6 +44,7 @@ public class PlayerCacheService : IPlayerCacheService
         _server = server;
         _logger = logger;
         _playerRepository = playerRepository;
+        _events = events;
 
         SetupEvents(events);
     }
@@ -113,7 +118,16 @@ public class PlayerCacheService : IPlayerCacheService
         
         try
         {
-            await ForceUpdatePlayerInternalAsync(accountId);
+            var player = await ForceUpdatePlayerInternalAsync(accountId);
+
+            if (!player.NewPlayer)
+            {
+                await _events.RaiseAsync(PlayerEvents.PlayerJoined,
+                    new PlayerJoinedEventArgs
+                    {
+                        Player = player.Player, IsPlayerListUpdate = false, IsNewPlayer = player.NewPlayer
+                    });
+            }
         }
         catch (Exception ex)
         {
@@ -121,11 +135,11 @@ public class PlayerCacheService : IPlayerCacheService
         }
     }
 
-    private async Task ForceUpdatePlayerInternalAsync(string accountId)
+    private async Task<(IOnlinePlayer Player, bool NewPlayer)> ForceUpdatePlayerInternalAsync(string accountId)
     {
         var player = await GetOnlinePlayerCachedAsync(accountId, true);
 
-        if (player == null)
+        if (player.Player == null)
         {
             throw new InvalidOperationException(
                 $"Tried to get online player with account ID '{accountId}', but the player object is null");
@@ -133,19 +147,21 @@ public class PlayerCacheService : IPlayerCacheService
 
         lock (_onlinePlayersMutex)
         {
-            _onlinePlayers[accountId] = player;
+            _onlinePlayers[accountId] = player.Player;
         }
+
+        return player;
     }
 
-    public Task<IOnlinePlayer?> GetOnlinePlayerCachedAsync(string accountId) => GetOnlinePlayerCachedAsync(accountId, false);
+    public Task<(IOnlinePlayer? Player, bool NewPlayer)> GetOnlinePlayerCachedAsync(string accountId) => GetOnlinePlayerCachedAsync(accountId, false);
 
-    public async Task<IOnlinePlayer?> GetOnlinePlayerCachedAsync(string accountId, bool forceUpdate)
+    public async Task<(IOnlinePlayer? Player, bool NewPlayer)> GetOnlinePlayerCachedAsync(string accountId, bool forceUpdate)
     {
         lock (_onlinePlayersMutex)
         {
             if (!forceUpdate && _onlinePlayers.ContainsKey(accountId))
             {
-                return _onlinePlayers[accountId];
+                return (_onlinePlayers[accountId], false);
             }
         }
         
@@ -166,22 +182,48 @@ public class PlayerCacheService : IPlayerCacheService
         }
 
         // get the player from the database or create if they don't exist
-        var player = await GetOrCreatePlayerAsync(accountId, onlinePlayerDetails);
+
+        IPlayer? player = null;
+        bool isNewPlayer = false;
+        await _updatePlayerSem.WaitAsync();
+        try
+        {
+            var gottenPlayer = await GetOrCreatePlayerAsync(accountId, onlinePlayerDetails);
+            player = gottenPlayer.Player;
+            isNewPlayer = gottenPlayer.IsNew;
+        }
+        finally
+        {
+            _updatePlayerSem.Release();
+        }
 
         if (player == null)
         {
             throw new PlayerNotFoundException(accountId, "Failed to fetch or create player in the database.");
         }
 
-        return new OnlinePlayer(player)
+        var onlinePlayer = new OnlinePlayer(player)
         {
             State = onlinePlayerDetails.GetState(),
             Flags = onlinePlayerInfo.GetFlags(),
             Team = onlinePlayerDetails.TeamId == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2
         };
+        
+        lock (_onlinePlayersMutex)
+        {
+            _onlinePlayers[accountId] = onlinePlayer;
+        }
+
+        if (isNewPlayer)
+        {
+            await _events.RaiseAsync(PlayerEvents.PlayerJoined,
+                new PlayerJoinedEventArgs { Player = onlinePlayer, IsPlayerListUpdate = false, IsNewPlayer = true });
+        }
+        
+        return (onlinePlayer, isNewPlayer);
     }
 
-    private async Task<IPlayer> GetOrCreatePlayerAsync(string accountId, TmPlayerDetailedInfo onlinePlayerDetails)
+    private async Task<(IPlayer Player, bool IsNew)> GetOrCreatePlayerAsync(string accountId, TmPlayerDetailedInfo onlinePlayerDetails)
     {
         try
         {
@@ -189,7 +231,7 @@ public class PlayerCacheService : IPlayerCacheService
 
             if (player != null)
             {
-                return player;
+                return (player, false);
             }
         }
         catch (Exception ex)
@@ -199,7 +241,8 @@ public class PlayerCacheService : IPlayerCacheService
                 accountId);
         }
 
-        return await _playerRepository.AddPlayerAsync(accountId, onlinePlayerDetails);
+        var newPlayer = await _playerRepository.AddPlayerAsync(accountId, onlinePlayerDetails);
+        return (newPlayer, true);
     }
 
     public async Task UpdatePlayerListAsync()
@@ -236,12 +279,12 @@ public class PlayerCacheService : IPlayerCacheService
             
             var player = await GetOrCreatePlayerAsync(accountId, onlinePlayerDetails);
             
-            if (player == null)
+            if (player.Player == null)
             {
                 throw new PlayerNotFoundException(accountId, "Failed to fetch or create player in the database.");
             }
 
-            var onlinePlayer = new OnlinePlayer(player)
+            var onlinePlayer = new OnlinePlayer(player.Player)
             {
                 State = onlinePlayerDetails.GetState(),
                 Flags = onlinePlayerInfo.GetFlags(),
@@ -251,6 +294,12 @@ public class PlayerCacheService : IPlayerCacheService
             lock (_onlinePlayersMutex)
             {
                 _onlinePlayers[accountId] = onlinePlayer;
+            }
+
+            if (player.IsNew)
+            {
+                await _events.RaiseAsync(PlayerEvents.PlayerJoined,
+                    new PlayerJoinedEventArgs { Player = onlinePlayer, IsPlayerListUpdate = true, IsNewPlayer = true });
             }
             
             _logger.LogDebug("Cached online player '{AccountId}'", accountId);

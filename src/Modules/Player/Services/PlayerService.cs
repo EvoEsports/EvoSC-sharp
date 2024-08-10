@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
+using EvoSC.Modules.Official.Player.Config;
 using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -14,27 +15,33 @@ namespace EvoSC.Modules.Official.Player.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
 public class PlayerService(IPlayerManagerService playerManager, IServerClient server, ILogger<PlayerService> logger,
-        IContextService context, Locale locale)
+        IContextService context, Locale locale, IPlayerModuleSettings playerModuleSettings, IPermissionManager permissions)
     : IPlayerService
 {
     private readonly dynamic _locale = locale;
 
-    public async Task UpdateAndGreetPlayerAsync(string login)
+    public async Task GreetPlayerAsync(IPlayer player)
     {
-        var accountId = PlayerUtils.ConvertLoginToAccountId(login);
-        var player = await playerManager.GetPlayerAsync(accountId);
-
-        if (player == null)
-        {
-            player = await playerManager.CreatePlayerAsync(accountId);
-            await server.InfoMessageAsync(_locale.PlayerFirstJoined(player.NickName));
-        }
-        else
-        {
-            await server.InfoMessageAsync(_locale.PlayerJoined(player.NickName));
-        }
+        await server.InfoMessageAsync(_locale.PlayerJoined(player.NickName));
         await playerManager.UpdateLastVisitAsync(player);
     }
+
+    public async Task SetupPlayerAsync(IPlayer player, bool dontGreet)
+    {
+        // assign the player to the default group
+        if (playerModuleSettings.AddToDefaultGroup)
+        {
+            await permissions.SetDisplayGroupAsync(player, playerModuleSettings.DefaultGroupId);
+        }
+
+        if (dontGreet)
+        {
+            return;
+        }
+        
+        await server.InfoMessageAsync(_locale.PlayerFirstJoined(player.NickName));
+    }
+
 
     public async Task KickAsync(IPlayer player, IPlayer actor)
     {

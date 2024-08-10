@@ -73,15 +73,25 @@ public class PermissionManager(IPermissionRepository permissionRepository, IPlay
 
     public async Task<IGroup?> GetGroupAsync(int id) => await permissionRepository.GetGroupAsync(id);
 
-    public async Task AddPlayerToGroupAsync(IPlayer player, IGroup group)
+    public Task AddPlayerToGroupAsync(IPlayer player, IGroup group) => AddPlayerToGroupAsync(player, group.Id);
+
+    public async Task AddPlayerToGroupAsync(IPlayer player, int group)
     {
-        await permissionRepository.AddPlayerToGroupAsync(player.Id, group.Id);
+        await permissionRepository.AddPlayerToGroupAsync(player.Id, group);
         await playerCache.InvalidatePlayerStateAsync(player);
     }
 
     public async Task RemovePlayerFromGroupAsync(IPlayer player, IGroup group)
     {
         await permissionRepository.RemovePlayerFromGroupAsync(player.Id, group.Id);
+        await playerCache.InvalidatePlayerStateAsync(player);
+    }
+
+    public Task SetDisplayGroupAsync(IPlayer player, IGroup group) => SetDisplayGroupAsync(player, group.Id);
+    
+    public async Task SetDisplayGroupAsync(IPlayer player, int groupId)
+    {
+        await permissionRepository.SetDisplayGroupAsync(player.Id, groupId);
         await playerCache.InvalidatePlayerStateAsync(player);
     }
 

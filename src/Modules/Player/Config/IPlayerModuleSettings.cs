@@ -7,7 +7,8 @@ namespace EvoSC.Modules.Official.Player.Config;
 [Settings]
 public interface IPlayerModuleSettings
 {
-    [Option(DefaultValue = true), Description("Automatically add new players to the default group.")]
+    [Option(DefaultValue = true)]
+    [Description("Automatically add new players to the default group when they join for the first time.")]
     public bool AddToDefaultGroup { get; set; }
     
     [Option(DefaultValue = 2), Description("The ID of the group new players will be added to.")]
