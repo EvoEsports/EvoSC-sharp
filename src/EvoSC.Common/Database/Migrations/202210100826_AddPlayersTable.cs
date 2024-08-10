@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Util;
+﻿using EvoSC.Common.Database.Models.Player;
+using EvoSC.Common.Util;
 using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
@@ -9,7 +10,7 @@ public class AddPlayersTable : Migration
 {
     public override void Up()
     {
-        Create.Table("Players")
+        Create.Table(DbPlayer.TableName)
             .WithColumn("Id").AsInt32().PrimaryKey().Identity()
             .WithColumn("AccountId").AsString().Unique()
             .WithColumn("UbisoftName").AsString().Indexed()

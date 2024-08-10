@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
+using EvoSC.Modules.Official.Player.Config;
 using EvoSC.Modules.Official.Player.Interfaces;
 using EvoSC.Modules.Official.Player.Services;
 using EvoSC.Testing;
@@ -50,18 +51,21 @@ public class PlayerServiceTests
         (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
         Mock<IOnlinePlayer> Player,
         Mock<IOnlinePlayer> Actor,
-        Mock<IAuditEventBuilder> Audit
-        )
+        Mock<IAuditEventBuilder> Audit,
+        Mock<IPlayerModuleSettings> PlayerModuleSettings,
+        Mock<IPermissionManager> PermissionManager)
         NewPlayerServiceMock()
     {
         var contextService = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
         var locale = Mocking.NewLocaleMock(contextService.Object);
         var playerManager = new Mock<IPlayerManagerService>();
+        var settings = new Mock<IPlayerModuleSettings>();
+        var permissionManager = new Mock<IPermissionManager>();
 
         var server = Mocking.NewServerClientMock();
 
         var playerService = new PlayerService(playerManager.Object, server.Client.Object, _logger.Object,
-            contextService.Object, locale);
+            contextService.Object, locale, settings.Object, permissionManager.Object);
 
         var player = new Mock<IOnlinePlayer>();
         player.Setup(m => m.AccountId).Returns(PlayerAccountId);
@@ -76,50 +80,39 @@ public class PlayerServiceTests
             Server: server,
             Player: player,
             Actor: _actor,
-            Audit: _commandContext.AuditEventBuilder
+            Audit: _commandContext.AuditEventBuilder,
+            PlayerModuleSettings: settings,
+            PermissionManager: permissionManager
         );
     }
 
-    [Fact]
-    public async Task Player_Created_And_Greeted_On_First_Join()
+    [Theory]
+    [InlineData(false, 0)]
+    [InlineData(true, 1)]
+    public async Task SetupPlayer_Adds_To_Default_Group(bool addToGroup, int setGroupCalled)
     {
-        var contextService = Mocking.NewContextServiceMock(_eventContext.Context.Object, null);
-        var locale = Mocking.NewLocaleMock(contextService.Object);
+        var mock = NewPlayerServiceMock();
         
-        var playerManager = new Mock<IPlayerManagerService>();
-        playerManager.Setup(m => m.GetPlayerAsync(PlayerAccountId)).Returns(Task.FromResult((IPlayer?)null));
-        playerManager.Setup(m => m.CreatePlayerAsync(PlayerAccountId)).Returns(Task.FromResult((IPlayer)_actor.Object));
+        mock.PlayerModuleSettings.Setup(m => m.DefaultGroupId).Returns(1337);
+        mock.PlayerModuleSettings.Setup(m => m.AddToDefaultGroup).Returns(addToGroup);
 
-        var server = Mocking.NewServerClientMock();
-
-        var playerService = new PlayerService(playerManager.Object, server.Client.Object, _logger.Object, contextService.Object, locale);
+        await mock.PlayerService.SetupPlayerAsync(mock.Player.Object);
         
-        await playerService.UpdateAndGreetPlayerAsync(PlayerLogin);
-        
-        playerManager.Verify(m => m.GetPlayerAsync(PlayerAccountId), Times.Once);
-        playerManager.Verify(m => m.CreatePlayerAsync(PlayerAccountId), Times.Once);
-        playerManager.Verify(m => m.UpdateLastVisitAsync(_actor.Object), Times.Once);
-        server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>()));
+        mock.PermissionManager.Verify(m => m.SetDisplayGroupAsync(mock.Player.Object, 1337), Times.Exactly(setGroupCalled));
     }
 
     [Fact]
     public async Task Player_Is_Greeted_When_Already_Exists()
     {
-        var contextService = Mocking.NewContextServiceMock(_eventContext.Context.Object, null);
-        var locale = Mocking.NewLocaleMock(contextService.Object);
+        var mock = NewPlayerServiceMock();
 
-        var playerManager = new Mock<IPlayerManagerService>();
-        playerManager.Setup(m => m.GetPlayerAsync(PlayerAccountId)).Returns(Task.FromResult((IPlayer)_actor.Object));
-
-        var server = Mocking.NewServerClientMock();
+        mock.PlayerManager.Setup(m => m.GetPlayerAsync(PlayerAccountId))
+            .ReturnsAsync(mock.Player.Object);
         
-        var playerService = new PlayerService(playerManager.Object, server.Client.Object, _logger.Object, contextService.Object, locale);
-
-        await playerService.UpdateAndGreetPlayerAsync(PlayerLogin);
+        await mock.PlayerService.GreetPlayerAsync(mock.Player.Object);
         
-        playerManager.Verify(m => m.GetPlayerAsync(PlayerAccountId), Times.Once);
-        playerManager.Verify(m => m.UpdateLastVisitAsync(_actor.Object), Times.Once);
-        server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>()));
+        mock.PlayerManager.Verify(m => m.UpdateLastVisitAsync(mock.Player.Object), Times.Once);
+        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>()));
     }
 
     [Fact]
@@ -272,5 +265,17 @@ public class PlayerServiceTests
         mock.Server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
         mock.Audit.Verify(m => m.Success(), Times.Once);
         mock.Logger.Verify(LogLevel.Error, ex, null, Times.Once());
+    }
+
+    [Fact]
+    public async Task ForceSpectator_Calls_Correct_Remote_Method()
+    {
+        var mock = NewPlayerServiceMock();
+        var player = new Mock<IPlayer>();
+        player.Setup(m => m.AccountId).Returns("a467a996-eba5-44bf-9e2b-8543b50f39ae");
+
+        await mock.PlayerService.ForceSpectatorAsync(player.Object);
+        
+        mock.Server.Remote.Verify(m => m.ForceSpectatorAsync("pGepluulRL-eK4VDtQ85rg", 3));
     }
 }

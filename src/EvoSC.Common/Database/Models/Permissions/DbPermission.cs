@@ -3,9 +3,11 @@ using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Permissions;
 
-[Table("Permissions")]
+[Table(TableName)]
 public class DbPermission : IPermission
 {
+    public const string TableName = "Permissions";
+    
     [PrimaryKey, Identity]
     public int Id { get; set; }
     

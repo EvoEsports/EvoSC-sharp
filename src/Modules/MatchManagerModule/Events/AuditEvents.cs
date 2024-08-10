@@ -26,5 +26,20 @@ public enum AuditEvents
     MatchSettingsLoaded,
     
     [Identifier(Name = "MatchManager:ScriptSettingsSet")]
-    ScriptSettingsModified
+    ScriptSettingsModified,
+    
+    [Identifier(Name = "MatchManager:TeamRoundPointsSet")]
+    TeamRoundPointsSet,
+    
+    [Identifier(Name = "MatchManager:TeamRoundMapSet")]
+    TeamMapPointsSet,
+    
+    [Identifier(Name = "MatchManager:TeamRoundMatchSet")]
+    TeamMatchPointsSet,
+    
+    [Identifier(Name = "MatchManager:MatchPaused")]
+    MatchPaused,
+    
+    [Identifier(Name = "MatchManager:MatchUnpaused")]
+    MatchUnpaused,
 }

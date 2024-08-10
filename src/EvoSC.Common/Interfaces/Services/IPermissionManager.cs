@@ -101,12 +101,38 @@ public interface IPermissionManager
     public Task AddPlayerToGroupAsync(IPlayer player, IGroup group);
     
     /// <summary>
+    /// Add a player to a group, giving them all permissions that are assigned to the group.
+    /// </summary>
+    /// <param name="player">The player that should be added to the group.</param>
+    /// <param name="group">The ID of the group assign the player.</param>
+    /// <returns></returns>
+    public Task AddPlayerToGroupAsync(IPlayer player, int group);
+    
+    /// <summary>
     /// Remove a player from a group. This removes all permissions assigned to the player from the group.
     /// </summary>
     /// <param name="player">The player that should be removed from the group.</param>
     /// <param name="group">The group which the player should be removed from.</param>
     /// <returns></returns>
     public Task RemovePlayerFromGroupAsync(IPlayer player, IGroup group);
+
+    /// <summary>
+    /// Sets the provided group as the display group.
+    /// Assigns the group to the player if not already.
+    /// </summary>
+    /// <param name="player">Player to set the display group for.</param>
+    /// <param name="group">The group to set as the player's display group.</param>
+    /// <returns></returns>
+    public Task SetDisplayGroupAsync(IPlayer player, IGroup group);
+    
+    /// <summary>
+    /// Sets the provided group as the display group.
+    /// Assigns the group to the player if not already.
+    /// </summary>
+    /// <param name="player">Player to set the display group for.</param>
+    /// <param name="groupId">The ID of the group to set as the player's display group.</param>
+    /// <returns></returns>
+    public Task SetDisplayGroupAsync(IPlayer player, int groupId);
     
     /// <summary>
     /// Add a permission to a group.

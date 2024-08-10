@@ -3,9 +3,11 @@ using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Player;
 
-[Table("Players")]
+[Table(TableName)]
 public class DbPlayer : IPlayer
 {
+    public const string TableName = "Players";
+    
     /// <summary>
     /// Database ID of the player.
     /// </summary>
