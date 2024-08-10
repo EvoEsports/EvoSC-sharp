@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using EvoSC.Common.Database.Models.AuditLog;
+using FluentMigrator;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -8,10 +9,10 @@ public class UpdateAuditLogTableDataTypes : Migration
 {
     public override void Up()
     {
-        Alter.Column("Properties").OnTable(AddAuditLogTable.AuditLog)
+        Alter.Column("Properties").OnTable(DbAuditRecord.TableName)
             .AsCustom("TEXT");
         
-        Alter.Column("Comment").OnTable(AddAuditLogTable.AuditLog)
+        Alter.Column("Comment").OnTable(DbAuditRecord.TableName)
             .AsCustom("TEXT");
     }
 

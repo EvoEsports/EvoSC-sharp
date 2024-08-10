@@ -6,9 +6,11 @@ using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.AuditLog;
 
-[Table(AddAuditLogTable.AuditLog)]
+[Table(TableName)]
 public class DbAuditRecord : IAuditRecord
 {
+    public const string TableName = "AuditLog";
+    
     [PrimaryKey, Identity]
     public long Id { get; set; }
 

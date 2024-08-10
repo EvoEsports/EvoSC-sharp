@@ -5,9 +5,11 @@ using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Maps;
 
-[Table("Maps")]
+[Table(TableName)]
 public class DbMap : IMap
 {
+    public const string TableName = "Maps";
+    
     [PrimaryKey, Identity]
     public long Id { get; set; }
 
