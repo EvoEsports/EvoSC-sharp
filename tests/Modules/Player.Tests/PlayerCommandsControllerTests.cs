@@ -1,7 +1,11 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.Player.Controllers;
+using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
+using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
+using GbxRemoteNet.Interfaces;
 using Moq;
 
 namespace EvoSC.Modules.Official.Player.Tests;
@@ -10,10 +14,11 @@ public class PlayerCommandsControllerTests : CommandInteractionControllerTestBas
 {
     private Mock<IPlayerService> _playerService = new();
     private Mock<IOnlinePlayer> _player = new();
+    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
     
     public PlayerCommandsControllerTests()
     {
-        InitMock(_player.Object, _playerService);
+        InitMock(_player.Object, _playerService, _server.Client);
     }
 
     [Fact]
@@ -53,5 +58,17 @@ public class PlayerCommandsControllerTests : CommandInteractionControllerTestBas
         await Controller.UnbanPlayerAsync("ThePlayerLogin");
         
         _playerService.Verify(p => p.UnbanAsync("ThePlayerLogin", Context.Object.Player));
+    }
+
+    [Fact]
+    public async Task ForceToSpec_Forces_Spectator_And_Audits()
+    {
+        var player = new Mock<IOnlinePlayer>();
+
+        await Controller.ForceSpectatorAsync(player.Object);
+        
+        _playerService.Verify(m => m.ForceSpectatorAsync(player.Object));
+        AuditEventBuilder.Verify(m => m.Success());
+        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.PlayerForcedToSpectator));
     }
 }

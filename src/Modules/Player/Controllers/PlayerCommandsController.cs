@@ -2,13 +2,15 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
 
 namespace EvoSC.Modules.Official.Player.Controllers;
 
 [Controller]
-public class PlayerCommandsController(IPlayerService players) : EvoScController<ICommandInteractionContext>
+public class PlayerCommandsController(IPlayerService players, IServerClient server) : EvoScController<ICommandInteractionContext>
 {
     [ChatCommand("kick", "[Command.Kick]", ModPermissions.KickPlayer)]
     public Task KickPlayerAsync(IOnlinePlayer player) => players.KickAsync(player, Context.Player);
@@ -24,4 +26,14 @@ public class PlayerCommandsController(IPlayerService players) : EvoScController<
     
     [ChatCommand("unban", "[Command.Unban]", ModPermissions.BanPlayer)]
     public Task UnbanPlayerAsync(string login) => players.UnbanAsync(login, Context.Player);
+
+    [ChatCommand("/forcespectator", "Force a player to spectator")]
+    [CommandAlias("/forcespec", hide: true)]
+    public async Task ForceSpectatorAsync(IOnlinePlayer player)
+    {
+        await players.ForceSpectatorAsync(player);
+
+        Context.AuditEvent.Success().WithEventName(AuditEvents.PlayerForcedToSpectator);
+        await server.SuccessMessageAsync(Context.Player, $"$<{player.NickName}$> was forced to spectator.");
+    }
 }
