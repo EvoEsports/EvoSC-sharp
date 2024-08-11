@@ -102,7 +102,8 @@ public class PermissionRepository(IDbConnectionFactory dbConnFactory, ILogger<Pe
 
     public async Task SetDisplayGroupAsync(long playerId, int groupId)
     {
-        var userGroup = await Table<DbUserGroup>().FirstOrDefaultAsync(ug => ug.GroupId == groupId);
+        var userGroup = await Table<DbUserGroup>()
+            .FirstOrDefaultAsync(ug => ug.GroupId == groupId && ug.UserId == playerId);
 
         await using var transaction = await Database.BeginTransactionAsync();
 
