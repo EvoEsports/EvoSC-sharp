@@ -15,7 +15,15 @@ public enum MatchControlPermissions
     [Description("[Permission.SkipMap]")]
     SkipMap,
     
+    [Description("[Permission.StartMatch]")]
     StartMatch,
     
-    EndMatch
+    [Description("[Permission.EndMatch]")]
+    EndMatch,
+    
+    [Description("[Permission.SetTeamPoints]")]
+    SetTeamPoints,
+    
+    [Description("[Permission.PauseMatch]")]
+    PauseMatch
 }

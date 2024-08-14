@@ -100,6 +100,40 @@ public class PermissionRepository(IDbConnectionFactory dbConnFactory, ILogger<Pe
     public Task RemovePlayerFromGroupAsync(long playerId, int groupId) => Table<DbUserGroup>()
         .DeleteAsync(t => t.UserId == playerId && t.GroupId == groupId);
 
+    public async Task SetDisplayGroupAsync(long playerId, int groupId)
+    {
+        var userGroup = await Table<DbUserGroup>()
+            .FirstOrDefaultAsync(ug => ug.GroupId == groupId && ug.UserId == playerId);
+
+        await using var transaction = await Database.BeginTransactionAsync();
+
+        try
+        {
+            if (userGroup == null)
+            {
+                await Database.InsertAsync(new DbUserGroup
+                {
+                    UserId = playerId,
+                    GroupId = groupId,
+                    Display = true
+                });
+            }
+            else
+            {
+                userGroup.Display = true;
+                await Database.UpdateAsync(userGroup);
+            }
+
+            await transaction.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to set display group.");
+            await transaction.RollbackTransactionAsync();
+            throw;
+        }
+    }
+
     public Task AddPermissionToGroupAsync(int groupId, int permissionId) => Database.InsertAsync(new DbGroupPermission
     {
         GroupId = groupId, PermissionId = permissionId

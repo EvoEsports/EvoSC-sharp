@@ -2,6 +2,7 @@
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Controllers;
+using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
@@ -72,5 +73,61 @@ public class MatchCommandsControllerTests : CommandInteractionControllerTestBase
         
         _matchControl.Verify(m => m.SkipMapAsync(), Times.Once);
         AuditEventBuilder.Verify(m => m.Success(), Times.Once);
+    }
+
+    [Theory]
+    [InlineData(0, PlayerTeam.Team1)]
+    [InlineData(1, PlayerTeam.Team2)]
+    public async Task Round_Points_Set_And_Audited(int team, PlayerTeam expectedTeam)
+    {
+        await Controller.SetRoundPointsAsync(team, 1337);
+        
+        _matchControl.Verify(m => m.SetTeamRoundPointsAsync(expectedTeam, 1337));
+        AuditEventBuilder.Verify(m => m.Success());
+        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.TeamRoundPointsSet));
+    }
+    
+    [Theory]
+    [InlineData(0, PlayerTeam.Team1)]
+    [InlineData(1, PlayerTeam.Team2)]
+    public async Task Round_Map_Set_And_Audited(int team, PlayerTeam expectedTeam)
+    {
+        await Controller.SetMapPointsAsync(team, 1337);
+        
+        _matchControl.Verify(m => m.SetTeamMapPointsAsync(expectedTeam, 1337));
+        AuditEventBuilder.Verify(m => m.Success());
+        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.TeamMapPointsSet));
+    }
+    
+    [Theory]
+    [InlineData(0, PlayerTeam.Team1)]
+    [InlineData(1, PlayerTeam.Team2)]
+    public async Task Round_Match_Set_And_Audited(int team, PlayerTeam expectedTeam)
+    {
+        await Controller.SetMatchPointsAsync(team, 1337);
+        
+        _matchControl.Verify(m => m.SetTeamMatchPointsAsync(expectedTeam, 1337));
+        AuditEventBuilder.Verify(m => m.Success());
+        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.TeamMatchPointsSet));
+    }
+
+    [Fact]
+    public async Task Pause_Match_Pauses_Match_And_Audits()
+    {
+        await Controller.PauseMatchAsync();
+        
+        _matchControl.Verify(m => m.PauseMatchAsync());
+        AuditEventBuilder.Verify(m => m.Success());
+        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MatchPaused));
+    }
+    
+    [Fact]
+    public async Task Unpause_Match_Unpauses_Match_And_Audits()
+    {
+        await Controller.UnpauseMatchAsync();
+        
+        _matchControl.Verify(m => m.UnpauseMatchAsync());
+        AuditEventBuilder.Verify(m => m.Success());
+        AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MatchUnpaused));
     }
 }
