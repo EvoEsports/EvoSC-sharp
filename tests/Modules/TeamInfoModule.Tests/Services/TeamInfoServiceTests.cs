@@ -168,7 +168,7 @@ public class TeamInfoServiceTests
         _server.Remote.Setup(s => s.GetModeScriptSettingsAsync())
             .Returns(Task.FromResult(new GbxDynamicObject()));
 
-        await teamInfoService.UpdatePointsAsync(4, 5);
+        await teamInfoService.UpdatePointsAsync(4, 5, false);
 
         _manialinkManager.Verify(
             m => m.SendPersistentManialinkAsync("TeamInfoModule.TeamInfoWidget", It.IsAny<It.IsAnyType>()),
@@ -212,7 +212,7 @@ public class TeamInfoServiceTests
             .Returns(Task.FromResult(team2Info));
 
         await teamInfoService.UpdateRoundNumberAsync(expectedRoundNumber);
-        await teamInfoService.UpdatePointsAsync(expectedTeam1Points, expectedTeam2Points);
+        await teamInfoService.UpdatePointsAsync(expectedTeam1Points, expectedTeam2Points, false);
         var widgetData = await teamInfoService.GetWidgetDataAsync();
 
         _server.Remote.Verify(remote => remote.GetModeScriptSettingsAsync(), Times.Exactly(3));
