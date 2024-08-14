@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
@@ -22,6 +23,7 @@ public class TeamInfoService(
     private int _currentRound;
     private int _team1Points;
     private int _team2Points;
+    private bool _includeManiaScript;
 
     public async Task InitializeModuleAsync()
     {
@@ -52,6 +54,7 @@ public class TeamInfoService(
             roundNumber = _currentRound,
             team1Points = _team1Points,
             team2Points = _team2Points,
+            includeManiaScript = _includeManiaScript,
             neutralEmblemUrl = modeScriptSettings.NeutralEmblemUrl
         };
     }
@@ -125,10 +128,11 @@ public class TeamInfoService(
         await SendTeamInfoWidgetEveryoneAsync();
     }
 
-    public async Task UpdatePointsAsync(int team1Points, int team2Points)
+    public async Task UpdatePointsAsync(int team1Points, int team2Points, bool includeManiaScript)
     {
         _team1Points = team1Points;
         _team2Points = team2Points;
+        _includeManiaScript = includeManiaScript;
         await SendTeamInfoWidgetEveryoneAsync();
     }
 
@@ -142,5 +146,15 @@ public class TeamInfoService(
         _modeIsTeams = modeIsTeams;
 
         return Task.CompletedTask;
+    }
+
+    public bool ShouldUpdateTeamPoints(ModeScriptSection section)
+    {
+        return section is ModeScriptSection.EndRound or ModeScriptSection.PreEndRound or ModeScriptSection.Undefined;
+    }
+
+    public bool ShouldIncludeManiaScript(ModeScriptSection section)
+    {
+        return section is ModeScriptSection.PreEndRound;
     }
 }

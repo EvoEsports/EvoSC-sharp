@@ -2,7 +2,6 @@
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
@@ -36,14 +35,27 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
             await teamInfoService.SetModeIsTeamsAsync(true);
         }
 
-        var teamInfos = eventArgs.Teams.ToList();
-        var team1Points = teamInfos[0]!.MatchPoints;
-        var team2Points = teamInfos[1]!.MatchPoints;
-
-        if (eventArgs.Section is ModeScriptSection.EndRound or ModeScriptSection.Undefined)
+        if (teamInfoService.ShouldUpdateTeamPoints(eventArgs.Section))
         {
-            await teamInfoService.UpdatePointsAsync(team1Points, team2Points);
+            var teamInfos = eventArgs.Teams.ToList();
+
+            await teamInfoService.UpdatePointsAsync(
+                teamInfos[0]!.MatchPoints,
+                teamInfos[1]!.MatchPoints,
+                teamInfoService.ShouldIncludeManiaScript(eventArgs.Section)
+            );
         }
+    }
+
+    [Subscribe(ModeScriptEvent.StartMatchStart)]
+    public async Task OnMatchStart(object sender, MatchEventArgs args)
+    {
+        if (!await teamInfoService.GetModeIsTeamsAsync())
+        {
+            return;
+        }
+
+        await teamInfoService.UpdatePointsAsync(0, 0, false);
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]

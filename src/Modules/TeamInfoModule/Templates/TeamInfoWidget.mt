@@ -2,7 +2,7 @@
     <using namespace="GbxRemoteNet.Structs"/>
     <using namespace="EvoSC.Modules.Official.TeamInfoModule.Config"/>
 
-    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle"/>
     <import component="TeamInfoModule.Components.RoundCounter" as="RoundCounter"/>
     <import component="TeamInfoModule.Components.PointsBox" as="PointsBox"/>
     <import component="TeamInfoModule.Components.BottomInfoBox" as="BottomInfoBox"/>
@@ -16,6 +16,7 @@
     <property type="TmTeamInfo" name="team1"/>
     <property type="TmTeamInfo" name="team2"/>
     <property type="string?" name="infoBoxText"/>
+    <property type="bool" name="includeManiaScript"/>
     <property type="int" name="roundNumber" default="-1"/>
     <property type="int" name="team1Points" default="0"/>
     <property type="int" name="team2Points" default="0"/>
@@ -27,7 +28,7 @@
     <template>
         <UIStyle/>
 
-        <frame pos="{{ settings.X }} {{ settings.Y }}">
+        <frame pos="{{ settings.X }} {{ settings.Y }}" scale="{{ settings.Scale }}">
             <BottomInfoBox if="infoBoxText != null"
                            y="-10"
                            text="{{ infoBoxText }}"
@@ -36,7 +37,8 @@
             <RoundCounter roundNumber="{{ roundNumber }}"/>
 
             <!-- TEAM 1 -->
-            <PointsBox x="-10.0"
+            <PointsBox id="pointsBox1"
+                       x="-10.0"
                        points="{{ team1Points }}"
                        color="{{ team1.RGB }}"
                        halign="right"
@@ -64,7 +66,8 @@
             </frame>
 
             <!-- TEAM 2 -->
-            <PointsBox x="10.0"
+            <PointsBox id="pointsBox2"
+                       x="10.0"
                        points="{{ team2Points }}"
                        color="{{ team2.RGB }}"
             />
@@ -91,4 +94,23 @@
             </frame>
         </frame>
     </template>
+
+    <script>
+        <!--
+        main() {
+            if({{ !includeManiaScript ? "True" : "False" }}){
+                return;
+            }
+            
+            declare pointsBox1Label <=> (Page.MainFrame.GetFirstChild("pointsBox1") as CMlLabel);
+            declare pointsBox2Label <=> (Page.MainFrame.GetFirstChild("pointsBox2") as CMlLabel);
+            
+            while(True){
+                pointsBox1Label.Value = ClanScores[1] ^ "";
+                pointsBox2Label.Value = ClanScores[2] ^ "";
+                sleep(50);
+            }
+        }
+        -->
+    </script>
 </component>

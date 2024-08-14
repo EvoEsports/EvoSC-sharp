@@ -12,6 +12,9 @@ public interface ITeamInfoSettings
 
     [Option(DefaultValue = 80.0), Description("Specifies the vertical top edge position of the wigdet. Values from -90 to 90 allowed.")]
     public double Y { get; set; }
+    
+    [Option(DefaultValue = 1.0), Description("Specifies the scale of the widget.")]
+    public double Scale { get; set; }
 
     [Option(DefaultValue = false), Description("If enabled a smaller version of the widget is shown, without the large team name.")]
     public bool CompactMode { get; set; }
