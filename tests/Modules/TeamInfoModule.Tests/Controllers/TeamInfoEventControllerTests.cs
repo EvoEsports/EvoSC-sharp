@@ -4,6 +4,8 @@ using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Controllers;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
+using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
+using EvoSC.Modules.Official.TeamSettingsModule.Models;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;
 using Moq;
@@ -159,5 +161,19 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
 
         await Controller.OnEndMapAsync(null, new MapGbxEventArgs());
         _teamInfoService.Verify(s => s.HideTeamInfoWidgetEveryoneAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task Updates_Widget_On_New_Team_Settings()
+    {
+        _teamInfoService.Setup(s => s.GetModeIsTeamsAsync())
+            .Returns(Task.FromResult(true));
+
+        await Controller.OnTeamSettingsUpdated(null, new TeamSettingsEventArgs
+        {
+            Settings = new TeamSettingsModel()
+        });
+        
+        _teamInfoService.Verify(s => s.SendTeamInfoWidgetEveryoneAsync(), Times.Once);
     }
 }

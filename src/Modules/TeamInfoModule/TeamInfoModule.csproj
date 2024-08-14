@@ -16,5 +16,6 @@
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Localization.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+        <ProjectReference Include="..\TeamSettingsModule\TeamSettingsModule.csproj" />
     </ItemGroup>
 </Project>

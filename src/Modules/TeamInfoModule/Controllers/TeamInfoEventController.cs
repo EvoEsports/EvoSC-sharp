@@ -5,6 +5,8 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
+using EvoSC.Modules.Official.TeamSettingsModule.Events;
+using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Controllers;
@@ -89,5 +91,16 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
         }
 
         await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    }
+
+    [Subscribe(TeamSettingsEvents.SettingsUpdated)]
+    public async Task OnTeamSettingsUpdated(object sender, TeamSettingsEventArgs args)
+    {
+        if (!await teamInfoService.GetModeIsTeamsAsync())
+        {
+            return;
+        }
+        
+        await Task.Delay(250).ContinueWith(t => teamInfoService.SendTeamInfoWidgetEveryoneAsync());
     }
 }
