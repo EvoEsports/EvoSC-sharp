@@ -50,7 +50,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
     }
 
     [Subscribe(ModeScriptEvent.StartMatchStart)]
-    public async Task OnMatchStart(object sender, MatchEventArgs args)
+    public async Task OnMatchStartAsync(object sender, MatchEventArgs args)
     {
         if (!await teamInfoService.GetModeIsTeamsAsync())
         {
@@ -94,7 +94,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
     }
 
     [Subscribe(TeamSettingsEvents.SettingsUpdated)]
-    public async Task OnTeamSettingsUpdated(object sender, TeamSettingsEventArgs args)
+    public async Task OnTeamSettingsUpdatedAsync(object sender, TeamSettingsEventArgs args)
     {
         if (!await teamInfoService.GetModeIsTeamsAsync())
         {

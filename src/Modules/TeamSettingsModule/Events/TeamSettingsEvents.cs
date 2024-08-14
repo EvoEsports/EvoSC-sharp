@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Util.EnumIdentifier;
-
-namespace EvoSC.Modules.Official.TeamSettingsModule.Events;
+﻿namespace EvoSC.Modules.Official.TeamSettingsModule.Events;
 
 public enum TeamSettingsEvents
 {

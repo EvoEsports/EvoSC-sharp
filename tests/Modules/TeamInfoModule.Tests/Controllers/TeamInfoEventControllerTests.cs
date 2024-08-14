@@ -139,7 +139,7 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
         _teamInfoService.Setup(s => s.GetModeIsTeamsAsync())
             .Returns(Task.FromResult(true));
 
-        await Controller.OnMatchStart(null, new MatchEventArgs { Time = 0, Count = 0 });
+        await Controller.OnMatchStartAsync(null, new MatchEventArgs { Time = 0, Count = 0 });
         _teamInfoService.Verify(s => s.UpdatePointsAsync(0, 0, false), Times.Once);
     }
 
@@ -169,7 +169,7 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
         _teamInfoService.Setup(s => s.GetModeIsTeamsAsync())
             .Returns(Task.FromResult(true));
 
-        await Controller.OnTeamSettingsUpdated(null, new TeamSettingsEventArgs
+        await Controller.OnTeamSettingsUpdatedAsync(null, new TeamSettingsEventArgs
         {
             Settings = new TeamSettingsModel()
         });

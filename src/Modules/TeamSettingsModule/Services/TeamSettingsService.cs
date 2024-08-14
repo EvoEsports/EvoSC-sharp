@@ -18,10 +18,10 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
     : ITeamSettingsService
 {
     private const string ClubLinkGeneratorUrl = "https://club-link.evotm.workers.dev";
-    public const string DefaultTeam1Name = "Blue";
-    public const string DefaultTeam2Name = "Red";
-    public const string DefaultTeam1Color = "00f";
-    public const string DefaultTeam2Color = "f00";
+    public static readonly string DefaultTeam1Name = "Blue";
+    public static readonly string DefaultTeam2Name = "Red";
+    public static readonly string DefaultTeam1Color = "00f";
+    public static readonly string DefaultTeam2Color = "f00";
 
     public async Task<TeamSettingsModel> GetCurrentTeamSettingsModel()
     {
