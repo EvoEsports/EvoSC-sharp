@@ -153,7 +153,7 @@ public class TeamInfoService(
         return section is ModeScriptSection.EndRound or ModeScriptSection.PreEndRound or ModeScriptSection.Undefined;
     }
 
-    public bool ShouldIncludeManiaScript(ModeScriptSection section)
+    public bool ShouldExecuteManiaScript(ModeScriptSection section)
     {
         return section is ModeScriptSection.PreEndRound;
     }

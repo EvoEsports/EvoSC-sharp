@@ -44,7 +44,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
             await teamInfoService.UpdatePointsAsync(
                 teamInfos[0]!.MatchPoints,
                 teamInfos[1]!.MatchPoints,
-                teamInfoService.ShouldIncludeManiaScript(eventArgs.Section)
+                teamInfoService.ShouldExecuteManiaScript(eventArgs.Section)
             );
         }
     }

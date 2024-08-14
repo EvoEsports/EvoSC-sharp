@@ -89,9 +89,9 @@ public interface ITeamInfoService
     public bool ShouldUpdateTeamPoints(ModeScriptSection section);
 
     /// <summary>
-    /// Determines when to include the ManiaScript that updates team points client side.
+    /// Determines when to execute the ManiaScript that updates team points client side.
     /// </summary>
     /// <param name="section"></param>
     /// <returns></returns>
-    public bool ShouldIncludeManiaScript(ModeScriptSection section);
+    public bool ShouldExecuteManiaScript(ModeScriptSection section);
 }

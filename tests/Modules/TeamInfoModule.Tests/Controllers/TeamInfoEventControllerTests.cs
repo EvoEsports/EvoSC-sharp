@@ -57,7 +57,7 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
         _teamInfoService.Setup(s => s.ShouldUpdateTeamPoints(ModeScriptSection.EndRound))
             .Returns(true);
 
-        _teamInfoService.Setup(s => s.ShouldIncludeManiaScript(ModeScriptSection.EndRound))
+        _teamInfoService.Setup(s => s.ShouldExecuteManiaScript(ModeScriptSection.EndRound))
             .Returns(false);
 
         await Controller.OnScoresAsync(null,
@@ -90,7 +90,7 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
         _teamInfoService.Setup(s => s.ShouldUpdateTeamPoints(ModeScriptSection.EndRound))
             .Returns(true);
 
-        _teamInfoService.Setup(s => s.ShouldIncludeManiaScript(ModeScriptSection.EndRound))
+        _teamInfoService.Setup(s => s.ShouldExecuteManiaScript(ModeScriptSection.EndRound))
             .Returns(false);
 
         await Controller.OnScoresAsync(null,
