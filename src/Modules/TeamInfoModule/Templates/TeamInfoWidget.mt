@@ -16,7 +16,7 @@
     <property type="TmTeamInfo" name="team1"/>
     <property type="TmTeamInfo" name="team2"/>
     <property type="string?" name="infoBoxText"/>
-    <property type="bool" name="includeManiaScript"/>
+    <property type="bool" name="executeManiaScript"/>
     <property type="int" name="roundNumber" default="-1"/>
     <property type="int" name="team1Points" default="0"/>
     <property type="int" name="team2Points" default="0"/>
@@ -98,7 +98,7 @@
     <script>
         <!--
         main() {
-            if({{ !includeManiaScript ? "True" : "False" }}){
+            if({{ !executeManiaScript ? "True" : "False" }}){
                 return;
             }
             

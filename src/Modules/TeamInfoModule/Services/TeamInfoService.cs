@@ -23,7 +23,7 @@ public class TeamInfoService(
     private int _currentRound;
     private int _team1Points;
     private int _team2Points;
-    private bool _includeManiaScript;
+    private bool _executeManiaScript;
 
     public async Task InitializeModuleAsync()
     {
@@ -54,7 +54,7 @@ public class TeamInfoService(
             roundNumber = _currentRound,
             team1Points = _team1Points,
             team2Points = _team2Points,
-            includeManiaScript = _includeManiaScript,
+            executeManiaScript = _executeManiaScript,
             neutralEmblemUrl = modeScriptSettings.NeutralEmblemUrl
         };
     }
@@ -128,11 +128,11 @@ public class TeamInfoService(
         await SendTeamInfoWidgetEveryoneAsync();
     }
 
-    public async Task UpdatePointsAsync(int team1Points, int team2Points, bool includeManiaScript)
+    public async Task UpdatePointsAsync(int team1Points, int team2Points, bool executeManiaScript)
     {
         _team1Points = team1Points;
         _team2Points = team2Points;
-        _includeManiaScript = includeManiaScript;
+        _executeManiaScript = executeManiaScript;
         await SendTeamInfoWidgetEveryoneAsync();
     }
 

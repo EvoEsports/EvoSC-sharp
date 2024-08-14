@@ -64,9 +64,9 @@ public interface ITeamInfoService
     /// </summary>
     /// <param name="team1Points"></param>
     /// <param name="team2Points"></param>
-    /// <param name="includeManiaScript"></param>
+    /// <param name="executeManiaScript"></param>
     /// <returns></returns>
-    public Task UpdatePointsAsync(int team1Points, int team2Points, bool includeManiaScript);
+    public Task UpdatePointsAsync(int team1Points, int team2Points, bool executeManiaScript);
     
     /// <summary>
     /// Tells whether the service is currently active for teams mode.
