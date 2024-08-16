@@ -100,7 +100,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
         {
             return;
         }
-        
-        await Task.Delay(250).ContinueWith(t => teamInfoService.SendTeamInfoWidgetEveryoneAsync());
+
+        await teamInfoService.SendTeamInfoWidgetEveryoneAsync();
     }
 }
