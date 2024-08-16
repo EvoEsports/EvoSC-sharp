@@ -118,6 +118,7 @@ public class TeamSettingsServiceTests
         );
 
         _server.Remote.Verify(m => m.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2), Times.Once);
+        _events.Verify(m => m.RaiseAsync(TeamSettingsEvents.SettingsUpdated, It.IsAny<TeamSettingsEventArgs>()));
     }
 
     [Fact]

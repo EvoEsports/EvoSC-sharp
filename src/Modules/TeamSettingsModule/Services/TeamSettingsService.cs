@@ -57,9 +57,10 @@ public class TeamSettingsService(
             teamSettings.Team2SecondaryColor, teamSettings.Team2EmblemUrl);
 
         await server.Remote.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2);
-
-        _ = Task.Delay(500).ContinueWith(t => events.RaiseAsync(TeamSettingsEvents.SettingsUpdated,
-            new TeamSettingsEventArgs { Settings = teamSettings }));
+        await events.RaiseAsync(TeamSettingsEvents.SettingsUpdated, new TeamSettingsEventArgs
+        {
+            Settings = teamSettings
+        });
     }
 
     public Task<NameValueCollection> ParseClubLinkUrl(string? clubLinkUrl)

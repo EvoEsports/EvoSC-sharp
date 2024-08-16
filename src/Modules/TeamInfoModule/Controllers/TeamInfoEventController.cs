@@ -91,7 +91,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
         await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
     }
 
-    [Subscribe(TeamSettingsEvents.SettingsUpdated)]
+    [Subscribe(TeamSettingsEvents.SettingsUpdated, IsAsync = true)]
     public async Task OnTeamSettingsUpdatedAsync(object sender, TeamSettingsEventArgs args)
     {
         if (!await teamInfoService.GetModeIsTeamsAsync())
@@ -99,6 +99,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
             return;
         }
 
+        await Task.Delay(500);
         await teamInfoService.SendTeamInfoWidgetEveryoneAsync();
     }
 }
