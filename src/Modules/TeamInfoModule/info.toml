@@ -9,3 +9,6 @@ summary = "Displays teams and their points in a widget on the screen."
 version = "1.0.0"
 # The name of the author that created this module
 author = "Evo"
+
+[dependencies]
+TeamSettingsModule = "1.0.0"

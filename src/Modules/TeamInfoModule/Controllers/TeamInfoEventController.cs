@@ -2,10 +2,11 @@
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Models;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
+using EvoSC.Modules.Official.TeamSettingsModule.Events;
+using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Controllers;
@@ -36,14 +37,25 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
             await teamInfoService.SetModeIsTeamsAsync(true);
         }
 
-        var teamInfos = eventArgs.Teams.ToList();
-        var team1Points = teamInfos[0]!.MatchPoints;
-        var team2Points = teamInfos[1]!.MatchPoints;
-
-        if (eventArgs.Section is ModeScriptSection.EndRound or ModeScriptSection.Undefined)
+        if (teamInfoService.ShouldUpdateTeamPoints(eventArgs.Section))
         {
-            await teamInfoService.UpdatePointsAsync(team1Points, team2Points);
+            await teamInfoService.UpdatePointsAsync(
+                eventArgs.Teams.FirstOrDefault()?.MatchPoints ?? 0,
+                eventArgs.Teams.Skip(1).FirstOrDefault()?.MatchPoints ?? 0,
+                teamInfoService.ShouldExecuteManiaScript(eventArgs.Section)
+            );
         }
+    }
+
+    [Subscribe(ModeScriptEvent.StartMatchStart)]
+    public async Task OnMatchStartAsync(object sender, MatchEventArgs args)
+    {
+        if (!await teamInfoService.GetModeIsTeamsAsync())
+        {
+            return;
+        }
+
+        await teamInfoService.UpdatePointsAsync(0, 0, false);
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
@@ -77,5 +89,17 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
         }
 
         await teamInfoService.HideTeamInfoWidgetEveryoneAsync();
+    }
+
+    [Subscribe(TeamSettingsEvents.SettingsUpdated, IsAsync = true)]
+    public async Task OnTeamSettingsUpdatedAsync(object sender, TeamSettingsEventArgs args)
+    {
+        if (!await teamInfoService.GetModeIsTeamsAsync())
+        {
+            return;
+        }
+
+        await Task.Delay(500);
+        await teamInfoService.SendTeamInfoWidgetEveryoneAsync();
     }
 }

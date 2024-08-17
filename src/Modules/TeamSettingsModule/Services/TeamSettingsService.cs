@@ -6,20 +6,26 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.TeamSettingsModule.Events;
+using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Models;
 
 namespace EvoSC.Modules.Official.TeamSettingsModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class TeamSettingsService(IServerClient server, IManialinkManager manialinks, Locale locale)
+public class TeamSettingsService(
+    IServerClient server,
+    IManialinkManager manialinks,
+    IEventManager events,
+    Locale locale)
     : ITeamSettingsService
 {
     private const string ClubLinkGeneratorUrl = "https://club-link.evotm.workers.dev";
-    public const string DefaultTeam1Name = "Blue";
-    public const string DefaultTeam2Name = "Red";
-    public const string DefaultTeam1Color = "00f";
-    public const string DefaultTeam2Color = "f00";
+    public static readonly string DefaultTeam1Name = "Blue";
+    public static readonly string DefaultTeam2Name = "Red";
+    public static readonly string DefaultTeam1Color = "00f";
+    public static readonly string DefaultTeam2Color = "f00";
 
     public async Task<TeamSettingsModel> GetCurrentTeamSettingsModel()
     {
@@ -51,6 +57,10 @@ public class TeamSettingsService(IServerClient server, IManialinkManager maniali
             teamSettings.Team2SecondaryColor, teamSettings.Team2EmblemUrl);
 
         await server.Remote.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2);
+        await events.RaiseAsync(TeamSettingsEvents.SettingsUpdated, new TeamSettingsEventArgs
+        {
+            Settings = teamSettings
+        });
     }
 
     public Task<NameValueCollection> ParseClubLinkUrl(string? clubLinkUrl)

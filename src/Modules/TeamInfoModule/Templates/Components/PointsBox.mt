@@ -1,4 +1,5 @@
 <component>
+    <property type="string" name="id" default="evosc_points_box"/>
     <property type="double" name="width" default="12.0"/>
     <property type="double" name="height" default="10.0"/>
     <property type="double" name="x" default="0.0"/>
@@ -13,7 +14,8 @@
                   bgcolor="{{ color }}"
             />
 
-            <label pos="{{ width / 2.0 }} {{ height / -2.0 + 0.5 }}"
+            <label id="{{ id }}"
+                   pos="{{ width / 2.0 }} {{ height / -2.0 + 0.5 }}"
                    class="text-3xl"
                    text="{{ points }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"

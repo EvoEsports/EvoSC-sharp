@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
+﻿using EvoSC.Common.Models;
+using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 
@@ -63,8 +64,9 @@ public interface ITeamInfoService
     /// </summary>
     /// <param name="team1Points"></param>
     /// <param name="team2Points"></param>
+    /// <param name="executeManiaScript"></param>
     /// <returns></returns>
-    public Task UpdatePointsAsync(int team1Points, int team2Points);
+    public Task UpdatePointsAsync(int team1Points, int team2Points, bool executeManiaScript);
     
     /// <summary>
     /// Tells whether the service is currently active for teams mode.
@@ -78,4 +80,18 @@ public interface ITeamInfoService
     /// <param name="modeIsTeams"></param>
     /// <returns></returns>
     public Task SetModeIsTeamsAsync(bool modeIsTeams);
+    
+    /// <summary>
+    /// Determines whether the team points need to be updated.
+    /// </summary>
+    /// <param name="section"></param>
+    /// <returns></returns>
+    public bool ShouldUpdateTeamPoints(ModeScriptSection section);
+
+    /// <summary>
+    /// Determines when to execute the ManiaScript that updates team points client side.
+    /// </summary>
+    /// <param name="section"></param>
+    /// <returns></returns>
+    public bool ShouldExecuteManiaScript(ModeScriptSection section);
 }

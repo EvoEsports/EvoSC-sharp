@@ -3,6 +3,8 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
+using EvoSC.Modules.Official.TeamSettingsModule.Events;
+using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Models;
 using EvoSC.Modules.Official.TeamSettingsModule.Services;
@@ -18,6 +20,7 @@ public class TeamSettingsServiceTests
 {
     private readonly Mock<IOnlinePlayer> _player = new();
     private readonly Mock<IManialinkManager> _manialinkManager = new();
+    private readonly Mock<IEventManager> _events = new();
 
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
@@ -30,7 +33,7 @@ public class TeamSettingsServiceTests
         var contextService = Mocking.NewContextServiceMock(context.Context.Object, null);
         var locale = Mocking.NewLocaleMock(contextService.Object);
 
-        return new TeamSettingsService(_server.Client.Object, _manialinkManager.Object, locale);
+        return new TeamSettingsService(_server.Client.Object, _manialinkManager.Object, _events.Object, locale);
     }
 
     [Theory]
@@ -115,6 +118,7 @@ public class TeamSettingsServiceTests
         );
 
         _server.Remote.Verify(m => m.SetForcedClubLinksAsync(clubLinkUrlTeam1, clubLinkUrlTeam2), Times.Once);
+        _events.Verify(m => m.RaiseAsync(TeamSettingsEvents.SettingsUpdated, It.IsAny<TeamSettingsEventArgs>()));
     }
 
     [Fact]
