@@ -23,10 +23,10 @@
     <value>Map with ID {0} could not be found.</value>
   </data>
   <data name="MapAddedSuccessfully" xml:space="preserve">
-    <value>Added {0} by $&lt;{1}$&gt; to the server.</value>
+    <value>Added $&lt;{0}$&gt; by $&lt;{1}$&gt; to the server.</value>
   </data>
   <data name="MapRemovedSuccessfully" xml:space="preserve">
-    <value>Removed {0} by $&lt;{1}$&gt; from the server.</value>
+    <value>Removed $&lt;{0}$&gt; by $&lt;{1}$&gt; from the server.</value>
   </data>
   <data name="Audit.MapAdded" xml:space="preserve">
     <value>Map was added.</value>
