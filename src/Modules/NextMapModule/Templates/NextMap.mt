@@ -27,7 +27,8 @@
                        textfont="{{ Font.Thin }}"
                        class="text-primary"
                        textsize="0.35"
-                       pos="2.0 -5.5"
+                       halign="center"
+                       pos="{{ settings.Width/2.0 }} -5.5"
                        size="{{ settings.Width/2.0 }} 5"
                 />
             </template>
