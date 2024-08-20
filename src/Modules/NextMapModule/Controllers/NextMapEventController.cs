@@ -25,7 +25,7 @@ public class NextMapEventController(
     {
         var nextMap = await nextMapService.GetNextMapAsync();
         await manialinkManager.SendManialinkAsync(Template,
-            new { mapName = nextMap.Name, author = nextMap.Author?.NickName, settings });
+            new { mapName = nextMap.Name, mapAuthor = nextMap.Author?.NickName ?? "Unknown", settings });
     }
 
     [Subscribe(GbxRemoteEvent.BeginMap)]

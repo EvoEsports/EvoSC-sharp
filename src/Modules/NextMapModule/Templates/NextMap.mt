@@ -6,30 +6,30 @@
     <import component="EvoSC.Style.UIStyle" as="UIStyle"/>
     
     <property type="INextMapSettings" name="settings" />
-    <property type="string" name="mapName" />
-    <property type="string" name="author" />
+    <property type="string" name="mapName"/>
+    <property type="string" name="mapAuthor"/>
     
     <template>
         <UIStyle/>
-        <Widget header="upcoming map" height="10" position="{{ settings.Position }}" y="{{ settings.Y }}">
+        <Widget header="upcoming map" height="9" position="{{ settings.Position }}" y="{{ settings.Y + 4.5 }}">
             <template slot="body">
-                <frame pos='{{ settings.Position=="right" ? settings.Width-2.0 : 0 }} 0'>
-                    <label text="{{ mapName }}"
-                           class="text-primary"
-                           pos="0 -3"
-                           valign="center"
-                           halign="right"
-                           size="{{ settings.Width-2 }} 5"
-                    />
-                    <label text="$<$tby {{ author }}$>"
-                           class="text-primary"
-                           textsize="0.75"
-                           pos="0 -6.5"
-                           valign="center"
-                           halign="right"
-                           size="{{ settings.Width-2 }} 5"
-                    />
-                </frame>
+                <label text="{{ mapName }}"
+                       textfont="{{ Font.Bold }}"
+                       textsize="0.75"
+                       class="text-primary"
+                       pos="{{ settings.Width/2.0 }} -2.5"
+                       halign="center"
+                       valign="center"
+                       size="{{ settings.Width-4 }} 5"
+                />
+                <label text="{{ Icons.User }} $<{{ mapAuthor.ToUpper() }}$>"
+                       textprefix="$t"
+                       textfont="{{ Font.Thin }}"
+                       class="text-primary"
+                       textsize="0.35"
+                       pos="2.0 -5.5"
+                       size="{{ settings.Width/2.0 }} 5"
+                />
             </template>
         </Widget>
     </template>
