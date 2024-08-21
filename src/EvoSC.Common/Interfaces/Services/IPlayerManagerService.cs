@@ -20,6 +20,15 @@ public interface IPlayerManagerService
     public Task<IPlayer> GetOrCreatePlayerAsync(string accountId);
     
     /// <summary>
+    /// Get a player by their account ID. If the player does not
+    /// exist in the database, create the entry.
+    /// </summary>
+    /// <param name="accountId">Account ID of the player.</param>
+    /// <param name="name">Name of the new player if created.</param>
+    /// <returns></returns>
+    public Task<IPlayer> GetOrCreatePlayerAsync(string accountId, string? name);
+    
+    /// <summary>
     /// Create a new entry for a player in the database.
     /// </summary>
     /// <param name="accountId">Account ID of the player.</param>
