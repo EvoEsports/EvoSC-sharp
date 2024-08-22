@@ -44,7 +44,7 @@
     <value>{0} Available modes: $fff{1}</value>
   </data>
   <data name="LoadedMatchSettings" xml:space="preserve">
-    <value>{0} loaded match settings: {1}</value>
+    <value>$&lt;{0}$&gt; loaded match settings: {1}</value>
   </data>
   <data name="CannotFindMatchSettings" xml:space="preserve">
     <value>Cannot find MatchSettings named '{0}'.</value>

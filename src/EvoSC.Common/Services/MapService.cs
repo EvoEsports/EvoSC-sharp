@@ -6,6 +6,10 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
+using GbxRemoteNet;
+using GbxRemoteNet.Interfaces;
+using GbxRemoteNet.Structs;
+using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
@@ -85,9 +89,9 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
 
     public async Task AddCurrentMapListAsync()
     {
-        var serverMapList = await serverClient.Remote.GetMapListAsync(-1, 0);
+        var maplist = await GetRemoteMapListAsync();
 
-        foreach (var serverMap in serverMapList)
+        foreach (var serverMap in maplist)
         {
             try
             {
@@ -97,9 +101,9 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
                 {
                     continue;
                 }
-
+                
                 var authorAccountId = PlayerUtils.ConvertLoginToAccountId(serverMap.Author);
-                var author = await playerService.GetOrCreatePlayerAsync(authorAccountId);
+                var author = await playerService.GetOrCreatePlayerAsync(authorAccountId, serverMap.AuthorNickname);
 
                 var mapMeta = new MapMetadata
                 {
@@ -115,7 +119,7 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
                 logger.LogDebug("Adding map {Name} ({Uid}) to the database", serverMap.Name, serverMap.UId);
                 var map = await mapRepository.AddMapAsync(mapMeta, author, serverMap.FileName);
 
-                var mapDetails = await FetchMapDetailsAsync(map);
+                var mapDetails = new ParsedMap(serverMap, map);
                 await mapRepository.AddMapDetailsAsync(mapDetails, map);
             }
             catch (Exception ex)
@@ -137,8 +141,8 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
             return map;
         }
 
-        var mapAuthor =
-            await playerService.GetOrCreatePlayerAsync(PlayerUtils.ConvertLoginToAccountId(currentMap.Author));
+        var authorAccountId = PlayerUtils.ConvertLoginToAccountId(currentMap.Author);
+        var mapAuthor = await playerService.GetOrCreatePlayerAsync(authorAccountId, currentMap.AuthorNickname);
 
         var mapMeta = new MapMetadata
         {
@@ -234,5 +238,55 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
             logger.LogWarning(e, "Failed saving the map file to storage");
             throw;
         }
+    }
+    
+    private async Task<List<TmMapInfo>> GetRemoteMapListAsync()
+    {
+        var serverMapList = await serverClient.Remote.GetMapListAsync(-1, 0);
+        var calls = new List<MultiCall>();
+        
+        // server can have more maps than calls allowed in a multicall, so split it up
+        for (var i = 0; i < serverMapList.Length; i++)
+        {
+            if (i % 20 == 0)
+            {
+                calls.Add(new MultiCall());
+            }
+            
+            calls.Last().Add("GetMapInfo", serverMapList[i].FileName);
+        }
+
+        var maplist = new List<TmMapInfo>();
+        
+        foreach (var call in calls)
+        {
+            var mapsWithDetails = await serverClient.Remote.MultiCallAsync(call);
+            
+            foreach (GbxDynamicObject serverMap in mapsWithDetails)
+            {
+                maplist.Add(new TmMapInfo
+                {
+                    UId = (string)serverMap["UId"],
+                    Name = (string)serverMap["Name"],
+                    FileName = (string)serverMap["FileName"],
+                    Author = (string)serverMap["Author"],
+                    AuthorNickname = (string)serverMap["AuthorNickname"],
+                    Environnement = (string)serverMap["Environnement"],
+                    Mood = (string)serverMap["Mood"],
+                    BronzeTime = (int)serverMap["BronzeTime"],
+                    SilverTime = (int)serverMap["SilverTime"],
+                    GoldTime = (int)serverMap["GoldTime"],
+                    AuthorTime = (int)serverMap["AuthorTime"],
+                    CopperPrice = (int)serverMap["CopperPrice"],
+                    LapRace = (bool)serverMap["LapRace"],
+                    NbLaps = (int)serverMap["NbLaps"],
+                    NbCheckpoints = (int)serverMap["NbCheckpoints"],
+                    MapType = (string)serverMap["MapType"],
+                    MapStyle = (string)serverMap["MapStyle"]
+                });
+            }
+        }
+
+        return maplist;
     }
 }
