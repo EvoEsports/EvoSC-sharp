@@ -25,12 +25,12 @@ public class CurrentMapService(
     public async Task ShowWidgetAsync()
     {
         var map = await client.Remote.GetCurrentMapInfoAsync();
-        await ShowManialinkAsync(map.UId);
+        await ShowManialinkAsync(map.UId, map.AuthorTime);
     }
 
     public async Task ShowWidgetAsync(MapGbxEventArgs args)
     {
-        await ShowManialinkAsync(args.Map.Uid);
+        await ShowManialinkAsync(args.Map.Uid, args.Map.AuthorTime);
     }
 
     public async Task HideWidgetAsync()
@@ -39,7 +39,7 @@ public class CurrentMapService(
         logger.LogDebug("Hiding current map widget");
     }
 
-    private async Task ShowManialinkAsync(string mapUId)
+    private async Task ShowManialinkAsync(string mapUId, int authorTime)
     {
         var dbMap = await mapRepository.GetMapByUidAsync(mapUId);
 
@@ -48,16 +48,19 @@ public class CurrentMapService(
             return;
         }
 
-        var author = dbMap.Author?.NickName;
+        var authorNickName = dbMap.Author?.NickName ?? "Unknown";
 
-        if (dbMap.Author?.NickName == dbMap.Author?.AccountId)
+        if (authorNickName == dbMap.Author?.AccountId)
         {
             var serverMap = await client.Remote.GetCurrentMapInfoAsync();
-            author = serverMap.AuthorNickname.Length > 0 ? serverMap.AuthorNickname : serverMap.Author;
+            authorNickName = serverMap.AuthorNickname.Length > 0 ? serverMap.AuthorNickname : serverMap.Author;
         }
 
+        logger.LogDebug("Current map {mapName} by {author} ({authorTime}).", dbMap.Name, authorNickName, authorTime);
+        
         await manialinkManager.SendPersistentManialinkAsync("CurrentMapModule.CurrentMapWidget",
-            new { map = dbMap, mapAuthor = author, settings });
+            new { map = dbMap, mapAuthor = authorNickName, authorTime, settings });
+        
         logger.LogDebug("Showing current map widget");
     }
 }
