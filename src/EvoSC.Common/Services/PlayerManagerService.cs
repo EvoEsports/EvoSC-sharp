@@ -16,7 +16,9 @@ public class PlayerManagerService(IPlayerRepository playerRepository, IPlayerCac
     public async Task<IPlayer?> GetPlayerAsync(string accountId) =>
         await playerRepository.GetPlayerByAccountIdAsync(accountId);
 
-    public async Task<IPlayer> GetOrCreatePlayerAsync(string accountId)
+    public Task<IPlayer> GetOrCreatePlayerAsync(string accountId) => GetOrCreatePlayerAsync(accountId, null);
+    
+    public async Task<IPlayer> GetOrCreatePlayerAsync(string accountId, string? name)
     {
         try
         {
@@ -34,7 +36,7 @@ public class PlayerManagerService(IPlayerRepository playerRepository, IPlayerCac
                 accountId);
         }
 
-        return await CreatePlayerAsync(accountId);
+        return await CreatePlayerAsync(accountId, name);
     }
 
     public Task<IPlayer> CreatePlayerAsync(string accountId) => CreatePlayerAsync(accountId, null);
