@@ -14,8 +14,10 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Services;
 using EvoSC.Testing;
+using GbxRemoteNet;
 using GbxRemoteNet.Interfaces;
 using GbxRemoteNet.Structs;
+using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -370,6 +372,7 @@ public class MapServiceTests
         {
             Name = "snippens dream",
             Author = "0efeba8a-9cda-49fa-ab25-35f1d9218c95",
+            AuthorNickname = "snippen",
             AuthorTime = 1337,
             BronzeTime = 1337,
             CopperPrice = 1337,
@@ -388,10 +391,32 @@ public class MapServiceTests
             UpdatedAt = new DateTime(),
             LastVisit = new DateTime()
         };
-
         _server.Remote.Setup(r => r.GetMapListAsync(It.IsAny<int>(), It.IsAny<int>()))
             .Returns(Task.FromResult(new[] { tmMapInfo }));
-        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>()))
+        _server.Remote.Setup(r => r.MultiCallAsync(It.IsAny<MultiCall>()))
+            .ReturnsAsync([
+                new GbxDynamicObject()
+                {
+                    { "UId", tmMapInfo.UId },
+                    { "Name", tmMapInfo.Name },
+                    { "FileName", tmMapInfo.FileName },
+                    { "Author", tmMapInfo.Author },
+                    { "AuthorNickname", tmMapInfo.AuthorNickname },
+                    { "Environnement", tmMapInfo.Environnement },
+                    { "Mood", tmMapInfo.Mood },
+                    { "BronzeTime", tmMapInfo.BronzeTime },
+                    { "SilverTime", tmMapInfo.SilverTime },
+                    { "GoldTime", tmMapInfo.GoldTime },
+                    { "AuthorTime", tmMapInfo.AuthorTime },
+                    { "CopperPrice", tmMapInfo.CopperPrice },
+                    { "LapRace", tmMapInfo.LapRace },
+                    { "NbLaps", tmMapInfo.NbLaps },
+                    { "NbCheckpoints", tmMapInfo.NbCheckpoints },
+                    { "MapType", tmMapInfo.MapType },
+                    { "MapStyle", tmMapInfo.MapStyle }
+                }
+            ]);
+        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>(), "snippen"))
             .Returns(Task.FromResult((IPlayer)player));
 
         await _mapService.AddCurrentMapListAsync();
@@ -407,6 +432,7 @@ public class MapServiceTests
         {
             Name = "snippens track",
             Author = "0efeba8a-9cda-49fa-ab25-35f1d9218c95",
+            AuthorNickname = "snippen",
             AuthorTime = 1337,
             BronzeTime = 1337,
             CopperPrice = 1337,
@@ -452,7 +478,7 @@ public class MapServiceTests
             .Returns(Task.FromResult((IMap?)null));
         _mapRepository.Setup(m => m.AddMapAsync(It.IsAny<MapMetadata>(), It.IsAny<IPlayer>(), It.IsAny<string>()))
             .Returns(Task.FromResult((IMap)map));
-        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>()))
+        _playerService.Setup(p => p.GetOrCreatePlayerAsync(It.IsAny<string>(), "snippen"))
             .Returns(Task.FromResult((IPlayer)player));
 
         var retrievedMap = await _mapService.GetOrAddCurrentMapAsync();
