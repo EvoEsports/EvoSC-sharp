@@ -4,8 +4,8 @@ using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using GbxRemoteNet.Events;
-using SpectatorTargetInfo.Interfaces;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Controllers;
 

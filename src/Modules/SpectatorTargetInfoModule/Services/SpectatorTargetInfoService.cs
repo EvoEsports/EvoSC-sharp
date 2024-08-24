@@ -5,24 +5,30 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
-using SpectatorTargetInfo.Interfaces;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule.Config;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class SpectatorTargetInfoService
-    (IManialinkManager manialinks, IServerClient server, IPlayerManagerService playerManagerService) : ISpectatorTargetInfoService
+    (IManialinkManager manialinks, IServerClient server, IPlayerManagerService playerManagerService, ISpectatorTargetInfoSettings settings) : ISpectatorTargetInfoService
 {
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
     public async Task SendManiaLinkAsync() =>
-        await manialinks.SendManialinkAsync(WidgetTemplate);
+        await manialinks.SendManialinkAsync(WidgetTemplate, new
+        {
+            settings
+        });
 
 
     public async Task SendManiaLinkAsync(string playerLogin)
     {
-        var player = await playerManagerService.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin));
-        await manialinks.SendManialinkAsync(player, WidgetTemplate);
+        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate, new
+        {
+            settings
+        });
     }
 
     public async Task HideManiaLinkAsync() =>
@@ -95,5 +101,10 @@ public class SpectatorTargetInfoService
             time = 0,
             cpIndex = -1
         });
+    }
+
+    public async Task AddFakePlayerAsync()
+    {
+        await server.Remote.ConnectFakePlayerAsync();
     }
 }

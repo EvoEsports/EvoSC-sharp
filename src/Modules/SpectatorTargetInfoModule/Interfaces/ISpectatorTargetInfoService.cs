@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Remote.EventArgsModels;
 
-namespace SpectatorTargetInfo.Interfaces;
+namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 
 public interface ISpectatorTargetInfoService
 {
@@ -43,4 +43,6 @@ public interface ISpectatorTargetInfoService
     /// Sends players DNF to clients.
     /// </summary>
     public Task ForwardDnfToClientsAsync(PlayerUpdateEventArgs playerUpdateEventArgs);
+
+    public Task AddFakePlayerAsync();
 }

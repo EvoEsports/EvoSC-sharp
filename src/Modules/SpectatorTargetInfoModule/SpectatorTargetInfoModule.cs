@@ -1,6 +1,6 @@
 ﻿using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
-using SpectatorTargetInfo.Interfaces;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule;
 
