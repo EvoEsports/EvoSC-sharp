@@ -10,22 +10,54 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Controllers;
 
 [Controller]
-public class SpectatorTargetInfoEventController
-    (ISpectatorTargetInfoService spectatorTargetInfoService) : EvoScController<EventControllerContext>
+public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spectatorTargetInfoService)
+    : EvoScController<EventControllerContext>
 {
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args) =>
-        spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
+    // [Subscribe(ModeScriptEvent.GiveUp)]
+    // public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs playerUpdateEventArgs) =>
+    //     spectatorTargetInfoService.ForwardDnfToClientsAsync(playerUpdateEventArgs);
 
+    /**
+     *
+     */
+    
+    [Subscribe(GbxRemoteEvent.PlayerConnect)]
+    public async Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args)
+    {
+        if (!args.IsSpectator)
+        {
+            return;
+        }
+
+        await spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
+    }
     [Subscribe(ModeScriptEvent.WayPoint)]
-    public Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs) =>
-        spectatorTargetInfoService.ForwardCheckpointTimeToClientsAsync(wayPointEventArgs);
+    public async Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs)
+    {
+        await spectatorTargetInfoService.AddCheckpointAsync(
+            wayPointEventArgs.Login,
+            wayPointEventArgs.CheckpointInLap,
+            wayPointEventArgs.LapTime
+        );
+    }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs) =>
-        spectatorTargetInfoService.ResetCheckpointTimesAsync();
+        spectatorTargetInfoService.ClearCheckpointsAsync();
 
-    [Subscribe(ModeScriptEvent.GiveUp)]
-    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs playerUpdateEventArgs) =>
-        spectatorTargetInfoService.ForwardDnfToClientsAsync(playerUpdateEventArgs);
+    [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
+    public async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedGbxEventArgs eventArgs)
+    {
+        var spectatorInfo = spectatorTargetInfoService.ParseSpectatorStatus(eventArgs.PlayerInfo.SpectatorStatus);
+        var spectatorLogin = eventArgs.PlayerInfo.Login;
+
+        if (spectatorInfo.IsSpectator)
+        {
+            await spectatorTargetInfoService.UpdateSpectatorTargetAsync(spectatorLogin, spectatorInfo.TargetPlayerId);
+        }
+        else
+        {
+            await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatorLogin);
+        }
+    }
 }

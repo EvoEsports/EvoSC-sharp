@@ -8,10 +8,10 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule;
 public class SpectatorTargetInfoModule(ISpectatorTargetInfoService spectatorTargetInfoService) : EvoScModule,
     IToggleable
 {
-    public Task EnableAsync()
+    public async Task EnableAsync()
     {
-        spectatorTargetInfoService.HideNadeoSpectatorInfoAsync();
-        return spectatorTargetInfoService.SendManiaLinkAsync();
+        await spectatorTargetInfoService.HideNadeoSpectatorInfoAsync();
+        // return spectatorTargetInfoService.SendManiaLinkAsync();
     }
 
     public Task DisableAsync() => spectatorTargetInfoService.ShowNadeoSpectatorInfoAsync();

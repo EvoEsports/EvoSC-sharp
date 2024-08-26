@@ -8,11 +8,12 @@ using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Events;
 using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Controllers;
 
 [Controller]
-public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScController<IEventControllerContext>
+public class TeamInfoEventController(ITeamInfoService teamInfoService, ILogger<TeamInfoEventController> logger) : EvoScController<IEventControllerContext>
 {
     [Subscribe(ModeScriptEvent.Scores)]
     public async Task OnScoresAsync(object sender, ScoresEventArgs eventArgs)
@@ -35,6 +36,17 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
         if (!isTeamsModeActive)
         {
             await teamInfoService.SetModeIsTeamsAsync(true);
+        }
+
+        var team1 = eventArgs.Teams.ToList()[0];
+        if (team1 != null)
+        {
+            logger.LogInformation("[TEAM 1] Match: {matchPoints} Map: {mapPoints}", team1.MatchPoints, team1.MapPoints);
+        }
+        var team2 = eventArgs.Teams.ToList()[1];
+        if (team2 != null)
+        {
+            logger.LogInformation("[TEAM 2] Match: {matchPoints} Map: {mapPoints}", team2.MatchPoints, team2.MapPoints);
         }
 
         if (teamInfoService.ShouldUpdateTeamPoints(eventArgs.Section))
