@@ -84,6 +84,19 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
 
         await server.SuccessMessageAsync(Context.Player, $"Round points for team {playerTeam} was set to {points}.");
     }
+
+    [ChatCommand("setteampoints", "Set the round, map and match points of a team.", MatchControlPermissions.SetTeamPoints)]
+    public async Task SetPointsAsync(int team, int points)
+    {
+        var playerTeam = team == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2;
+        await matchControl.SetTeamPointsAsync(playerTeam, points);
+
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.TeamPointsSet)
+            .HavingProperties(new { Points = points, Team = playerTeam });
+
+        await server.SuccessMessageAsync(Context.Player, $"Points for team {playerTeam} was set to {points}.");
+    }
     
     [ChatCommand("setteammappoints", "Set the map points of a team.", MatchControlPermissions.SetTeamPoints)]
     public async Task SetMapPointsAsync(int team, int points)
