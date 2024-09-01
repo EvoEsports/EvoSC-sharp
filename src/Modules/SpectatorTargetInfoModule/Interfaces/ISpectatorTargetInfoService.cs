@@ -13,8 +13,6 @@ public interface ISpectatorTargetInfoService
 
     public Task<string?> GetLoginOfDedicatedPlayerAsync(int targetPlayerIdDedicated);
 
-    public Task UpdateSpectatorTargetAsync(string spectatorLogin, int targetPlayerIdDedicated);
-
     public Task SetSpectatorTargetLoginAsync(string spectatorLogin, string targetLogin);
 
     public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin);

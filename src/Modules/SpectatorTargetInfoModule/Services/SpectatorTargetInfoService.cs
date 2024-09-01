@@ -9,6 +9,7 @@ using EvoSC.Modules.Official.SpectatorTargetInfoModule.Config;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
 using LinqToDB.Common;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;
 
@@ -17,8 +18,8 @@ public class SpectatorTargetInfoService(
     IManialinkManager manialinks,
     IServerClient server,
     IPlayerManagerService playerManagerService,
-    ISpectatorTargetInfoSettings settings
-) : ISpectatorTargetInfoService
+    ISpectatorTargetInfoSettings settings,
+    ILogger<SpectatorTargetInfoService> logger) : ISpectatorTargetInfoService
 {
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
@@ -80,45 +81,42 @@ public class SpectatorTargetInfoService(
             .FirstOrDefault();
     }
 
-    public async Task UpdateSpectatorTargetAsync(string spectatorLogin, int targetPlayerIdDedicated)
+    public async Task SetSpectatorTargetLoginAsync(string spectatorLogin, string targetLogin)
     {
-        var targetLogin = await GetLoginOfDedicatedPlayerAsync(targetPlayerIdDedicated);
-
-        if (targetLogin == null)
+        if (_spectatorTargets.TryGetValue(spectatorLogin, out var target) && target.GetLogin() == targetLogin)
         {
-            await RemovePlayerFromSpectatorsListAsync(spectatorLogin);
             return;
         }
 
-        await SetSpectatorTargetLoginAsync(spectatorLogin, targetLogin);
-    }
-
-    public async Task SetSpectatorTargetLoginAsync(string spectatorLogin, string targetLogin)
-    {
         var targetPlayer = await GetOnlinePlayerByLoginAsync(targetLogin);
         _spectatorTargets[spectatorLogin] = targetPlayer;
 
         var checkpointIndex = GetLastCheckpointIndexOfPlayer(targetLogin);
-        if (!_checkpointTimes.ContainsKey(checkpointIndex))
+        var targetRank = 0;
+        var timeDifference = 0;
+
+        if (_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointsGroup))
         {
-            //TODO: error?
-            return;
+            var leadingCpData = checkpointsGroup.First();
+            var targetCpData = checkpointsGroup.GetPlayer(targetLogin);
+            targetRank = checkpointsGroup.GetRank(targetLogin);
+            timeDifference = GetTimeDifference(leadingCpData, targetCpData!);
         }
 
-        var checkpointsGroup = _checkpointTimes[checkpointIndex];
-        var leadingCpData = checkpointsGroup.First();
-        var targetCpData = checkpointsGroup.GetPlayer(targetLogin);
-        var targetRank = checkpointsGroup.GetRank(targetLogin);
-        var timeDifference = GetTimeDifference(leadingCpData, targetCpData!);
-
         await SendWidgetAsync(spectatorLogin, targetPlayer, targetRank, timeDifference);
+
+        logger.LogDebug("Updated spectator target {spectatorLogin} -> {targetLogin}.", spectatorLogin,
+            targetLogin);
     }
 
-    public async Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin)
+    public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin)
     {
-        _spectatorTargets.Remove(spectatorLogin);
+        if (_spectatorTargets.Remove(spectatorLogin))
+        {
+            logger.LogDebug("Removed spectator {spectatorLogin}.", spectatorLogin);
+        }
 
-        await HideWidgetAsync(spectatorLogin);
+        return Task.CompletedTask;
     }
 
     public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(string targetPlayerLogin)

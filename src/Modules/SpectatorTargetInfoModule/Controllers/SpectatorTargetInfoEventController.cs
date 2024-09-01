@@ -6,11 +6,14 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Controllers;
 
 [Controller]
-public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spectatorTargetInfoService)
+public class SpectatorTargetInfoEventController(
+    ISpectatorTargetInfoService spectatorTargetInfoService,
+    ILogger<SpectatorTargetInfoEventController> logger)
     : EvoScController<EventControllerContext>
 {
     // [Subscribe(ModeScriptEvent.GiveUp)]
@@ -31,7 +34,10 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
     //     //TODO: do nothing?
     //     // await spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
     // }
-    
+    [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
+    public Task OnPlayerDisconnect(object sender, PlayerGbxEventArgs eventArgs) =>
+        spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(eventArgs.Login);
+
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs) =>
         spectatorTargetInfoService.AddCheckpointAsync(
@@ -59,11 +65,16 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
 
         if (spectatorInfo.IsSpectator)
         {
-            await spectatorTargetInfoService.UpdateSpectatorTargetAsync(spectatorLogin, spectatorInfo.TargetPlayerId);
+            var targetLogin =
+                await spectatorTargetInfoService.GetLoginOfDedicatedPlayerAsync(spectatorInfo.TargetPlayerId);
+            if (targetLogin != null)
+            {
+                await spectatorTargetInfoService.SetSpectatorTargetLoginAsync(spectatorLogin, targetLogin);
+                return;
+            }
         }
-        else
-        {
-            await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatorLogin);
-        }
+
+        await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatorLogin);
+        await spectatorTargetInfoService.HideWidgetAsync(spectatorLogin);
     }
 }
