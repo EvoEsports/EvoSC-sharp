@@ -18,9 +18,13 @@ public interface ISpectatorTargetInfoService
     public Task<string?> GetLoginOfDedicatedPlayerAsync(int targetPlayerIdDedicated);
     
     public Task UpdateSpectatorTargetAsync(string spectatorLogin, int targetPlayerIdDedicated);
+   
+    public Task UpdateSpectatorTargetAsync(string spectatorLogin, string targetLogin);
     
     public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin);
 
+    public IEnumerable<string> GetLoginsSpectatingTarget(string targetPlayerLogin);
+    
     public Task UpdateWidgetAsync(List<string> playerLogins, CheckpointData leadingCheckpointData, CheckpointData targetCheckpointData, int targetPlayerRank);
     
     public SpectatorInfo ParseSpectatorStatus(int spectatorStatus);
