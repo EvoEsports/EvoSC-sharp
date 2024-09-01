@@ -20,40 +20,36 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
     /**
      *
      */
-    
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args)
-    {
-        if (!args.IsSpectator)
-        {
-            return;
-        }
-
-        //TODO: get spectator target
-        //TODO: show widget
-        
-        // await spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
-    }
+    // [Subscribe(GbxRemoteEvent.PlayerConnect)]
+    // public async Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args)
+    // {
+    //     if (!args.IsSpectator)
+    //     {
+    //         return;
+    //     }
+    //
+    //     //TODO: do nothing?
+    //     // await spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
+    // }
     
     [Subscribe(ModeScriptEvent.WayPoint)]
-    public async Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs)
-    {
-        await spectatorTargetInfoService.AddCheckpointAsync(
+    public Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs) =>
+        spectatorTargetInfoService.AddCheckpointAsync(
             wayPointEventArgs.Login,
             wayPointEventArgs.CheckpointInLap,
             wayPointEventArgs.LapTime
         );
-        
-        //TODO: get players spectating
-        //TODO: send widget to spectating players
-    }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs)
     {
         await spectatorTargetInfoService.ClearCheckpointsAsync();
-        //TODO: update widgets for all spectating players
+        await spectatorTargetInfoService.ResetWidgetForSpectatorsAsync();
     }
+
+    [Subscribe(ModeScriptEvent.PodiumStart)]
+    public Task OnPodiumStartAsync() =>
+        spectatorTargetInfoService.HideWidgetAsync();
 
     [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
     public async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedGbxEventArgs eventArgs)

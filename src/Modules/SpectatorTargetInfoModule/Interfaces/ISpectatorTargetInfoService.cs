@@ -31,6 +31,8 @@ public interface ISpectatorTargetInfoService
 
     public Dictionary<int, CheckpointsGroup> GetCheckpointTimes();
 
+    public Task ResetWidgetForSpectatorsAsync();
+
     public Task SendWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
 
     public Task SendWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);

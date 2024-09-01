@@ -22,8 +22,8 @@ public class SpectatorTargetInfoService(
 {
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
-    private readonly Dictionary<int, CheckpointsGroup> _checkpointTimes = new(); // cp-id -> data
-    private readonly Dictionary<string, string> _spectatorTargets = new(); // login -> login
+    private readonly Dictionary<int, CheckpointsGroup> _checkpointTimes = new(); // cp-id -> CheckpointsGroup
+    private readonly Dictionary<string, IOnlinePlayer> _spectatorTargets = new(); // login -> IOnlinePlayer
 
     /*
      * Spectator select new target -> update widget for them
@@ -40,16 +40,17 @@ public class SpectatorTargetInfoService(
     {
         var player = await GetOnlinePlayerByLoginAsync(playerLogin);
         var newCheckpointData = new CheckpointData(player, checkpointTime);
-        
+
         if (!_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointGroup))
         {
             checkpointGroup = [];
             _checkpointTimes.Add(checkpointIndex, checkpointGroup);
         }
+
         checkpointGroup.Add(newCheckpointData);
         checkpointGroup = checkpointGroup.ToSortedGroup();
         _checkpointTimes[checkpointIndex] = checkpointGroup;
-        
+
         var playerLogins = GetLoginsOfPlayersSpectatingTarget(playerLogin).ToList();
         if (playerLogins.IsNullOrEmpty())
         {
@@ -94,7 +95,8 @@ public class SpectatorTargetInfoService(
 
     public async Task SetSpectatorTargetLoginAsync(string spectatorLogin, string targetLogin)
     {
-        _spectatorTargets[spectatorLogin] = targetLogin;
+        var targetPlayer = await GetOnlinePlayerByLoginAsync(targetLogin);
+        _spectatorTargets[spectatorLogin] = targetPlayer;
 
         var checkpointIndex = GetLastCheckpointIndexOfPlayer(targetLogin);
         if (!_checkpointTimes.ContainsKey(checkpointIndex))
@@ -103,7 +105,6 @@ public class SpectatorTargetInfoService(
             return;
         }
 
-        var targetPlayer = await GetOnlinePlayerByLoginAsync(targetLogin);
         var checkpointsGroup = _checkpointTimes[checkpointIndex];
         var leadingCpData = checkpointsGroup.First();
         var targetCpData = checkpointsGroup.GetPlayer(targetLogin);
@@ -122,7 +123,7 @@ public class SpectatorTargetInfoService(
 
     public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(string targetPlayerLogin)
     {
-        return _spectatorTargets.Where(specTarget => specTarget.Value == targetPlayerLogin)
+        return _spectatorTargets.Where(specTarget => specTarget.Value.GetLogin() == targetPlayerLogin)
             .Select(specTarget => specTarget.Key);
     }
 
@@ -163,6 +164,14 @@ public class SpectatorTargetInfoService(
     public Dictionary<int, CheckpointsGroup> GetCheckpointTimes()
     {
         return _checkpointTimes;
+    }
+
+    public async Task ResetWidgetForSpectatorsAsync()
+    {
+        foreach (var (spectatorLogin, targetPlayer) in _spectatorTargets)
+        {
+            await SendWidgetAsync(spectatorLogin, targetPlayer, 1, 0);
+        }
     }
 
     public async Task SendWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer,
