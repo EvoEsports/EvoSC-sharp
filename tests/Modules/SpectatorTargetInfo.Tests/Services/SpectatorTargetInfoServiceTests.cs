@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Database.Models.Player;
-using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Players;
@@ -49,7 +47,7 @@ public class SpectatorTargetInfoServiceTests
         await spectatorTargetService.AddCheckpointAsync("*fakeplayer3*", 2, 1000);
         await spectatorTargetService.AddCheckpointAsync("*fakeplayer4*", 1, 1000);
 
-        var cpTimes = await spectatorTargetService.GetCheckpointTimesAsync();
+        var cpTimes = spectatorTargetService.GetCheckpointTimes();
         Assert.Equal(2, cpTimes.Count);
         Assert.Single(cpTimes[1]);
         Assert.Equal(1000, cpTimes[1][0].time);
@@ -59,7 +57,7 @@ public class SpectatorTargetInfoServiceTests
         Assert.Equal(1400, cpTimes[2][2].time);
 
         await spectatorTargetService.ClearCheckpointsAsync();
-        Assert.Empty(await spectatorTargetService.GetCheckpointTimesAsync());
+        Assert.Empty(spectatorTargetService.GetCheckpointTimes());
     }
 
     [Fact]
@@ -84,11 +82,11 @@ public class SpectatorTargetInfoServiceTests
                 new TmPlayerInfo { PlayerId = 22, Login = "UnitTest" }
             ]);
 
-        await spectatorTargetService.UpdateSpectatorTargetAsync("player1", 22);
-        var spectatorOfPlayer = spectatorTargetService.GetLoginsSpectatingTarget("UnitTest").ToList();
+        await spectatorTargetService.UpdateSpectatorTargetAsync("*fakeplayer1*", 22);
+        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("UnitTest").ToList();
 
         Assert.Single(spectatorOfPlayer);
-        Assert.Contains("player1", spectatorOfPlayer);
+        Assert.Contains("*fakeplayer1*", spectatorOfPlayer);
     }
 
     [Fact]
@@ -96,12 +94,12 @@ public class SpectatorTargetInfoServiceTests
     {
         var spectatorTargetService = ServiceMock();
 
-        await spectatorTargetService.UpdateSpectatorTargetAsync("player1", "UnitTest");
-        await spectatorTargetService.UpdateSpectatorTargetAsync("player1", 1111);
-        var spectatorOfPlayer = spectatorTargetService.GetLoginsSpectatingTarget("UnitTest").ToList();
+        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "UnitTest");
+        await spectatorTargetService.UpdateSpectatorTargetAsync("*fakeplayer1*", 1111);
+        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("UnitTest").ToList();
 
         Assert.Empty(spectatorOfPlayer);
-        Assert.DoesNotContain("player1", spectatorOfPlayer);
+        Assert.DoesNotContain("*fakeplayer1*", spectatorOfPlayer);
     }
 
     [Fact]
@@ -109,16 +107,16 @@ public class SpectatorTargetInfoServiceTests
     {
         var spectatorTargetService = ServiceMock();
 
-        await spectatorTargetService.UpdateSpectatorTargetAsync("player1", "player10");
-        await spectatorTargetService.UpdateSpectatorTargetAsync("player2", "player10");
-        await spectatorTargetService.UpdateSpectatorTargetAsync("player3", "player20");
+        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "*fakeplayer10*");
+        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer2*", "*fakeplayer10*");
+        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer3*", "*fakeplayer20*");
 
-        var spectatorOfPlayer = spectatorTargetService.GetLoginsSpectatingTarget("player10").ToList();
+        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("*fakeplayer10*").ToList();
 
         Assert.Equal(2, spectatorOfPlayer.Count);
-        Assert.Contains("player1", spectatorOfPlayer);
-        Assert.Contains("player2", spectatorOfPlayer);
-        Assert.DoesNotContain("player3", spectatorOfPlayer);
+        Assert.Contains("*fakeplayer1*", spectatorOfPlayer);
+        Assert.Contains("*fakeplayer2*", spectatorOfPlayer);
+        Assert.DoesNotContain("*fakeplayer3*", spectatorOfPlayer);
     }
 
     [Theory]
@@ -138,8 +136,7 @@ public class SpectatorTargetInfoServiceTests
     [Fact]
     public Task Gets_Rank_From_Sorted_Checkpoints_List()
     {
-        var spectatorTargetService = ServiceMock();
-        var checkpointsList = new List<CheckpointData>
+        var checkpointsList = new CheckpointsGroup
         {
             new(
                 new OnlinePlayer
@@ -167,10 +164,10 @@ public class SpectatorTargetInfoServiceTests
             ),
         };
 
-        Assert.Equal(1, spectatorTargetService.GetRankFromCheckpointList(checkpointsList, "*fakeplayer1*"));
-        Assert.Equal(2, spectatorTargetService.GetRankFromCheckpointList(checkpointsList, "*fakeplayer2*"));
-        Assert.Equal(3, spectatorTargetService.GetRankFromCheckpointList(checkpointsList, "*fakeplayer4*"));
-        Assert.Equal(4, spectatorTargetService.GetRankFromCheckpointList(checkpointsList, "*fakeplayer3*"));
+        Assert.Equal(1, checkpointsList.GetRank("*fakeplayer1*"));
+        Assert.Equal(2, checkpointsList.GetRank("*fakeplayer2*"));
+        Assert.Equal(3, checkpointsList.GetRank("*fakeplayer4*"));
+        Assert.Equal(4, checkpointsList.GetRank("*fakeplayer3*"));
 
         return Task.CompletedTask;
     }

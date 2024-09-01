@@ -5,14 +5,13 @@ using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule;
 
 [Module(IsInternal = true)]
-public class SpectatorTargetInfoModule(ISpectatorTargetInfoService spectatorTargetInfoService) : EvoScModule,
-    IToggleable
+public class SpectatorTargetInfoModule(ISpectatorTargetInfoService spectatorTargetInfoService) : EvoScModule
 {
-    public async Task EnableAsync()
-    {
-        await spectatorTargetInfoService.HideNadeoSpectatorInfoAsync();
-        // return spectatorTargetInfoService.SendManiaLinkAsync();
-    }
+    // public async Task EnableAsync()
+    // {
+    //     await spectatorTargetInfoService.HideNadeoSpectatorInfoAsync();
+    //     return spectatorTargetInfoService.SendManiaLinkAsync();
+    // }
 
-    public Task DisableAsync() => spectatorTargetInfoService.ShowNadeoSpectatorInfoAsync();
+    // public Task DisableAsync() => spectatorTargetInfoService.ShowNadeoSpectatorInfoAsync();
 }

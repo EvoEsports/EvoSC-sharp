@@ -29,8 +29,12 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
             return;
         }
 
-        await spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
+        //TODO: get spectator target
+        //TODO: show widget
+        
+        // await spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
     }
+    
     [Subscribe(ModeScriptEvent.WayPoint)]
     public async Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs)
     {
@@ -39,11 +43,17 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
             wayPointEventArgs.CheckpointInLap,
             wayPointEventArgs.LapTime
         );
+        
+        //TODO: get players spectating
+        //TODO: send widget to spectating players
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs) =>
-        spectatorTargetInfoService.ClearCheckpointsAsync();
+    public async Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs)
+    {
+        await spectatorTargetInfoService.ClearCheckpointsAsync();
+        //TODO: update widgets for all spectating players
+    }
 
     [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
     public async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedGbxEventArgs eventArgs)
