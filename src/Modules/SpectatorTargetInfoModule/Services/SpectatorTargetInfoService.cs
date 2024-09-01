@@ -28,33 +28,22 @@ public class SpectatorTargetInfoService(
     {
         var player = await playerManagerService.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin));
 
-        if (!_checkpointTimes.ContainsKey(checkpointIndex))
+        if (!_checkpointTimes.TryGetValue(checkpointIndex, out var value))
         {
-            _checkpointTimes.Add(checkpointIndex, []);
+            value = [];
+            _checkpointTimes.Add(checkpointIndex, value);
         }
 
-        var newCheckpointData = new CheckpointData(player, checkpointTime);
+        value.Add(new CheckpointData(player, checkpointTime));
+        _checkpointTimes[checkpointIndex] = value.OrderBy(cpData => cpData.time).ToList();
 
-        _checkpointTimes[checkpointIndex].Add(newCheckpointData);
-        _checkpointTimes[checkpointIndex] = _checkpointTimes[checkpointIndex].OrderBy(cpData => cpData.time).ToList();
-
-        // var spectatorLoginsWatchingPlayer = _spectatorTargets.Where(x => x.Value == playerLogin)
-        //     .Select(x => x.Key)
-        //     .ToList();
-        //
-        // if (spectatorLoginsWatchingPlayer.IsNullOrEmpty())
-        // {
-        //     return;
-        // }
-
-        var spectatorLoginsWatchingPlayer = new List<string> { playerLogin };
-
-        await UpdateWidgetAsync(
-            spectatorLoginsWatchingPlayer,
-            _checkpointTimes[checkpointIndex].First(),
-            newCheckpointData,
-            GetRankFromCheckpointList(_checkpointTimes[checkpointIndex], playerLogin)
-        );
+        // var spectatorLoginsWatchingPlayer = new List<string> { playerLogin };
+        // await UpdateWidgetAsync(
+        //     spectatorLoginsWatchingPlayer,
+        //     _checkpointTimes[checkpointIndex].First(),
+        //     newCheckpointData,
+        //     GetRankFromCheckpointList(_checkpointTimes[checkpointIndex], playerLogin)
+        // );
     }
 
     public Task ClearCheckpointsAsync()
@@ -131,7 +120,7 @@ public class SpectatorTargetInfoService(
             Convert.ToBoolean((spectatorStatus / 10) % 10),
             Convert.ToBoolean((spectatorStatus / 100) % 10),
             Convert.ToBoolean((spectatorStatus / 1000) % 10),
-            spectatorStatus / 10000
+            spectatorStatus / 10_000
         );
     }
 
@@ -147,9 +136,19 @@ public class SpectatorTargetInfoService(
         return -1;
     }
 
-    public int GetTimeDifference(CheckpointData leadingCheckpointData, CheckpointData spectatorCheckpointData)
+    public int GetTimeDifference(CheckpointData leadingCheckpointData, CheckpointData targetCheckpointData)
     {
-        return leadingCheckpointData.time - spectatorCheckpointData.time;
+        return GetTimeDifference(leadingCheckpointData.time, targetCheckpointData.time);
+    }
+
+    public int GetTimeDifference(int leadingCheckpointTime, int targetCheckpointTime)
+    {
+        return targetCheckpointTime - leadingCheckpointTime;
+    }
+
+    public Task<Dictionary<int, List<CheckpointData>>> GetCheckpointTimesAsync()
+    {
+        return Task.FromResult(_checkpointTimes);
     }
 
     public async Task SendManiaLinkAsync() =>

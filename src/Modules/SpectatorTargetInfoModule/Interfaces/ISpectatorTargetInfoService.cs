@@ -5,12 +5,6 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 
 public interface ISpectatorTargetInfoService
 {
-    /*
-     * Consume new waypoint time (/)
-     * Clear waypoint times
-     * Cache spectator targets
-     */
-
     public Task AddCheckpointAsync(string playerLogin, int checkpointIndex, int checkpointTime);
 
     public Task ClearCheckpointsAsync();
@@ -31,8 +25,11 @@ public interface ISpectatorTargetInfoService
     
     public int GetRankFromCheckpointList(List<CheckpointData> sortedCheckpointTimes, string targetPlayerLogin);
 
-    public int GetTimeDifference(CheckpointData leadingCheckpointData, CheckpointData spectatorCheckpointData);
-    
+    public int GetTimeDifference(CheckpointData leadingCheckpointData, CheckpointData targetCheckpointData);
+   
+    public int GetTimeDifference(int leadingCheckpointTime, int targetCheckpointTime);
+
+    public Task<Dictionary<int, List<CheckpointData>>> GetCheckpointTimesAsync();
     
     /// <summary>
     /// Sends the manialink to all players.
