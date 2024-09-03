@@ -77,12 +77,8 @@ public class SpectatorTargetInfoServiceTests
     public async Task Updates_Spectator_Target_With_Dedicated_Player_Id()
     {
         var spectatorTargetService = ServiceMock();
-        _server.Remote.Setup(s => s.GetPlayerListAsync())
-            .ReturnsAsync([
-                new TmPlayerInfo { PlayerId = 22, Login = "UnitTest" }
-            ]);
 
-        await spectatorTargetService.UpdateSpectatorTargetAsync("*fakeplayer1*", 22);
+        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "UnitTest");
         var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("UnitTest").ToList();
 
         Assert.Single(spectatorOfPlayer);
@@ -95,7 +91,7 @@ public class SpectatorTargetInfoServiceTests
         var spectatorTargetService = ServiceMock();
 
         await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "UnitTest");
-        await spectatorTargetService.UpdateSpectatorTargetAsync("*fakeplayer1*", 1111);
+        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "SomeOtherPlayer");
         var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("UnitTest").ToList();
 
         Assert.Empty(spectatorOfPlayer);

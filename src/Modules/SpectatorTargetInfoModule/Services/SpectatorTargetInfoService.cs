@@ -1,13 +1,16 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
+using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Config;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
+using GbxRemoteNet.Structs;
 using LinqToDB.Common;
 using Microsoft.Extensions.Logging;
 
@@ -18,13 +21,18 @@ public class SpectatorTargetInfoService(
     IManialinkManager manialinks,
     IServerClient server,
     IPlayerManagerService playerManagerService,
+    IMatchSettingsService matchSettingsService,
     ISpectatorTargetInfoSettings settings,
-    ILogger<SpectatorTargetInfoService> logger) : ISpectatorTargetInfoService
+    IThemeManager theme,
+    ILogger<SpectatorTargetInfoService> logger
+) : ISpectatorTargetInfoService
 {
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
     private readonly Dictionary<int, CheckpointsGroup> _checkpointTimes = new(); // cp-id -> CheckpointsGroup
     private readonly Dictionary<string, IOnlinePlayer> _spectatorTargets = new(); // login -> IOnlinePlayer
+    private readonly Dictionary<PlayerTeam, TmTeamInfo> _teamInfos = new();
+    private bool _isTeamsMode;
 
     /*
      * Spectator select new target -> update widget for them
@@ -33,6 +41,13 @@ public class SpectatorTargetInfoService(
      * Hide on podium
      * Re-send widget after map change
      */
+
+    public async Task InitializeAsync()
+    {
+        await UpdateIsTeamsModeAsync();
+        await UpdateTeamInfoAsync();
+        await HideGameModeUiAsync();
+    }
 
     public Task<IOnlinePlayer> GetOnlinePlayerByLoginAsync(string playerLogin)
         => playerManagerService.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(playerLogin));
@@ -146,6 +161,11 @@ public class SpectatorTargetInfoService(
         return targetCheckpointTime - leadingCheckpointTime;
     }
 
+    public string GetTeamColorAsync(PlayerTeam team)
+    {
+        return _isTeamsMode ? _teamInfos[team].RGB : (string)theme.Theme.UI_AccentPrimary;
+    }
+
     public int GetLastCheckpointIndexOfPlayer(string playerLogin)
     {
         foreach (var (checkpointIndex, checkpointsGroup) in _checkpointTimes.Reverse())
@@ -162,6 +182,11 @@ public class SpectatorTargetInfoService(
     public Dictionary<int, CheckpointsGroup> GetCheckpointTimes()
     {
         return _checkpointTimes;
+    }
+
+    public async Task<TmTeamInfo> GetTeamInfoAsync(PlayerTeam team)
+    {
+        return await server.Remote.GetTeamInfoAsync((int)team + 1);
     }
 
     public async Task ResetWidgetForSpectatorsAsync()
@@ -181,16 +206,45 @@ public class SpectatorTargetInfoService(
         }
     }
 
-    public Task SendWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank,
-        int timeDifference) =>
-        manialinks.SendManialinkAsync(playerLogin, WidgetTemplate,
-            new { settings, timeDifference, playerRank = targetPlayerRank, playerName = targetPlayer.NickName });
+    public async Task SendWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank,
+        int timeDifference)
+    {
+        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate,
+            new
+            {
+                settings,
+                timeDifference,
+                playerRank = targetPlayerRank,
+                playerName = targetPlayer.NickName,
+                playerTeam = targetPlayer.Team,
+                teamColorCode = new ColorUtils().Opacity(GetTeamColorAsync(targetPlayer.Team), 80)
+            });
+    }
 
     public Task HideWidgetAsync()
         => manialinks.HideManialinkAsync(WidgetTemplate);
 
     public Task HideWidgetAsync(string playerLogin)
         => manialinks.HideManialinkAsync(playerLogin, WidgetTemplate);
+
+    public async Task UpdateTeamInfoAsync()
+    {
+        _teamInfos[PlayerTeam.Team1] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1);
+        _teamInfos[PlayerTeam.Team2] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2);
+    }
+
+    public async Task UpdateIsTeamsModeAsync()
+    {
+        _isTeamsMode =
+            await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.Teams
+                or DefaultModeScriptName.TmwtTeams;
+        logger.LogInformation("Team mode is {state}", _isTeamsMode ? "active" : "not active");
+    }
+
+    public Task HideGameModeUiAsync()
+    {
+        return Task.CompletedTask; //TODO: implement
+    }
 
     public Task AddFakePlayerAsync() => //TODO: remove before mergin into master
         server.Remote.ConnectFakePlayerAsync();

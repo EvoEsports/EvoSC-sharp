@@ -1,10 +1,13 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
+using GbxRemoteNet.Structs;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 
 public interface ISpectatorTargetInfoService
 {
+    public Task InitializeAsync();
+    
     public Task<IOnlinePlayer> GetOnlinePlayerByLoginAsync(string playerLogin);
 
     public Task AddCheckpointAsync(string playerLogin, int checkpointIndex, int checkpointTime);
@@ -25,9 +28,13 @@ public interface ISpectatorTargetInfoService
 
     public int GetTimeDifference(int leadingCheckpointTime, int targetCheckpointTime);
 
+    public string GetTeamColorAsync(PlayerTeam team);
+
     public int GetLastCheckpointIndexOfPlayer(string playerLogin);
 
     public Dictionary<int, CheckpointsGroup> GetCheckpointTimes();
+
+    public Task<TmTeamInfo> GetTeamInfoAsync(PlayerTeam team);
 
     public Task ResetWidgetForSpectatorsAsync();
 
@@ -38,6 +45,12 @@ public interface ISpectatorTargetInfoService
     public Task HideWidgetAsync();
 
     public Task HideWidgetAsync(string playerLogin);
+
+    public Task UpdateTeamInfoAsync();
+    
+    public Task UpdateIsTeamsModeAsync();
+
+    public Task HideGameModeUiAsync();
 
     public Task AddFakePlayerAsync();
 }

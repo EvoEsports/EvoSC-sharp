@@ -8,7 +8,9 @@
     <property type="ISpectatorTargetInfoSettings" name="settings"/>
     <property type="int" name="timeDifference" default="0"/>
     <property type="int" name="playerRank" default="0"/>
+    <property type="int" name="playerTeam" default="-1"/>
     <property type="string" name="playerName" default="unknown"/>
+    <property type="string" name="teamColorCode" default="000"/>
     
     <property type="double" name="centerBoxWidth" default="48.0"/>
     <property type="double" name="h" default="7.0"/>
@@ -51,6 +53,7 @@
                    textsize="{{ Theme.UI_FontSize*2 }}"
                    textfont="{{ Font.Regular }}"
                    text='{{ timeDifference > 0 ? RaceTime.FromMilliseconds(timeDifference) : "000" }}'
+                   textprefix="+"
                    halign="center"
                    valign="center2"
             />
@@ -73,7 +76,7 @@
             <Rectangle y="{{ -h }}"
                        width="{{ h*4.4+centerBoxWidth }}"
                        height="0.75"
-                       bgColor="{{ Theme.UI_AccentPrimary }}99"
+                       bgColor="{{ teamColorCode }}"
                        cornerRadius="0.5"
                        corners='BottomRight,BottomLeft'
             />
