@@ -47,6 +47,9 @@ public class SpectatorTargetInfoService(
         await UpdateIsTeamsModeAsync();
         await UpdateTeamInfoAsync();
         await HideGameModeUiAsync();
+
+        // var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
+        // onlinePlayers.Where(player => player.State == PlayerState.Spectating);
     }
 
     public Task<IOnlinePlayer> GetOnlinePlayerByLoginAsync(string playerLogin)
@@ -229,8 +232,8 @@ public class SpectatorTargetInfoService(
 
     public async Task UpdateTeamInfoAsync()
     {
-        _teamInfos[PlayerTeam.Team1] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1);
-        _teamInfos[PlayerTeam.Team2] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2);
+        _teamInfos[PlayerTeam.Team1] = await GetTeamInfoAsync(PlayerTeam.Team1);
+        _teamInfos[PlayerTeam.Team2] = await GetTeamInfoAsync(PlayerTeam.Team2);
     }
 
     public async Task UpdateIsTeamsModeAsync()
