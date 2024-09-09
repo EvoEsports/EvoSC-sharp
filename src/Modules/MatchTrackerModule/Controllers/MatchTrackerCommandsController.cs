@@ -1,0 +1,14 @@
+﻿using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
+using EvoSC.Common.Controllers;
+using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
+
+namespace EvoSC.Modules.Official.MatchTrackerModule.Controllers;
+
+[Controller]
+public class MatchTrackerCommandsController(IMatchTrackerExportService exportService) : EvoScController<ICommandInteractionContext>
+{
+    [ChatCommand("mtexport", "Export all match tracker data to a csv file.")]
+    public Task ExportCsvAsync(string file) => exportService.ExportCsv(file);
+}
