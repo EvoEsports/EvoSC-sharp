@@ -7,6 +7,9 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Enums;
+using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Models;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Config;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
@@ -24,6 +27,7 @@ public class SpectatorTargetInfoService(
     IMatchSettingsService matchSettingsService,
     ISpectatorTargetInfoSettings settings,
     IThemeManager theme,
+    IGameModeUiModuleService gameModeUiModuleService,
     ILogger<SpectatorTargetInfoService> logger
 ) : ISpectatorTargetInfoService
 {
@@ -244,9 +248,16 @@ public class SpectatorTargetInfoService(
         logger.LogInformation("Team mode is {state}", _isTeamsMode ? "active" : "not active");
     }
 
-    public Task HideGameModeUiAsync()
+    public async Task HideGameModeUiAsync()
     {
-        return Task.CompletedTask; //TODO: implement
+        var componentSettings = new GameModeUiComponentSettings(
+            GameModeUiComponents.SpectatorBaseName,
+            false,
+            0.0,
+            0.0,
+            1.0
+        );
+        await gameModeUiModuleService.ApplyAndSaveComponentSettingsAsync(componentSettings);
     }
 
     public Task AddFakePlayerAsync() => //TODO: remove before mergin into master

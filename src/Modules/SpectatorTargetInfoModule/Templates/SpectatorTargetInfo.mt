@@ -17,7 +17,7 @@
 
     <template>
         <UIStyle/>
-        <frame id="main_frame" pos="{{ (h*4.4+centerBoxWidth) / -2.0 }} {{ settings.Y + 40 }}">
+        <frame id="main_frame" pos="{{ (h*4.4+centerBoxWidth) / -2.0 }} {{ settings.Y }}">
             <Rectangle width="{{ h*1.6 }}"
                        height="{{ h }}"
                        bgColor="{{ Theme.UI_AccentSecondary }}cc"

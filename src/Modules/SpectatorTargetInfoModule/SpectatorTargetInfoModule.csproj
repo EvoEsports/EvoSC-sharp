@@ -5,14 +5,21 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>EvoSC.Modules.Official.SpectatorTargetInfoModule</RootNamespace>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>SpectatorTargetInfoModule</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
+      <ProjectReference Include="..\GameModeUiModule\GameModeUiModule.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <EmbeddedResource Include="Templates\**\*" />
+        <EmbeddedResource Update="Localization.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
 </Project>

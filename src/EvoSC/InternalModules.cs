@@ -53,7 +53,6 @@ public static class InternalModules
         typeof(LiveRankingModule),
         typeof(MatchRankingModule),
         typeof(ASayModule),
-        typeof(SpectatorTargetInfoModule),
         typeof(MapQueueModule),
         typeof(MapListModule),
         typeof(LocalRecordsModule),
@@ -61,7 +60,8 @@ public static class InternalModules
         typeof(TeamSettingsModule),
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
-        typeof(GameModeUiModule)
+        typeof(GameModeUiModule),
+        typeof(SpectatorTargetInfoModule)
     ];
 
     /// <summary>

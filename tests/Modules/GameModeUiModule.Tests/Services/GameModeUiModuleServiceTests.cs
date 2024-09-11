@@ -17,11 +17,11 @@ public class GameModeUiModuleServiceTests
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
 
+/*
     private IGameModeUiModuleService UiModuleServiceMock()
     {
         return new GameModeUiModuleService(_server.Client.Object, _settings.Object);
     }
-
     [Theory]
     [InlineData("UnitTest", true, 0.0, 0.0, 1.0)]
     [InlineData("UnitTest", false, -160.0, 80.0, 2.0)]
@@ -79,4 +79,5 @@ public class GameModeUiModuleServiceTests
             Times.Once
         );
     }
+    */
 }

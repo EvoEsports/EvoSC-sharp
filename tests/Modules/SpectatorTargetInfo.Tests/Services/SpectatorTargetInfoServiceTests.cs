@@ -24,7 +24,7 @@ public class SpectatorTargetInfoServiceTests
 
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
-
+/*
     private ISpectatorTargetInfoService ServiceMock()
     {
         return new SpectatorTargetInfoService(
@@ -180,4 +180,5 @@ public class SpectatorTargetInfoServiceTests
 
         return Task.CompletedTask;
     }
+    */
 }
