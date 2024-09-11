@@ -46,6 +46,8 @@ public interface ISpectatorTargetInfoService
 
     public Task HideWidgetAsync(string playerLogin);
 
+    public Task SendRequestTargetManialinkAsync();
+
     public Task UpdateTeamInfoAsync();
     
     public Task UpdateIsTeamsModeAsync();

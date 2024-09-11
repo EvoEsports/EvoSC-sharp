@@ -31,6 +31,7 @@ public class SpectatorTargetInfoService(
     ILogger<SpectatorTargetInfoService> logger
 ) : ISpectatorTargetInfoService
 {
+    private const string RequestTargetTemplate = "SpectatorTargetInfoModule.RequestSpecTarget";
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
     private readonly Dictionary<int, CheckpointsGroup> _checkpointTimes = new(); // cp-id -> CheckpointsGroup
@@ -51,6 +52,7 @@ public class SpectatorTargetInfoService(
         await UpdateIsTeamsModeAsync();
         await UpdateTeamInfoAsync();
         await HideGameModeUiAsync();
+        await SendRequestTargetManialinkAsync();
 
         // var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
         // onlinePlayers.Where(player => player.State == PlayerState.Spectating);
@@ -234,6 +236,11 @@ public class SpectatorTargetInfoService(
     public Task HideWidgetAsync(string playerLogin)
         => manialinks.HideManialinkAsync(playerLogin, WidgetTemplate);
 
+    public async Task SendRequestTargetManialinkAsync()
+    {
+        await manialinks.SendManialinkAsync(RequestTargetTemplate);
+    }
+
     public async Task UpdateTeamInfoAsync()
     {
         _teamInfos[PlayerTeam.Team1] = await GetTeamInfoAsync(PlayerTeam.Team1);
@@ -250,14 +257,13 @@ public class SpectatorTargetInfoService(
 
     public async Task HideGameModeUiAsync()
     {
-        var componentSettings = new GameModeUiComponentSettings(
+        await gameModeUiModuleService.ApplyAndSaveComponentSettingsAsync(new GameModeUiComponentSettings(
             GameModeUiComponents.SpectatorBaseName,
             false,
             0.0,
             0.0,
             1.0
-        );
-        await gameModeUiModuleService.ApplyAndSaveComponentSettingsAsync(componentSettings);
+        ));
     }
 
     public Task AddFakePlayerAsync() => //TODO: remove before mergin into master

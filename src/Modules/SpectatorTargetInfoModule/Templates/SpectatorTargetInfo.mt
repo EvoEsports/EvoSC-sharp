@@ -13,7 +13,7 @@
     <property type="string" name="teamColorCode" default="000"/>
 
     <property type="double" name="centerBoxWidth" default="50.0"/>
-    <property type="double" name="h" default="7.0"/>
+    <property type="double" name="h" default="6.0"/>
 
     <template>
         <UIStyle/>
@@ -177,14 +177,14 @@
     
     Void SpecPrevious(CMlLabel button){
         AnimatePop(button);
-        declare CSmPlayer target <=> GetPrevSpawnedPlayer();
-        FocusPlayer(target);
+        //declare CSmPlayer target <=> GetPrevSpawnedPlayer();
+        //FocusPlayer(target);
     }
     
     Void SpecNext(CMlLabel button){
         AnimatePop(button);
-        declare CSmPlayer target <=> GetNextSpawnedPlayer();
-        FocusPlayer(target);
+        //declare CSmPlayer target <=> GetNextSpawnedPlayer();
+        //FocusPlayer(target);
     }
     
     main() {
