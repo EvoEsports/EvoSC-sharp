@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.GameModeUiModule.Config;
 using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
 using EvoSC.Modules.Official.GameModeUiModule.Services;
@@ -14,7 +15,7 @@ public class GameModeUiModuleServiceTests
 {
     private readonly Mock<IGameModeUiModuleSettings> _settings = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
         _server = Mocking.NewServerClientMock();
 
     private IGameModeUiModuleService UiModuleServiceMock()

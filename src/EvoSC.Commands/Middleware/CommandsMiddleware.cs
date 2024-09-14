@@ -31,12 +31,12 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
             }
 
             var message = $"Error: {cmdParserException.Message}";
-            await serverClient.SendChatMessageAsync(playerLogin, $"Error: {message}");
+            await serverClient.Chat.SendChatMessageAsync($"Error: {message}", playerLogin);
         }
 
         if (result.Exception is PlayerNotFoundException playerNotFoundException)
         {
-            await serverClient.SendChatMessageAsync(playerLogin, $"Error: {playerNotFoundException.Message}");
+            await serverClient.Chat.SendChatMessageAsync($"Error: {playerNotFoundException.Message}", playerLogin);
         }
         else
         {
@@ -55,7 +55,7 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
         
         var contextServerClient = context.ServiceScope.Container.GetRequiredService<IServerClient>();
 
-        var playerInteractionContext = new CommandInteractionContext((IOnlinePlayer)routerContext.Player, contextServerClient, context)
+        var playerInteractionContext = new CommandInteractionContext((IOnlinePlayer)routerContext.Author, contextServerClient, context)
         {
             CommandExecuted = cmd
         };
@@ -122,7 +122,7 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
             }
             else if (parserResult.Exception != null)
             {
-                await HandleUserErrorsAsync(parserResult, context.Player.GetLogin());
+                await HandleUserErrorsAsync(parserResult, context.Author.GetLogin());
             }
             else
             {

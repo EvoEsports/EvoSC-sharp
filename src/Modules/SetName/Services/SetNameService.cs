@@ -11,7 +11,7 @@ using EvoSC.Modules.Official.SetName.Interfaces;
 namespace EvoSC.Modules.Official.SetName.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
-public class SetNameService(IServerClient server, IPlayerRepository playerRepository, IPlayerCacheService playerCache,
+public class SetNameService(IChatService chat, IPlayerRepository playerRepository, IPlayerCacheService playerCache,
         IEventManager events, Locale locale)
     : ISetNameService
 {
@@ -21,15 +21,15 @@ public class SetNameService(IServerClient server, IPlayerRepository playerReposi
     {
         if (player.NickName.Equals(newName, StringComparison.Ordinal))
         {
-            await server.ErrorMessageAsync(player, _locale.PlayerLanguage.DidNotChangeName);
+            await chat.ErrorMessageAsync(_locale.PlayerLanguage.DidNotChangeName, player);
             return;
         }
         
         await playerRepository.UpdateNicknameAsync(player, newName);
         await playerCache.UpdatePlayerAsync(player);
         
-        await server.SuccessMessageAsync(player, _locale.PlayerLanguage.NameSuccessfullySet(newName));
-        await server.InfoMessageAsync(_locale.PlayerChangedTheirName(player.NickName, newName));
+        await chat.SuccessMessageAsync(_locale.PlayerLanguage.NameSuccessfullySet(newName), player);
+        await chat.InfoMessageAsync(_locale.PlayerChangedTheirName(player.NickName, newName));
         
         await events.RaiseAsync(SetNameEvents.NicknameUpdated, new NicknameUpdatedEventArgs
         {

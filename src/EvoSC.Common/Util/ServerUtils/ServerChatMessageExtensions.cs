@@ -6,7 +6,7 @@ namespace EvoSC.Common.Util.ServerUtils;
 
 public static class ServerChatMessageExtensions
 {
-    /// <summary>
+    /* /// <summary>
     /// Send a chat message to all users.
     /// </summary>
     /// <param name="server"></param>
@@ -103,5 +103,5 @@ public static class ServerChatMessageExtensions
         var message = new TextFormatter();
         messageBuilder(message);
         return server.SendChatMessageAsync(login, message.ToString());
-    }
+    } */
 }

@@ -78,7 +78,8 @@ public class MockingTests
         var player = new Mock<IOnlinePlayer>();
         var mlActionContext = new Mock<IManialinkActionContext>();
         var mlManager = new Mock<IManialinkManager>();
-        mock.SetupMock(player.Object, mlActionContext.Object, mlManager.Object);
+        var server = Mocking.NewServerClientMock();
+        mock.SetupMock(server.Client, player.Object, mlActionContext.Object, mlManager.Object);
         
         Assert.Equal(player.Object, mock.Context.Object.Player);
         Assert.Equal(mlActionContext.Object, mock.Context.Object.ManialinkAction);
@@ -92,7 +93,8 @@ public class MockingTests
         var player = new Mock<IOnlinePlayer>();
         var mlActionContext = new Mock<IManialinkActionContext>();
         var mlManager = new Mock<IManialinkManager>();
-        var mock = Mocking.NewManialinkInteractionContextMock(player.Object, mlActionContext.Object, mlManager.Object);
+        var server = Mocking.NewServerClientMock();
+        var mock = Mocking.NewManialinkInteractionContextMock(server.Client, player.Object, mlActionContext.Object, mlManager.Object);
         
         Assert.Equal(player.Object, mock.Context.Object.Player);
         Assert.Equal(mlActionContext.Object, mock.Context.Object.ManialinkAction);

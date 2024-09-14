@@ -12,14 +12,14 @@ using EvoSC.Modules.Official.MapQueueModule.Interfaces;
 namespace EvoSC.Modules.Official.MapQueueModule.Controllers;
 
 [Controller]
-public class QueueCommandsController(IMapQueueService mapQueue, IMapService maps, IServerClient server) : EvoScController<ICommandInteractionContext>
+public class QueueCommandsController(IMapQueueService mapQueue, IMapService maps) : EvoScController<ICommandInteractionContext>
 {
     [ChatCommand("queue", "Queue a map to be played.")]
     public async Task QueueAsync(int id)
     {
         var map = await maps.GetMapByIdAsync(id);
         await mapQueue.EnqueueAsync(map);
-        await server.SuccessMessageAsync($"$<{Context.Player.NickName}$> queued map $<{map.Name}$>.");
+        await Context.Chat.SuccessMessageAsync($"$<{Context.Player.NickName}$> queued map $<{map.Name}$>.");
     }
 
     [ChatCommand("queuelist", "List currently queued maps.")]
@@ -40,6 +40,6 @@ public class QueueCommandsController(IMapQueueService mapQueue, IMapService maps
             message.AddText(", ");
         }
 
-        await server.SendChatMessageAsync(Context.Player, message);
+        await Context.Chat.SendChatMessageAsync(message, Context.Player);
     }
 }

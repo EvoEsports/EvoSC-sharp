@@ -32,26 +32,26 @@ public partial class ServerClient
             .AddText(text);
 
     public Task InfoMessageAsync(string text) =>
-        this.SendChatMessageAsync(MakeInfoMessage(text));
+        Chat.SendChatMessageAsync(MakeInfoMessage(text));
 
     public Task InfoMessageAsync(IPlayer player, string text) =>
-        this.SendChatMessageAsync(player, MakeInfoMessage(text));
+        Chat.SendChatMessageAsync(MakeInfoMessage(text), player);
     
     public Task SuccessMessageAsync(string text) =>
-        this.SendChatMessageAsync(MakeSuccessMessage(text));
+        Chat.SendChatMessageAsync(MakeSuccessMessage(text));
 
     public Task SuccessMessageAsync(IPlayer player, string text) =>
-        this.SendChatMessageAsync(player, MakeSuccessMessage(text));
+        Chat.SendChatMessageAsync(MakeSuccessMessage(text), player);
     
     public Task WarningMessageAsync(string text) =>
-        this.SendChatMessageAsync(MakeWarningMessage(text));
+        Chat.SendChatMessageAsync(MakeWarningMessage(text));
 
     public Task WarningMessageAsync(IPlayer player, string text) =>
-        this.SendChatMessageAsync(player, MakeWarningMessage(text));
+        Chat.SendChatMessageAsync(MakeWarningMessage(text), player);
     
     public Task ErrorMessageAsync(string text) =>
-        this.SendChatMessageAsync(MakeErrorMessage(text));
+        Chat.SendChatMessageAsync(MakeErrorMessage(text));
 
     public Task ErrorMessageAsync(IPlayer player, string text) =>
-        this.SendChatMessageAsync(player, MakeErrorMessage(text));
+        Chat.SendChatMessageAsync(MakeErrorMessage(text), player);
 }

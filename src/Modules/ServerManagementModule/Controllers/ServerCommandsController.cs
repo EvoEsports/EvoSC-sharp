@@ -23,7 +23,7 @@ public class ServerCommandsController(IServerManagementService serverManagementS
             .HavingProperties(new { password })
             .Success();
 
-        await Context.Server.SuccessMessageAsync(Context.Player, "The password was changed.");
+        await Context.Chat.SuccessMessageAsync("The password was changed.", Context.Player);
     }
 
     [ChatCommand("clearpassword", "Clear the server password.",
@@ -38,7 +38,7 @@ public class ServerCommandsController(IServerManagementService serverManagementS
             .HavingProperties(new { password = "", cleared = true })
             .Success();
         
-        await Context.Server.SuccessMessageAsync(Context.Player, "The password was cleared and removed.");
+        await Context.Chat.SuccessMessageAsync("The password was cleared and removed.", Context.Player);
     }
     
     [ChatCommand("setmaxplayers", "Set maximum number of players that can join the server.",
@@ -53,7 +53,7 @@ public class ServerCommandsController(IServerManagementService serverManagementS
             .HavingProperties(new { maxPlayers })
             .Success();
         
-        await Context.Server.SuccessMessageAsync(Context.Player, $"Max players set to {maxPlayers}");
+        await Context.Chat.SuccessMessageAsync($"Max players set to {maxPlayers}", Context.Player);
     }
     
     [ChatCommand("setmaxspectators", "Set the maximum number of spectators that can join the server.",
@@ -68,6 +68,6 @@ public class ServerCommandsController(IServerManagementService serverManagementS
             .HavingProperties(new { maxSpectators })
             .Success();
         
-        await Context.Server.SuccessMessageAsync(Context.Player, $"Max spectators set to {maxSpectators}");
+        await Context.Chat.SuccessMessageAsync($"Max spectators set to {maxSpectators}", Context.Player);
     }
 }

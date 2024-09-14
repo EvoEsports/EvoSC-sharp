@@ -1,9 +1,12 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Services;
 using GbxRemoteNet;
 using GbxRemoteNet.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;
@@ -20,6 +23,7 @@ public partial class ServerClient : IServerClient
 
     public IGbxRemoteClient Remote => _gbxRemote;
     public bool Connected => _connected;
+    public IChatService Chat { get; }
 
     public ServerClient(IEvoScBaseConfig config, ILogger<ServerClient> logger, IEvoSCApplication app, IThemeManager themes)
     {
@@ -32,6 +36,8 @@ public partial class ServerClient : IServerClient
         _gbxRemote = new GbxRemoteClient(config.Server.Host, config.Server.Port, logger);
         
         _gbxRemote.OnDisconnected += OnDisconnectedAsync;
+
+        Chat = new ChatService(this, themes);
     }
 
     private async Task OnDisconnectedAsync()

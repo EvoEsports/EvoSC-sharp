@@ -18,7 +18,7 @@ public class OpenPlanetEventControllerTests : EventControllerTestBase<OpenPlanet
     private const string PlayerLogin = "pGepluulRL-eK4VDtQ85rg";
     
     private readonly Mock<IOpenPlanetTrackerService> _trackerService = new();
-    private readonly (Mock<IServerClient> Server, Mock<IGbxRemoteClient> Client) _server = Mocking.NewServerClientMock();
+    private readonly (Mock<IServerClient> Server, Mock<IGbxRemoteClient> Client, Mock<IChatService> Chat) _server = Mocking.NewServerClientMock();
     private readonly Mock<IPlayerManagerService> _playerService = new();
     private Mock<IPlayer> _player = new();
 

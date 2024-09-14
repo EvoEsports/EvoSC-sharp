@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Events.Arguments;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.Player.Controllers;
 using EvoSC.Modules.Official.Player.Interfaces;
 using EvoSC.Testing;
@@ -17,8 +18,8 @@ public class PlayerEventControllerTests : ControllerMock<PlayerEventController, 
     public PlayerEventControllerTests()
     {
         var locale = Mocking.NewLocaleMock(ContextService.Object);
-        var server = Mocking.NewServerClientMock();
-        InitMock(_playerService, locale, server.Client);
+        var chatService = new Mock<IChatService>();
+        InitMock(_playerService, locale, chatService);
     }
 
     [Fact]

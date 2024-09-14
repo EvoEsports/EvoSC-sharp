@@ -51,11 +51,9 @@ public class ForceTeamManialinkControllerTests : ManialinkControllerTestBase<For
     public async Task Player_Not_Found_Sends_Error()
     {
         _playerManagerService.Setup(m => m.GetOnlinePlayerAsync(PlayerAccountId)).ReturnsAsync((IOnlinePlayer?)null);
-        var serverMock = Mocking.NewServerClientMock();
-        Context.Setup(m => m.Server).Returns(serverMock.Client.Object);
 
         await Controller.SwitchPlayerAsync(PlayerAccountId);
-        
-        serverMock.Client.Verify(m => m.ErrorMessageAsync(_player.Object, It.IsAny<string>()));
+
+        Server.Chat.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _player.Object));
     }
 }

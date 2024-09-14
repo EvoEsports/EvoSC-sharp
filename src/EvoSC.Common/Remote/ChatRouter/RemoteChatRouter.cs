@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Util;
@@ -53,9 +54,17 @@ public class RemoteChatRouter : IRemoteChatRouter
                 {
                     Task.Run(async () =>
                     {
-                        var formatted = FormattingUtils.FormatPlayerChatMessage(chatContext.Player,
+                        var formatted = FormattingUtils.FormatPlayerChatMessage(chatContext.Author,
                             chatContext.MessageText);
-                        await _server.SendChatMessageAsync(formatted);
+
+                        if (chatContext.Players.Any())
+                        {
+                            await _server.Chat.SendChatMessageAsync(formatted, chatContext.Players.ToArray());
+                        }
+                        else
+                        {
+                            await _server.Chat.SendChatMessageAsync(formatted);
+                        }
                     });
                 }
             });
@@ -63,8 +72,9 @@ public class RemoteChatRouter : IRemoteChatRouter
             await pipelineChain(new ChatRouterPipelineContext
             {
                 ForwardMessage = true,
-                Player = player,
-                MessageText = e.Text
+                Author = player,
+                MessageText = e.Text,
+                Players = []
             });
             
             _logger.LogInformation("[{Name}]: {Msg}", player.StrippedNickName, e.Text);

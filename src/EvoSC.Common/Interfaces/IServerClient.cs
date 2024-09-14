@@ -1,4 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Util.TextFormatting;
 using GbxRemoteNet.Interfaces;
 
 namespace EvoSC.Common.Interfaces;
@@ -13,6 +15,8 @@ public interface IServerClient
     /// Whether the client is connected to the remote XMLRPC server or not.
     /// </summary>
     public bool Connected { get; }
+    
+    public IChatService Chat { get; }
 
     /// <summary>
     /// Start the client and set up a connection.
@@ -28,7 +32,7 @@ public interface IServerClient
     /// <returns></returns>
     public Task StopAsync(CancellationToken token);
 
-    /// <summary>
+    /* /// <summary>
     /// Send an info message to the chat.
     /// </summary>
     /// <param name="text">Text to send.</param>
@@ -80,6 +84,7 @@ public interface IServerClient
     /// <returns></returns>
     public Task ErrorMessageAsync(string text);
     
+    
     /// <summary>
     /// Send a error message to a specific player.
     /// </summary>
@@ -87,7 +92,7 @@ public interface IServerClient
     /// <param name="text">Text to send.</param>
     /// <returns></returns>
     public Task ErrorMessageAsync(IPlayer player, string text);
-
+ */
     public Task<string> GetMapsDirectoryAsync();
     
     public Task<bool> FileExistsAsync(string file);
