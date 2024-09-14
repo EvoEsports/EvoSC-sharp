@@ -21,7 +21,7 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
 {
     private readonly ChatCommandParser _parser = new(cmdManager);
 
-    async Task HandleUserErrorsAsync(IParserResult result, string playerLogin)
+    async Task HandleUserErrorsAsync(IParserResult result, IPlayer player)
     {
         if (result.Exception is CommandParserException cmdParserException)
         {
@@ -31,12 +31,12 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
             }
 
             var message = $"Error: {cmdParserException.Message}";
-            await serverClient.Chat.SendChatMessageAsync($"Error: {message}", playerLogin);
+            await serverClient.Chat.ErrorMessageAsync($"Error: {message}", player);
         }
 
         if (result.Exception is PlayerNotFoundException playerNotFoundException)
         {
-            await serverClient.Chat.SendChatMessageAsync($"Error: {playerNotFoundException.Message}", playerLogin);
+            await serverClient.Chat.ErrorMessageAsync($"Error: {playerNotFoundException.Message}", player);
         }
         else
         {
@@ -122,7 +122,7 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
             }
             else if (parserResult.Exception != null)
             {
-                await HandleUserErrorsAsync(parserResult, context.Author.GetLogin());
+                await HandleUserErrorsAsync(parserResult, context.Author);
             }
             else
             {

@@ -50,6 +50,7 @@
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
         <ProjectReference Include="..\Modules\ServerManagementModule\ServerManagementModule.csproj" />
         <ProjectReference Include="..\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj" />
+        <ProjectReference Include="..\Modules\TeamChatModule\TeamChatModule.csproj" />
         <ProjectReference Include="..\Modules\TeamInfoModule\TeamInfoModule.csproj" />
         <ProjectReference Include="..\Modules\TeamSettingsModule\TeamSettingsModule.csproj" />
         <ProjectReference Include="..\Modules\GameModeUiModule\GameModeUiModule.csproj" />
