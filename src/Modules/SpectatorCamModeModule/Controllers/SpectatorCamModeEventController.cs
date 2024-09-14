@@ -63,7 +63,7 @@ public class SpectatorCamModeEventController(
         }
         else
         {
-            await spectatorCamModeService.SendCamModeWidgetAsync(eventArgs.PlayerInfo.Login);
+            // await spectatorCamModeService.SendCamModeWidgetAsync(eventArgs.PlayerInfo.Login);
         }
     }
 }

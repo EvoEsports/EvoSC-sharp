@@ -178,16 +178,20 @@
         }
     }
     
-    Void SpecPrevious(CMlLabel button){
+    Void SpecPrevious(CMlLabel button, Boolean focus){
         AnimatePop(button);
-        declare CSmPlayer target <=> GetPrevSpawnedPlayer();
-        FocusPlayer(target);
+        if(focus){
+            declare CSmPlayer target <=> GetPrevSpawnedPlayer();
+            FocusPlayer(target);
+        }
     }
     
-    Void SpecNext(CMlLabel button){
+    Void SpecNext(CMlLabel button, Boolean focus){
         AnimatePop(button);
-        declare CSmPlayer target <=> GetNextSpawnedPlayer();
-        FocusPlayer(target);
+        if(focus){
+            declare CSmPlayer target <=> GetNextSpawnedPlayer();
+            FocusPlayer(target);
+        }
     }
     
     main() {
@@ -202,12 +206,14 @@
             }
             
 			foreach (InputEvent in Input.PendingEvents) {
+			    log(InputEvent);
+			    
 			    if(InputEvent.Button == CInputEvent::EButton::Left){
-			        SpecPrevious(previousButton);
+			        SpecPrevious(previousButton, InputEvent.Pad.Type == CInputPad::EPadType::Keyboard);
 			        continue;
 			    }
 			    if(InputEvent.Button == CInputEvent::EButton::Right){
-			        SpecNext(nextButton);
+			        SpecNext(nextButton, InputEvent.Pad.Type == CInputPad::EPadType::Keyboard);
 			        continue;
 			    }
 			}
@@ -215,10 +221,10 @@
 			foreach(Event in PendingEvents){
 			    if(Event.Type == CMlScriptEvent::Type::MouseClick){
 			        if(Event.Control == previousButton){
-                        SpecPrevious(previousButton);
+                        SpecPrevious(previousButton, True);
                         continue;
 			        }else if(Event.Control == nextButton){
-                        SpecNext(nextButton);
+                        SpecNext(nextButton, True);
                         continue;
 			        }
 			    }

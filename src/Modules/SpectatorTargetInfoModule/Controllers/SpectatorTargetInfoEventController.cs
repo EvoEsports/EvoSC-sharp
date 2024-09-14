@@ -52,6 +52,10 @@ public class SpectatorTargetInfoEventController(
             wayPointEventArgs.LapTime
         );
 
+    [Subscribe(ModeScriptEvent.EndRoundStart)]
+    public Task OnEndRoundStartAsync(object sender, RoundEventArgs eventArgs) =>
+        spectatorTargetInfoService.HideSpectatorInfoWidgetAsync();
+
     [Subscribe(ModeScriptEvent.StartRoundStart)]
     public async Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs)
     {
