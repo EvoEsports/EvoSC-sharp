@@ -86,7 +86,7 @@ public class SpectatorTargetInfoService(
         var rank = checkpointGroup.GetRank(playerLogin);
         var timeDifference = GetTimeDifference(leadingCheckpointData, newCheckpointData);
 
-        await SendWidgetAsync(playerLogins, player, rank, timeDifference);
+        await SendSpectatorInfoWidgetAsync(playerLogins, player, rank, timeDifference);
     }
 
     public Task ClearCheckpointsAsync()
@@ -127,7 +127,7 @@ public class SpectatorTargetInfoService(
             timeDifference = GetTimeDifference(leadingCpData, targetCpData!);
         }
 
-        await SendWidgetAsync(spectatorLogin, targetPlayer, targetRank, timeDifference);
+        await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, targetRank, timeDifference);
 
         logger.LogDebug("Updated spectator target {spectatorLogin} -> {targetLogin}.", spectatorLogin,
             targetLogin);
@@ -202,20 +202,20 @@ public class SpectatorTargetInfoService(
     {
         foreach (var (spectatorLogin, targetPlayer) in _spectatorTargets)
         {
-            await SendWidgetAsync(spectatorLogin, targetPlayer, 1, 0);
+            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, 1, 0);
         }
     }
 
-    public async Task SendWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer,
+    public async Task SendSpectatorInfoWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer,
         int targetPlayerRank, int timeDifference)
     {
         foreach (var playerLogin in playerLogins)
         {
-            await SendWidgetAsync(playerLogin, targetPlayer, targetPlayerRank, timeDifference);
+            await SendSpectatorInfoWidgetAsync(playerLogin, targetPlayer, targetPlayerRank, timeDifference);
         }
     }
 
-    public async Task SendWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank,
+    public async Task SendSpectatorInfoWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank,
         int timeDifference)
     {
         await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate,
@@ -230,15 +230,18 @@ public class SpectatorTargetInfoService(
             });
     }
 
-    public Task HideWidgetAsync()
+    public Task HideSpectatorInfoWidgetAsync()
         => manialinks.HideManialinkAsync(WidgetTemplate);
 
-    public Task HideWidgetAsync(string playerLogin)
+    public Task HideSpectatorInfoWidgetAsync(string playerLogin)
         => manialinks.HideManialinkAsync(playerLogin, WidgetTemplate);
 
-    public async Task SendRequestTargetManialinkAsync()
+    public Task SendRequestTargetManialinkAsync() =>
+        manialinks.SendManialinkAsync(RequestTargetTemplate);
+
+    public async Task SendRequestTargetManialinkAsync(string playerLogin)
     {
-        await manialinks.SendManialinkAsync(RequestTargetTemplate);
+        await manialinks.SendManialinkAsync(playerLogin, RequestTargetTemplate, new { });
     }
 
     public async Task UpdateTeamInfoAsync()

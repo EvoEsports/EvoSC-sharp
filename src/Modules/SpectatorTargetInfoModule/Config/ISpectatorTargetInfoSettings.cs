@@ -7,6 +7,6 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Config;
 [Settings]
 public interface ISpectatorTargetInfoSettings
 {
-    [Option(DefaultValue = -66.0), Description("Defines the vertical position of the widget.")]
+    [Option(DefaultValue = -57.0), Description("Defines the vertical position of the widget.")]
     public double Y { get; set; }
 }

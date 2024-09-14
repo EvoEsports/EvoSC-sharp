@@ -107,6 +107,9 @@
     </template>
 
     <script><!--
+    #Include "Libs/Nadeo/CMGame/Utils/Icons.Script.txt" as Icons
+    #Include "TextLib" as TextLib
+
     CSmPlayer GetNextSpawnedPlayer() {
         if (GUIPlayer == Null) return Null;
     
@@ -177,14 +180,14 @@
     
     Void SpecPrevious(CMlLabel button){
         AnimatePop(button);
-        //declare CSmPlayer target <=> GetPrevSpawnedPlayer();
-        //FocusPlayer(target);
+        declare CSmPlayer target <=> GetPrevSpawnedPlayer();
+        FocusPlayer(target);
     }
     
     Void SpecNext(CMlLabel button){
         AnimatePop(button);
-        //declare CSmPlayer target <=> GetNextSpawnedPlayer();
-        //FocusPlayer(target);
+        declare CSmPlayer target <=> GetNextSpawnedPlayer();
+        FocusPlayer(target);
     }
     
     main() {

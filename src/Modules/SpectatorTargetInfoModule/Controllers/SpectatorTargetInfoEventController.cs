@@ -39,8 +39,10 @@ public class SpectatorTargetInfoEventController(
         spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(eventArgs.Login);
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public Task OnBeginMap(object sender, MapGbxEventArgs eventArgs) =>
-        spectatorTargetInfoService.UpdateIsTeamsModeAsync();
+    public async Task OnBeginMap(object sender, MapGbxEventArgs eventArgs)
+    {
+        await spectatorTargetInfoService.UpdateIsTeamsModeAsync();
+    }
 
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs) =>
@@ -59,8 +61,10 @@ public class SpectatorTargetInfoEventController(
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public Task OnPodiumStartAsync() =>
-        spectatorTargetInfoService.HideWidgetAsync();
+    public async Task OnPodiumStartAsync()
+    {
+        await spectatorTargetInfoService.HideSpectatorInfoWidgetAsync();
+    }
 
     [Subscribe(GbxRemoteEvent.PlayerInfoChanged)]
     public async Task OnPlayerInfoChangedAsync(object sender, PlayerInfoChangedGbxEventArgs eventArgs)
@@ -68,7 +72,9 @@ public class SpectatorTargetInfoEventController(
         var spectatorInfo = spectatorTargetInfoService.ParseSpectatorStatus(eventArgs.PlayerInfo.SpectatorStatus);
         var spectatorLogin = eventArgs.PlayerInfo.Login;
 
-        if (spectatorInfo.IsSpectator)
+        logger.LogInformation("Spectator status: {status}", spectatorInfo);
+
+        if (spectatorInfo is { IsSpectator: true, TargetPlayerId: > 0 })
         {
             var targetLogin =
                 await spectatorTargetInfoService.GetLoginOfDedicatedPlayerAsync(spectatorInfo.TargetPlayerId);
@@ -80,6 +86,10 @@ public class SpectatorTargetInfoEventController(
         }
 
         await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatorLogin);
-        await spectatorTargetInfoService.HideWidgetAsync(spectatorLogin);
+        await spectatorTargetInfoService.HideSpectatorInfoWidgetAsync(spectatorLogin);
     }
+
+    [Subscribe(ModeScriptEvent.GiveUp)]
+    public Task OnGiveUpAsync(object sender, PlayerUpdateEventArgs eventArgs) =>
+        spectatorTargetInfoService.SendRequestTargetManialinkAsync(eventArgs.Login);
 }

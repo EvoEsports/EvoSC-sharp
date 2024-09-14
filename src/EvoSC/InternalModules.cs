@@ -23,6 +23,7 @@ using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.Scoreboard;
 using EvoSC.Modules.Official.ServerManagementModule;
 using EvoSC.Modules.Official.SetName;
+using EvoSC.Modules.Official.SpectatorCamModeModule;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.TeamInfoModule;
 using EvoSC.Modules.Official.TeamSettingsModule;
@@ -61,7 +62,8 @@ public static class InternalModules
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(GameModeUiModule),
-        typeof(SpectatorTargetInfoModule)
+        typeof(SpectatorTargetInfoModule),
+        typeof(SpectatorCamModeModule)
     ];
 
     /// <summary>

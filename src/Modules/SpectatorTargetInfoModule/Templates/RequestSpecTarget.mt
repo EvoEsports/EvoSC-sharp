@@ -2,6 +2,8 @@
     <template/>
     <script><!--
     main() {
+        sleep(500);
+    
         if(GUIPlayer == Null){
             log("[Spec Info] No target player.");
             return;

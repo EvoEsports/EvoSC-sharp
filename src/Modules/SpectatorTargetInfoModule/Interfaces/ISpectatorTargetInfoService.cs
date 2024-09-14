@@ -38,15 +38,17 @@ public interface ISpectatorTargetInfoService
 
     public Task ResetWidgetForSpectatorsAsync();
 
-    public Task SendWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
+    public Task SendSpectatorInfoWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
 
-    public Task SendWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
+    public Task SendSpectatorInfoWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
 
-    public Task HideWidgetAsync();
+    public Task HideSpectatorInfoWidgetAsync();
 
-    public Task HideWidgetAsync(string playerLogin);
+    public Task HideSpectatorInfoWidgetAsync(string playerLogin);
 
     public Task SendRequestTargetManialinkAsync();
+
+    public Task SendRequestTargetManialinkAsync(string playerLogin);
 
     public Task UpdateTeamInfoAsync();
     
