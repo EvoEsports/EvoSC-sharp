@@ -2,19 +2,15 @@
     <template/>
     <script><!--
     main() {
-        sleep(500);
+        sleep(750);
+        declare abortAt = Now + 3000;
     
-        if(GUIPlayer == Null){
-            log("[Spec Info] No target player.");
-            return;
+        while(GUIPlayer == Null){
+            yield;
+            if(Now > abortAt) return;
         }
         
-        if(GUIPlayer.User == LocalUser){
-            log("[Spec Info] Target player is local user.");
-            return;
-        }
-    
-        log("[Spec Info] Sending focused player " ^ GUIPlayer.User.Name);
+        log("[Spec Info] Reporting focused player " ^ GUIPlayer.User.Name);
         TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ GUIPlayer.User.Login);
     }
     --></script>

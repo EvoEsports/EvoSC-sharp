@@ -16,27 +16,19 @@ public class SpectatorTargetInfoEventController(
     ILogger<SpectatorTargetInfoEventController> logger)
     : EvoScController<EventControllerContext>
 {
-    // [Subscribe(ModeScriptEvent.GiveUp)]
-    // public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs playerUpdateEventArgs) =>
-    //     spectatorTargetInfoService.ForwardDnfToClientsAsync(playerUpdateEventArgs);
+    [Subscribe(GbxRemoteEvent.PlayerConnect)]
+    public async Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args)
+    {
+        await spectatorTargetInfoService.SendRequestTargetManialinkAsync(args.Login);
+    }
 
-    /**
-     *
-     */
-    // [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    // public async Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args)
-    // {
-    //     if (!args.IsSpectator)
-    //     {
-    //         return;
-    //     }
-    //
-    //     //TODO: do nothing?
-    //     // await spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
-    // }
     [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
     public Task OnPlayerDisconnect(object sender, PlayerGbxEventArgs eventArgs) =>
         spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(eventArgs.Login);
+
+    [Subscribe(ModeScriptEvent.GiveUp)]
+    public Task OnGiveUpAsync(object sender, PlayerUpdateEventArgs eventArgs) =>
+        spectatorTargetInfoService.SendRequestTargetManialinkAsync(eventArgs.Login);
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMap(object sender, MapGbxEventArgs eventArgs)
@@ -61,7 +53,8 @@ public class SpectatorTargetInfoEventController(
     {
         await spectatorTargetInfoService.ClearCheckpointsAsync();
         await spectatorTargetInfoService.UpdateTeamInfoAsync();
-        await spectatorTargetInfoService.ResetWidgetForSpectatorsAsync();
+        await spectatorTargetInfoService.SendRequestTargetManialinkAsync();
+        // await spectatorTargetInfoService.ResetWidgetForSpectatorsAsync();
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
@@ -89,11 +82,8 @@ public class SpectatorTargetInfoEventController(
             }
         }
 
-        await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatorLogin);
-        await spectatorTargetInfoService.HideSpectatorInfoWidgetAsync(spectatorLogin);
+        await spectatorTargetInfoService.SendRequestTargetManialinkAsync();
+        // await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatorLogin);
+        // await spectatorTargetInfoService.HideSpectatorInfoWidgetAsync(spectatorLogin);
     }
-
-    [Subscribe(ModeScriptEvent.GiveUp)]
-    public Task OnGiveUpAsync(object sender, PlayerUpdateEventArgs eventArgs) =>
-        spectatorTargetInfoService.SendRequestTargetManialinkAsync(eventArgs.Login);
 }

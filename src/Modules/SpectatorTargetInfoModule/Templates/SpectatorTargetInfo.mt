@@ -183,6 +183,7 @@
         if(focus){
             declare CSmPlayer target <=> GetPrevSpawnedPlayer();
             FocusPlayer(target);
+            //TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
         }
     }
     
@@ -191,6 +192,7 @@
         if(focus){
             declare CSmPlayer target <=> GetNextSpawnedPlayer();
             FocusPlayer(target);
+            //TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
         }
     }
     
@@ -206,8 +208,6 @@
             }
             
 			foreach (InputEvent in Input.PendingEvents) {
-			    log(InputEvent);
-			    
 			    if(InputEvent.Button == CInputEvent::EButton::Left){
 			        SpecPrevious(previousButton, InputEvent.Pad.Type == CInputPad::EPadType::Keyboard);
 			        continue;
