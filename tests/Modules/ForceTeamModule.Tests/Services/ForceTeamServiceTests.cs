@@ -16,7 +16,7 @@ public class ForceTeamServiceTests
     private (
         IForceTeamService ForceTeamService,
         Mock<IManialinkManager> ManialinkManager,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
+        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server,
         Locale locale
         ) NewForceTeamServiceMock()
     {

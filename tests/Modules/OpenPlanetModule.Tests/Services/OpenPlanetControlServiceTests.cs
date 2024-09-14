@@ -28,7 +28,7 @@ public class OpenPlanetControlServiceTests
         Mock<IPermissionManager> Permissions,
         Mock<IOpenPlanetControlSettings> Settings,
         Mock<IManialinkManager> Manialinks,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
+        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server,
         Mock<IOpenPlanetScheduler> Scheduler,
         Mock<IAuditService> AuditService,
         ControllerContextMock<IManialinkInteractionContext> Context
@@ -45,7 +45,7 @@ public class OpenPlanetControlServiceTests
 
         var actionContext = new Mock<IManialinkActionContext>();
         var context =
-            Mocking.NewManialinkInteractionContextMock(player.Object, actionContext.Object, manialinks.Object);
+            Mocking.NewManialinkInteractionContextMock(server.Client, player.Object, actionContext.Object, manialinks.Object);
         var contextService = Mocking.NewContextServiceMock(context.Context.Object, player.Object);
         var locale = Mocking.NewLocaleMock(contextService.Object);
 

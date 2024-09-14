@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Util.MatchSettings.Models.ModeScriptSettingsModels;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Config;
@@ -18,7 +19,7 @@ public class TeamInfoServiceTests
     private readonly Mock<IManialinkManager> _manialinkManager = new();
     private readonly Mock<ITeamInfoSettings> _settings = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
         _server = Mocking.NewServerClientMock();
 
     private ITeamInfoService TeamInfoServiceMock()

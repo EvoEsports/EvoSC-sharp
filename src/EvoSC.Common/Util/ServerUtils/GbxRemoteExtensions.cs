@@ -1,6 +1,6 @@
 ﻿using GbxRemoteNet.XmlRpc;
 
-namespace EvoSC.Common.Util;
+namespace EvoSC.Common.Util.ServerUtils;
 
 public static class GbxRemoteUtils
 {

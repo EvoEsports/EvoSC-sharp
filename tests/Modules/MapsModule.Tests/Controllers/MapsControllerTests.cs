@@ -21,13 +21,12 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
     private Mock<IMxMapService> _mxMapService = new();
     private Mock<IMapService> _mapService = new();
     private Locale _locale;
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
     private Mock<IMap?> _map;
 
     public MapsControllerTests()
     {
         _locale = Mocking.NewLocaleMock(ContextService.Object);
-        InitMock(_actor.Object, _logger, _mxMapService, _mapService, _server.Client, _locale);
+        InitMock(_actor.Object, _logger, _mxMapService, _mapService, _locale);
         
         _map = new Mock<IMap?>();
         _map.Setup(m => m.Name).Returns("MyMap");
@@ -45,7 +44,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mxMapService.Verify(m => m.FindAndDownloadMapAsync(123, null, _actor.Object), Times.Once);
         AuditEventBuilder.Verify(m => m.Success(), Times.Once);
         AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MapAdded), Times.Once);
-        _server.Client.Verify(m => m.SuccessMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
+        Server.Chat.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
 
     [Fact]
@@ -57,7 +56,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
 
         await Assert.ThrowsAsync<Exception>(() => Controller.AddMapAsync("123"));
         
-        _server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
+        Server.Chat.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
 
     [Fact]
@@ -69,7 +68,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
 
         await Assert.ThrowsAsync<DuplicateMapException>(() => Controller.AddMapAsync("123"));
         
-        _server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
+        Server.Chat.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
     
     [Fact]
@@ -80,7 +79,7 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
 
         await Controller.AddMapAsync("123");
         
-        _server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
+        Server.Chat.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
     }
 
     [Fact]
@@ -94,8 +93,8 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         _mapService.Verify(m => m.RemoveMapAsync(123), Times.Once);
         AuditEventBuilder.Verify(m => m.Success(), Times.Once);
         AuditEventBuilder.Verify(m => m.WithEventName(AuditEvents.MapRemoved), Times.Once);
-        _server.Client.Verify(m => m.SuccessMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
-        _server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Never);
+        Server.Chat.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
+        Server.Chat.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);
         _logger.Verify(LogLevel.Debug, null, null, Times.Once());
     }
 
@@ -107,8 +106,8 @@ public class MapsControllerTests : CommandInteractionControllerTestBase<MapsCont
         await Controller.RemoveMapAsync(123);
         
         _mapService.Verify(m => m.RemoveMapAsync(123), Times.Never);
-        _server.Client.Verify(m => m.SuccessMessageAsync(_actor.Object, It.IsAny<string>()), Times.Never);
-        _server.Client.Verify(m => m.ErrorMessageAsync(_actor.Object, It.IsAny<string>()), Times.Once);
+        Server.Chat.Verify(m => m.SuccessMessageAsync(It.IsAny<string>(), _actor.Object), Times.Never);
+        Server.Chat.Verify(m => m.ErrorMessageAsync(It.IsAny<string>(), _actor.Object), Times.Once);
         AuditEventBuilder.Verify(m => m.Success(), Times.Never);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.ServerManagementModule.Interfaces;
 using EvoSC.Modules.Official.ServerManagementModule.Services;
 using EvoSC.Testing;
@@ -11,7 +12,7 @@ public class ServerManagementServiceTests
 {
     public (
         IServerManagementService ServerManagementService,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
+        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server,
         Mock<IEventManager> EventManager
         ) NewServiceMock()
     {

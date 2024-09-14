@@ -1,7 +1,10 @@
-﻿using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
+using GbxRemoteNet.Interfaces;
 using Moq;
 
 namespace EvoSC.Testing.Controllers;
@@ -9,6 +12,9 @@ namespace EvoSC.Testing.Controllers;
 public class ManialinkControllerTestBase<TController> : ControllerMock<TController, IManialinkInteractionContext>
     where TController : class, IController
 {
+    protected readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server =
+        Mocking.NewServerClientMock();
+    
     private Mock<IManialinkManager> _mlManager = new();
 
     /// <summary>
@@ -25,6 +31,6 @@ public class ManialinkControllerTestBase<TController> : ControllerMock<TControll
     protected void InitMock(IOnlinePlayer actor, IManialinkActionContext actionContext, params object[] services)
     {
         base.InitMock(services);
-        this.SetupMock(actor, actionContext, _mlManager.Object);
+        this.SetupMock(Server.Client, actor, actionContext, _mlManager.Object);
     }
 }

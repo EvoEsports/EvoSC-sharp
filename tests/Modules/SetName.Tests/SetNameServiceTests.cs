@@ -20,15 +20,15 @@ public class SetNameServiceTests
         player.Setup(m => m.NickName).Returns("OldName");
         var mlAction = new Mock<IManialinkActionContext>();
         var mlManager = new Mock<IManialinkManager>();
-        var context = Mocking.NewManialinkInteractionContextMock(player.Object, mlAction.Object, mlManager.Object);
-        var contextService = Mocking.NewContextServiceMock(context.Context.Object, null);
         var server = Mocking.NewServerClientMock();
+        var context = Mocking.NewManialinkInteractionContextMock(server.Client, player.Object, mlAction.Object, mlManager.Object);
+        var contextService = Mocking.NewContextServiceMock(context.Context.Object, null);
         var playerRepository = new Mock<IPlayerRepository>();
         var playerCache = new Mock<IPlayerCacheService>();
         var eventManager = new Mock<IEventManager>();
         var locale = Mocking.NewLocaleMock(contextService.Object);
 
-        var service = new SetNameService(server.Client.Object, playerRepository.Object, playerCache.Object,
+        var service = new SetNameService(server.Chat.Object, playerRepository.Object, playerCache.Object,
             eventManager.Object, locale);
 
         await service.SetNicknameAsync(player.Object, "NewName");
@@ -45,13 +45,13 @@ public class SetNameServiceTests
         player.Setup(m => m.NickName).Returns("OldName");
         var mlAction = new Mock<IManialinkActionContext>();
         var mlManager = new Mock<IManialinkManager>();
-        var context = Mocking.NewManialinkInteractionContextMock(player.Object, mlAction.Object, mlManager.Object);
+        var server = Mocking.NewServerClientMock();
+        var context = Mocking.NewManialinkInteractionContextMock(server.Client, player.Object, mlAction.Object, mlManager.Object);
         var contextService = Mocking.NewContextServiceMock(context.Context.Object, null);
         var playerRepository = new Mock<IPlayerRepository>();
         var locale = Mocking.NewLocaleMock(contextService.Object);
-        var server = Mocking.NewServerClientMock();
         
-        var service = new SetNameService(server.Client.Object, playerRepository.Object, null, null, locale);
+        var service = new SetNameService(server.Chat.Object, playerRepository.Object, null, null, locale);
 
         await service.SetNicknameAsync(player.Object, "OldName");
         

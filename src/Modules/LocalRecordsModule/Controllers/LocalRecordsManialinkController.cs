@@ -8,7 +8,7 @@ using EvoSC.Modules.Official.LocalRecordsModule.Permissions;
 namespace EvoSC.Modules.Official.LocalRecordsModule.Controllers;
 
 [Controller]
-public class LocalRecordsManialinkController(ILocalRecordsService localRecordsService, IServerClient server) : ManialinkController
+public class LocalRecordsManialinkController(ILocalRecordsService localRecordsService) : ManialinkController
 {
     [ManialinkRoute(Permission = LocalRecordsPermission.ResetLocals)]
     public async Task ConfirmResetAsync(bool confirmed)
@@ -21,7 +21,7 @@ public class LocalRecordsManialinkController(ILocalRecordsService localRecordsSe
         }
         
         Context.AuditEvent.WithEventName(AuditEvents.ResetAll);
-        await server.InfoMessageAsync("Resetting local records, this may take a while ...");
+        await Context.Chat.InfoMessageAsync("Resetting local records, this may take a while ...");
 
         try
         {
@@ -29,12 +29,12 @@ public class LocalRecordsManialinkController(ILocalRecordsService localRecordsSe
         }
         catch (Exception ex)
         {
-            await server.ErrorMessageAsync($"Failed to reset local records: {ex.Message}");
+            await Context.Chat.ErrorMessageAsync($"Failed to reset local records: {ex.Message}");
             Context.AuditEvent.Error();
             throw;
         }
         
-        await server.SuccessMessageAsync("Local records successfully reset!");
+        await Context.Chat.SuccessMessageAsync("Local records successfully reset!");
         Context.AuditEvent.Success();
 
         await localRecordsService.ShowWidgetToAllAsync();

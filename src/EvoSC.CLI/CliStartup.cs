@@ -81,6 +81,10 @@ public static class CliStartup
                     .RegisterSingleton<IServiceContainerManager, ServiceContainerManager>()
                 , "Logging")
 
+            .Services(AppFeature.Chat, s => s
+                .Register<IChatService, ChatService>(Lifestyle.Transient)
+                , "GbxRemoteClient", "Themes")
+            
             .Services(AppFeature.ChatCommands, s => s
                     .AddEvoScChatCommands()
                 , "Logging", "PlayerManager")

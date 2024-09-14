@@ -19,7 +19,7 @@ public class QueueControllerTests : EventControllerTestBase<QueueController>
 {
     private Mock<IMapQueueService> _mapQueueServiceMock = new();
     private Mock<IMapService> _mapServiceMock = new();
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
+    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) _server = Mocking.NewServerClientMock();
     
     public QueueControllerTests()
     {

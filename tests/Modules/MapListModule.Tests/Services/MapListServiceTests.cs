@@ -31,7 +31,7 @@ public class MapListServiceTests
         ControllerContextMock<IControllerContext> ControllerContext,
         Mock<IOnlinePlayer> Player,
         ILogger<MapListService> Logger,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
+        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server,
         Mock<IManialinkManager> ManialinkManager,
         Mock<IPermissionManager> PermissionManager
         ) NewMapListServiceMock()
@@ -51,7 +51,7 @@ public class MapListServiceTests
             context.ContextService.Object,
             mapService.Object,
             logger,
-            server.Client.Object,
+            server.Chat.Object,
             manialinkManagerService.Object,
             permissionManagerService.Object
         );

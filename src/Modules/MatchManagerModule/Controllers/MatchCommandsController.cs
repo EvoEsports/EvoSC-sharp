@@ -12,7 +12,7 @@ using EvoSC.Modules.Official.MatchManagerModule.Permissions;
 namespace EvoSC.Modules.Official.MatchManagerModule.Controllers;
 
 [Controller]
-public class MatchCommandsController(IMatchControlService matchControl, IServerClient server, Locale locale)
+public class MatchCommandsController(IMatchControlService matchControl, Locale locale)
     : EvoScController<ICommandInteractionContext>
 {
     private readonly dynamic _locale = locale;
@@ -42,7 +42,7 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
     public async Task RestartMatchAsync()
     {
         await matchControl.RestartMatchAsync();
-        await server.InfoMessageAsync(_locale.RestartedMatch(Context.Player.NickName));
+        await Context.Chat.InfoMessageAsync(_locale.RestartedMatch(Context.Player.NickName));
         
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.RestartMatch)
@@ -53,7 +53,7 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
     public async Task EndRoundAsync()
     {
         await matchControl.EndRoundAsync();
-        await server.InfoMessageAsync(_locale.ForcedRoundEnd(Context.Player.NickName));
+        await Context.Chat.InfoMessageAsync(_locale.ForcedRoundEnd(Context.Player.NickName));
         
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.EndRound)
@@ -65,7 +65,7 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
     public async Task SkipMapAsync()
     {
         await matchControl.SkipMapAsync();
-        await server.InfoMessageAsync(_locale.SkippedToNextMap(Context.Player.NickName));
+        await Context.Chat.InfoMessageAsync(_locale.SkippedToNextMap(Context.Player.NickName));
         
         Context.AuditEvent.Success()
             .WithEventName(AuditEvents.SkipMap)
@@ -82,7 +82,7 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
             .WithEventName(AuditEvents.TeamRoundPointsSet)
             .HavingProperties(new { Points = points, Team = playerTeam });
 
-        await server.SuccessMessageAsync(Context.Player, $"Round points for team {playerTeam} was set to {points}.");
+        await Context.Chat.SuccessMessageAsync($"Round points for team {playerTeam} was set to {points}.",Context.Player);
     }
     
     [ChatCommand("setteammappoints", "Set the map points of a team.", MatchControlPermissions.SetTeamPoints)]
@@ -95,7 +95,7 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
             .WithEventName(AuditEvents.TeamMapPointsSet)
             .HavingProperties(new { Points = points, Team = playerTeam });
         
-        await server.SuccessMessageAsync(Context.Player, $"Map points for team {playerTeam} was set to {points}.");
+        await Context.Chat.SuccessMessageAsync($"Map points for team {playerTeam} was set to {points}.", Context.Player);
     }
     
     [ChatCommand("setteammatchpoints", "Set the match points of a team.", MatchControlPermissions.SetTeamPoints)]
@@ -108,7 +108,7 @@ public class MatchCommandsController(IMatchControlService matchControl, IServerC
             .WithEventName(AuditEvents.TeamMatchPointsSet)
             .HavingProperties(new { Points = points, Team = playerTeam });
         
-        await server.SuccessMessageAsync(Context.Player, $"Match points for team {playerTeam} was set to {points}.");
+        await Context.Chat.SuccessMessageAsync($"Match points for team {playerTeam} was set to {points}.", Context.Player);
     }
 
     [ChatCommand("pause", "Pause the current match.", MatchControlPermissions.PauseMatch)]
