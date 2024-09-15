@@ -7,7 +7,11 @@ namespace EvoSC.Modules.Official.SpectatorCamModeModule;
 [Module(IsInternal = true)]
 public class SpectatorCamModeModule(ISpectatorCamModeService spectatorCamModeService) : EvoScModule, IToggleable
 {
-    public Task EnableAsync() => spectatorCamModeService.InitializeAsync();
+    public async Task EnableAsync()
+    {
+        await spectatorCamModeService.SendCamModeWidgetAsync();
+        await spectatorCamModeService.HideGameModeUiAsync();
+    }
 
     public Task DisableAsync() => Task.CompletedTask;
 }

@@ -210,6 +210,20 @@
         while(True){
             yield;
 			
+			declare shouldBeDisplayed = InputPlayer != Null && InputPlayer.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned;
+			
+			if(!shouldBeDisplayed){
+			    if(camModeFrame.Visible){
+			        camModeFrame.Hide();
+			    }
+			    sleep(500);
+			    continue;
+			}
+			
+            if(!camModeFrame.Visible){
+                camModeFrame.Show();
+            }
+			
 			declare Integer AssumedCamMode = GetAssumedCamMode(camMode);
 			
 			if (camMode != AssumedCamMode) {

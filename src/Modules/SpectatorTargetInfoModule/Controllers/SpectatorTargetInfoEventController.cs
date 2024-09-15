@@ -71,7 +71,7 @@ public class SpectatorTargetInfoEventController(
 
         logger.LogInformation("Spectator status: {status}", spectatorInfo);
 
-        if (spectatorInfo is { IsSpectator: true, TargetPlayerId: > 0 })
+        if (spectatorInfo is { TargetPlayerId: > 0 })
         {
             var targetLogin =
                 await spectatorTargetInfoService.GetLoginOfDedicatedPlayerAsync(spectatorInfo.TargetPlayerId);

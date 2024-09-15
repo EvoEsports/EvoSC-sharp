@@ -43,7 +43,7 @@
                    size="{{ h * 0.8 }} {{ h * 0.8 }}"
                    textsize="{{ Theme.UI_FontSize*2 }}"
                    textcolor="{{ Theme.Black }}"
-                   text='{{ true ? Icons.Flag : playerRank }}'
+                   text='{{ playerRank }}'
                    halign="center"
                    valign="center2"
             />
@@ -180,20 +180,20 @@
     
     Void SpecPrevious(CMlLabel button, Boolean focus){
         AnimatePop(button);
-        if(focus){
-            declare CSmPlayer target <=> GetPrevSpawnedPlayer();
-            FocusPlayer(target);
-            //TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
-        }
+        declare CSmPlayer target <=> GetNextSpawnedPlayer();
+        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
+        //if(focus){
+        //    FocusPlayer(target);
+        //}
     }
     
     Void SpecNext(CMlLabel button, Boolean focus){
         AnimatePop(button);
-        if(focus){
-            declare CSmPlayer target <=> GetNextSpawnedPlayer();
-            FocusPlayer(target);
-            //TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
-        }
+        declare CSmPlayer target <=> GetNextSpawnedPlayer();
+        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
+        //if(focus){
+        //    FocusPlayer(target);
+        //}
     }
     
     main() {
