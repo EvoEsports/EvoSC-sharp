@@ -19,20 +19,23 @@ public class SpectatorCamModeService(
 {
     private const string WidgetTemplate = "SpectatorCamModeModule.SpectatorMode";
 
-    public Task SendCamModeWidgetAsync() =>
+    public Task SendPersistentCamModeWidgetAsync() =>
         manialinks.SendPersistentManialinkAsync(WidgetTemplate, new { settings });
 
     public Task HideCamModeWidgetAsync() =>
         manialinks.HideManialinkAsync(WidgetTemplate);
 
-    public async Task HideGameModeUiAsync()
+    public Task HideGameModeUiAsync() =>
+        gameModeUiModuleService.ApplyAndSaveComponentSettingsAsync(GetGameModeUiSettings());
+
+    public GameModeUiComponentSettings GetGameModeUiSettings()
     {
-        await gameModeUiModuleService.ApplyAndSaveComponentSettingsAsync(new GameModeUiComponentSettings(
+        return new GameModeUiComponentSettings(
             GameModeUiComponents.SpectatorBaseCommands,
             false,
             0.0,
             0.0,
             1.0
-        ));
+        );
     }
 }

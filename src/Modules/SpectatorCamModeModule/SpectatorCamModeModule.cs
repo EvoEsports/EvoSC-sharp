@@ -9,7 +9,7 @@ public class SpectatorCamModeModule(ISpectatorCamModeService spectatorCamModeSer
 {
     public async Task EnableAsync()
     {
-        await spectatorCamModeService.SendCamModeWidgetAsync();
+        await spectatorCamModeService.SendPersistentCamModeWidgetAsync();
         await spectatorCamModeService.HideGameModeUiAsync();
     }
 
