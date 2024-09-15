@@ -41,6 +41,7 @@
             <frame id="modes_wrapper" 
                    pos="0 {{ height * 3.0 }}"
                    size="{{ width }} {{ height * 3.0 }}"
+                   hidden="1"
             >
                 <frameinstance modelid="option"/>
                 <frameinstance modelid="option"/>
@@ -277,7 +278,7 @@
         
         declare lastCamUpdate = Net_Race_SpectatorBase_CamUpdate;
         declare camMode = SetCamMode(Net_Race_SpectatorBase_CamMode, camModeFrame);
-        declare isExpanded = True;
+        declare isExpanded = False;
         
         SetupModesDropUp(modesWrapperFrame);
         HideCurrentlySelectedModeAndRearrange(modesWrapperFrame, camMode);
