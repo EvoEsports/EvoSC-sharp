@@ -217,10 +217,6 @@
                 mainFrame.Show();
             }
             
-            if(GUIPlayer.User.Login != targetLogin){
-                TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ GUIPlayer.User.Login);
-            }
-            
 			foreach (InputEvent in Input.PendingEvents) {
 			    if(InputEvent.Button == CInputEvent::EButton::Left){
 			        SpecPrevious(previousButton, InputEvent.Pad.Type == CInputPad::EPadType::Keyboard);
@@ -236,11 +232,9 @@
 			    if(Event.Type == CMlScriptEvent::Type::MouseClick){
 			        if(Event.Control == previousButton){
                         targetLogin = SpecPrevious(previousButton, True);
-                        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ targetLogin);
                         continue;
 			        }else if(Event.Control == nextButton){
                         targetLogin = SpecNext(nextButton, True);
-                        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ targetLogin);
                         continue;
 			        }
 			    }
