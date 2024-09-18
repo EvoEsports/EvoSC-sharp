@@ -30,6 +30,6 @@ public class CheckpointsGroup : List<CheckpointData>
             rank++;
         }
 
-        return -1;
+        return rank;
     }
 }

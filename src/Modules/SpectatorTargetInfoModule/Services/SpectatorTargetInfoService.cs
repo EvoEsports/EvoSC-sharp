@@ -110,7 +110,7 @@ public class SpectatorTargetInfoService(
         _spectatorTargets[spectatorLogin] = targetPlayer;
 
         var checkpointIndex = GetLastCheckpointIndexOfPlayer(targetLogin);
-        var targetRank = 0;
+        var targetRank = 1;
         var timeDifference = 0;
 
         if (_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointsGroup))
@@ -187,10 +187,8 @@ public class SpectatorTargetInfoService(
         return _checkpointTimes;
     }
 
-    public async Task<TmTeamInfo> GetTeamInfoAsync(PlayerTeam team)
-    {
-        return await server.Remote.GetTeamInfoAsync((int)team + 1);
-    }
+    public Task<TmTeamInfo> GetTeamInfoAsync(PlayerTeam team) =>
+        server.Remote.GetTeamInfoAsync((int)team + 1);
 
     public async Task ResetWidgetForSpectatorsAsync()
     {

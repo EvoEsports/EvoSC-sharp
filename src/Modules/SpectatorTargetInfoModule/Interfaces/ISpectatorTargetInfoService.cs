@@ -31,7 +31,7 @@ public interface ISpectatorTargetInfoService
     public string GetTeamColorAsync(PlayerTeam team);
 
     public int GetLastCheckpointIndexOfPlayer(string playerLogin);
-
+    
     public Dictionary<int, CheckpointsGroup> GetCheckpointTimes();
 
     public Task<TmTeamInfo> GetTeamInfoAsync(PlayerTeam team);
@@ -54,5 +54,5 @@ public interface ISpectatorTargetInfoService
 
     public Task HideGameModeUiAsync();
 
-    public Task AddFakePlayerAsync();
+    public Task AddFakePlayerAsync(); //TODO: remove
 }
