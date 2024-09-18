@@ -16,11 +16,13 @@ public interface ISpectatorTargetInfoService
 
     public Task<string?> GetLoginOfDedicatedPlayerAsync(int targetPlayerIdDedicated);
 
-    public Task SetSpectatorTargetLoginAsync(string spectatorLogin, string targetLogin);
+    public Task<IOnlinePlayer?> SetSpectatorTargetAsync(string spectatorLogin, string targetLogin);
+    
+    public Task SetSpectatorTargetAndSendAsync(string spectatorLogin, string targetLogin);
 
     public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin);
 
-    public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(string targetPlayerLogin);
+    public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(IOnlinePlayer targetPlayer);
 
     public SpectatorInfo ParseSpectatorStatus(int spectatorStatus);
 
@@ -30,7 +32,7 @@ public interface ISpectatorTargetInfoService
 
     public string GetTeamColorAsync(PlayerTeam team);
 
-    public int GetLastCheckpointIndexOfPlayer(string playerLogin);
+    public int GetLastCheckpointIndexOfPlayer(IOnlinePlayer playerLogin);
     
     public Dictionary<int, CheckpointsGroup> GetCheckpointTimes();
 
@@ -38,9 +40,11 @@ public interface ISpectatorTargetInfoService
 
     public Task ResetWidgetForSpectatorsAsync();
 
-    public Task SendSpectatorInfoWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
+    public Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer);
 
-    public Task SendSpectatorInfoWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
+    public Task SendSpectatorInfoWidgetAsync(IEnumerable<string> spectatorLogins, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
+
+    public Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
 
     public Task HideSpectatorInfoWidgetAsync();
 

@@ -65,17 +65,17 @@ public class SpectatorTargetInfoService(
         checkpointGroup = checkpointGroup.ToSortedGroup();
         _checkpointTimes[checkpointIndex] = checkpointGroup;
 
-        var playerLogins = GetLoginsOfPlayersSpectatingTarget(playerLogin).ToList();
-        if (playerLogins.IsNullOrEmpty())
+        var spectatorLogins = GetLoginsOfPlayersSpectatingTarget(player).ToList();
+        if (spectatorLogins.IsNullOrEmpty())
         {
             return;
         }
 
         var leadingCheckpointData = checkpointGroup.First();
-        var rank = checkpointGroup.GetRank(playerLogin);
         var timeDifference = GetTimeDifference(leadingCheckpointData, newCheckpointData);
 
-        await SendSpectatorInfoWidgetAsync(playerLogins, player, rank, timeDifference);
+        await SendSpectatorInfoWidgetAsync(spectatorLogins, player, checkpointGroup.GetRank(playerLogin),
+            timeDifference);
     }
 
     public Task ClearCheckpointsAsync()
@@ -94,37 +94,35 @@ public class SpectatorTargetInfoService(
             .FirstOrDefault();
     }
 
-    public async Task SetSpectatorTargetLoginAsync(string spectatorLogin, string targetLogin)
+    public async Task<IOnlinePlayer?> SetSpectatorTargetAsync(string spectatorLogin, string targetLogin)
     {
         if (spectatorLogin == targetLogin)
         {
-            return; //Can't spec yourself
-        }
-
-        if (_spectatorTargets.TryGetValue(spectatorLogin, out var target) && target.GetLogin() == targetLogin)
-        {
-            return; //Player is already spectating target
+            return null; //Can't spec yourself
         }
 
         var targetPlayer = await GetOnlinePlayerByLoginAsync(targetLogin);
-        _spectatorTargets[spectatorLogin] = targetPlayer;
 
-        var checkpointIndex = GetLastCheckpointIndexOfPlayer(targetLogin);
-        var targetRank = 1;
-        var timeDifference = 0;
-
-        if (_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointsGroup))
+        if (_spectatorTargets.TryGetValue(spectatorLogin, out var target) && target == targetPlayer)
         {
-            var leadingCpData = checkpointsGroup.First();
-            var targetCpData = checkpointsGroup.GetPlayer(targetLogin);
-            targetRank = checkpointsGroup.GetRank(targetLogin);
-            timeDifference = GetTimeDifference(leadingCpData, targetCpData!);
+            return null; //Player is already spectating target
         }
-
-        await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, targetRank, timeDifference);
+        
+        _spectatorTargets[spectatorLogin] = targetPlayer;
 
         logger.LogDebug("Updated spectator target {spectatorLogin} -> {targetLogin}.", spectatorLogin,
             targetLogin);
+
+        return targetPlayer;
+    }
+
+    public async Task SetSpectatorTargetAndSendAsync(string spectatorLogin, string targetLogin)
+    {
+        var targetPlayer = await SetSpectatorTargetAsync(spectatorLogin, targetLogin);
+        if (targetPlayer != null)
+        {
+            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer);
+        }
     }
 
     public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin)
@@ -137,9 +135,9 @@ public class SpectatorTargetInfoService(
         return Task.CompletedTask;
     }
 
-    public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(string targetPlayerLogin)
+    public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(IOnlinePlayer targetPlayer)
     {
-        return _spectatorTargets.Where(specTarget => specTarget.Value.GetLogin() == targetPlayerLogin)
+        return _spectatorTargets.Where(specTarget => specTarget.Value.AccountId == targetPlayer.AccountId)
             .Select(specTarget => specTarget.Key);
     }
 
@@ -169,8 +167,9 @@ public class SpectatorTargetInfoService(
         return _isTeamsMode ? _teamInfos[team].RGB : (string)theme.Theme.UI_AccentPrimary;
     }
 
-    public int GetLastCheckpointIndexOfPlayer(string playerLogin)
+    public int GetLastCheckpointIndexOfPlayer(IOnlinePlayer player)
     {
+        var playerLogin = player.GetLogin();
         foreach (var (checkpointIndex, checkpointsGroup) in _checkpointTimes.Reverse())
         {
             if (checkpointsGroup.GetPlayer(playerLogin) != null)
@@ -198,19 +197,38 @@ public class SpectatorTargetInfoService(
         }
     }
 
-    public async Task SendSpectatorInfoWidgetAsync(IEnumerable<string> playerLogins, IOnlinePlayer targetPlayer,
+    public async Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer)
+    {
+        var targetLogin = targetPlayer.GetLogin();
+        var checkpointIndex = GetLastCheckpointIndexOfPlayer(targetPlayer);
+        var targetRank = 1;
+        var timeDifference = 0;
+
+        if (_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointsGroup))
+        {
+            var leadingCpData = checkpointsGroup.First();
+            var targetCpData = checkpointsGroup.GetPlayer(targetLogin);
+            targetRank = checkpointsGroup.GetRank(targetLogin);
+            timeDifference = GetTimeDifference(leadingCpData, targetCpData!);
+        }
+
+        await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, targetRank, timeDifference);
+    }
+
+    public async Task SendSpectatorInfoWidgetAsync(IEnumerable<string> spectatorLogins, IOnlinePlayer targetPlayer,
         int targetPlayerRank, int timeDifference)
     {
-        foreach (var playerLogin in playerLogins)
+        foreach (var spectatorLogin in spectatorLogins)
         {
-            await SendSpectatorInfoWidgetAsync(playerLogin, targetPlayer, targetPlayerRank, timeDifference);
+            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, targetPlayerRank, timeDifference);
         }
     }
 
-    public async Task SendSpectatorInfoWidgetAsync(string playerLogin, IOnlinePlayer targetPlayer, int targetPlayerRank,
+    public async Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer,
+        int targetPlayerRank,
         int timeDifference)
     {
-        await manialinks.SendManialinkAsync(playerLogin, WidgetTemplate,
+        await manialinks.SendManialinkAsync(spectatorLogin, WidgetTemplate,
             new
             {
                 settings,

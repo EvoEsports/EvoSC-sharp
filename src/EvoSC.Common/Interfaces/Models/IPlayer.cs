@@ -15,7 +15,7 @@ public interface IPlayer : IEquatable<IPlayer>
     /// <summary>
     /// The Player's account ID.
     /// </summary>
-    public string AccountId { get; }
+    public string  AccountId { get; }
     
     /// <summary>
     /// The player's nickname

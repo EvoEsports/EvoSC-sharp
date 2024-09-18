@@ -15,7 +15,7 @@ public class SpectatorTargetInfoManialinkController(ISpectatorTargetInfoService 
 
         if (targetLogin != "" && targetLogin != spectatingPlayerLogin)
         {
-            await spectatorTargetInfoService.SetSpectatorTargetLoginAsync(spectatingPlayerLogin, targetLogin);
+            await spectatorTargetInfoService.SetSpectatorTargetAndSendAsync(spectatingPlayerLogin, targetLogin);
         }
         else
         {

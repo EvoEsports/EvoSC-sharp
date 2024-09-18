@@ -1,9 +1,11 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Config;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
@@ -11,6 +13,7 @@ using EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;
 using EvoSC.Testing;
 using GbxRemoteNet.Interfaces;
 using GbxRemoteNet.Structs;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -19,19 +22,27 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Tests.Services;
 public class SpectatorTargetInfoServiceTests
 {
     private readonly Mock<IManialinkManager> _manialinkManager = new();
+    private readonly Mock<IMatchSettingsService> _matchSettingsService = new();
     private readonly Mock<ISpectatorTargetInfoSettings> _settings = new();
     private readonly Mock<IPlayerManagerService> _playerManager = new();
+    private readonly Mock<IGameModeUiModuleService> _gameModeUiModuleService = new();
+    private readonly Mock<ILogger<SpectatorTargetInfoService>> _logger = new();
+    private readonly Mock<IThemeManager> _theme = new();
 
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
-/*
+
     private ISpectatorTargetInfoService ServiceMock()
     {
         return new SpectatorTargetInfoService(
             _manialinkManager.Object,
             _server.Client.Object,
             _playerManager.Object,
-            _settings.Object
+            _matchSettingsService.Object,
+            _settings.Object,
+            _theme.Object,
+            _gameModeUiModuleService.Object,
+            _logger.Object
         );
     }
 
@@ -77,9 +88,18 @@ public class SpectatorTargetInfoServiceTests
     public async Task Updates_Spectator_Target_With_Dedicated_Player_Id()
     {
         var spectatorTargetService = ServiceMock();
+        
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer_unittest*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer_unittest*" });
 
-        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "UnitTest");
-        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("UnitTest").ToList();
+        await spectatorTargetService.SetSpectatorTargetAsync("*fakeplayer1*", "*fakeplayer_unittest*");
+
+        var fakePlayer = new OnlinePlayer
+        {
+            State = PlayerState.Playing,
+            AccountId = "*fakeplayer_unittest*"
+        };
+        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget(fakePlayer).ToList();
 
         Assert.Single(spectatorOfPlayer);
         Assert.Contains("*fakeplayer1*", spectatorOfPlayer);
@@ -89,10 +109,23 @@ public class SpectatorTargetInfoServiceTests
     public async Task Removes_Spectator_If_Target_Login_Is_Null()
     {
         var spectatorTargetService = ServiceMock();
+        
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer_UnitTest*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer_UnitTest*" });
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer_SomeOtherPlayer*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer_SomeOtherPlayer*" });
 
-        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "UnitTest");
-        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "SomeOtherPlayer");
-        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("UnitTest").ToList();
+        await spectatorTargetService.SetSpectatorTargetAsync("*fakeplayer1*", "*fakeplayer_UnitTest*");
+        await spectatorTargetService.SetSpectatorTargetAsync("*fakeplayer1*", "*fakeplayer_SomeOtherPlayer*");
+
+        var fakePlayer = new OnlinePlayer
+        {
+            State = PlayerState.Playing,
+            AccountId = "*fakeplayer_UnitTest*"
+        };
+
+        var spectatorOfPlayer =
+            spectatorTargetService.GetLoginsOfPlayersSpectatingTarget(fakePlayer).ToList();
 
         Assert.Empty(spectatorOfPlayer);
         Assert.DoesNotContain("*fakeplayer1*", spectatorOfPlayer);
@@ -103,11 +136,17 @@ public class SpectatorTargetInfoServiceTests
     {
         var spectatorTargetService = ServiceMock();
 
-        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer1*", "*fakeplayer10*");
-        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer2*", "*fakeplayer10*");
-        await spectatorTargetService.SetSpectatorTargetLoginAsync("*fakeplayer3*", "*fakeplayer20*");
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer10*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer10*" });
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer99*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer99*" });
 
-        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget("*fakeplayer10*").ToList();
+        await spectatorTargetService.SetSpectatorTargetAsync("*fakeplayer1*", "*fakeplayer10*");
+        await spectatorTargetService.SetSpectatorTargetAsync("*fakeplayer2*", "*fakeplayer10*");
+        await spectatorTargetService.SetSpectatorTargetAsync("*fakeplayer3*", "*fakeplayer99*");
+
+        var fakePlayer10 = new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer10*" };
+        var spectatorOfPlayer = spectatorTargetService.GetLoginsOfPlayersSpectatingTarget(fakePlayer10).ToList();
 
         Assert.Equal(2, spectatorOfPlayer.Count);
         Assert.Contains("*fakeplayer1*", spectatorOfPlayer);
@@ -180,5 +219,4 @@ public class SpectatorTargetInfoServiceTests
 
         return Task.CompletedTask;
     }
-    */
 }
