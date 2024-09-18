@@ -26,7 +26,7 @@ public class SpectatorCamModeService(
         manialinks.HideManialinkAsync(WidgetTemplate);
 
     public Task HideGameModeUiAsync() =>
-        gameModeUiModuleService.ApplyAndSaveComponentSettingsAsync(GetGameModeUiSettings());
+        gameModeUiModuleService.ApplyComponentSettingsAsync(GetGameModeUiSettings());
 
     public GameModeUiComponentSettings GetGameModeUiSettings()
     {

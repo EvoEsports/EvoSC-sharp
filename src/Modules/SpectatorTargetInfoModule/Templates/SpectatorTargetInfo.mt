@@ -10,6 +10,7 @@
     <property type="int" name="playerRank" default="0"/>
     <property type="int" name="playerTeam" default="-1"/>
     <property type="string" name="playerName" default="unknown"/>
+    <property type="string" name="playerLogin" default="unknown"/>
     <property type="string" name="teamColorCode" default="000"/>
 
     <property type="double" name="centerBoxWidth" default="50.0"/>
@@ -178,33 +179,46 @@
         }
     }
     
-    Void SpecPrevious(CMlLabel button, Boolean focus){
+    Text SpecPrevious(CMlLabel button, Boolean focus){
         AnimatePop(button);
         declare CSmPlayer target <=> GetNextSpawnedPlayer();
-        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
-        //if(focus){
-        //    FocusPlayer(target);
-        //}
+        if(focus){
+            FocusPlayer(target);
+        }
+        return target.User.Login;
     }
     
-    Void SpecNext(CMlLabel button, Boolean focus){
+    Text SpecNext(CMlLabel button, Boolean focus){
         AnimatePop(button);
         declare CSmPlayer target <=> GetNextSpawnedPlayer();
-        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ target.User.Login);
-        //if(focus){
-        //    FocusPlayer(target);
-        //}
+        if(focus){
+            FocusPlayer(target);
+        }
+        return target.User.Login;
     }
     
     main() {
+        declare mainFrame <=> (Page.MainFrame.GetFirstChild("main_frame") as CMlFrame);
         declare previousButton <=> (Page.MainFrame.GetFirstChild("left_button") as CMlLabel);
         declare nextButton <=> (Page.MainFrame.GetFirstChild("right_button") as CMlLabel);
+        declare targetLogin = "{{ playerLogin }}";
         
         while(True){
             yield;
             
             if(GUIPlayer == Null){
+                if(mainFrame.Visible){
+                    mainFrame.Hide();
+                }
                 continue;
+            }
+            
+            if(!mainFrame.Visible){
+                mainFrame.Show();
+            }
+            
+            if(GUIPlayer.User.Login != targetLogin){
+                TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ GUIPlayer.User.Login);
             }
             
 			foreach (InputEvent in Input.PendingEvents) {
@@ -221,10 +235,12 @@
 			foreach(Event in PendingEvents){
 			    if(Event.Type == CMlScriptEvent::Type::MouseClick){
 			        if(Event.Control == previousButton){
-                        SpecPrevious(previousButton, True);
+                        targetLogin = SpecPrevious(previousButton, True);
+                        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ targetLogin);
                         continue;
 			        }else if(Event.Control == nextButton){
-                        SpecNext(nextButton, True);
+                        targetLogin = SpecNext(nextButton, True);
+                        TriggerPageAction("SpectatorTargetInfoManialinkController/SetSpectatorTarget/" ^ targetLogin);
                         continue;
 			        }
 			    }

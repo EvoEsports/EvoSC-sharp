@@ -31,7 +31,7 @@ public class SpectatorTargetInfoService(
     ILogger<SpectatorTargetInfoService> logger
 ) : ISpectatorTargetInfoService
 {
-    private const string RequestTargetTemplate = "SpectatorTargetInfoModule.RequestSpecTarget";
+    private const string ReportTargetTemplate = "SpectatorTargetInfoModule.ReportSpecTarget";
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
     private readonly Dictionary<int, CheckpointsGroup> _checkpointTimes = new(); // cp-id -> CheckpointsGroup
@@ -39,23 +39,12 @@ public class SpectatorTargetInfoService(
     private readonly Dictionary<PlayerTeam, TmTeamInfo> _teamInfos = new();
     private bool _isTeamsMode;
 
-    /*
-     * Spectator select new target -> update widget for them
-     * Driver passes new checkpoint -> update widget for all spectators of that player
-     * New round starts -> clear diffs in widgets
-     * Hide on podium
-     * Re-send widget after map change
-     */
-
     public async Task InitializeAsync()
     {
         await UpdateIsTeamsModeAsync();
         await UpdateTeamInfoAsync();
         await HideGameModeUiAsync();
-        await SendRequestTargetManialinkAsync();
-
-        // var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
-        // onlinePlayers.Where(player => player.State == PlayerState.Spectating);
+        await SendReportSpectatorTargetManialinkAsync();
     }
 
     public Task<IOnlinePlayer> GetOnlinePlayerByLoginAsync(string playerLogin)
@@ -107,9 +96,14 @@ public class SpectatorTargetInfoService(
 
     public async Task SetSpectatorTargetLoginAsync(string spectatorLogin, string targetLogin)
     {
+        if (spectatorLogin == targetLogin)
+        {
+            return; //Can't spec yourself
+        }
+
         if (_spectatorTargets.TryGetValue(spectatorLogin, out var target) && target.GetLogin() == targetLogin)
         {
-            return;
+            return; //Player is already spectating target
         }
 
         var targetPlayer = await GetOnlinePlayerByLoginAsync(targetLogin);
@@ -226,6 +220,7 @@ public class SpectatorTargetInfoService(
                 playerRank = targetPlayerRank,
                 playerName = targetPlayer.NickName,
                 playerTeam = targetPlayer.Team,
+                playerLogin = targetPlayer.GetLogin(),
                 teamColorCode = new ColorUtils().Opacity(GetTeamColorAsync(targetPlayer.Team), 80)
             });
     }
@@ -236,13 +231,8 @@ public class SpectatorTargetInfoService(
     public Task HideSpectatorInfoWidgetAsync(string playerLogin)
         => manialinks.HideManialinkAsync(playerLogin, WidgetTemplate);
 
-    public Task SendRequestTargetManialinkAsync() =>
-        manialinks.SendManialinkAsync(RequestTargetTemplate);
-
-    public async Task SendRequestTargetManialinkAsync(string playerLogin)
-    {
-        await manialinks.SendManialinkAsync(playerLogin, RequestTargetTemplate, new { });
-    }
+    public Task SendReportSpectatorTargetManialinkAsync() =>
+        manialinks.SendPersistentManialinkAsync(ReportTargetTemplate);
 
     public async Task UpdateTeamInfoAsync()
     {
@@ -260,7 +250,7 @@ public class SpectatorTargetInfoService(
 
     public async Task HideGameModeUiAsync()
     {
-        await gameModeUiModuleService.ApplyAndSaveComponentSettingsAsync(new GameModeUiComponentSettings(
+        await gameModeUiModuleService.ApplyComponentSettingsAsync(new GameModeUiComponentSettings(
             GameModeUiComponents.SpectatorBaseName,
             false,
             0.0,

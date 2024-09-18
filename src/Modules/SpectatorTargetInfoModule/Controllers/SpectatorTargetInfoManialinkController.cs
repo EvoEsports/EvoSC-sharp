@@ -11,14 +11,16 @@ public class SpectatorTargetInfoManialinkController(ISpectatorTargetInfoService 
 {
     public async Task SetSpectatorTargetAsync(string targetLogin)
     {
-        if (Context.Player.GetLogin() != targetLogin)
+        var spectatingPlayerLogin = Context.Player.GetLogin();
+
+        if (targetLogin != "" && targetLogin != spectatingPlayerLogin)
         {
-            await spectatorTargetInfoService.SetSpectatorTargetLoginAsync(Context.Player.GetLogin(), targetLogin);
+            await spectatorTargetInfoService.SetSpectatorTargetLoginAsync(spectatingPlayerLogin, targetLogin);
         }
         else
         {
-            await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(Context.Player.GetLogin());
-            await spectatorTargetInfoService.HideSpectatorInfoWidgetAsync(Context.Player.GetLogin());
+            await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatingPlayerLogin);
+            await spectatorTargetInfoService.HideSpectatorInfoWidgetAsync(spectatingPlayerLogin);
         }
     }
 }

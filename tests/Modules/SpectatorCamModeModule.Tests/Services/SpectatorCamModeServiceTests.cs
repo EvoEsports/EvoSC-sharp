@@ -51,7 +51,7 @@ public class SpectatorCamModeServiceTests
         var camModeService = CamModeServiceMock();
         await camModeService.HideGameModeUiAsync();
 
-        _gameModeUiModule.Verify(s => s.ApplyAndSaveComponentSettingsAsync(It.IsAny<GameModeUiComponentSettings>()));
+        _gameModeUiModule.Verify(s => s.ApplyComponentSettingsAsync(It.IsAny<GameModeUiComponentSettings>()));
     }
 
     [Fact]

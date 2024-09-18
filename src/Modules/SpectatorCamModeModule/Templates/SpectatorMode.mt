@@ -36,7 +36,7 @@
             />
         </framemodel>
 
-        <frame id="main_frame" pos="{{ settings.X }} {{ settings.Y }}">
+        <frame id="main_frame" pos="{{ settings.X }} {{ settings.Y }}" hidden="1">
             <frameinstance id="cam_mode_frame" modelid="option"/>
             <frame id="modes_wrapper" 
                    pos="0 {{ height * 3.0 }}"
