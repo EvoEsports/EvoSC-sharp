@@ -107,7 +107,7 @@ public class SpectatorTargetInfoService(
         {
             return null; //Player is already spectating target
         }
-        
+
         _spectatorTargets[spectatorLogin] = targetPlayer;
 
         logger.LogDebug("Updated spectator target {spectatorLogin} -> {targetLogin}.", spectatorLogin,
@@ -141,17 +141,6 @@ public class SpectatorTargetInfoService(
             .Select(specTarget => specTarget.Key);
     }
 
-    public SpectatorInfo ParseSpectatorStatus(int spectatorStatus)
-    {
-        return new SpectatorInfo(
-            Convert.ToBoolean(spectatorStatus % 10),
-            Convert.ToBoolean((spectatorStatus / 10) % 10),
-            Convert.ToBoolean((spectatorStatus / 100) % 10),
-            Convert.ToBoolean((spectatorStatus / 1000) % 10),
-            spectatorStatus / 10_000
-        );
-    }
-
     public int GetTimeDifference(CheckpointData leadingCheckpointData, CheckpointData targetCheckpointData)
     {
         return GetTimeDifference(leadingCheckpointData.time, targetCheckpointData.time);
@@ -181,13 +170,8 @@ public class SpectatorTargetInfoService(
         return -1;
     }
 
-    public Dictionary<int, CheckpointsGroup> GetCheckpointTimes()
-    {
-        return _checkpointTimes;
-    }
-
-    public Task<TmTeamInfo> GetTeamInfoAsync(PlayerTeam team) =>
-        server.Remote.GetTeamInfoAsync((int)team + 1);
+    public Dictionary<int, CheckpointsGroup> GetCheckpointTimes() =>
+        _checkpointTimes;
 
     public async Task ResetWidgetForSpectatorsAsync()
     {
@@ -252,8 +236,8 @@ public class SpectatorTargetInfoService(
 
     public async Task UpdateTeamInfoAsync()
     {
-        _teamInfos[PlayerTeam.Team1] = await GetTeamInfoAsync(PlayerTeam.Team1);
-        _teamInfos[PlayerTeam.Team2] = await GetTeamInfoAsync(PlayerTeam.Team2);
+        _teamInfos[PlayerTeam.Team1] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1 + 1);
+        _teamInfos[PlayerTeam.Team2] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1);
     }
 
     public async Task UpdateIsTeamsModeAsync()
@@ -261,6 +245,7 @@ public class SpectatorTargetInfoService(
         _isTeamsMode =
             await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.Teams
                 or DefaultModeScriptName.TmwtTeams;
+
         logger.LogInformation("Team mode is {state}", _isTeamsMode ? "active" : "not active");
     }
 
@@ -274,7 +259,4 @@ public class SpectatorTargetInfoService(
             1.0
         ));
     }
-
-    public Task AddFakePlayerAsync() => //TODO: remove before mergin into master
-        server.Remote.ConnectFakePlayerAsync();
 }

@@ -154,20 +154,6 @@ public class SpectatorTargetInfoServiceTests
         Assert.DoesNotContain("*fakeplayer3*", spectatorOfPlayer);
     }
 
-    [Theory]
-    [InlineData(10_000, 1)]
-    [InlineData(2_550_000, 255)]
-    [InlineData(1_230_000, 123)]
-    public Task Parses_Target_Player_Id_From_Spectator_Status(int spectatorStatus, int expectedPlayerId)
-    {
-        var spectatorTargetService = ServiceMock();
-        var parsedStatus = spectatorTargetService.ParseSpectatorStatus(spectatorStatus);
-
-        Assert.Equal(expectedPlayerId, parsedStatus.TargetPlayerId);
-
-        return Task.CompletedTask;
-    }
-
     [Fact]
     public Task Gets_Rank_From_Sorted_Checkpoints_List()
     {
