@@ -32,7 +32,7 @@ public class SpectatorTargetInfoServiceTests
     private readonly Mock<ILogger<SpectatorTargetInfoService>> _logger = new();
     private readonly Mock<IThemeManager> _theme = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
 
     private ISpectatorTargetInfoService ServiceMock()
