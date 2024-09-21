@@ -251,12 +251,12 @@ public class SpectatorTargetInfoService(
 
     public async Task HideGameModeUiAsync()
     {
-        await gameModeUiModuleService.ApplyComponentSettingsAsync(new GameModeUiComponentSettings(
+        await gameModeUiModuleService.ApplyComponentSettingsAsync(
             GameModeUiComponents.SpectatorBaseName,
             false,
             0.0,
             0.0,
             1.0
-        ));
+        );
     }
 }
