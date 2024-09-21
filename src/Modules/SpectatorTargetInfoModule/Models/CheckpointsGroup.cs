@@ -14,7 +14,10 @@ public class CheckpointsGroup : List<CheckpointData>
         var rank = 1;
         foreach (var checkpointData in this)
         {
-            if (checkpointData.player.GetLogin() == playerLogin) return rank;
+            if (checkpointData.player.GetLogin() == playerLogin)
+            {
+                return rank;
+            }
             rank++;
         }
 
