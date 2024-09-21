@@ -42,9 +42,9 @@ public class SpectatorTargetInfoService(
     public async Task InitializeAsync()
     {
         await UpdateIsTeamsModeAsync();
-        await UpdateTeamInfoAsync();
-        await HideGameModeUiAsync();
+        await FetchAndCacheTeamInfoAsync();
         await SendReportSpectatorTargetManialinkAsync();
+        await HideGameModeUiAsync();
     }
 
     public Task<IOnlinePlayer> GetOnlinePlayerByLoginAsync(string playerLogin)
@@ -234,7 +234,7 @@ public class SpectatorTargetInfoService(
     public Task SendReportSpectatorTargetManialinkAsync() =>
         manialinks.SendPersistentManialinkAsync(ReportTargetTemplate);
 
-    public async Task UpdateTeamInfoAsync()
+    public async Task FetchAndCacheTeamInfoAsync()
     {
         _teamInfos[PlayerTeam.Team1] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1 + 1);
         _teamInfos[PlayerTeam.Team2] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1);
@@ -249,14 +249,6 @@ public class SpectatorTargetInfoService(
         logger.LogInformation("Team mode is {state}", _isTeamsMode ? "active" : "not active");
     }
 
-    public async Task HideGameModeUiAsync()
-    {
-        await gameModeUiModuleService.ApplyComponentSettingsAsync(
-            GameModeUiComponents.SpectatorBaseName,
-            false,
-            0.0,
-            0.0,
-            1.0
-        );
-    }
+    public Task HideGameModeUiAsync() =>
+        gameModeUiModuleService.ApplyComponentSettingsAsync(GameModeUiComponents.SpectatorBaseName, false, 0, 0, 1);
 }

@@ -1,7 +1,7 @@
 ﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
@@ -11,7 +11,7 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Controllers;
 
 [Controller]
 public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spectatorTargetInfoService)
-    : EvoScController<EventControllerContext>
+    : EvoScController<IEventControllerContext>
 {
     [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
     public Task OnPlayerDisconnect(object sender, PlayerGbxEventArgs eventArgs) =>
@@ -33,6 +33,6 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
     public async Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs)
     {
         await spectatorTargetInfoService.ClearCheckpointsAsync();
-        await spectatorTargetInfoService.UpdateTeamInfoAsync();
+        await spectatorTargetInfoService.FetchAndCacheTeamInfoAsync();
     }
 }

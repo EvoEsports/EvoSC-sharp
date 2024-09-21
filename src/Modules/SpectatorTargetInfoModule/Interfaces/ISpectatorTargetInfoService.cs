@@ -160,7 +160,7 @@ public interface ISpectatorTargetInfoService
     /// Retrieve and cache the latest team infos.
     /// </summary>
     /// <returns></returns>
-    public Task UpdateTeamInfoAsync();
+    public Task FetchAndCacheTeamInfoAsync();
     
     /// <summary>
     /// Updates whether team mode is active or not.
