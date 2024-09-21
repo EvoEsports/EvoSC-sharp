@@ -30,7 +30,7 @@ public class
         var spectatorLogin = _actor.Object.GetLogin();
         var targetLogin = "*fakeplayer_target*";
 
-        await Controller.ReportSpectatorTarget(targetLogin);
+        await Controller.ReportSpectatorTargetAsync(targetLogin);
 
         _spectatorTargetService.Verify(st => st.SetSpectatorTargetAndSendAsync(spectatorLogin, targetLogin), Times.Once);
         _spectatorTargetService.Verify(st => st.RemovePlayerFromSpectatorsListAsync(spectatorLogin), Times.Never);
@@ -46,7 +46,7 @@ public class
         var spectatorLogin = _actor.Object.GetLogin();
         var targetLogin = "";
 
-        await Controller.ReportSpectatorTarget(targetLogin);
+        await Controller.ReportSpectatorTargetAsync(targetLogin);
 
         _spectatorTargetService.Verify(st => st.SetSpectatorTargetAndSendAsync(spectatorLogin, targetLogin), Times.Never);
         _spectatorTargetService.Verify(st => st.RemovePlayerFromSpectatorsListAsync(spectatorLogin), Times.Once);
@@ -62,7 +62,7 @@ public class
         var spectatorLogin = _actor.Object.GetLogin();
         var targetLogin = "*fakeplayer_spectator*";
 
-        await Controller.ReportSpectatorTarget(targetLogin);
+        await Controller.ReportSpectatorTargetAsync(targetLogin);
 
         _spectatorTargetService.Verify(st => st.SetSpectatorTargetAndSendAsync(spectatorLogin, targetLogin), Times.Never);
         _spectatorTargetService.Verify(st => st.RemovePlayerFromSpectatorsListAsync(spectatorLogin), Times.Once);

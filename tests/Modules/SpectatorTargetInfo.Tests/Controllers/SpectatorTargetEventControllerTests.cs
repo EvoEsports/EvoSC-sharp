@@ -24,7 +24,7 @@ public class
     {
         var login = "*fakeplayer_unittest*";
 
-        await Controller.OnPlayerDisconnect(null, new PlayerGbxEventArgs { Login = login });
+        await Controller.OnPlayerDisconnectAsync(null, new PlayerGbxEventArgs { Login = login });
 
         _spectatorTargetService.Verify(sts => sts.RemovePlayerFromSpectatorsListAsync(login));
     }
@@ -32,7 +32,7 @@ public class
     [Fact]
     public async Task Updates_Team_Mode_On_New_Map()
     {
-        await Controller.OnBeginMap(null, new MapGbxEventArgs());
+        await Controller.OnBeginMapAsync(null, new MapGbxEventArgs());
 
         _spectatorTargetService.Verify(sts => sts.UpdateIsTeamsModeAsync());
     }
