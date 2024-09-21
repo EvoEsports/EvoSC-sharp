@@ -127,11 +127,19 @@ public interface ISpectatorTargetInfoService
     /// </summary>
     /// <param name="spectatorLogin"></param>
     /// <param name="targetPlayer"></param>
-    /// <param name="targetPlayerRank"></param>
+    /// <param name="widgetData"></param>
+    /// <returns></returns>
+    public Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer, object widgetData);
+
+    /// <summary>
+    /// Gets the data that's passed to the widget.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="rank"></param>
     /// <param name="timeDifference"></param>
     /// <returns></returns>
-    public Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
-
+    public object GetWidgetData(IOnlinePlayer player, int rank, int timeDifference);
+    
     /// <summary>
     /// Hides the widget for all players.
     /// </summary>

@@ -9,7 +9,6 @@ using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.GameModeUiModule.Enums;
 using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
-using EvoSC.Modules.Official.GameModeUiModule.Models;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Config;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
@@ -171,7 +170,8 @@ public class SpectatorTargetInfoService(
     {
         foreach (var (spectatorLogin, targetPlayer) in _spectatorTargets)
         {
-            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, 1, 0);
+            var widgetData = GetWidgetData(targetPlayer, 1, 0);
+            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
         }
     }
 
@@ -190,33 +190,35 @@ public class SpectatorTargetInfoService(
             timeDifference = GetTimeDifference(leadingCpData.time, targetCpData?.time ?? 0);
         }
 
-        await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, targetRank, timeDifference);
+        var widgetData = GetWidgetData(targetPlayer, targetRank, timeDifference);
+        await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
     }
 
     public async Task SendSpectatorInfoWidgetAsync(IEnumerable<string> spectatorLogins, IOnlinePlayer targetPlayer,
         int targetPlayerRank, int timeDifference)
     {
+        var widgetData = GetWidgetData(targetPlayer, targetPlayerRank, timeDifference);
         foreach (var spectatorLogin in spectatorLogins)
         {
-            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, targetPlayerRank, timeDifference);
+            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
         }
     }
 
-    public async Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer,
-        int targetPlayerRank,
-        int timeDifference)
+    public Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer, object widgetData) =>
+        manialinks.SendManialinkAsync(spectatorLogin, WidgetTemplate, widgetData);
+
+    public object GetWidgetData(IOnlinePlayer player, int rank, int timeDifference)
     {
-        await manialinks.SendManialinkAsync(spectatorLogin, WidgetTemplate,
-            new
-            {
-                settings,
-                timeDifference,
-                playerRank = targetPlayerRank,
-                playerName = targetPlayer.NickName,
-                playerTeam = targetPlayer.Team,
-                playerLogin = targetPlayer.GetLogin(),
-                teamColorCode = new ColorUtils().Opacity(GetTeamColor(targetPlayer.Team), 80)
-            });
+        return new
+        {
+            settings,
+            timeDifference,
+            playerRank = rank,
+            playerName = player.NickName,
+            playerTeam = player.Team,
+            playerLogin = player.GetLogin(),
+            teamColorCode = new ColorUtils().Opacity(GetTeamColor(player.Team), 80)
+        };
     }
 
     public Task HideSpectatorInfoWidgetAsync()

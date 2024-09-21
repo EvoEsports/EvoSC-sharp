@@ -295,23 +295,10 @@ public class SpectatorTargetInfoServiceTests
         var spectatorTargetService = ServiceMock();
         await spectatorTargetService.UpdateIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
-        await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, 2, 150);
+        var widgetData = spectatorTargetService.GetWidgetData(targetPlayer, 2, 150);
+        await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
 
-        // _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin,
-        //     "SpectatorTargetInfoModule.SpectatorTargetInfo",
-        //     new
-        //     {
-        //         settings = _settings.Object,
-        //         timeDifference = 150,
-        //         playerRank = 2,
-        //         playerName = targetPlayer.NickName,
-        //         playerTeam = targetPlayer.Team,
-        //         playerLogin = targetPlayer.GetLogin(),
-        //         teamColorCode = "FF0066CC"
-        //     }));
-        _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin,
-            "SpectatorTargetInfoModule.SpectatorTargetInfo",
-            It.IsAny<object>()));
+        _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin, "SpectatorTargetInfoModule.SpectatorTargetInfo",widgetData));
     }
 
     [Fact]
@@ -381,21 +368,9 @@ public class SpectatorTargetInfoServiceTests
         await spectatorTargetService.AddCheckpointAsync(otherPlayer.GetLogin(), 2, 1000);
         await spectatorTargetService.AddCheckpointAsync(targetPlayer.GetLogin(), 2, 1234);
         await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer);
-
-        // _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin,
-        //     "SpectatorTargetInfoModule.SpectatorTargetInfo",
-        //     new
-        //     {
-        //         settings = _settings.Object,
-        //         timeDifference = 234,
-        //         playerRank = 2,
-        //         playerName = targetPlayer.NickName,
-        //         playerTeam = targetPlayer.Team,
-        //         playerLogin = targetPlayer.GetLogin(),
-        //         teamColorCode = "FF0066CC"
-        //     }));
+        
         _manialinkManager.Verify(mm =>
-            mm.SendManialinkAsync(spectatorLogin, "SpectatorTargetInfoModule.SpectatorTargetInfo", It.IsAny<object>()));
+            mm.SendManialinkAsync(spectatorLogin, "SpectatorTargetInfoModule.SpectatorTargetInfo", It.IsAny<object>()), Times.Once);
     }
 
     [Fact]
@@ -423,18 +398,6 @@ public class SpectatorTargetInfoServiceTests
         await spectatorTargetService.SetSpectatorTargetAsync(spectatorLogin, targetPlayer.GetLogin());
         await spectatorTargetService.ResetWidgetForSpectatorsAsync();
 
-        // _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin,
-        //     "SpectatorTargetInfoModule.SpectatorTargetInfo",
-        //     new
-        //     {
-        //         settings = _settings.Object,
-        //         timeDifference = 0,
-        //         playerRank = 1,
-        //         playerName = targetPlayer.NickName,
-        //         playerTeam = targetPlayer.Team,
-        //         playerLogin = targetPlayer.GetLogin(),
-        //         teamColorCode = "FF0066CC"
-        //     }));
         _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin,
             "SpectatorTargetInfoModule.SpectatorTargetInfo",
             It.IsAny<object>()));
