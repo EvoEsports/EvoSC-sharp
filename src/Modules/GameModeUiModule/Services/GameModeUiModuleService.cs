@@ -13,15 +13,15 @@ namespace EvoSC.Modules.Official.GameModeUiModule.Services;
 public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings)
     : IGameModeUiModuleService
 {
-    public Task InitializeAsync() =>
-        ApplyComponentSettingsAsync(GetDefaultSettings());
-
     public Task ApplyComponentSettingsAsync(IEnumerable<GameModeUiComponentSettings> componentSettingsList) =>
         server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties",
             GetUiModulesPropertiesJson(componentSettingsList));
 
     public Task ApplyComponentSettingsAsync(GameModeUiComponentSettings componentSettings) =>
         ApplyComponentSettingsAsync([componentSettings]);
+
+    public Task ApplyComponentSettingsAsync(string name, bool visible, double x, double y, double scale) =>
+        ApplyComponentSettingsAsync([new GameModeUiComponentSettings(name, visible, x, y, scale)]);
 
     public string GetUiModulesPropertiesJson(IEnumerable<GameModeUiComponentSettings> componentSettingsList)
     {

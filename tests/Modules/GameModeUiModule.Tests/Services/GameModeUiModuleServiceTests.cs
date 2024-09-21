@@ -22,6 +22,7 @@ public class GameModeUiModuleServiceTests
     {
         return new GameModeUiModuleService(_server.Client.Object, _settings.Object);
     }
+
     [Theory]
     [InlineData("UnitTest", true, 0.0, 0.0, 1.0)]
     [InlineData("UnitTest", false, -160.0, 80.0, 2.0)]
@@ -29,7 +30,8 @@ public class GameModeUiModuleServiceTests
     public Task Generates_Property_Object(string id, bool visible, double x, double y, double scale)
     {
         var uiModuleService = UiModuleServiceMock();
-        var uiModulePropertyObject = uiModuleService.GeneratePropertyObject(new GameModeUiComponentSettings(id, visible, x, y, scale));
+        var uiModulePropertyObject =
+            uiModuleService.GeneratePropertyObject(new GameModeUiComponentSettings(id, visible, x, y, scale));
 
         var idProperty = uiModulePropertyObject.GetType().GetProperty("id");
         Assert.Equal(id, idProperty.GetValue(uiModulePropertyObject, null));
@@ -77,6 +79,21 @@ public class GameModeUiModuleServiceTests
         var uiModuleProperties = uiModuleService.GetUiModulesPropertiesJson(uiModuleService.GetDefaultSettings());
 
         await uiModuleService.ApplyComponentSettingsAsync(uiModuleService.GetDefaultSettings());
+
+        _server.Remote.Verify(
+            remote => remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", uiModuleProperties),
+            Times.Once
+        );
+    }
+
+    [Fact]
+    public async Task Creates_And_Applies_Ui_Settings_From_Single_Arguments()
+    {
+        var uiModuleService = UiModuleServiceMock();
+        var uiComponentSettings = new GameModeUiComponentSettings("UnitTest", true, 123.0, 123.0, 1.0);
+        var uiModuleProperties = uiModuleService.GetUiModulesPropertiesJson([uiComponentSettings]);
+
+        await uiModuleService.ApplyComponentSettingsAsync("UnitTest", true, 123.0, 123.0, 1.0);
 
         _server.Remote.Verify(
             remote => remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", uiModuleProperties),
