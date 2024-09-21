@@ -6,7 +6,7 @@ public class CheckpointsGroup : List<CheckpointData>
 {
     public CheckpointData? GetPlayerCheckpointData(string playerLogin)
     {
-        return this.FirstOrDefault(cpData => cpData.player.GetLogin() == playerLogin);
+        return this.Find(cpData => cpData.player.GetLogin() == playerLogin);
     }
 
     public int GetRank(string playerLogin)
