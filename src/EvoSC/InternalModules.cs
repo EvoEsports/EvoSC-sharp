@@ -37,6 +37,7 @@ public static class InternalModules
     public static readonly Type[] Modules =
     [
         //typeof(ExampleModule),
+        typeof(GameModeUiModule),
         typeof(PlayerModule),
         typeof(MapsModule),
         typeof(WorldRecordModule),
@@ -61,7 +62,6 @@ public static class InternalModules
         typeof(TeamSettingsModule),
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
-        typeof(GameModeUiModule),
         typeof(SpectatorTargetInfoModule),
         typeof(SpectatorCamModeModule)
     ];
