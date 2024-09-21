@@ -14,11 +14,11 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
     : EvoScController<IEventControllerContext>
 {
     [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
-    public Task OnPlayerDisconnect(object sender, PlayerGbxEventArgs eventArgs) =>
+    public Task OnPlayerDisconnectAsync(object sender, PlayerGbxEventArgs eventArgs) =>
         spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(eventArgs.Login);
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public Task OnBeginMap(object sender, MapGbxEventArgs eventArgs) =>
+    public Task OnBeginMapAsync(object sender, MapGbxEventArgs eventArgs) =>
         spectatorTargetInfoService.UpdateIsTeamsModeAsync();
 
     [Subscribe(ModeScriptEvent.WayPoint)]
