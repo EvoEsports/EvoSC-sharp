@@ -5,39 +5,45 @@ using EvoSC.Modules.Official.GameModeUiModule.Config;
 using EvoSC.Modules.Official.GameModeUiModule.Enums;
 using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
 using EvoSC.Modules.Official.GameModeUiModule.Models;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace EvoSC.Modules.Official.GameModeUiModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings, ILogger<GameModeUiModuleService> logger)
+public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings)
     : IGameModeUiModuleService
 {
-    private readonly List<GameModeUiComponentSettings> _componentSettings = [];
+    public Task InitializeAsync() =>
+        ApplyComponentSettingsAsync(GetDefaultSettings());
 
-    public async Task InitializeAsync()
+    public Task ApplyComponentSettingsAsync(IEnumerable<GameModeUiComponentSettings> componentSettingsList) =>
+        server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties",
+            GetUiModulesPropertiesJson(componentSettingsList));
+
+    public Task ApplyComponentSettingsAsync(GameModeUiComponentSettings componentSettings) =>
+        ApplyComponentSettingsAsync([componentSettings]);
+
+    public string GetUiModulesPropertiesJson(IEnumerable<GameModeUiComponentSettings> componentSettingsList)
     {
-        _componentSettings.AddRange(GetDefaultSettings());
-        await ApplyConfigurationAsync(_componentSettings);
+        var propertyObjects = componentSettingsList
+            .Select(uiElement => GeneratePropertyObject(uiElement))
+            .ToList();
+
+        return JsonConvert.SerializeObject(new { uimodules = propertyObjects });
     }
 
-    public async Task ApplyConfigurationAsync(List<GameModeUiComponentSettings> componentSettingsList)
+    public dynamic GeneratePropertyObject(GameModeUiComponentSettings componentSettings)
     {
-        var uiModuleProperties = GetUiModulesPropertiesJson(componentSettingsList);
-        logger.LogDebug("Applying UI properties: {json}", uiModuleProperties);
-        await server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", uiModuleProperties);
-    }
-
-    public async Task ApplyComponentSettingsAsync(GameModeUiComponentSettings componentSettings)
-    {
-        await ApplyConfigurationAsync([componentSettings]);
-    }
-
-    public async Task ApplyAndSaveComponentSettingsAsync(GameModeUiComponentSettings componentSettings)
-    {
-        //TODO: overwrite value in _componentSettings
-        await ApplyConfigurationAsync([componentSettings]);
+        return new
+        {
+            id = componentSettings.Name,
+            position = (double[]) [componentSettings.X, componentSettings.Y],
+            visible = componentSettings.Visible,
+            scale = componentSettings.Scale,
+            position_update = componentSettings.UpdatePosition,
+            visible_update = componentSettings.UpdateVisible,
+            scale_update = componentSettings.UpdateScale,
+        };
     }
 
     public List<GameModeUiComponentSettings> GetDefaultSettings()
@@ -150,28 +156,5 @@ public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSett
                 settings.BestRaceViewerScale
             )
         ];
-    }
-
-    public string GetUiModulesPropertiesJson(List<GameModeUiComponentSettings> componentSettingsList)
-    {
-        var propertyObjects = componentSettingsList
-            .Select(uiElement => GeneratePropertyObject(uiElement))
-            .ToList();
-
-        return JsonConvert.SerializeObject(new { uimodules = propertyObjects });
-    }
-
-    public dynamic GeneratePropertyObject(GameModeUiComponentSettings componentSettings)
-    {
-        return new
-        {
-            id = componentSettings.Name,
-            position = (double[]) [componentSettings.X, componentSettings.Y],
-            visible = componentSettings.Visible,
-            scale = componentSettings.Scale,
-            position_update = componentSettings.UpdatePosition,
-            visible_update = componentSettings.UpdateVisible,
-            scale_update = componentSettings.UpdateScale,
-        };
     }
 }

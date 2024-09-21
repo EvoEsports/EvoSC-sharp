@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Official.GameModeUiModule.Config;
 using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Models;
 using EvoSC.Modules.Official.GameModeUiModule.Services;
 using EvoSC.Testing;
 using GbxRemoteNet.Interfaces;
@@ -17,7 +18,6 @@ public class GameModeUiModuleServiceTests
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
         _server = Mocking.NewServerClientMock();
 
-/*
     private IGameModeUiModuleService UiModuleServiceMock()
     {
         return new GameModeUiModuleService(_server.Client.Object, _settings.Object);
@@ -26,10 +26,10 @@ public class GameModeUiModuleServiceTests
     [InlineData("UnitTest", true, 0.0, 0.0, 1.0)]
     [InlineData("UnitTest", false, -160.0, 80.0, 2.0)]
     [InlineData("UnitTest", false, 160.0, -80.0, 0.5)]
-    public async Task Generates_Property_Object(string id, bool visible, double x, double y, double scale)
+    public Task Generates_Property_Object(string id, bool visible, double x, double y, double scale)
     {
         var uiModuleService = UiModuleServiceMock();
-        var uiModulePropertyObject = await uiModuleService.GeneratePropertyObjectAsync(id, visible, x, y, scale);
+        var uiModulePropertyObject = uiModuleService.GeneratePropertyObject(new GameModeUiComponentSettings(id, visible, x, y, scale));
 
         var idProperty = uiModulePropertyObject.GetType().GetProperty("id");
         Assert.Equal(id, idProperty.GetValue(uiModulePropertyObject, null));
@@ -54,30 +54,33 @@ public class GameModeUiModuleServiceTests
 
         var scaleUpdateProperty = uiModulePropertyObject.GetType().GetProperty("scale_update");
         Assert.True(scaleUpdateProperty.GetValue(uiModulePropertyObject, null));
+
+        return Task.CompletedTask;
     }
 
     [Fact]
-    public async Task Gets_Ui_Module_Properties_As_Json()
+    public Task Gets_Ui_Module_Properties_As_Json()
     {
         var uiModuleService = UiModuleServiceMock();
-        var uiModuleProperties = await uiModuleService.GetUiModulesPropertiesJsonAsync();
+        var uiModuleProperties = uiModuleService.GetUiModulesPropertiesJson(uiModuleService.GetDefaultSettings());
 
         Assert.IsType<string>(uiModuleProperties);
         JToken.Parse(uiModuleProperties);
+
+        return Task.CompletedTask;
     }
 
     [Fact]
     public async Task Applies_Ui_Modules_Configuration()
     {
         var uiModuleService = UiModuleServiceMock();
-        var uiModuleProperties = await uiModuleService.GetUiModulesPropertiesJsonAsync();
+        var uiModuleProperties = uiModuleService.GetUiModulesPropertiesJson(uiModuleService.GetDefaultSettings());
 
-        await uiModuleService.ApplyConfigurationAsync();
+        await uiModuleService.ApplyComponentSettingsAsync(uiModuleService.GetDefaultSettings());
 
         _server.Remote.Verify(
             remote => remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", uiModuleProperties),
             Times.Once
         );
     }
-    */
 }
