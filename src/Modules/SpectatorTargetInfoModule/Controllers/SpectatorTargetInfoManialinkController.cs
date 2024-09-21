@@ -9,7 +9,7 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Controllers;
 public class SpectatorTargetInfoManialinkController(ISpectatorTargetInfoService spectatorTargetInfoService)
     : ManialinkController
 {
-    public async Task ReportSpectatorTarget(string targetLogin)
+    public async Task ReportSpectatorTargetAsync(string targetLogin)
     {
         var spectatorLogin = Context.Player.GetLogin();
 
