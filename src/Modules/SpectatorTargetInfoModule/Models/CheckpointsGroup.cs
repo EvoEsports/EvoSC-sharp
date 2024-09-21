@@ -4,19 +4,7 @@ namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
 
 public class CheckpointsGroup : List<CheckpointData>
 {
-    public CheckpointsGroup() { }
-
-    public CheckpointsGroup(IEnumerable<CheckpointData> checkpoints)
-    {
-        this.AddRange(checkpoints);
-    }
-
-    public CheckpointsGroup ToSortedGroup()
-    {
-        return new CheckpointsGroup(this.OrderBy(cpData => cpData.time));
-    }
-
-    public CheckpointData? GetPlayer(string playerLogin)
+    public CheckpointData? GetPlayerCheckpointData(string playerLogin)
     {
         return this.FirstOrDefault(cpData => cpData.player.GetLogin() == playerLogin);
     }

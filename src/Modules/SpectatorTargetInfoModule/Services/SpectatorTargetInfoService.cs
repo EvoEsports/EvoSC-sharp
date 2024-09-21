@@ -62,7 +62,6 @@ public class SpectatorTargetInfoService(
         }
 
         checkpointGroup.Add(newCheckpointData);
-        checkpointGroup = checkpointGroup.ToSortedGroup();
         _checkpointTimes[checkpointIndex] = checkpointGroup;
 
         var spectatorLogins = GetLoginsOfPlayersSpectatingTarget(player).ToList();
@@ -156,7 +155,7 @@ public class SpectatorTargetInfoService(
         var playerLogin = player.GetLogin();
         foreach (var (checkpointIndex, checkpointsGroup) in _checkpointTimes.Reverse())
         {
-            if (checkpointsGroup.GetPlayer(playerLogin) != null)
+            if (checkpointsGroup.GetPlayerCheckpointData(playerLogin) != null)
             {
                 return checkpointIndex;
             }
@@ -186,7 +185,7 @@ public class SpectatorTargetInfoService(
         if (_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointsGroup))
         {
             var leadingCpData = checkpointsGroup.First();
-            var targetCpData = checkpointsGroup.GetPlayer(targetLogin);
+            var targetCpData = checkpointsGroup.GetPlayerCheckpointData(targetLogin);
             targetRank = checkpointsGroup.GetRank(targetLogin);
             timeDifference = GetTimeDifference(leadingCpData.time, targetCpData?.time ?? 0);
         }
