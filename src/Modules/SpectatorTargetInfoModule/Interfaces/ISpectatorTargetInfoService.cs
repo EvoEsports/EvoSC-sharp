@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
-using GbxRemoteNet.Structs;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 
@@ -72,14 +71,6 @@ public interface ISpectatorTargetInfoService
     public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(IOnlinePlayer targetPlayer);
 
     /// <summary>
-    /// Calculates the time difference between two CheckpointData in milliseconds.
-    /// </summary>
-    /// <param name="leadingCheckpointData"></param>
-    /// <param name="targetCheckpointData"></param>
-    /// <returns></returns>
-    public int GetTimeDifference(CheckpointData leadingCheckpointData, CheckpointData targetCheckpointData);
-
-    /// <summary>
     /// Calculates the time difference between two given times in milliseconds.
     /// </summary>
     /// <param name="leadingCheckpointTime"></param>
@@ -92,14 +83,14 @@ public interface ISpectatorTargetInfoService
     /// </summary>
     /// <param name="team"></param>
     /// <returns></returns>
-    public string GetTeamColorAsync(PlayerTeam team);
+    public string GetTeamColor(PlayerTeam team);
 
     /// <summary>
     /// Gets the highest checkpoint ID the given player has reached in the ongoing round.
     /// </summary>
-    /// <param name="playerLogin"></param>
+    /// <param name="player"></param>
     /// <returns></returns>
-    public int GetLastCheckpointIndexOfPlayer(IOnlinePlayer playerLogin);
+    public int GetLastCheckpointIndexOfPlayer(IOnlinePlayer player);
     
     /// <summary>
     /// Returns the CheckpointGroups for all collected checkpoints.
@@ -124,8 +115,10 @@ public interface ISpectatorTargetInfoService
     /// <summary>
     /// Send the widget to the given players.
     /// </summary>
-    /// <param name="spectatorLogin"></param>
+    /// <param name="spectatorLogins"></param>
     /// <param name="targetPlayer"></param>
+    /// <param name="targetPlayerRank"></param>
+    /// <param name="timeDifference"></param>
     /// <returns></returns>
     public Task SendSpectatorInfoWidgetAsync(IEnumerable<string> spectatorLogins, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
 
@@ -134,6 +127,8 @@ public interface ISpectatorTargetInfoService
     /// </summary>
     /// <param name="spectatorLogin"></param>
     /// <param name="targetPlayer"></param>
+    /// <param name="targetPlayerRank"></param>
+    /// <param name="timeDifference"></param>
     /// <returns></returns>
     public Task SendSpectatorInfoWidgetAsync(string spectatorLogin, IOnlinePlayer targetPlayer, int targetPlayerRank, int timeDifference);
 

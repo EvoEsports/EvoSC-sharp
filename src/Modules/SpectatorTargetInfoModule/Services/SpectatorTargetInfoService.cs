@@ -72,7 +72,7 @@ public class SpectatorTargetInfoService(
         }
 
         var leadingCheckpointData = checkpointGroup.First();
-        var timeDifference = GetTimeDifference(leadingCheckpointData, newCheckpointData);
+        var timeDifference = GetTimeDifference(leadingCheckpointData.time, newCheckpointData.time);
 
         await SendSpectatorInfoWidgetAsync(spectatorLogins, player, checkpointGroup.GetRank(playerLogin),
             timeDifference);
@@ -141,17 +141,12 @@ public class SpectatorTargetInfoService(
             .Select(specTarget => specTarget.Key);
     }
 
-    public int GetTimeDifference(CheckpointData leadingCheckpointData, CheckpointData targetCheckpointData)
-    {
-        return GetTimeDifference(leadingCheckpointData.time, targetCheckpointData.time);
-    }
-
     public int GetTimeDifference(int leadingCheckpointTime, int targetCheckpointTime)
     {
         return targetCheckpointTime - leadingCheckpointTime;
     }
 
-    public string GetTeamColorAsync(PlayerTeam team)
+    public string GetTeamColor(PlayerTeam team)
     {
         return _isTeamsMode ? _teamInfos[team].RGB : (string)theme.Theme.UI_AccentPrimary;
     }
@@ -193,7 +188,7 @@ public class SpectatorTargetInfoService(
             var leadingCpData = checkpointsGroup.First();
             var targetCpData = checkpointsGroup.GetPlayer(targetLogin);
             targetRank = checkpointsGroup.GetRank(targetLogin);
-            timeDifference = GetTimeDifference(leadingCpData, targetCpData!);
+            timeDifference = GetTimeDifference(leadingCpData.time, targetCpData?.time ?? 0);
         }
 
         await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, targetRank, timeDifference);
@@ -221,7 +216,7 @@ public class SpectatorTargetInfoService(
                 playerName = targetPlayer.NickName,
                 playerTeam = targetPlayer.Team,
                 playerLogin = targetPlayer.GetLogin(),
-                teamColorCode = new ColorUtils().Opacity(GetTeamColorAsync(targetPlayer.Team), 80)
+                teamColorCode = new ColorUtils().Opacity(GetTeamColor(targetPlayer.Team), 80)
             });
     }
 

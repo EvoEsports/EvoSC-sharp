@@ -2,5 +2,5 @@
 
 public class CheckpointsGroupTests
 {
-    
+    //TODO: write tests
 }
