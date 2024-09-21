@@ -32,8 +32,8 @@ public class SpectatorTargetInfoServiceTests
     private readonly Mock<ILogger<SpectatorTargetInfoService>> _logger = new();
     private readonly Mock<IThemeManager> _theme = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
-        _server = Mocking.NewServerClientMock();
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) _server =
+        Mocking.NewServerClientMock();
 
     private ISpectatorTargetInfoService ServiceMock()
     {
@@ -416,13 +416,13 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(new TmTeamInfo { RGB = "FF0066" });
         _playerManager.Setup(pm => pm.GetOnlinePlayerAsync(targetPlayer.AccountId))
             .ReturnsAsync(targetPlayer);
-        
+
         var spectatorTargetService = ServiceMock();
         await spectatorTargetService.UpdateIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
         await spectatorTargetService.SetSpectatorTargetAsync(spectatorLogin, targetPlayer.GetLogin());
         await spectatorTargetService.ResetWidgetForSpectatorsAsync();
-        
+
         // _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin,
         //     "SpectatorTargetInfoModule.SpectatorTargetInfo",
         //     new
@@ -450,16 +450,16 @@ public class SpectatorTargetInfoServiceTests
             NickName = "UnitTest",
             Team = PlayerTeam.Team1
         };
-        
+
         _playerManager.Setup(pm => pm.GetOnlinePlayerAsync(targetPlayer.AccountId))
             .ReturnsAsync(targetPlayer);
-        
+
         var spectatorTargetService = ServiceMock();
         await spectatorTargetService.AddCheckpointAsync(targetPlayer.GetLogin(), 1, 1000);
         await spectatorTargetService.AddCheckpointAsync(targetPlayer.GetLogin(), 2, 2000);
         await spectatorTargetService.AddCheckpointAsync(targetPlayer.GetLogin(), 3, 3000);
         var checkpointIndex = spectatorTargetService.GetLastCheckpointIndexOfPlayer(targetPlayer);
-        
+
         Assert.Equal(3, checkpointIndex);
     }
 }
