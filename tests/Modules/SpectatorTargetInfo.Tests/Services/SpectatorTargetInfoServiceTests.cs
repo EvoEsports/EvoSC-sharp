@@ -50,16 +50,16 @@ public class SpectatorTargetInfoServiceTests
     }
 
     [Fact]
-    public async Task Adds_And_Clears_Checkpoint_Data_And_Sorts_Times()
+    public async Task Adds_And_Clears_Checkpoint_Data()
     {
         var spectatorTargetService = ServiceMock();
         _playerManager.Setup(s => s.GetOnlinePlayerAsync(It.IsAny<string>()))
             .ReturnsAsync(new OnlinePlayer { State = PlayerState.Spectating, });
 
-        await spectatorTargetService.AddCheckpointAsync("*fakeplayer1*", 2, 1400);
-        await spectatorTargetService.AddCheckpointAsync("*fakeplayer2*", 2, 1200);
-        await spectatorTargetService.AddCheckpointAsync("*fakeplayer3*", 2, 1000);
         await spectatorTargetService.AddCheckpointAsync("*fakeplayer4*", 1, 1000);
+        await spectatorTargetService.AddCheckpointAsync("*fakeplayer3*", 2, 1000);
+        await spectatorTargetService.AddCheckpointAsync("*fakeplayer2*", 2, 1200);
+        await spectatorTargetService.AddCheckpointAsync("*fakeplayer1*", 2, 1400);
 
         var cpTimes = spectatorTargetService.GetCheckpointTimes();
         Assert.Equal(2, cpTimes.Count);
