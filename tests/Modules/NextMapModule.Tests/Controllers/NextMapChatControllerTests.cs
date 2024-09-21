@@ -2,6 +2,7 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing;
@@ -16,15 +17,13 @@ public class NextMapChatControllerTests : CommandInteractionControllerTestBase<N
 {
     private readonly Mock<IOnlinePlayer> _actor = new();
     private readonly Mock<INextMapService> _nextMapService = new();
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
-        _server = Mocking.NewServerClientMock();
 
     private readonly Locale _locale;
 
     public NextMapChatControllerTests()
     {
         _locale = Mocking.NewLocaleMock(ContextService.Object);
-        InitMock(_actor.Object, _nextMapService, _server.Client, _locale);
+        InitMock(_actor.Object, _nextMapService, _locale);
     }
 
     [Fact]
@@ -43,6 +42,6 @@ public class NextMapChatControllerTests : CommandInteractionControllerTestBase<N
 
         await Controller.GetNextMapAsync();
 
-        _server.Client.Verify(c => c.InfoMessageAsync(It.IsAny<string>()));
+        Server.Chat.Verify(c => c.InfoMessageAsync(It.IsAny<string>()));
     }
 }

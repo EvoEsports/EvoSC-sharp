@@ -36,7 +36,7 @@ using MockData = (
     Mock<IManialinkManager> ManialinkManager,
     ILogger<LocalRecordsService> Logger,
     Mock<ILocalRecordsSettings> Settings,
-    (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
+    (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server,
     Mock<IThemeManager> ThemeManager,
     Mock<IPlayerRecordsRepository> PlayerRecordsRepository);
 
@@ -64,7 +64,7 @@ public class LocalRecordsServiceTests
             manialinkManager.Object,
             logger,
             settings.Object,
-            server.Client.Object,
+            server.Chat.Object,
             themeManager.Object,
             playerRecordsRepository.Object
         );
@@ -236,7 +236,7 @@ public class LocalRecordsServiceTests
 
         await mock.Service.UpdatePbAsync(newPb);
         
-        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.IsAny<string>()), Times.Never);
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -260,7 +260,7 @@ public class LocalRecordsServiceTests
 
         await mock.Service.UpdatePbAsync(newPb);
 
-        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("gained the"))), Times.Once);
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("gained the"))), Times.Once);
     }
     
     [Fact]
@@ -289,7 +289,7 @@ public class LocalRecordsServiceTests
 
         await mock.Service.UpdatePbAsync(newPb);
 
-        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("improved the"))), Times.Once);
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("improved the"))), Times.Once);
     }
     
     [Fact]
@@ -313,6 +313,6 @@ public class LocalRecordsServiceTests
 
         await mock.Service.UpdatePbAsync(newPb);
 
-        mock.Server.Client.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("equaled their"))), Times.Once);
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("equaled their"))), Times.Once);
     }
 }

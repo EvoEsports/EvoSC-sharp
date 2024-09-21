@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.MatchManagerModule.Controllers;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
@@ -15,13 +16,12 @@ public class MatchCommandsControllerTests : CommandInteractionControllerTestBase
 {
     private Mock<IOnlinePlayer> _player = new();
     private Mock<IMatchControlService> _matchControl = new();
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
     private Locale _locale;
 
     public MatchCommandsControllerTests()
     {
         _locale = Mocking.NewLocaleMock(this.ContextService.Object);
-        InitMock(_player.Object, _matchControl, _server.Client, _locale);
+        InitMock(_player.Object, _matchControl, _locale);
     }
 
     [Fact]

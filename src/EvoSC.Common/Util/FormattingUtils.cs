@@ -46,13 +46,18 @@ public static class FormattingUtils
         return $"+ {s:0}.{ms:000}";
     }
 
-    public static TextFormatter FormatPlayerChatMessage(IPlayer player, string message)
+    public static TextFormatter FormatPlayerChatMessage(IPlayer player, string message, bool teamMessage)
     {
         var formattedMessage = new TextFormatter();
 
+        if (teamMessage)
+        {
+            formattedMessage.AddText($"({GameIcons.Icons.EyeSlash} team) ", s => s.WithColor("BBB"));
+        }
+        
         if (player.DisplayGroup?.Icon != null)
         {
-            formattedMessage.AddText(player.DisplayGroup.Icon, s => s.WithColor(player.DisplayGroup.Color ?? "FFF"));
+            formattedMessage.AddText($"{player.DisplayGroup.Icon} ", s => s.WithColor(player.DisplayGroup.Color ?? "FFF"));
         }
         
         formattedMessage.AddText("[")

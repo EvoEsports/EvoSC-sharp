@@ -122,4 +122,10 @@ public enum AppFeature
     /// </summary>
     [Identifier(NoPrefix = true)]
     Themes,
+    
+    /// <summary>
+    /// Optimized way to send chat messages to a set of players of any size.
+    /// </summary>
+    [Identifier(NoPrefix = true)]
+    Chat,
 }

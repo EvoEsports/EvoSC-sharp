@@ -16,7 +16,7 @@ namespace EvoSC.Modules.Official.PlayerRecords.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPlayerManagerService players,
-        IEventManager events, IPlayerRecordSettings recordOptions, IServerClient server, IMapService maps,
+        IEventManager events, IPlayerRecordSettings recordOptions, IChatService chat, IMapService maps,
         Locale locale)
     : IPlayerRecordHandlerService
 {
@@ -45,9 +45,9 @@ public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPl
 
     public Task SendRecordUpdateToChatAsync(IPlayerRecord record) => recordOptions.EchoPb switch
     {
-        EchoOptions.All => server.InfoMessageAsync(
+        EchoOptions.All => chat.InfoMessageAsync(
             _locale.PlayerGotANewPb(record.Player.NickName, FormattingUtils.FormatTime(record.Score))),
-        EchoOptions.Player => server.InfoMessageAsync(
+        EchoOptions.Player => chat.InfoMessageAsync(
             _locale.PlayerLanguage.YouGotANewPb(record.Player, FormattingUtils.FormatTime(record.Score))),
         _ => Task.CompletedTask
     };
@@ -59,7 +59,7 @@ public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPl
 
         if (pb == null)
         {
-            await server.InfoMessageAsync(player, _locale.PlayerLanguage.YouHaveNotSetATime);
+            await chat.InfoMessageAsync(_locale.PlayerLanguage.YouHaveNotSetATime, player);
             return;
         }
 
@@ -68,6 +68,6 @@ public class PlayerRecordHandlerService(IPlayerRecordsService playerRecords, IPl
         var m = pb.Score / 1000 / 60;
         var formattedTime = $"{(m > 0 ? m + ":" : "")}{s:00}.{ms:000}";
 
-        await server.InfoMessageAsync(player, _locale.PlayerLanguage.YourCurrentPbIs(formattedTime));
+        await chat.InfoMessageAsync(_locale.PlayerLanguage.YourCurrentPbIs(formattedTime), player);
     }
 }

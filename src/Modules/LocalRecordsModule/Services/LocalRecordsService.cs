@@ -24,7 +24,7 @@ public class LocalRecordsService(
     IManialinkManager manialinkManager,
     ILogger<LocalRecordsService> logger,
     ILocalRecordsSettings settings,
-    IServerClient server,
+    IChatService server,
     IThemeManager themeManager,
     IPlayerRecordsRepository playerRecordsRepository) : ILocalRecordsService
 {

@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.Player.Controllers;
 using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
@@ -14,11 +15,9 @@ public class PlayerCommandsControllerTests : CommandInteractionControllerTestBas
 {
     private Mock<IPlayerService> _playerService = new();
     private Mock<IOnlinePlayer> _player = new();
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
-    
     public PlayerCommandsControllerTests()
     {
-        InitMock(_player.Object, _playerService, _server.Client);
+        InitMock(_player.Object, _playerService);
     }
 
     [Fact]

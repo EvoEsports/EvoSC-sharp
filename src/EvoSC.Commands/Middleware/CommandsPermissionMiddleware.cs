@@ -26,6 +26,6 @@ public class CommandsPermissionMiddleware(ActionDelegate next, IPermissionManage
             return;
         }
 
-        await server.SendChatMessageAsync(cmdContext.Player, "Insufficient permissions to run this command.");
+        await server.Chat.SendChatMessageAsync("Insufficient permissions to run this command.", cmdContext.Player);
     }
 }

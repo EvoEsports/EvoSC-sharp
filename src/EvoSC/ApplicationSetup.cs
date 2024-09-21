@@ -72,6 +72,10 @@ public static class ApplicationSetup
             .Services(AppFeature.ServicesManager, s => s
                 .RegisterSingleton<IServiceContainerManager, ServiceContainerManager>()
             )
+                
+            .Services(AppFeature.Chat, s => s
+                .Register<IChatService, ChatService>(Lifestyle.Transient)
+            )
 
             .Services(AppFeature.ChatCommands, s => s.AddEvoScChatCommands())
 

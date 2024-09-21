@@ -31,7 +31,7 @@ public class MapServiceTests
     private readonly Mock<IEvoScBaseConfig> _config = new();
     private readonly Mock<IPlayerManagerService> _playerService = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
         _server = Mocking.NewServerClientMock();
 
     private readonly MapService _mapService;

@@ -16,12 +16,10 @@ public class QueueCommandsControllerTests : CommandInteractionControllerTestBase
     private Mock<IOnlinePlayer> _player = new();
     private readonly Mock<IMapQueueService> _mapQueueServiceMock = new();
     private readonly Mock<IMapService> _mapServiceMock = new();
-    private (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _server = Mocking.NewServerClientMock();
-    
     public QueueCommandsControllerTests()
     {
         _player.Setup(m => m.AccountId).Returns("a467a996-eba5-44bf-9e2b-8543b50f39ae");
-        InitMock(_player.Object, _mapQueueServiceMock, _mapServiceMock, _server.Client);
+        InitMock(_player.Object, _mapQueueServiceMock, _mapServiceMock);
     }
 
     [Fact]

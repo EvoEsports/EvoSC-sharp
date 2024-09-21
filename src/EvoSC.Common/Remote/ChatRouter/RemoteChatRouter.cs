@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Exceptions.PlayerExceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Middleware;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Util;
@@ -36,10 +37,38 @@ public class RemoteChatRouter : IRemoteChatRouter
 
     private async Task HandlePlayerChatRoutingAsync(object sender, PlayerChatGbxEventArgs e)
     {
+        var actorAccountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
+        var actor = await _players.GetOnlinePlayerAsync(actorAccountId);
+        var onlinePlayers = await _players.GetOnlinePlayersAsync();
+
+        await SendMessageAsync(new ChatRouterPipelineContext
+        {
+            ForwardMessage = true,
+            Author = actor,
+            MessageText = e.Text,
+            Recipients = onlinePlayers.ToList(),
+            IsTeamMessage = e.Options == 3
+        });
+    }
+
+    public async Task SendMessageAsync(string message, IOnlinePlayer actor)
+    {
+        var onlinePlayers = await _players.GetOnlinePlayersAsync();
+        await SendMessageAsync(new ChatRouterPipelineContext
+        {
+            ForwardMessage = true,
+            Author = actor,
+            MessageText = message,
+            Recipients = onlinePlayers.ToList(),
+            IsTeamMessage = false
+        });
+    }
+
+    public async Task SendMessageAsync(ChatRouterPipelineContext pipelineContext)
+    {
         try
         {
-            var accountId = PlayerUtils.ConvertLoginToAccountId(e.Login);
-            var player = await _players.GetOnlinePlayerAsync(accountId);
+            var player = await _players.GetOnlinePlayerAsync(pipelineContext.Author.AccountId);
 
             if (player.Flags.IsServer)
             {
@@ -53,21 +82,17 @@ public class RemoteChatRouter : IRemoteChatRouter
                 {
                     Task.Run(async () =>
                     {
-                        var formatted = FormattingUtils.FormatPlayerChatMessage(chatContext.Player,
-                            chatContext.MessageText);
-                        await _server.SendChatMessageAsync(formatted);
+                        var formatted = FormattingUtils.FormatPlayerChatMessage(chatContext.Author,
+
+                            chatContext.MessageText, chatContext.IsTeamMessage);
+                        await _server.Chat.SendChatMessageAsync(formatted, ((IEnumerable<IPlayer>)chatContext.Recipients).ToArray());
                     });
                 }
             });
             
-            await pipelineChain(new ChatRouterPipelineContext
-            {
-                ForwardMessage = true,
-                Player = player,
-                MessageText = e.Text
-            });
+            await pipelineChain(pipelineContext);
             
-            _logger.LogInformation("[{Name}]: {Msg}", player.StrippedNickName, e.Text);
+            _logger.LogInformation("[{Name}]: {Msg}", player.StrippedNickName, pipelineContext.MessageText);
         }
         catch (PlayerNotFoundException ex)
         {
