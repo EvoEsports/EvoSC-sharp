@@ -142,7 +142,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamChatModule", "src/Modul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamChatModule.Tests", "tests\Modules\TeamChatModule.Tests\TeamChatModule.Tests.csproj", "{7BD60D6E-7B7E-4771-87C0-7F98FC82F990}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectatorTargetInfo.Tests", "tests\Modules\SpectatorTargetInfo.Tests\SpectatorTargetInfo.Tests.csproj", "{E4BF17BE-A517-4D3C-8DCA-DA99A100EBFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectatorTargetInfoModule.Tests", "tests\Modules\SpectatorTargetInfoModule.Tests\SpectatorTargetInfoModule.Tests.csproj", "{E4BF17BE-A517-4D3C-8DCA-DA99A100EBFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectatorCamModeModule", "src\Modules\SpectatorCamModeModule\SpectatorCamModeModule.csproj", "{E9806703-6E24-4F05-A728-A04F7EB31749}"
 EndProject
