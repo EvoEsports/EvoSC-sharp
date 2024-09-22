@@ -454,6 +454,8 @@
         }
         
         Void UpdateScoreTable() {
+            declare Text[Text] EvoSC_Player_Nicknames for UI = [];
+        
             foreach (PlayerIndex => Player in Players) {
                 if (Player.Score == Null) continue;
                 
@@ -505,7 +507,12 @@
                 
                 positionLabel.Value = (cursor + 1) ^ "";
                 clubLabel.Value = Score.User.ClubTag;
-                nameLabel.Value = Score.User.Name;
+                
+                if(EvoSC_Player_Nicknames.existskey(Score.User.Login)){
+                    nameLabel.Value = EvoSC_Player_Nicknames[Score.User.Login];
+                }else{
+                    nameLabel.Value = Score.User.Name;
+                }
                 
                 if(clubLabel.Value != ""){
                     clubBg.Opacity = 0.95;

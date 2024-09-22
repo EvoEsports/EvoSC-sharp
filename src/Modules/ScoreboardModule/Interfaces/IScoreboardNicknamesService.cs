@@ -15,4 +15,6 @@ public interface IScoreboardNicknamesService
     public string ToManiaScriptArray(Dictionary<string, string> nicknameMap);
 
     public string ToManiaScriptArrayEntry(KeyValuePair<string, string> loginNickname);
+
+    public string EscapeNickname(string nickname);
 }

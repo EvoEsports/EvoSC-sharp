@@ -4,7 +4,6 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
-using ManiaTemplates.Lib;
 
 namespace EvoSC.Modules.Official.ScoreboardModule.Services;
 
@@ -60,6 +59,12 @@ public class ScoreboardNicknamesService(
 
     public string ToManiaScriptArrayEntry(KeyValuePair<string, string> loginNickname)
     {
-        return $"\"{loginNickname.Key}\" => \"{Security.Escape(loginNickname.Value)}\"";
+        return $"\"{loginNickname.Key}\" => \"{EscapeNickname(loginNickname.Value)}\"";
+    }
+
+    public string EscapeNickname(string nickname)
+    {
+        return nickname.Replace("-->", "-\u2192")
+            .Replace("\"", "\\\"");
     }
 }

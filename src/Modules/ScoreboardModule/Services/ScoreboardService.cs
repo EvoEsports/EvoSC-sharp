@@ -20,15 +20,17 @@ public class ScoreboardService(
 )
     : IScoreboardService
 {
+    public static readonly string ScoreboardTemplate = "ScoreboardModule.Scoreboard";
+    
     public async Task ShowScoreboardToAllAsync()
     {
-        await manialinks.SendPersistentManialinkAsync("ScoreboardModule.Scoreboard", await GetDataAsync());
+        await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, await GetDataAsync());
         await nicknamesService.SendNicknamesManialinkAsync();
     }
 
     public async Task ShowScoreboardAsync(IPlayer playerLogin)
     {
-        await manialinks.SendManialinkAsync(playerLogin, "ScoreboardModule.Scoreboard", await GetDataAsync());
+        await manialinks.SendManialinkAsync(playerLogin, ScoreboardTemplate, await GetDataAsync());
     }
 
     private Task<dynamic> GetDataAsync()
