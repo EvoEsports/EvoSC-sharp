@@ -2,9 +2,9 @@
     <import component="ScoreboardModule.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
     <import component="ScoreboardModule.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
     <import component="ScoreboardModule.Components.PlayerRow.PointsBox" as="PointsBox"/>
-    <import component="ScoreboardModule.Components.PlayerRow.PositionBox" as="Position"/>
     <import component="ScoreboardModule.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
     <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
+    <import component="ScoreboardModule.ComponentsNew.Row.PositionBox" as="PositionBox"/>
 
     <property type="double" name="w"/>
     <property type="double" name="padding"/>
@@ -13,7 +13,6 @@
     <property type="double" name="innerSpacing"/>
     <property type="double" name="rowInnerHeight"/>
     <property type="double" name="pointsWidth"/>
-    <property type="double" name="scrollBarWidth"/>
 
     <property type="double" name="textSize" default="2.4"/>
     <property type="double" name="positionBoxWidth" default="9.6"/>
@@ -21,31 +20,33 @@
     <template>
         <framemodel id="player_row">
             <!-- Scroll activation -->
-            <quad id="player_row_trigger" size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
+            <quad id="player_row_trigger" 
+                  size="{{ w }} {{ rowHeight + rowSpacing }}" 
+                  ScriptEvents="1"
+            />
 
             <!-- Player Row Background -->
             <PlayerRowBackground id="player_row_bg"
                                  rowHeight="{{ rowHeight }}"
                                  padding="{{ padding }}"
-                                 w="{{ w - scrollBarWidth - rowSpacing - positionBoxWidth - rowSpacing }}"
-                                 x="{{ positionBoxWidth + rowSpacing }}"
+                                 w="{{ w - positionBoxWidth }}"
+                                 h="{{ rowHeight }}"
+                                 x="{{ positionBoxWidth }}"
             />
 
             <!-- Position Box -->
-            <Position id="position_box"
-                      w="{{ positionBoxWidth }}"
-                      h="{{ rowHeight }}"
-                      z-index="5"
+            <PositionBox width="{{ positionBoxWidth }}"
+                         height="{{ rowHeight }}"
             />
 
             <!-- Custom Label Background -->
             <CustomLabelBackground id="custom_gradient"
-                                   x="{{ w - padding }}"
-                                   rowHeight="{{ rowHeight }}"
-                                   w="{{ w }}"
+                                   x="{{ w }}"
+                                   width="{{ w }}"
+                                   height="{{ rowHeight }}"
             />
 
-            <frame pos="{{ innerSpacing + positionBoxWidth + innerSpacing * 1.5 }} {{ rowHeight / -2.0 }}" z-index="10">
+            <frame pos="{{ positionBoxWidth + 2.0 }} {{ rowHeight / -2.0 }}" z-index="10">
                 <!-- Flag -->
                 <quad id="flag"
                       size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
@@ -54,23 +55,24 @@
                       alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
                 />
 
-               <ClubTag h="{{ rowInnerHeight }}" />
+                <ClubTag h="{{ rowInnerHeight }}"/>
 
                 <!-- Player Name -->
                 <label id="name"
                        pos="{{ rowInnerHeight * 4 + innerSpacing }} 0.4"
                        size="{{ w / 3.0 }} {{ rowHeight }}"
                        valign="center"
-                       textsize="2.6"
+                       textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Regular }}"
-                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
+                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"
+                />
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
                 <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
-                       textsize="{{ textSize }}"
+                       textsize="{{ Theme.UI_FontSize*2 }}"
                        textcolor="{{ Theme.ScoreboardModule_PlayerRow_FrameModel_Text }}"
                        opacity="0.5"
                        textfont="{{ Font.Regular }}"/>
@@ -79,7 +81,7 @@
                 <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
-                       textsize="{{ textSize }}"
+                       textsize="{{ Theme.UI_FontSize*2 }}"
                        textcolor="{{ Theme.ScoreboardModule_PlayerRow_FrameModel_TextRoundPoints }}"
                        textfont="{{ Font.Regular }}"/>
 
@@ -88,7 +90,7 @@
                        pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
-                       textsize="{{ textSize }}"
+                       textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Thin }}"
                        textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
 
@@ -97,7 +99,7 @@
                        pos="0 {{ rowHeight / -2.0 + 0.4 }}"
                        valign="center"
                        halign="right"
-                       textsize="{{ textSize }}"
+                       textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Thin }}"
                        textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
 
@@ -115,8 +117,8 @@
                            padding="{{ padding }}"
                 />
             </frame>
-            <PlayerActions x="{{ w - padding }}" 
-                           y="{{ rowHeight / -2.0 }}" 
+            <PlayerActions x="{{ w - padding }}"
+                           y="{{ rowHeight / -2.0 }}"
                            rowHeight="{{ rowHeight }}"
                            innerSpacing="{{ innerSpacing }}"
                            textsize="{{ textSize }}"

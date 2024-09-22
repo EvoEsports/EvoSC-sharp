@@ -4,10 +4,6 @@
     
     <template>
         <frame pos="1 {{ headerHeight / -2.0 }}">
-            <label id="map_name" pos="5 2" text="MAP NAME" valign="center" textsize="2.8" textfont="{{ Font.Regular }}"
-                   textcolor="{{ Theme.ScoreboardModule_ScoreboardHeader_Text }}"/>
-            <label id="author_name" pos="5 -2.5" textprefix="by " text="AUTHOR NAME" valign="center" textsize="1.6" textfont="{{ Font.Thin }}"
-                   textcolor="{{ Theme.ScoreboardModule_ScoreboardHeader_Text }}"/>
         </frame>
 
         <frame pos="{{ w - 1.0 }} {{ headerHeight / -2.0 }}">

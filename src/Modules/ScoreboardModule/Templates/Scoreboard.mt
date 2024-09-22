@@ -6,79 +6,60 @@
     <import component="ScoreboardModule.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
     <import component="ScoreboardModule.Components.Settings.Wrapper" as="SettingsWrapper"/>
     <import component="ScoreboardModule.Components.Settings.Form" as="SettingsForm"/>
-    <import component="ScoreboardModule.Components.Scrollbar" as="Scrollbar"/>
+    <import component="ScoreboardModule.ComponentsNew.ScoreboardHeader" as="Header"/>
+    <import component="ScoreboardModule.ComponentsNew.ScoreboardBody" as="Body"/>
 
     <property type="int" name="MaxPlayers" default="0"/>
     <property type="int" name="VisiblePlayers" default="8"/>
     <property type="Dictionary<int, string>" name="PositionColors"/>
 
     <property type="double" name="w" default="160"/>
-    <property type="double" name="h" default="71.2"/>
+    <property type="double" name="h" default="80"/>
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
-    <property type="double" name="headerHeight" default="19.0"/>
+    <property type="double" name="headerHeight" default="18.0"/>
     <property type="double" name="rowHeight" default="8.0"/>
     <property type="double" name="rowInnerHeight" default="5.0"/>
     <property type="double" name="pointsWidth" default="16.0"/>
-    <property type="double" name="rowSpacing" default="0.8"/>
+    <property type="double" name="rowSpacing" default="0.5"/>
     <property type="double" name="padding" default="2.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
-    <property type="double" name="scrollBarWidth" default="1.5"/>
 
     <template layer="ScoresTable">
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
-            <ScoreboardBackground w="{{ w }}" 
-                                  h="{{ VisiblePlayers * rowHeight * rowSpacing + padding - rowSpacing + headerHeight }}"
-                                  radius="{{ backgroundBorderRadius }}"
-                                  headerHeight="{{ headerHeight }}"
+            <Header width="{{ w }}"
+                    height="{{ headerHeight }}"
+            />
+            <Body y="{{ -headerHeight }}"
+                  width="{{ w }}"
+                  height="{{ h - headerHeight }}"
             />
 
-            <ScoreboardHeader w="{{ w }}" headerHeight="{{ headerHeight }}" />
+            <ScoreboardHeader w="{{ w }}" headerHeight="{{ headerHeight }}"/>
 
             <!-- Player Rows -->
-            <frame id="rows_wrapper" pos="0 {{ -headerHeight - padding }}" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
+            <frame id="rows_wrapper" pos="0 {{ -headerHeight }}" size="{{ w }} {{ h-headerHeight }}">
                 <frame id="rows_inner">
                     <!-- Settings -->
                     <SettingsWrapper h="{{ h }}" padding="{{ padding }}">
                         <SettingsForm w="{{ w - padding * 2.0 }}" h="{{ h - padding * 2.0 }}"/>
                     </SettingsWrapper>
-                    
-                    
+
                     <!-- Player Rows -->
-                    <PlayerRowFramemodel
-                                         w="{{ w }}"
+                    <PlayerRowFramemodel w="{{ w }}"
                                          padding="{{ padding }}"
                                          rowHeight="{{ rowHeight }}"
                                          rowSpacing="{{ rowSpacing }}"
                                          innerSpacing="{{ innerSpacing }}"
                                          rowInnerHeight="{{ rowInnerHeight }}"
                                          pointsWidth="{{ pointsWidth }}"
-                                         scrollBarWidth="{{ scrollBarWidth }}"
                     />
-                    <frame id="frame_scroll" size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
+                    <frame id="frame_scroll"
+                           size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
-                                       pos="0 {{ -rowId * (rowHeight + rowSpacing) }}"
+                                       pos="0 {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
                         />
                     </frame>
-
-                    <!-- Scrollbar -->
-                    <Scrollbar x="{{ w - scrollBarWidth }}"
-                               w="{{ scrollBarWidth }}"
-                               h="{{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing }}"
-                               accentColor="{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"
-                               opacity="0.25"
-                               rowHeight="{{ rowHeight + rowSpacing }}"
-                               visiblePlayers="{{ VisiblePlayers }}"
-                               id="scrollbar_bg"
-                    />
-                    <Scrollbar x="{{ w - scrollBarWidth }}"
-                               w="{{ scrollBarWidth }}"
-                               h="{{ (VisiblePlayers * rowHeight * rowSpacing + headerHeight - rowSpacing) * 0.35 }}"
-                               accentColor="{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"
-                               rowHeight="{{ rowHeight + rowSpacing }}"
-                               visiblePlayers="{{ VisiblePlayers }}"
-                               id="scrollbar_handle"
-                    />
                 </frame>
             </frame>
         </frame>
@@ -210,11 +191,12 @@
         
         Void SetCustomLabel(CMlFrame playerRow, Text value, Text hexColor){
             declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
-            declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
+            //declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
             
             customLabel.Value = value;
             customLabel.TextColor = CL::HexToRgb(hexColor);
             
+            /*
             Page.GetClassChildren("modulate", customGradientFrame, True);
             foreach(Control in Page.GetClassChildren_Result){
                 (Control as CMlQuad).ModulateColor = customLabel.TextColor;
@@ -225,13 +207,14 @@
             }
             
             customGradientFrame.Show();
+            */
         }
         
         Void HideCustomLabel(CMlFrame playerRow){
             declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
-            declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
+            //declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
             customLabel.Value = "";
-            customGradientFrame.Hide();
+            //customGradientFrame.Hide();
         }
         
         Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow, Integer position){
@@ -351,11 +334,11 @@
             declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
             if(PositionColors.existskey(position) && colorizePosition){
                 declare positionColor = PositionColors[position];
-                SetPositionBackgroundColor(positionBox, CL::HexToRgb(positionColor));
-                SetPlayerHighlightColor(playerRowBg, CL::HexToRgb(positionColor));
+                SetPositionBoxColor(positionBox, CL::HexToRgb(positionColor));
+                //SetPlayerHighlightColor(playerRowBg, CL::HexToRgb(positionColor));
             }else{
-                SetPositionBackgroundColor(positionBox, CL::HexToRgb("{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"));
-                SetPlayerHighlightColor(playerRowBg, CL::HexToRgb("{{ Theme.ScoreboardModule_Scoreboard_BgPosition }}"));
+                SetPositionBoxColor(positionBox, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
+                //SetPlayerHighlightColor(playerRowBg, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
             }
             
             if (PlayerIsConnected) {
@@ -386,14 +369,6 @@
                 offset += roundPointsLabel.ComputeWidth(roundPointsLabel.Value) + {{ innerSpacing }};
             }
             specDisconnectedLabel.RelativePosition_V3.X = x - offset;
-        }
-        
-        Void SetMapAndAuthorName() {
-            declare mapNameLabel <=> (Page.MainFrame.GetFirstChild("map_name") as CMlLabel);
-            declare authorName <=> (Page.MainFrame.GetFirstChild("author_name") as CMlLabel);
-        
-            mapNameLabel.Value = Map.MapName;
-            authorName.Value = Map.AuthorNickName;
         }
         
         Text GetRecordText() {
@@ -440,8 +415,6 @@
             }else{
                 roundLabel.Value = "";
             }
-            
-            SetMapAndAuthorName();
         }
         
         Void UpdateScrollSize(Integer playerRowsFilled) {
@@ -453,9 +426,18 @@
             PlayerRowsFilled = playerRowsFilled;
         }
         
-        Void UpdateScoreTable() {
+        Text GetNickname(CUser user) {
             declare Text[Text] EvoSC_Player_Nicknames for UI = [];
+            if(EvoSC_Player_Nicknames.existskey(user.Login)){
+                return EvoSC_Player_Nicknames[user.Login];
+            }
+            
+            return user.Name;
+        }
         
+        Void UpdateScoreTable() {
+            UpdateHeaderInfo();
+            
             foreach (PlayerIndex => Player in Players) {
                 if (Player.Score == Null) continue;
                 
@@ -468,7 +450,7 @@
                 declare CSmPlayer::ESpawnStatus Race_ScoresTable_SpawnStatus for Player.Score = CSmPlayer::ESpawnStatus::NotSpawned;
                 Race_ScoresTable_SpawnStatus = Player.SpawnStatus;
             }
-        
+            
             declare cursor = 0;
             //declare startFill = ML::Max(ScrollIndex - PlayerRowsVisible, 0);
             //declare endFill = ML::Min(ScrollIndex + PlayerRowsVisible * 2, MaxPlayers - 1);
@@ -495,25 +477,20 @@
                         continue;
                     }
                 }
-            
+                
                 declare playerRow = (RowsFrame.Controls[cursor] as CMlFrame);
-                declare positionLabel = (playerRow.GetFirstChild("position") as CMlLabel);
                 declare clubBg = (playerRow.GetFirstChild("club_bg") as CMlQuad);
                 declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
                 declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
                 declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
+                declare positionBoxFrame = (playerRow.GetFirstChild("position_box") as CMlFrame);
                 
-                positionLabel.Value = (cursor + 1) ^ "";
+                SetPlayerRank(positionBoxFrame, cursor + 1);
+                nameLabel.Value = GetNickname(Score.User);
+                
                 clubLabel.Value = Score.User.ClubTag;
-                
-                if(EvoSC_Player_Nicknames.existskey(Score.User.Login)){
-                    nameLabel.Value = EvoSC_Player_Nicknames[Score.User.Login];
-                }else{
-                    nameLabel.Value = Score.User.Name;
-                }
-                
                 if(clubLabel.Value != ""){
                     clubBg.Opacity = 0.95;
                 }else{
@@ -546,8 +523,6 @@
                 declare playerRow = (RowsFrame.Controls[i] as CMlFrame);
                 playerRow.Hide();
             }
-            
-            UpdateHeaderInfo();
             UpdateScrollSize(cursor);
         }
         
