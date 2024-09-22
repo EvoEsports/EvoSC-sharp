@@ -6,10 +6,10 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Events.EventArgObjects;
-using EvoSC.Modules.Official.Scoreboard.Interfaces;
+using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 using GbxRemoteNet.Events;
 
-namespace EvoSC.Modules.Official.Scoreboard.Controllers;
+namespace EvoSC.Modules.Official.ScoreboardModule.Controllers;
 
 [Controller]
 public class ScoreboardEventController(IScoreboardService scoreboardService) : EvoScController<IEventControllerContext>

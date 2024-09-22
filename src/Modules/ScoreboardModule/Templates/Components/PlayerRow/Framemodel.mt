@@ -1,9 +1,9 @@
 ﻿<component>
-    <import component="Scoreboard.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
-    <import component="Scoreboard.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
-    <import component="Scoreboard.Components.PlayerRow.PointsBox" as="PointsBox"/>
-    <import component="Scoreboard.Components.PlayerRow.PositionBox" as="Position"/>
-    <import component="Scoreboard.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
+    <import component="ScoreboardModule.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
+    <import component="ScoreboardModule.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
+    <import component="ScoreboardModule.Components.PlayerRow.PointsBox" as="PointsBox"/>
+    <import component="ScoreboardModule.Components.PlayerRow.PositionBox" as="Position"/>
+    <import component="ScoreboardModule.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
     <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
 
     <property type="double" name="w"/>

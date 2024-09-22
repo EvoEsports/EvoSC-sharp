@@ -3,7 +3,7 @@ using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
 using EvoSC.Common.Util;
 
-namespace EvoSC.Modules.Official.Scoreboard.Themes;
+namespace EvoSC.Modules.Official.ScoreboardModule.Themes;
 
 [Theme(Name = "Scoreboard", Description = "Default theme for the scoreboard.")]
 public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboardTheme>

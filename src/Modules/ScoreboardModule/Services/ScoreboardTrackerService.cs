@@ -1,8 +1,8 @@
 ﻿using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Modules.Official.Scoreboard.Interfaces;
+using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
-namespace EvoSC.Modules.Official.Scoreboard.Services;
+namespace EvoSC.Modules.Official.ScoreboardModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class ScoreboardTrackerService : IScoreboardTrackerService

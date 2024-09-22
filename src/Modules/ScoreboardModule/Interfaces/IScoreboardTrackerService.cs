@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Modules.Official.Scoreboard.Interfaces;
+﻿namespace EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
 public interface IScoreboardTrackerService
 {

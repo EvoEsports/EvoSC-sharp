@@ -5,9 +5,9 @@ using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.Scoreboard.Interfaces;
+using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
-namespace EvoSC.Modules.Official.Scoreboard.Services;
+namespace EvoSC.Modules.Official.ScoreboardModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class ScoreboardService(IManialinkManager manialinks, IServerClient server,
@@ -16,12 +16,12 @@ public class ScoreboardService(IManialinkManager manialinks, IServerClient serve
 {
     public async Task ShowScoreboardToAllAsync()
     {
-        await manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetDataAsync());
+        await manialinks.SendPersistentManialinkAsync("ScoreboardModule.Scoreboard", await GetDataAsync());
     }
 
     public async Task ShowScoreboardAsync(IPlayer playerLogin)
     {
-        await manialinks.SendManialinkAsync(playerLogin, "Scoreboard.Scoreboard", await GetDataAsync());
+        await manialinks.SendManialinkAsync(playerLogin, "ScoreboardModule.Scoreboard", await GetDataAsync());
     }
 
     private Task<dynamic> GetDataAsync()

@@ -1,12 +1,12 @@
 ﻿<component>
     <using namespace="System.Linq"/>
 
-    <import component="Scoreboard.Components.BackgroundBox" as="ScoreboardBackground"/>
-    <import component="Scoreboard.Components.ScoreboardHeader" as="ScoreboardHeader"/>
-    <import component="Scoreboard.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
-    <import component="Scoreboard.Components.Settings.Wrapper" as="SettingsWrapper"/>
-    <import component="Scoreboard.Components.Settings.Form" as="SettingsForm"/>
-    <import component="Scoreboard.Components.Scrollbar" as="Scrollbar"/>
+    <import component="ScoreboardModule.Components.BackgroundBox" as="ScoreboardBackground"/>
+    <import component="ScoreboardModule.Components.ScoreboardHeader" as="ScoreboardHeader"/>
+    <import component="ScoreboardModule.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
+    <import component="ScoreboardModule.Components.Settings.Wrapper" as="SettingsWrapper"/>
+    <import component="ScoreboardModule.Components.Settings.Form" as="SettingsForm"/>
+    <import component="ScoreboardModule.Components.Scrollbar" as="Scrollbar"/>
 
     <property type="int" name="MaxPlayers" default="0"/>
     <property type="int" name="VisiblePlayers" default="8"/>

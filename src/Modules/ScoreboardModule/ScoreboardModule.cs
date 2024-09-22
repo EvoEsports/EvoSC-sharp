@@ -1,8 +1,8 @@
 ﻿using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
-using EvoSC.Modules.Official.Scoreboard.Interfaces;
+using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
-namespace EvoSC.Modules.Official.Scoreboard;
+namespace EvoSC.Modules.Official.ScoreboardModule;
 
 [Module(IsInternal = true)]
 public class ScoreboardModule(IScoreboardService scoreboardService) : EvoScModule, IToggleable
