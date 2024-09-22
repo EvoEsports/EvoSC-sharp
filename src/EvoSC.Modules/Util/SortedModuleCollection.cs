@@ -55,11 +55,7 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
                 selected = dependent.Key;
             }
 
-            if (selected != null)
-            {
-                dependencyGraph.Remove(selected);
-            }
-            else
+            if (selected == null)
             {
                 break;
             }
@@ -77,6 +73,11 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
             {
                 dependencies.Value.Remove(dependent.Key);
             }
+        }
+
+        if (dependencyGraph.ContainsKey(dependent.Key))
+        {
+            dependencyGraph.Remove(dependent.Key);
         }
     }
 
