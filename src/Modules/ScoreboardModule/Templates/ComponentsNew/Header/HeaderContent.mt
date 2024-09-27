@@ -3,7 +3,7 @@
 
     <property type="double" name="width"/>
     <property type="double" name="height"/>
-    <property type="double" name="padding" default="3.8"/>
+    <property type="double" name="padding" default="3.4"/>
 
     <template>
         <frame id="header_content"

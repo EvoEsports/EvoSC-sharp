@@ -10,6 +10,7 @@
     <property type="double" name="padding"/>
     <property type="double" name="rowHeight"/>
     <property type="double" name="rowSpacing"/>
+    <property type="double" name="columnSpacing"/>
     <property type="double" name="innerSpacing"/>
     <property type="double" name="rowInnerHeight"/>
     <property type="double" name="pointsWidth"/>
@@ -20,8 +21,8 @@
     <template>
         <framemodel id="player_row">
             <!-- Scroll activation -->
-            <quad id="player_row_trigger" 
-                  size="{{ w }} {{ rowHeight + rowSpacing }}" 
+            <quad id="player_row_trigger"
+                  size="{{ w }} {{ rowHeight + rowSpacing }}"
                   ScriptEvents="1"
             />
 
@@ -46,22 +47,37 @@
                                    height="{{ rowHeight }}"
             />
 
-            <frame pos="{{ positionBoxWidth + 2.0 }} {{ rowHeight / -2.0 }}" z-index="10">
+            <frame pos="{{ positionBoxWidth + columnSpacing }} {{ rowHeight / -2.0 }}" z-index="10">
                 <!-- Flag -->
                 <quad id="flag"
-                      size="{{ rowInnerHeight * 2 }} {{ rowInnerHeight }}"
+                      size="{{ rowInnerHeight * 1.5 }} {{ rowInnerHeight * 0.75 }}"
                       valign="center"
                       image="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
-                      alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
+                      data-alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
                 />
 
-                <ClubTag h="{{ rowInnerHeight }}"/>
+                <frame pos="{{ rowInnerHeight * 1.5 + columnSpacing }} 0">
+                    <quad id="club_bg"
+                          size="{{ rowInnerHeight * 1.5 }} {{ rowInnerHeight * 0.75 }}"
+                          bgcolor="f00"
+                          valign="center"
+                          hidden="1"
+                    />
+                    <label id="club"
+                           class="text-primary"
+                           text="CLUB"
+                           pos="{{ rowInnerHeight * 0.75 }} 0"
+                           valign="center2"
+                           halign="center"
+                           textsize="{{ Theme.UI_FontSize*2 }}"
+                    />
+                </frame>
 
                 <!-- Player Name -->
                 <label id="name"
-                       pos="{{ rowInnerHeight * 4 + innerSpacing }} 0.4"
+                       pos="{{ rowInnerHeight * 3.0 + columnSpacing * 2.0 }} 0"
                        size="{{ w / 3.0 }} {{ rowHeight }}"
-                       valign="center"
+                       valign="center2"
                        textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Regular }}"
                        textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"
@@ -96,12 +112,12 @@
 
                 <!-- Player Score -->
                 <label id="score"
-                       pos="0 {{ rowHeight / -2.0 + 0.4 }}"
-                       valign="center"
+                       class="text-primary"
+                       pos="0 {{ rowHeight / -2.0 }}"
+                       valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
-                       textfont="{{ Font.Thin }}"
-                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
+                />
 
                 <!-- Points Box -->
                 <PointsBox id="points_box"

@@ -16,28 +16,35 @@
     <property type="double" name="w" default="160"/>
     <property type="double" name="h" default="80"/>
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
-    <property type="double" name="headerHeight" default="18.0"/>
+    <property type="double" name="headerHeight" default="17.0"/>
     <property type="double" name="rowHeight" default="8.0"/>
     <property type="double" name="rowInnerHeight" default="5.0"/>
-    <property type="double" name="pointsWidth" default="16.0"/>
     <property type="double" name="rowSpacing" default="0.5"/>
+    <property type="double" name="columnSpacing" default="4.0" />
+    <property type="double" name="pointsWidth" default="16.0"/>
     <property type="double" name="padding" default="2.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
+    <property type="double" name="legendHeight" default="3.8"/>
 
     <template layer="ScoresTable">
-        <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 10.0 }}">
+        <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 12.0 }}">
             <Header width="{{ w }}"
                     height="{{ headerHeight }}"
             />
             <Body y="{{ -headerHeight }}"
                   width="{{ w }}"
                   height="{{ h - headerHeight }}"
+                  legendHeight="{{ legendHeight }}"
+                  rowSpacing="{{ rowSpacing }}"
+                  columnSpacing="{{ columnSpacing }}"
+                  flagWidth="{{ rowInnerHeight * 1.5 }}"
+                  clubTagWidth="{{ rowInnerHeight * 1.5 }}"
             />
 
             <ScoreboardHeader w="{{ w }}" headerHeight="{{ headerHeight }}"/>
 
             <!-- Player Rows -->
-            <frame id="rows_wrapper" pos="0 {{ -headerHeight }}" size="{{ w }} {{ h-headerHeight }}">
+            <frame id="rows_wrapper" pos="0 {{ -headerHeight-legendHeight }}" size="{{ w }} {{ h-headerHeight }}">
                 <frame id="rows_inner">
                     <!-- Settings -->
                     <SettingsWrapper h="{{ h }}" padding="{{ padding }}">
@@ -49,12 +56,13 @@
                                          padding="{{ padding }}"
                                          rowHeight="{{ rowHeight }}"
                                          rowSpacing="{{ rowSpacing }}"
+                                         columnSpacing="{{ columnSpacing }}"
                                          innerSpacing="{{ innerSpacing }}"
                                          rowInnerHeight="{{ rowInnerHeight }}"
                                          pointsWidth="{{ pointsWidth }}"
                     />
                     <frame id="frame_scroll"
-                           size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight }}">
+                           size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight }}">
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
                                        pos="0 {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
@@ -126,7 +134,7 @@
                 pointsLabel.Visible = shouldShowPoints;
                 
                 if(SB_Setting_ShowFlags){
-                    flagQuad.RelativePosition_V3.X = offset;
+                    //flagQuad.RelativePosition_V3.X = offset;
                     flagQuad.Show();
                     offset += flagWidth;
                 }else{
@@ -134,17 +142,17 @@
                 }
                 
                 if(SB_Setting_ShowClubTags){
-                    clubQuad.RelativePosition_V3.X = offset;
-                    clubLabel.RelativePosition_V3.X = offset + (flagWidth / 2.0);
-                    clubQuad.Show();
+                    //clubQuad.RelativePosition_V3.X = offset;
+                    //clubLabel.RelativePosition_V3.X = offset + (flagWidth / 2.0);
+                    //clubQuad.Show();
                     clubLabel.Show();
                     offset += flagWidth;
                 }else{
-                    clubQuad.Hide();
+                    //clubQuad.Hide();
                     clubLabel.Hide();
                 }
                 
-                nameLabel.RelativePosition_V3.X = offset + innerSpacing;
+                //nameLabel.RelativePosition_V3.X = offset + innerSpacing;
             }
         }
         
