@@ -43,6 +43,24 @@ public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboa
         Set("ScoreboardModule.Scoreboard.BgPosition").To(_theme.UI_BgHighlight);
         
         Set("ScoreboardModule.Settings.Text").To(_theme.UI_TextPrimary);
+        
+        // new
+
+        Set("ScoreboardModule.Logo_URL").To("");
+        Set("ScoreboardModule.Logo_Width").To(10.0);
+        Set("ScoreboardModule.Logo_Height").To(10.0);
+        
+        Set("ScoreboardModule.Background_Opacity").To(0.0);
+        Set("ScoreboardModule.Background_Image").To("");
+        
+        Set("ScoreboardModule.Background_Header_Color").To(_theme.UI_HeaderBg);
+        Set("ScoreboardModule.Background_Header_Opacity").To(0.95);
+        
+        Set("ScoreboardModule.Background_Legend_Color").To(_theme.UI_BgPrimary);
+        Set("ScoreboardModule.Background_Legend_Opacity").To(1.0);
+        
+        Set("ScoreboardModule.Background_Row_Color").To(_theme.UI_BgPrimary);
+        Set("ScoreboardModule.Background_Row_Opacity").To(0.9);
 
         return Task.CompletedTask;
     }

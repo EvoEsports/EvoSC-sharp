@@ -13,7 +13,8 @@
         >
             <quad id="background"
                   size="{{ w }} {{ h }}"
-                  class="bg-primary"
+                  bgcolor="{{ Theme.ScoreboardModule_Background_Row_Color }}"
+                  opacity="{{ Theme.ScoreboardModule_Background_Row_Opacity }}"
             />
         </frame>
     </template>
@@ -26,7 +27,7 @@
         }
         
         Void ResetPlayerBackgroundColor(CMlFrame backgroundFrame){
-            SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.UI_BgPrimary }}"));
+            SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.ScoreboardModule_Background_Row_Color }}"));
         }
         
         Void SetPlayerHighlightColor(CMlFrame backgroundFrame, Vec3 color) {

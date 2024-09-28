@@ -2,12 +2,13 @@
     <using namespace="System.Linq"/>
 
     <import component="ScoreboardModule.Components.BackgroundBox" as="ScoreboardBackground"/>
-    <import component="ScoreboardModule.Components.ScoreboardHeader" as="ScoreboardHeader"/>
     <import component="ScoreboardModule.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
     <import component="ScoreboardModule.Components.Settings.Wrapper" as="SettingsWrapper"/>
     <import component="ScoreboardModule.Components.Settings.Form" as="SettingsForm"/>
     <import component="ScoreboardModule.ComponentsNew.ScoreboardHeader" as="Header"/>
     <import component="ScoreboardModule.ComponentsNew.ScoreboardBody" as="Body"/>
+    <import component="ScoreboardModule.ComponentsNew.ScoreboardBg" as="ScoreboardBg"/>
+    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
 
     <property type="int" name="MaxPlayers" default="0"/>
     <property type="int" name="VisiblePlayers" default="8"/>
@@ -28,7 +29,11 @@
     <property type="int" name="actionButtonCount" default="2"/>
 
     <template layer="ScoresTable_x">
-        <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 12.0 }}">
+        <UIStyle />
+        <frame pos="{{ w / -2.0 }} {{ h / 2.0 }}">
+            <ScoreboardBg width="{{ w }}"
+                          height="{{ h }}"
+            />
             <Header width="{{ w }}"
                     height="{{ headerHeight }}"
             />
@@ -42,16 +47,9 @@
                   clubTagWidth="{{ rowInnerHeight * 1.5 }}"
             />
 
-            <ScoreboardHeader w="{{ w }}" headerHeight="{{ headerHeight }}"/>
-
             <!-- Player Rows -->
             <frame id="rows_wrapper" pos="0 {{ -headerHeight-legendHeight }}" size="{{ w }} {{ h-headerHeight }}">
                 <frame id="rows_inner">
-                    <!-- Settings -->
-                    <SettingsWrapper h="{{ h }}" padding="{{ padding }}">
-                        <SettingsForm w="{{ w - padding * 2.0 }}" h="{{ h - padding * 2.0 }}"/>
-                    </SettingsWrapper>
-
                     <!-- Player Rows -->
                     <PlayerRowFramemodel w="{{ w }}"
                                          padding="{{ padding }}"
@@ -64,7 +62,7 @@
                                          actionButtonCount="{{ actionButtonCount }}"
                     />
                     <frame id="frame_scroll"
-                           size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight }}">
+                           size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight + rowSpacing }}">
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
                                        pos="0 {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
@@ -106,7 +104,6 @@
         declare Integer ScrollIndex;
         declare Integer MaxPlayers;
         declare CMlFrame RowsFrame;
-        declare Boolean SettingsVisible;
         declare Text[Integer] PositionColors;
         
         Boolean ShouldShowPointsBox() {
@@ -127,34 +124,12 @@
                 declare playerRow = (Control as CMlFrame);
                 declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
-                declare clubQuad = (playerRow.GetFirstChild("club_bg") as CMlQuad);
                 declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
                 declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
                 
                 pointsBoxFrame.Visible = shouldShowPoints;
                 pointsLabel.Visible = shouldShowPoints;
-                
-                if(SB_Setting_ShowFlags){
-                    //flagQuad.RelativePosition_V3.X = offset;
-                    flagQuad.Show();
-                    offset += flagWidth;
-                }else{
-                    flagQuad.Hide();
-                }
-                
-                if(SB_Setting_ShowClubTags){
-                    //clubQuad.RelativePosition_V3.X = offset;
-                    //clubLabel.RelativePosition_V3.X = offset + (flagWidth / 2.0);
-                    //clubQuad.Show();
-                    clubLabel.Show();
-                    offset += flagWidth;
-                }else{
-                    //clubQuad.Hide();
-                    clubLabel.Hide();
-                }
-                
-                //nameLabel.RelativePosition_V3.X = offset + innerSpacing;
             }
         }
         
@@ -190,12 +165,12 @@
         Void SetCountryFlag(CMlQuad flagQuad, Text login){
             if(login != "" && !TL::StartsWith("*fakeplayer", login)){
                 flagQuad.ImageUrl = "file://ZoneFlags/Login/" ^ login ^ "/country";
-                flagQuad.ModulateColor = <1.0, 1.0, 1.0>;
                 flagQuad.Opacity = 1.0;
             }else{
-                flagQuad.ImageUrl = "file://Media/Manialinks/Nadeo/TMNext/Menus/Common/Common_Flag_Mask.dds";
-                flagQuad.ModulateColor = <0.0, 0.0, 0.0>;
-                flagQuad.Opacity = 0.25;
+                flagQuad.ImageUrl = "file://ZoneFlags/World";
+                flagQuad.Opacity = 1.0;
+                //flagQuad.BgColor = <0.0, 0.0, 0.0>;
+                //flagQuad.Opacity = 0.15;
             }
         }
         
@@ -396,11 +371,10 @@
         }
         
         Void UpdateHeaderInfo() {
+            /*
             declare subTextLabel <=> (Page.MainFrame.GetFirstChild("sub_text") as CMlLabel);
             declare roundLabel <=> (Page.MainFrame.GetFirstChild("round_label") as CMlLabel);
-            
             subTextLabel.Value = GetRecordText();
-            
             declare Owner <=> MV_Utils::GetOwner(This);
             
             if (CurrentScoreMode == C_Mode_BestTime || CurrentScoreMode == C_Mode_PrevTime){
@@ -425,6 +399,7 @@
             }else{
                 roundLabel.Value = "";
             }
+            */
         }
         
         Void UpdateScrollSize(Integer playerRowsFilled) {
@@ -489,7 +464,6 @@
                 }
                 
                 declare playerRow = (RowsFrame.Controls[cursor] as CMlFrame);
-                declare clubBg = (playerRow.GetFirstChild("club_bg") as CMlQuad);
                 declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
                 declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
@@ -499,12 +473,9 @@
                 
                 SetPlayerRank(positionBoxFrame, cursor + 1);
                 nameLabel.Value = GetNickname(Score.User);
-                
                 clubLabel.Value = Score.User.ClubTag;
-                if(clubLabel.Value != ""){
-                    clubBg.Opacity = 0.95;
-                }else{
-                    clubBg.Opacity = 0.25;
+                if(clubLabel.Value == ""){
+                    clubLabel.Value = "-";
                 }
                 
                 declare Boolean CustomLabelVisible for playerRow = False;
@@ -535,19 +506,6 @@
             }
             UpdateScrollSize(cursor);
         }
-        
-        Void ToggleShowSettings() {
-            declare wrapperInnerFrame <=> (Page.MainFrame.GetFirstChild("rows_inner") as CMlFrame);
-            declare y = 0.0;
-            SettingsVisible = !SettingsVisible;
-        
-            if(SettingsVisible) {
-                y = {{ h + padding }} * -1.0;
-            }
-            
-            declare targetState = "<frame pos='0 " ^ y ^ "' />";
-            AnimMgr.Add(wrapperInnerFrame, targetState, 320, CAnimManager::EAnimManagerEasing::ExpInOut);
-        }
         -->
     </script>
 
@@ -572,7 +530,6 @@
             PlayerRowsVisible = {{ VisiblePlayers }};
             PlayerRowsFilled = -1;
             CurrentScoreMode = -1;
-            SettingsVisible = False;
             
             {! string.Join("\n", PositionColors.Select(pc => $"PositionColors[{pc.Key}] = \"{pc.Value}\";")) !}
         ***
@@ -589,13 +546,6 @@
                 CurrentScoreMode = Net_TMGame_ScoresTable_ScoreMode;
                 UpdateScoreboardLayout();
                 log("[EvoSC#] Update scoreboard layout.");
-            }
-        ***
-        
-        *** OnMouseClick *** 
-        ***
-            if (Event.Control.ControlId == "settings_icon") {
-                ToggleShowSettings();
             }
         ***
         

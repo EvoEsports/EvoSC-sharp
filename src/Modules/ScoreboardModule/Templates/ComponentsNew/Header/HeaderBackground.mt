@@ -4,7 +4,8 @@
 
     <template>
         <quad size="{{ width }} {{ height }}"
-              class="bg-header"
+              bgcolor="{{ Theme.ScoreboardModule_Background_Header_Color }}"
+              opacity="{{ Theme.ScoreboardModule_Background_Header_Opacity }}"
         />
     </template>
 </component>

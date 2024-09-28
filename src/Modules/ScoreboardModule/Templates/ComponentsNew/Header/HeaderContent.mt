@@ -29,10 +29,9 @@
                    opacity="0.6"
             />
 
-            <Logo x="{{ (width - padding * 2.0) / 2.0 }}"
+            <Logo if='Theme.ScoreboardModule_Logo_URL != ""'
+                  x="{{ (width - padding * 2.0) / 2.0 }}"
                   y="{{ (height - padding * 2.0) / -2.0 }}"
-                  width="{{ height / 2.0 }}"
-                  height="{{ height / 2.0 }}"
             />
         </frame>
     </template>

@@ -53,8 +53,8 @@
                 <quad id="flag"
                       size="{{ rowInnerHeight * 1.5 }} {{ rowInnerHeight * 0.75 }}"
                       valign="center"
-                      image="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
-                      data-alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/PageClub/ClubActivities/Clubs_ActivityIcon_Mask.dds"
+                      alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/Common/Common_Flag_Mask.dds"
+                      data-alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/Common/Common_Flag_Mask.dds"
                 />
 
                 <frame pos="{{ rowInnerHeight * 1.5 + columnSpacing }} 0">
@@ -209,7 +209,7 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.UI_BgPrimary }}"));
+                ResetPlayerBackgroundColor(backgroundFrame);
                 continue;
                 ResetPlayerBackgroundColor(backgroundFrame);
             }

@@ -8,8 +8,8 @@
 
     <template>
         <quad size="{{ width }} {{ height }}"
-              class="bg-header"
-              opacity="1.0"
+              bgcolor="{{ Theme.ScoreboardModule_Background_Legend_Color }}"
+              opacity="{{ Theme.ScoreboardModule_Background_Legend_Opacity }}"
         />
         <label text="POS"
                class="text-primary"
@@ -43,6 +43,13 @@
                opacity="0.75"
         />
         
+        <label text="BEST TIME"
+               class="text-primary"
+               pos="{{ width-columnSpacing - 60.0 }} {{ height / -2 + 0.25 }}"
+               valign="center" 
+               textsize="{{ Theme.UI_FontSize*0.2 }}"
+               opacity="0.75"
+        />
         <label text="SCORE"
                class="text-primary"
                pos="{{ width-columnSpacing }} {{ height / -2 + 0.25 }}"
