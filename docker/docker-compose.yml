@@ -1,6 +1,6 @@
 services:
   trackmania:
-    image: evotm/trackmania
+    image: evoesports/trackmania
     restart: always
     ports:
       - 2350:2350/udp
