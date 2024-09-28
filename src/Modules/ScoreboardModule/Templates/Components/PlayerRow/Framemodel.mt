@@ -2,7 +2,7 @@
     <import component="ScoreboardModule.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
     <import component="ScoreboardModule.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
     <import component="ScoreboardModule.Components.PlayerRow.PointsBox" as="PointsBox"/>
-    <import component="ScoreboardModule.Components.PlayerRow.PlayerActions" as="PlayerActions"/>
+    <import component="ScoreboardModule.ComponentsNew.Row.PlayerActions" as="PlayerActions"/>
     <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
     <import component="ScoreboardModule.ComponentsNew.Row.PositionBox" as="PositionBox"/>
 
@@ -199,7 +199,7 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.ScoreboardModule_PlayerRow_FrameModel_BgRow }}"));
+                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.UI_HeaderBg }}"));
                 continue;
             }
         ***
@@ -209,6 +209,7 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
+                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.UI_BgPrimary }}"));
                 continue;
                 ResetPlayerBackgroundColor(backgroundFrame);
             }
