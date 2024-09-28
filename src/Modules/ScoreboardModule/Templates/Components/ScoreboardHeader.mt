@@ -14,7 +14,8 @@
                        halign="right"
                        textsize="2.2"
                        textcolor="{{ Theme.ScoreboardModule_ScoreboardHeader_Text }}"
-                       textfont="{{ Font.Regular }}"/>
+                       textfont="{{ Font.Regular }}"
+                       hidden="1"/>
             </frame>
 
             <!-- Sub Text (Below highlighted box) -->
@@ -26,6 +27,7 @@
                    textsize="1.1"
                    textfont="{{ Font.Thin }}"
                    opacity="0.85"
+                   hidden="1"
             />
 
             <!-- Settings Icon -->
@@ -42,6 +44,7 @@
                    focusareacolor1="0000"
                    focusareacolor2="0000"
                    opacity="0.65"
+                   hidden="1"
             />
         </frame>
 
@@ -53,6 +56,7 @@
               size="32 32"
               keepratio="Fit"
               z-index="50"
+              hidden="1"
         />
     </template>
 </component>

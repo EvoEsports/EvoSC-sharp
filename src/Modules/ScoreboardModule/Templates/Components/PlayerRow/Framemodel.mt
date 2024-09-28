@@ -14,6 +14,7 @@
     <property type="double" name="innerSpacing"/>
     <property type="double" name="rowInnerHeight"/>
     <property type="double" name="pointsWidth"/>
+    <property type="int" name="actionButtonCount"/>
 
     <property type="double" name="textSize" default="2.4"/>
     <property type="double" name="positionBoxWidth" default="9.6"/>
@@ -133,10 +134,10 @@
                            padding="{{ padding }}"
                 />
             </frame>
-            <PlayerActions x="{{ w - padding }}"
+            <PlayerActions x="{{ w }}"
                            y="{{ rowHeight / -2.0 }}"
                            rowHeight="{{ rowHeight }}"
-                           innerSpacing="{{ innerSpacing }}"
+                           rowSpacing="{{ rowSpacing }}"
                            textsize="{{ textSize }}"
             />
         </framemodel>
@@ -147,15 +148,19 @@
         Void ShowPlayerActions(CMlFrame playerRow) {
             declare playerActions = (playerRow.GetFirstChild("player_actions") as CMlFrame);
             declare detailsWrapper = (playerRow.GetFirstChild("details_wrapper") as CMlFrame);
+            declare backgroundWrapper = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
             playerActions.Show();
             detailsWrapper.Hide();
+            backgroundWrapper.Size.X = ({{ (w - positionBoxWidth) - actionButtonCount*(rowHeight*1.2) - actionButtonCount*rowSpacing - 0.1 }}) * 1.0;
         }
         
         Void HidePlayerActions(CMlFrame playerRow) {
             declare playerActions = (playerRow.GetFirstChild("player_actions") as CMlFrame);
             declare detailsWrapper = (playerRow.GetFirstChild("details_wrapper") as CMlFrame);
+            declare backgroundWrapper = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
             playerActions.Hide();
             detailsWrapper.Show();
+            backgroundWrapper.Size.X = {{ (w - positionBoxWidth) }} * 1.0;
         }
         
         Void ResetPlayerActions() {

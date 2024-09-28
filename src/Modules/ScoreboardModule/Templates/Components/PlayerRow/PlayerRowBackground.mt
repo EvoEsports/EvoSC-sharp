@@ -7,7 +7,10 @@
     <property type="double" name="x"/>
 
     <template>
-        <frame id="{{ id }}" pos="{{ x }}">
+        <frame id="{{ id }}" 
+               size="{{ w }} {{ h }}"
+               pos="{{ x }}"
+        >
             <quad id="background"
                   size="{{ w }} {{ h }}"
                   class="bg-primary"

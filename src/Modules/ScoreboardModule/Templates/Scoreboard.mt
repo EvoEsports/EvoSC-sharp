@@ -19,14 +19,15 @@
     <property type="double" name="headerHeight" default="17.0"/>
     <property type="double" name="rowHeight" default="8.0"/>
     <property type="double" name="rowInnerHeight" default="5.0"/>
-    <property type="double" name="rowSpacing" default="0.5"/>
+    <property type="double" name="rowSpacing" default="0.3"/>
     <property type="double" name="columnSpacing" default="4.0" />
     <property type="double" name="pointsWidth" default="16.0"/>
     <property type="double" name="padding" default="2.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
     <property type="double" name="legendHeight" default="3.8"/>
+    <property type="int" name="actionButtonCount" default="2"/>
 
-    <template layer="ScoresTable">
+    <template layer="ScoresTable_x">
         <frame pos="{{ w / -2.0 }} {{ h / 2.0 + 12.0 }}">
             <Header width="{{ w }}"
                     height="{{ headerHeight }}"
@@ -60,6 +61,7 @@
                                          innerSpacing="{{ innerSpacing }}"
                                          rowInnerHeight="{{ rowInnerHeight }}"
                                          pointsWidth="{{ pointsWidth }}"
+                                         actionButtonCount="{{ actionButtonCount }}"
                     />
                     <frame id="frame_scroll"
                            size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight }}">
@@ -554,7 +556,8 @@
         *** OnInitialization ***
         ***
             declare netread Integer Net_TMGame_ScoresTable_ScoreMode for Teams[0];
-            declare Integer scoreboardUpdateInterval = 333;
+            //declare Integer scoreboardUpdateInterval = 333;
+            declare Integer scoreboardUpdateInterval = 25;
             declare Integer lastScoreboardUpdate = 0;
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
             

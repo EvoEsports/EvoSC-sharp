@@ -23,7 +23,7 @@
             />
             <label id="smaller_text"
                    class="text-primary"
-                   pos="0 -8.5"
+                   pos="0 -8.75"
                    text="SMALLER TEXT"
                    textsize="{{ Theme.UI_FontSize*0.8 }}"
                    opacity="0.6"
