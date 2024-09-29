@@ -24,7 +24,7 @@
     <property type="double" name="legendHeight" default="3.8"/>
     <property type="int" name="actionButtonCount" default="2"/>
 
-    <template layer="ScoresTable_x">
+    <template layer="ScoresTable">
         <!-- UI Styles -->
         <UIStyle/>
 
@@ -149,6 +149,10 @@
             
             for(i, 1, padding - TL::Length(points)){
                 out ^= "0";
+            }
+            
+            if(points == "0"){
+                return out ^ points;
             }
             
             return out ^ primaryTextColor ^ points;

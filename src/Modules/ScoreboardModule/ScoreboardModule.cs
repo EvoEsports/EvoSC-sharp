@@ -5,18 +5,16 @@ using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 namespace EvoSC.Modules.Official.ScoreboardModule;
 
 [Module(IsInternal = true)]
-public class ScoreboardModule(IScoreboardService scoreboardService, IScoreboardNicknamesService nicknamesService) : EvoScModule, IToggleable
+public class ScoreboardModule(IScoreboardService scoreboardService, IScoreboardNicknamesService nicknamesService)
+    : EvoScModule, IToggleable
 {
-    public Task EnableAsync()
+    public async Task EnableAsync()
     {
-        nicknamesService.LoadNicknamesAsync();
-        scoreboardService.HideNadeoScoreboardAsync();
-        
-        return scoreboardService.SendScoreboardAsync();
+        await nicknamesService.LoadNicknamesAsync();
+        await scoreboardService.HideNadeoScoreboardAsync();
+        await scoreboardService.SendScoreboardAsync();
     }
 
-    public Task DisableAsync()
-    {
-        return scoreboardService.ShowNadeoScoreboardAsync();
-    }
+    public Task DisableAsync() =>
+        scoreboardService.ShowNadeoScoreboardAsync();
 }

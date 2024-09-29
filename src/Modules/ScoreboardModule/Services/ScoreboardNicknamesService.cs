@@ -27,13 +27,6 @@ public class ScoreboardNicknamesService(
         _nicknames[login] = player.NickName;
     }
 
-    public Task RemoveNicknameAsync(string login)
-    {
-        _nicknames.Remove(login);
-
-        return Task.CompletedTask;
-    }
-
     public Task ClearNicknamesAsync()
     {
         _nicknames.Clear();

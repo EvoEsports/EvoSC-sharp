@@ -4,8 +4,6 @@ public interface IScoreboardNicknamesService
 {
     public Task AddNicknameByLoginAsync(string login);
     
-    public Task RemoveNicknameAsync(string login);
-    
     public Task ClearNicknamesAsync();
     
     public Task LoadNicknamesAsync();
