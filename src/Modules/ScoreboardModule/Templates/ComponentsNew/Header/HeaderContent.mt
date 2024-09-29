@@ -36,8 +36,8 @@
     declare CMlLabel HeaderContentFrame_TextRight;
     
     Void UpdateHeader() {
-        HeaderContentFrame_TextLeft.Value = TL::ToUpperCase(CurrentServerName);
-        HeaderContentFrame_TextRight.Value = TL::ToUpperCase(Map.MapName ^ " by " ^ Map.AuthorNickName);
+        HeaderContentFrame_TextLeft.Value = CurrentServerName;
+        HeaderContentFrame_TextRight.Value = Map.MapName ^ " by " ^ Map.AuthorNickName;
     }
     --></script>
 

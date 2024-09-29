@@ -15,9 +15,9 @@
                  text="{{ Icons.VideoCamera }}"
                  textsize="{{ Theme.UI_FontSize*2 }}"
                  ScriptEvents="1"
-                 focusareacolor1="{{ Theme.UI_BgPrimary }}"
-                 focusareacolor2="{{ Theme.UI_AccentPrimary }}"
-                 textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
+                 focusareacolor1="{{ Theme.UI_HeaderBg }}"
+                 focusareacolor2="{{ Theme.ScoreboardModule_Background_Hover_Color }}"
+                 textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
 
           <!-- PROFILE -->
           <label id="show_player_profile"
@@ -29,9 +29,9 @@
                  text="{{ Icons.Vcard }}"
                  textsize="{{ Theme.UI_FontSize*2 }}"
                  ScriptEvents="1"
-                 focusareacolor1="{{ Theme.UI_BgPrimary }}"
-                 focusareacolor2="{{ Theme.UI_AccentPrimary }}"
-                 textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
+                 focusareacolor1="{{ Theme.UI_HeaderBg }}"
+                 focusareacolor2="{{ Theme.ScoreboardModule_Background_Hover_Color }}"
+                 textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
         </frame>
     </template>
 

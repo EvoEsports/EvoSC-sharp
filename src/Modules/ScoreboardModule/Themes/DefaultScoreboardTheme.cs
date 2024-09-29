@@ -12,14 +12,7 @@ public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboa
 
     public override Task ConfigureAsync()
     {
-        Set("ScoreboardModule.BackgroundBox.BgHeader").To(_theme.UI_BgPrimary);
-        Set("ScoreboardModule.BackgroundBox.BgHeaderGrad").To(ColorUtils.Darken(_theme.UI_BgPrimary));
-        Set("ScoreboardModule.BackgroundBox.BgList").To(_theme.UI_BgHighlight);
-        
-        Set("ScoreboardModule.ScoreboardHeader.Text").To(_theme.UI_TextPrimary);
-        Set("ScoreboardModule.ScoreboardHeader.Logo").To(_theme.UI_LogoLight);
-        
-        Set("ScoreboardModule.ClubTag.Bg").To(_theme.UI_BgHighlight);
+        // old
         
         Set("ScoreboardModule.PlayerRow.Text").To(_theme.UI_TextPrimary);
         Set("ScoreboardModule.PlayerRow.CustomLabelBackground.Bg").To(_theme.Black);
@@ -32,19 +25,13 @@ public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboa
         Set("ScoreboardModule.PlayerRow.PointsBox.Bg").To(ColorUtils.SetLightness(_theme.UI_BgHighlight, 70));
         Set("ScoreboardModule.PlayerRow.PointsBox.Text").To(ColorUtils.SetLightness(_theme.UI_BgHighlight, 20));
         
-        Set("ScoreboardModule.PlayerRow.PositionBox.Bg").To(_theme.UI_BgHighlight);
-        
         Set("ScoreboardModule.PlayerRow.FrameModel.Bg").To(_theme.UI_BgHighlight);
-        
         Set("ScoreboardModule.PlayerRow.FrameModel.Text").To(_theme.UI_TextPrimary);
         Set("ScoreboardModule.PlayerRow.FrameModel.BgRow").To(_theme.UI_BgHighlight);
         Set("ScoreboardModule.PlayerRow.FrameModel.TextRoundPoints").To(_theme.UI_TextSecondary);
         
-        Set("ScoreboardModule.Scoreboard.BgPosition").To(_theme.UI_BgHighlight);
-        
-        Set("ScoreboardModule.Settings.Text").To(_theme.UI_TextPrimary);
-        
         // new
+        Set("ScoreboardModule.Text_Color").To(_theme.UI_TextPrimary);
 
         Set("ScoreboardModule.Logo_URL").To("");
         Set("ScoreboardModule.Logo_Width").To(10.0);
@@ -64,12 +51,19 @@ public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboa
         Set("ScoreboardModule.Background_Row_Color").To(_theme.UI_BgPrimary);
         Set("ScoreboardModule.Background_Row_Opacity").To(0.9);
         
-        Set("ScoreboardModule.Background_Row_PositionBox_Color").To(_theme.UI_AccentSecondary);
-        Set("ScoreboardModule.Background_Row_PositionBox_Opacity").To(1.0);
-        Set("ScoreboardModule.Background_Row_PositionBox_Text_Color").To(_theme.UI_TextSecondary);
-        Set("ScoreboardModule.Background_Row_PositionBox_Text_Opacity").To(1.0);
+        Set("ScoreboardModule.Background_Hover_Color").To(_theme.UI_BgHighlight);
+        Set("ScoreboardModule.Background_Hover_Opacity").To(0.9);
+        
+        Set("ScoreboardModule.PositionBox_ShowAccent").To("True");
+        Set("ScoreboardModule.PositionBox_Color").To(_theme.UI_AccentSecondary);
+        Set("ScoreboardModule.PositionBox_Opacity").To(1.0);
+        Set("ScoreboardModule.PositionBox_TextColor").To(_theme.UI_TextSecondary);
+        Set("ScoreboardModule.PositionBox_TextOpacity").To(1.0);
 
         Set("ScoreboardModule.Background_Row_Flag_AlphaMaskUrl").To("file://Media/Manialinks/Nadeo/Trackmania/Menus/Common/Common_Flag_Mask.dds");
+        
+        Set("ScoreboardModule.FinalistColor").To("");
+        Set("ScoreboardModule.WinnerColor").To("");
         
         return Task.CompletedTask;
     }

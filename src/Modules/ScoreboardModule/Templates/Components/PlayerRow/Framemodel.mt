@@ -87,29 +87,41 @@
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
                 <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
+                       class="text-muted"
                        valign="center"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
-                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_FrameModel_Text }}"
-                       opacity="0.5"
-                       textfont="{{ Font.Regular }}"/>
+                />
 
                 <!-- Round Points -->
                 <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
+                       class="text-primary"
                        valign="center"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
-                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_FrameModel_TextRoundPoints }}"
+                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
                        textfont="{{ Font.Regular }}"/>
 
                 <!-- Custom Label (FINALIST, etc) -->
                 <label id="custom_label"
+                       class="text-primary"
                        pos="0 {{ rowHeight / -2.0 + 0.3 }}"
                        valign="center"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
-                       textfont="{{ Font.Thin }}"
-                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"/>
+                       textfont="{{ Font.Regular }}"
+                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
+
+                <!-- Best Time -->
+                <label id="best_time"
+                       class="text-primary"
+                       pos="{{ w - columnSpacing - 55.0 }} {{ rowHeight / -2.0 }}"
+                       valign="center2"
+                       halign="right"
+                       textsize="{{ Theme.UI_FontSize*2 }}"
+                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
+                       text="0:00.000"
+                />
 
                 <!-- Player Score -->
                 <label id="score"
@@ -118,6 +130,7 @@
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
+                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
                 />
 
                 <!-- Points Box -->
@@ -186,6 +199,33 @@
             }
         }
         
+        Vec3 GetCustomLabelColor(Text value, Text defaultColorHex){
+            declare customLabelColorHex = "";
+            switch(value){
+                case "WINNER": customLabelColorHex = "{{ Theme.ScoreboardModule_WinnerColor }}";
+                case "FINALIST": customLabelColorHex = "{{ Theme.ScoreboardModule_FinalistColor }}";
+            }
+            
+            if(customLabelColorHex == ""){
+                customLabelColorHex = defaultColorHex;
+            }
+            
+            return CL::HexToRgb(customLabelColorHex);
+        }
+        
+        Void SetCustomLabel(CMlFrame playerRow, Text value, Text hexColor){
+            declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
+            customLabel.Value = value;
+            customLabel.TextColor = GetCustomLabelColor(value, hexColor);
+            SetPlayerHighlightColor(playerRow, customLabel.TextColor);
+        }
+        
+        Void HideCustomLabel(CMlFrame playerRow){
+            declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
+            customLabel.Value = "";
+            ResetPlayerHighlightColor(playerRow);
+        }
+        
         *** OnMouseClick ***
         ***
             if(Event.Control.ControlId == "player_row_trigger"){
@@ -199,7 +239,7 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                SetPlayerBackgroundColor(backgroundFrame, CL::HexToRgb("{{ Theme.UI_HeaderBg }}"));
+                RowMouseOver(backgroundFrame);
                 continue;
             }
         ***
@@ -209,9 +249,8 @@
             if(Event.Control.ControlId == "player_row_trigger"){
                 declare parentFrame = (Event.Control.Parent as CMlFrame);
                 declare backgroundFrame <=> (parentFrame.GetFirstChild("player_row_bg") as CMlFrame);
-                ResetPlayerBackgroundColor(backgroundFrame);
+                RowMouseOut(backgroundFrame);
                 continue;
-                ResetPlayerBackgroundColor(backgroundFrame);
             }
         ***
         -->

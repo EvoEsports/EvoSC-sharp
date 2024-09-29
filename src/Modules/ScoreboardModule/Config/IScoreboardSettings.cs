@@ -12,7 +12,4 @@ public interface IScoreboardSettings
 
     [Option(DefaultValue = 80.0), Description("Sets the height of the scoreboard.")]
     public double Height { get; }
-
-    [Option(DefaultValue = true), Description("Display the position color next to the rank.")]
-    public bool ShowPositionColor { get; }
 }

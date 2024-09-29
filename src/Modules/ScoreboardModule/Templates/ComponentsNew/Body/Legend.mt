@@ -49,8 +49,9 @@
         
         <label text="BEST TIME"
                class="text-primary"
-               pos="{{ width-columnSpacing - 60.0 }} {{ height / -2 + 0.25 }}"
-               valign="center" 
+               pos="{{ width-columnSpacing - 55.0 }} {{ height / -2 + 0.25 }}"
+               valign="center"
+               halign="right"
                textsize="{{ Theme.UI_FontSize*0.2 }}"
                textcolor="{{ Theme.ScoreboardModule_Background_Legend_Text_Color }}"
                opacity="{{ Theme.ScoreboardModule_Background_Legend_Text_Opacity }}"

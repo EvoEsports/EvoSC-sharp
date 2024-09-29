@@ -9,7 +9,7 @@
     <import component="ScoreboardModule.ComponentsNew.ScoreboardHeader" as="Header"/>
     <import component="ScoreboardModule.ComponentsNew.ScoreboardBody" as="Body"/>
     <import component="ScoreboardModule.ComponentsNew.ScoreboardBg" as="ScoreboardBg"/>
-    <import component="EvoSC.Style.UIStyle" as="UIStyle" />
+    <import component="EvoSC.Style.UIStyle" as="UIStyle"/>
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
@@ -21,7 +21,7 @@
     <property type="double" name="rowHeight" default="8.0"/>
     <property type="double" name="rowInnerHeight" default="5.0"/>
     <property type="double" name="rowSpacing" default="0.3"/>
-    <property type="double" name="columnSpacing" default="4.0" />
+    <property type="double" name="columnSpacing" default="4.0"/>
     <property type="double" name="pointsWidth" default="16.0"/>
     <property type="double" name="padding" default="2.0"/>
     <property type="double" name="innerSpacing" default="1.6"/>
@@ -29,14 +29,35 @@
     <property type="int" name="actionButtonCount" default="2"/>
 
     <template layer="ScoresTable_x">
-        <UIStyle />
+        <!-- UI Styles -->
+        <UIStyle/>
+
+        <!-- Frame Models -->
+        <PlayerRowFramemodel w="{{ settings.Width }}"
+                             padding="{{ padding }}"
+                             rowHeight="{{ rowHeight }}"
+                             rowSpacing="{{ rowSpacing }}"
+                             columnSpacing="{{ columnSpacing }}"
+                             innerSpacing="{{ innerSpacing }}"
+                             rowInnerHeight="{{ rowInnerHeight }}"
+                             pointsWidth="{{ pointsWidth }}"
+                             actionButtonCount="{{ actionButtonCount }}"
+                             settings="{{ settings }}"
+        />
+
+        <!-- Scoreboard Content -->
         <frame pos="{{ settings.Width / -2.0 }} {{ settings.Height / 2.0 }}">
+            <!-- Background -->
             <ScoreboardBg width="{{ settings.Width }}"
                           height="{{ settings.Height }}"
             />
+
+            <!-- Header -->
             <Header width="{{ settings.Width }}"
                     height="{{ headerHeight }}"
             />
+
+            <!-- Body -->
             <Body y="{{ -headerHeight }}"
                   width="{{ settings.Width }}"
                   height="{{ settings.Height - headerHeight }}"
@@ -46,24 +67,14 @@
                   flagWidth="{{ rowInnerHeight * 1.5 }}"
                   clubTagWidth="{{ rowInnerHeight * 1.5 }}"
             />
-
-            <!-- Player Rows -->
-            <frame id="rows_wrapper" pos="0 {{ -headerHeight-legendHeight }}" size="{{ settings.Width }} {{ settings.Height-headerHeight }}">
+            <frame id="rows_wrapper"
+                   pos="0 {{ -headerHeight-legendHeight }}"
+                   size="{{ settings.Width }} {{ settings.Height-headerHeight }}"
+            >
                 <frame id="rows_inner">
-                    <!-- Player Rows -->
-                    <PlayerRowFramemodel w="{{ settings.Width }}"
-                                         padding="{{ padding }}"
-                                         rowHeight="{{ rowHeight }}"
-                                         rowSpacing="{{ rowSpacing }}"
-                                         columnSpacing="{{ columnSpacing }}"
-                                         innerSpacing="{{ innerSpacing }}"
-                                         rowInnerHeight="{{ rowInnerHeight }}"
-                                         pointsWidth="{{ pointsWidth }}"
-                                         actionButtonCount="{{ actionButtonCount }}"
-                                         settings="{{ settings }}"
-                    />
                     <frame id="frame_scroll"
-                           size="{{ settings.Width }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight + rowSpacing }}">
+                           size="{{ settings.Width }} {{ settings.Height-headerHeight-legendHeight - 0.1 }}"
+                    >
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
                                        pos="0 {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
@@ -134,8 +145,32 @@
             }
         }
         
-        Text StripLeadingZeroes(Text input) {
-            return TL::RegexReplace("^[0.:]+", input, "", "");
+        Text StripLeadingZeroes(Text timeString) {
+            return TL::RegexReplace("^[0.:]+", timeString, "", "");
+        }
+        
+        Text StyleTime(Text timeString) {
+            //declare mutedTextColor = "{{ Color.ToTextColor(Theme.UI_TextMuted) }}";
+            declare mutedTextColor = "$aaa";
+            declare primaryTextColor = "{{ Color.ToTextColor(Theme.ScoreboardModule_Text_Color) }}";
+        
+            if(timeString == "0:00.000") {
+                return mutedTextColor ^ "0" ^ timeString;
+            }
+        
+            declare endPart = StripLeadingZeroes(timeString);
+            declare startPart = TL::Replace(timeString, endPart, "");
+            
+            return mutedTextColor ^ startPart ^ primaryTextColor ^ endPart;
+        }
+        
+        Text GetPlayerBestTimeStyled(CSmScore score) {
+            if(score.BestRaceTimes.count == 0){
+                return StyleTime("0:00.000");
+            }
+        
+            declare bestTime = score.BestRaceTimes[score.BestRaceTimes.count - 1];
+            return StyleTime(TL::TimeToText(bestTime, True, True));
         }
 
         Integer[CSmScore] GetSortedScores() {
@@ -170,37 +205,7 @@
             }else{
                 flagQuad.ImageUrl = "file://ZoneFlags/World";
                 flagQuad.Opacity = 1.0;
-                //flagQuad.BgColor = <0.0, 0.0, 0.0>;
-                //flagQuad.Opacity = 0.15;
             }
-        }
-        
-        Void SetCustomLabel(CMlFrame playerRow, Text value, Text hexColor){
-            declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
-            //declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
-            
-            customLabel.Value = value;
-            customLabel.TextColor = CL::HexToRgb(hexColor);
-            
-            /*
-            Page.GetClassChildren("modulate", customGradientFrame, True);
-            foreach(Control in Page.GetClassChildren_Result){
-                (Control as CMlQuad).ModulateColor = customLabel.TextColor;
-            }
-            Page.GetClassChildren("set", customGradientFrame, True);
-            foreach(Control in Page.GetClassChildren_Result){
-                (Control as CMlQuad).BgColor = customLabel.TextColor;
-            }
-            
-            customGradientFrame.Show();
-            */
-        }
-        
-        Void HideCustomLabel(CMlFrame playerRow){
-            declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
-            //declare customGradientFrame = (playerRow.GetFirstChild("custom_gradient") as CMlFrame);
-            customLabel.Value = "";
-            //customGradientFrame.Hide();
         }
         
         Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow, Integer position){
@@ -219,6 +224,7 @@
             playerScore <=> Score;
                 
             declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
+            declare bestTimeLabel = (playerRow.GetFirstChild("best_time") as CMlLabel);
             declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
             declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
             declare roundPointsLabel = (playerRow.GetFirstChild("round_points") as CMlLabel);
@@ -314,29 +320,30 @@
                 scoreLabel.Value = "0:00.000";
             }
             
-            scoreLabel.Value = StripLeadingZeroes(scoreLabel.Value);
+            scoreLabel.Value = StyleTime(scoreLabel.Value);
+            bestTimeLabel.Value = GetPlayerBestTimeStyled(Score);
             
             declare positionBox = (playerRow.GetFirstChild("position_box") as CMlFrame);
             declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
-            if(PositionColors.existskey(position) && colorizePosition){
-                declare positionColor = PositionColors[position];
-                SetPositionBoxColor(positionBox, CL::HexToRgb(positionColor));
-                //SetPlayerHighlightColor(playerRowBg, CL::HexToRgb(positionColor));
-            }else{
-                SetPositionBoxColor(positionBox, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
-                //SetPlayerHighlightColor(playerRowBg, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
+            if({{ Theme.ScoreboardModule_PositionBox_ShowAccent }}){
+                if(PositionColors.existskey(position) && colorizePosition){
+                    declare positionColor = PositionColors[position];
+                    SetPositionBoxColor(positionBox, CL::HexToRgb(positionColor));
+                }else{
+                    SetPositionBoxColor(positionBox, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
+                }
             }
             
             if (PlayerIsConnected) {
                 //connected
                 if(Race_ScoresTable_IsSpectator){
-                    specDisconnectedLabel.Value = "";
+                    specDisconnectedLabel.Value = "{{ Icons.VideoCamera }}";
                 }else{
                     specDisconnectedLabel.Value = "";
                 }
             }else{
                 //disconnected
-                specDisconnectedLabel.Value = "";
+                specDisconnectedLabel.Value = "{{ Icons.UserTimes }}";
             }
             
             //align items
@@ -344,15 +351,15 @@
             declare x = scoreLabel.RelativePosition_V3.X;
             
             if(scoreLabel.Value != ""){
-                offset += scoreLabel.ComputeWidth(scoreLabel.Value) + {{ innerSpacing }};
+                offset += scoreLabel.ComputeWidth(scoreLabel.Value) + {{ columnSpacing / 2.0 }};
             }
             customLabel.RelativePosition_V3.X = x - offset;
             if(customLabel.Value != ""){
-                offset += customLabel.ComputeWidth(customLabel.Value) + {{ innerSpacing }};
+                offset += customLabel.ComputeWidth(customLabel.Value) + {{ columnSpacing / 2.0 }};
             }
             roundPointsLabel.RelativePosition_V3.X = x - offset;
             if(roundPointsLabel.Value != ""){
-                offset += roundPointsLabel.ComputeWidth(roundPointsLabel.Value) + {{ innerSpacing }};
+                offset += roundPointsLabel.ComputeWidth(roundPointsLabel.Value) + {{ columnSpacing / 2.0 }};
             }
             specDisconnectedLabel.RelativePosition_V3.X = x - offset;
         }

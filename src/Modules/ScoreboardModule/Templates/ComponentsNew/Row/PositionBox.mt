@@ -10,26 +10,26 @@
 
     <template>
         <frame id="position_box" pos="{{ x }} {{ y }}">
-            <quad id="position_box_accent"
+            <quad if='Theme.ScoreboardModule_PositionBox_ShowAccent == "True"'
+                  id="position_box_accent"
                   class="accent-primary"
                   size="{{ accentBarWidth }} {{ height }}"
-                  hidden="{{ settings.ShowPositionColor ? 0 : 1 }}"
             />
             <quad id="position_box_background"
                   class="accent-secondary"
-                  pos="{{ settings.ShowPositionColor ? accentBarWidth : 0 }}"
-                  size="{{ settings.ShowPositionColor ? (width - accentBarWidth) : (width) }} {{ height }}"
-                  bgcolor="{{ Theme.ScoreboardModule_Background_Row_PositionBox_Color }}"
-                  opacity="{{ Theme.ScoreboardModule_Background_Row_PositionBox_Opacity }}"
+                  pos='{{ Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0 }}'
+                  size='{{ Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? (width - accentBarWidth) : (width) }} {{ height }}'
+                  bgcolor="{{ Theme.ScoreboardModule_PositionBox_Color }}"
+                  opacity="{{ Theme.ScoreboardModule_PositionBox_Opacity }}"
             />
             <label id="position_box_position_rank"
-                   pos="{{ (width-(settings.ShowPositionColor ? accentBarWidth : 0)) / 2.0 + (settings.ShowPositionColor ? accentBarWidth : 0) }} {{ height / -2.0 + 0.25 }}"
+                   pos='{{ (width-(Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0)) / 2.0 + (Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0) }} {{ height / -2.0 + 0.25 }}'
                    valign="center"
                    halign="center"
                    textsize="{{ Theme.UI_FontSize*2 }}"
                    textfont="{{ Font.ExtraBold }}"
-                   textcolor="{{ Theme.ScoreboardModule_Background_Row_PositionBox_Text_Color }}"
-                   opacity="{{ Theme.ScoreboardModule_Background_Row_PositionBox_Text_Opacity }}"
+                   textcolor="{{ Theme.ScoreboardModule_PositionBox_TextColor }}"
+                   opacity="{{ Theme.ScoreboardModule_PositionBox_TextOpacity }}"
             />
         </frame>
     </template>
@@ -37,7 +37,7 @@
     <script once="true">
         <!--
         Void SetPositionBoxColor(CMlFrame backgroundFrame, Vec3 accentColor, Vec3 secondaryColor) {
-            if({{ settings.ShowPositionColor ? "False" : "True" }}) return;
+            if(!{{ Theme.ScoreboardModule_PositionBox_ShowAccent }}) return;
         
             declare accentQuad <=> (backgroundFrame.GetFirstChild("position_box_accent") as CMlQuad);
             declare bgQuad <=> (backgroundFrame.GetFirstChild("position_box_background") as CMlQuad);
