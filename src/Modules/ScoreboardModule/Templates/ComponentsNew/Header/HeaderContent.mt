@@ -1,4 +1,6 @@
 <component>
+    <using namespace="System.Globalization"/>
+
     <import component="ScoreboardModule.ComponentsNew.Header.Logo" as="Logo"/>
 
     <property type="double" name="width"/>
@@ -6,47 +8,36 @@
     <property type="double" name="padding" default="3.4"/>
 
     <template>
-        <frame id="header_content"
-               pos="{{ padding }} {{ -padding }}"
-               size="{{ width - padding * 2.0 }} {{ height - padding }}"
-        >
-            <label id="big_text"
-                   class="text-primary"
-                   text="BIG TEXT"
-                   textsize="{{ Theme.UI_FontSize*4 }}"
+        <frame id="header_content" pos="{{ width / 2.0 }} {{ height / -2.0 }}">
+            <label id="header_text_left"
+                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * -0.5 - 4.0 }}"
+                   textcolor="{{ Theme.UI_TextPrimary }}"
+                   class="text-lg"
+                   textfont="{{ Font.Regular }}"
+                   halign="right"
+                   valign="center2"
             />
-            <label id="small_text"
-                   class="text-primary"
-                   pos="0 -5.5"
-                   text="SMALL TEXT"
-                   textsize="{{ Theme.UI_FontSize }}"
-            />
-            <label id="smaller_text"
-                   class="text-primary"
-                   pos="0 -8.75"
-                   text="SMALLER TEXT"
-                   textsize="{{ Theme.UI_FontSize*0.8 }}"
-                   opacity="0.6"
+            <label id="header_text_right"
+                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * 0.5 + 4.0 }}"
+                   textcolor="{{ Theme.UI_TextPrimary }}"
+                   class="text-lg"
+                   textfont="{{ Font.Regular }}"
+                   valign="center2"
             />
 
-            <Logo if='Theme.ScoreboardModule_Logo_URL != ""'
-                  x="{{ (width - padding * 2.0) / 2.0 }}"
-                  y="{{ (height - padding * 2.0) / -2.0 }}"
-            />
+            <Logo if='Theme.ScoreboardModule_Logo_URL != ""'/>
         </frame>
     </template>
 
     <script once="true"><!--
     declare Integer HeaderContentFrameLastUpdate;
     declare CMlFrame HeaderContentFrame;
-    declare CMlLabel HeaderContentFrame_BigText;
-    declare CMlLabel HeaderContentFrame_SmallText;
-    declare CMlLabel HeaderContentFrame_SmallerText;
+    declare CMlLabel HeaderContentFrame_TextLeft;
+    declare CMlLabel HeaderContentFrame_TextRight;
     
     Void UpdateHeader() {
-        HeaderContentFrame_BigText.Value = CurrentServerName;
-        HeaderContentFrame_SmallText.Value = Map.MapName;
-        HeaderContentFrame_SmallerText.Value = Map.AuthorNickName;
+        HeaderContentFrame_TextLeft.Value = TL::ToUpperCase(CurrentServerName);
+        HeaderContentFrame_TextRight.Value = TL::ToUpperCase(Map.MapName ^ " by " ^ Map.AuthorNickName);
     }
     --></script>
 
@@ -55,14 +46,13 @@
         ***
             HeaderContentFrameLastUpdate = 0;
             HeaderContentFrame <=> (Page.MainFrame.GetFirstChild("header_content") as CMlFrame);
-            HeaderContentFrame_BigText <=> (HeaderContentFrame.GetFirstChild("big_text") as CMlLabel);
-            HeaderContentFrame_SmallText <=> (HeaderContentFrame.GetFirstChild("small_text") as CMlLabel);
-            HeaderContentFrame_SmallerText <=> (HeaderContentFrame.GetFirstChild("smaller_text") as CMlLabel);
+            HeaderContentFrame_TextLeft <=> (HeaderContentFrame.GetFirstChild("header_text_left") as CMlLabel);
+            HeaderContentFrame_TextRight <=> (HeaderContentFrame.GetFirstChild("header_text_right") as CMlLabel);
         ***
         
         *** OnLoop *** 
         ***
-            if(Now > HeaderContentFrameLastUpdate + 1000){
+            if(Now > HeaderContentFrameLastUpdate + 2500){
                 HeaderContentFrameLastUpdate = Now;
                 UpdateHeader();
             }

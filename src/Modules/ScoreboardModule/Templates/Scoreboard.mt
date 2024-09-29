@@ -17,7 +17,7 @@
     <property type="Dictionary<int, string>" name="PositionColors"/>
 
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
-    <property type="double" name="headerHeight" default="17.0"/>
+    <property type="double" name="headerHeight" default="14.0"/>
     <property type="double" name="rowHeight" default="8.0"/>
     <property type="double" name="rowInnerHeight" default="5.0"/>
     <property type="double" name="rowSpacing" default="0.3"/>

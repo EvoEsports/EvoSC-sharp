@@ -28,7 +28,8 @@
                    halign="center"
                    textsize="{{ Theme.UI_FontSize*2 }}"
                    textfont="{{ Font.ExtraBold }}"
-                   textcolor="{{ Theme.UI_TextSecondary }}"
+                   textcolor="{{ Theme.ScoreboardModule_Background_Row_PositionBox_Text_Color }}"
+                   opacity="{{ Theme.ScoreboardModule_Background_Row_PositionBox_Text_Opacity }}"
             />
         </frame>
     </template>
