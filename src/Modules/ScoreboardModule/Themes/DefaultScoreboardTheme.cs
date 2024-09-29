@@ -12,25 +12,6 @@ public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboa
 
     public override Task ConfigureAsync()
     {
-        // old
-        
-        Set("ScoreboardModule.PlayerRow.Text").To(_theme.UI_TextPrimary);
-        Set("ScoreboardModule.PlayerRow.CustomLabelBackground.Bg").To(_theme.Black);
-        
-        Set("ScoreboardModule.PlayerRow.PlayerActions.BgHighlight").To(_theme.UI_BgHighlight);
-        
-        Set("ScoreboardModule.PlayerRow.PlayerRowBackground.Bg").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
-        Set("ScoreboardModule.PlayerRow.PlayerRowBackground.BgHighlight").To(ColorUtils.SetLightness(_theme.UI_BgHighlight, 70));
-
-        Set("ScoreboardModule.PlayerRow.PointsBox.Bg").To(ColorUtils.SetLightness(_theme.UI_BgHighlight, 70));
-        Set("ScoreboardModule.PlayerRow.PointsBox.Text").To(ColorUtils.SetLightness(_theme.UI_BgHighlight, 20));
-        
-        Set("ScoreboardModule.PlayerRow.FrameModel.Bg").To(_theme.UI_BgHighlight);
-        Set("ScoreboardModule.PlayerRow.FrameModel.Text").To(_theme.UI_TextPrimary);
-        Set("ScoreboardModule.PlayerRow.FrameModel.BgRow").To(_theme.UI_BgHighlight);
-        Set("ScoreboardModule.PlayerRow.FrameModel.TextRoundPoints").To(_theme.UI_TextSecondary);
-        
-        // new
         Set("ScoreboardModule.Text_Color").To(_theme.UI_TextPrimary);
 
         Set("ScoreboardModule.Logo_URL").To("");

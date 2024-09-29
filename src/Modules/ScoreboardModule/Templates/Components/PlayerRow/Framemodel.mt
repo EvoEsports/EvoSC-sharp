@@ -2,7 +2,7 @@
     <using namespace="EvoSC.Modules.Official.ScoreboardModule.Config"/>
     
     <import component="ScoreboardModule.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
-    <import component="ScoreboardModule.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
+    <import component="ScoreboardModule.ComponentsNew.Row.PlayerRowBackground" as="PlayerRowBackground"/>
     <import component="ScoreboardModule.Components.PlayerRow.PointsBox" as="PointsBox"/>
     <import component="ScoreboardModule.ComponentsNew.Row.PlayerActions" as="PlayerActions"/>
     <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
@@ -71,6 +71,7 @@
                            valign="center2"
                            halign="center"
                            textsize="{{ Theme.UI_FontSize*2 }}"
+                           textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
                     />
                 </frame>
 
@@ -81,7 +82,7 @@
                        valign="center2"
                        textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Regular }}"
-                       textcolor="{{ Theme.ScoreboardModule_PlayerRow_Text }}"
+                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
                 />
             </frame>
             <frame id="details_wrapper" z-index="10">

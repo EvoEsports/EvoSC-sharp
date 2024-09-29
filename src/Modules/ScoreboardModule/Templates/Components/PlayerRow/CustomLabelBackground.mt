@@ -11,7 +11,7 @@
                   pos="{{ width }} 0"
                   rot="-90"
                   class="modulate"
-                  modulatecolor="{{ Theme.ScoreboardModule_PlayerRow_CustomLabelBackground_Bg }}"
+                  modulatecolor="ffffff"
                   opacity="0.25"
                   image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
             />
