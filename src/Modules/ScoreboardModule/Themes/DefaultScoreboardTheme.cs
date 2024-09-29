@@ -1,7 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
-using EvoSC.Common.Util;
 
 namespace EvoSC.Modules.Official.ScoreboardModule.Themes;
 
