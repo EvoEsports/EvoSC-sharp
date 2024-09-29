@@ -1,5 +1,4 @@
 <component>
-    <import component="ScoreboardModule.Components.Body.BodyBackground" as="BodyBackground"/>
     <import component="ScoreboardModule.Components.Body.Legend" as="Legend"/>
 
     <property type="double" name="width"/>
@@ -18,11 +17,6 @@
                     flagWidth="{{ flagWidth }}"
                     clubTagWidth="{{ clubTagWidth }}"
                     columnSpacing="{{ columnSpacing }}"
-            />
-
-            <BodyBackground y="{{ -legendHeight - rowSpacing }}"
-                            width="{{ width }}"
-                            height="{{ height - legendHeight }}"
             />
         </frame>
     </template>
