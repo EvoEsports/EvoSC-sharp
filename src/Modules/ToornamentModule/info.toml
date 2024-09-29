@@ -1,0 +1,12 @@
+[info]
+name = "ToornamentModule"
+title = "Toornament Module"
+summary = "Integrates Toornament with EvoSC#"
+version = "1.0.0"
+author = "EvoEsports"
+
+[dependencies]
+MapsModule = "1.0.0"
+MatchReadyModule = "1.0.0"
+MatchTrackerModule = "1.0.0"
+ServerSyncModule = "1.0.0"
