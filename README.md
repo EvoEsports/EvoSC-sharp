@@ -40,7 +40,7 @@ It sets up a TM2020 dedicated server for you as well as all the required other s
 version: "3.8"
 services:
   trackmania:
-    image: evotm/trackmania
+    image: evoesports/trackmania
     ports:
       - 2350:2350/udp
       - 2350:2350/tcp
