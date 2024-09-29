@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace EvoSC.Modules.Official.GameModeUiModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Singleton)]
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings)
     : IGameModeUiModuleService
 {
