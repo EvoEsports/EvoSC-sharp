@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.ScoreboardModule.Config;
 using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ScoreboardModule.Services;
@@ -16,7 +17,8 @@ public class ScoreboardService(
     IMatchSettingsService matchSettingsService,
     IScoreboardTrackerService scoreboardTracker,
     IScoreboardNicknamesService nicknamesService,
-    IThemeManager themes
+    IThemeManager themes,
+    IScoreboardSettings settings
 )
     : IScoreboardService
 {
@@ -37,6 +39,7 @@ public class ScoreboardService(
     {
         return Task.FromResult<dynamic>(new
         {
+            settings,
             scoreboardTracker.MaxPlayers,
             scoreboardTracker.RoundsPerMap,
             PositionColors = new Dictionary<int, string>

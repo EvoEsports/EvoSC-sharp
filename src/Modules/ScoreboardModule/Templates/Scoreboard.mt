@@ -1,4 +1,5 @@
 ﻿<component>
+    <using namespace="EvoSC.Modules.Official.ScoreboardModule.Config"/>
     <using namespace="System.Linq"/>
 
     <import component="ScoreboardModule.Components.BackgroundBox" as="ScoreboardBackground"/>
@@ -10,12 +11,11 @@
     <import component="ScoreboardModule.ComponentsNew.ScoreboardBg" as="ScoreboardBg"/>
     <import component="EvoSC.Style.UIStyle" as="UIStyle" />
 
+    <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
     <property type="int" name="VisiblePlayers" default="8"/>
     <property type="Dictionary<int, string>" name="PositionColors"/>
 
-    <property type="double" name="w" default="160"/>
-    <property type="double" name="h" default="80"/>
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
     <property type="double" name="headerHeight" default="17.0"/>
     <property type="double" name="rowHeight" default="8.0"/>
@@ -30,16 +30,16 @@
 
     <template layer="ScoresTable_x">
         <UIStyle />
-        <frame pos="{{ w / -2.0 }} {{ h / 2.0 }}">
-            <ScoreboardBg width="{{ w }}"
-                          height="{{ h }}"
+        <frame pos="{{ settings.Width / -2.0 }} {{ settings.Height / 2.0 }}">
+            <ScoreboardBg width="{{ settings.Width }}"
+                          height="{{ settings.Height }}"
             />
-            <Header width="{{ w }}"
+            <Header width="{{ settings.Width }}"
                     height="{{ headerHeight }}"
             />
             <Body y="{{ -headerHeight }}"
-                  width="{{ w }}"
-                  height="{{ h - headerHeight }}"
+                  width="{{ settings.Width }}"
+                  height="{{ settings.Height - headerHeight }}"
                   legendHeight="{{ legendHeight }}"
                   rowSpacing="{{ rowSpacing }}"
                   columnSpacing="{{ columnSpacing }}"
@@ -48,10 +48,10 @@
             />
 
             <!-- Player Rows -->
-            <frame id="rows_wrapper" pos="0 {{ -headerHeight-legendHeight }}" size="{{ w }} {{ h-headerHeight }}">
+            <frame id="rows_wrapper" pos="0 {{ -headerHeight-legendHeight }}" size="{{ settings.Width }} {{ settings.Height-headerHeight }}">
                 <frame id="rows_inner">
                     <!-- Player Rows -->
-                    <PlayerRowFramemodel w="{{ w }}"
+                    <PlayerRowFramemodel w="{{ settings.Width }}"
                                          padding="{{ padding }}"
                                          rowHeight="{{ rowHeight }}"
                                          rowSpacing="{{ rowSpacing }}"
@@ -62,7 +62,7 @@
                                          actionButtonCount="{{ actionButtonCount }}"
                     />
                     <frame id="frame_scroll"
-                           size="{{ w }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight + rowSpacing }}">
+                           size="{{ settings.Width }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight + rowSpacing }}">
                         <frameinstance modelid="player_row"
                                        foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
                                        pos="0 {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
@@ -490,7 +490,7 @@
                     scoreLabel.RelativePosition_V3.X = pointsBoxFrame.RelativePosition_V3.X - {{ innerSpacing }};
                     pointsBoxFrame.Show();
                 }else{
-                    scoreLabel.RelativePosition_V3.X = {{ w - padding - innerSpacing }};
+                    scoreLabel.RelativePosition_V3.X = {{ settings.Width - padding - innerSpacing }};
                     pointsBoxFrame.Hide();
                 }
                 
@@ -523,7 +523,7 @@
             RowsFrame.DisablePreload = True;
             RowsFrame.ScrollGridSnap = True;
             RowsFrame.ScrollMin = <0.0, 0.0>;
-            RowsFrame.ScrollMax = <0.0, {{ MaxPlayers * (rowHeight + rowSpacing) - h }} * 1.0>;
+            RowsFrame.ScrollMax = <0.0, {{ MaxPlayers * (rowHeight + rowSpacing) - settings.Height }} * 1.0>;
             RowsFrame.ScrollGrid = <0.0, {{ rowHeight + rowSpacing }} * 1.0>;
             
             MaxPlayers = {{ MaxPlayers }};
