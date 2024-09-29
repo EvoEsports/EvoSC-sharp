@@ -62,7 +62,7 @@ public class ScoreboardNicknamesService(
 
     public string EscapeNickname(string nickname)
     {
-        return nickname.Replace("-->", "-\u2192")
-            .Replace("\"", "\\\"");
+        return nickname.Replace("-->", "-\u2192", StringComparison.OrdinalIgnoreCase)
+            .Replace("\"", "\\\"", StringComparison.OrdinalIgnoreCase);
     }
 }
