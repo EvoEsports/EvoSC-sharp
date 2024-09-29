@@ -40,6 +40,8 @@ public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboa
         Set("ScoreboardModule.PositionBox_Opacity").To("1.0");
         Set("ScoreboardModule.PositionBox_TextColor").To(_theme.UI_TextSecondary);
         Set("ScoreboardModule.PositionBox_TextOpacity").To("1.0");
+        
+        Set("ScoreboardModule.GainedPoints.Color").To(_theme.UI_AccentPrimary);
 
         Set("ScoreboardModule.Background_Row_Flag_AlphaMaskUrl").To("file://Media/Manialinks/Nadeo/Trackmania/Menus/Common/Common_Flag_Mask.dds");
         

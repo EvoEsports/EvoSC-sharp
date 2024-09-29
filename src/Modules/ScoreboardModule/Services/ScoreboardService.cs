@@ -1,6 +1,4 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -14,8 +12,6 @@ namespace EvoSC.Modules.Official.ScoreboardModule.Services;
 public class ScoreboardService(
     IManialinkManager manialinks,
     IServerClient server,
-    IMatchSettingsService matchSettingsService,
-    IScoreboardTrackerService scoreboardTracker,
     IScoreboardNicknamesService nicknamesService,
     IThemeManager themes,
     IScoreboardSettings settings
@@ -24,15 +20,10 @@ public class ScoreboardService(
 {
     public static readonly string ScoreboardTemplate = "ScoreboardModule.Scoreboard";
     
-    public async Task ShowScoreboardToAllAsync()
+    public async Task SendScoreboardAsync()
     {
         await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, await GetDataAsync());
         await nicknamesService.SendNicknamesManialinkAsync();
-    }
-
-    public async Task ShowScoreboardAsync(IPlayer playerLogin)
-    {
-        await manialinks.SendManialinkAsync(playerLogin, ScoreboardTemplate, await GetDataAsync());
     }
 
     private Task<dynamic> GetDataAsync()
@@ -40,8 +31,7 @@ public class ScoreboardService(
         return Task.FromResult<dynamic>(new
         {
             settings,
-            scoreboardTracker.MaxPlayers,
-            scoreboardTracker.RoundsPerMap,
+            MaxPlayers = 64, //TODO: make dynamic
             PositionColors = new Dictionary<int, string>
             {
                 { 1, themes.Theme.Gold }, { 2, themes.Theme.Silver }, { 3, themes.Theme.Bronze }
@@ -87,45 +77,5 @@ public class ScoreboardService(
         };
 
         await server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
-    }
-
-    public async Task SendRequiredAdditionalInfoAsync()
-    {
-        await manialinks.SendPersistentManialinkAsync("Scoreboard.RoundsInfo",
-            new { scoreboardTracker.RoundsPerMap, scoreboardTracker.CurrentRound, scoreboardTracker.PointsLimit });
-    }
-
-    public async Task LoadAndSendRequiredAdditionalInfoAsync()
-    {
-        var settings = await matchSettingsService.GetCurrentScriptSettingsAsync();
-
-        if (settings == null)
-        {
-            return;
-        }
-
-        var roundsPerMap = -1;
-        var pointsLimit = -1;
-
-        if (settings.TryGetValue("S_RoundsPerMap", out var rounds))
-        {
-            roundsPerMap = (int)rounds;
-        }
-
-        if (settings.TryGetValue("S_PointsLimit", out var pointsLimitValue))
-        {
-            pointsLimit = (int)pointsLimitValue;
-        }
-
-        scoreboardTracker.MaxPlayers = (await server.Remote.GetMaxPlayersAsync()).CurrentValue;
-        scoreboardTracker.RoundsPerMap = roundsPerMap;
-        scoreboardTracker.PointsLimit = pointsLimit;
-
-        await SendRequiredAdditionalInfoAsync();
-    }
-
-    public void SetCurrentRound(int round)
-    {
-        scoreboardTracker.CurrentRound = round;
     }
 }

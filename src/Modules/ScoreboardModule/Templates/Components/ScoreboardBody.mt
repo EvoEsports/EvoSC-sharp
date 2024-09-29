@@ -1,6 +1,6 @@
 <component>
-    <import component="ScoreboardModule.ComponentsNew.Body.BodyBackground" as="BodyBackground"/>
-    <import component="ScoreboardModule.ComponentsNew.Body.Legend" as="Legend"/>
+    <import component="ScoreboardModule.Components.Body.BodyBackground" as="BodyBackground"/>
+    <import component="ScoreboardModule.Components.Body.Legend" as="Legend"/>
 
     <property type="double" name="width"/>
     <property type="double" name="height"/>

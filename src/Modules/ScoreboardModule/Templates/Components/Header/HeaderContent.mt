@@ -1,7 +1,7 @@
 <component>
     <using namespace="System.Globalization"/>
 
-    <import component="ScoreboardModule.ComponentsNew.Header.Logo" as="Logo"/>
+    <import component="ScoreboardModule.Components.Header.Logo" as="Logo"/>
 
     <property type="double" name="width"/>
     <property type="double" name="height"/>

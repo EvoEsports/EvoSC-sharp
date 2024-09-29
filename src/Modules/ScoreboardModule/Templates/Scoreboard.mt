@@ -2,18 +2,14 @@
     <using namespace="EvoSC.Modules.Official.ScoreboardModule.Config"/>
     <using namespace="System.Linq"/>
 
-    <import component="ScoreboardModule.Components.BackgroundBox" as="ScoreboardBackground"/>
-    <import component="ScoreboardModule.Components.PlayerRow.Framemodel" as="PlayerRowFramemodel"/>
-    <import component="ScoreboardModule.Components.Settings.Wrapper" as="SettingsWrapper"/>
-    <import component="ScoreboardModule.Components.Settings.Form" as="SettingsForm"/>
-    <import component="ScoreboardModule.ComponentsNew.ScoreboardHeader" as="Header"/>
-    <import component="ScoreboardModule.ComponentsNew.ScoreboardBody" as="Body"/>
-    <import component="ScoreboardModule.ComponentsNew.ScoreboardBg" as="ScoreboardBg"/>
     <import component="EvoSC.Style.UIStyle" as="UIStyle"/>
+    <import component="ScoreboardModule.Components.ScoreboardHeader" as="Header"/>
+    <import component="ScoreboardModule.Components.ScoreboardBody" as="Body"/>
+    <import component="ScoreboardModule.Components.ScoreboardBg" as="ScoreboardBg"/>
+    <import component="ScoreboardModule.Components.Row.Framemodel" as="PlayerRowFramemodel"/>
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
-    <property type="int" name="VisiblePlayers" default="8"/>
     <property type="Dictionary<int, string>" name="PositionColors"/>
 
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
@@ -125,24 +121,7 @@
         }
         
         Void UpdateScoreboardLayout() {
-            declare persistent Boolean SB_Setting_ShowClubTags for LocalUser = True;
-            declare persistent Boolean SB_Setting_ShowFlags for LocalUser = True;
-            declare shouldShowPoints = ShouldShowPointsBox();
-            declare Real flagWidth = {{ rowInnerHeight }} * 2.0;
-            declare Real innerSpacing = {{ innerSpacing }} * 1.0;
-            
-            foreach(Control in RowsFrame.Controls){
-                declare Real offset = 0.0;
-                declare playerRow = (Control as CMlFrame);
-                declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
-                declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
-                declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
-                declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
-                declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
-                
-                pointsBoxFrame.Visible = shouldShowPoints;
-                pointsLabel.Visible = shouldShowPoints;
-            }
+            UpdateLegend(ShouldShowPointsBox());
         }
         
         Text StripLeadingZeroes(Text timeString) {
@@ -150,8 +129,7 @@
         }
         
         Text StyleTime(Text timeString) {
-            //declare mutedTextColor = "{{ Color.ToTextColor(Theme.UI_TextMuted) }}";
-            declare mutedTextColor = "$aaa";
+            declare mutedTextColor = "{{ Color.ToTextColor(Theme.UI_TextMuted) }}";
             declare primaryTextColor = "{{ Color.ToTextColor(Theme.ScoreboardModule_Text_Color) }}";
         
             if(timeString == "0:00.000") {
@@ -162,6 +140,18 @@
             declare startPart = TL::Replace(timeString, endPart, "");
             
             return mutedTextColor ^ startPart ^ primaryTextColor ^ endPart;
+        }
+        
+        Text StylePoints(Text points, Integer padding) {
+            declare mutedTextColor = "{{ Color.ToTextColor(Theme.UI_TextMuted) }}";
+            declare primaryTextColor = "{{ Color.ToTextColor(Theme.ScoreboardModule_Text_Color) }}";
+            declare out = mutedTextColor;
+            
+            for(i, 1, padding - TL::Length(points)){
+                out ^= "0";
+            }
+            
+            return out ^ primaryTextColor ^ points;
         }
         
         Text GetPlayerBestTimeStyled(CSmScore score) {
@@ -226,7 +216,6 @@
             declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
             declare bestTimeLabel = (playerRow.GetFirstChild("best_time") as CMlLabel);
             declare specDisconnectedLabel = (playerRow.GetFirstChild("spec_disconnected_label") as CMlLabel);
-            declare pointsLabel = (playerRow.GetFirstChild("points") as CMlLabel);
             declare roundPointsLabel = (playerRow.GetFirstChild("round_points") as CMlLabel);
             declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
             
@@ -254,17 +243,17 @@
                 }
             } else if (CurrentScoreMode == C_Mode_Points) {
                 customLabel.Value = "";
-                pointsLabel.Value = TL::ToText(Score.Points);
+                scoreLabel.Value = TL::ToText(Score.Points);
                 colorizePosition = Score.Points > 0;
                 
-                if(Score.PrevRaceTimes.count > 0 && Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1] > 0){
-                    scoreLabel.Value = TL::TimeToText(Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1], True, True);
+                if(Score.BestRaceTimes.count > 0 && Score.BestRaceTimes[Score.BestRaceTimes.count - 1] > 0){
+                    bestTimeLabel.Value = TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True);
                 }else{
                     declare CSmPlayer::ESpawnStatus Race_ScoresTable_SpawnStatus for Score = CSmPlayer::ESpawnStatus::NotSpawned;
                     if(Race_ScoresTable_SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned && PlayerIsConnected && !Race_ScoresTable_IsSpectator){
-                        scoreLabel.Value = "DNF";
+                        roundPointsLabel.Value = "DNF";
                     }else{
-                        scoreLabel.Value = "";
+                        roundPointsLabel.Value = "";
                     }
                 }
                 
@@ -301,11 +290,11 @@
             } else if (CurrentScoreMode == C_Mode_Laps && Score.BestRaceTimes.count > 0) {
                 customLabel.Value = "";
                 scoreLabel.Value = TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True);
-                pointsLabel.Value = ""^Score.BestRaceTimes.count;
+                scoreLabel.Value = ""^Score.BestRaceTimes.count;
             } else if (CurrentScoreMode == C_Mode_RaceProgression) {
                 customLabel.Value = "";
                 declare netread Int2 Net_TMxSM_ScoresTable_RaceProgression for Score;
-                pointsLabel.Value = ""^Net_TMxSM_ScoresTable_RaceProgression.X;
+                scoreLabel.Value = ""^Net_TMxSM_ScoresTable_RaceProgression.X;
                 if (Net_TMxSM_ScoresTable_RaceProgression.Y > 0) {
                     scoreLabel.Value = TL::TimeToText(Net_TMxSM_ScoresTable_RaceProgression.Y, True, True);
                     colorizePosition = True;
@@ -320,8 +309,13 @@
                 scoreLabel.Value = "0:00.000";
             }
             
-            scoreLabel.Value = StyleTime(scoreLabel.Value);
-            bestTimeLabel.Value = GetPlayerBestTimeStyled(Score);
+            if(ShouldShowPointsBox()){
+                scoreLabel.Value = StylePoints(scoreLabel.Value, 3);
+                bestTimeLabel.Value = GetPlayerBestTimeStyled(Score);
+            }else{
+                scoreLabel.Value = StyleTime(scoreLabel.Value);
+                bestTimeLabel.Value = "";
+            }
             
             declare positionBox = (playerRow.GetFirstChild("position_box") as CMlFrame);
             declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
@@ -378,44 +372,16 @@
             return "AUTHOR TIME | " ^ TL::TimeToText(Map.TMObjective_AuthorTime, True, True);
         }
         
-        Void UpdateHeaderInfo() {
-            /*
-            declare subTextLabel <=> (Page.MainFrame.GetFirstChild("sub_text") as CMlLabel);
-            declare roundLabel <=> (Page.MainFrame.GetFirstChild("round_label") as CMlLabel);
-            subTextLabel.Value = GetRecordText();
-            declare Owner <=> MV_Utils::GetOwner(This);
-            
-            if (CurrentScoreMode == C_Mode_BestTime || CurrentScoreMode == C_Mode_PrevTime){
-                declare timeLimit = RaceHelpers::GetTimeLimit(Teams[0]);
-                roundLabel.Value = "TIME LIMIT | ";
-                if(timeLimit <= 0){
-                    roundLabel.Value ^= "UNLIMITED";
-                }else{                   
-                    roundLabel.Value ^= TL::TimeToText(timeLimit);
-                }
-            }else if (CurrentScoreMode == C_Mode_LapTime || CurrentScoreMode == C_Mode_Laps){
-				declare Integer LapCurrent = -1;
-				if(Owner != Null){
-                    declare Integer LapCurrent = RaceHelpers::GetPlayerLap(Owner);
-				}
-				declare LapsTotal = RaceHelpers::GetLapsNb(Teams[0]);
-                roundLabel.Value = TL::Compose("%1 | %2 OF %3", _("|Race|Lap"), TL::ToText(LapCurrent), TL::ToText(LapsTotal));
-            }else if (CurrentScoreMode == C_Mode_Points) {
-                declare Integer SB_CurrentRound for UI = 0;
-                declare Integer SB_RoundsPerMap for UI = 0;
-                roundLabel.Value = TL::Compose("ROUND | %1 OF %2", TL::ToText(SB_CurrentRound), TL::ToText(SB_RoundsPerMap));
-            }else{
-                roundLabel.Value = "";
-            }
-            */
-        }
-        
         Void UpdateScrollSize(Integer playerRowsFilled) {
-            declare scrollN = 0;
-            if(playerRowsFilled >= 8){
-                scrollN = playerRowsFilled - 8;
+            declare filledHeight = playerRowsFilled * {{ rowHeight + rowSpacing }};
+            declare contentHeight = {{ settings.Height - headerHeight - legendHeight }};
+            
+            if(filledHeight > contentHeight) {
+                RowsFrame.ScrollMax.Y = (filledHeight - contentHeight) * 1.0;
+            }else{
+                RowsFrame.ScrollMax.Y = 0.0;
             }
-            RowsFrame.ScrollMax = <0.0, {{ rowHeight + rowSpacing }} * scrollN * 1.0>;
+        
             PlayerRowsFilled = playerRowsFilled;
         }
         
@@ -429,8 +395,6 @@
         }
         
         Void UpdateScoreTable() {
-            UpdateHeaderInfo();
-            
             foreach (PlayerIndex => Player in Players) {
                 if (Player.Score == Null) continue;
                 
@@ -445,15 +409,8 @@
             }
             
             declare cursor = 0;
-            //declare startFill = ML::Max(ScrollIndex - PlayerRowsVisible, 0);
-            //declare endFill = ML::Min(ScrollIndex + PlayerRowsVisible * 2, MaxPlayers - 1);
            
             foreach(Score => Weight in GetSortedScores()){
-                //if(cursor < startFill || cursor > endFill){
-                //    cursor += 1;
-                //    continue;
-                //}
-                
                 declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
                 declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
                 
@@ -475,8 +432,6 @@
                 declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
                 declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
                 declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
-                declare scoreLabel = (playerRow.GetFirstChild("score") as CMlLabel);
-                declare pointsBoxFrame = (playerRow.GetFirstChild("points_box") as CMlFrame);
                 declare positionBoxFrame = (playerRow.GetFirstChild("position_box") as CMlFrame);
                 
                 SetPlayerRank(positionBoxFrame, cursor + 1);
@@ -492,14 +447,6 @@
                 if(!RowIsLocked){
                     UpdateScoreAndPoints(Score, playerRow, cursor + 1);
                     SetCountryFlag(flagQuad, Score.User.Login);
-                }
-                
-                if(ShouldShowPointsBox()){
-                    scoreLabel.RelativePosition_V3.X = pointsBoxFrame.RelativePosition_V3.X - {{ innerSpacing }};
-                    pointsBoxFrame.Show();
-                }else{
-                    scoreLabel.RelativePosition_V3.X = {{ settings.Width - padding - innerSpacing }};
-                    pointsBoxFrame.Hide();
                 }
                 
                 playerRow.Show();
@@ -522,8 +469,7 @@
         *** OnInitialization ***
         ***
             declare netread Integer Net_TMGame_ScoresTable_ScoreMode for Teams[0];
-            //declare Integer scoreboardUpdateInterval = 333;
-            declare Integer scoreboardUpdateInterval = 25;
+            declare Integer scoreboardUpdateInterval = 333;
             declare Integer lastScoreboardUpdate = 0;
             RowsFrame <=> (Page.MainFrame.GetFirstChild("frame_scroll") as CMlFrame);
             
@@ -531,11 +477,10 @@
             RowsFrame.DisablePreload = True;
             RowsFrame.ScrollGridSnap = True;
             RowsFrame.ScrollMin = <0.0, 0.0>;
-            RowsFrame.ScrollMax = <0.0, {{ MaxPlayers * (rowHeight + rowSpacing) - settings.Height }} * 1.0>;
             RowsFrame.ScrollGrid = <0.0, {{ rowHeight + rowSpacing }} * 1.0>;
             
             MaxPlayers = {{ MaxPlayers }};
-            PlayerRowsVisible = {{ VisiblePlayers }};
+            PlayerRowsVisible = 0;
             PlayerRowsFilled = -1;
             CurrentScoreMode = -1;
             

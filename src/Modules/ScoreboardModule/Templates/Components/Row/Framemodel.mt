@@ -1,13 +1,11 @@
 ﻿<component>
     <using namespace="EvoSC.Modules.Official.ScoreboardModule.Config"/>
     
-    <import component="ScoreboardModule.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
-    <import component="ScoreboardModule.ComponentsNew.Row.PlayerRowBackground" as="PlayerRowBackground"/>
-    <import component="ScoreboardModule.Components.PlayerRow.PointsBox" as="PointsBox"/>
-    <import component="ScoreboardModule.ComponentsNew.Row.PlayerActions" as="PlayerActions"/>
-    <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
-    <import component="ScoreboardModule.ComponentsNew.Row.PositionBox" as="PositionBox"/>
-    <import component="ScoreboardModule.ComponentsNew.Row.Flag" as="Flag"/>
+    <import component="ScoreboardModule.Components.Row.CustomLabelBackground" as="CustomLabelBackground"/>
+    <import component="ScoreboardModule.Components.Row.PlayerRowBackground" as="PlayerRowBackground"/>
+    <import component="ScoreboardModule.Components.Row.PlayerActions" as="PlayerActions"/>
+    <import component="ScoreboardModule.Components.Row.PositionBox" as="PositionBox"/>
+    <import component="ScoreboardModule.Components.Row.Flag" as="Flag"/>
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="double" name="w"/>
@@ -87,31 +85,31 @@
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
-                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
+                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 }}"
                        class="text-muted"
-                       valign="center"
+                       valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
                 />
 
                 <!-- Round Points -->
-                <label id="round_points" pos="0 {{ rowHeight / -2.0 + 0.3 }}"
+                <label id="round_points" pos="0 {{ rowHeight / -2.0 }}"
                        class="text-primary"
-                       valign="center"
+                       valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
-                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
-                       textfont="{{ Font.Regular }}"/>
+                       textcolor="{{ Theme.ScoreboardModule_GainedPoints_Color }}"
+                />
 
                 <!-- Custom Label (FINALIST, etc) -->
                 <label id="custom_label"
                        class="text-primary"
-                       pos="0 {{ rowHeight / -2.0 + 0.3 }}"
-                       valign="center"
+                       pos="0 {{ rowHeight / -2.0 }}"
+                       valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
-                       textfont="{{ Font.Regular }}"
-                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
+                       textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
+                />
 
                 <!-- Best Time -->
                 <label id="best_time"
@@ -127,25 +125,11 @@
                 <!-- Player Score -->
                 <label id="score"
                        class="text-primary"
-                       pos="0 {{ rowHeight / -2.0 }}"
+                       pos="{{ w - columnSpacing }} {{ rowHeight / -2.0 }}"
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
                        textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
-                />
-
-                <!-- Points Box -->
-                <PointsBox id="points_box"
-                           x="{{ w - padding - pointsWidth * 0.65 - rowHeight * 0.4 * 0.5 }}"
-                           y="{{ rowHeight * 0.33 * -0.5 }}"
-                           w="{{ pointsWidth }}"
-                           h="{{ rowHeight }}"
-                           scale="0.65"
-                           hidden="1"
-                           z-index="10"
-                           rowHeight="{{ rowHeight }}"
-                           pointsWidth="{{ pointsWidth }}"
-                           padding="{{ padding }}"
                 />
             </frame>
             <PlayerActions x="{{ w }}"
