@@ -5,23 +5,33 @@ using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Enums;
+using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
 using EvoSC.Modules.Official.Scoreboard.Interfaces;
 
 namespace EvoSC.Modules.Official.Scoreboard.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class ScoreboardService(IManialinkManager manialinks, IServerClient server,
-        IMatchSettingsService matchSettingsService, IScoreboardTrackerService scoreboardTracker, IThemeManager themes)
+public class ScoreboardService(
+    IManialinkManager manialinks,
+    IServerClient server,
+    IMatchSettingsService matchSettingsService,
+    IScoreboardTrackerService scoreboardTracker,
+    IGameModeUiModuleService gameModeUiModuleService,
+    IThemeManager themes
+)
     : IScoreboardService
 {
+    private const string ScoreboardTemplate = "Scoreboard.Scoreboard";
+
     public async Task ShowScoreboardToAllAsync()
     {
-        await manialinks.SendPersistentManialinkAsync("Scoreboard.Scoreboard", await GetDataAsync());
+        await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, await GetDataAsync());
     }
 
     public async Task ShowScoreboardAsync(IPlayer playerLogin)
     {
-        await manialinks.SendManialinkAsync(playerLogin, "Scoreboard.Scoreboard", await GetDataAsync());
+        await manialinks.SendManialinkAsync(playerLogin, ScoreboardTemplate, await GetDataAsync());
     }
 
     private Task<dynamic> GetDataAsync()
@@ -30,49 +40,18 @@ public class ScoreboardService(IManialinkManager manialinks, IServerClient serve
         {
             scoreboardTracker.MaxPlayers,
             scoreboardTracker.RoundsPerMap,
-            PositionColors = new Dictionary<int, string> { { 1, themes.Theme.Gold }, { 2, themes.Theme.Silver }, { 3, themes.Theme.Bronze } },
+            PositionColors = new Dictionary<int, string>
+            {
+                { 1, themes.Theme.Gold }, { 2, themes.Theme.Silver }, { 3, themes.Theme.Bronze }
+            },
         });
     }
 
-    public async Task HideNadeoScoreboardAsync()
-    {
-        var hudSettings = new List<string>
-        {
-            @"{
-    ""uimodules"": [
-        {
-            ""id"": ""Race_ScoresTable"",
-            ""position"": [-50,0],
-            ""scale"": 1,
-            ""visible"": false,
-            ""visible_update"": true
-        }
-    ]
-}"
-        };
+    public Task HideNadeoScoreboardAsync() =>
+        gameModeUiModuleService.ApplyComponentSettingsAsync(GameModeUiComponents.ScoresTable, false, 0, 0, 1);
 
-        await server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
-    }
-
-    public async Task ShowNadeoScoreboardAsync()
-    {
-        var hudSettings = new List<string>
-        {
-            @"{
-    ""uimodules"": [
-        {
-            ""id"": ""Race_ScoresTable"",
-            ""position"": [-50,0],
-            ""scale"": 1,
-            ""visible"": true,
-            ""visible_update"": true
-        }
-    ]
-}"
-        };
-
-        await server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", hudSettings.ToArray());
-    }
+    public Task ShowNadeoScoreboardAsync() =>
+        gameModeUiModuleService.ApplyComponentSettingsAsync(GameModeUiComponents.ScoresTable, false, -50, 0, 1);
 
     public async Task SendRequiredAdditionalInfoAsync()
     {
@@ -88,14 +67,15 @@ public class ScoreboardService(IManialinkManager manialinks, IServerClient serve
         {
             return;
         }
-        
+
         var roundsPerMap = -1;
         var pointsLimit = -1;
-        
+
         if (settings.TryGetValue("S_RoundsPerMap", out var rounds))
         {
             roundsPerMap = (int)rounds;
         }
+
         if (settings.TryGetValue("S_PointsLimit", out var pointsLimitValue))
         {
             pointsLimit = (int)pointsLimitValue;
@@ -104,7 +84,7 @@ public class ScoreboardService(IManialinkManager manialinks, IServerClient serve
         scoreboardTracker.MaxPlayers = (await server.Remote.GetMaxPlayersAsync()).CurrentValue;
         scoreboardTracker.RoundsPerMap = roundsPerMap;
         scoreboardTracker.PointsLimit = pointsLimit;
-        
+
         await SendRequiredAdditionalInfoAsync();
     }
 

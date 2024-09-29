@@ -4,3 +4,6 @@ title = "Spectator Target Info"
 summary = "Shows player info in spectator mode."
 version = "1.0.0"
 author = "Evo"
+
+[dependencies]
+GameModeUiModule = "1.0.0"

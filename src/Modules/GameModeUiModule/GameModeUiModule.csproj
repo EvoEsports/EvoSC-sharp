@@ -12,8 +12,6 @@
         <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj"/>
         <EmbeddedResource Include="Templates\**\*"/>
         <EmbeddedResource Update="Localization.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Localization.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
 

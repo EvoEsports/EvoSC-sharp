@@ -2,7 +2,9 @@
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.GameModeUiModule.Config;
+using EvoSC.Modules.Official.GameModeUiModule.Enums;
 using EvoSC.Modules.Official.GameModeUiModule.Interfaces;
+using EvoSC.Modules.Official.GameModeUiModule.Models;
 using Newtonsoft.Json;
 
 namespace EvoSC.Modules.Official.GameModeUiModule.Services;
@@ -11,139 +13,148 @@ namespace EvoSC.Modules.Official.GameModeUiModule.Services;
 public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSettings settings)
     : IGameModeUiModuleService
 {
-    public async Task ApplyConfigurationAsync()
+    public Task ApplyComponentSettingsAsync(IEnumerable<GameModeUiComponentSettings> componentSettingsList) =>
+        server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties",
+            GetUiModulesPropertiesJson(componentSettingsList));
+
+    public Task ApplyComponentSettingsAsync(GameModeUiComponentSettings componentSettings) =>
+        ApplyComponentSettingsAsync([componentSettings]);
+
+    public Task ApplyComponentSettingsAsync(string name, bool visible, double x, double y, double scale) =>
+        ApplyComponentSettingsAsync([new GameModeUiComponentSettings(name, visible, x, y, scale)]);
+
+    public string GetUiModulesPropertiesJson(IEnumerable<GameModeUiComponentSettings> componentSettingsList)
     {
-        var uiModuleProperties = await GetUiModulesPropertiesJsonAsync();
-        await server.Remote.TriggerModeScriptEventArrayAsync("Common.UIModules.SetProperties", uiModuleProperties);
+        var propertyObjects = componentSettingsList
+            .Select(uiElement => GeneratePropertyObject(uiElement))
+            .ToList();
+
+        return JsonConvert.SerializeObject(new { uimodules = propertyObjects });
     }
 
-    public async Task<string> GetUiModulesPropertiesJsonAsync()
+    public dynamic GeneratePropertyObject(GameModeUiComponentSettings componentSettings)
     {
-        return JsonConvert.SerializeObject(new
+        return new
         {
-            uimodules = new List<dynamic>
-            {
-                await GeneratePropertyObjectAsync(
-                    "Race_Chrono",
-                    settings.ChronoVisible,
-                    settings.ChronoX,
-                    settings.ChronoY,
-                    settings.ChronoScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_RespawnHelper",
-                    settings.RespawnHelperVisible,
-                    settings.RespawnHelperX,
-                    settings.RespawnHelperY,
-                    settings.RespawnHelperScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_Checkpoint",
-                    settings.CheckpointVisible,
-                    settings.CheckpointX,
-                    settings.CheckpointY,
-                    settings.CheckpointScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_LapsCounter",
-                    settings.LapsCounterVisible,
-                    settings.LapsCounterX,
-                    settings.LapsCounterY,
-                    settings.LapsCounterScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_TimeGap",
-                    settings.TimeGapVisible,
-                    settings.TimeGapX,
-                    settings.TimeGapY,
-                    settings.TimeGapScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_ScoresTable",
-                    settings.ScoresTableVisible,
-                    settings.ScoresTableX,
-                    settings.ScoresTableY,
-                    settings.ScoresTableScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_DisplayMessage",
-                    settings.DisplayMessageVisible,
-                    settings.DisplayMessageX,
-                    settings.DisplayMessageY,
-                    settings.DisplayMessageScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_Countdown",
-                    settings.CountdownVisible,
-                    settings.CountdownX,
-                    settings.CountdownY,
-                    settings.CountdownScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_SpectatorBase_Name",
-                    settings.SpectatorBaseNameVisible,
-                    settings.SpectatorBaseNameX,
-                    settings.SpectatorBaseNameY,
-                    settings.SpectatorBaseNameScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_SpectatorBase_Commands",
-                    settings.SpectatorBaseCommandsVisible,
-                    settings.SpectatorBaseCommandsX,
-                    settings.SpectatorBaseCommandsY,
-                    settings.SpectatorBaseCommandsScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_Record",
-                    settings.RecordVisible,
-                    settings.RecordX,
-                    settings.RecordY,
-                    settings.RecordScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_BigMessage",
-                    settings.BigMessageVisible,
-                    settings.BigMessageX,
-                    settings.BigMessageY,
-                    settings.BigMessageScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_BlockHelper",
-                    settings.BlockHelperVisible,
-                    settings.BlockHelperX,
-                    settings.BlockHelperY,
-                    settings.BlockHelperScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_WarmUp",
-                    settings.WarmUpVisible,
-                    settings.WarmUpX,
-                    settings.WarmUpY,
-                    settings.WarmUpScale
-                ),
-                await GeneratePropertyObjectAsync(
-                    "Race_BestRaceViewer",
-                    settings.BestRaceViewerVisible,
-                    settings.BestRaceViewerX,
-                    settings.BestRaceViewerY,
-                    settings.BestRaceViewerScale
-                ),
-            }
-        });
+            id = componentSettings.Name,
+            position = (double[]) [componentSettings.X, componentSettings.Y],
+            visible = componentSettings.Visible,
+            scale = componentSettings.Scale,
+            position_update = componentSettings.UpdatePosition,
+            visible_update = componentSettings.UpdateVisible,
+            scale_update = componentSettings.UpdateScale,
+        };
     }
 
-    public Task<dynamic> GeneratePropertyObjectAsync(string uiModuleName, bool visible, double x, double y,
-        double scale)
+    public List<GameModeUiComponentSettings> GetDefaultSettings()
     {
-        return Task.FromResult<dynamic>(new
-        {
-            id = uiModuleName,
-            position = (double[]) [x, y],
-            visible,
-            scale,
-            position_update = true,
-            visible_update = true,
-            scale_update = true,
-        });
+        return
+        [
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.Chrono,
+                settings.ChronoVisible,
+                settings.ChronoX,
+                settings.ChronoY,
+                settings.ChronoScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.RespawnHelper,
+                settings.RespawnHelperVisible,
+                settings.RespawnHelperX,
+                settings.RespawnHelperY,
+                settings.RespawnHelperScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.Checkpoint,
+                settings.CheckpointVisible,
+                settings.CheckpointX,
+                settings.CheckpointY,
+                settings.CheckpointScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.LapsCounter,
+                settings.LapsCounterVisible,
+                settings.LapsCounterX,
+                settings.LapsCounterY,
+                settings.LapsCounterScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.TimeGap,
+                settings.TimeGapVisible,
+                settings.TimeGapX,
+                settings.TimeGapY,
+                settings.TimeGapScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.ScoresTable,
+                settings.ScoresTableVisible,
+                settings.ScoresTableX,
+                settings.ScoresTableY,
+                settings.ScoresTableScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.DisplayMessage,
+                settings.DisplayMessageVisible,
+                settings.DisplayMessageX,
+                settings.DisplayMessageY,
+                settings.DisplayMessageScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.Countdown,
+                settings.CountdownVisible,
+                settings.CountdownX,
+                settings.CountdownY,
+                settings.CountdownScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.SpectatorBaseName,
+                settings.SpectatorBaseNameVisible,
+                settings.SpectatorBaseNameX,
+                settings.SpectatorBaseNameY,
+                settings.SpectatorBaseNameScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.SpectatorBaseCommands,
+                settings.SpectatorBaseCommandsVisible,
+                settings.SpectatorBaseCommandsX,
+                settings.SpectatorBaseCommandsY,
+                settings.SpectatorBaseCommandsScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.Record,
+                settings.RecordVisible,
+                settings.RecordX,
+                settings.RecordY,
+                settings.RecordScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.BigMessage,
+                settings.BigMessageVisible,
+                settings.BigMessageX,
+                settings.BigMessageY,
+                settings.BigMessageScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.BlockHelper,
+                settings.BlockHelperVisible,
+                settings.BlockHelperX,
+                settings.BlockHelperY,
+                settings.BlockHelperScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.WarmUp,
+                settings.WarmUpVisible,
+                settings.WarmUpX,
+                settings.WarmUpY,
+                settings.WarmUpScale
+            ),
+            new GameModeUiComponentSettings(
+                GameModeUiComponents.BestRaceViewer,
+                settings.BestRaceViewerVisible,
+                settings.BestRaceViewerX,
+                settings.BestRaceViewerY,
+                settings.BestRaceViewerScale
+            )
+        ];
     }
 }
