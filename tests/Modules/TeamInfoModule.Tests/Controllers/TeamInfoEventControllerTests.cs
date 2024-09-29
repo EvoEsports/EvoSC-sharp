@@ -4,10 +4,12 @@ using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Controllers;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
+using EvoSC.Modules.Official.TeamInfoModule.Services;
 using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using EvoSC.Modules.Official.TeamSettingsModule.Models;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 

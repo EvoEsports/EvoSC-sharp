@@ -1,31 +1,38 @@
 ﻿using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Controllers.Context;
 using EvoSC.Common.Events.Attributes;
+using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using GbxRemoteNet.Events;
-using SpectatorTargetInfo.Interfaces;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Controllers;
 
 [Controller]
-public class SpectatorTargetInfoEventController
-    (ISpectatorTargetInfoService spectatorTargetInfoService) : EvoScController<EventControllerContext>
+public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spectatorTargetInfoService)
+    : EvoScController<IEventControllerContext>
 {
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnectAsync(object x, PlayerConnectGbxEventArgs args) =>
-        spectatorTargetInfoService.SendManiaLinkAsync(args.Login);
+    [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
+    public Task OnPlayerDisconnectAsync(object sender, PlayerGbxEventArgs eventArgs) =>
+        spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(eventArgs.Login);
+
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public Task OnBeginMapAsync(object sender, MapGbxEventArgs eventArgs) =>
+        spectatorTargetInfoService.UpdateIsTeamsModeAsync();
 
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs) =>
-        spectatorTargetInfoService.ForwardCheckpointTimeToClientsAsync(wayPointEventArgs);
+        spectatorTargetInfoService.AddCheckpointAsync(
+            wayPointEventArgs.Login,
+            wayPointEventArgs.CheckpointInLap,
+            wayPointEventArgs.LapTime
+        );
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs) =>
-        spectatorTargetInfoService.ResetCheckpointTimesAsync();
-
-    [Subscribe(ModeScriptEvent.GiveUp)]
-    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs playerUpdateEventArgs) =>
-        spectatorTargetInfoService.ForwardDnfToClientsAsync(playerUpdateEventArgs);
+    public async Task OnNewRoundAsync(object sender, RoundEventArgs roundEventArgs)
+    {
+        await spectatorTargetInfoService.ClearCheckpointsAsync();
+        await spectatorTargetInfoService.FetchAndCacheTeamInfoAsync();
+    }
 }

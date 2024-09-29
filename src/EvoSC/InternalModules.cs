@@ -23,6 +23,7 @@ using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.ScoreboardModule;
 using EvoSC.Modules.Official.ServerManagementModule;
 using EvoSC.Modules.Official.SetName;
+using EvoSC.Modules.Official.SpectatorCamModeModule;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.TeamChatModule;
 using EvoSC.Modules.Official.TeamInfoModule;
@@ -56,6 +57,7 @@ public static class InternalModules
         typeof(MatchRankingModule),
         typeof(ASayModule),
         typeof(SpectatorTargetInfoModule),
+        typeof(SpectatorCamModeModule),
         typeof(MapQueueModule),
         typeof(MapListModule),
         typeof(LocalRecordsModule),
