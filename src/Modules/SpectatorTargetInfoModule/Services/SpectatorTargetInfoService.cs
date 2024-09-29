@@ -108,7 +108,7 @@ public class SpectatorTargetInfoService(
 
         _spectatorTargets[spectatorLogin] = targetPlayer;
 
-        logger.LogDebug("Updated spectator target {spectatorLogin} -> {targetLogin}.", spectatorLogin,
+        logger.LogTrace("Updated spectator target {spectatorLogin} -> {targetLogin}.", spectatorLogin,
             targetLogin);
 
         return targetPlayer;
@@ -127,7 +127,7 @@ public class SpectatorTargetInfoService(
     {
         if (_spectatorTargets.Remove(spectatorLogin))
         {
-            logger.LogDebug("Removed spectator {spectatorLogin}.", spectatorLogin);
+            logger.LogTrace("Removed spectator {spectatorLogin}.", spectatorLogin);
         }
 
         return Task.CompletedTask;
