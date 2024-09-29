@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Models;
-
-namespace EvoSC.Modules.Official.ScoreboardModule.Interfaces;
+﻿namespace EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
 public interface IScoreboardService
 {
