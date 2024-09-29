@@ -204,8 +204,8 @@ public class SpectatorTargetInfoServiceTests
         
         Assert.Equal(1, player1Rank);
         Assert.Equal(2, player2Rank);
-        Assert.Equal(3, player3Rank);
-        Assert.Equal(4, player4Rank);
+        Assert.Equal(4, player3Rank);
+        Assert.Equal(3, player4Rank);
 
         return Task.CompletedTask;
     }

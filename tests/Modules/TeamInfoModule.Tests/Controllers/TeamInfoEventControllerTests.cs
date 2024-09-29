@@ -18,11 +18,10 @@ namespace EvoSC.Modules.Official.TeamInfoModule.Tests.Controllers;
 public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventController, IEventControllerContext>
 {
     private Mock<ITeamInfoService> _teamInfoService = new();
-    private readonly Mock<ILogger<TeamInfoEventController>> _logger = new();
 
     public TeamInfoEventControllerTests()
     {
-        InitMock(_teamInfoService, _logger.Object);
+        InitMock(_teamInfoService);
     }
 
     [Fact]
