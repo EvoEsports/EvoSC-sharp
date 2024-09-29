@@ -71,7 +71,9 @@ public class SpectatorTargetInfoServiceTests
         Assert.Equal(1400, cpTimes[2][2].time);
 
         await spectatorTargetService.ClearCheckpointsAsync();
-        Assert.Empty(spectatorTargetService.GetCheckpointTimes());
+        var checkpointTime = spectatorTargetService.GetCheckpointTimes();
+        
+        Assert.Empty(checkpointTime);
     }
 
     [Fact]
@@ -169,25 +171,25 @@ public class SpectatorTargetInfoServiceTests
     {
         var checkpointsList = new CheckpointsGroup
         {
-            new(
+            new CheckpointData(
                 new OnlinePlayer
                 {
                     AccountId = PlayerUtils.ConvertLoginToAccountId("*fakeplayer1*"), State = PlayerState.Spectating
                 }, 1_000
             ),
-            new(
+            new CheckpointData(
                 new OnlinePlayer
                 {
                     AccountId = PlayerUtils.ConvertLoginToAccountId("*fakeplayer2*"), State = PlayerState.Spectating
                 }, 1_000
             ),
-            new(
+            new CheckpointData(
                 new OnlinePlayer
                 {
                     AccountId = PlayerUtils.ConvertLoginToAccountId("*fakeplayer4*"), State = PlayerState.Spectating
                 }, 1_001
             ),
-            new(
+            new CheckpointData(
                 new OnlinePlayer
                 {
                     AccountId = PlayerUtils.ConvertLoginToAccountId("*fakeplayer3*"), State = PlayerState.Spectating
@@ -195,10 +197,15 @@ public class SpectatorTargetInfoServiceTests
             ),
         };
 
-        Assert.Equal(1, checkpointsList.GetRank("*fakeplayer1*"));
-        Assert.Equal(2, checkpointsList.GetRank("*fakeplayer2*"));
-        Assert.Equal(3, checkpointsList.GetRank("*fakeplayer4*"));
-        Assert.Equal(4, checkpointsList.GetRank("*fakeplayer3*"));
+        var player1Rank = checkpointsList.GetRank("*fakeplayer1*");
+        var player2Rank = checkpointsList.GetRank("*fakeplayer2*");
+        var player3Rank = checkpointsList.GetRank("*fakeplayer3*");
+        var player4Rank = checkpointsList.GetRank("*fakeplayer4*");
+        
+        Assert.Equal(1, player1Rank);
+        Assert.Equal(2, player2Rank);
+        Assert.Equal(3, player3Rank);
+        Assert.Equal(4, player4Rank);
 
         return Task.CompletedTask;
     }
@@ -210,8 +217,9 @@ public class SpectatorTargetInfoServiceTests
     public Task Calculates_Time_Difference(int leadingTime, int trailingTime, int expectedTime)
     {
         var spectatorTargetService = ServiceMock();
+        var timeDifference = spectatorTargetService.GetTimeDifference(leadingTime, trailingTime);
 
-        Assert.Equal(expectedTime, spectatorTargetService.GetTimeDifference(leadingTime, trailingTime));
+        Assert.Equal(expectedTime, timeDifference);
 
         return Task.CompletedTask;
     }
@@ -260,8 +268,11 @@ public class SpectatorTargetInfoServiceTests
         await spectatorTargetService.UpdateIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
 
-        Assert.Equal("FF0066", spectatorTargetService.GetTeamColor(PlayerTeam.Team1));
-        Assert.Equal("111111", spectatorTargetService.GetTeamColor(PlayerTeam.Team2));
+        var team1Color = spectatorTargetService.GetTeamColor(PlayerTeam.Team1);
+        var team2Color = spectatorTargetService.GetTeamColor(PlayerTeam.Team2);
+        
+        Assert.Equal("FF0066", team1Color);
+        Assert.Equal("111111", team2Color);
     }
 
     [Fact]

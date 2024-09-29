@@ -20,7 +20,9 @@ public class CheckpointsGroupTests
         checkpointsGroup.Add(
             new CheckpointData(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer12*" }, 2));
 
-        Assert.Equal(1, checkpointsGroup.GetPlayerCheckpointData(targetPlayer.GetLogin())?.time);
+        var time = checkpointsGroup.GetPlayerCheckpointData(targetPlayer.GetLogin())?.time;
+        
+        Assert.Equal(1, time);
 
         return Task.CompletedTask;
     }
@@ -29,8 +31,9 @@ public class CheckpointsGroupTests
     public Task Returns_Null_For_Non_Existent_Player_data()
     {
         var checkpointsGroup = new CheckpointsGroup();
+        var checkpointData = checkpointsGroup.GetPlayerCheckpointData("*fakeplayer1*");
 
-        Assert.Null(checkpointsGroup.GetPlayerCheckpointData("*fakeplayer1*"));
+        Assert.Null(checkpointData);
 
         return Task.CompletedTask;
     }
@@ -47,7 +50,9 @@ public class CheckpointsGroupTests
         checkpointsGroup.Add(
             new CheckpointData(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer12*" }, 2));
 
-        Assert.Equal(2, checkpointsGroup.GetRank(targetPlayer.AccountId));
+        var rank = checkpointsGroup.GetRank(targetPlayer.AccountId);
+        
+        Assert.Equal(2, rank);
 
         return Task.CompletedTask;
     }
@@ -66,7 +71,9 @@ public class CheckpointsGroupTests
         checkpointsGroup.Add(
             new CheckpointData(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer12*" }, 2));
 
-        Assert.Equal(3, checkpointsGroup.GetRank(targetPlayer.AccountId));
+        var rank = checkpointsGroup.GetRank(targetPlayer.AccountId);
+        
+        Assert.Equal(3, rank);
 
         return Task.CompletedTask;
     }
@@ -85,7 +92,9 @@ public class CheckpointsGroupTests
         checkpointsGroup.Add(
             new CheckpointData(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer12*" }, 2));
 
-        Assert.Equal(2, checkpointsGroup.GetRank(targetPlayer.AccountId));
+        var rank = checkpointsGroup.GetRank(targetPlayer.AccountId);
+        
+        Assert.Equal(2, rank);
 
         return Task.CompletedTask;
     }
