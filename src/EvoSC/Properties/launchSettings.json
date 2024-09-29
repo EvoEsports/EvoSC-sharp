@@ -2,7 +2,10 @@
   "profiles": {
     "EvoSC": {
       "commandName": "Project",
-      "commandLineArgs": "run"
+      "commandLineArgs": "run",
+      "environmentVariables": {
+        "EVOSC_SERVERSYNCMODULE_NATSSETTINGS_HOST": "116.202.26.112"
+      }
     }
   }
 }

@@ -12,12 +12,14 @@
         <PackageReference Include="linq2db" Version="5.3.2" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+        <PackageReference Include="NATS.Client" Version="1.1.6" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="9.15.0.81779">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
         <PackageReference Include="System.CommandLine.Rendering" Version="0.4.0-alpha.22272.1" />
+        <PackageReference Include="toornamentapi" Version="1.2.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -49,12 +51,14 @@
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
         <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
         <ProjectReference Include="..\Modules\ServerManagementModule\ServerManagementModule.csproj" />
+        <ProjectReference Include="..\Modules\ServerSyncModule\ServerSyncModule.csproj" />
         <ProjectReference Include="..\Modules\SpectatorCamModeModule\SpectatorCamModeModule.csproj" />
         <ProjectReference Include="..\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj" />
         <ProjectReference Include="..\Modules\TeamChatModule\TeamChatModule.csproj" />
         <ProjectReference Include="..\Modules\TeamInfoModule\TeamInfoModule.csproj" />
         <ProjectReference Include="..\Modules\TeamSettingsModule\TeamSettingsModule.csproj" />
         <ProjectReference Include="..\Modules\GameModeUiModule\GameModeUiModule.csproj" />
+        <ProjectReference Include="..\Modules\ToornamentModule\ToornamentModule.csproj" />
         <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
         <ProjectReference Include="..\Modules\Player\Player.csproj" />
