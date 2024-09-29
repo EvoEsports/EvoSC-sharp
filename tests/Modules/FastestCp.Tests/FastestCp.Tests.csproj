@@ -35,9 +35,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ContentWithTargetPath Include="**\*.xml">
+        <ContentWithTargetPath Include="Manialinks\*.xml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <TargetPath>%(RecursiveDir)\%(Filename)%(Extension)</TargetPath>
+            <TargetPath>Manialinks\%(Filename)%(Extension)</TargetPath>
         </ContentWithTargetPath>
     </ItemGroup>
 
