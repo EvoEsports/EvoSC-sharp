@@ -65,6 +65,9 @@ Void SetCamModeNameAndIcon(Integer _CamMode, CMlFrame camModeFrame) {
     }
 }
 
+/**
+ * Copied from "Libs/Nadeo/TMGame/Modes/Base/UIModules/SpectatorBase_Client.Script.txt"
+ */
 Integer SetCamMode(Integer _CamMode, CMlFrame camModeFrame) {
     /* NB ClientUI.SpectatorForceCameraType:
      * 1: Script has 2 states
