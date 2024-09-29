@@ -1,11 +1,15 @@
 ﻿<component>
+    <using namespace="EvoSC.Modules.Official.ScoreboardModule.Config"/>
+    
     <import component="ScoreboardModule.Components.PlayerRow.CustomLabelBackground" as="CustomLabelBackground"/>
     <import component="ScoreboardModule.Components.PlayerRow.PlayerRowBackground" as="PlayerRowBackground"/>
     <import component="ScoreboardModule.Components.PlayerRow.PointsBox" as="PointsBox"/>
     <import component="ScoreboardModule.ComponentsNew.Row.PlayerActions" as="PlayerActions"/>
     <import component="EvoSC.Advanced.ClubTag" as="ClubTag"/>
     <import component="ScoreboardModule.ComponentsNew.Row.PositionBox" as="PositionBox"/>
+    <import component="ScoreboardModule.ComponentsNew.Row.Flag" as="Flag"/>
 
+    <property type="IScoreboardSettings" name="settings"/>
     <property type="double" name="w"/>
     <property type="double" name="padding"/>
     <property type="double" name="rowHeight"/>
@@ -39,6 +43,7 @@
             <!-- Position Box -->
             <PositionBox width="{{ positionBoxWidth }}"
                          height="{{ rowHeight }}"
+                         settings="{{ settings }}"
             />
 
             <!-- Custom Label Background -->
@@ -50,12 +55,7 @@
 
             <frame pos="{{ positionBoxWidth + columnSpacing }} {{ rowHeight / -2.0 }}" z-index="10">
                 <!-- Flag -->
-                <quad id="flag"
-                      size="{{ rowInnerHeight * 1.5 }} {{ rowInnerHeight * 0.75 }}"
-                      valign="center"
-                      alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/Common/Common_Flag_Mask.dds"
-                      data-alphamask="file://Media/Manialinks/Nadeo/Trackmania/Menus/Common/Common_Flag_Mask.dds"
-                />
+                <Flag height="{{ rowInnerHeight }}" />
 
                 <frame pos="{{ rowInnerHeight * 1.5 + columnSpacing }} 0">
                     <quad id="club_bg"

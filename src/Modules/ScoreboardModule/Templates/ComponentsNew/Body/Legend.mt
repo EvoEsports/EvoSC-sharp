@@ -17,7 +17,8 @@
                halign="center"
                valign="center"
                textsize="{{ Theme.UI_FontSize*0.2 }}"
-               opacity="0.75"
+               textcolor="{{ Theme.ScoreboardModule_Background_Legend_Text_Color }}"
+               opacity="{{ Theme.ScoreboardModule_Background_Legend_Text_Opacity }}"
         />
         <label text="NAT."
                class="text-primary"
@@ -25,7 +26,8 @@
                halign="center"
                valign="center"
                textsize="{{ Theme.UI_FontSize*0.2 }}"
-               opacity="0.75"
+               textcolor="{{ Theme.ScoreboardModule_Background_Legend_Text_Color }}"
+               opacity="{{ Theme.ScoreboardModule_Background_Legend_Text_Opacity }}"
         />
         <label text="CLUB"
                class="text-primary"
@@ -33,14 +35,16 @@
                halign="center"
                valign="center"
                textsize="{{ Theme.UI_FontSize*0.2 }}"
-               opacity="0.75"
+               textcolor="{{ Theme.ScoreboardModule_Background_Legend_Text_Color }}"
+               opacity="{{ Theme.ScoreboardModule_Background_Legend_Text_Opacity }}"
         />
         <label text="NAME"
                class="text-primary"
                pos="{{ positionBoxWidth+columnSpacing+flagWidth+columnSpacing+clubTagWidth+columnSpacing }} {{ height / -2 + 0.25 }}"
                valign="center" 
                textsize="{{ Theme.UI_FontSize*0.2 }}"
-               opacity="0.75"
+               textcolor="{{ Theme.ScoreboardModule_Background_Legend_Text_Color }}"
+               opacity="{{ Theme.ScoreboardModule_Background_Legend_Text_Opacity }}"
         />
         
         <label text="BEST TIME"
@@ -48,7 +52,8 @@
                pos="{{ width-columnSpacing - 60.0 }} {{ height / -2 + 0.25 }}"
                valign="center" 
                textsize="{{ Theme.UI_FontSize*0.2 }}"
-               opacity="0.75"
+               textcolor="{{ Theme.ScoreboardModule_Background_Legend_Text_Color }}"
+               opacity="{{ Theme.ScoreboardModule_Background_Legend_Text_Opacity }}"
         />
         <label text="SCORE"
                class="text-primary"
@@ -56,7 +61,8 @@
                valign="center" 
                halign="right"
                textsize="{{ Theme.UI_FontSize*0.2 }}"
-               opacity="0.75"
+               textcolor="{{ Theme.ScoreboardModule_Background_Legend_Text_Color }}"
+               opacity="{{ Theme.ScoreboardModule_Background_Legend_Text_Opacity }}"
         />
     </template>
 </component>

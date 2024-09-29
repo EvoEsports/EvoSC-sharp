@@ -19,6 +19,11 @@ public class ScoreboardNicknamesService(
     {
         var player = await playerManagerService.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(login));
 
+        if (player.NickName == player.UbisoftName)
+        {
+            return;
+        }
+
         _nicknames[login] = player.NickName;
     }
 

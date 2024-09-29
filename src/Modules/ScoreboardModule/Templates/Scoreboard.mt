@@ -60,6 +60,7 @@
                                          rowInnerHeight="{{ rowInnerHeight }}"
                                          pointsWidth="{{ pointsWidth }}"
                                          actionButtonCount="{{ actionButtonCount }}"
+                                         settings="{{ settings }}"
                     />
                     <frame id="frame_scroll"
                            size="{{ settings.Width }} {{ VisiblePlayers * rowHeight * rowSpacing + headerHeight - legendHeight + rowSpacing }}">

@@ -56,12 +56,19 @@ public class DefaultScoreboardTheme(IThemeManager theme) : Theme<DefaultScoreboa
         Set("ScoreboardModule.Background_Header_Color").To(_theme.UI_HeaderBg);
         Set("ScoreboardModule.Background_Header_Opacity").To(0.95);
         
-        Set("ScoreboardModule.Background_Legend_Color").To(_theme.UI_BgPrimary);
+        Set("ScoreboardModule.Background_Legend_Color").To(_theme.UI_HeaderBg);
         Set("ScoreboardModule.Background_Legend_Opacity").To(1.0);
+        Set("ScoreboardModule.Background_Legend_Text_Color").To(_theme.UI_TextPrimary);
+        Set("ScoreboardModule.Background_Legend_Text_Opacity").To(0.75);
         
         Set("ScoreboardModule.Background_Row_Color").To(_theme.UI_BgPrimary);
         Set("ScoreboardModule.Background_Row_Opacity").To(0.9);
+        
+        Set("ScoreboardModule.Background_Row_PositionBox_Color").To(_theme.UI_AccentSecondary);
+        Set("ScoreboardModule.Background_Row_PositionBox_Opacity").To(1.0);
 
+        Set("ScoreboardModule.Background_Row_Flag_AlphaMaskUrl").To("file://Media/Manialinks/Nadeo/Trackmania/Menus/Common/Common_Flag_Mask.dds");
+        
         return Task.CompletedTask;
     }
 }
