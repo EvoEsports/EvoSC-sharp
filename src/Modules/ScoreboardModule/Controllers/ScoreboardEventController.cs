@@ -10,25 +10,24 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.ScoreboardModule.Controllers;
 
 [Controller]
-public class ScoreboardEventController(IScoreboardNicknamesService nicknamesService)
+public class ScoreboardEventController(
+    IScoreboardService scoreboardService,
+    IScoreboardNicknamesService nicknamesService
+)
     : EvoScController<IEventControllerContext>
 {
+    [Subscribe(GbxRemoteEvent.PlayerConnect)]
+    public Task OnPlayerConnectAsync(object sender, PlayerGbxEventArgs args) =>
+        nicknamesService.AddNicknameByLoginAsync(args.Login);
+
     [Subscribe(ModeScriptEvent.EndMapEnd)]
-    public async Task OnEndMapAsync(object sender, MapEventArgs args)
-    {
-        await nicknamesService.ClearNicknamesAsync();
-    }
+    public Task OnEndMapAsync(object sender, MapEventArgs args) =>
+        nicknamesService.ClearNicknamesAsync();
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
         await nicknamesService.LoadNicknamesAsync();
-        await nicknamesService.SendNicknamesManialinkAsync();
-    }
-
-    [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public async Task OnPlayerConnectAsync(object sender, PlayerGbxEventArgs args)
-    {
-        await nicknamesService.AddNicknameByLoginAsync(args.Login);
+        await scoreboardService.SendScoreboardAsync();
     }
 }

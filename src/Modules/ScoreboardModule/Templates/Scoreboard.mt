@@ -10,7 +10,6 @@
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
-    <property type="Dictionary<int, string>" name="PositionColors"/>
 
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
     <property type="double" name="headerHeight" default="14.0"/>
@@ -488,7 +487,11 @@
             PlayerRowsFilled = -1;
             CurrentScoreMode = -1;
             
-            {! string.Join("\n", PositionColors.Select(pc => $"PositionColors[{pc.Key}] = \"{pc.Value}\";")) !}
+            PositionColors = [
+                1 => "{{ Theme.Gold }}",
+                2 => "{{ Theme.Silver }}",
+                3 => "{{ Theme.Bronze }}"
+            ];
         ***
         
         *** OnLoop *** 
