@@ -21,7 +21,7 @@ public class ScoreboardService(
 )
     : IScoreboardService
 {
-    private static readonly string ScoreboardTemplate = "ScoreboardModule.Scoreboard";
+    private const string ScoreboardTemplate = "ScoreboardModule.Scoreboard";
 
     public async Task SendScoreboardAsync()
     {
