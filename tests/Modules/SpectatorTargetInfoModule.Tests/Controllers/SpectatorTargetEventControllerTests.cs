@@ -73,4 +73,13 @@ public class
         _spectatorTargetService.Verify(sts => sts.ClearCheckpointsAsync());
         _spectatorTargetService.Verify(sts => sts.FetchAndCacheTeamInfoAsync());
     }
+
+    [Fact]
+    public async Task Resets_Collected_Data_On_New_Warm_Up_Round()
+    {
+        await Controller.OnNewWarmUpRoundAsync(null, new WarmUpRoundEventArgs { Total = 3, Current = 1 });
+
+        _spectatorTargetService.Verify(sts => sts.ClearCheckpointsAsync());
+        _spectatorTargetService.Verify(sts => sts.FetchAndCacheTeamInfoAsync());
+    }
 }
