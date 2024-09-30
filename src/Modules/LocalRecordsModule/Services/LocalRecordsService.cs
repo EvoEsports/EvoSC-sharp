@@ -29,7 +29,7 @@ public class LocalRecordsService(
     IPlayerRecordsRepository playerRecordsRepository) : ILocalRecordsService
 {
     private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
-    
+
     public async Task<ILocalRecord[]> GetLocalsOfCurrentMapAsync()
     {
         var currentMap = await mapService.GetCurrentMapAsync();
@@ -39,7 +39,7 @@ public class LocalRecordsService(
             throw new InvalidOperationException("Failed to get current map");
         }
 
-        var records = (IEnumerable<ILocalRecord>)await localRecordRepository.GetLocalRecordsOfMapByIdAsync(currentMap.Id);
+        IEnumerable<ILocalRecord> records = await localRecordRepository.GetLocalRecordsOfMapByIdAsync(currentMap.Id);
         return records.ToArray();
     }
 
@@ -64,7 +64,7 @@ public class LocalRecordsService(
                 var playerRecords = GetRecordsWithPlayer(player, records);
                 await transaction.SendManialinkAsync(player, WidgetName, new { currentPlayer = player, records = playerRecords });
             }
-            
+
             await transaction.CommitAsync();
         }
         catch (Exception ex)
@@ -83,9 +83,9 @@ public class LocalRecordsService(
             // player did not get a local record good enough to be registered
             return;
         }
-        
+
         var localRaceTime = RaceTime.FromMilliseconds(localRecord.Record.Score).ToString();
-        
+
         if (localRaceTime == null)
         {
             throw new InvalidOperationException($"Failed to convert {localRecord.Record.Score} to race time");
@@ -106,18 +106,43 @@ public class LocalRecordsService(
 
         if (record.Score < oldRecord.Record.Score)
         {
-            await server.InfoMessageAsync(new TextFormatter()
-                .AddText(record.Player.NickName)
-                .AddText(" improved the ")
-                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                .AddText(" local record ")
-                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
-                .AddText(" (")
-                .AddText($"{oldRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                .AddText(" - ")
-                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                .AddText(" )")
-                .ToString());
+            var timeDifference = RaceTime.FromMilliseconds(oldRecord.Record.Score - record.Score);
+            var timeDifferenceStr = timeDifference.ToString();
+
+            if (timeDifferenceStr == null)
+            {
+                throw new InvalidOperationException($"Failed to convert {timeDifference} to race time difference");
+            }
+
+            if (localRecord.Position < oldRecord.Position)
+            {
+                await server.InfoMessageAsync(new TextFormatter()
+                    .AddText(record.Player.NickName)
+                    .AddText(" claimed ")
+                    .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                    .AddText(" (from ")
+                    .AddText($"{oldRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                    .AddText(") local record ")
+                    .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
+                    .AddText(" (-")
+                    .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
+                    .AddText(")")
+                    .ToString());
+            }
+            else
+            {
+                await server.InfoMessageAsync(new TextFormatter()
+                    .AddText(record.Player.NickName)
+                    .AddText(" improved their ")
+                    .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                    .AddText(" local record ")
+                    .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
+                    .AddText(" (-")
+                    .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
+                    .AddText(")")
+                    .ToString());
+            }
+
             await ShowWidgetToAllAsync();
         }
         else if (record.Score == localRecord.Record.Score)
@@ -151,7 +176,7 @@ public class LocalRecordsService(
         {
             return records;
         }
-        
+
         var playerRecord = records.FirstOrDefault(r => r.Record.Player.Id == player.Id);
         var topMaxRows = Math.Min(settings.MaxWidgetRows, records.Length);
 
@@ -166,7 +191,7 @@ public class LocalRecordsService(
         {
             return records[..topMaxRows];
         }
-        
+
         // return top records + records around the player
         var topRecords = records[..Math.Min(settings.WidgetShowTop, records.Length)];
 
