@@ -94,10 +94,13 @@ main() {
     while(True){
         yield;
         
-        if(GUIPlayer == Null){
+        declare shouldBeDisplayed = GUIPlayer != Null && UI.UISequence == CUIConfig::EUISequence::Playing;
+        
+        if(!shouldBeDisplayed){
             if(mainFrame.Visible){
                 mainFrame.Hide();
             }
+            sleep(100);
             continue;
         }
         

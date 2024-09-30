@@ -231,7 +231,9 @@ main(){
     while(True){
         yield;
         
-        declare shouldBeDisplayed = InputPlayer != Null && InputPlayer.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned;
+        declare shouldBeDisplayed = InputPlayer != Null 
+                                    && InputPlayer.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned
+                                    && UI.UISequence == CUIConfig::EUISequence::Playing;
         
         if(!shouldBeDisplayed){
             if(mainFrame.Visible){
