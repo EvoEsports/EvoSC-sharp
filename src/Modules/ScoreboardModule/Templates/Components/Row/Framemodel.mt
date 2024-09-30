@@ -187,8 +187,8 @@
         Vec3 GetCustomLabelColor(Text value, Text defaultColorHex){
             declare customLabelColorHex = "";
             switch(value){
-                case "WINNER": customLabelColorHex = "{{ Theme.ScoreboardModule_WinnerColor }}";
-                case "FINALIST": customLabelColorHex = "{{ Theme.ScoreboardModule_FinalistColor }}";
+                case _("|Status|Winner"): customLabelColorHex = "{{ Theme.ScoreboardModule_WinnerColor }}";
+                case _("|Status|Finalist"): customLabelColorHex = "{{ Theme.ScoreboardModule_FinalistColor }}";
             }
             
             if(customLabelColorHex == ""){
