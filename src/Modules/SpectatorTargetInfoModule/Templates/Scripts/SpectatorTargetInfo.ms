@@ -70,29 +70,26 @@ Void FocusPlayer(CSmPlayer _Player) {
     }
 }
 
-Text SpecPrevious(CMlLabel button, Boolean focus){
+Void SpecPrevious(CMlLabel button, Boolean focus){
     AnimatePop(button);
     declare CSmPlayer target <=> GetNextSpawnedPlayer();
-    if(focus){
+    if(target == Null && focus){
         FocusPlayer(target);
     }
-    return target.User.Login;
 }
 
-Text SpecNext(CMlLabel button, Boolean focus){
+Void SpecNext(CMlLabel button, Boolean focus){
     AnimatePop(button);
     declare CSmPlayer target <=> GetNextSpawnedPlayer();
-    if(focus){
+    if(target != Null && focus){
         FocusPlayer(target);
     }
-    return target.User.Login;
 }
 
 main() {
     declare mainFrame <=> (Page.MainFrame.GetFirstChild("main_frame") as CMlFrame);
     declare previousButton <=> (Page.MainFrame.GetFirstChild("left_button") as CMlLabel);
     declare nextButton <=> (Page.MainFrame.GetFirstChild("right_button") as CMlLabel);
-    declare targetLogin = "{{ playerLogin }}";
     
     while(True){
         yield;
@@ -122,10 +119,10 @@ main() {
         foreach(Event in PendingEvents){
             if(Event.Type == CMlScriptEvent::Type::MouseClick){
                 if(Event.Control == previousButton){
-                    targetLogin = SpecPrevious(previousButton, True);
+                    SpecPrevious(previousButton, True);
                     continue;
                 }else if(Event.Control == nextButton){
-                    targetLogin = SpecNext(nextButton, True);
+                    SpecNext(nextButton, True);
                     continue;
                 }
             }
