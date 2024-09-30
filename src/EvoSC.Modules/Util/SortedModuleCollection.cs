@@ -33,53 +33,57 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
 
     private List<T> GetSortedModules()
     {
-        var dependencyGraph = MakeDependencyGraph();
-        EnsureDependenciesExists(dependencyGraph);
-        
+        var graph = MakeDependencyGraph();
+        EnsureDependenciesExists(graph);
+
         var sortedDependencies = new List<T>();
 
         while (true)
         {
-            string? selected = null;
-
-            foreach (var dependent in dependencyGraph)
+            bool found = false;
+            
+            foreach (var node in graph)
             {
-                if (dependent.Value.Count != 0)
+                if (node.Value.Count > 0)
                 {
                     continue;
                 }
-
-                sortedDependencies.Add(_modules[dependent.Key]);
-                RemoveDependent(dependencyGraph, dependent);
-
-                selected = dependent.Key;
+                
+                sortedDependencies.Add(_modules[node.Key]);
+                RemoveNodeReferences(graph, node.Key);
+                found = true;
             }
 
-            if (selected != null)
-            {
-                dependencyGraph.Remove(selected);
-            }
-            else
+            if (!found)
             {
                 break;
             }
         }
-        
-        DetectCycle(dependencyGraph);
+
+        if (graph.Count > 0)
+        {
+            throw new DependencyCycleException(graph);
+        }
+
         return sortedDependencies;
     }
 
-    private static void RemoveDependent(DependencyGraph dependencyGraph, KeyValuePair<string, IList<string>> dependent)
+    private static void RemoveNodeReferences(DependencyGraph graph, string nodeName)
     {
-        foreach (var dependencies in dependencyGraph)
+        if (graph.ContainsKey(nodeName))
         {
-            if (dependencies.Value.Contains(dependencies.Key))
+            graph.Remove(nodeName);
+        }
+        
+        foreach (var node in graph)
+        {
+            if (node.Value.Contains(nodeName))
             {
-                dependencies.Value.Remove(dependent.Key);
+                node.Value.Remove(nodeName);
             }
         }
     }
-
+        
     private DependencyGraph MakeDependencyGraph()
     {
         var adjList = new Dictionary<string, IList<string>>();
