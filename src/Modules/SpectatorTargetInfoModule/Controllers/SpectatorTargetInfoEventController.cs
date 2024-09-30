@@ -34,6 +34,7 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
     {
         await spectatorTargetInfoService.ClearCheckpointsAsync();
         await spectatorTargetInfoService.FetchAndCacheTeamInfoAsync();
+        await spectatorTargetInfoService.ResetWidgetForSpectatorsAsync();
     }
 
     [Subscribe(ModeScriptEvent.WarmUpStartRound)]
@@ -41,5 +42,6 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
     {
         await spectatorTargetInfoService.ClearCheckpointsAsync();
         await spectatorTargetInfoService.FetchAndCacheTeamInfoAsync();
+        await spectatorTargetInfoService.ResetWidgetForSpectatorsAsync();
     }
 }
