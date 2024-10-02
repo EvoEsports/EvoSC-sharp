@@ -24,6 +24,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using GbxRemoteNet;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
+using NATS.Client.JetStream;
 using ToornamentApi.Models.Api.TournamentApi;
 
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Services;
@@ -55,7 +56,6 @@ public class MatchService(IAuditService auditService,
         // create a new timeline and get the tracking ID
         var matchTrackerId = await matchTracker.BeginMatchAsync();
 
-        // is this needed?
         await matchSettings.LoadMatchSettingsAsync(stateService.MatchSettingsName, false);
         await server.Remote.RestartMapAsync();
 
@@ -78,9 +78,9 @@ public class MatchService(IAuditService auditService,
 
     public async Task EndMatchAsync(ScoresEventArgs timeline)
     {
-        if (stateService.WaitingForMatchStart)
+        if (stateService.WaitingForMatchStart || stateService.IsInitialSetup || stateService.SetupFinished || stateService.MatchEnded)
         {
-            logger.LogInformation("Match hasn't been setup yet. Not updating MatchGame map on Toornament.");
+            logger.LogInformation("Match hasn't been run or completed yet. Not updating MatchGame map on Toornament.");
             return;
         }
         logger.LogInformation("Begin of EndMatchAsync()");
@@ -143,6 +143,12 @@ public class MatchService(IAuditService auditService,
         matchGame.Status = MatchGameStatus.Completed.ToString().ToLower();
         await toornamentService.SetMatchGameResultAsync(settings.AssignedMatchId, matchGameNumber, matchGame);
 
+        //Set GameMode back to the 1h warmup gamemode.
+        await matchSettings.LoadMatchSettingsAsync(stateService.MatchSettingsName + "_warmup", false);
+        await server.Remote.RestartMapAsync();
+
+        stateService.SetMatchEnded();
+
         await server.Chat.SuccessMessageAsync("Match finished, thanks for playing!");
         logger.LogInformation("End of EndMatchAsync()");
     }
@@ -150,9 +156,9 @@ public class MatchService(IAuditService auditService,
     public async Task SetMatchGameMapAsync()
     {
         logger.LogInformation("Begin of SetMatchGameMapAsync()");
-        if (stateService.WaitingForMatchStart)
+        if (!stateService.MatchInProgress)
         {
-            logger.LogInformation("Match hasn't been setup yet. Not updating MatchGame map on Toornament.");
+            logger.LogInformation("Match hasn't started yet. Not updating MatchGame map on Toornament.");
             return;
         }
 
@@ -171,7 +177,16 @@ public class MatchService(IAuditService auditService,
         }
         var mapMachineNames = settings.MapMachineNames.Split(',');
 
-        var toornamentMapName = mapMachineNames.Where(m => m.Contains(currentMap.Name.ToLowerInvariant())).FirstOrDefault();
+        var toornamentMapName = "";
+
+        foreach (var name in mapMachineNames)
+        {
+            if (currentMap.Name.ToLowerInvariant().Contains(name))
+            {
+                toornamentMapName = name;
+                break;
+            }
+        }
 
         if (!string.IsNullOrEmpty(toornamentMapName))
         {
@@ -272,14 +287,23 @@ public class MatchService(IAuditService auditService,
         }
 
         //Apply matchsettings to server (this includes maps)
-        logger.LogDebug("Loading the configured matchsetting {0}", matchSettingsName);
+        logger.LogDebug("Loading the configured matchsetting {0}_warmup", matchSettingsName);
         await matchSettings.LoadMatchSettingsAsync(matchSettingsName + "_warmup");
         await server.Remote.SetServerNameAsync("Match#" + stage.Number + "." + group.Number + "." + round.Number + "." + match.Number);
 
         //Notify ServerSync module
         logger.LogDebug("Notify the ServerSync module");
         var serverName = Encoding.ASCII.GetBytes(await server.Remote.GetServerNameAsync());
-        keyValueStoreService.CreateEntry(matchId, serverName);
+        try
+        {
+            keyValueStoreService.CreateEntry(matchId, serverName);
+        }
+        catch (NATSJetStreamException ex)
+        {
+            logger.LogWarning("Retrieved exception from NATS with exception: {0}", ex);
+            logger.LogWarning("Tried to create entry in KeyValueStore with Key {0} and Value {1}", matchId, serverName);
+            logger.LogWarning("Please fix the duplicate entry in NATS. @Atomic :DinkDonk:");
+        }
 
         //Show ReadyForMatch widget (?)
         logger.LogDebug("Show ReadyForMatch widget for the players");
@@ -537,6 +561,7 @@ public class MatchService(IAuditService auditService,
 
         var warmupSettingsData = settingsData;
         warmupSettingsData.Scripts.S_WarmUpDuration = 3600;
+        warmupSettingsData.Scripts.S_WarmUpNb = 1;
         await CreateMatchSettings(name + "_warmup", settingsData, mapsToAdd);
 
         logger.LogInformation("End of CreateMatchSettingsAsync()");
@@ -549,19 +574,33 @@ public class MatchService(IAuditService auditService,
         {
             await matchSettings.CreateMatchSettingsAsync(name, builder =>
             {
-                var mode = settingsData.GameMode switch
+                if (settings.UseDefaultGameMode)
                 {
-                    GameMode.Rounds => DefaultModeScriptName.Rounds,
-                    GameMode.Cup => DefaultModeScriptName.Cup,
-                    GameMode.TimeAttack => DefaultModeScriptName.TimeAttack,
-                    GameMode.Knockout => DefaultModeScriptName.Knockout,
-                    GameMode.Laps => DefaultModeScriptName.Laps,
-                    GameMode.Team => DefaultModeScriptName.Teams,
-                    _ => DefaultModeScriptName.TimeAttack
-                };
-                logger.LogDebug("Creating match settings with gamemode {0}", mode);
+                    var mode = settingsData.GameMode switch
+                    {
+                        "rounds" => DefaultModeScriptName.Rounds,
+                        "cup" => DefaultModeScriptName.Cup,
+                        "time_attack" => DefaultModeScriptName.TimeAttack,
+                        "knockout" => DefaultModeScriptName.Knockout,
+                        "laps" => DefaultModeScriptName.Laps,
+                        "team" => DefaultModeScriptName.Teams,
+                        _ => DefaultModeScriptName.TimeAttack
+                    };
+                    logger.LogDebug("Creating match settings with gamemode {0}", mode);
 
-                builder.WithMode(mode);
+                    builder.WithMode(mode);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(settings.GameMode))
+                    {
+                        logger.LogWarning("Custom gamemode not defined in environment!!");
+                        throw new ArgumentNullException(nameof(settings.GameMode));
+                    }
+                    logger.LogDebug("Creating match settings with custom gamemode {0}", settings.GameMode);
+                    builder.WithMode(settings.GameMode);
+                }
+
                 builder.WithModeSettings(s =>
                 {
                     var type = settingsData.Scripts.GetType();
@@ -603,7 +642,8 @@ public class MatchService(IAuditService auditService,
 
         foreach (var player in players)
         {
-            multiCall.Add("AddGuest", player.AccountId);
+            var login = PlayerUtils.ConvertAccountIdToLogin(player.AccountId);
+            multiCall.Add("AddGuest", login);
         }
 
         await server.Remote.MultiCallAsync(multiCall);
@@ -648,7 +688,7 @@ public class MatchService(IAuditService auditService,
                     players.Add(player);
                 }
 
-                if (player is not null)
+                if (player is not null && player.Groups.Count() == 0)
                 {
                     await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
                 }
@@ -752,6 +792,7 @@ public class MatchService(IAuditService auditService,
         {
             return;
         }
+
         var accountId = PlayerUtils.ConvertLoginToAccountId(login);
         var player = await playerManagerService.GetOrCreatePlayerAsync(accountId);
 
@@ -767,7 +808,16 @@ public class MatchService(IAuditService auditService,
         //Player is in the configured whitelist -> put into spectate mode
         if (player is not null && whitelistedSpectates.Contains(accountId))
         {
-            await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+            if (!stateService.MatchInProgress)
+            {
+                // No match in progress, so players won't get put into Spectate
+                return;
+            }
+
+            if (player.Groups.Count() == 0)
+            {
+                await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+            }
             await ForceSpectatorAsync(player);
         }
     }
@@ -807,7 +857,10 @@ public class MatchService(IAuditService auditService,
             //Player is in the configured whitelist -> put into spectate mode
             if (player is not null && whitelistedSpectates.Contains(accountId))
             {
-                await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+                if (player.Groups.Count() == 0)
+                {
+                    await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+                }
                 await ForceSpectatorAsync(player);
             }
         }
@@ -817,11 +870,11 @@ public class MatchService(IAuditService auditService,
     {
         if (await server.Remote.KickAsync(player.GetLogin(), ""))
         {
-            await server.Chat.SuccessMessageAsync($"Kicked player {player.UbisoftName} from server");
+            logger.LogInformation("Kicked player {0} from server", player.UbisoftName);
         }
         else
         {
-            await server.Chat.ErrorMessageAsync($"Failed to kick player {player.UbisoftName} from server");
+            logger.LogWarning("Failed to kick player {0} from server", player.UbisoftName);
         }
     }
 

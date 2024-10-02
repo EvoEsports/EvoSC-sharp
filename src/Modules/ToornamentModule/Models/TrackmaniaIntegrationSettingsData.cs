@@ -8,7 +8,7 @@ public class TrackmaniaIntegrationSettingsData
     public bool TracksShuffle { get; set; } = false;
 
     [JsonPropertyName("game_mode")]
-    public GameMode GameMode { get; set; } = GameMode.TimeAttack;
+    public string GameMode { get; set; } = "time_attack";
 
     [JsonPropertyName("stage_number")]
     public int StageNumber { get; set; } = 0;

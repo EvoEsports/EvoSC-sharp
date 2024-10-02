@@ -54,5 +54,11 @@ namespace EvoSC.Modules.EvoEsports.ToornamentModule.Settings
 
         [Option(DefaultValue = false), Description("Enable experimental features")]
         public bool UseExperimentalFeatures { get; set; }
+
+        [Option(DefaultValue = true), Description("Use the default gamemode as defined in Discipline. Default value is true")]
+        public bool UseDefaultGameMode { get; set; }
+
+        [Option, Description("The Gamemode to be used when UseDefaultGameMode setting is false.")]
+        public string GameMode { get; set; }
     }
 }

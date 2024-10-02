@@ -23,6 +23,16 @@ public interface IStateService
     public bool WaitingForMatchStart { get; }
 
     /// <summary>
+    /// True if the match has started.
+    /// </summary>
+    public bool MatchInProgress { get; }
+
+    /// <summary>
+    /// True if the match has ended.
+    /// </summary>
+    public bool MatchEnded { get; }
+
+    /// <summary>
     /// Set the initial setup state.
     /// </summary>
     /// <param name="matchSettingsName">Name of the match settings to use.</param>
@@ -37,4 +47,9 @@ public interface IStateService
     /// Set that the match has started.
     /// </summary>
     public void SetMatchStarted();
+
+    /// <summary>
+    /// Set that the match has ended.
+    /// </summary>
+    public void SetMatchEnded();
 }

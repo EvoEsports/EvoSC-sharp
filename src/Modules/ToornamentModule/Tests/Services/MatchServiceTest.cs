@@ -15,7 +15,6 @@ using EvoSC.Modules.EvoEsports.ToornamentModule.Settings;
 using EvoSC.Modules.Official.MapsModule.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
-using EvoSC.Modules.Official.Player.Interfaces;
 using EvoSC.Testing;
 using GbxRemoteNet;
 using GbxRemoteNet.Interfaces;
@@ -50,7 +49,6 @@ public class MatchServiceTest
     private readonly Mock<IAuditEventBuilder> _auditEventBuilderMock;
     private readonly Mock<IKeyValueStoreService> _keyValueStoreServiceMock = new();
     private readonly Mock<IPermissionManager> _permissionManager = new();
-    private readonly Mock<IPlayerService> _playerService = new();
 
     public MatchServiceTest(ITestOutputHelper output)
     {
