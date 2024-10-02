@@ -656,9 +656,11 @@ public class MatchService(IAuditService auditService,
         await playerReadyTrackerService.AddRequiredPlayersAsync(players);
         await playerReadyService.SetWidgetEnabled(true);
 
-        var onlinePlayers = (await playerManagerService.GetOnlinePlayersAsync()).ToArray();
+        var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
 
-        foreach (var player in onlinePlayers)
+        var filteredList = onlinePlayers.SelectMany(op => players.Where(p => p.AccountId == op.AccountId));
+
+        foreach (var player in filteredList)
         {
             //TODO check if player is playing or spectating
             await playerReadyService.SendWidgetAsync(player);
@@ -793,6 +795,12 @@ public class MatchService(IAuditService auditService,
             return;
         }
 
+        if (!stateService.MatchInProgress)
+        {
+            // No match in progress, so players won't get put into Spectate
+            return;
+        }
+
         var accountId = PlayerUtils.ConvertLoginToAccountId(login);
         var player = await playerManagerService.GetOrCreatePlayerAsync(accountId);
 
@@ -808,12 +816,6 @@ public class MatchService(IAuditService auditService,
         //Player is in the configured whitelist -> put into spectate mode
         if (player is not null && whitelistedSpectates.Contains(accountId))
         {
-            if (!stateService.MatchInProgress)
-            {
-                // No match in progress, so players won't get put into Spectate
-                return;
-            }
-
             if (player.Groups.Count() == 0)
             {
                 await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
