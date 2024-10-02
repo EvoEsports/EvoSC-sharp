@@ -684,11 +684,6 @@ public class MatchService(IAuditService auditService,
                         players.Add(player);
                     }
                 }
-                else
-                {
-                    player = await playerManagerService.GetOrCreatePlayerAsync(opponent.Number.ToString(), "Unknown");
-                    players.Add(player);
-                }
 
                 if (player is not null && player.Groups.Count() == 0)
                 {

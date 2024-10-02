@@ -14,6 +14,20 @@ public class KeyValueStoreService(INatsConnectionService nats, ILogger<KeyValueS
         logger.LogInformation("Creating key value entry from store with key: {Key}", key);
         return nats.KeyValue.Create(key, value);
     }
+
+    public ulong CreateOrUpdateEntry(string key, byte[] value)
+    {
+        var entryExists = nats.KeyValue.Get(key);
+
+        if (entryExists is null)
+        {
+            logger.LogInformation("Creating key value entry from store with key: {Key}", key);
+            return nats.KeyValue.Create(key, value);
+        }
+        
+        logger.LogInformation("Updating existing key value entry with key: {Key}", key);
+        return nats.KeyValue.Update(entryExists.Key, value, entryExists.Revision);
+    }
     
     public void UpdateEntry(string key, byte[] value, ulong revision)
     {

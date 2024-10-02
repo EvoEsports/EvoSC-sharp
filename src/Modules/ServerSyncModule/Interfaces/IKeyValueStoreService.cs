@@ -11,6 +11,14 @@ public interface IKeyValueStoreService
     /// <param name="value"></param>
     /// <returns>Revision number of the key</returns>
     ulong CreateEntry(string key, byte[] value);
+
+    /// <summary>
+    /// Create a new key value entry if one does not exist, if it does it updates.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns>Revision number of the key</returns>
+    ulong CreateOrUpdateEntry(string key, byte[] value);
     
     /// <summary>
     /// Updates an existing key value entry.
