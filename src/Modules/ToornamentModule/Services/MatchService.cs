@@ -87,7 +87,7 @@ public class MatchService(IAuditService auditService,
         }
         logger.LogDebug("Begin of EndMatchAsync()");
 
-        if (timeline == null || timeline.Section != ModeScriptSection.EndMatch)
+        if (timeline is not { Section: ModeScriptSection.EndMatch })
         {
             throw new InvalidOperationException("Did not get a match end result to send to Toornament.");
         }
@@ -298,13 +298,11 @@ public class MatchService(IAuditService auditService,
         var serverName = Encoding.ASCII.GetBytes(await server.Remote.GetServerNameAsync());
         try
         {
-            keyValueStoreService.CreateEntry(matchId, serverName);
+            keyValueStoreService.CreateOrUpdateEntry(matchId, serverName);
         }
         catch (NATSJetStreamException ex)
         {
-            logger.LogWarning("Retrieved exception from NATS with exception: {0}", ex);
-            logger.LogWarning("Tried to create entry in KeyValueStore with Key {0} and Value {1}", matchId, serverName);
-            logger.LogWarning("Please fix the duplicate entry in NATS. @Atomic :DinkDonk:");
+            logger.LogWarning(ex, "Retrieved exception from NATS when attempting to create or update entry");
         }
 
         //Show ReadyForMatch widget (?)
@@ -350,11 +348,11 @@ public class MatchService(IAuditService auditService,
         {
             foreach (var mapUid in GetMapUids())
             {
-                logger.LogDebug("Checking if map with Uid {0} exists on the server", mapUid);
+                logger.LogDebug("Checking if map with Uid {UID} exists on the server", mapUid);
                 IMap? existingMap = await mapService.GetMapByUidAsync(mapUid);
                 if (existingMap == null)
                 {
-                    logger.LogDebug("Map with Uid {0} was not found on the server", mapUid);
+                    logger.LogDebug("Map with Uid {UID} was not found on the server", mapUid);
                     allMapsOnServer = false;
                 }
                 else
@@ -374,6 +372,7 @@ public class MatchService(IAuditService auditService,
             try
             {
                 maps = await AddMapsFromNadeo(player, GetMapIds());
+                // TODO: This should not check if null, but rather check if the List is empty.
                 if (maps is not null)
                 {
                     allMapsOnServer = true;
@@ -792,7 +791,7 @@ public class MatchService(IAuditService auditService,
             return;
         }
 
-        if (!stateService.WaitingForMatchStart || !stateService.MatchInProgress)
+        if (!stateService.WaitingForMatchStart && !stateService.MatchInProgress)
         {
             // No match in progress, so players won't get put into Spectate
             return;
@@ -877,7 +876,7 @@ public class MatchService(IAuditService auditService,
         }
     }
 
-    private Task ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 3);
+    private Task ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 1);
 
 
     private async Task<TmGuestListEntry[]> GetGuestListAsync()
