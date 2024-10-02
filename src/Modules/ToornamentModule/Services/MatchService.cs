@@ -62,7 +62,7 @@ public class MatchService(IAuditService auditService,
         // disable the ready widget
         await playerReadyService.SetWidgetEnabled(false);
 
-        await server.Chat.InfoMessageAsync("Match is about to begin ...");
+        await server.Chat.InfoMessageAsync("Match is live after warmup. GLHF! ");
 
         stateService.SetMatchStarted();
 
@@ -302,7 +302,7 @@ public class MatchService(IAuditService auditService,
         }
         catch (NATSJetStreamException ex)
         {
-            logger.LogWarning("Retrieved exception from NATS with exception: {0}", ex);
+            logger.LogWarning(ex, "Retrieved exception from NATS");
             logger.LogWarning("Tried to create entry in KeyValueStore with Key {0} and Value {1}", matchId, serverName);
             logger.LogWarning("Please fix the duplicate entry in NATS. @Atomic :DinkDonk:");
         }
@@ -335,6 +335,10 @@ public class MatchService(IAuditService auditService,
         await matchSettings.LoadMatchSettingsAsync(stateService.MatchSettingsName + "_warmup", false);
 
         await KickNonWhitelistedPlayers();
+
+        await server.Chat.InfoMessageAsync($"Toornament match has been set up.");
+
+        logger.LogInformation("Toornament match has been set up.");
 
         logger.LogDebug("End of FinishServerSetupAsync()");
     }
@@ -426,15 +430,13 @@ public class MatchService(IAuditService auditService,
         catch (Exception)
         {
             logger.LogWarning("Failed to download map from Nadeo servers");
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add map using the Nadeo servers", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add map using the Nadeo servers");
             throw;
         }
 
         if (maps.Count() != mapIds.Count())
         {
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add all maps from the Nadeo servers", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add all maps from the Nadeo servers");
             return null;
         }
         return maps;
@@ -464,15 +466,13 @@ public class MatchService(IAuditService auditService,
         catch (Exception)
         {
             logger.LogWarning("Failed to download map from TMX");
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add map from TMX", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add map from TMX");
             throw;
         }
 
         if (maps.Count() != mapIds.Count())
         {
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add all maps from TMX", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add all maps from TMX");
             return null;
         }
         return maps;
@@ -792,7 +792,7 @@ public class MatchService(IAuditService auditService,
             return;
         }
 
-        if (!stateService.WaitingForMatchStart || !stateService.MatchInProgress)
+        if (!stateService.WaitingForMatchStart && !stateService.MatchInProgress)
         {
             // No match in progress, so players won't get put into Spectate
             return;
@@ -869,7 +869,7 @@ public class MatchService(IAuditService auditService,
     {
         if (await server.Remote.KickAsync(player.GetLogin(), ""))
         {
-            logger.LogDebug("Kicked player {0} from server", player.UbisoftName);
+            logger.LogDebug("Kicked player {0} from server, because player was not whitelisted or expected as a participant of this match", player.UbisoftName);
         }
         else
         {
@@ -877,7 +877,7 @@ public class MatchService(IAuditService auditService,
         }
     }
 
-    private Task ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 3);
+    private Task ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 1);
 
 
     private async Task<TmGuestListEntry[]> GetGuestListAsync()
