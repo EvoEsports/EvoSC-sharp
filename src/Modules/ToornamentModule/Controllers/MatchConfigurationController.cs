@@ -18,8 +18,7 @@ public class MatchConfigurationController(IMatchService matchService, IServerCli
     {
         try
         {
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(Context.Player, $"Setting up a new Toornament match, please wait ...", false);
-            await server.Chat.InfoMessageAsync(chatMessage);
+            await server.Chat.InfoMessageAsync($"Setting up a new Toornament match, please wait ...");
             await matchService.ShowSetupScreenAsync(Context.Player, string.Empty, string.Empty);
         }
         catch (InvalidOperationException ex)
