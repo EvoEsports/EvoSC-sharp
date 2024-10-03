@@ -1,0 +1,6 @@
+﻿[info]
+name = "ContactAdminModule"
+title = "Contact Admin Module"
+summary = "Creates a button for players that when clicked, notifies a Discord webhook."
+version = "1.0.0"
+author = "Nsgr"
