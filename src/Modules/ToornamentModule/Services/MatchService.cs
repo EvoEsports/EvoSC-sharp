@@ -24,6 +24,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using GbxRemoteNet;
 using GbxRemoteNet.Structs;
 using Microsoft.Extensions.Logging;
+using NATS.Client.JetStream;
 using ToornamentApi.Models.Api.TournamentApi;
 
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Services;
@@ -51,20 +52,21 @@ public class MatchService(IAuditService auditService,
 
     public async Task StartMatchAsync()
     {
-        logger.LogInformation("Begin of StartMatchAsync()");
+        logger.LogDebug("Begin of StartMatchAsync()");
         // create a new timeline and get the tracking ID
         var matchTrackerId = await matchTracker.BeginMatchAsync();
 
-        // is this needed?
         await matchSettings.LoadMatchSettingsAsync(stateService.MatchSettingsName, false);
         await server.Remote.RestartMapAsync();
 
         // disable the ready widget
         await playerReadyService.SetWidgetEnabled(false);
 
-        await server.Chat.InfoMessageAsync("Match is about to begin ...");
+        await server.Chat.InfoMessageAsync("Match is live after warmup. GLHF! ");
 
         stateService.SetMatchStarted();
+
+        await KickNonWhitelistedPlayers();
 
         // notify Toornament that the match has started
         await toornamentService.SetMatchGameStatusAsync(settings.AssignedMatchId, 1, MatchGameStatus.Running);
@@ -73,17 +75,17 @@ public class MatchService(IAuditService auditService,
             .HavingProperties(new { MatchTrackingId = matchTrackerId })
             .Comment("Match was started.");
 
-        logger.LogInformation("End of StartMatchAsync()");
+        logger.LogDebug("End of StartMatchAsync()");
     }
 
     public async Task EndMatchAsync(ScoresEventArgs timeline)
     {
-        if (stateService.WaitingForMatchStart)
+        if (stateService.WaitingForMatchStart || stateService.IsInitialSetup || stateService.SetupFinished || stateService.MatchEnded)
         {
-            logger.LogInformation("Match hasn't been setup yet. Not updating MatchGame map on Toornament.");
+            logger.LogDebug("Match hasn't been run or completed yet. Not updating MatchGame map on Toornament.");
             return;
         }
-        logger.LogInformation("Begin of EndMatchAsync()");
+        logger.LogDebug("Begin of EndMatchAsync()");
 
         if (timeline == null || timeline.Section != ModeScriptSection.EndMatch)
         {
@@ -143,16 +145,22 @@ public class MatchService(IAuditService auditService,
         matchGame.Status = MatchGameStatus.Completed.ToString().ToLower();
         await toornamentService.SetMatchGameResultAsync(settings.AssignedMatchId, matchGameNumber, matchGame);
 
+        //Set GameMode back to the 1h warmup gamemode.
+        await matchSettings.LoadMatchSettingsAsync(stateService.MatchSettingsName + "_warmup", false);
+        await server.Remote.RestartMapAsync();
+
+        stateService.SetMatchEnded();
+
         await server.Chat.SuccessMessageAsync("Match finished, thanks for playing!");
-        logger.LogInformation("End of EndMatchAsync()");
+        logger.LogDebug("End of EndMatchAsync()");
     }
 
     public async Task SetMatchGameMapAsync()
     {
-        logger.LogInformation("Begin of SetMatchGameMapAsync()");
-        if (stateService.WaitingForMatchStart)
+        logger.LogDebug("Begin of SetMatchGameMapAsync()");
+        if (!stateService.MatchInProgress)
         {
-            logger.LogInformation("Match hasn't been setup yet. Not updating MatchGame map on Toornament.");
+            logger.LogDebug("Match hasn't started yet. Not updating MatchGame map on Toornament.");
             return;
         }
 
@@ -171,14 +179,23 @@ public class MatchService(IAuditService auditService,
         }
         var mapMachineNames = settings.MapMachineNames.Split(',');
 
-        var toornamentMapName = mapMachineNames.Where(m => m.Contains(currentMap.Name.ToLowerInvariant())).FirstOrDefault();
+        var toornamentMapName = "";
+
+        foreach (var name in mapMachineNames)
+        {
+            if (currentMap.Name.ToLowerInvariant().Contains(name))
+            {
+                toornamentMapName = name;
+                break;
+            }
+        }
 
         if (!string.IsNullOrEmpty(toornamentMapName))
         {
             await toornamentService.SetMatchGameMapAsync(settings.AssignedMatchId, 1, toornamentMapName);
         }
 
-        logger.LogInformation("End of SetMatchGameMapAsync()");
+        logger.LogDebug("End of SetMatchGameMapAsync()");
     }
 
     public async Task<bool> SetServerNameAsync(string name)
@@ -188,7 +205,7 @@ public class MatchService(IAuditService auditService,
 
     public async Task ShowSetupScreenAsync(IPlayer player, string selectedTournamentId, string selectedStageId)
     {
-        logger.LogInformation("Begin of ShowSetupScreenAsync()");
+        logger.LogDebug("Begin of ShowSetupScreenAsync()");
         if (string.IsNullOrEmpty(selectedTournamentId) && !string.IsNullOrEmpty(settings.ToornamentId) && settings.ToornamentId != "EVOSC_MODULE_TOORNAMENTMODULE_")
         {
             logger.LogDebug("Using toornamentId from settings: {0}", settings.ToornamentId);
@@ -221,12 +238,12 @@ public class MatchService(IAuditService auditService,
             rounds = rounds
         });
 
-        logger.LogInformation("End of ShowSetupScreenAsync()");
+        logger.LogDebug("End of ShowSetupScreenAsync()");
     }
 
     public async Task SetupServerAsync(IPlayer player, string tournamentId, string stageId, string matchId)
     {
-        logger.LogInformation("Begin of SetupServerAsync()");
+        logger.LogDebug("Begin of SetupServerAsync()");
         if (string.IsNullOrEmpty(tournamentId))
         {
             logger.LogWarning("TournamentId is missing");
@@ -272,14 +289,23 @@ public class MatchService(IAuditService auditService,
         }
 
         //Apply matchsettings to server (this includes maps)
-        logger.LogDebug("Loading the configured matchsetting {0}", matchSettingsName);
+        logger.LogDebug("Loading the configured matchsetting {0}_warmup", matchSettingsName);
         await matchSettings.LoadMatchSettingsAsync(matchSettingsName + "_warmup");
         await server.Remote.SetServerNameAsync("Match#" + stage.Number + "." + group.Number + "." + round.Number + "." + match.Number);
 
         //Notify ServerSync module
         logger.LogDebug("Notify the ServerSync module");
         var serverName = Encoding.ASCII.GetBytes(await server.Remote.GetServerNameAsync());
-        keyValueStoreService.CreateEntry(matchId, serverName);
+        try
+        {
+            keyValueStoreService.CreateEntry(matchId, serverName);
+        }
+        catch (NATSJetStreamException ex)
+        {
+            logger.LogWarning(ex, "Retrieved exception from NATS");
+            logger.LogWarning("Tried to create entry in KeyValueStore with Key {0} and Value {1}", matchId, serverName);
+            logger.LogWarning("Please fix the duplicate entry in NATS. @Atomic :DinkDonk:");
+        }
 
         //Show ReadyForMatch widget (?)
         logger.LogDebug("Show ReadyForMatch widget for the players");
@@ -291,12 +317,12 @@ public class MatchService(IAuditService auditService,
         logger.LogDebug("Hiding the Setup window");
         await manialinkManager.HideManialinkAsync(player, "ToornamentModule.TournamentSetupView");
 
-        logger.LogInformation("End of SetupServerAsync()");
+        logger.LogDebug("End of SetupServerAsync()");
     }
 
     public async Task FinishServerSetupAsync()
     {
-        logger.LogInformation("Begin of FinishServerSetupAsync()");
+        logger.LogDebug("Begin of FinishServerSetupAsync()");
         if (!stateService.IsInitialSetup)
         {
             return;
@@ -310,12 +336,16 @@ public class MatchService(IAuditService auditService,
 
         await KickNonWhitelistedPlayers();
 
-        logger.LogInformation("End of FinishServerSetupAsync()");
+        await server.Chat.InfoMessageAsync($"Toornament match has been set up.");
+
+        logger.LogInformation("Toornament match has been set up.");
+
+        logger.LogDebug("End of FinishServerSetupAsync()");
     }
 
     private async Task<List<IMap?>> AddMapsAsync(IPlayer player)
     {
-        logger.LogInformation("Begin of AddMapsAsync()");
+        logger.LogDebug("Begin of AddMapsAsync()");
         List<IMap?> maps = new List<IMap?>();
         bool allMapsOnServer = true;
 
@@ -373,7 +403,7 @@ public class MatchService(IAuditService auditService,
             throw new ArgumentException("Maps could not be found on the server, or downloaded from Nadeo servers or from TMX");
         }
 
-        logger.LogInformation("End of AddMapsAsync()");
+        logger.LogDebug("End of AddMapsAsync()");
         return maps;
     }
 
@@ -400,15 +430,13 @@ public class MatchService(IAuditService auditService,
         catch (Exception)
         {
             logger.LogWarning("Failed to download map from Nadeo servers");
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add map using the Nadeo servers", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add map using the Nadeo servers");
             throw;
         }
 
         if (maps.Count() != mapIds.Count())
         {
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add all maps from the Nadeo servers", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add all maps from the Nadeo servers");
             return null;
         }
         return maps;
@@ -438,15 +466,13 @@ public class MatchService(IAuditService auditService,
         catch (Exception)
         {
             logger.LogWarning("Failed to download map from TMX");
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add map from TMX", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add map from TMX");
             throw;
         }
 
         if (maps.Count() != mapIds.Count())
         {
-            var chatMessage = FormattingUtils.FormatPlayerChatMessage(player, "Failed to add all maps from TMX", false);
-            await server.Chat.ErrorMessageAsync(chatMessage);
+            await server.Chat.ErrorMessageAsync("Failed to add all maps from TMX");
             return null;
         }
         return maps;
@@ -454,7 +480,7 @@ public class MatchService(IAuditService auditService,
 
     private async Task<string> CreateMatchSettingsAsync(TournamentBasicData tournament, MatchInfo matchInfo, StageInfo stageInfo, GroupInfo groupInfo, RoundInfo roundInfo, IEnumerable<IMap> maps)
     {
-        logger.LogInformation("Begin of CreateMatchSettingsAsync()");
+        logger.LogDebug("Begin of CreateMatchSettingsAsync()");
         var settingsData = new TrackmaniaIntegrationSettingsData();
         if (settings.UseToornamentDiscipline)
         {
@@ -537,9 +563,10 @@ public class MatchService(IAuditService auditService,
 
         var warmupSettingsData = settingsData;
         warmupSettingsData.Scripts.S_WarmUpDuration = 3600;
+        warmupSettingsData.Scripts.S_WarmUpNb = 1;
         await CreateMatchSettings(name + "_warmup", settingsData, mapsToAdd);
 
-        logger.LogInformation("End of CreateMatchSettingsAsync()");
+        logger.LogDebug("End of CreateMatchSettingsAsync()");
         return name;
     }
 
@@ -549,19 +576,33 @@ public class MatchService(IAuditService auditService,
         {
             await matchSettings.CreateMatchSettingsAsync(name, builder =>
             {
-                var mode = settingsData.GameMode switch
+                if (settings.UseDefaultGameMode)
                 {
-                    GameMode.Rounds => DefaultModeScriptName.Rounds,
-                    GameMode.Cup => DefaultModeScriptName.Cup,
-                    GameMode.TimeAttack => DefaultModeScriptName.TimeAttack,
-                    GameMode.Knockout => DefaultModeScriptName.Knockout,
-                    GameMode.Laps => DefaultModeScriptName.Laps,
-                    GameMode.Team => DefaultModeScriptName.Teams,
-                    _ => DefaultModeScriptName.TimeAttack
-                };
-                logger.LogDebug("Creating match settings with gamemode {0}", mode);
+                    var mode = settingsData.GameMode switch
+                    {
+                        "rounds" => DefaultModeScriptName.Rounds,
+                        "cup" => DefaultModeScriptName.Cup,
+                        "time_attack" => DefaultModeScriptName.TimeAttack,
+                        "knockout" => DefaultModeScriptName.Knockout,
+                        "laps" => DefaultModeScriptName.Laps,
+                        "team" => DefaultModeScriptName.Teams,
+                        _ => DefaultModeScriptName.TimeAttack
+                    };
+                    logger.LogDebug("Creating match settings with gamemode {0}", mode);
 
-                builder.WithMode(mode);
+                    builder.WithMode(mode);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(settings.GameMode))
+                    {
+                        logger.LogWarning("Custom gamemode not defined in environment!!");
+                        throw new ArgumentNullException(nameof(settings.GameMode));
+                    }
+                    logger.LogDebug("Creating match settings with custom gamemode {0}", settings.GameMode);
+                    builder.WithMode(settings.GameMode);
+                }
+
                 builder.WithModeSettings(s =>
                 {
                     var type = settingsData.Scripts.GetType();
@@ -596,18 +637,19 @@ public class MatchService(IAuditService auditService,
 
     private async Task WhitelistPlayers(OpponentInfo[] opponents)
     {
-        logger.LogInformation("Begin of WhitelistPlayers()");
+        logger.LogDebug("Begin of WhitelistPlayers()");
         var multiCall = new MultiCall();
 
         var players = await GetPlayersFromOpponents(opponents);
 
         foreach (var player in players)
         {
-            multiCall.Add("AddGuest", player.AccountId);
+            var login = PlayerUtils.ConvertAccountIdToLogin(player.AccountId);
+            multiCall.Add("AddGuest", login);
         }
 
         await server.Remote.MultiCallAsync(multiCall);
-        logger.LogInformation("End of WhitelistPlayers()");
+        logger.LogDebug("End of WhitelistPlayers()");
     }
     private async Task SetupReadyWidgetAsync(OpponentInfo[] opponents)
     {
@@ -616,9 +658,11 @@ public class MatchService(IAuditService auditService,
         await playerReadyTrackerService.AddRequiredPlayersAsync(players);
         await playerReadyService.SetWidgetEnabled(true);
 
-        var onlinePlayers = (await playerManagerService.GetOnlinePlayersAsync()).ToArray();
+        var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
 
-        foreach (var player in onlinePlayers)
+        var filteredList = onlinePlayers.SelectMany(op => players.Where(p => p.AccountId == op.AccountId));
+
+        foreach (var player in filteredList)
         {
             //TODO check if player is playing or spectating
             await playerReadyService.SendWidgetAsync(player);
@@ -642,13 +686,8 @@ public class MatchService(IAuditService auditService,
                         players.Add(player);
                     }
                 }
-                else
-                {
-                    player = await playerManagerService.GetOrCreatePlayerAsync(opponent.Number.ToString(), "Unknown");
-                    players.Add(player);
-                }
 
-                if (player is not null)
+                if (player is not null && player.Groups.Count() == 0)
                 {
                     await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
                 }
@@ -661,7 +700,7 @@ public class MatchService(IAuditService auditService,
 
     private async Task WhitelistSpectators()
     {
-        logger.LogInformation("Begin of WhitelistSpectators()");
+        logger.LogDebug("Begin of WhitelistSpectators()");
         if (!string.IsNullOrEmpty(settings.Whitelist))
         {
             var multiCall = new MultiCall();
@@ -673,7 +712,7 @@ public class MatchService(IAuditService auditService,
 
             await server.Remote.MultiCallAsync(multiCall);
         }
-        logger.LogInformation("End of WhitelistSpectators()");
+        logger.LogDebug("End of WhitelistSpectators()");
     }
 
     private List<int> GetTmxIds()
@@ -752,6 +791,13 @@ public class MatchService(IAuditService auditService,
         {
             return;
         }
+
+        if (!stateService.WaitingForMatchStart && !stateService.MatchInProgress)
+        {
+            // No match in progress, so players won't get put into Spectate
+            return;
+        }
+
         var accountId = PlayerUtils.ConvertLoginToAccountId(login);
         var player = await playerManagerService.GetOrCreatePlayerAsync(accountId);
 
@@ -767,7 +813,10 @@ public class MatchService(IAuditService auditService,
         //Player is in the configured whitelist -> put into spectate mode
         if (player is not null && whitelistedSpectates.Contains(accountId))
         {
-            await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+            if (player.Groups.Count() == 0)
+            {
+                await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+            }
             await ForceSpectatorAsync(player);
         }
     }
@@ -807,7 +856,10 @@ public class MatchService(IAuditService auditService,
             //Player is in the configured whitelist -> put into spectate mode
             if (player is not null && whitelistedSpectates.Contains(accountId))
             {
-                await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+                if (player.Groups.Count() == 0)
+                {
+                    await permissionManager.AddPlayerToGroupAsync(player, settings.DefaultGroupId);
+                }
                 await ForceSpectatorAsync(player);
             }
         }
@@ -817,15 +869,15 @@ public class MatchService(IAuditService auditService,
     {
         if (await server.Remote.KickAsync(player.GetLogin(), ""))
         {
-            await server.Chat.SuccessMessageAsync($"Kicked player {player.UbisoftName} from server");
+            logger.LogDebug("Kicked player {0} from server, because player was not whitelisted or expected as a participant of this match", player.UbisoftName);
         }
         else
         {
-            await server.Chat.ErrorMessageAsync($"Failed to kick player {player.UbisoftName} from server");
+            logger.LogWarning("Failed to kick player {0} from server", player.UbisoftName);
         }
     }
 
-    private Task ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 3);
+    private Task ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 1);
 
 
     private async Task<TmGuestListEntry[]> GetGuestListAsync()
