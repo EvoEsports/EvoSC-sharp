@@ -380,6 +380,7 @@ public class MatchService(IAuditService auditService,
             }
             catch (ArgumentNullException)
             {
+                // TODO: This should not do it completely silent, add a a log statement.
                 //Silently catch Exception, since we can use TMX as final backup
             }
         }
@@ -387,6 +388,7 @@ public class MatchService(IAuditService auditService,
         //Try to download maps from TMX using tmx Ids
         if (!allMapsOnServer)
         {
+            // TODO: Add logging here too, you want to understand if you end up here.
             maps = await AddMapsFromTmx(player, GetTmxIds());
             allMapsOnServer = true;
         }
