@@ -24,9 +24,15 @@ public interface IRoundRankingService
 
     public int GetGainedPoints(int rank);
 
+    public string? GetTeamAccentColor(PlayerTeam playerTeam);
+    
+    public PlayerTeam GetWinnerTeam();
+
     public Task UpdatePointsRepartitionAsync();
 
     public Task SetIsTimeAttackModeAsync(bool isTimeAttackMode);
     
     public Task DetectModeAsync();
+    
+    public Task FetchAndCacheTeamInfoAsync();
 }

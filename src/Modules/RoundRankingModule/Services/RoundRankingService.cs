@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util.MatchSettings;
@@ -16,6 +17,7 @@ public class RoundRankingService(
     IRoundRankingSettings settings,
     IManialinkManager manialinkManager,
     IMatchSettingsService matchSettingsService,
+    IThemeManager theme,
     IServerClient server
 ) : IRoundRankingService
 {
@@ -24,7 +26,9 @@ public class RoundRankingService(
     private readonly object _checkpointsRepositoryMutex = new();
     private readonly CheckpointsRepository _checkpointsRepository = new();
     private readonly List<int> _pointsRepartition = [];
+    private readonly Dictionary<PlayerTeam, string> _teamColors = new();
     private bool _isTimeAttackMode;
+    private bool _isTeamsMode;
 
     public async Task ConsumeCheckpointDataAsync(CheckpointData checkpointData)
     {
@@ -90,6 +94,14 @@ public class RoundRankingService(
             }
         }
 
+        foreach (var checkpoint in bestCheckpoints.Where(checkpoint => checkpoint.GainedPoints > 0))
+        {
+            //TODO: get winning team
+            checkpoint.AccentColor = _isTeamsMode
+                ? GetTeamAccentColor(checkpoint.Player.Team)
+                : (string)theme.Theme.UI_AccentPrimary;
+        }
+
         await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate, new { settings, bestCheckpoints });
     }
 
@@ -114,6 +126,19 @@ public class RoundRankingService(
         return rank <= _pointsRepartition.Count ? _pointsRepartition[rank - 1] : _pointsRepartition.LastOrDefault(0);
     }
 
+    public string? GetTeamAccentColor(PlayerTeam playerTeam)
+    {
+        var winnerTeam = GetWinnerTeam();
+        var useTeamColor = winnerTeam == playerTeam || winnerTeam == PlayerTeam.Unknown;
+
+        return useTeamColor ? _teamColors[playerTeam] : null;
+    }
+
+    public PlayerTeam GetWinnerTeam()
+    {
+        return PlayerTeam.Unknown; //TODO: calculate & return winner team
+    }
+
     public async Task UpdatePointsRepartitionAsync()
     {
         var modeScriptSettings = await server.Remote.GetModeScriptSettingsAsync();
@@ -134,6 +159,14 @@ public class RoundRankingService(
 
     public async Task DetectModeAsync()
     {
-        _isTimeAttackMode = await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.TimeAttack;
+        var currentMode = await matchSettingsService.GetCurrentModeAsync();
+        _isTimeAttackMode = currentMode is DefaultModeScriptName.TimeAttack;
+        _isTeamsMode = currentMode is DefaultModeScriptName.Teams or DefaultModeScriptName.TmwtTeams;
+    }
+
+    public async Task FetchAndCacheTeamInfoAsync()
+    {
+        _teamColors[PlayerTeam.Team1] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1 + 1)).RGB;
+        _teamColors[PlayerTeam.Team2] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1)).RGB;
     }
 }

@@ -66,7 +66,8 @@ public class RoundRankingEventController(
     
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnStartMapAsync(object sender, EventArgs args)
-    { 
+    {
+        await roundRankingService.FetchAndCacheTeamInfoAsync();
         await roundRankingService.UpdatePointsRepartitionAsync();
         await roundRankingService.ClearCheckpointDataAsync();
     }

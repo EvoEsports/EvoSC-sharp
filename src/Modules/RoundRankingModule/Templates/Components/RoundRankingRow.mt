@@ -64,7 +64,8 @@
                     <quad
                             size="{{ height * 1.25 }} {{ height }}"
                             pos="{{ width-4 }}"
-                            class='{{ checkpoint.GainedPoints > 0 ? "accent-primary" : "lr-body-highlight" }}'
+                            class='lr-body-highlight'
+                            bgcolor="{{ checkpoint.AccentColor != null ? checkpoint.AccentColor : Theme.UI_RoundRankingModule_Widget_RowBgHighlight }}"
                             halign="right"
                     />
                     <label
