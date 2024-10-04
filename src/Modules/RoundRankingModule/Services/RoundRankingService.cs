@@ -26,7 +26,7 @@ public class RoundRankingService(
     private readonly List<int> _pointsRepartition = [];
     private bool _isTimeAttackMode;
 
-    public Task ConsumeCheckpointDataAsync(CheckpointData checkpointData)
+    public async Task ConsumeCheckpointDataAsync(CheckpointData checkpointData)
     {
         lock (_checkpointsRepositoryMutex)
         {
@@ -40,30 +40,36 @@ public class RoundRankingService(
             }
         }
 
-        return Task.CompletedTask;
+        await DisplayRoundRankingWidgetAsync();
     }
 
     public Task RemovePlayerCheckpointDataAsync(IOnlinePlayer player) =>
         RemovePlayerCheckpointDataAsync(player.AccountId);
 
-    public Task RemovePlayerCheckpointDataAsync(string accountId)
+    public async Task RemovePlayerCheckpointDataAsync(string accountId)
     {
+        if (!_isTimeAttackMode)
+        {
+            //In time attack mode the entries are cleared by new round event, prevents flood of manialinks.
+            return;
+        }
+
         lock (_checkpointsRepositoryMutex)
         {
             _checkpointsRepository.Remove(accountId);
         }
 
-        return Task.CompletedTask;
+        await DisplayRoundRankingWidgetAsync();
     }
 
-    public Task ClearCheckpointDataAsync()
+    public async Task ClearCheckpointDataAsync()
     {
         lock (_checkpointsRepositoryMutex)
         {
             _checkpointsRepository.Clear();
         }
 
-        return Task.CompletedTask;
+        await DisplayRoundRankingWidgetAsync();
     }
 
     public async Task DisplayRoundRankingWidgetAsync()

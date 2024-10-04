@@ -17,4 +17,12 @@ public interface IRoundRankingSettings
 
     [Option(DefaultValue = 8), Description("Limits the rows shown in the widget.")]
     public int MaxRows { get; set; }
+
+    [Option(DefaultValue = false),
+     Description("If set to true, the time label is going to show the difference to the leading player.")]
+    public bool DisplayTimeDifference { get; set; }
+
+    [Option(DefaultValue = false),
+     Description("If set to true, the checkpoint index will show the difference in checkpoints to the leading player.")]
+    public bool DisplayCheckpointIndexDifference { get; set; }
 }

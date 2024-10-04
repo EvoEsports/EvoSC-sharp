@@ -35,14 +35,6 @@ public class RoundRankingEventController(
             IsFinish = args.IsEndLap,
             IsDNF = false
         });
-        await roundRankingService.DisplayRoundRankingWidgetAsync();
-    }
-
-    [Subscribe(ModeScriptEvent.EndRoundEnd)]
-    public async Task OnStartRoundAsync(object sender, EventArgs args)
-    {
-        await roundRankingService.ClearCheckpointDataAsync();
-        await roundRankingService.DisplayRoundRankingWidgetAsync();
     }
 
     [Subscribe(ModeScriptEvent.GiveUp)]
@@ -58,27 +50,26 @@ public class RoundRankingEventController(
             IsFinish = false,
             IsDNF = true
         });
-        await roundRankingService.DisplayRoundRankingWidgetAsync();
     }
+
+    [Subscribe(ModeScriptEvent.EndRoundEnd)]
+    public Task OnStartRoundAsync(object sender, EventArgs args) =>
+        roundRankingService.ClearCheckpointDataAsync();
 
     [Subscribe(ModeScriptEvent.StartLine)]
-    public async Task OnStartLineAsync(object sender, PlayerUpdateEventArgs args)
-    {
-        await roundRankingService.RemovePlayerCheckpointDataAsync(args.AccountId);
-        await roundRankingService.DisplayRoundRankingWidgetAsync();
-    }
+    public Task OnStartLineAsync(object sender, PlayerUpdateEventArgs args) =>
+        roundRankingService.RemovePlayerCheckpointDataAsync(args.AccountId);
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
-    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args) =>
+    public Task OnPodiumStartAsync(object sender, EventArgs args) =>
         roundRankingService.HideRoundRankingWidgetAsync();
-
-    [Subscribe(ModeScriptEvent.EndMapStart)]
-    public Task OnEndMapStartAsync(object sender, MapEventArgs args) =>
-        roundRankingService.HideRoundRankingWidgetAsync();
-
-    [Subscribe(ModeScriptEvent.StartMapEnd)]
-    public Task OnStartMapAsync(object sender, MapEventArgs args) =>
-        roundRankingService.UpdatePointsRepartitionAsync();
+    
+    [Subscribe(GbxRemoteEvent.BeginMap)]
+    public async Task OnStartMapAsync(object sender, EventArgs args)
+    { 
+        await roundRankingService.UpdatePointsRepartitionAsync();
+        await roundRankingService.ClearCheckpointDataAsync();
+    }
 
     [Subscribe(ModeScriptEvent.WarmUpStart)]
     public Task OnWarmUpStartAsync(object sender, EventArgs args) =>
