@@ -1,7 +1,9 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.RoundRankingModule.Config;
 using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
@@ -13,6 +15,7 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Services;
 public class RoundRankingService(
     IRoundRankingSettings settings,
     IManialinkManager manialinkManager,
+    IMatchSettingsService matchSettingsService,
     IServerClient server
 ) : IRoundRankingService
 {
@@ -21,22 +24,33 @@ public class RoundRankingService(
     private readonly object _checkpointsRepositoryMutex = new();
     private readonly CheckpointsRepository _checkpointsRepository = new();
     private readonly List<int> _pointsRepartition = [];
+    private bool _isTimeAttackMode;
 
-    public Task AddCheckpointDataAsync(CheckpointData checkpointData)
+    public Task ConsumeCheckpointDataAsync(CheckpointData checkpointData)
     {
         lock (_checkpointsRepositoryMutex)
         {
-            _checkpointsRepository[checkpointData.Player.AccountId] = checkpointData;
+            if (_isTimeAttackMode && checkpointData.IsDNF)
+            {
+                _checkpointsRepository.Remove(checkpointData.Player.AccountId);
+            }
+            else
+            {
+                _checkpointsRepository[checkpointData.Player.AccountId] = checkpointData;
+            }
         }
 
         return Task.CompletedTask;
     }
 
-    public Task RemovePlayerCheckpointDataAsync(IOnlinePlayer player)
+    public Task RemovePlayerCheckpointDataAsync(IOnlinePlayer player) =>
+        RemovePlayerCheckpointDataAsync(player.AccountId);
+
+    public Task RemovePlayerCheckpointDataAsync(string accountId)
     {
         lock (_checkpointsRepositoryMutex)
         {
-            _checkpointsRepository.Remove(player.AccountId);
+            _checkpointsRepository.Remove(accountId);
         }
 
         return Task.CompletedTask;
@@ -61,10 +75,13 @@ public class RoundRankingService(
             bestCheckpoints = _checkpointsRepository.GetBestTimes(settings.MaxRows);
         }
 
-        int rank = 1;
-        foreach (var checkpoint in bestCheckpoints.Where(checkpoint => checkpoint.IsFinish))
+        if (!_isTimeAttackMode)
         {
-            checkpoint.GainedPoints = GetGainedPoints(rank++);
+            int rank = 1;
+            foreach (var checkpoint in bestCheckpoints.Where(checkpoint => checkpoint.IsFinish))
+            {
+                checkpoint.GainedPoints = GetGainedPoints(rank++);
+            }
         }
 
         await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate, new { settings, bestCheckpoints });
@@ -100,5 +117,17 @@ public class RoundRankingService(
 
         _pointsRepartition.Clear();
         _pointsRepartition.AddRange(pointsRepartition);
+    }
+
+    public Task SetIsTimeAttackModeAsync(bool isTimeAttackMode)
+    {
+        _isTimeAttackMode = isTimeAttackMode;
+
+        return Task.CompletedTask;
+    }
+
+    public async Task DetectModeAsync()
+    {
+        _isTimeAttackMode = await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.TimeAttack;
     }
 }

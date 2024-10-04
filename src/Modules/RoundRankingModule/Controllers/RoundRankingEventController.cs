@@ -27,7 +27,7 @@ public class RoundRankingEventController(
 
         var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
 
-        await roundRankingService.AddCheckpointDataAsync(new CheckpointData
+        await roundRankingService.ConsumeCheckpointDataAsync(new CheckpointData
         {
             Player = player,
             CheckpointId = args.CheckpointInLap,
@@ -39,7 +39,7 @@ public class RoundRankingEventController(
     }
 
     [Subscribe(ModeScriptEvent.EndRoundEnd)]
-    public async Task OnStartRoundAsync()
+    public async Task OnStartRoundAsync(object sender, EventArgs args)
     {
         await roundRankingService.ClearCheckpointDataAsync();
         await roundRankingService.DisplayRoundRankingWidgetAsync();
@@ -50,7 +50,7 @@ public class RoundRankingEventController(
     {
         var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
 
-        await roundRankingService.AddCheckpointDataAsync(new CheckpointData
+        await roundRankingService.ConsumeCheckpointDataAsync(new CheckpointData
         {
             Player = player,
             CheckpointId = -1,
@@ -58,6 +58,13 @@ public class RoundRankingEventController(
             IsFinish = false,
             IsDNF = true
         });
+        await roundRankingService.DisplayRoundRankingWidgetAsync();
+    }
+
+    [Subscribe(ModeScriptEvent.StartLine)]
+    public async Task OnStartLineAsync(object sender, PlayerUpdateEventArgs args)
+    {
+        await roundRankingService.RemovePlayerCheckpointDataAsync(args.AccountId);
         await roundRankingService.DisplayRoundRankingWidgetAsync();
     }
 
@@ -72,4 +79,12 @@ public class RoundRankingEventController(
     [Subscribe(ModeScriptEvent.StartMapEnd)]
     public Task OnStartMapAsync(object sender, MapEventArgs args) =>
         roundRankingService.UpdatePointsRepartitionAsync();
+
+    [Subscribe(ModeScriptEvent.WarmUpStart)]
+    public Task OnWarmUpStartAsync(object sender, EventArgs args) =>
+        roundRankingService.SetIsTimeAttackModeAsync(true);
+
+    [Subscribe(ModeScriptEvent.WarmUpEnd)]
+    public Task OnWarmUpEndAsync(object sender, EventArgs args) =>
+        roundRankingService.DetectModeAsync();
 }

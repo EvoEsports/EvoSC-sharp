@@ -9,8 +9,9 @@ public class RoundRankingModule(IRoundRankingService roundRankingService) : EvoS
 {
     public async Task EnableAsync()
     {
-        await roundRankingService.DisplayRoundRankingWidgetAsync();
         await roundRankingService.UpdatePointsRepartitionAsync();
+        await roundRankingService.DetectModeAsync();
+        await roundRankingService.DisplayRoundRankingWidgetAsync();
     }
 
     public Task DisableAsync() => Task.CompletedTask;
