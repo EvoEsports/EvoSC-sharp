@@ -5,7 +5,9 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
+using EvoSC.Modules.Official.RoundRankingModule.Models;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Controllers;
 
@@ -18,10 +20,21 @@ public class RoundRankingEventController(
     [Subscribe(ModeScriptEvent.WayPoint)]
     public async Task OnWaypointAsync(object sender, WayPointEventArgs args)
     {
+        if (!roundRankingService.ShouldCollectCheckpointData(args.AccountId))
+        {
+            return;
+        }
+
         var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
 
-        await roundRankingService.AddCheckpointDataAsync(player, args.CheckpointInLap, args.LapTime, args.IsEndLap);
-        await roundRankingService.RemoveCheckpointDataAsync(player, args.CheckpointInLap - 1);
+        await roundRankingService.AddCheckpointDataAsync(new CheckpointData
+        {
+            Player = player,
+            CheckpointId = args.CheckpointInLap,
+            Time = RaceTime.FromMilliseconds(args.LapTime),
+            IsFinish = args.IsEndLap,
+            IsDNF = false
+        });
         await roundRankingService.DisplayRoundRankingWidgetAsync();
     }
 
@@ -33,11 +46,19 @@ public class RoundRankingEventController(
     }
 
     [Subscribe(ModeScriptEvent.GiveUp)]
-    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args)
+    public async Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args)
     {
-        //TODO: set DNF
+        var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
 
-        return Task.CompletedTask;
+        await roundRankingService.AddCheckpointDataAsync(new CheckpointData
+        {
+            Player = player,
+            CheckpointId = -1,
+            Time = RaceTime.FromMilliseconds(0),
+            IsFinish = false,
+            IsDNF = true
+        });
+        await roundRankingService.DisplayRoundRankingWidgetAsync();
     }
 
     [Subscribe(ModeScriptEvent.PodiumStart)]
@@ -47,4 +68,8 @@ public class RoundRankingEventController(
     [Subscribe(ModeScriptEvent.EndMapStart)]
     public Task OnEndMapStartAsync(object sender, MapEventArgs args) =>
         roundRankingService.HideRoundRankingWidgetAsync();
+
+    [Subscribe(ModeScriptEvent.StartMapEnd)]
+    public Task OnStartMapAsync(object sender, MapEventArgs args) =>
+        roundRankingService.UpdatePointsRepartitionAsync();
 }

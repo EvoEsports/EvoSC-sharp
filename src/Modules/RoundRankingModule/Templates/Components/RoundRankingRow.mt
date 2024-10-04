@@ -51,34 +51,53 @@
                         size="{{ width-20 }} {{ height }}"
                 />
                 <label
-                        text='{{ checkpoint.Time }}'
+                        text="{{ checkpoint.IsDNF ? &quot;DNF&quot; : checkpoint.Time.ToString().TrimStart('0') }}"
                         class="text-primary"
                         textsize="0.5"
                         pos="{{ width-4-(height * 1.25)-1.0 }} {{ -height/2.0 + 0.2 }}"
                         valign="center"
                         halign="right"
-                        size="8 {{ height }}"
+                        size="9 {{ height }}"
                 />
-                <quad size="{{ height * 1.25 }} {{ height }}"
-                      pos="{{ width-4 }}"
-                      class="lr-body-highlight"
-                      halign="right"
-                />
-                <label
-                        text='{{ checkpoint.IsFinish ? Icons.FlagCheckered : checkpoint.CheckpointId + 1 }}'
-                        class="text-primary"
-                        textsize="0.5"
-                        pos="{{ width-4-(height*1.25/2.0) }} {{ -height/2.0 + 0.2 }}"
-                        valign="center"
-                        halign="center"
-                        opacity="0.8"
-                />
+                <frame>
+                    <!-- CHECKPOINT ID & GAINED POINTS BOX -->
+                    <quad
+                            size="{{ height * 1.25 }} {{ height }}"
+                            pos="{{ width-4 }}"
+                            class='{{ checkpoint.GainedPoints > 0 ? "accent-primary" : "lr-body-highlight" }}'
+                            halign="right"
+                    />
+                    <label
+                            if="checkpoint.GainedPoints == 0"
+                            class="text-primary"
+                            text='{{ checkpoint.IsDNF ? Icons.FlagO : (checkpoint.IsFinish ? Icons.FlagCheckered : checkpoint.CheckpointId + 1) }}'
+                            textsize="0.5"
+                            pos="{{ width-4-(height*1.25/2.0) }} {{ -height/2.0 + 0.2 }}"
+                            valign="center"
+                            halign="center"
+                            opacity="0.8"
+                    />
+                    <label
+                            if="checkpoint.GainedPoints > 0"
+                            class="text-primary"
+                            text='{{ checkpoint.GainedPoints }}'
+                            textprefix="+"
+                            textsize="0.5"
+                            textfont="{{ Font.Bold }}"
+                            pos="{{ width-4-(height*1.25/2.0) }} {{ -height/2.0 + 0.2 }}"
+                            size="3.5 {{ height }}"
+                            valign="center"
+                            halign="center"
+                            opacity="0.8"
+                    />
+                </frame>
             </Panel>
-            <GainedPoints x="{{ width + 1.0 }}" 
-                          height="{{ height }}"
-                          width="{{ height*1.5 }}"
-                          points="{{ checkpoint.IsFinish ? 1 : 0 }}"
-            />
+<!--            <GainedPoints-->
+<!--                    x="{{ width + 1.0 }}"-->
+<!--                    height="{{ height }}"-->
+<!--                    width="{{ height*1.5 }}"-->
+<!--                    points="{{ checkpoint.IsFinish ? 1 : 0 }}"-->
+<!--            />-->
         </frame>
     </template>
 </component>

@@ -5,8 +5,10 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 
 public class CheckpointData
 {
-    public IOnlinePlayer Player { get; init; }
-    public int CheckpointId { get; init; }
-    public IRaceTime Time { get; init; }
-    public bool IsFinish { get; init; }
+    public required IOnlinePlayer Player { get; init; }
+    public required int CheckpointId { get; init; }
+    public required IRaceTime Time { get; init; }
+    public required bool IsFinish { get; init; }
+    public required bool IsDNF { get; init; }
+    public int GainedPoints { get; set; } = 0;
 }

@@ -5,9 +5,9 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Interfaces;
 
 public interface IRoundRankingService
 {
-    public Task AddCheckpointDataAsync(IOnlinePlayer player, int checkpointIndex, int checkpointTime, bool isFinish);
+    public Task AddCheckpointDataAsync(CheckpointData checkpointData);
 
-    public Task RemoveCheckpointDataAsync(IOnlinePlayer player, int checkpointIndex);
+    public Task RemovePlayerCheckpointDataAsync(IOnlinePlayer player);
 
     public Task ClearCheckpointDataAsync();
 
@@ -18,4 +18,10 @@ public interface IRoundRankingService
     public Task DisplayRoundRankingWidgetAsync();
 
     public Task HideRoundRankingWidgetAsync();
+
+    public bool ShouldCollectCheckpointData(string playerAccountId);
+
+    public int GetGainedPoints(int rank);
+
+    public Task UpdatePointsRepartitionAsync();
 }

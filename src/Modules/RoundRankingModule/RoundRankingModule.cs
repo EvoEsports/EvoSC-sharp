@@ -7,7 +7,11 @@ namespace EvoSC.Modules.Official.RoundRankingModule;
 [Module(IsInternal = true)]
 public class RoundRankingModule(IRoundRankingService roundRankingService) : EvoScModule, IToggleable
 {
-    public Task EnableAsync() => roundRankingService.DisplayRoundRankingWidgetAsync();
+    public async Task EnableAsync()
+    {
+        await roundRankingService.DisplayRoundRankingWidgetAsync();
+        await roundRankingService.UpdatePointsRepartitionAsync();
+    }
 
     public Task DisableAsync() => Task.CompletedTask;
 }
