@@ -7,5 +7,5 @@ namespace EvoSC.Modules.Nsgr.ContactAdminModule.Controllers;
 [Controller]
 public class ContactAdminManialinkController(IContactAdminService service) : ManialinkController
 {
-    public Task ContactAdminButtonAsync() => service.ContactAdminAsync();
+    public Task ContactAdminButtonAsync() => service.ContactAdminAsync(Context.Player);
 }

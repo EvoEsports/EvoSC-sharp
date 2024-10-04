@@ -2,6 +2,8 @@
 using System.Text;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
+using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -18,6 +20,7 @@ public class ContactAdminService(
     IManialinkManager manialinkManager,
     ILogger<ContactAdminService> logger,
     IServerClient client,
+    IChatService chat,
     IContactAdminSettings settings
 )
     : IContactAdminService
@@ -36,22 +39,51 @@ public class ContactAdminService(
         logger.LogDebug("Hiding 'Contact Admin' widget");
     }
 
-    public async Task ContactAdminAsync()
+    public async Task ContactAdminAsync(IOnlinePlayer? contextPlayer)
     {
         var serverName = await client.Remote.GetServerNameAsync();
 
-        var message = new { content = "Help requested on server" + serverName };
-        var json = JsonConvert.SerializeObject(message);
+        var discordMessage = contextPlayer is null
+            ? $"Help requested on server {serverName}"
+            : $"{contextPlayer.NickName} requested help on server {serverName}";
+
+        // Check for suffix so we can ping people on Discord
+        if (settings.MessageSuffix.Length > 0)
+        {
+            discordMessage += $" {settings.MessageSuffix}";
+        }
+
+        var messageObject = new { content = discordMessage };
+        var json = JsonConvert.SerializeObject(messageObject);
         var data = new StringContent(json, Encoding.UTF8, "application/json");
         
-        var response = await _http.PostAsync(settings.WebhookURL, data);
-        if (response.IsSuccessStatusCode)
+        logger.LogTrace($"Requesting {settings.WebhookUrl}");
+
+        try
         {
+            var response = await _http.PostAsync(settings.WebhookUrl, data);
+            if (!response.IsSuccessStatusCode) throw new Exception("The request status code was not successful.");
+            
             logger.LogDebug("Successfully executed webhook.");
+            
+            var chatMessage = contextPlayer is null
+                ? "The admins were contacted."
+                : $"$<{contextPlayer.NickName}$> requested to contact the admins.";
+
+            await chat.InfoMessageAsync(chatMessage);
         }
-        else
+        catch (Exception ex)
         {
-            logger.LogError("Failed to executed Discord webhook.");
+            logger.LogError($"Failed to execute Discord webhook: {ex.ToString()}");
+
+            if (contextPlayer is null)
+            {
+                await chat.ErrorMessageAsync("Could not notify admins. Please reach out manually.");
+            }
+            else
+            {
+                await chat.ErrorMessageAsync("Could not notify admins. Please reach out manually.", contextPlayer);
+            }
         }
     }
 }

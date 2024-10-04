@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Modules.Nsgr.ContactAdminModule.Interfaces;
+﻿using EvoSC.Common.Interfaces.Models;
+
+namespace EvoSC.Modules.Nsgr.ContactAdminModule.Interfaces;
 
 public interface IContactAdminService
 {
@@ -16,7 +18,9 @@ public interface IContactAdminService
     
     /// <summary>
     /// Posts a help message containing the Trackmania server name to the specified Webhook
+    /// If contextPlayer is specified, the chat message will mention who requested the contact.
     /// </summary>
+    /// <param name="contextPlayer"></param>
     /// <returns></returns>
-    Task ContactAdminAsync();
+    Task ContactAdminAsync(IOnlinePlayer? contextPlayer);
 }
