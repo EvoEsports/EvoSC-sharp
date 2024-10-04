@@ -16,7 +16,12 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Controllers;
 
 [Controller]
-public class MatchController(IMatchService matchService, IServerClient server, IToornamentSettings settings, ILogger<MatchController> logger) : EvoScController<IEventControllerContext>
+public class MatchController(
+    IMatchService matchService,
+    IServerClient server,
+    IToornamentSettings settings,
+    ILogger<MatchController> logger,
+    IWhitelistService whitelistService) : EvoScController<IEventControllerContext>
 {
     [Subscribe(MatchReadyEvents.AllPlayersReady)]
     public async Task OnAllPlayersReadyAsync(object sender, AllPlayersReadyEventArgs args)
@@ -83,7 +88,7 @@ public class MatchController(IMatchService matchService, IServerClient server, I
                 return;
             }
 
-            await matchService.ForcePlayerIntoSpectate(args.Login);
+            await whitelistService.ForcePlayerIntoSpectate(args.Login);
         }
         catch (Exception)
         {

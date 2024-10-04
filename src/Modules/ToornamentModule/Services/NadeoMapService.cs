@@ -11,6 +11,7 @@ using GBX.NET.LZO;
 using Hawf.Attributes;
 using Hawf.Client;
 using Microsoft.Extensions.Logging;
+using IMapService = EvoSC.Common.Interfaces.Services.IMapService;
 
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Services;
 

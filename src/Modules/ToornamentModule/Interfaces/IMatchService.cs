@@ -18,6 +18,4 @@ public interface IMatchService
     public Task<bool> SetServerNameAsync(string name);
 
     public Task SetMatchGameMapAsync();
-
-    public Task ForcePlayerIntoSpectate(string login);
 }
