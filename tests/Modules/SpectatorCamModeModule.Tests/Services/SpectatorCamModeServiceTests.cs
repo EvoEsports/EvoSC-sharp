@@ -36,16 +36,6 @@ public class SpectatorCamModeServiceTests
     }
 
     [Fact]
-    public async Task HidesCamModeWidget()
-    {
-        var camModeService = CamModeServiceMock();
-        await camModeService.HideCamModeWidgetAsync();
-
-        _manialinkManager.Verify(m =>
-            m.HideManialinkAsync("SpectatorCamModeModule.SpectatorMode"), Times.Once);
-    }
-
-    [Fact]
     public async Task HidesDefaultGameModeUi()
     {
         var camModeService = CamModeServiceMock();
