@@ -6,15 +6,13 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Controllers;
 
 [Controller]
 public class RoundRankingEventController(
     IRoundRankingService roundRankingService,
-    IPlayerManagerService playerManagerService,
-    ILogger<RoundRankingEventController> logger
+    IPlayerManagerService playerManagerService
 ) : EvoScController<IEventControllerContext>
 {
     [Subscribe(ModeScriptEvent.WayPoint)]
@@ -22,16 +20,31 @@ public class RoundRankingEventController(
     {
         var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
 
-        logger.LogInformation("Adding data {account} -> {cpId}: {time}", player.AccountId, args.CheckpointInLap,
-            args.LapTime);
-
         await roundRankingService.AddCheckpointDataAsync(player, args.CheckpointInLap, args.LapTime, args.IsEndLap);
+        await roundRankingService.RemoveCheckpointDataAsync(player, args.CheckpointInLap - 1);
         await roundRankingService.DisplayRoundRankingWidgetAsync();
     }
 
-    [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public Task OnStartRoundAsync()
+    [Subscribe(ModeScriptEvent.EndRoundEnd)]
+    public async Task OnStartRoundAsync()
     {
+        await roundRankingService.ClearCheckpointDataAsync();
+        await roundRankingService.DisplayRoundRankingWidgetAsync();
+    }
+
+    [Subscribe(ModeScriptEvent.GiveUp)]
+    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args)
+    {
+        //TODO: set DNF
+
         return Task.CompletedTask;
     }
+
+    [Subscribe(ModeScriptEvent.PodiumStart)]
+    public Task OnPodiumStartAsync(object sender, PodiumEventArgs args) =>
+        roundRankingService.HideRoundRankingWidgetAsync();
+
+    [Subscribe(ModeScriptEvent.EndMapStart)]
+    public Task OnEndMapStartAsync(object sender, MapEventArgs args) =>
+        roundRankingService.HideRoundRankingWidgetAsync();
 }

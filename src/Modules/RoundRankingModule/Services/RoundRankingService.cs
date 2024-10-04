@@ -24,17 +24,38 @@ public class RoundRankingService(
     {
         lock (_checkpointsRepositoryMutex)
         {
-            var checkpointGroup = _checkpointsRepository.CreateIndexIfMissing(checkpointIndex);
-
-            if (ShouldAddCheckpointTime(checkpointGroup))
+            _checkpointsRepository.AddAndSort(new CheckpointData
             {
-                _checkpointsRepository.AddAndSort(new CheckpointData
-                {
-                    Player = player,
-                    CheckpointId = checkpointIndex,
-                    Time = RaceTime.FromMilliseconds(checkpointTime),
-                    IsFinish = isFinish
-                });
+                Player = player,
+                CheckpointId = checkpointIndex,
+                Time = RaceTime.FromMilliseconds(checkpointTime),
+                IsFinish = isFinish
+            });
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveCheckpointDataAsync(IOnlinePlayer player, int checkpointIndex)
+    {
+        if (checkpointIndex < 0)
+        {
+            return Task.CompletedTask;
+        }
+
+        lock (_checkpointsRepositoryMutex)
+        {
+            if (!_checkpointsRepository.TryGetValue(checkpointIndex, out var checkpointGroup))
+            {
+                return Task.CompletedTask;
+            }
+
+            var playersEntry = checkpointGroup
+                .FirstOrDefault(cpData => cpData.Player.AccountId == player.AccountId);
+
+            if (playersEntry != null)
+            {
+                _checkpointsRepository[checkpointIndex].Remove(playersEntry);
             }
         }
 
@@ -65,7 +86,4 @@ public class RoundRankingService(
 
     public Task HideRoundRankingWidgetAsync() =>
         manialinkManager.HideManialinkAsync(WidgetTemplate);
-
-    public bool ShouldAddCheckpointTime(IEnumerable<CheckpointData> checkpointGroup) =>
-        checkpointGroup.Count() < settings.MaxRows;
 }

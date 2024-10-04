@@ -2,6 +2,16 @@
 
 public class CheckpointsRepository : Dictionary<int, List<CheckpointData>>
 {
+    public int TotalEntries()
+    {
+        return this.Values.Select(cpGroup => cpGroup.Count()).Sum();
+    }
+
+    public bool CanCollectAnotherPlayer(int maxRows)
+    {
+        return TotalEntries() < maxRows;
+    }
+
     public List<CheckpointData> CreateIndexIfMissing(int index)
     {
         if (this.ContainsKey(index))
@@ -16,8 +26,9 @@ public class CheckpointsRepository : Dictionary<int, List<CheckpointData>>
 
     public void AddAndSort(CheckpointData data)
     {
-        this[data.CheckpointId].Add(data);
-        this[data.CheckpointId] = this[data.CheckpointId].OrderBy(checkpoint => checkpoint.Time.TotalMilliseconds).ToList();
+        var checkpointGroup = CreateIndexIfMissing(data.CheckpointId);
+        checkpointGroup.Add(data);
+        this[data.CheckpointId] = checkpointGroup.OrderBy(checkpoint => checkpoint.Time.TotalMilliseconds).ToList();
     }
 
     public List<CheckpointData> GetBestTimes(int maxRows)
