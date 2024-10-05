@@ -1,6 +1,8 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Interfaces;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Settings;
@@ -11,6 +13,7 @@ using ToornamentApi.Models.Api.TournamentApi;
 
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Services;
 
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class WhitelistService(
     ILogger<WhitelistService> logger,
     IServerClient server,
@@ -21,8 +24,6 @@ public class WhitelistService(
     IPermissionManager permissionManager
     ) : IWhitelistService
 {
-    
-
     public async Task WhitelistPlayers(OpponentInfo[] opponents)
     {
         logger.LogDebug("Begin of WhitelistPlayers()");
@@ -57,8 +58,6 @@ public class WhitelistService(
 
         logger.LogDebug("End of WhitelistSpectators()");
     }
-    
-    
 
     public async Task ForcePlayerIntoSpectate(string login)
     {
@@ -96,7 +95,7 @@ public class WhitelistService(
             await ForceSpectatorAsync(player);
         }
     }
-    
+
     public async Task KickNonWhitelistedPlayers()
     {
         if (!settings.UseExperimentalFeatures)
@@ -143,7 +142,7 @@ public class WhitelistService(
             }
         }
     }
-    
+
     private async Task KickAsync(IPlayer player)
     {
         if (await server.Remote.KickAsync(player.GetLogin(), ""))
@@ -159,7 +158,6 @@ public class WhitelistService(
     }
 
     private Task<bool> ForceSpectatorAsync(IPlayer player) => server.Remote.ForceSpectatorAsync(player.GetLogin(), 1);
-
 
     private async Task<TmGuestListEntry[]> GetGuestListAsync()
     {

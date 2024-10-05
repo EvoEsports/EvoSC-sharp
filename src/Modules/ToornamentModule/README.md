@@ -20,7 +20,13 @@ The module has the following Environment Variables:
 |MapTmxIds|EVOSC_MODULE_TOORNAMENTMODULE_MAPTMXIDS|string|Yes*|A comma separated string containing the Map Ids used on TMX. Required when `MapUids` and `MapIds` are empty.|
 |MapUids|EVOSC_MODULE_TOORNAMENTMODULE_MAPUIDS|string|Yes*|A comma separated string containing the Map Uids used on this server. It is used to determine whether the maps have already been provided or have to be downloaded. Required when `MapTmxIds` or `MapIds` are empty.|
 |MapIds|EVOSC_MODULE_TOORNAMENTMODULE_MAPIDS|string|Yes*|A comma separated string containing the Map Ids used on Nadeo servers. Required when `MapTmxIds` or `MapUids` are empty.|
+|MapMachineNames|EVOSC_MODULE_TOORNAMENTMODULE_MAPMACHINENAMES|Yes|A comma separated string containing the MachineNames of the maps as defined on Toornament. The Toornament API doesn't provide an endpoint for this, so we have to provide it|
 |SensitiveLogging|EVOSC_MODULE_TOORNAMENTMODULE_SENSITIVELOGGING|bool|No|Enable very sensitive logging, like logging Authorization tokens|
+|UseExperimentalFeatures|EVOSC_MODULE_TOORNAMENTMODULE_USEEXPERIMENTALFEATURES|bool|No|Flag to indicate whether to use experimental features or not. This is currently applying a whitelist to players on the server or players joining the server. If they are not on the whitelist, they will get kicked from the server. Default value is `False`.|
+|UseDefaultGameMode|EVOSC_MODULE_TOORNAMENTMODULE_USEDEFAULTGAMEMODE|bool|No|Flag to indicate whether to use a Nadeo gamemode or a custom gamemode. Default value is `true`.|
+|GameMode|EVOSC_MODULE_TOORNAMENTMODULE_GAMEMODE|string|Yes*|Required when using a custom gamemode script. This indicates the path to where the script can be found.|
+|WebhookUrl|EVOSC_MODULE_TOORNAMENTMODULE_WEBHOOKURL|string|No|String indicating a Discord webhook url where maporder will be posted to.|
+|MessageSuffix|EVOSC_MODULE_TOORNAMENTMODULE_MESSAGESUFFIX|string|No|Extra information that can be added to the Discord message. For example pinging certain @roles or @users.|
 
 ## Disciplines
 

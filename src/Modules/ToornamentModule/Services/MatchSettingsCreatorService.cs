@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Interfaces;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Models;
@@ -12,15 +14,17 @@ using ToornamentApi.Models.Api.TournamentApi;
 
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Services;
 
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MatchSettingsCreatorService(
     ILogger<MatchSettingsCreatorService> logger,
     IToornamentSettings toornamentSettings,
     IToornamentService toornamentService,
     IMatchSettingsService matchSettingsService,
-    IServerClient serverClient) : IMatchSettingsCreatorService
+    IServerClient serverClient,
+    IDiscordNotifyService notifyService) : IMatchSettingsCreatorService
 {
     private readonly Random _rng = new();
-    
+
     public async Task<string> CreateMatchSettingsAsync(TournamentBasicData tournament, MatchInfo matchInfo,
         StageInfo stageInfo, GroupInfo groupInfo, RoundInfo roundInfo, IEnumerable<IMap> maps)
     {
@@ -57,7 +61,8 @@ public class MatchSettingsCreatorService(
 
             var jsonSerializerOptions = new JsonSerializerOptions
             {
-                WriteIndented = true, Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+                WriteIndented = true,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
             };
             var allDisciplines =
                 JsonSerializer.Deserialize<List<TrackmaniaIntegrationSettingsData>>(toornamentSettings.Disciplines,
@@ -112,8 +117,12 @@ public class MatchSettingsCreatorService(
 
         var warmupSettingsData = settingsData;
         warmupSettingsData.Scripts.S_WarmUpDuration = 3600;
-        warmupSettingsData.Scripts.S_WarmUpNb = 1;
+        warmupSettingsData.Scripts.S_WarmUpNb = 10;
         await CreateMatchSettings(name + "_warmup", settingsData, mapsToAdd);
+
+        var matchName = "Match#" + stageInfo.Number + "." + groupInfo.Number + "." + roundInfo.Number + "." + matchInfo.Number;
+
+        await notifyService.NotifyMatchInfoAsync(matchName, mapsToAdd);
 
         logger.LogDebug("End of CreateMatchSettingsAsync()");
         return name;
@@ -169,7 +178,6 @@ public class MatchSettingsCreatorService(
                 });
 
                 builder.WithMaps(mapsToAdd);
-                builder.WithFilter(f => f.AsRandomMapOrder(settingsData.TracksShuffle));
             });
         }
         catch (Exception)

@@ -1,11 +1,14 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Interfaces;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Settings;
 using ToornamentApi.Models.Api.TournamentApi;
 
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Services;
 
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MatchPlayerService(
     IPlayerManagerService playerManagerService,
     IPermissionManager permissionManager,

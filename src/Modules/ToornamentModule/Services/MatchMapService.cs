@@ -2,6 +2,8 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Interfaces;
 using EvoSC.Modules.EvoEsports.ToornamentModule.Settings;
 using EvoSC.Modules.Official.MapsModule.Interfaces;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.EvoEsports.ToornamentModule.Services;
 
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MatchMapService(
     ILogger<MatchMapService> logger,
     IMapService mapService,
@@ -119,7 +122,6 @@ public class MatchMapService(
         return null;
 
     }
-
 
     public async Task<List<IMap?>> AddMapsFromTmx(IPlayer player, IEnumerable<int> mapIds)
     {
