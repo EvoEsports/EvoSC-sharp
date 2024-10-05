@@ -44,7 +44,7 @@ public class RoundRankingService(
             }
         }
 
-        await DisplayRoundRankingWidgetAsync();
+        await SendRoundRankingWidgetAsync();
     }
 
     public Task RemovePlayerCheckpointDataAsync(IOnlinePlayer player) =>
@@ -54,7 +54,8 @@ public class RoundRankingService(
     {
         if (!_isTimeAttackMode)
         {
-            //In time attack mode the entries are cleared by new round event, prevents flood of manialinks.
+            //In time attack mode the entries are cleared by new round event.
+            //Prevents flood of manialinks.
             return;
         }
 
@@ -63,7 +64,7 @@ public class RoundRankingService(
             _checkpointsRepository.Remove(accountId);
         }
 
-        await DisplayRoundRankingWidgetAsync();
+        await SendRoundRankingWidgetAsync();
     }
 
     public async Task ClearCheckpointDataAsync()
@@ -73,10 +74,10 @@ public class RoundRankingService(
             _checkpointsRepository.Clear();
         }
 
-        await DisplayRoundRankingWidgetAsync();
+        await SendRoundRankingWidgetAsync();
     }
 
-    public async Task DisplayRoundRankingWidgetAsync()
+    public async Task SendRoundRankingWidgetAsync()
     {
         List<CheckpointData> bestCheckpoints;
 
@@ -87,20 +88,10 @@ public class RoundRankingService(
 
         if (!_isTimeAttackMode)
         {
-            int rank = 1;
-            foreach (var checkpoint in bestCheckpoints.Where(checkpoint => checkpoint.IsFinish))
-            {
-                checkpoint.GainedPoints = GetGainedPoints(rank++);
-            }
+            SetGainedPointsOnResult(bestCheckpoints);
         }
-
-        foreach (var checkpoint in bestCheckpoints.Where(checkpoint => checkpoint.GainedPoints > 0))
-        {
-            //TODO: get winning team
-            checkpoint.AccentColor = _isTeamsMode
-                ? GetTeamAccentColor(checkpoint.Player.Team)
-                : (string)theme.Theme.UI_AccentPrimary;
-        }
+        
+        SetAccentColorsOnResult(bestCheckpoints);
 
         await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate, new { settings, bestCheckpoints });
     }
@@ -119,11 +110,6 @@ public class RoundRankingService(
 
             return _checkpointsRepository.Count < settings.MaxRows;
         }
-    }
-
-    public int GetGainedPoints(int rank)
-    {
-        return rank <= _pointsRepartition.Count ? _pointsRepartition[rank - 1] : _pointsRepartition.LastOrDefault(0);
     }
 
     public string? GetTeamAccentColor(PlayerTeam playerTeam)
@@ -168,5 +154,29 @@ public class RoundRankingService(
     {
         _teamColors[PlayerTeam.Team1] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1 + 1)).RGB;
         _teamColors[PlayerTeam.Team2] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1)).RGB;
+    }
+
+    public void SetGainedPointsOnResult(List<CheckpointData> checkpoints)
+    {
+        int rank = 1;
+        foreach (var checkpoint in checkpoints.Where(checkpoint => checkpoint.IsFinish))
+        {
+            checkpoint.GainedPoints = GetGainedPointsForRank(rank++);
+        }
+    }
+
+    public int GetGainedPointsForRank(int rank)
+    {
+        return rank <= _pointsRepartition.Count ? _pointsRepartition[rank - 1] : _pointsRepartition.LastOrDefault(0);
+    }
+
+    public void SetAccentColorsOnResult(List<CheckpointData> checkpoints)
+    {
+        foreach (var checkpoint in checkpoints.Where(checkpoint => checkpoint.GainedPoints > 0))
+        {
+            checkpoint.AccentColor = _isTeamsMode
+                ? GetTeamAccentColor(checkpoint.Player.Team)
+                : (string)theme.Theme.UI_AccentPrimary;
+        }
     }
 }

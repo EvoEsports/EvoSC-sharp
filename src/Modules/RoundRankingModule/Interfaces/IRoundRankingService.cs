@@ -16,13 +16,13 @@ public interface IRoundRankingService
     /// Send the widget to the players.
     /// </summary>
     /// <returns></returns>
-    public Task DisplayRoundRankingWidgetAsync();
+    public Task SendRoundRankingWidgetAsync();
 
     public Task HideRoundRankingWidgetAsync();
 
     public bool ShouldCollectCheckpointData(string playerAccountId);
 
-    public int GetGainedPoints(int rank);
+    public int GetGainedPointsForRank(int rank);
 
     public string? GetTeamAccentColor(PlayerTeam playerTeam);
     
@@ -35,4 +35,8 @@ public interface IRoundRankingService
     public Task DetectModeAsync();
     
     public Task FetchAndCacheTeamInfoAsync();
+
+    public void SetGainedPointsOnResult(List<CheckpointData> checkpoints);
+    
+    public void SetAccentColorsOnResult(List<CheckpointData> checkpoints);
 }
