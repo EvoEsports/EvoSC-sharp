@@ -153,14 +153,40 @@ public class MatchSettingsCreatorService(
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(toornamentSettings.GameMode))
+                    if (string.IsNullOrEmpty(toornamentSettings.GameModes))
                     {
                         logger.LogWarning("Custom gamemode not defined in environment!!");
-                        throw new ArgumentNullException(nameof(toornamentSettings.GameMode));
+                        throw new ArgumentNullException(nameof(toornamentSettings.GameModes));
                     }
 
-                    logger.LogDebug("Creating match settings with custom gamemode {0}", toornamentSettings.GameMode);
-                    builder.WithMode(toornamentSettings.GameMode);
+                    var availableCustomModes = toornamentSettings.GameModes.Trim().Split(',');
+
+                    var selectedGameMode = availableCustomModes.FirstOrDefault(gm => gm.ToLowerInvariant().Contains(settingsData.GameMode));
+
+                    if (string.IsNullOrEmpty(selectedGameMode))
+                    {
+                        logger.LogWarning("GameMode could not be determined from custom gamemodes. Falling back to Default scriptmodes");
+                        var mode = settingsData.GameMode switch
+                        {
+                            "rounds" => DefaultModeScriptName.Rounds,
+                            "cup" => DefaultModeScriptName.Cup,
+                            "time_attack" => DefaultModeScriptName.TimeAttack,
+                            "knockout" => DefaultModeScriptName.Knockout,
+                            "laps" => DefaultModeScriptName.Laps,
+                            "team" => DefaultModeScriptName.Teams,
+                            _ => DefaultModeScriptName.TimeAttack
+                        };
+                        logger.LogDebug("Creating match settings with gamemode {0}", mode);
+
+                        builder.WithMode(mode);
+                    }
+                    else
+                    {
+                        var prefixedGameMode = "Trackmania/" + selectedGameMode;
+                        logger.LogDebug("Creating match settings with custom gamemode {0}", prefixedGameMode);
+
+                        builder.WithMode(prefixedGameMode);
+                    }
                 }
 
                 builder.WithModeSettings(s =>

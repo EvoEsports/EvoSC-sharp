@@ -369,4 +369,24 @@ public class MatchService(
             await playerReadyService.SendWidgetAsync(player);
         }
     }
+
+    public async Task ShowConfirmSetupScreenAsync(IPlayer player, string tournamentId, string stageId, string matchId)
+    {
+        var match = await toornamentService.GetMatchAsync(matchId);
+
+        if (match is not null && match.Status != "pending")
+        {
+            await manialinkManager.SendManialinkAsync(player, "ToornamentModule.Dialogs.MatchInProgressDialog",
+                new
+                {
+                    tournamentId,
+                    stageId,
+                    matchId,
+                });
+        }
+        else
+        {
+            await SetupServerAsync(player, tournamentId, stageId, matchId);
+        }
+    }
 }

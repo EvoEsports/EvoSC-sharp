@@ -15,9 +15,22 @@ public class MatchManialinkController(IMatchService matchService, IServerClient 
     [ManialinkRoute(Route = "SelectMatch/{tournamentId}/{stageId}/{matchId}", Permission = ToornamentPermissions.SetupMatch)]
     public async Task SelectMatchAsync(string tournamentId, string stageId, string matchId)
     {
-        await matchService.SetupServerAsync(Context.Player, tournamentId, stageId, matchId);
+        await matchService.ShowConfirmSetupScreenAsync(Context.Player, tournamentId, stageId, matchId);
         var chatMessage = FormattingUtils.FormatPlayerChatMessage(Context.Player, "Match successfully set up!", false);
         await server.Chat.SuccessMessageAsync(chatMessage);
+    }
+
+    [ManialinkRoute(Route = "ConfirmMatch/{tournamentId}/{stageId}/{matchId}/True", Permission = ToornamentPermissions.SetupMatch)]
+    public async Task ConfirmMatchAsync(string tournamentId, string stageId, string matchId)
+    {
+        await HideAsync(Context.Player, "ToornamentModule.Dialogs.MatchInProgressDialog");
+        await matchService.SetupServerAsync(Context.Player, tournamentId, stageId, matchId);
+    }
+
+    [ManialinkRoute(Route = "ConfirmMatch/{tournamentId}/{stageId}/{matchId}/False", Permission = ToornamentPermissions.SetupMatch)]
+    public async Task CancelConfirmMatchAsync(string tournamentId, string stageId, string matchId)
+    {
+        await HideAsync(Context.Player, "ToornamentModule.Dialogs.MatchInProgressDialog");
     }
 
     [ManialinkRoute(Route = "SelectTournament/{tournamentId}", Permission = ToornamentPermissions.SetupMatch)]

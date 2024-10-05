@@ -59,7 +59,7 @@ namespace EvoSC.Modules.EvoEsports.ToornamentModule.Settings
         public bool UseDefaultGameMode { get; set; }
 
         [Option, Description("The Gamemode to be used when UseDefaultGameMode setting is false.")]
-        public string GameMode { get; set; }
+        public string GameModes { get; set; }
 
         [Option, Description("Specifies the Discord Webhook endpoint to send matchinformation to")]
         public string WebhookUrl { get; set; }
