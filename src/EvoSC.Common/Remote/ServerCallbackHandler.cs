@@ -114,6 +114,22 @@ public class ServerCallbackHandler : IServerCallbackHandler
             case "Trackmania.WarmUp.Start":
                 await _events.RaiseAsync(ModeScriptEvent.WarmUpStart, EventArgs.Empty);
                 break;
+            case "Trackmania.WarmUp.StartRound":
+                await _events.RaiseAsync(ModeScriptEvent.WarmUpStartRound,
+                    new WarmUpRoundEventArgs
+                    {
+                        Current = data.GetValue("current", StringComparison.Ordinal).ToObject<int>(),
+                        Total = data.GetValue("total", StringComparison.Ordinal).ToObject<int>()
+                    });
+                break;
+            case "Trackmania.WarmUp.EndRound":
+                await _events.RaiseAsync(ModeScriptEvent.WarmUpEndRound,
+                    new WarmUpRoundEventArgs
+                    {
+                        Current = data.GetValue("current", StringComparison.Ordinal).ToObject<int>(),
+                        Total = data.GetValue("total", StringComparison.Ordinal).ToObject<int>()
+                    });
+                break;
             case "Trackmania.Event.Eliminated":
                 await _events.RaiseAsync(ModeScriptEvent.Eliminated,
                     new PlayerUpdateEventArgs
