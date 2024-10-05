@@ -87,7 +87,7 @@ public class MatchService(IAuditService auditService,
         }
         logger.LogDebug("Begin of EndMatchAsync()");
 
-        if (timeline == null || timeline.Section != ModeScriptSection.EndMatch)
+        if (timeline is not { Section: ModeScriptSection.EndMatch })
         {
             throw new InvalidOperationException("Did not get a match end result to send to Toornament.");
         }
@@ -298,13 +298,12 @@ public class MatchService(IAuditService auditService,
         var serverName = Encoding.ASCII.GetBytes(await server.Remote.GetServerNameAsync());
         try
         {
-            keyValueStoreService.CreateEntry(matchId, serverName);
+            keyValueStoreService.CreateOrUpdateEntry(matchId, serverName);
         }
         catch (NATSJetStreamException ex)
         {
             logger.LogWarning(ex, "Retrieved exception from NATS");
             logger.LogWarning("Tried to create entry in KeyValueStore with Key {0} and Value {1}", matchId, serverName);
-            logger.LogWarning("Please fix the duplicate entry in NATS. @Atomic :DinkDonk:");
         }
 
         //Show ReadyForMatch widget (?)
@@ -354,11 +353,11 @@ public class MatchService(IAuditService auditService,
         {
             foreach (var mapUid in GetMapUids())
             {
-                logger.LogDebug("Checking if map with Uid {0} exists on the server", mapUid);
+                logger.LogDebug("Checking if map with Uid {UID} exists on the server", mapUid);
                 IMap? existingMap = await mapService.GetMapByUidAsync(mapUid);
                 if (existingMap == null)
                 {
-                    logger.LogDebug("Map with Uid {0} was not found on the server", mapUid);
+                    logger.LogDebug("Map with Uid {UID} was not found on the server", mapUid);
                     allMapsOnServer = false;
                 }
                 else
@@ -378,6 +377,7 @@ public class MatchService(IAuditService auditService,
             try
             {
                 maps = await AddMapsFromNadeo(player, GetMapIds());
+                // TODO: This should not check if null, but rather check if the List is empty.
                 if (maps is not null)
                 {
                     allMapsOnServer = true;
@@ -385,6 +385,7 @@ public class MatchService(IAuditService auditService,
             }
             catch (ArgumentNullException)
             {
+                // TODO: This should not do it completely silent, add a a log statement.
                 //Silently catch Exception, since we can use TMX as final backup
             }
         }
@@ -392,6 +393,7 @@ public class MatchService(IAuditService auditService,
         //Try to download maps from TMX using tmx Ids
         if (!allMapsOnServer)
         {
+            // TODO: Add logging here too, you want to understand if you end up here.
             maps = await AddMapsFromTmx(player, GetTmxIds());
             allMapsOnServer = true;
         }
