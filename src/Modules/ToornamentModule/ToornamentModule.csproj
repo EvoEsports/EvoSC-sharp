@@ -19,6 +19,7 @@
       <PackageReference Include="Bogus" Version="35.6.1" />
       <PackageReference Include="GBX.NET" Version="2.0.7" />
       <PackageReference Include="GBX.NET.LZO" Version="2.1.1" />
+      <PackageReference Include="Hawf" Version="2.0.0" />
       <PackageReference Include="Moq" Version="4.20.70" />
       <PackageReference Include="xunit.abstractions" Version="2.0.3" />
       <PackageReference Include="xunit.assert" Version="2.8.1" />
