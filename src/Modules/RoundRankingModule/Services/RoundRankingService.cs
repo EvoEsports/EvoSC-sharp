@@ -86,12 +86,12 @@ public class RoundRankingService(
 
         if (bestCheckpoints.Count > 0)
         {
-            if (!_isTimeAttackMode)
+            if (settings.DisplayGainedPoints && !_isTimeAttackMode)
             {
                 SetGainedPointsOnResult(bestCheckpoints);
             }
 
-            SetAccentColorsOnResult(bestCheckpoints);
+            SetGainedPointsBackgroundColorsOnResult(bestCheckpoints);
 
             if (settings.DisplayTimeDifference)
             {
@@ -203,7 +203,7 @@ public class RoundRankingService(
         }
     }
 
-    public void SetAccentColorsOnResult(List<CheckpointData> checkpoints)
+    public void SetGainedPointsBackgroundColorsOnResult(List<CheckpointData> checkpoints)
     {
         var winnerTeam = _isTeamsMode ? GetWinnerTeam(checkpoints) : PlayerTeam.Unknown;
 

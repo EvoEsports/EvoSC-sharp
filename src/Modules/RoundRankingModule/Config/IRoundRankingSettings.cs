@@ -21,4 +21,8 @@ public interface IRoundRankingSettings
     [Option(DefaultValue = false),
      Description("Shows the time difference to the leading player instead of individual times.")]
     public bool DisplayTimeDifference { get; set; }
+
+    [Option(DefaultValue = true),
+     Description("Shows the gained points once a player crosses the finish line.")]
+    public bool DisplayGainedPoints { get; set; }
 }

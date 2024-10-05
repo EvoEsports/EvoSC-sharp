@@ -101,5 +101,5 @@ public interface IRoundRankingService
     /// Traverses the checkpoint data and sets the accent color on each entry.
     /// </summary>
     /// <param name="checkpoints"></param>
-    public void SetAccentColorsOnResult(List<CheckpointData> checkpoints);
+    public void SetGainedPointsBackgroundColorsOnResult(List<CheckpointData> checkpoints);
 }
