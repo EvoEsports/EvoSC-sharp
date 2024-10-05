@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -15,7 +14,6 @@ public class ScoreboardService(
     IManialinkManager manialinks,
     IServerClient server,
     IScoreboardNicknamesService nicknamesService,
-    IThemeManager themes,
     IScoreboardSettings settings,
     IGameModeUiModuleService gameModeUiModuleService
 )
