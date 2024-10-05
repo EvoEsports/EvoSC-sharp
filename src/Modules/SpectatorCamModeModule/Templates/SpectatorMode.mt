@@ -8,7 +8,7 @@
     <property type="ISpectatorCamModeSettings" name="settings"/>
     <property type="double" name="width" default="32.0"/>
     <property type="double" name="height" default="5.5"/>
-    <property type="double" name="opacityUnfocused" default="0.1"/>
+    <property type="double" name="opacityUnfocused" default="0.001"/>
 
     <template>
         <UIStyle/>
@@ -27,6 +27,7 @@
                    textfont="{{ Font.Bold }}"
                    text="CAM MODE"
                    valign="center2"
+                   halign="right"
             />
             <quad id="cam_mode_icon"
                   size="3.5 3.5"
@@ -43,10 +44,10 @@
                    size="{{ width }} {{ height * 3.0 }}"
                    hidden="1"
             >
-                <frameinstance modelid="option"/>
-                <frameinstance modelid="option"/>
-                <frameinstance modelid="option"/>
-                <frameinstance modelid="option"/>
+                <frameinstance modelid="option" size="{{ width }} {{ height }}"/>
+                <frameinstance modelid="option" size="{{ width }} {{ height }}"/>
+                <frameinstance modelid="option" size="{{ width }} {{ height }}"/>
+                <frameinstance modelid="option" size="{{ width }} {{ height }}"/>
             </frame>
         </frame>
     </template>

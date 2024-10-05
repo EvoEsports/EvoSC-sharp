@@ -9,12 +9,6 @@ public interface ISpectatorCamModeService
     /// </summary>
     /// <returns></returns>
     public Task SendPersistentCamModeWidgetAsync();
-
-    /// <summary>
-    /// Hides the previously send widget.
-    /// </summary>
-    /// <returns></returns>
-    public Task HideCamModeWidgetAsync();
     
     /// <summary>
     /// Hides the default UI provided by the game mode.
