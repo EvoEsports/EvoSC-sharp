@@ -12,7 +12,7 @@ public class CheckpointData
     public IRaceTime? TimeDifference { get; set; }
     public required bool IsFinish { get; init; }
     public required bool IsDNF { get; init; }
-    public int GainedPoints { get; set; } = 0;
+    public int GainedPoints { get; set; }
     public string? AccentColor { get; set; }
 
     public IRaceTime GetTimeDifferenceAbsolute(CheckpointData checkpointData)

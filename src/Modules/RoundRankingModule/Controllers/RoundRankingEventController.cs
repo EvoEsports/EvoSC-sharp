@@ -68,7 +68,7 @@ public class RoundRankingEventController(
     public async Task OnStartMapAsync(object sender, EventArgs args)
     {
         await roundRankingService.FetchAndCacheTeamInfoAsync();
-        await roundRankingService.UpdatePointsRepartitionAsync();
+        await roundRankingService.LoadPointsRepartitionFromSettingsAsync();
         await roundRankingService.ClearCheckpointDataAsync();
     }
 

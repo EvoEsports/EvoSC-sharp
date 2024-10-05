@@ -21,11 +21,11 @@ public class RoundRankingService(
     IServerClient server
 ) : IRoundRankingService
 {
-    public const string WidgetTemplate = "RoundRankingModule.RoundRanking";
+    private const string WidgetTemplate = "RoundRankingModule.RoundRanking";
 
     private readonly object _checkpointsRepositoryMutex = new();
     private readonly CheckpointsRepository _checkpointsRepository = new();
-    private readonly List<int> _pointsRepartition = [];
+    private readonly PointsRepartition _pointsRepartition = new();
     private readonly Dictionary<PlayerTeam, string> _teamColors = new();
     private bool _isTimeAttackMode;
     private bool _isTeamsMode;
@@ -82,7 +82,7 @@ public class RoundRankingService(
             cpRepository = _checkpointsRepository;
         }
 
-        var bestCheckpoints = SortCheckpointData(cpRepository);
+        var bestCheckpoints = cpRepository.GetSortedData();
 
         if (bestCheckpoints.Count > 0)
         {
@@ -119,15 +119,15 @@ public class RoundRankingService(
         }
     }
 
-    public async Task UpdatePointsRepartitionAsync()
+    public async Task LoadPointsRepartitionFromSettingsAsync()
     {
-        var modeScriptSettings = await server.Remote.GetModeScriptSettingsAsync();
-        var pointsRepartitionString =
-            (string)modeScriptSettings.GetValueOrDefault("S_PointsRepartition", "10,6,4,3,2,1");
-        var pointsRepartition = pointsRepartitionString.Split(',').Select(int.Parse).ToList();
+        var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
+        var pointsRepartitionString = (string?)modeScriptSettings?[PointsRepartition.ModeScriptSetting];
 
-        _pointsRepartition.Clear();
-        _pointsRepartition.AddRange(pointsRepartition);
+        if (pointsRepartitionString != null)
+        {
+            _pointsRepartition.Update(pointsRepartitionString);
+        }
     }
 
     public Task SetIsTimeAttackModeAsync(bool isTimeAttackMode)
@@ -152,18 +152,18 @@ public class RoundRankingService(
 
     public void SetGainedPointsOnResult(List<CheckpointData> checkpoints)
     {
-        int rank = 1;
-        foreach (var checkpoint in checkpoints.Where(checkpoint => checkpoint.IsFinish))
+        var rank = 1;
+        foreach (var cpData in checkpoints.Where(checkpoint => checkpoint.IsFinish))
         {
-            checkpoint.GainedPoints = GetGainedPointsForRank(rank++);
+            cpData.GainedPoints = _pointsRepartition.GetGainedPoints(rank++);
         }
     }
 
     public string? GetTeamAccentColor(PlayerTeam winnerTeam, PlayerTeam playerTeam)
     {
-        var useTeamColor = winnerTeam == playerTeam || winnerTeam == PlayerTeam.Unknown;
-
-        return useTeamColor ? _teamColors[playerTeam] : null;
+        return winnerTeam == playerTeam || winnerTeam == PlayerTeam.Unknown
+            ? _teamColors[playerTeam]
+            : null;
     }
 
     public PlayerTeam GetWinnerTeam(List<CheckpointData> checkpoints)
@@ -203,29 +203,15 @@ public class RoundRankingService(
         }
     }
 
-    public int GetGainedPointsForRank(int rank)
-    {
-        return rank <= _pointsRepartition.Count ? _pointsRepartition[rank - 1] : _pointsRepartition.LastOrDefault(0);
-    }
-
     public void SetAccentColorsOnResult(List<CheckpointData> checkpoints)
     {
-        var winnerTeam = GetWinnerTeam(checkpoints);
+        var winnerTeam = _isTeamsMode ? GetWinnerTeam(checkpoints) : PlayerTeam.Unknown;
 
-        foreach (var checkpoint in checkpoints.Where(checkpoint => checkpoint.GainedPoints > 0))
+        foreach (var cpData in checkpoints.Where(checkpoint => checkpoint.GainedPoints > 0))
         {
-            checkpoint.AccentColor = _isTeamsMode
-                ? GetTeamAccentColor(winnerTeam, checkpoint.Player.Team)
+            cpData.AccentColor = _isTeamsMode
+                ? GetTeamAccentColor(winnerTeam, cpData.Player.Team)
                 : (string)theme.Theme.UI_AccentPrimary;
         }
-    }
-
-    public List<CheckpointData> SortCheckpointData(CheckpointsRepository checkpoints)
-    {
-        return checkpoints.Values
-            .OrderBy(cpData => cpData.IsDNF)
-            .ThenByDescending(cpData => cpData.CheckpointId)
-            .ThenBy(cpData => cpData.Time.TotalMilliseconds)
-            .ToList();
     }
 }

@@ -49,7 +49,7 @@ public interface IRoundRankingService
     /// Gets the current points repartition value and caches it.
     /// </summary>
     /// <returns></returns>
-    public Task UpdatePointsRepartitionAsync();
+    public Task LoadPointsRepartitionFromSettingsAsync();
 
     /// <summary>
     /// Sets TimeAttack mode active/inactive.
@@ -69,13 +69,6 @@ public interface IRoundRankingService
     /// </summary>
     /// <returns></returns>
     public Task FetchAndCacheTeamInfoAsync();
-
-    /// <summary>
-    /// Calculates the gained points for the given rank based on the cached points repartition.
-    /// </summary>
-    /// <param name="rank"></param>
-    /// <returns></returns>
-    public int GetGainedPointsForRank(int rank);
 
     /// <summary>
     /// Returns the accent color for the given team.
@@ -109,11 +102,4 @@ public interface IRoundRankingService
     /// </summary>
     /// <param name="checkpoints"></param>
     public void SetAccentColorsOnResult(List<CheckpointData> checkpoints);
-    
-    /// <summary>
-    /// Sorts the data in the CheckpointRepository for the widget and calculations.
-    /// </summary>
-    /// <param name="checkpoints"></param>
-    /// <returns></returns>
-    public List<CheckpointData> SortCheckpointData(CheckpointsRepository checkpoints);
 }
