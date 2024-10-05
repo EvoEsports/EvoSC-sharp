@@ -3,12 +3,12 @@ services:
     image: evoesports/trackmania
     restart: always
     ports:
-      - 2350:2350/udp
-      - 2350:2350/tcp
-      - 5001:5000
+      - "2350:2350/udp"
+      - "2350:2350/tcp"
+      - "5001:5000"
     environment:
-      - MASTER_LOGIN=evoen
-      - MASTER_PASSWORD=D6avU;4gmrJv0XMj
+      - MASTER_LOGIN=
+      - MASTER_PASSWORD=
       - XMLRPC_ALLOWREMOTE=True
     volumes:
       - UserData:/server/UserData
@@ -21,7 +21,7 @@ services:
       - POSTGRES_USER=evosc_sharp
       - POSTGRES_DB=evosc_sharp
     ports:
-      - 5432:5432
+      - "5432:5432"
 
 volumes:
   PostgresData: null
