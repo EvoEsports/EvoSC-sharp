@@ -38,5 +38,7 @@ public interface IRoundRankingService
 
     public void SetGainedPointsOnResult(List<CheckpointData> checkpoints);
     
+    public void CalculateAndSetTimeDifferenceOnResult(List<CheckpointData> checkpoints);
+    
     public void SetAccentColorsOnResult(List<CheckpointData> checkpoints);
 }

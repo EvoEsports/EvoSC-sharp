@@ -51,13 +51,15 @@
                         size="{{ width-20 }} {{ height }}"
                 />
                 <label
-                        text="{{ checkpoint.IsDNF ? &quot;DNF&quot; : checkpoint.Time.ToString().TrimStart('0') }}"
+                        text="{{ checkpoint.IsDNF ? &quot;DNF&quot; : (checkpoint.TimeDifference!=null ? checkpoint.TimeDifference.ToString().TrimStart('0') : checkpoint.Time.ToString().TrimStart('0') ) }}"
+                        textprefix='{{ checkpoint.TimeDifference!=null&amp;&amp;!checkpoint.IsDNF ? "+" : "" }}'
                         class="text-primary"
                         textsize="0.5"
                         pos="{{ width-4-(height * 1.25)-1.0 }} {{ -height/2.0 + 0.2 }}"
                         valign="center"
                         halign="right"
                         size="9 {{ height }}"
+                        opacity="{{ checkpoint.TimeDifference==null&amp;&amp;!checkpoint.IsDNF ? 1.0 : 0.75 }}"
                 />
                 <frame>
                     <!-- CHECKPOINT ID & GAINED POINTS BOX -->

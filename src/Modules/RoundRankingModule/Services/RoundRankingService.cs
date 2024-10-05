@@ -86,12 +86,20 @@ public class RoundRankingService(
             bestCheckpoints = _checkpointsRepository.GetBestTimes(settings.MaxRows);
         }
 
-        if (!_isTimeAttackMode)
+        if (bestCheckpoints.Count > 0)
         {
-            SetGainedPointsOnResult(bestCheckpoints);
+            SetAccentColorsOnResult(bestCheckpoints);
+
+            if (!_isTimeAttackMode)
+            {
+                SetGainedPointsOnResult(bestCheckpoints);
+            }
+
+            if (settings.DisplayTimeDifference)
+            {
+                CalculateAndSetTimeDifferenceOnResult(bestCheckpoints);
+            }
         }
-        
-        SetAccentColorsOnResult(bestCheckpoints);
 
         await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate, new { settings, bestCheckpoints });
     }
@@ -162,6 +170,26 @@ public class RoundRankingService(
         foreach (var checkpoint in checkpoints.Where(checkpoint => checkpoint.IsFinish))
         {
             checkpoint.GainedPoints = GetGainedPointsForRank(rank++);
+        }
+    }
+
+    public void CalculateAndSetTimeDifferenceOnResult(List<CheckpointData> checkpoints)
+    {
+        if (checkpoints.Count <= 1)
+        {
+            return;
+        }
+
+        var firstEntry = checkpoints.FirstOrDefault();
+        if (firstEntry == null)
+        {
+            return;
+        }
+
+        firstEntry.TimeDifference = null;
+        foreach (var cpData in checkpoints[1..])
+        {
+            cpData.TimeDifference = cpData.GetTimeDifferenceAbsolute(firstEntry);
         }
     }
 

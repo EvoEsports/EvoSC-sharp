@@ -4,9 +4,9 @@ public class CheckpointsRepository : Dictionary<string, CheckpointData>
 {
     public List<CheckpointData> GetBestTimes(int maxRows)
     {
-        return this.Values.OrderBy(cpData => cpData.Time.TotalMilliseconds)
+        return this.Values.OrderBy(cpData => cpData.IsDNF)
             .ThenByDescending(cpData => cpData.CheckpointId)
-            .ThenBy(cpData => cpData.IsDNF)
+            .ThenBy(cpData => cpData.Time.TotalMilliseconds)
             .Take(maxRows)
             .ToList();
     }

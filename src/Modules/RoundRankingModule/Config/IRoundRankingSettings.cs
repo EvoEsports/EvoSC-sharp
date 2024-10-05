@@ -19,10 +19,6 @@ public interface IRoundRankingSettings
     public int MaxRows { get; set; }
 
     [Option(DefaultValue = false),
-     Description("If set to true, the time label is going to show the difference to the leading player.")]
+     Description("Shows the time difference to the leading player instead of individual times.")]
     public bool DisplayTimeDifference { get; set; }
-
-    [Option(DefaultValue = false),
-     Description("If set to true, the checkpoint index will show the difference in checkpoints to the leading player.")]
-    public bool DisplayCheckpointIndexDifference { get; set; }
 }
