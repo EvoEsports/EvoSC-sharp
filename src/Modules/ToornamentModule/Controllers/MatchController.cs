@@ -83,11 +83,6 @@ public class MatchController(
     {
         try
         {
-            if (args.IsSpectator)
-            {
-                return;
-            }
-
             await whitelistService.ForcePlayerIntoSpectate(args.Login);
         }
         catch (Exception)
