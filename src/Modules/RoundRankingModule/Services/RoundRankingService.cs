@@ -47,9 +47,6 @@ public class RoundRankingService(
         await SendRoundRankingWidgetAsync();
     }
 
-    public Task RemovePlayerCheckpointDataAsync(IOnlinePlayer player) =>
-        RemovePlayerCheckpointDataAsync(player.AccountId);
-
     public async Task RemovePlayerCheckpointDataAsync(string accountId)
     {
         if (!_isTimeAttackMode)
@@ -79,21 +76,22 @@ public class RoundRankingService(
 
     public async Task SendRoundRankingWidgetAsync()
     {
-        List<CheckpointData> bestCheckpoints;
-
+        CheckpointsRepository cpRepository;
         lock (_checkpointsRepositoryMutex)
         {
-            bestCheckpoints = _checkpointsRepository.GetBestTimes(settings.MaxRows);
+            cpRepository = _checkpointsRepository;
         }
+
+        var bestCheckpoints = SortCheckpointData(cpRepository);
 
         if (bestCheckpoints.Count > 0)
         {
-            SetAccentColorsOnResult(bestCheckpoints);
-
             if (!_isTimeAttackMode)
             {
                 SetGainedPointsOnResult(bestCheckpoints);
             }
+
+            SetAccentColorsOnResult(bestCheckpoints);
 
             if (settings.DisplayTimeDifference)
             {
@@ -101,36 +99,24 @@ public class RoundRankingService(
             }
         }
 
-        await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate, new { settings, bestCheckpoints });
+        await manialinkManager.SendPersistentManialinkAsync(WidgetTemplate,
+            new { settings, bestCheckpoints = bestCheckpoints.Take(settings.MaxRows) });
     }
 
     public Task HideRoundRankingWidgetAsync() =>
         manialinkManager.HideManialinkAsync(WidgetTemplate);
 
-    public bool ShouldCollectCheckpointData(string playerAccountId)
+    public bool ShouldCollectCheckpointData(string accountId)
     {
         lock (_checkpointsRepositoryMutex)
         {
-            if (_checkpointsRepository.ContainsKey(playerAccountId))
+            if (_checkpointsRepository.ContainsKey(accountId))
             {
                 return true;
             }
 
             return _checkpointsRepository.Count < settings.MaxRows;
         }
-    }
-
-    public string? GetTeamAccentColor(PlayerTeam playerTeam)
-    {
-        var winnerTeam = GetWinnerTeam();
-        var useTeamColor = winnerTeam == playerTeam || winnerTeam == PlayerTeam.Unknown;
-
-        return useTeamColor ? _teamColors[playerTeam] : null;
-    }
-
-    public PlayerTeam GetWinnerTeam()
-    {
-        return PlayerTeam.Unknown; //TODO: calculate & return winner team
     }
 
     public async Task UpdatePointsRepartitionAsync()
@@ -173,6 +159,30 @@ public class RoundRankingService(
         }
     }
 
+    public string? GetTeamAccentColor(PlayerTeam winnerTeam, PlayerTeam playerTeam)
+    {
+        var useTeamColor = winnerTeam == playerTeam || winnerTeam == PlayerTeam.Unknown;
+
+        return useTeamColor ? _teamColors[playerTeam] : null;
+    }
+
+    public PlayerTeam GetWinnerTeam(List<CheckpointData> checkpoints)
+    {
+        var teamPoints = new Dictionary<PlayerTeam, int>
+        {
+            { PlayerTeam.Unknown, 0 }, { PlayerTeam.Team1, 0 }, { PlayerTeam.Team2, 0 }
+        };
+
+        foreach (var cpData in checkpoints)
+        {
+            teamPoints[cpData.Player.Team] += cpData.GainedPoints;
+        }
+
+        return teamPoints.OrderByDescending(tp => tp.Value)
+            .First()
+            .Key;
+    }
+
     public void CalculateAndSetTimeDifferenceOnResult(List<CheckpointData> checkpoints)
     {
         if (checkpoints.Count <= 1)
@@ -200,11 +210,22 @@ public class RoundRankingService(
 
     public void SetAccentColorsOnResult(List<CheckpointData> checkpoints)
     {
+        var winnerTeam = GetWinnerTeam(checkpoints);
+
         foreach (var checkpoint in checkpoints.Where(checkpoint => checkpoint.GainedPoints > 0))
         {
             checkpoint.AccentColor = _isTeamsMode
-                ? GetTeamAccentColor(checkpoint.Player.Team)
+                ? GetTeamAccentColor(winnerTeam, checkpoint.Player.Team)
                 : (string)theme.Theme.UI_AccentPrimary;
         }
+    }
+
+    public List<CheckpointData> SortCheckpointData(CheckpointsRepository checkpoints)
+    {
+        return checkpoints.Values
+            .OrderBy(cpData => cpData.IsDNF)
+            .ThenByDescending(cpData => cpData.CheckpointId)
+            .ThenBy(cpData => cpData.Time.TotalMilliseconds)
+            .ToList();
     }
 }
