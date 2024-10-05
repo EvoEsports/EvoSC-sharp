@@ -137,7 +137,7 @@ public class MatchSettingsCreatorService(
             {
                 if (toornamentSettings.UseDefaultGameMode)
                 {
-                    var mode = settingsData.GameMode switch
+                    var mode = settingsData.GameMode.ToLowerInvariant() switch
                     {
                         "rounds" => DefaultModeScriptName.Rounds,
                         "cup" => DefaultModeScriptName.Cup,
@@ -166,7 +166,7 @@ public class MatchSettingsCreatorService(
                     if (string.IsNullOrEmpty(selectedGameMode))
                     {
                         logger.LogWarning("GameMode could not be determined from custom gamemodes. Falling back to Default scriptmodes");
-                        var mode = settingsData.GameMode switch
+                        var mode = settingsData.GameMode.ToLowerInvariant() switch
                         {
                             "rounds" => DefaultModeScriptName.Rounds,
                             "cup" => DefaultModeScriptName.Cup,
