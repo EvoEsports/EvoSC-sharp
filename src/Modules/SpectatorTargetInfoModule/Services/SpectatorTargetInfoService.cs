@@ -166,7 +166,7 @@ public class SpectatorTargetInfoService(
 
     public int GetTimeDifference(int leadingCheckpointTime, int targetCheckpointTime)
     {
-        return targetCheckpointTime - leadingCheckpointTime;
+        return int.Abs(targetCheckpointTime - leadingCheckpointTime);
     }
 
     public string GetTeamColor(PlayerTeam team)
