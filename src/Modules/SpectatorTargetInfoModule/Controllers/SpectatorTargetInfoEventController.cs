@@ -15,7 +15,7 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
 {
     [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
     public Task OnPlayerDisconnectAsync(object sender, PlayerGbxEventArgs eventArgs) =>
-        spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(eventArgs.Login);
+        spectatorTargetInfoService.RemovePlayerAsync(eventArgs.Login);
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs eventArgs)

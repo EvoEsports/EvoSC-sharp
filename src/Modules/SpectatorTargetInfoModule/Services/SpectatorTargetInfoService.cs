@@ -44,6 +44,7 @@ public class SpectatorTargetInfoService(
     public async Task InitializeAsync()
     {
         await DetectIsTeamsModeAsync();
+        await DetectIsTimeAttackModeAsync();
         await FetchAndCacheTeamInfoAsync();
         await SendReportSpectatorTargetManialinkAsync();
         await HideGameModeUiAsync();
@@ -158,7 +159,7 @@ public class SpectatorTargetInfoService(
         }
     }
 
-    public Task RemovePlayerFromSpectatorsListAsync(string playerLogin)
+    public Task RemovePlayerAsync(string playerLogin)
     {
         lock (_spectatorTargetsMutex)
         {

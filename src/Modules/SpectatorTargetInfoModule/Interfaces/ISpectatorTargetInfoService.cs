@@ -67,7 +67,7 @@ public interface ISpectatorTargetInfoService
     /// </summary>
     /// <param name="playerLogin"></param>
     /// <returns></returns>
-    public Task RemovePlayerFromSpectatorsListAsync(string playerLogin);
+    public Task RemovePlayerAsync(string playerLogin);
 
     /// <summary>
     /// Gets the logins of a players spectating the given target.

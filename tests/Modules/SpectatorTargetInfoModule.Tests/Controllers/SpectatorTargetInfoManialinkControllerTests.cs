@@ -22,7 +22,7 @@ public class
     }
 
     [Fact]
-    public async Task SetsSpectatorTargetIfGivenLoginIsValid()
+    public async Task Sets_Spectator_Target_If_Given_Login_Is_Valid()
     {
         _actor.Setup(actor => actor.AccountId)
             .Returns("*fakeplayer_spectator*");
@@ -33,12 +33,12 @@ public class
         await Controller.ReportSpectatorTargetAsync(targetLogin);
 
         _spectatorTargetService.Verify(st => st.SetSpectatorTargetAndSendAsync(spectatorLogin, targetLogin), Times.Once);
-        _spectatorTargetService.Verify(st => st.RemovePlayerFromSpectatorsListAsync(spectatorLogin), Times.Never);
+        _spectatorTargetService.Verify(st => st.RemovePlayerAsync(spectatorLogin), Times.Never);
         _spectatorTargetService.Verify(st => st.HideSpectatorInfoWidgetAsync(spectatorLogin), Times.Never);
     }
 
     [Fact]
-    public async Task RemoveSpectatorIfTargetIsEmpty()
+    public async Task Remove_Spectator_If_Target_Is_Empty()
     {
         _actor.Setup(actor => actor.AccountId)
             .Returns("*fakeplayer_spectator*");
@@ -49,12 +49,12 @@ public class
         await Controller.ReportSpectatorTargetAsync(targetLogin);
 
         _spectatorTargetService.Verify(st => st.SetSpectatorTargetAndSendAsync(spectatorLogin, targetLogin), Times.Never);
-        _spectatorTargetService.Verify(st => st.RemovePlayerFromSpectatorsListAsync(spectatorLogin), Times.Once);
+        _spectatorTargetService.Verify(st => st.RemovePlayerAsync(spectatorLogin), Times.Once);
         _spectatorTargetService.Verify(st => st.HideSpectatorInfoWidgetAsync(spectatorLogin), Times.Once);
     }
 
     [Fact]
-    public async Task RemoveSpectatorIfTargetIsSpectatorThemselvesEmpty()
+    public async Task Remove_Spectator_If_Target_Is_Spectator_Themselves()
     {
         _actor.Setup(actor => actor.AccountId)
             .Returns("*fakeplayer_spectator*");
@@ -65,7 +65,7 @@ public class
         await Controller.ReportSpectatorTargetAsync(targetLogin);
 
         _spectatorTargetService.Verify(st => st.SetSpectatorTargetAndSendAsync(spectatorLogin, targetLogin), Times.Never);
-        _spectatorTargetService.Verify(st => st.RemovePlayerFromSpectatorsListAsync(spectatorLogin), Times.Once);
+        _spectatorTargetService.Verify(st => st.RemovePlayerAsync(spectatorLogin), Times.Once);
         _spectatorTargetService.Verify(st => st.HideSpectatorInfoWidgetAsync(spectatorLogin), Times.Once);
     }
 }
