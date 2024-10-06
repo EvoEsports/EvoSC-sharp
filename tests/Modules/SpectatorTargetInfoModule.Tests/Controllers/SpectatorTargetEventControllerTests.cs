@@ -24,7 +24,7 @@ public class
     {
         var login = "*fakeplayer_unittest*";
 
-        await Controller.OnPlayerDisconnectAsync(null, new PlayerGbxEventArgs { Login = login });
+        await Controller.OnPlayerDisconnectAsync(null!, new PlayerGbxEventArgs { Login = login });
 
         _spectatorTargetService.Verify(sts => sts.RemovePlayerAsync(login));
     }
@@ -32,7 +32,7 @@ public class
     [Fact]
     public async Task Detects_Team_And_TimeAttack_Mode_On_New_Map()
     {
-        await Controller.OnBeginMapAsync(null, new MapGbxEventArgs());
+        await Controller.OnBeginMapAsync(null!, new MapGbxEventArgs());
 
         _spectatorTargetService.Verify(sts => sts.DetectIsTeamsModeAsync());
         _spectatorTargetService.Verify(sts => sts.DetectIsTimeAttackModeAsync());
@@ -45,7 +45,7 @@ public class
         var checkpointId = 3;
         var lapTime = 1234;
 
-        await Controller.OnWayPointAsync(null,
+        await Controller.OnWayPointAsync(null!,
             new WayPointEventArgs
             {
                 Login = login,
@@ -56,9 +56,9 @@ public class
                 CheckpointInLap = checkpointId,
                 IsEndRace = false,
                 IsEndLap = false,
-                CurrentRaceCheckpoints = null,
-                CurrentLapCheckpoints = null,
-                BlockId = null,
+                CurrentRaceCheckpoints = [],
+                CurrentLapCheckpoints = [],
+                BlockId = "",
                 Speed = 0,
                 Time = 0
             });
@@ -69,7 +69,7 @@ public class
     [Fact]
     public async Task Resets_Collected_Data_On_New_Round()
     {
-        await Controller.OnNewRoundAsync(null, new RoundEventArgs { Count = 0, Time = 0 });
+        await Controller.OnNewRoundAsync(null!, new RoundEventArgs { Count = 0, Time = 0 });
 
         _spectatorTargetService.Verify(sts => sts.ClearCheckpointsAsync());
         _spectatorTargetService.Verify(sts => sts.FetchAndCacheTeamInfoAsync());
@@ -79,7 +79,7 @@ public class
     [Fact]
     public async Task Resets_Collected_Data_On_New_Warm_Up_Round()
     {
-        await Controller.OnNewWarmUpRoundAsync(null, new WarmUpRoundEventArgs { Total = 3, Current = 1 });
+        await Controller.OnNewWarmUpRoundAsync(null!, new WarmUpRoundEventArgs { Total = 3, Current = 1 });
 
         _spectatorTargetService.Verify(sts => sts.ClearCheckpointsAsync());
         _spectatorTargetService.Verify(sts => sts.FetchAndCacheTeamInfoAsync());
@@ -89,7 +89,7 @@ public class
     [Fact]
     public async Task Sets_TimeAttack_Mode_To_Active_At_Warm_Up_Start()
     {
-        await Controller.OnWarmUpStartAsync(null, EventArgs.Empty);
+        await Controller.OnWarmUpStartAsync(null!, EventArgs.Empty);
 
         _spectatorTargetService.Verify(sts => sts.UpdateIsTimeAttackModeAsync(true));
     }
@@ -97,7 +97,7 @@ public class
     [Fact]
     public async Task Detects_TimeAttack_Mode_At_Warm_Up_End()
     {
-        await Controller.OnWarmUpEndAsync(null, EventArgs.Empty);
+        await Controller.OnWarmUpEndAsync(null!, EventArgs.Empty);
 
         _spectatorTargetService.Verify(sts => sts.DetectIsTimeAttackModeAsync());
     }
@@ -108,7 +108,7 @@ public class
         var eventArgs = new PlayerUpdateEventArgs { Login = "*fakeplayer1*", AccountId = "*fakeplayer1*", Time = 0 };
 
         await _spectatorTargetService.Object.UpdateIsTimeAttackModeAsync(true);
-        await Controller.OnPlayerGiveUpAsync(null, eventArgs);
+        await Controller.OnPlayerGiveUpAsync(null!, eventArgs);
 
         _spectatorTargetService.Verify(sts => sts.ClearCheckpointsAsync(eventArgs.Login));
     }
