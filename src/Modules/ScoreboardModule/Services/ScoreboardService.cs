@@ -30,18 +30,12 @@ public class ScoreboardService(
     private async Task<dynamic> GetDataAsync()
     {
         var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
-        var maxPlayers = 128;
+        var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
 
-        if (currentNextMaxPlayers.CurrentValue > 0)
+        return new
         {
-            maxPlayers = currentNextMaxPlayers.CurrentValue;
-        }
-        else if (currentNextMaxPlayers.NextValue > 0)
-        {
-            maxPlayers = currentNextMaxPlayers.NextValue;
-        }
-
-        return new { settings, MaxPlayers = maxPlayers };
+            settings, MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue
+        };
     }
 
     public Task HideNadeoScoreboardAsync() =>

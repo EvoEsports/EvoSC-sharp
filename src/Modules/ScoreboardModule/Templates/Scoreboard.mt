@@ -222,6 +222,9 @@
             declare roundPointsLabel = (playerRow.GetFirstChild("round_points") as CMlLabel);
             declare customLabel = (playerRow.GetFirstChild("custom_label") as CMlLabel);
             
+            scoreLabel.Value = "";
+            roundPointsLabel.Value = "";
+            
             if (!(CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy)) {
                 HideCustomLabel(playerRow);
             }
