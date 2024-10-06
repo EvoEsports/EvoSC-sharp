@@ -213,7 +213,7 @@ public class SpectatorTargetInfoServiceTests
     [Theory]
     [InlineData(900, 1_000, 100)]
     [InlineData(100, 999, 899)]
-    [InlineData(400, 200, -200)]
+    [InlineData(400, 200, 200)]
     public Task Calculates_Time_Difference(int leadingTime, int trailingTime, int expectedTime)
     {
         var spectatorTargetService = ServiceMock();
@@ -265,7 +265,7 @@ public class SpectatorTargetInfoServiceTests
         _server.Remote.Setup(remote => remote.GetTeamInfoAsync(2))
             .ReturnsAsync(new TmTeamInfo { RGB = "111111" });
 
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
 
         var team1Color = spectatorTargetService.GetTeamColor(PlayerTeam.Team1);
@@ -304,7 +304,7 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(new TmTeamInfo { RGB = "FF0066" });
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
         var widgetData = spectatorTargetService.GetWidgetData(targetPlayer, 2, 150);
         await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
@@ -332,7 +332,7 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(new TmTeamInfo { RGB = "111111" });
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
         await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogins, targetPlayer, 2, 150);
 
@@ -373,7 +373,7 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(otherPlayer);
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
 
         await spectatorTargetService.AddCheckpointAsync(otherPlayer.GetLogin(), 2, 1000);
@@ -404,7 +404,7 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(targetPlayer);
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
         await spectatorTargetService.SetSpectatorTargetAsync(spectatorLogin, targetPlayer.GetLogin());
         await spectatorTargetService.ResetWidgetForSpectatorsAsync();

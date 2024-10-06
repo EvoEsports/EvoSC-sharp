@@ -34,7 +34,8 @@ public class
     {
         await Controller.OnBeginMapAsync(null, new MapGbxEventArgs());
 
-        _spectatorTargetService.Verify(sts => sts.UpdateIsTeamsModeAsync());
+        _spectatorTargetService.Verify(sts => sts.DetectIsTeamsModeAsync());
+        _spectatorTargetService.Verify(sts => sts.DetectIsTimeAttackModeAsync());
     }
 
     [Fact]

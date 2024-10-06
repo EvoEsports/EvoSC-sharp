@@ -38,11 +38,12 @@ public class SpectatorTargetInfoService(
     private readonly Dictionary<int, CheckpointsGroup> _checkpointTimes = new(); // cp-id -> CheckpointsGroup
     private readonly Dictionary<string, IOnlinePlayer> _spectatorTargets = new(); // login -> IOnlinePlayer
     private readonly Dictionary<PlayerTeam, TmTeamInfo> _teamInfos = new();
+    private bool _isTimeAttackMode;
     private bool _isTeamsMode;
 
     public async Task InitializeAsync()
     {
-        await UpdateIsTeamsModeAsync();
+        await DetectIsTeamsModeAsync();
         await FetchAndCacheTeamInfoAsync();
         await SendReportSpectatorTargetManialinkAsync();
         await HideGameModeUiAsync();
@@ -95,6 +96,25 @@ public class SpectatorTargetInfoService(
         return Task.CompletedTask;
     }
 
+    public Task ClearCheckpointsAsync(string playerLogin)
+    {
+        if (!_isTimeAttackMode)
+        {
+            //New round event is going to clear the entries.
+            return Task.CompletedTask;
+        }
+
+        lock (_checkpointTimesMutex)
+        {
+            foreach (var checkpointGroup in _checkpointTimes.Values)
+            {
+                checkpointGroup.ForgetPlayer(playerLogin);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
     public async Task<string?> GetLoginOfDedicatedPlayerAsync(int targetPlayerIdDedicated)
     {
         var serverPlayers = await server.Remote.GetPlayerListAsync();
@@ -138,13 +158,25 @@ public class SpectatorTargetInfoService(
         }
     }
 
-    public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin)
+    public Task RemovePlayerFromSpectatorsListAsync(string playerLogin)
     {
         lock (_spectatorTargetsMutex)
         {
-            if (_spectatorTargets.Remove(spectatorLogin))
+            if (_spectatorTargets.Remove(playerLogin))
             {
-                logger.LogTrace("Removed spectator {spectatorLogin}.", spectatorLogin);
+                //Player was spectator
+                logger.LogTrace("Removed spectator {spectatorLogin}.", playerLogin);
+
+                return Task.CompletedTask;
+            }
+
+            //Player is driver, get all spectators
+            var spectatorLoginsToRemove = _spectatorTargets.Where(kv => kv.Value.GetLogin() == playerLogin)
+                .Select(kv => kv.Key);
+            
+            foreach (var spectatorLogin in spectatorLoginsToRemove)
+            {
+                _spectatorTargets.Remove(spectatorLogin);
             }
         }
 
@@ -153,14 +185,8 @@ public class SpectatorTargetInfoService(
 
     public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(IOnlinePlayer targetPlayer)
     {
-        Dictionary<string, IOnlinePlayer> spectatorTargets;
-
-        lock (_spectatorTargetsMutex)
-        {
-            spectatorTargets = _spectatorTargets;
-        }
-
-        return spectatorTargets.Where(specTarget => specTarget.Value.AccountId == targetPlayer.AccountId)
+        return GetSpectatorTargets()
+            .Where(specTarget => specTarget.Value.AccountId == targetPlayer.AccountId)
             .Select(specTarget => specTarget.Key);
     }
 
@@ -177,6 +203,7 @@ public class SpectatorTargetInfoService(
     public int GetLastCheckpointIndexOfPlayer(IOnlinePlayer player)
     {
         var playerLogin = player.GetLogin();
+
         foreach (var (checkpointIndex, checkpointsGroup) in GetCheckpointTimes().Reverse())
         {
             if (checkpointsGroup.GetPlayerCheckpointData(playerLogin) != null)
@@ -196,16 +223,17 @@ public class SpectatorTargetInfoService(
         }
     }
 
-    public async Task ResetWidgetForSpectatorsAsync()
+    public Dictionary<string, IOnlinePlayer> GetSpectatorTargets()
     {
-        Dictionary<string, IOnlinePlayer> spectatorTargets;
-
         lock (_spectatorTargetsMutex)
         {
-            spectatorTargets = _spectatorTargets;
+            return _spectatorTargets;
         }
+    }
 
-        foreach (var (spectatorLogin, targetPlayer) in spectatorTargets)
+    public async Task ResetWidgetForSpectatorsAsync()
+    {
+        foreach (var (spectatorLogin, targetPlayer) in GetSpectatorTargets())
         {
             var widgetData = GetWidgetData(targetPlayer, 1, 0);
             await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
@@ -273,13 +301,22 @@ public class SpectatorTargetInfoService(
         _teamInfos[PlayerTeam.Team2] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1);
     }
 
-    public async Task UpdateIsTeamsModeAsync()
+    public async Task DetectIsTeamsModeAsync()
     {
-        _isTeamsMode =
-            await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.Teams
-                or DefaultModeScriptName.TmwtTeams;
+        _isTeamsMode = await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.Teams
+            or DefaultModeScriptName.TmwtTeams;
+    }
 
-        logger.LogInformation("Team mode is {state}", _isTeamsMode ? "active" : "not active");
+    public async Task DetectIsTimeAttackModeAsync()
+    {
+        _isTimeAttackMode = await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.TimeAttack;
+    }
+
+    public Task UpdateIsTimeAttackModeAsync(bool isTimeAttack)
+    {
+        _isTimeAttackMode = isTimeAttack;
+
+        return Task.CompletedTask;
     }
 
     public Task HideGameModeUiAsync() =>
