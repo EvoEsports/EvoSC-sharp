@@ -29,9 +29,19 @@ public class ScoreboardService(
 
     private async Task<dynamic> GetDataAsync()
     {
-        var maxPlayers = await server.Remote.GetMaxPlayersAsync();
+        var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
+        var maxPlayers = 128;
 
-        return new { settings, MaxPlayers = maxPlayers.CurrentValue };
+        if (currentNextMaxPlayers.CurrentValue > 0)
+        {
+            maxPlayers = currentNextMaxPlayers.CurrentValue;
+        }
+        else if (currentNextMaxPlayers.NextValue > 0)
+        {
+            maxPlayers = currentNextMaxPlayers.NextValue;
+        }
+
+        return new { settings, MaxPlayers = maxPlayers };
     }
 
     public Task HideNadeoScoreboardAsync() =>

@@ -37,7 +37,7 @@ public class ScoreboardNicknamesService(
     public async Task LoadNicknamesAsync()
     {
         var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
-        foreach (var player in onlinePlayers)
+        foreach (var player in onlinePlayers.Where(player => player.NickName != player.UbisoftName))
         {
             _nicknames[player.GetLogin()] = player.NickName;
         }

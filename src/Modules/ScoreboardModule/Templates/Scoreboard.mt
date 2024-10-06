@@ -414,6 +414,10 @@
             declare cursor = 0;
            
             foreach(Score => Weight in GetSortedScores()){
+                if(!RowsFrame.Controls.existskey(cursor)){
+                    continue;
+                }
+                
                 declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
                 declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
                 
@@ -459,6 +463,10 @@
             
             //Hide remaining rows
             for(i, cursor, {{ MaxPlayers - 1 }}){
+                if(!RowsFrame.Controls.existskey(i)){
+                    continue;
+                }
+            
                 declare playerRow = (RowsFrame.Controls[i] as CMlFrame);
                 playerRow.Hide();
             }

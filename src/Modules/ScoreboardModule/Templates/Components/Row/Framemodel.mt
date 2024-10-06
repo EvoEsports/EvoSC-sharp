@@ -66,6 +66,7 @@
                            class="text-primary"
                            text="CLUB"
                            pos="{{ rowInnerHeight * 0.75 }} 0"
+                           size="{{ rowInnerHeight * 2.0 }} {{ rowInnerHeight }}"
                            valign="center2"
                            halign="center"
                            textsize="{{ Theme.UI_FontSize*2 }}"
