@@ -73,7 +73,7 @@ Void FocusPlayer(CSmPlayer _Player) {
 Void SpecPrevious(CMlLabel button, Boolean focus){
     AnimatePop(button);
     declare CSmPlayer target <=> GetNextSpawnedPlayer();
-    if(target == Null && focus){
+    if(target != Null && focus){
         FocusPlayer(target);
     }
 }
