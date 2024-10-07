@@ -33,14 +33,18 @@ public class SpectatorTargetInfoService(
     private const string ReportTargetTemplate = "SpectatorTargetInfoModule.ReportSpecTarget";
     private const string WidgetTemplate = "SpectatorTargetInfoModule.SpectatorTargetInfo";
 
+    private readonly object _checkpointTimesMutex = new();
+    private readonly object _spectatorTargetsMutex = new();
     private readonly Dictionary<int, CheckpointsGroup> _checkpointTimes = new(); // cp-id -> CheckpointsGroup
     private readonly Dictionary<string, IOnlinePlayer> _spectatorTargets = new(); // login -> IOnlinePlayer
     private readonly Dictionary<PlayerTeam, TmTeamInfo> _teamInfos = new();
+    private bool _isTimeAttackMode;
     private bool _isTeamsMode;
 
     public async Task InitializeAsync()
     {
-        await UpdateIsTeamsModeAsync();
+        await DetectIsTeamsModeAsync();
+        await DetectIsTimeAttackModeAsync();
         await FetchAndCacheTeamInfoAsync();
         await SendReportSpectatorTargetManialinkAsync();
         await HideGameModeUiAsync();
@@ -53,15 +57,18 @@ public class SpectatorTargetInfoService(
     {
         var player = await GetOnlinePlayerByLoginAsync(playerLogin);
         var newCheckpointData = new CheckpointData(player, checkpointTime);
+        CheckpointsGroup checkpointsGroup = [];
 
-        if (!_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointGroup))
+        lock (_checkpointTimesMutex)
         {
-            checkpointGroup = [];
-            _checkpointTimes.Add(checkpointIndex, checkpointGroup);
-        }
+            if (_checkpointTimes.TryGetValue(checkpointIndex, out var existingCheckpointGroup))
+            {
+                checkpointsGroup = existingCheckpointGroup;
+            }
 
-        checkpointGroup.Add(newCheckpointData);
-        _checkpointTimes[checkpointIndex] = checkpointGroup;
+            checkpointsGroup.Add(newCheckpointData);
+            _checkpointTimes[checkpointIndex] = checkpointsGroup;
+        }
 
         var spectatorLogins = GetLoginsOfPlayersSpectatingTarget(player).ToList();
         if (spectatorLogins.IsNullOrEmpty())
@@ -69,16 +76,42 @@ public class SpectatorTargetInfoService(
             return;
         }
 
-        var leadingCheckpointData = checkpointGroup.First();
+        var leadingCheckpointData = checkpointsGroup.First();
         var timeDifference = GetTimeDifference(leadingCheckpointData.time, newCheckpointData.time);
 
-        await SendSpectatorInfoWidgetAsync(spectatorLogins, player, checkpointGroup.GetRank(playerLogin),
-            timeDifference);
+        await SendSpectatorInfoWidgetAsync(
+            spectatorLogins,
+            player,
+            checkpointsGroup.GetRank(playerLogin),
+            timeDifference
+        );
     }
 
     public Task ClearCheckpointsAsync()
     {
-        _checkpointTimes.Clear();
+        lock (_checkpointTimesMutex)
+        {
+            _checkpointTimes.Clear();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task ClearCheckpointsAsync(string playerLogin)
+    {
+        if (!_isTimeAttackMode)
+        {
+            //New round event is going to clear the entries.
+            return Task.CompletedTask;
+        }
+
+        lock (_checkpointTimesMutex)
+        {
+            foreach (var checkpointGroup in _checkpointTimes.Values)
+            {
+                checkpointGroup.ForgetPlayer(playerLogin);
+            }
+        }
 
         return Task.CompletedTask;
     }
@@ -101,12 +134,15 @@ public class SpectatorTargetInfoService(
 
         var targetPlayer = await GetOnlinePlayerByLoginAsync(targetLogin);
 
-        if (_spectatorTargets.TryGetValue(spectatorLogin, out var target) && target == targetPlayer)
+        lock (_spectatorTargetsMutex)
         {
-            return null; //Player is already spectating target
-        }
+            if (_spectatorTargets.TryGetValue(spectatorLogin, out var target) && target == targetPlayer)
+            {
+                return null; //Player is already spectating target
+            }
 
-        _spectatorTargets[spectatorLogin] = targetPlayer;
+            _spectatorTargets[spectatorLogin] = targetPlayer;
+        }
 
         logger.LogTrace("Updated spectator target {spectatorLogin} -> {targetLogin}.", spectatorLogin,
             targetLogin);
@@ -123,11 +159,26 @@ public class SpectatorTargetInfoService(
         }
     }
 
-    public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin)
+    public Task RemovePlayerAsync(string playerLogin)
     {
-        if (_spectatorTargets.Remove(spectatorLogin))
+        lock (_spectatorTargetsMutex)
         {
-            logger.LogTrace("Removed spectator {spectatorLogin}.", spectatorLogin);
+            if (_spectatorTargets.Remove(playerLogin))
+            {
+                //Player was spectator
+                logger.LogTrace("Removed spectator {spectatorLogin}.", playerLogin);
+
+                return Task.CompletedTask;
+            }
+
+            //Player is driver, get all spectators
+            var spectatorLoginsToRemove = _spectatorTargets.Where(kv => kv.Value.GetLogin() == playerLogin)
+                .Select(kv => kv.Key);
+            
+            foreach (var spectatorLogin in spectatorLoginsToRemove)
+            {
+                _spectatorTargets.Remove(spectatorLogin);
+            }
         }
 
         return Task.CompletedTask;
@@ -135,13 +186,14 @@ public class SpectatorTargetInfoService(
 
     public IEnumerable<string> GetLoginsOfPlayersSpectatingTarget(IOnlinePlayer targetPlayer)
     {
-        return _spectatorTargets.Where(specTarget => specTarget.Value.AccountId == targetPlayer.AccountId)
+        return GetSpectatorTargets()
+            .Where(specTarget => specTarget.Value.AccountId == targetPlayer.AccountId)
             .Select(specTarget => specTarget.Key);
     }
 
     public int GetTimeDifference(int leadingCheckpointTime, int targetCheckpointTime)
     {
-        return targetCheckpointTime - leadingCheckpointTime;
+        return int.Abs(targetCheckpointTime - leadingCheckpointTime);
     }
 
     public string GetTeamColor(PlayerTeam team)
@@ -152,7 +204,8 @@ public class SpectatorTargetInfoService(
     public int GetLastCheckpointIndexOfPlayer(IOnlinePlayer player)
     {
         var playerLogin = player.GetLogin();
-        foreach (var (checkpointIndex, checkpointsGroup) in _checkpointTimes.Reverse())
+
+        foreach (var (checkpointIndex, checkpointsGroup) in GetCheckpointTimes().Reverse())
         {
             if (checkpointsGroup.GetPlayerCheckpointData(playerLogin) != null)
             {
@@ -163,12 +216,25 @@ public class SpectatorTargetInfoService(
         return -1;
     }
 
-    public Dictionary<int, CheckpointsGroup> GetCheckpointTimes() =>
-        _checkpointTimes;
+    public Dictionary<int, CheckpointsGroup> GetCheckpointTimes()
+    {
+        lock (_checkpointTimesMutex)
+        {
+            return _checkpointTimes;
+        }
+    }
+
+    public Dictionary<string, IOnlinePlayer> GetSpectatorTargets()
+    {
+        lock (_spectatorTargetsMutex)
+        {
+            return _spectatorTargets;
+        }
+    }
 
     public async Task ResetWidgetForSpectatorsAsync()
     {
-        foreach (var (spectatorLogin, targetPlayer) in _spectatorTargets)
+        foreach (var (spectatorLogin, targetPlayer) in GetSpectatorTargets())
         {
             var widgetData = GetWidgetData(targetPlayer, 1, 0);
             await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
@@ -182,7 +248,7 @@ public class SpectatorTargetInfoService(
         var targetRank = 1;
         var timeDifference = 0;
 
-        if (_checkpointTimes.TryGetValue(checkpointIndex, out var checkpointsGroup))
+        if (GetCheckpointTimes().TryGetValue(checkpointIndex, out var checkpointsGroup))
         {
             var leadingCpData = checkpointsGroup.First();
             var targetCpData = checkpointsGroup.GetPlayerCheckpointData(targetLogin);
@@ -236,13 +302,22 @@ public class SpectatorTargetInfoService(
         _teamInfos[PlayerTeam.Team2] = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1);
     }
 
-    public async Task UpdateIsTeamsModeAsync()
+    public async Task DetectIsTeamsModeAsync()
     {
-        _isTeamsMode =
-            await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.Teams
-                or DefaultModeScriptName.TmwtTeams;
+        _isTeamsMode = await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.Teams
+            or DefaultModeScriptName.TmwtTeams;
+    }
 
-        logger.LogInformation("Team mode is {state}", _isTeamsMode ? "active" : "not active");
+    public async Task DetectIsTimeAttackModeAsync()
+    {
+        _isTimeAttackMode = await matchSettingsService.GetCurrentModeAsync() is DefaultModeScriptName.TimeAttack;
+    }
+
+    public Task UpdateIsTimeAttackModeAsync(bool isTimeAttack)
+    {
+        _isTimeAttackMode = isTimeAttack;
+
+        return Task.CompletedTask;
     }
 
     public Task HideGameModeUiAsync() =>

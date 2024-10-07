@@ -25,6 +25,12 @@ public interface ISpectatorTargetInfoService
     /// </summary>
     /// <returns></returns>
     public Task ClearCheckpointsAsync();
+
+    /// <summary>
+    /// Clears all registered checkpoint times of the given player.
+    /// </summary>
+    /// <returns></returns>
+    public Task ClearCheckpointsAsync(string playerLogin);
     
     /// <summary>
     /// Retrieve an IOnlinePlayer instance by their login.
@@ -59,9 +65,9 @@ public interface ISpectatorTargetInfoService
     /// <summary>
     /// Remove a player from the spectators list.
     /// </summary>
-    /// <param name="spectatorLogin"></param>
+    /// <param name="playerLogin"></param>
     /// <returns></returns>
-    public Task RemovePlayerFromSpectatorsListAsync(string spectatorLogin);
+    public Task RemovePlayerAsync(string playerLogin);
 
     /// <summary>
     /// Gets the logins of a players spectating the given target.
@@ -97,6 +103,12 @@ public interface ISpectatorTargetInfoService
     /// </summary>
     /// <returns></returns>
     public Dictionary<int, CheckpointsGroup> GetCheckpointTimes();
+
+    /// <summary>
+    /// Returns the current spectator targets.
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, IOnlinePlayer> GetSpectatorTargets();
 
     /// <summary>
     /// Resets the widget for all spectating players.
@@ -166,10 +178,23 @@ public interface ISpectatorTargetInfoService
     public Task FetchAndCacheTeamInfoAsync();
     
     /// <summary>
-    /// Updates whether team mode is active or not.
+    /// Updates whether team mode is active.
     /// </summary>
     /// <returns></returns>
-    public Task UpdateIsTeamsModeAsync();
+    public Task DetectIsTeamsModeAsync();
+    
+    /// <summary>
+    /// Detects whether time attack mode is active.
+    /// </summary>
+    /// <returns></returns>
+    public Task DetectIsTimeAttackModeAsync();
+    
+    /// <summary>
+    /// Manually sets active state of time attack mode.
+    /// </summary>
+    /// <param name="isTimeAttack"></param>
+    /// <returns></returns>
+    public Task UpdateIsTimeAttackModeAsync(bool isTimeAttack);
 
     /// <summary>
     /// Hides the default game mode UI.

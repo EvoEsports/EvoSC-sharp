@@ -15,11 +15,14 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
 {
     [Subscribe(GbxRemoteEvent.PlayerDisconnect)]
     public Task OnPlayerDisconnectAsync(object sender, PlayerGbxEventArgs eventArgs) =>
-        spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(eventArgs.Login);
+        spectatorTargetInfoService.RemovePlayerAsync(eventArgs.Login);
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
-    public Task OnBeginMapAsync(object sender, MapGbxEventArgs eventArgs) =>
-        spectatorTargetInfoService.UpdateIsTeamsModeAsync();
+    public async Task OnBeginMapAsync(object sender, MapGbxEventArgs eventArgs)
+    {
+        await spectatorTargetInfoService.DetectIsTeamsModeAsync();
+        await spectatorTargetInfoService.DetectIsTimeAttackModeAsync();
+    }
 
     [Subscribe(ModeScriptEvent.WayPoint)]
     public Task OnWayPointAsync(object sender, WayPointEventArgs wayPointEventArgs) =>
@@ -44,4 +47,16 @@ public class SpectatorTargetInfoEventController(ISpectatorTargetInfoService spec
         await spectatorTargetInfoService.FetchAndCacheTeamInfoAsync();
         await spectatorTargetInfoService.ResetWidgetForSpectatorsAsync();
     }
+
+    [Subscribe(ModeScriptEvent.WarmUpStart)]
+    public Task OnWarmUpStartAsync(object sender, EventArgs args) =>
+        spectatorTargetInfoService.UpdateIsTimeAttackModeAsync(true);
+
+    [Subscribe(ModeScriptEvent.WarmUpEnd)]
+    public Task OnWarmUpEndAsync(object sender, EventArgs args) =>
+        spectatorTargetInfoService.DetectIsTimeAttackModeAsync();
+
+    [Subscribe(ModeScriptEvent.GiveUp)]
+    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args) =>
+        spectatorTargetInfoService.ClearCheckpointsAsync(args.Login);
 }
