@@ -24,6 +24,7 @@ using Moq;
 using ToornamentApi.Models.Api.TournamentApi;
 using ToornamentTest.Mocks;
 using Xunit.Abstractions;
+using IMapService = EvoSC.Common.Interfaces.Services.IMapService;
 
 namespace Toornament.Services;
 
@@ -48,7 +49,10 @@ public class MatchServiceTest
     private readonly MatchService _matchService;
     private readonly Mock<IAuditEventBuilder> _auditEventBuilderMock;
     private readonly Mock<IKeyValueStoreService> _keyValueStoreServiceMock = new();
-    private readonly Mock<IPermissionManager> _permissionManager = new();
+    private readonly Mock<IMatchSettingsCreatorService> _matchSettingsCreatorService = new();
+    private readonly Mock<IMatchMapService> _matchMapServiceMock = new();
+    private readonly Mock<IWhitelistService> _whitelistServiceMock = new();
+    private readonly Mock<IMatchPlayerService> _matchPlayerServiceMock = new();
 
     public MatchServiceTest(ITestOutputHelper output)
     {
@@ -62,8 +66,6 @@ public class MatchServiceTest
                                         _serverClientMock.Object,
                                         _manialinkManagerMock.Object,
                                         _toornamentSettingsMock.Object,
-                                        _mxMapServiceMock.Object,
-                                        _mapServiceMock.Object,
                                         _playerManagerServiceMock.Object,
                                         _playerReadyServiceMock.Object,
                                         _playerReadyTrackerServiceMock.Object,
@@ -71,10 +73,13 @@ public class MatchServiceTest
                                         _matchSettingsMock.Object,
                                         _matchTrackerMock.Object,
                                         _toornamentServiceMock,
-                                        _nadeoMapServiceMock.Object,
                                         _keyValueStoreServiceMock.Object,
-                                        _permissionManager.Object,
-                                        _loggerMock);
+                                        _loggerMock,
+                                        _matchSettingsCreatorService.Object,
+                                        _matchMapServiceMock.Object,
+                                        _whitelistServiceMock.Object,
+                                        _matchPlayerServiceMock.Object
+                                        );
 
         _auditEventBuilderMock = Mocking.NewAuditEventBuilderMock();
     }

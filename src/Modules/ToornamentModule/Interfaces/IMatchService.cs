@@ -19,5 +19,5 @@ public interface IMatchService
 
     public Task SetMatchGameMapAsync();
 
-    public Task ForcePlayerIntoSpectate(string login);
+    public Task ShowConfirmSetupScreenAsync(IPlayer player, string tournamentId, string stageId, string matchId);
 }
