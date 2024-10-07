@@ -31,7 +31,15 @@ public class MatchTrackerEventController(ITrackerSettings settings, IMatchTracke
     }
 
     [Subscribe(FlowControlEvent.MatchStarted)]
-    public Task OnMatchStarted(object sender, EventArgs args) => tracker.BeginMatchAsync();
+    public Task OnMatchStarted(object sender, EventArgs args)
+    {
+        if (settings.AutomaticTracking)
+        {
+            return Task.CompletedTask;
+        }
+        
+        return tracker.BeginMatchAsync();
+    }
 
     [Subscribe(FlowControlEvent.MatchEnded)]
     public Task OnMatchEnded(object sender, EventArgs args) => tracker.EndMatchAsync();

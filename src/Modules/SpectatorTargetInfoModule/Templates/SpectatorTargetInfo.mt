@@ -53,7 +53,7 @@
                    size="{{ (h*3.4)*0.8 }} {{ h }}"
                    textsize="{{ Theme.UI_FontSize*2 }}"
                    textfont="{{ Font.Regular }}"
-                   text='{{ timeDifference > 0 ? RaceTime.FromMilliseconds(timeDifference) : "000" }}'
+                   text='{{ RaceTime.FromMilliseconds(timeDifference) }}'
                    textprefix="+"
                    halign="center"
                    valign="center2"

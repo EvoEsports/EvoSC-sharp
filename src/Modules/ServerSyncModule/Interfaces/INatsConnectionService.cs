@@ -1,7 +1,5 @@
-using EvoSC.Modules.EvoEsports.ServerSyncModule.Events.Args;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Events.Args.Nats;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Interfaces.StateMessages;
-using EvoSC.Modules.EvoEsports.ServerSyncModule.Services;
 using NATS.Client;
 using NATS.Client.JetStream;
 using NATS.Client.KeyValue;

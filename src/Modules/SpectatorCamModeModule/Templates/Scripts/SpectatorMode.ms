@@ -39,29 +39,24 @@ Void SetCamModeNameAndIcon(Integer _CamMode, CMlFrame camModeFrame) {
     }
     
     declare Real spacing = 1.0;
-    declare Real offset = 0.0;
-    declare Real width = 0.0;
-    if (camModeLabel != Null){
-        camModeLabel.Value = TextLib::ToUpperCase(Text_CamMode);
-        offset = spacing * 2.0 + camModeLabel.ComputeWidth(camModeLabel.Value);
-        width = spacing * 2.0 + camModeLabel.ComputeWidth(camModeLabel.Value);
-    }
     if (camModeQuad != Null){
         camModeQuad.ImageUrl = Icon_CamMode;
-        camModeQuad.RelativePosition_V3.X = offset + spacing;
-        width = width + spacing + camModeQuad.Size.X;
+        camModeQuad.RelativePosition_V3.X = {{ width }} * 1.0 - spacing - camModeQuad.Size.X;
     }
-    width = width + spacing * 2.0;
-    camModeFrame.Size.X = width;
-    camModeBg.Size.X = width;
+    if (camModeLabel != Null){
+        camModeLabel.Value = TextLib::ToUpperCase(Text_CamMode);
+        camModeLabel.RelativePosition_V3.X = camModeQuad.RelativePosition_V3.X - spacing;
+    }
+    camModeFrame.Size.X = 32.0;
+    camModeBg.Size.X = 32.0;
     
     declare Integer targetCamMode for camModeFrame;
     targetCamMode = _CamMode;
     
     if({{ settings.Alignment == WidgetPosition.Right ? "True" : "False" }}){
-        camModeFrame.RelativePosition_V3.X = width * -1.0;
+        camModeFrame.RelativePosition_V3.X = camModeFrame.Size.X * -1.0;
     }else if({{ settings.Alignment == WidgetPosition.Center ? "True" : "False" }}){
-        camModeFrame.RelativePosition_V3.X = width / -2.0;
+        camModeFrame.RelativePosition_V3.X = camModeFrame.Size.X / -2.0;
     }
 }
 
@@ -236,7 +231,9 @@ main(){
     while(True){
         yield;
         
-        declare shouldBeDisplayed = InputPlayer != Null && InputPlayer.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned;
+        declare shouldBeDisplayed = InputPlayer != Null 
+                                    && InputPlayer.SpawnStatus == CSmPlayer::ESpawnStatus::NotSpawned
+                                    && UI.UISequence == CUIConfig::EUISequence::Playing;
         
         if(!shouldBeDisplayed){
             if(mainFrame.Visible){

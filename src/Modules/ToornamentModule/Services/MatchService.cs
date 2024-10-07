@@ -81,7 +81,7 @@ public class MatchService(
 
         logger.LogDebug("Begin of EndMatchAsync()");
 
-        if (timeline == null || timeline.Section != ModeScriptSection.EndMatch)
+        if (timeline is not { Section: ModeScriptSection.EndMatch })
         {
             throw new InvalidOperationException("Did not get a match end result to send to Toornament.");
         }
@@ -299,13 +299,12 @@ public class MatchService(
         var serverName = Encoding.ASCII.GetBytes(await server.Remote.GetServerNameAsync());
         try
         {
-            keyValueStoreService.CreateEntry(matchId, serverName);
+            keyValueStoreService.CreateOrUpdateEntry(matchId, serverName);
         }
         catch (NATSJetStreamException ex)
         {
             logger.LogWarning(ex, "Retrieved exception from NATS");
             logger.LogWarning("Tried to create entry in KeyValueStore with Key {0} and Value {1}", matchId, serverName);
-            logger.LogWarning("Please fix the duplicate entry in NATS. @Atomic :DinkDonk:");
         }
 
         //Show ReadyForMatch widget (?)
