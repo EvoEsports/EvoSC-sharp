@@ -19,7 +19,7 @@ public class SpectatorTargetInfoManialinkController(ISpectatorTargetInfoService 
         }
         else
         {
-            await spectatorTargetInfoService.RemovePlayerFromSpectatorsListAsync(spectatorLogin);
+            await spectatorTargetInfoService.RemovePlayerAsync(spectatorLogin);
             await spectatorTargetInfoService.HideSpectatorInfoWidgetAsync(spectatorLogin);
         }
     }
