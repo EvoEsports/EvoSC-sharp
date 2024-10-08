@@ -124,7 +124,7 @@ public class RoundRankingService(
         var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
         var pointsRepartitionString = (string?)modeScriptSettings?[PointsRepartition.ModeScriptSetting];
 
-        if (pointsRepartitionString != null)
+        if (pointsRepartitionString != null && pointsRepartitionString.Trim().Length > 0)
         {
             _pointsRepartition.Update(pointsRepartitionString);
         }
