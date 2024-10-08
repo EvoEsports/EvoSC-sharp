@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -15,7 +16,8 @@ public class ScoreboardService(
     IServerClient server,
     IScoreboardNicknamesService nicknamesService,
     IScoreboardSettings settings,
-    IGameModeUiModuleService gameModeUiModuleService
+    IGameModeUiModuleService gameModeUiModuleService,
+    IMatchSettingsService matchSettingsService
 )
     : IScoreboardService
 {
@@ -31,10 +33,14 @@ public class ScoreboardService(
     {
         var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
         var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
+        var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
 
         return new
         {
-            settings, MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue
+            settings,
+            MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue,
+            PointsLimit = (int)(modeScriptSettings?["S_PointsLimit"] ?? 0),
+            RoundsPerMap = (int)(modeScriptSettings?["S_RoundsPerMap"] ?? 0),
         };
     }
 

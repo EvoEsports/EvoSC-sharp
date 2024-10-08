@@ -10,6 +10,8 @@
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
+    <property type="int" name="PointsLimit" default="0"/>
+    <property type="int" name="RoundsPerMap" default="0"/>
 
     <property type="double" name="backgroundBorderRadius" default="3.0"/>
     <property type="double" name="headerHeight" default="14.0"/>
@@ -50,6 +52,9 @@
             <!-- Header -->
             <Header width="{{ settings.Width }}"
                     height="{{ headerHeight }}"
+                    maxPlayers="{{ MaxPlayers }}"
+                    pointsLimit="{{ PointsLimit }}"
+                    roundsPerMap="{{ RoundsPerMap }}"
             />
 
             <!-- Body -->
