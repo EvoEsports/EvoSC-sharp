@@ -264,7 +264,36 @@ public class LocalRecordsServiceTests
     }
     
     [Fact]
-    public async Task New_Pb_Is_Improved_From_Old_Record()
+    public async Task New_Pb_Is_Improved_From_Old_Record_With_Position_Change()
+    {
+        var mock = NewLocalRecordsServiceMock();
+        var mockSetup = SetupMockRecords(mock);
+        var newPb = new DbPlayerRecord
+        {
+            PlayerId = 1, Score = 12345, RecordType = PlayerRecordType.Time, DbPlayer = new DbPlayer(mockSetup.Player),
+        };
+        var oldPlayerRecord = new DbPlayerRecord()
+        {
+            Score = 123456, RecordType = PlayerRecordType.Time, DbPlayer = new DbPlayer(mockSetup.Player)
+        };
+        var oldRecord = new DbLocalRecord { DbRecord = oldPlayerRecord, Position = 1337 };
+        var localRecord = new DbLocalRecord { DbRecord = newPb, Position = 420 };
+
+        mock.LocalRecordRepository
+            .Setup(m => m.GetRecordOfPlayerInMapAsync(newPb.Player, newPb.Map))
+            .ReturnsAsync((DbLocalRecord?)oldRecord);
+
+        mock.LocalRecordRepository
+            .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
+            .ReturnsAsync(localRecord);
+
+        await mock.Service.UpdatePbAsync(newPb);
+
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("claimed"))), Times.Once);
+    }
+    
+    [Fact]
+    public async Task New_Pb_Is_Improved_From_Old_Record_Without_Position_Change()
     {
         var mock = NewLocalRecordsServiceMock();
         var mockSetup = SetupMockRecords(mock);
@@ -289,7 +318,7 @@ public class LocalRecordsServiceTests
 
         await mock.Service.UpdatePbAsync(newPb);
 
-        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("improved the"))), Times.Once);
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("improved their"))), Times.Once);
     }
     
     [Fact]

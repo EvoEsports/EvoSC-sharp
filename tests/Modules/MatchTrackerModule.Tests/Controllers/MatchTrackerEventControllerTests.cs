@@ -49,4 +49,24 @@ public class MatchTrackerEventControllerTests : EventControllerTestBase<MatchTra
         
         _tracker.Verify(m => m.BeginMatchAsync(), timesCalled);
     }
+
+    [Fact]
+    public async Task Manual_Match_Tracking_Is_Disabled_If_Automatic_Tracking_Is_Enabled()
+    {
+        _settings.Setup(m => m.AutomaticTracking).Returns(true);
+
+        await Controller.OnMatchStarted(null, null);
+        
+        _tracker.Verify(m => m.BeginMatchAsync(), Times.Never);
+    }
+    
+    [Fact]
+    public async Task Manual_Match_Tracking_Is_Triggered_If_Automatic_Tracking_Is_Disabled()
+    {
+        _settings.Setup(m => m.AutomaticTracking).Returns(false);
+
+        await Controller.OnMatchStarted(null, null);
+        
+        _tracker.Verify(m => m.BeginMatchAsync(), Times.Once);
+    }
 }

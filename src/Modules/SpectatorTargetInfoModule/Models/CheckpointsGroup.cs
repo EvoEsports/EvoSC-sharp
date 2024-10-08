@@ -18,9 +18,16 @@ public class CheckpointsGroup : List<CheckpointData>
             {
                 return rank;
             }
+
             rank++;
         }
 
         return rank;
     }
+
+    public bool ForgetPlayer(string playerLogin) =>
+        (from checkpointData in this
+            where checkpointData.player.GetLogin() == playerLogin
+            select this.Remove(checkpointData)
+        ).FirstOrDefault();
 }

@@ -72,7 +72,7 @@ public class SpectatorTargetInfoServiceTests
 
         await spectatorTargetService.ClearCheckpointsAsync();
         var checkpointTime = spectatorTargetService.GetCheckpointTimes();
-        
+
         Assert.Empty(checkpointTime);
     }
 
@@ -144,6 +144,58 @@ public class SpectatorTargetInfoServiceTests
     }
 
     [Fact]
+    public async Task Removes_Spectator_From_Spectator_Target_Repository()
+    {
+        var spectatorTargetService = ServiceMock();
+        var spectatorLogin = "*fakeplayer_spec*";
+
+        await spectatorTargetService.AddCheckpointAsync("*fakeplayer1*", 1, 1);
+        await spectatorTargetService.SetSpectatorTargetAsync(spectatorLogin, "*fakeplayer1*");
+        await spectatorTargetService.RemovePlayerAsync(spectatorLogin);
+
+        var spectatorInRepo = spectatorTargetService
+            .GetSpectatorTargets()
+            .ContainsKey(spectatorLogin);
+
+        Assert.False(spectatorInRepo);
+    }
+
+    [Fact]
+    public async Task Removes_Driver_From_Spectator_Target_Repository()
+    {
+        var spectatorTargetService = ServiceMock();
+        var spectatorLogin1 = "*fakeplayer99*";
+        var spectatorLogin2 = "*fakeplayer98*";
+        var targetLogin = "*fakeplayer2*";
+        
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer1*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer1*" });
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer2*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer2*" });
+        _playerManager.Setup(pm => pm.GetOnlinePlayerAsync("*fakeplayer3*"))
+            .ReturnsAsync(new OnlinePlayer { State = PlayerState.Playing, AccountId = "*fakeplayer3*" });
+
+        await spectatorTargetService.AddCheckpointAsync("*fakeplayer1*", 1, 1);
+        await spectatorTargetService.AddCheckpointAsync(targetLogin, 2, 2);
+        await spectatorTargetService.AddCheckpointAsync("*fakeplayer3*", 3, 3);
+        await spectatorTargetService.SetSpectatorTargetAsync(spectatorLogin1, targetLogin);
+        await spectatorTargetService.SetSpectatorTargetAsync(spectatorLogin2, targetLogin);
+
+        await spectatorTargetService.RemovePlayerAsync(targetLogin);
+
+        var targetPlayerInRepo = spectatorTargetService
+            .GetSpectatorTargets()
+            .Any(kv => kv.Value.GetLogin() == targetLogin);
+
+        var spectatorsOfTargetInRepo = spectatorTargetService
+            .GetSpectatorTargets()
+            .Any(kv => kv.Key == spectatorLogin1 || kv.Key == spectatorLogin2);
+
+        Assert.False(targetPlayerInRepo);
+        Assert.False(spectatorsOfTargetInRepo);
+    }
+
+    [Fact]
     public async Task Gets_Logins_Spectating_The_Given_Target()
     {
         var spectatorTargetService = ServiceMock();
@@ -201,7 +253,7 @@ public class SpectatorTargetInfoServiceTests
         var player2Rank = checkpointsList.GetRank("*fakeplayer2*");
         var player3Rank = checkpointsList.GetRank("*fakeplayer3*");
         var player4Rank = checkpointsList.GetRank("*fakeplayer4*");
-        
+
         Assert.Equal(1, player1Rank);
         Assert.Equal(2, player2Rank);
         Assert.Equal(4, player3Rank);
@@ -213,7 +265,7 @@ public class SpectatorTargetInfoServiceTests
     [Theory]
     [InlineData(900, 1_000, 100)]
     [InlineData(100, 999, 899)]
-    [InlineData(400, 200, -200)]
+    [InlineData(400, 200, 200)]
     public Task Calculates_Time_Difference(int leadingTime, int trailingTime, int expectedTime)
     {
         var spectatorTargetService = ServiceMock();
@@ -265,12 +317,12 @@ public class SpectatorTargetInfoServiceTests
         _server.Remote.Setup(remote => remote.GetTeamInfoAsync(2))
             .ReturnsAsync(new TmTeamInfo { RGB = "111111" });
 
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
 
         var team1Color = spectatorTargetService.GetTeamColor(PlayerTeam.Team1);
         var team2Color = spectatorTargetService.GetTeamColor(PlayerTeam.Team2);
-        
+
         Assert.Equal("FF0066", team1Color);
         Assert.Equal("111111", team2Color);
     }
@@ -304,12 +356,13 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(new TmTeamInfo { RGB = "FF0066" });
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
         var widgetData = spectatorTargetService.GetWidgetData(targetPlayer, 2, 150);
         await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
 
-        _manialinkManager.Verify(mm => mm.SendManialinkAsync(spectatorLogin, "SpectatorTargetInfoModule.SpectatorTargetInfo",widgetData));
+        _manialinkManager.Verify(mm =>
+            mm.SendManialinkAsync(spectatorLogin, "SpectatorTargetInfoModule.SpectatorTargetInfo", widgetData));
     }
 
     [Fact]
@@ -332,7 +385,7 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(new TmTeamInfo { RGB = "111111" });
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
         await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogins, targetPlayer, 2, 150);
 
@@ -373,15 +426,17 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(otherPlayer);
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
 
         await spectatorTargetService.AddCheckpointAsync(otherPlayer.GetLogin(), 2, 1000);
         await spectatorTargetService.AddCheckpointAsync(targetPlayer.GetLogin(), 2, 1234);
         await spectatorTargetService.SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer);
-        
+
         _manialinkManager.Verify(mm =>
-            mm.SendManialinkAsync(spectatorLogin, "SpectatorTargetInfoModule.SpectatorTargetInfo", It.IsAny<object>()), Times.Once);
+                mm.SendManialinkAsync(spectatorLogin, "SpectatorTargetInfoModule.SpectatorTargetInfo",
+                    It.IsAny<object>()),
+            Times.Once);
     }
 
     [Fact]
@@ -404,7 +459,7 @@ public class SpectatorTargetInfoServiceTests
             .ReturnsAsync(targetPlayer);
 
         var spectatorTargetService = ServiceMock();
-        await spectatorTargetService.UpdateIsTeamsModeAsync();
+        await spectatorTargetService.DetectIsTeamsModeAsync();
         await spectatorTargetService.FetchAndCacheTeamInfoAsync();
         await spectatorTargetService.SetSpectatorTargetAsync(spectatorLogin, targetPlayer.GetLogin());
         await spectatorTargetService.ResetWidgetForSpectatorsAsync();

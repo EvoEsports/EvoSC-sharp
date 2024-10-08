@@ -1,5 +1,8 @@
 using EvoSC.Common.Interfaces;
+using EvoSC.Modules.EvoEsports.ServerSyncModule;
+using EvoSC.Modules.EvoEsports.ToornamentModule;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Nsgr.ContactAdminModule;
 using EvoSC.Modules.Official.ASayModule;
 using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
@@ -67,6 +70,9 @@ public static class InternalModules
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(TeamChatModule),
+        typeof(ServerSyncModule),
+        typeof(ToornamentModule),
+        typeof(ContactAdminModule),
         typeof(RoundRankingModule)
     ];
 
