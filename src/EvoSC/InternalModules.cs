@@ -1,5 +1,8 @@
 using EvoSC.Common.Interfaces;
+using EvoSC.Modules.EvoEsports.ServerSyncModule;
+using EvoSC.Modules.EvoEsports.ToornamentModule;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Nsgr.ContactAdminModule;
 using EvoSC.Modules.Official.ASayModule;
 using EvoSC.Modules.Official.CurrentMapModule;
 using EvoSC.Modules.Official.ExampleModule;
@@ -20,6 +23,8 @@ using EvoSC.Modules.Official.NextMapModule;
 using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
+using EvoSC.Modules.Official.RoundRankingModule;
+using EvoSC.Modules.Official.Scoreboard;
 using EvoSC.Modules.Official.ScoreboardModule;
 using EvoSC.Modules.Official.ServerManagementModule;
 using EvoSC.Modules.Official.SetName;
@@ -65,7 +70,11 @@ public static class InternalModules
         typeof(TeamSettingsModule),
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
-        typeof(TeamChatModule)
+        typeof(TeamChatModule),
+        typeof(ServerSyncModule),
+        typeof(ToornamentModule),
+        typeof(ContactAdminModule),
+        typeof(RoundRankingModule)
     ];
 
     /// <summary>

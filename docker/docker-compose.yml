@@ -3,8 +3,9 @@ services:
     image: evoesports/trackmania
     restart: always
     ports:
-      - 2350:2350/udp
-      - 2350:2350/tcp
+      - "2350:2350/udp"
+      - "2350:2350/tcp"
+      - "5001:5000"
     environment:
       - MASTER_LOGIN=
       - MASTER_PASSWORD=
@@ -19,21 +20,8 @@ services:
       - POSTGRES_PASSWORD=evosc_sharp
       - POSTGRES_USER=evosc_sharp
       - POSTGRES_DB=evosc_sharp
-  
-  evosc_sharp:
-    image: evoscsharp:latest
-    restart: always
-    depends_on:
-      - trackmania
-      - postgres
-    environment:
-      - EVOSC_DATABASE_HOST=postgres
-      - EVOSC_DATABASE_NAME=evosc_sharp
-      - EVOSC_DATABASE_USERNAME=evosc_sharp
-      - EVOSC_DATABASE_PASSWORD=evosc_sharp
-      - EVOSC_SERVER_HOST=trackmania
-    volumes:
-      - UserData:/server/UserData
+    ports:
+      - "5432:5432"
 
 volumes:
   PostgresData: null
