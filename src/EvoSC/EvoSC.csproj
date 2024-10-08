@@ -37,6 +37,7 @@
         <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
         <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
         <ProjectReference Include="..\Modules\NextMapModule\NextMapModule.csproj" />
+        <ProjectReference Include="..\Modules\RoundRankingModule\RoundRankingModule.csproj" />
         <ProjectReference Include="..\Modules\Scoreboard\Scoreboard.csproj" />
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
