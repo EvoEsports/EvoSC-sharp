@@ -84,7 +84,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule", "src\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchReadyModule", "src\Modules\MatchReadyModule\MatchReadyModule.csproj", "{0538B9AB-B556-45BF-8230-53087BA9D353}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scoreboard", "src\Modules\Scoreboard\Scoreboard.csproj", "{CD032D37-3BC8-4DE8-8C5B-45A0DE36932E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScoreboardModule", "src\Modules\ScoreboardModule\ScoreboardModule.csproj", "{CD032D37-3BC8-4DE8-8C5B-45A0DE36932E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextMapModule", "src\Modules\NextMapModule\NextMapModule.csproj", "{64688FA7-136C-4BB9-B716-4E96DD0AA82F}"
 EndProject
