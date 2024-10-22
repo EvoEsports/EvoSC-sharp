@@ -1,5 +1,7 @@
 ﻿using EvoSC.Common.Interfaces.Controllers;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.RoundRankingModule.Controllers;
 using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
 using EvoSC.Testing.Controllers;
@@ -11,10 +13,11 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Tests.Controllers;
 public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEventController, IEventControllerContext>
 {
     private Mock<IRoundRankingService> _roundRankingService = new();
-
+    private Mock<IPlayerManagerService> _playerManagerService = new();
+    
     public RoundRankingEventControllerTests()
     {
-        InitMock(_roundRankingService);
+        InitMock(_roundRankingService, _playerManagerService);
     }
 
     [Fact]
