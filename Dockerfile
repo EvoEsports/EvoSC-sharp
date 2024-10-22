@@ -6,15 +6,6 @@ COPY . .
 
 RUN dotnet publish "src/EvoSC/EvoSC.csproj" -r linux-musl-x64 --self-contained true -c Release -o /publish
 
-# Set user & permissions
-FROM alpine:latest as run-chown
-
-WORKDIR /app
-COPY --from=build /publish .
-RUN true \
-    && chown 9999:9999 -R /app \
-    && true
-
 # Create the image
 FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine3.20 as create-image
 
@@ -35,12 +26,21 @@ LABEL org.opencontainers.image.title="EvoSC#" \
       org.opencontainers.image.revision=${REVISION}
 
 WORKDIR /app
-COPY --from=run-chown /app .
 
 RUN true \
+    && set -eux \
+    && addgroup -g 9999 evosc \
+    && adduser -u 9999 -Hh /app -G evosc -s /sbin/nologin -D evosc \
+    && install -d -o evosc -g evosc -m 775 /app \
     && apk add --no-cache icu-libs \
-    && adduser --disabled-password --home /app -u 9999 evosc \
     && true \
 
+RUN true \
+    && chown evosc:evosc -Rf /app \
+    && true
+
+COPY --from=build --chown=evosc:evosc /publish /app
+
 USER evosc
+
 ENTRYPOINT ["./EvoSC", "run"]
