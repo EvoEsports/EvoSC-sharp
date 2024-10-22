@@ -21,7 +21,7 @@ services:
       - POSTGRES_DB=evosc_sharp
 
   evosc_sharp:
-    image: evoscsharp:latest
+    image: evoesports/evosc-sharp:latest
     restart: always
     depends_on:
       - trackmania
@@ -32,6 +32,7 @@ services:
       - EVOSC_DATABASE_USERNAME=evosc_sharp
       - EVOSC_DATABASE_PASSWORD=evosc_sharp
       - EVOSC_SERVER_HOST=trackmania
+      - EVOSC_PATH_MAPS=/server/UserData/Maps
     volumes:
       - UserData:/server/UserData
 
