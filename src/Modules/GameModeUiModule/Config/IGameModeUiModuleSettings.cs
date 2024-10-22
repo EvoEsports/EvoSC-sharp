@@ -96,6 +96,22 @@ public interface IGameModeUiModuleSettings
 
     [Option(DefaultValue = 1.0), Description("The scale of the ScoresTable module.")]
     public double ScoresTableScale { get; set; }
+    
+    /*
+     * Settings for Race_SmallScoresTable
+     */
+    // TODO: change to true after XPEvo
+    [Option(DefaultValue = false), Description("The visibility of the SmallScoresTable module.")]
+    public bool SmallScoresTableVisible { get; set; }
+
+    [Option(DefaultValue = 0.0), Description("The x position of the ScoresTable module.")]
+    public double SmallScoresTableX { get; set; }
+
+    [Option(DefaultValue = 0.0), Description("The y position of the ScoresTable module.")]
+    public double SmallScoresTableY { get; set; }
+
+    [Option(DefaultValue = 1.0), Description("The scale of the ScoresTable module.")]
+    public double SmallScoresTableScale { get; set; }
 
     /*
      * Settings for Race_DisplayMessage

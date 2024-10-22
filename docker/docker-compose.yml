@@ -6,9 +6,9 @@ services:
       - 2350:2350/udp
       - 2350:2350/tcp
     environment:
-      - MASTER_LOGIN=
-      - MASTER_PASSWORD=
-      - XMLRPC_ALLOWREMOTE=True
+      - TM_MASTERSERVER_LOGIN=
+      - TM_MASTERSERVER_PASSWORD=
+      - TM_SYSTEM_XMLRPC_ALLOWREMOTE=True
     volumes:
       - UserData:/server/UserData
     
@@ -19,7 +19,7 @@ services:
       - POSTGRES_PASSWORD=evosc_sharp
       - POSTGRES_USER=evosc_sharp
       - POSTGRES_DB=evosc_sharp
-  
+
   evosc_sharp:
     image: evoscsharp:latest
     restart: always
