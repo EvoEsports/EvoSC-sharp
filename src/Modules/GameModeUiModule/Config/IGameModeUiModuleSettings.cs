@@ -100,8 +100,7 @@ public interface IGameModeUiModuleSettings
     /*
      * Settings for Race_SmallScoresTable
      */
-    // TODO: change to true after XPEvo
-    [Option(DefaultValue = false), Description("The visibility of the SmallScoresTable module.")]
+    [Option(DefaultValue = true), Description("The visibility of the SmallScoresTable module.")]
     public bool SmallScoresTableVisible { get; set; }
 
     [Option(DefaultValue = 0.0), Description("The x position of the ScoresTable module.")]
