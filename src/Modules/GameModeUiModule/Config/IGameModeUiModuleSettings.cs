@@ -103,13 +103,13 @@ public interface IGameModeUiModuleSettings
     [Option(DefaultValue = true), Description("The visibility of the SmallScoresTable module.")]
     public bool SmallScoresTableVisible { get; set; }
 
-    [Option(DefaultValue = 0.0), Description("The x position of the ScoresTable module.")]
+    [Option(DefaultValue = -160.0), Description("The x position of the SmallScoresTable module.")]
     public double SmallScoresTableX { get; set; }
 
-    [Option(DefaultValue = 0.0), Description("The y position of the ScoresTable module.")]
+    [Option(DefaultValue = 10.0), Description("The y position of the SmallScoresTable module.")]
     public double SmallScoresTableY { get; set; }
 
-    [Option(DefaultValue = 1.0), Description("The scale of the ScoresTable module.")]
+    [Option(DefaultValue = 1.0), Description("The scale of the SmallScoresTable module.")]
     public double SmallScoresTableScale { get; set; }
 
     /*
