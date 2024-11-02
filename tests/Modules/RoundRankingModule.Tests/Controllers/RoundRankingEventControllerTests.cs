@@ -23,7 +23,7 @@ public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEvent
     [Fact]
     public async Task Consumes_Checkpoint_Data()
     {
-        Controller.OnWaypointAsync(null,
+        await Controller.OnWaypointAsync(null,
             new WayPointEventArgs
             {
                 Login = "*fakeplayer1*",

@@ -38,14 +38,6 @@ public interface IRoundRankingService
     public Task HideRoundRankingWidgetAsync();
 
     /// <summary>
-    /// Determines whether the checkpoint data repository can collect another player.
-    /// Should return false if max entries is reached.
-    /// </summary>
-    /// <param name="accountId"></param>
-    /// <returns></returns>
-    public bool ShouldCollectCheckpointData(string accountId);
-
-    /// <summary>
     /// Gets the current points repartition value and caches it.
     /// </summary>
     /// <returns></returns>
@@ -57,20 +49,18 @@ public interface IRoundRankingService
     /// <param name="isTimeAttackMode"></param>
     /// <returns></returns>
     public Task SetIsTimeAttackModeAsync(bool isTimeAttackMode);
+
+    /// <summary>
+    /// Detects if team mode is active and caches the result.
+    /// </summary>
+    /// <returns></returns>
+    public Task DetectIsTeamsModeAsync();
     
     /// <summary>
     /// Gets the latest team infos and caches them.
     /// </summary>
     /// <returns></returns>
     public Task FetchAndCacheTeamInfoAsync();
-
-    /// <summary>
-    /// Returns the accent color for the given team.
-    /// </summary>
-    /// <param name="winnerTeam"></param>
-    /// <param name="playerTeam"></param>
-    /// <returns></returns>
-    public string? GetTeamAccentColor(PlayerTeam winnerTeam, PlayerTeam playerTeam);
     
     /// <summary>
     /// Determines the winning team based on the given checkpoint data.
@@ -78,6 +68,13 @@ public interface IRoundRankingService
     /// <param name="checkpoints"></param>
     /// <returns></returns>
     public PlayerTeam GetWinnerTeam(List<CheckpointData> checkpoints);
+
+    /// <summary>
+    /// Determines whether the winner team should be displayed in the widget.
+    /// </summary>
+    /// <param name="checkpoints"></param>
+    /// <returns></returns>
+    public bool ShouldShowWinnerTeam(List<CheckpointData> checkpoints);
 
     /// <summary>
     /// Traverses the checkpoint data list and sets the gained points on each entry.

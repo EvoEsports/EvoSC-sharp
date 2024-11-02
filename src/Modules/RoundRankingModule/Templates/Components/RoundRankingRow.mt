@@ -3,7 +3,6 @@
     <using namespace="EvoSC.Modules.Official.RoundRankingModule.Models"/>
 
     <import component="EvoSC.Controls.Panel" as="Panel"/>
-    <import component="RoundRankingModule.Components.GainedPointsBox" as="GainedPoints"/>
 
     <property type="double" name="width" default="36"/>
     <property type="double" name="height" default="4"/>
@@ -95,12 +94,6 @@
                     />
                 </frame>
             </Panel>
-<!--            <GainedPoints-->
-<!--                    x="{{ width + 1.0 }}"-->
-<!--                    height="{{ height }}"-->
-<!--                    width="{{ height*1.5 }}"-->
-<!--                    points="{{ checkpoint.IsFinish ? 1 : 0 }}"-->
-<!--            />-->
         </frame>
     </template>
 </component>
