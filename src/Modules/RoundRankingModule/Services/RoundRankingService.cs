@@ -23,7 +23,6 @@ public class RoundRankingService(
 {
     private const string WidgetTemplate = "RoundRankingModule.RoundRanking";
 
-    private readonly object _checkpointsRepositoryMutex = new();
     private readonly CheckpointsRepository _checkpointsRepository = new();
     private readonly PointsRepartition _pointsRepartition = [];
     private readonly Dictionary<PlayerTeam, string> _teamColors = new();
@@ -32,16 +31,13 @@ public class RoundRankingService(
 
     public async Task ConsumeCheckpointDataAsync(CheckpointData checkpointData)
     {
-        lock (_checkpointsRepositoryMutex)
+        if (_isTimeAttackMode && checkpointData.IsDNF)
         {
-            if (_isTimeAttackMode && checkpointData.IsDNF)
-            {
-                _checkpointsRepository.Remove(checkpointData.Player.AccountId);
-            }
-            else
-            {
-                _checkpointsRepository[checkpointData.Player.AccountId] = checkpointData;
-            }
+            _checkpointsRepository.Remove(checkpointData.Player.AccountId, out var removedCheckpointData);
+        }
+        else
+        {
+            _checkpointsRepository[checkpointData.Player.AccountId] = checkpointData;
         }
 
         await SendRoundRankingWidgetAsync();
@@ -56,20 +52,14 @@ public class RoundRankingService(
             return;
         }
 
-        lock (_checkpointsRepositoryMutex)
-        {
-            _checkpointsRepository.Remove(accountId);
-        }
+        _checkpointsRepository.Remove(accountId, out var removedCheckpointData);
 
         await SendRoundRankingWidgetAsync();
     }
 
     public async Task ClearCheckpointDataAsync()
     {
-        lock (_checkpointsRepositoryMutex)
-        {
-            _checkpointsRepository.Clear();
-        }
+        _checkpointsRepository.Clear();
 
         await SendRoundRankingWidgetAsync();
     }
@@ -77,10 +67,7 @@ public class RoundRankingService(
     public async Task SendRoundRankingWidgetAsync()
     {
         CheckpointsRepository cpRepository;
-        lock (_checkpointsRepositoryMutex)
-        {
-            cpRepository = _checkpointsRepository;
-        }
+        cpRepository = _checkpointsRepository;
 
         var bestCheckpoints = cpRepository.GetSortedData();
 

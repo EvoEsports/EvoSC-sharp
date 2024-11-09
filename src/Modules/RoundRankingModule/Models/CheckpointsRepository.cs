@@ -1,6 +1,8 @@
-﻿namespace EvoSC.Modules.Official.RoundRankingModule.Models;
+﻿using System.Collections.Concurrent;
 
-public class CheckpointsRepository : Dictionary<string, CheckpointData>
+namespace EvoSC.Modules.Official.RoundRankingModule.Models;
+
+public class CheckpointsRepository : ConcurrentDictionary<string, CheckpointData>
 {
     public List<CheckpointData> GetSortedData()
     {
