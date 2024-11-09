@@ -50,7 +50,7 @@
                         size="{{ width-20 }} {{ height }}"
                 />
                 <label
-                        text="{{ checkpoint.IsDNF ? &quot;DNF&quot; : (checkpoint.TimeDifference!=null ? checkpoint.TimeDifference.ToString().TrimStart('0') : checkpoint.Time.ToString().TrimStart('0') ) }}"
+                        text="{{ checkpoint.FormattedTime() ) }}"
                         textprefix='{{ checkpoint.TimeDifference!=null&amp;&amp;!checkpoint.IsDNF ? "+" : "" }}'
                         class="text-primary"
                         textsize="0.5"
@@ -72,7 +72,7 @@
                     <label
                             if="checkpoint.GainedPoints == 0"
                             class="text-primary"
-                            text='{{ checkpoint.IsDNF ? Icons.FlagO : (checkpoint.IsFinish ? Icons.FlagCheckered : checkpoint.CheckpointId + 1) }}'
+                            text='{{ checkpoint.IndexText() }}'
                             textsize="0.5"
                             pos="{{ width-4-(height*1.25/2.0) }} {{ -height/2.0 + 0.2 }}"
                             valign="center"
