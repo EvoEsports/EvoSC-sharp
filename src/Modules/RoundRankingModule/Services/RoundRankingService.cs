@@ -10,6 +10,7 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.RoundRankingModule.Config;
 using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
 using EvoSC.Modules.Official.RoundRankingModule.Models;
+using EvoSC.Modules.Official.RoundRankingModule.Utils;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Services;
 
@@ -74,25 +75,35 @@ public class RoundRankingService(
 
             if (settings.DisplayGainedPoints && !_isTimeAttackMode)
             {
-                SetGainedPointsOnResult(bestCheckpoints);
+                lock (_pointsRepartitionMutex)
+                {
+                    RoundRankingUtils.SetGainedPointsOnResult(
+                        bestCheckpoints,
+                        _pointsRepartition,
+                        (string)theme.Theme.UI_AccentPrimary
+                    );
+                }
             }
 
-            SetGainedPointsBackgroundColorsOnResult(bestCheckpoints);
+            if (_isTeamsMode)
+            {
+                RoundRankingUtils.ApplyTeamColorsAsAccentColors(bestCheckpoints, _teamColors);
+            }
 
             if (settings.DisplayTimeDifference)
             {
-                CalculateAndSetTimeDifferenceOnResult(bestCheckpoints);
+                RoundRankingUtils.CalculateAndSetTimeDifferenceOnResult(bestCheckpoints);
             }
         }
 
-        var showWinnerTeam = _isTeamsMode && HasPlayerInFinish(bestCheckpoints);
+        var showWinnerTeam = _isTeamsMode && RoundRankingUtils.HasPlayerInFinish(bestCheckpoints);
         var winnerTeamName = "DRAW";
         var winnerTeamColor = theme.Theme.UI_AccentSecondary;
         var winnerTeam = PlayerTeam.Unknown;
 
         if (showWinnerTeam)
         {
-            winnerTeam = GetWinnerTeam(bestCheckpoints);
+            winnerTeam = RoundRankingUtils.GetWinnerTeam(bestCheckpoints);
 
             if (winnerTeam != PlayerTeam.Unknown)
             {
@@ -141,7 +152,6 @@ public class RoundRankingService(
     public async Task DetectIsTeamsModeAsync()
     {
         var currentMode = await matchSettingsService.GetCurrentModeAsync();
-
         _isTeamsMode = currentMode == DefaultModeScriptName.Teams;
     }
 
@@ -150,77 +160,5 @@ public class RoundRankingService(
         _teamColors[PlayerTeam.Unknown] = theme.Theme.UI_AccentSecondary;
         _teamColors[PlayerTeam.Team1] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1 + 1)).RGB;
         _teamColors[PlayerTeam.Team2] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1)).RGB;
-    }
-
-    public bool HasPlayerInFinish(List<CheckpointData> checkpoints) =>
-        checkpoints.Any(checkpoint => checkpoint.IsFinish);
-
-    public void SetGainedPointsOnResult(List<CheckpointData> checkpoints)
-    {
-        PointsRepartition currentPointsRepartition;
-
-        lock (_pointsRepartitionMutex)
-        {
-            currentPointsRepartition = _pointsRepartition.Clone();
-        }
-
-        var rank = 1;
-        foreach (var cpData in checkpoints.Where(checkpoint => checkpoint.IsFinish))
-        {
-            cpData.GainedPoints = currentPointsRepartition.GetGainedPoints(rank++);
-        }
-    }
-
-    public PlayerTeam GetWinnerTeam(List<CheckpointData> checkpoints)
-    {
-        var gainedPointsPerTeam = new Dictionary<PlayerTeam, int>
-        {
-            { PlayerTeam.Unknown, 0 }, { PlayerTeam.Team1, 0 }, { PlayerTeam.Team2, 0 }
-        };
-
-        foreach (var cpData in checkpoints)
-        {
-            gainedPointsPerTeam[cpData.Player.Team] += cpData.GainedPoints;
-        }
-
-        if (gainedPointsPerTeam[PlayerTeam.Team1] == gainedPointsPerTeam[PlayerTeam.Team2])
-        {
-            return PlayerTeam.Unknown;
-        }
-
-        return gainedPointsPerTeam.Where(tp => tp.Value > 0)
-            .OrderByDescending(tp => tp.Value)
-            .Select(tp => tp.Key)
-            .FirstOrDefault(PlayerTeam.Unknown);
-    }
-
-    public void CalculateAndSetTimeDifferenceOnResult(List<CheckpointData> checkpoints)
-    {
-        if (checkpoints.Count <= 1)
-        {
-            return;
-        }
-
-        var firstEntry = checkpoints.FirstOrDefault();
-        if (firstEntry == null)
-        {
-            return;
-        }
-
-        firstEntry.TimeDifference = null;
-        foreach (var cpData in checkpoints[1..])
-        {
-            cpData.TimeDifference = cpData.GetTimeDifferenceAbsolute(firstEntry);
-        }
-    }
-
-    public void SetGainedPointsBackgroundColorsOnResult(List<CheckpointData> checkpoints)
-    {
-        foreach (var cpData in checkpoints.Where(checkpoint => checkpoint.GainedPoints > 0))
-        {
-            cpData.AccentColor = _isTeamsMode
-                ? _teamColors[cpData.Player.Team]
-                : (string)theme.Theme.UI_AccentPrimary;
-        }
     }
 }

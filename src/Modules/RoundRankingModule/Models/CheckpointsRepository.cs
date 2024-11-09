@@ -8,6 +8,10 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 /// </summary>
 public class CheckpointsRepository : ConcurrentDictionary<string, CheckpointData>
 {
+    /// <summary>
+    /// Sorts and returns the contents of the dictionary by the checkpoint progression and times at each checkpoint.
+    /// </summary>
+    /// <returns></returns>
     public List<CheckpointData> GetSortedData()
     {
         return this.Values
