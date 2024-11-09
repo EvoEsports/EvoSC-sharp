@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using System.Collections.Concurrent;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
@@ -25,7 +26,7 @@ public class RoundRankingService(
 
     private readonly CheckpointsRepository _checkpointsRepository = new();
     private readonly PointsRepartition _pointsRepartition = [];
-    private readonly Dictionary<PlayerTeam, string> _teamColors = new();
+    private readonly ConcurrentDictionary<PlayerTeam, string> _teamColors = new();
     private bool _isTimeAttackMode;
     private bool _isTeamsMode;
 
@@ -66,10 +67,7 @@ public class RoundRankingService(
 
     public async Task SendRoundRankingWidgetAsync()
     {
-        CheckpointsRepository cpRepository;
-        cpRepository = _checkpointsRepository;
-
-        var bestCheckpoints = cpRepository.GetSortedData();
+        var bestCheckpoints = _checkpointsRepository.GetSortedData();
 
         if (bestCheckpoints.Count > 0)
         {
