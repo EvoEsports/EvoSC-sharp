@@ -74,7 +74,7 @@ public interface IRoundRankingService
     /// </summary>
     /// <param name="checkpoints"></param>
     /// <returns></returns>
-    public bool ShouldShowWinnerTeam(List<CheckpointData> checkpoints);
+    public bool HasPlayerInFinish(List<CheckpointData> checkpoints);
 
     /// <summary>
     /// Traverses the checkpoint data list and sets the gained points on each entry.

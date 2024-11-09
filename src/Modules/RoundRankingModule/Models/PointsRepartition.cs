@@ -14,6 +14,11 @@ public class PointsRepartition : List<int>
         Update(DefaultValue);
     }
 
+    private PointsRepartition(PointsRepartition pointsRepartition)
+    {
+        this.AddRange(pointsRepartition);
+    }
+
     /// <summary>
     /// Consumes new a points repartition.
     /// Values are comma separated.
@@ -33,5 +38,14 @@ public class PointsRepartition : List<int>
     public int GetGainedPoints(int rank)
     {
         return rank <= Count ? this[rank - 1] : this.LastOrDefault(0);
+    }
+
+    /// <summary>
+    /// Creates a copy of the object.
+    /// </summary>
+    /// <returns></returns>
+    public PointsRepartition Clone()
+    {
+        return new PointsRepartition(this);
     }
 }

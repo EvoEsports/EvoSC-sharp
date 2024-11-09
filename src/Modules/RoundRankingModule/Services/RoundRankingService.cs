@@ -24,11 +24,12 @@ public class RoundRankingService(
 {
     private const string WidgetTemplate = "RoundRankingModule.RoundRanking";
 
-    private readonly CheckpointsRepository _checkpointsRepository = new();
+    private readonly object _pointsRepartitionMutex = new();
     private readonly PointsRepartition _pointsRepartition = [];
+    private readonly CheckpointsRepository _checkpointsRepository = new();
     private readonly ConcurrentDictionary<PlayerTeam, string> _teamColors = new();
-    private bool _isTimeAttackMode;
-    private bool _isTeamsMode;
+    private volatile bool _isTimeAttackMode;
+    private volatile bool _isTeamsMode;
 
     public async Task ConsumeCheckpointDataAsync(CheckpointData checkpointData)
     {
@@ -54,14 +55,12 @@ public class RoundRankingService(
         }
 
         _checkpointsRepository.Remove(accountId, out var removedCheckpointData);
-
         await SendRoundRankingWidgetAsync();
     }
 
     public async Task ClearCheckpointDataAsync()
     {
         _checkpointsRepository.Clear();
-
         await SendRoundRankingWidgetAsync();
     }
 
@@ -86,7 +85,7 @@ public class RoundRankingService(
             }
         }
 
-        var showWinnerTeam = ShouldShowWinnerTeam(bestCheckpoints);
+        var showWinnerTeam = _isTeamsMode && HasPlayerInFinish(bestCheckpoints);
         var winnerTeamName = "DRAW";
         var winnerTeamColor = theme.Theme.UI_AccentSecondary;
         var winnerTeam = PlayerTeam.Unknown;
@@ -125,7 +124,10 @@ public class RoundRankingService(
 
         if (pointsRepartitionString != null && pointsRepartitionString.Trim().Length > 0)
         {
-            _pointsRepartition.Update(pointsRepartitionString);
+            lock (_pointsRepartitionMutex)
+            {
+                _pointsRepartition.Update(pointsRepartitionString);
+            }
         }
     }
 
@@ -139,6 +141,7 @@ public class RoundRankingService(
     public async Task DetectIsTeamsModeAsync()
     {
         var currentMode = await matchSettingsService.GetCurrentModeAsync();
+
         _isTeamsMode = currentMode == DefaultModeScriptName.Teams;
     }
 
@@ -149,15 +152,22 @@ public class RoundRankingService(
         _teamColors[PlayerTeam.Team2] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1)).RGB;
     }
 
-    public bool ShouldShowWinnerTeam(List<CheckpointData> checkpoints) =>
-        _isTeamsMode && checkpoints.Any(checkpoint => checkpoint.IsFinish);
+    public bool HasPlayerInFinish(List<CheckpointData> checkpoints) =>
+        checkpoints.Any(checkpoint => checkpoint.IsFinish);
 
     public void SetGainedPointsOnResult(List<CheckpointData> checkpoints)
     {
+        PointsRepartition currentPointsRepartition;
+
+        lock (_pointsRepartitionMutex)
+        {
+            currentPointsRepartition = _pointsRepartition.Clone();
+        }
+
         var rank = 1;
         foreach (var cpData in checkpoints.Where(checkpoint => checkpoint.IsFinish))
         {
-            cpData.GainedPoints = _pointsRepartition.GetGainedPoints(rank++);
+            cpData.GainedPoints = currentPointsRepartition.GetGainedPoints(rank++);
         }
     }
 
