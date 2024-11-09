@@ -11,7 +11,7 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 public class CheckpointData
 {
     /// <summary>
-    /// The player.
+    /// The player associated with the checkpoint data.
     /// </summary>
     public required IOnlinePlayer Player { get; init; }
     
