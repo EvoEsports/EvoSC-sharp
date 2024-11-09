@@ -8,8 +8,8 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Config;
 [Settings]
 public interface IRoundRankingSettings
 {
-    [Option(DefaultValue = WidgetPosition.Left),
-     Description("Specifies on which side the widget is displayed. Valid values are Left | Right.")]
+    [Option(DefaultValue = WidgetPosition.Left)]
+    [Description("Specifies on which side the widget is displayed. Valid values are Left | Right.")]
     public WidgetPosition Position { get; set; }
 
     [Option(DefaultValue = 15.0), Description("Defines the Y position of the widget.")]
