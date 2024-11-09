@@ -33,7 +33,7 @@ RUN true \
     && adduser -u 9999 -Hh /app -G evosc -s /sbin/nologin -D evosc \
     && install -d -o evosc -g evosc -m 775 /app \
     && apk add --no-cache icu-libs \
-    && true \
+    && true
 
 RUN true \
     && chown evosc:evosc -Rf /app \

@@ -21,7 +21,10 @@ services:
       - POSTGRES_DB=evosc_sharp
 
   evosc_sharp:
-    image: evoesports/evosc-sharp:latest
+    image: evoscsharp
+    build: 
+      context: .
+      dockerfile: ../Dockerfile
     restart: always
     depends_on:
       - trackmania
