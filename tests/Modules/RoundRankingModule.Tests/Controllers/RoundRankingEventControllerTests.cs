@@ -39,7 +39,7 @@ public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEvent
 
         await Controller.OnWaypointAsync(null, waypointEventArgs);
 
-        _roundRankingService.Verify(rrs => rrs.ConsumeCheckpointDataAsync(
+        _roundRankingService.Verify(rrs => rrs.ConsumeCheckpointAsync(
             AccountId,
             1,
             1234,
@@ -56,13 +56,7 @@ public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEvent
 
         await Controller.OnPlayerGiveUpAsync(null, playerGiveUpEventArgs);
 
-        _roundRankingService.Verify(rrs => rrs.ConsumeCheckpointDataAsync(
-            AccountId,
-            -1,
-            0,
-            false,
-            true
-        ), Times.Once());
+        _roundRankingService.Verify(rrs => rrs.ConsumeDnfAsync(AccountId), Times.Once());
     }
 
     [Fact]

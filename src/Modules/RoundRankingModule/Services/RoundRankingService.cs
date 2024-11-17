@@ -34,25 +34,30 @@ public class RoundRankingService(
     private volatile bool _isTimeAttackMode;
     private volatile bool _isTeamsMode;
 
-    public async Task ConsumeCheckpointDataAsync(string accountId, int checkpointId, int time, bool isFinish,
+    public async Task ConsumeCheckpointAsync(string accountId, int checkpointId, int time, bool isFinish,
         bool isDnf)
     {
-        if (_isTimeAttackMode && isDnf)
+        _checkpointsRepository[accountId] = new CheckpointData
         {
-            _checkpointsRepository.Remove(accountId, out var removedCheckpointData);
-        }
-        else
+            Player = await playerManagerService.GetOnlinePlayerAsync(accountId),
+            CheckpointId = checkpointId,
+            Time = RaceTime.FromMilliseconds(time),
+            IsFinish = isFinish,
+            IsDNF = isDnf
+        };
+
+        await SendRoundRankingWidgetAsync();
+    }
+
+    public async Task ConsumeDnfAsync(string accountId)
+    {
+        if (!_isTimeAttackMode)
         {
-            _checkpointsRepository[accountId] = new CheckpointData
-            {
-                Player = await playerManagerService.GetOnlinePlayerAsync(accountId),
-                CheckpointId = checkpointId,
-                Time = RaceTime.FromMilliseconds(time),
-                IsFinish = isFinish,
-                IsDNF = isDnf
-            };
+            await ConsumeCheckpointAsync(accountId, -1, 0, false, true);
+            return;
         }
 
+        _checkpointsRepository.Remove(accountId, out var removedCheckpointData);
         await SendRoundRankingWidgetAsync();
     }
 
@@ -69,6 +74,11 @@ public class RoundRankingService(
         await SendRoundRankingWidgetAsync();
     }
 
+    public List<CheckpointData> GetSortedCheckpoints()
+    {
+        return _checkpointsRepository.GetSortedData();
+    }
+
     public async Task ClearCheckpointDataAsync()
     {
         _checkpointsRepository.Clear();
@@ -77,7 +87,7 @@ public class RoundRankingService(
 
     public async Task SendRoundRankingWidgetAsync()
     {
-        var bestCheckpoints = _checkpointsRepository.GetSortedData();
+        var bestCheckpoints = GetSortedCheckpoints();
 
         if (bestCheckpoints.Count > 0)
         {
@@ -108,7 +118,7 @@ public class RoundRankingService(
 
         var showWinnerTeam = _isTeamsMode && RoundRankingUtils.HasPlayerInFinish(bestCheckpoints);
         var winnerTeamName = "DRAW";
-        var winnerTeamColor = theme.Theme.UI_AccentSecondary;
+        var winnerTeamColor = theme.Theme?.UI_AccentSecondary ?? "000000";
         var winnerTeam = PlayerTeam.Unknown;
 
         if (showWinnerTeam)
@@ -143,12 +153,14 @@ public class RoundRankingService(
         var pointsRepartitionString =
             (string?)modeScriptSettings?.GetValueOrDefault(PointsRepartition.ModeScriptSetting);
 
-        if (pointsRepartitionString != null && pointsRepartitionString.Trim().Length > 0)
+        if (pointsRepartitionString == null || pointsRepartitionString.Trim().Length == 0)
         {
-            lock (_pointsRepartitionMutex)
-            {
-                _pointsRepartition.Update(pointsRepartitionString);
-            }
+            return;
+        }
+
+        lock (_pointsRepartitionMutex)
+        {
+            _pointsRepartition.Update(pointsRepartitionString);
         }
     }
 

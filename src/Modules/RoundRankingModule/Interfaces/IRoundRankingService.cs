@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Modules.Official.RoundRankingModule.Interfaces;
+﻿using EvoSC.Modules.Official.RoundRankingModule.Models;
+
+namespace EvoSC.Modules.Official.RoundRankingModule.Interfaces;
 
 public interface IRoundRankingService
 {
@@ -11,7 +13,13 @@ public interface IRoundRankingService
     /// <param name="isFinish"></param>
     /// <param name="isDnf"></param>
     /// <returns></returns>
-    public Task ConsumeCheckpointDataAsync(string accountId, int checkpointId, int time, bool isFinish, bool isDnf);
+    public Task ConsumeCheckpointAsync(string accountId, int checkpointId, int time, bool isFinish, bool isDnf);
+
+    /// <summary>
+    /// Sets a player as DNF in the checkpoint repository.
+    /// </summary>
+    /// <param name="accountId"></param>
+    public Task ConsumeDnfAsync(string accountId);
 
     /// <summary>
     /// Removes the checkpoint data of the player with the given account ID.
@@ -20,6 +28,12 @@ public interface IRoundRankingService
     /// <returns></returns>
     public Task RemovePlayerCheckpointDataAsync(string accountId);
 
+    /// <summary>
+    /// Sorts and returns the current checkpoint data.
+    /// </summary>
+    /// <returns></returns>
+    public List<CheckpointData> GetSortedCheckpoints();
+    
     /// <summary>
     /// Clears all checkpoint data.
     /// </summary>

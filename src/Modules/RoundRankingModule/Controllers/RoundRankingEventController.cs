@@ -15,7 +15,7 @@ public class RoundRankingEventController(IRoundRankingService roundRankingServic
     [Subscribe(ModeScriptEvent.WayPoint)]
     public async Task OnWaypointAsync(object sender, WayPointEventArgs args)
     {
-        await roundRankingService.ConsumeCheckpointDataAsync(
+        await roundRankingService.ConsumeCheckpointAsync(
             args.AccountId,
             args.CheckpointInLap,
             args.LapTime,
@@ -25,16 +25,8 @@ public class RoundRankingEventController(IRoundRankingService roundRankingServic
     }
 
     [Subscribe(ModeScriptEvent.GiveUp)]
-    public async Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args)
-    {
-        await roundRankingService.ConsumeCheckpointDataAsync(
-            args.AccountId,
-            -1,
-            0,
-            false,
-            true
-        );
-    }
+    public Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args) =>
+        roundRankingService.ConsumeDnfAsync(args.AccountId);
 
     [Subscribe(ModeScriptEvent.EndRoundEnd)]
     public Task OnEndRoundAsync(object sender, EventArgs args) =>
