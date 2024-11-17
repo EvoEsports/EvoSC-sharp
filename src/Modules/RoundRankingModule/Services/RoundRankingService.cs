@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.RoundRankingModule.Config;
@@ -18,6 +19,7 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Services;
 public class RoundRankingService(
     IRoundRankingSettings settings,
     IManialinkManager manialinkManager,
+    IPlayerManagerService playerManagerService,
     IMatchSettingsService matchSettingsService,
     IThemeManager theme,
     IServerClient server
@@ -32,15 +34,23 @@ public class RoundRankingService(
     private volatile bool _isTimeAttackMode;
     private volatile bool _isTeamsMode;
 
-    public async Task ConsumeCheckpointDataAsync(CheckpointData checkpointData)
+    public async Task ConsumeCheckpointDataAsync(string accountId, int checkpointId, int time, bool isFinish,
+        bool isDnf)
     {
-        if (_isTimeAttackMode && checkpointData.IsDNF)
+        if (_isTimeAttackMode && isDnf)
         {
-            _checkpointsRepository.Remove(checkpointData.Player.AccountId, out var removedCheckpointData);
+            _checkpointsRepository.Remove(accountId, out var removedCheckpointData);
         }
         else
         {
-            _checkpointsRepository[checkpointData.Player.AccountId] = checkpointData;
+            _checkpointsRepository[accountId] = new CheckpointData
+            {
+                Player = await playerManagerService.GetOnlinePlayerAsync(accountId),
+                CheckpointId = checkpointId,
+                Time = RaceTime.FromMilliseconds(time),
+                IsFinish = isFinish,
+                IsDNF = isDnf
+            };
         }
 
         await SendRoundRankingWidgetAsync();

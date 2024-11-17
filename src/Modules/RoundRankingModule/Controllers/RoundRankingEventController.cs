@@ -2,36 +2,38 @@
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
-using EvoSC.Modules.Official.RoundRankingModule.Models;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Controllers;
 
 [Controller]
-public class RoundRankingEventController(
-    IRoundRankingService roundRankingService,
-    IPlayerManagerService playerManagerService
-) : EvoScController<IEventControllerContext>
+public class RoundRankingEventController(IRoundRankingService roundRankingService)
+    : EvoScController<IEventControllerContext>
 {
     [Subscribe(ModeScriptEvent.WayPoint)]
     public async Task OnWaypointAsync(object sender, WayPointEventArgs args)
     {
-        var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
-        var checkpointData = CheckpointData.FromWaypointEventArgs(player, args);
-
-        await roundRankingService.ConsumeCheckpointDataAsync(checkpointData);
+        await roundRankingService.ConsumeCheckpointDataAsync(
+            args.AccountId,
+            args.CheckpointInLap,
+            args.LapTime,
+            args.IsEndLap,
+            false
+        );
     }
 
     [Subscribe(ModeScriptEvent.GiveUp)]
     public async Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args)
     {
-        var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
-        var checkpointData = CheckpointData.CreateDnfEntry(player);
-
-        await roundRankingService.ConsumeCheckpointDataAsync(checkpointData);
+        await roundRankingService.ConsumeCheckpointDataAsync(
+            args.AccountId,
+            -1,
+            0,
+            false,
+            true
+        );
     }
 
     [Subscribe(ModeScriptEvent.EndRoundEnd)]
@@ -43,7 +45,7 @@ public class RoundRankingEventController(
         roundRankingService.ClearCheckpointDataAsync();
 
     [Subscribe(ModeScriptEvent.StartMatchStart)]
-    public Task OnStartMatchAsync(object sender, WarmUpRoundEventArgs args) =>
+    public Task OnStartMatchAsync(object sender, MatchEventArgs args) =>
         roundRankingService.ClearCheckpointDataAsync();
 
     [Subscribe(ModeScriptEvent.StartLine)]

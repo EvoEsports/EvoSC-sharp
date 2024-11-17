@@ -1,15 +1,17 @@
-﻿using EvoSC.Modules.Official.RoundRankingModule.Models;
-
-namespace EvoSC.Modules.Official.RoundRankingModule.Interfaces;
+﻿namespace EvoSC.Modules.Official.RoundRankingModule.Interfaces;
 
 public interface IRoundRankingService
 {
     /// <summary>
-    /// Handle new CheckpointData entry
+    /// Process a new entry for the checkpoint data repository.
     /// </summary>
-    /// <param name="checkpointData"></param>
+    /// <param name="accountId"></param>
+    /// <param name="checkpointId"></param>
+    /// <param name="time"></param>
+    /// <param name="isFinish"></param>
+    /// <param name="isDnf"></param>
     /// <returns></returns>
-    public Task ConsumeCheckpointDataAsync(CheckpointData checkpointData);
+    public Task ConsumeCheckpointDataAsync(string accountId, int checkpointId, int time, bool isFinish, bool isDnf);
 
     /// <summary>
     /// Removes the checkpoint data of the player with the given account ID.
@@ -54,7 +56,7 @@ public interface IRoundRankingService
     /// </summary>
     /// <returns></returns>
     public Task DetectIsTeamsModeAsync();
-    
+
     /// <summary>
     /// Gets the latest team infos and caches them.
     /// </summary>
