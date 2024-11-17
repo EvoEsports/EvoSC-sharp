@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Util;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Models;
@@ -76,12 +77,8 @@ public class CheckpointData
         {
             return GameIcons.Icons.FlagO;
         }
-        else if (IsFinish)
-        {
-            return GameIcons.Icons.FlagCheckered;
-        }
 
-        return (CheckpointId + 1).ToString();
+        return IsFinish ? GameIcons.Icons.FlagCheckered : (CheckpointId + 1).ToString();
     }
 
     /// <summary>
@@ -92,5 +89,41 @@ public class CheckpointData
     public IRaceTime GetTimeDifferenceAbsolute(CheckpointData checkpointData)
     {
         return RaceTime.FromMilliseconds(int.Abs(this.Time.TotalMilliseconds - checkpointData.Time.TotalMilliseconds));
+    }
+
+    /// <summary>
+    /// Creates a CheckpointData instance from WayPointEventArgs.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="args"></param>
+    /// <param name="isDnf"></param>
+    /// <returns></returns>
+    public static CheckpointData FromWaypointEventArgs(IOnlinePlayer player, WayPointEventArgs args)
+    {
+        return new CheckpointData
+        {
+            Player = player,
+            CheckpointId = args.CheckpointInLap,
+            Time = RaceTime.FromMilliseconds(args.LapTime),
+            IsFinish = args.IsEndLap,
+            IsDNF = false
+        };
+    }
+
+    /// <summary>
+    /// Creates a CheckpointData instance for DNFs.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    public static CheckpointData CreateDnfEntry(IOnlinePlayer player)
+    {
+        return new CheckpointData
+        {
+            Player = player,
+            CheckpointId = -1,
+            Time = RaceTime.FromMilliseconds(0),
+            IsFinish = false,
+            IsDNF = true
+        };
     }
 }

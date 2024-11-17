@@ -5,7 +5,6 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
-using EvoSC.Common.Util;
 using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
 using EvoSC.Modules.Official.RoundRankingModule.Models;
 
@@ -21,30 +20,18 @@ public class RoundRankingEventController(
     public async Task OnWaypointAsync(object sender, WayPointEventArgs args)
     {
         var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
+        var checkpointData = CheckpointData.FromWaypointEventArgs(player, args);
 
-        await roundRankingService.ConsumeCheckpointDataAsync(new CheckpointData
-        {
-            Player = player,
-            CheckpointId = args.CheckpointInLap,
-            Time = RaceTime.FromMilliseconds(args.LapTime),
-            IsFinish = args.IsEndLap,
-            IsDNF = false
-        });
+        await roundRankingService.ConsumeCheckpointDataAsync(checkpointData);
     }
 
     [Subscribe(ModeScriptEvent.GiveUp)]
     public async Task OnPlayerGiveUpAsync(object sender, PlayerUpdateEventArgs args)
     {
         var player = await playerManagerService.GetOnlinePlayerAsync(args.AccountId);
+        var checkpointData = CheckpointData.CreateDnfEntry(player);
 
-        await roundRankingService.ConsumeCheckpointDataAsync(new CheckpointData
-        {
-            Player = player,
-            CheckpointId = -1,
-            Time = RaceTime.FromMilliseconds(0),
-            IsFinish = false,
-            IsDNF = true
-        });
+        await roundRankingService.ConsumeCheckpointDataAsync(checkpointData);
     }
 
     [Subscribe(ModeScriptEvent.EndRoundEnd)]
