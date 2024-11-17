@@ -7,16 +7,11 @@
 public class PointsRepartition : List<int>
 {
     public const string ModeScriptSetting = "S_PointsRepartition";
-    private const string DefaultValue = "10,6,4,3,2,1";
+    public const string DefaultValue = "10,6,4,3,2,1";
 
     public PointsRepartition()
     {
         Update(DefaultValue);
-    }
-
-    private PointsRepartition(PointsRepartition pointsRepartition)
-    {
-        this.AddRange(pointsRepartition);
     }
 
     /// <summary>
@@ -38,14 +33,5 @@ public class PointsRepartition : List<int>
     public int GetGainedPoints(int rank)
     {
         return rank <= Count ? this[rank - 1] : this.LastOrDefault(0);
-    }
-
-    /// <summary>
-    /// Creates a copy of the object.
-    /// </summary>
-    /// <returns></returns>
-    public PointsRepartition Clone()
-    {
-        return new PointsRepartition(this);
     }
 }
