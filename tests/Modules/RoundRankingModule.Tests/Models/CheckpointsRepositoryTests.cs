@@ -7,7 +7,7 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Tests.Models;
 
 public class CheckpointsRepositoryTests
 {
-    private CheckpointData CreateFakeCheckpointData(string accountId, int cpId, int time)
+    private static CheckpointData CreateFakeCheckpointData(string accountId, int cpId, int time)
     {
         return new CheckpointData
         {

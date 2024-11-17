@@ -14,6 +14,11 @@ public class PointsRepartition : List<int>
         Update(DefaultValue);
     }
 
+    public PointsRepartition(string pointsRepartitionString)
+    {
+        Update(pointsRepartitionString);
+    }
+
     /// <summary>
     /// Consumes new a points repartition.
     /// Values are comma separated.

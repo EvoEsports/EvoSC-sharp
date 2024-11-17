@@ -10,10 +10,7 @@ public class PointsRepartitionTests
     [InlineData("0, 0, 1, 2, -4, -5", new[] { 0, 0, 1, 2, -4, -5 })]
     public void Sets_Points_From_String(string pointsRepartition, int[] expectedPoints)
     {
-        var pr = new PointsRepartition();
-        pr.Update(pointsRepartition);
-
-        Assert.Equal(expectedPoints, pr.ToArray());
+        Assert.Equal(expectedPoints, new PointsRepartition(pointsRepartition).ToArray());
     }
 
     [Fact]
@@ -40,9 +37,6 @@ public class PointsRepartitionTests
     [InlineData("-1,-2,0,7,3", 6, 3)]
     public void Gets_Gained_Points_Correctly(string pointsRepartition, int rank, int expectedGainedPoints)
     {
-        var pr = new PointsRepartition();
-        pr.Update(pointsRepartition);
-        
-        Assert.Equal(expectedGainedPoints, pr.GetGainedPoints(rank));
+        Assert.Equal(expectedGainedPoints, new PointsRepartition(pointsRepartition).GetGainedPoints(rank));
     }
 }
