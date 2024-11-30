@@ -6,6 +6,12 @@ public interface IScoreboardService
     /// Sends the scoreboard manialink to all players.
     /// </summary>
     public Task SendScoreboardAsync();
+
+    /// <summary>
+    /// Sends the MetaData manialink.
+    /// </summary>
+    /// <returns></returns>
+    public Task SendMetaDataAsync();
     
     /// <summary>
     /// Hide the default game scoreboard.
@@ -16,24 +22,4 @@ public interface IScoreboardService
     /// Shows the default game scoreboard.
     /// </summary>
     public Task ShowNadeoScoreboardAsync();
-
-    /// <summary>
-    /// Sets the current round number.
-    /// </summary>
-    /// <param name="roundNumber"></param>
-    /// <returns></returns>
-    public Task SetCurrentRoundAsync(int roundNumber);
-
-    /// <summary>
-    /// Sets whether warm is currently ongoing.
-    /// </summary>
-    /// <param name="isWarmUp"></param>
-    /// <returns></returns>
-    public Task SetIsWarmUpAsync(bool isWarmUp);
-
-    /// <summary>
-    /// Sends the MetaData manialink.
-    /// </summary>
-    /// <returns></returns>
-    public Task SendMetaDataAsync();
 }

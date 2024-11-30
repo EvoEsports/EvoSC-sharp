@@ -12,6 +12,7 @@ namespace EvoSC.Modules.Official.ScoreboardModule.Controllers;
 [Controller]
 public class ScoreboardEventController(
     IScoreboardService scoreboardService,
+    IScoreboardStateService scoreboardStateService,
     IScoreboardNicknamesService nicknamesService
 )
     : EvoScController<IEventControllerContext>
@@ -24,38 +25,45 @@ public class ScoreboardEventController(
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
         await nicknamesService.LoadNicknamesAsync();
-        await scoreboardService.SetCurrentRoundAsync(1);
+        await scoreboardStateService.SetCurrentRoundNumberAsync(1);
         await scoreboardService.SendScoreboardAsync();
     }
 
     [Subscribe(ModeScriptEvent.StartRoundStart)]
-    public Task OnStartRoundAsync(object sender, RoundEventArgs args) =>
-        scoreboardService.SetCurrentRoundAsync(args.Count);
+    public async Task OnStartRoundAsync(object sender, RoundEventArgs args)
+    {
+        await scoreboardStateService.SetCurrentRoundNumberAsync(args.Count);
+        await scoreboardService.SendMetaDataAsync();
+    }
 
     [Subscribe(ModeScriptEvent.EndRoundEnd)]
-    public Task OnEndRoundAsync(object sender, RoundEventArgs args) =>
-        scoreboardService.SetCurrentRoundAsync(args.Count + 1);
+    public async Task OnEndRoundAsync(object sender, RoundEventArgs args)
+    {
+        await scoreboardStateService.SetCurrentRoundNumberAsync(args.Count + 1);
+        await scoreboardService.SendMetaDataAsync();
+    }
 
     [Subscribe(ModeScriptEvent.WarmUpStart)]
     public async Task OnWarmUpStartAsync(object sender, EventArgs args)
     {
-        await scoreboardService.SetIsWarmUpAsync(true);
-        await scoreboardService.SetCurrentRoundAsync(1);
+        await scoreboardStateService.SetIsWarmUpAsync(true);
+        await scoreboardStateService.SetCurrentRoundNumberAsync(1);
         await scoreboardService.SendMetaDataAsync();
     }
 
     [Subscribe(ModeScriptEvent.WarmUpEnd)]
     public async Task OnWarmUpEndAsync(object sender, EventArgs args)
     {
-        await scoreboardService.SetIsWarmUpAsync(false);
-        await scoreboardService.SetCurrentRoundAsync(1);
+        await scoreboardStateService.SetIsWarmUpAsync(false);
+        await scoreboardStateService.SetCurrentRoundNumberAsync(1);
         await scoreboardService.SendMetaDataAsync();
     }
 
     [Subscribe(ModeScriptEvent.WarmUpStartRound)]
     public async Task OnWarmUpStartRoundAsync(object sender, WarmUpRoundEventArgs args)
     {
-        await scoreboardService.SetIsWarmUpAsync(true);
-        await scoreboardService.SetCurrentRoundAsync(args.Current);
+        await scoreboardStateService.SetIsWarmUpAsync(true);
+        await scoreboardStateService.SetCurrentRoundNumberAsync(args.Current);
+        await scoreboardService.SendMetaDataAsync();
     }
 }

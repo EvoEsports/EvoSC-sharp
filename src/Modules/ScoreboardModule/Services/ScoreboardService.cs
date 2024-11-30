@@ -10,8 +10,9 @@ using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ScoreboardModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Singleton)]
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class ScoreboardService(
+    IScoreboardStateService scoreboardStateService,
     IManialinkManager manialinks,
     IServerClient server,
     IScoreboardNicknamesService nicknamesService,
@@ -23,27 +24,35 @@ public class ScoreboardService(
 {
     private const string ScoreboardTemplate = "ScoreboardModule.Scoreboard";
     private const string MetaDataTemplate = "ScoreboardModule.MetaData";
-    private readonly object _currentRoundMutex = new();
-    private readonly object _isWarmUpMutex = new();
-    private int _roundNumber = 1;
-    private bool _isWarmUp;
 
     public async Task SendScoreboardAsync()
     {
+        var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
+        var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
+        
         await SendMetaDataAsync();
-        await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, await GetDataAsync());
+        await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, new
+        {
+            settings,
+            MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue,
+        });
         await nicknamesService.SendNicknamesManialinkAsync();
     }
 
-    private async Task<dynamic> GetDataAsync()
+    public async Task SendMetaDataAsync()
     {
-        var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
-        var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
+        var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
+        int currentRoundNumber = await scoreboardStateService.GetCurrentRoundNumberAsync();
+        bool isWarmUp = await scoreboardStateService.GetIsWarmUpAsync();
 
-        return new
+        await manialinks.SendPersistentManialinkAsync(MetaDataTemplate, new
         {
-            settings, MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue,
-        };
+            roundNumber = currentRoundNumber,
+            isWarmUp,
+            warmUpCount = (int)(modeScriptSettings?.GetValueOrDefault("S_WarmUpNb") ?? 0),
+            roundsPerMap = (int)(modeScriptSettings?.GetValueOrDefault("S_RoundsPerMap") ?? 0),
+            pointsLimit = (int)(modeScriptSettings?.GetValueOrDefault("S_PointsLimit") ?? 0),
+        });
     }
 
     public Task HideNadeoScoreboardAsync() =>
@@ -63,50 +72,4 @@ public class ScoreboardService(
             0.0,
             1.0
         );
-
-    public async Task SetCurrentRoundAsync(int roundNumber)
-    {
-        lock (_currentRoundMutex)
-        {
-            _roundNumber = roundNumber;
-        }
-
-        await SendMetaDataAsync();
-    }
-
-    public Task SetIsWarmUpAsync(bool isWarmUp)
-    {
-        lock (_isWarmUpMutex)
-        {
-            _isWarmUp = isWarmUp;
-        }
-
-        return Task.CompletedTask;
-    }
-
-    public async Task SendMetaDataAsync()
-    {
-        var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
-        int roundNumber;
-        bool isWarmUp;
-
-        lock (_currentRoundMutex)
-        {
-            roundNumber = _roundNumber;
-        }
-
-        lock (_isWarmUpMutex)
-        {
-            isWarmUp = _isWarmUp;
-        }
-
-        await manialinks.SendPersistentManialinkAsync(MetaDataTemplate, new
-        {
-            roundNumber,
-            isWarmUp,
-            warmUpCount = (int)(modeScriptSettings?.GetValueOrDefault("S_WarmUpNb") ?? 0),
-            roundsPerMap = (int)(modeScriptSettings?.GetValueOrDefault("S_RoundsPerMap") ?? 0),
-            pointsLimit = (int)(modeScriptSettings?.GetValueOrDefault("S_PointsLimit") ?? 0),
-        });
-    }
 }
