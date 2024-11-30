@@ -67,7 +67,7 @@ public static class InternalModules
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(TeamChatModule),
-        typeof(RoundRankingModule)
+        // typeof(RoundRankingModule)
     ];
 
     /// <summary>

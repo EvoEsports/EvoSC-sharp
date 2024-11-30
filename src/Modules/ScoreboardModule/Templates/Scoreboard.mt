@@ -3,7 +3,7 @@
     <using namespace="System.Linq"/>
 
     <import component="EvoSC.Style.UIStyle" as="UIStyle"/>
-    <import component="ScoreboardModule.Components.ScoreboardHeader" as="Header"/>
+    <import component="ScoreboardModule.Components.ScoreboardHeader" as="ScoreboardHeader"/>
     <import component="ScoreboardModule.Components.ScoreboardBody" as="Body"/>
     <import component="ScoreboardModule.Components.ScoreboardBg" as="ScoreboardBg"/>
     <import component="ScoreboardModule.Components.Row.Framemodel" as="PlayerRowFramemodel"/>
@@ -43,12 +43,14 @@
         <!-- Scoreboard Content -->
         <frame pos="{{ settings.Width / -2.0 }} {{ settings.Height / 2.0 }}">
             <!-- Background -->
-            <ScoreboardBg width="{{ settings.Width }}"
-                          height="{{ settings.Height }}"
+            <ScoreboardBg
+                    width="{{ settings.Width }}"
+                    height="{{ settings.Height }}"
             />
 
             <!-- Header -->
-            <Header width="{{ settings.Width }}"
+            <ScoreboardHeader
+                    width="{{ settings.Width }}"
                     height="{{ headerHeight }}"
             />
 
