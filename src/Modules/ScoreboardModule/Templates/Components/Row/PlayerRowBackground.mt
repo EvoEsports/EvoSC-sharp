@@ -15,10 +15,10 @@
                   bgcolor="{{ Theme.ScoreboardModule_Background_Row_Color }}"
                   opacity="{{ Theme.ScoreboardModule_Background_Row_Opacity }}"
             />
-            <frame pos="{{ w / 2.0 }} {{ h / -2.0 }}">
+            <frame pos="{{ w / 2f }} {{ h / -2f }}">
                 <quad id="custom_gradient"
                       size="{{ h }} {{ w }}"
-                      pos="{{ w / -2.0 }} {{ h / -2.0 }}"
+                      pos="{{ w / -2f }} {{ h / -2f }}"
                       rot="-90"
                       image="file:///Media/Painter/Stencils/04-SquareGradient/Brush.tga"
                       modulatecolor="{{ Theme.UI_AccentPrimary }}"

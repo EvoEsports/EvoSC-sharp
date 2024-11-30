@@ -8,10 +8,10 @@
     <property type="double" name="padding" default="3.4"/>
 
     <template>
-        <frame id="header_content" pos="{{ width / 2.0 }} {{ height / -2.0 }}">
+        <frame id="header_content" pos="{{ width / 2f }} {{ height / -2f }}">
             <label id="header_text_left"
-                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * -0.5 - 4.0 }} 1.75"
-                   size="{{ width/2.0-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2.0 }} {{ height }}"
+                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * -0.5 - 4f }} 1.75"
+                   size="{{ width/2f-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2f }} {{ height }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    class="text-lg"
                    textfont="{{ Font.Regular }}"
@@ -19,8 +19,8 @@
                    valign="center2"
             />
             <label id="header_text_left_small"
-                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * -0.5 - 4.0 }} -1.75"
-                   size="{{ width/2.0-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2.0 }} {{ height }}"
+                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * -0.5 - 4f }} -1.75"
+                   size="{{ width/2f-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2f }} {{ height }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    class="text-primary"
                    textfont="{{ Font.Regular }}"
@@ -30,16 +30,16 @@
                    opacity="0.8"
             />
             <label id="header_text_right"
-                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * 0.5 + 4.0 }} 1.75"
-                   size="{{ width/2.0-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2.0 }} {{ height }}"
+                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * 0.5 + 4f }} 1.75"
+                   size="{{ width/2f-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2f }} {{ height }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    class="text-lg"
                    textfont="{{ Font.Regular }}"
                    valign="center2"
             />
             <label id="header_text_right_small"
-                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * 0.5 + 4.0 }} -1.75"
-                   size="{{ width/2.0-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2.0 }} {{ height }}"
+                   pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * 0.5 + 4f }} -1.75"
+                   size="{{ width/2f-float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture)-2f }} {{ height }}"
                    textcolor="{{ Theme.UI_TextPrimary }}"
                    class="text-primary"
                    textfont="{{ Font.Regular }}"
