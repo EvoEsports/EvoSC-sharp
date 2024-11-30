@@ -28,11 +28,13 @@ public class RoundRankingService(
     private const string WidgetTemplate = "RoundRankingModule.RoundRanking";
 
     private readonly object _pointsRepartitionMutex = new();
+    private readonly object _isTimeAttackModeMutex = new();
+    private readonly object _isTeamsModeMutex = new();
     private readonly PointsRepartition _pointsRepartition = [];
     private readonly CheckpointsRepository _checkpointsRepository = new();
     private readonly ConcurrentDictionary<PlayerTeam, string> _teamColors = new();
-    private volatile bool _isTimeAttackMode;
-    private volatile bool _isTeamsMode;
+    private bool _isTimeAttackMode;
+    private bool _isTeamsMode;
 
     public async Task ConsumeCheckpointAsync(string accountId, int checkpointId, int time, bool isFinish,
         bool isDnf)
@@ -51,7 +53,14 @@ public class RoundRankingService(
 
     public async Task ConsumeDnfAsync(string accountId)
     {
-        if (!_isTimeAttackMode)
+        bool isTimeAttackMode;
+
+        lock (_isTimeAttackModeMutex)
+        {
+            isTimeAttackMode = _isTimeAttackMode;
+        }
+
+        if (!isTimeAttackMode)
         {
             await ConsumeCheckpointAsync(accountId, -1, 0, false, true);
             return;
@@ -63,11 +72,14 @@ public class RoundRankingService(
 
     public async Task RemovePlayerCheckpointDataAsync(string accountId)
     {
-        if (!_isTimeAttackMode)
+        lock (_isTimeAttackModeMutex)
         {
-            //In time attack mode the entries are cleared by new round event.
-            //Prevents flood of manialinks.
-            return;
+            if (!_isTimeAttackMode)
+            {
+                //In time attack mode the entries are cleared by new round event.
+                //Prevents flood of manialinks.
+                return;
+            }
         }
 
         _checkpointsRepository.Remove(accountId, out var removedCheckpointData);
@@ -87,13 +99,25 @@ public class RoundRankingService(
 
     public async Task SendRoundRankingWidgetAsync()
     {
+        bool isTeamsMode;
+        bool isTimeAttackMode;
         var bestCheckpoints = GetSortedCheckpoints();
+
+        lock (_isTeamsModeMutex)
+        {
+            isTeamsMode = _isTeamsMode;
+        }
+
+        lock (_isTimeAttackModeMutex)
+        {
+            isTimeAttackMode = _isTimeAttackMode;
+        }
 
         if (bestCheckpoints.Count > 0)
         {
             bestCheckpoints = bestCheckpoints.Take(settings.MaxRows).ToList();
 
-            if (settings.DisplayGainedPoints && !_isTimeAttackMode)
+            if (settings.DisplayGainedPoints && !isTimeAttackMode)
             {
                 lock (_pointsRepartitionMutex)
                 {
@@ -105,7 +129,7 @@ public class RoundRankingService(
                 }
             }
 
-            if (_isTeamsMode)
+            if (isTeamsMode)
             {
                 RoundRankingUtils.ApplyTeamColorsAsAccentColors(bestCheckpoints, _teamColors);
             }
@@ -116,7 +140,7 @@ public class RoundRankingService(
             }
         }
 
-        var showWinnerTeam = _isTeamsMode && RoundRankingUtils.HasPlayerInFinish(bestCheckpoints);
+        var showWinnerTeam = isTeamsMode && RoundRankingUtils.HasPlayerInFinish(bestCheckpoints);
         var winnerTeamName = "DRAW";
         var winnerTeamColor = theme.Theme?.UI_AccentSecondary ?? "000000";
         var winnerTeam = PlayerTeam.Unknown;
@@ -166,7 +190,10 @@ public class RoundRankingService(
 
     public Task SetIsTimeAttackModeAsync(bool isTimeAttackMode)
     {
-        _isTimeAttackMode = isTimeAttackMode;
+        lock (_isTimeAttackModeMutex)
+        {
+            _isTimeAttackMode = isTimeAttackMode;
+        }
 
         return Task.CompletedTask;
     }
@@ -174,13 +201,20 @@ public class RoundRankingService(
     public async Task DetectIsTeamsModeAsync()
     {
         var currentMode = await matchSettingsService.GetCurrentModeAsync();
-        _isTeamsMode = currentMode == DefaultModeScriptName.Teams;
+
+        lock (_isTeamsModeMutex)
+        {
+            _isTeamsMode = currentMode == DefaultModeScriptName.Teams;
+        }
     }
 
     public async Task FetchAndCacheTeamInfoAsync()
     {
+        var team1Info = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1 + 1);
+        var team2Info = await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1);
+
         _teamColors[PlayerTeam.Unknown] = theme.Theme.UI_AccentSecondary;
-        _teamColors[PlayerTeam.Team1] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team1 + 1)).RGB;
-        _teamColors[PlayerTeam.Team2] = (await server.Remote.GetTeamInfoAsync((int)PlayerTeam.Team2 + 1)).RGB;
+        _teamColors[PlayerTeam.Team1] = team1Info.RGB;
+        _teamColors[PlayerTeam.Team2] = team2Info.RGB;
     }
 }
