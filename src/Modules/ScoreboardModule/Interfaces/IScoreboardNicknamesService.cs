@@ -1,4 +1,6 @@
-﻿namespace EvoSC.Modules.Official.ScoreboardModule.Interfaces;
+﻿using System.Collections.Concurrent;
+
+namespace EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
 public interface IScoreboardNicknamesService
 {
@@ -26,25 +28,4 @@ public interface IScoreboardNicknamesService
     /// </summary>
     /// <returns></returns>
     public Task SendNicknamesManialinkAsync();
-    
-    /// <summary>
-    /// Converts the nickname repo to a ManiaScript array.
-    /// </summary>
-    /// <param name="nicknameMap"></param>
-    /// <returns></returns>
-    public string ToManiaScriptArray(Dictionary<string, string> nicknameMap);
-
-    /// <summary>
-    /// Converts an entry of the nickname repo to a ManiaScript array entry.
-    /// </summary>
-    /// <param name="loginNickname"></param>
-    /// <returns></returns>
-    public string ToManiaScriptArrayEntry(KeyValuePair<string, string> loginNickname);
-
-    /// <summary>
-    /// Escapes a nickname to be safely inserted into a XMl comment.
-    /// </summary>
-    /// <param name="nickname"></param>
-    /// <returns></returns>
-    public string EscapeNickname(string nickname);
 }

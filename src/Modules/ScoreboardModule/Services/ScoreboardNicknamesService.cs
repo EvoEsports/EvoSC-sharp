@@ -1,19 +1,19 @@
-﻿using EvoSC.Common.Interfaces.Services;
+﻿using System.Collections.Concurrent;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
+using EvoSC.Modules.Official.ScoreboardModule.Utils;
 
 namespace EvoSC.Modules.Official.ScoreboardModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class ScoreboardNicknamesService(
-    IPlayerManagerService playerManagerService,
-    IManialinkManager manialinkManager
-) : IScoreboardNicknamesService
+public class ScoreboardNicknamesService(IPlayerManagerService playerManagerService, IManialinkManager manialinkManager)
+    : IScoreboardNicknamesService
 {
-    private readonly Dictionary<string, string> _nicknames = new();
+    private readonly ConcurrentDictionary<string, string> _nicknames = new();
 
     public async Task AddNicknameByLoginAsync(string login)
     {
@@ -45,24 +45,5 @@ public class ScoreboardNicknamesService(
 
     public Task SendNicknamesManialinkAsync() =>
         manialinkManager.SendPersistentManialinkAsync("ScoreboardModule.PlayerNicknames",
-            new { nicknames = ToManiaScriptArray(_nicknames) });
-
-    public string ToManiaScriptArray(Dictionary<string, string> nicknameMap)
-    {
-        var entriesList = nicknameMap.Select(ToManiaScriptArrayEntry).ToList();
-        var joinedEntries = string.Join(",\n", entriesList);
-
-        return $"[{joinedEntries}]";
-    }
-
-    public string ToManiaScriptArrayEntry(KeyValuePair<string, string> loginNickname)
-    {
-        return $"\"{loginNickname.Key}\" => \"{EscapeNickname(loginNickname.Value)}\"";
-    }
-
-    public string EscapeNickname(string nickname)
-    {
-        return nickname.Replace("-->", "-\u2192", StringComparison.OrdinalIgnoreCase)
-            .Replace("\"", "\\\"", StringComparison.OrdinalIgnoreCase);
-    }
+            new { nicknames = ScoreboardNicknameUtils.ToManiaScriptArray(_nicknames) });
 }
