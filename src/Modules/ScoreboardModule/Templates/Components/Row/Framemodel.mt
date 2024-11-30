@@ -51,7 +51,7 @@
                                    height="{{ rowHeight }}"
             />
 
-            <frame pos="{{ positionBoxWidth + columnSpacing }} {{ rowHeight / -2f }}" z-index="10">
+            <frame pos="{{ positionBoxWidth + columnSpacing }} {{ rowHeight / -2.0 }}" z-index="10">
                 <!-- Flag -->
                 <Flag height="{{ rowInnerHeight }}" />
 
@@ -66,7 +66,7 @@
                            class="text-primary"
                            text="CLUB"
                            pos="{{ rowInnerHeight * 0.75 }} 0"
-                           size="{{ rowInnerHeight * 2f }} {{ rowInnerHeight }}"
+                           size="{{ rowInnerHeight * 2.0 }} {{ rowInnerHeight }}"
                            valign="center2"
                            halign="center"
                            textsize="{{ Theme.UI_FontSize*2 }}"
@@ -76,8 +76,8 @@
 
                 <!-- Player Name -->
                 <label id="name"
-                       pos="{{ rowInnerHeight * 3f + columnSpacing * 2f }} 0"
-                       size="{{ w / 3f }} {{ rowHeight }}"
+                       pos="{{ rowInnerHeight * 3.0 + columnSpacing * 2.0 }} 0"
+                       size="{{ w / 3.0 }} {{ rowHeight }}"
                        valign="center2"
                        textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Regular }}"
@@ -86,7 +86,7 @@
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
-                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2f }}"
+                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 }}"
                        class="text-muted"
                        valign="center2"
                        halign="right"
@@ -94,7 +94,7 @@
                 />
 
                 <!-- Round Points -->
-                <label id="round_points" pos="0 {{ rowHeight / -2f }}"
+                <label id="round_points" pos="0 {{ rowHeight / -2.0 }}"
                        class="text-primary"
                        valign="center2"
                        halign="right"
@@ -105,7 +105,7 @@
                 <!-- Custom Label (FINALIST, etc) -->
                 <label id="custom_label"
                        class="text-primary"
-                       pos="0 {{ rowHeight / -2f }}"
+                       pos="0 {{ rowHeight / -2.0 }}"
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
@@ -115,18 +115,18 @@
                 <!-- Best Time -->
                 <label id="best_time"
                        class="text-primary"
-                       pos="{{ w - columnSpacing - 55f }} {{ rowHeight / -2f }}"
+                       pos="{{ w - columnSpacing - 55.0 }} {{ rowHeight / -2.0 }}"
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
                        textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
-                       text="0:00f00"
+                       text="0:00.000"
                 />
 
                 <!-- Player Score -->
                 <label id="score"
                        class="text-primary"
-                       pos="{{ w - columnSpacing }} {{ rowHeight / -2f }}"
+                       pos="{{ w - columnSpacing }} {{ rowHeight / -2.0 }}"
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
@@ -134,7 +134,7 @@
                 />
             </frame>
             <PlayerActions x="{{ w }}"
-                           y="{{ rowHeight / -2f }}"
+                           y="{{ rowHeight / -2.0 }}"
                            rowHeight="{{ rowHeight }}"
                            rowSpacing="{{ rowSpacing }}"
                            textsize="{{ textSize }}"
@@ -150,7 +150,7 @@
             declare backgroundWrapper = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
             playerActions.Show();
             detailsWrapper.Hide();
-            backgroundWrapper.Size.X = ({{ (w - positionBoxWidth) - actionButtonCount*(rowHeight*1.2) - actionButtonCount*rowSpacing - 0.1 }}) * 1f;
+            backgroundWrapper.Size.X = ({{ (w - positionBoxWidth) - actionButtonCount*(rowHeight*1.2) - actionButtonCount*rowSpacing - 0.1 }}) * 1.0;
         }
         
         Void HidePlayerActions(CMlFrame playerRow) {
@@ -159,7 +159,7 @@
             declare backgroundWrapper = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
             playerActions.Hide();
             detailsWrapper.Show();
-            backgroundWrapper.Size.X = {{ (w - positionBoxWidth) }} * 1f;
+            backgroundWrapper.Size.X = {{ (w - positionBoxWidth) }} * 1.0;
         }
         
         Void ResetPlayerActions() {

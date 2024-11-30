@@ -2,9 +2,9 @@
     <using namespace="EvoSC.Modules.Official.ScoreboardModule.Config"/>
 
     <property type="IScoreboardSettings" name="settings"/>
-    <property type="double" name="accentBarWidth" default="1f"/>
-    <property type="double" name="x" default="0f"/>
-    <property type="double" name="y" default="0f"/>
+    <property type="double" name="accentBarWidth" default="1.0"/>
+    <property type="double" name="x" default="0.0"/>
+    <property type="double" name="y" default="0.0"/>
     <property type="double" name="width"/>
     <property type="double" name="height"/>
 
@@ -23,7 +23,7 @@
                   opacity="{{ Theme.ScoreboardModule_PositionBox_Opacity }}"
             />
             <label id="position_box_position_rank"
-                   pos='{{ (width-(Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0)) / 2f + (Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0) }} {{ height / -2f + 0.25 }}'
+                   pos='{{ (width-(Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0)) / 2.0 + (Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0) }} {{ height / -2.0 + 0.25 }}'
                    valign="center"
                    halign="center"
                    textsize="{{ Theme.UI_FontSize*2 }}"
