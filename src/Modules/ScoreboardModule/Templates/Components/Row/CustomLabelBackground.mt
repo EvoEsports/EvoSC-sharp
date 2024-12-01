@@ -1,9 +1,9 @@
 ﻿<component>
     <property type="string" name="id" />
-    <property type="double" name="x" default="0.0"/>
-    <property type="double" name="y" default="0.0"/>
-    <property type="double" name="width" default="0.0"/>
-    <property type="double" name="height" default="0.0"/>
+    <property type="double" name="x" default="0f"/>
+    <property type="double" name="y" default="0f"/>
+    <property type="double" name="width" default="0f"/>
+    <property type="double" name="height" default="0f"/>
     
     <template>
         <frame id="{{ id }}" pos="{{ x }} {{ y }}">

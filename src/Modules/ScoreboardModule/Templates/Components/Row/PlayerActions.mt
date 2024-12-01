@@ -1,11 +1,11 @@
 ﻿<component>
-    <property type="double" name="x" default="0.0"/>
-    <property type="double" name="y" default="0.0"/>
-    <property type="double" name="rowHeight" default="0.0"/>
+    <property type="double" name="x" default="0f"/>
+    <property type="double" name="y" default="0f"/>
+    <property type="double" name="rowHeight" default="0f"/>
     <property type="double" name="rowSpacing" default="0.5"/>
 
     <template>
-        <frame id="player_actions" pos="{{ x - (rowHeight*1.2)/2.0 }} {{ y }}" hidden="1">
+        <frame id="player_actions" pos="{{ x - (rowHeight*1.2)/2f }} {{ y }}" hidden="1">
             <!-- SPECTATE -->
           <label id="spectate_player"
                  class="text-primary"

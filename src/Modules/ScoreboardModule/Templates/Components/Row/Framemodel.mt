@@ -51,7 +51,7 @@
                                    height="{{ rowHeight }}"
             />
 
-            <frame pos="{{ positionBoxWidth + columnSpacing }} {{ rowHeight / -2.0 }}" z-index="10">
+            <frame pos="{{ positionBoxWidth + columnSpacing }} {{ rowHeight / -2f }}" z-index="10">
                 <!-- Flag -->
                 <Flag height="{{ rowInnerHeight }}" />
 
@@ -66,7 +66,7 @@
                            class="text-primary"
                            text="CLUB"
                            pos="{{ rowInnerHeight * 0.75 }} 0"
-                           size="{{ rowInnerHeight * 2.0 }} {{ rowInnerHeight }}"
+                           size="{{ rowInnerHeight * 2f }} {{ rowInnerHeight }}"
                            valign="center2"
                            halign="center"
                            textsize="{{ Theme.UI_FontSize*2 }}"
@@ -76,8 +76,8 @@
 
                 <!-- Player Name -->
                 <label id="name"
-                       pos="{{ rowInnerHeight * 3.0 + columnSpacing * 2.0 }} 0"
-                       size="{{ w / 3.0 }} {{ rowHeight }}"
+                       pos="{{ rowInnerHeight * 3f + columnSpacing * 2f }} 0"
+                       size="{{ w / 3f }} {{ rowHeight }}"
                        valign="center2"
                        textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Regular }}"
@@ -86,7 +86,7 @@
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->
-                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2.0 }}"
+                <label id="spec_disconnected_label" pos="0 {{ rowHeight / -2f }}"
                        class="text-muted"
                        valign="center2"
                        halign="right"
@@ -94,7 +94,7 @@
                 />
 
                 <!-- Round Points -->
-                <label id="round_points" pos="0 {{ rowHeight / -2.0 }}"
+                <label id="round_points" pos="0 {{ rowHeight / -2f }}"
                        class="text-primary"
                        valign="center2"
                        halign="right"
@@ -105,7 +105,7 @@
                 <!-- Custom Label (FINALIST, etc) -->
                 <label id="custom_label"
                        class="text-primary"
-                       pos="0 {{ rowHeight / -2.0 }}"
+                       pos="0 {{ rowHeight / -2f }}"
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
@@ -115,7 +115,7 @@
                 <!-- Best Time -->
                 <label id="best_time"
                        class="text-primary"
-                       pos="{{ w - columnSpacing - 55.0 }} {{ rowHeight / -2.0 }}"
+                       pos="{{ w - columnSpacing - 55f }} {{ rowHeight / -2f }}"
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
@@ -126,7 +126,7 @@
                 <!-- Player Score -->
                 <label id="score"
                        class="text-primary"
-                       pos="{{ w - columnSpacing }} {{ rowHeight / -2.0 }}"
+                       pos="{{ w - columnSpacing }} {{ rowHeight / -2f }}"
                        valign="center2"
                        halign="right"
                        textsize="{{ Theme.UI_FontSize*2 }}"
@@ -134,7 +134,7 @@
                 />
             </frame>
             <PlayerActions x="{{ w }}"
-                           y="{{ rowHeight / -2.0 }}"
+                           y="{{ rowHeight / -2f }}"
                            rowHeight="{{ rowHeight }}"
                            rowSpacing="{{ rowSpacing }}"
                            textsize="{{ textSize }}"

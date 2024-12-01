@@ -11,14 +11,14 @@
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
 
-    <property type="double" name="backgroundBorderRadius" default="3.0"/>
-    <property type="double" name="headerHeight" default="14.0"/>
-    <property type="double" name="rowHeight" default="8.0"/>
-    <property type="double" name="rowInnerHeight" default="5.0"/>
-    <property type="double" name="rowSpacing" default="0.3"/>
-    <property type="double" name="columnSpacing" default="4.0"/>
-    <property type="double" name="pointsWidth" default="16.0"/>
-    <property type="double" name="padding" default="2.0"/>
+    <property type="double" name="backgroundBorderRadius" default="3f"/>
+    <property type="double" name="headerHeight" default="14f"/>
+    <property type="double" name="rowHeight" default="8f"/>
+    <property type="double" name="rowInnerHeight" default="5f"/>
+    <property type="double" name="rowSpacing" default="0f"/>
+    <property type="double" name="columnSpacing" default="4f"/>
+    <property type="double" name="pointsWidth" default="16f"/>
+    <property type="double" name="padding" default="2f"/>
     <property type="double" name="innerSpacing" default="1.6"/>
     <property type="double" name="legendHeight" default="3.8"/>
     <property type="int" name="actionButtonCount" default="2"/>
@@ -41,7 +41,7 @@
         />
 
         <!-- Scoreboard Content -->
-        <frame pos="{{ settings.Width / -2.0 }} {{ settings.Height / 2.0 }}">
+        <frame pos="{{ settings.Width / -2f }} {{ settings.Height / 2f }}">
             <!-- Background -->
             <ScoreboardBg
                     width="{{ settings.Width }}"
@@ -353,15 +353,15 @@
             declare x = scoreLabel.RelativePosition_V3.X;
             
             if(scoreLabel.Value != ""){
-                offset += scoreLabel.ComputeWidth(scoreLabel.Value) + {{ columnSpacing / 2.0 }};
+                offset += scoreLabel.ComputeWidth(scoreLabel.Value) + {{ columnSpacing / 2f }};
             }
             customLabel.RelativePosition_V3.X = x - offset;
             if(customLabel.Value != ""){
-                offset += customLabel.ComputeWidth(customLabel.Value) + {{ columnSpacing / 2.0 }};
+                offset += customLabel.ComputeWidth(customLabel.Value) + {{ columnSpacing / 2f }};
             }
             roundPointsLabel.RelativePosition_V3.X = x - offset;
             if(roundPointsLabel.Value != ""){
-                offset += roundPointsLabel.ComputeWidth(roundPointsLabel.Value) + {{ columnSpacing / 2.0 }};
+                offset += roundPointsLabel.ComputeWidth(roundPointsLabel.Value) + {{ columnSpacing / 2f }};
             }
             specDisconnectedLabel.RelativePosition_V3.X = x - offset;
         }
