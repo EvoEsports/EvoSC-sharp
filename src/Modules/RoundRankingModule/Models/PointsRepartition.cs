@@ -6,8 +6,8 @@
 /// </summary>
 public class PointsRepartition : List<int>
 {
-    public const string ModeScriptSetting = "S_PointsRepartition";
-    public const string DefaultValue = "10,6,4,3,2,1";
+    public static readonly string ModeScriptSetting = "S_PointsRepartition";
+    public static readonly string DefaultValue = "10,6,4,3,2,1";
 
     public PointsRepartition()
     {

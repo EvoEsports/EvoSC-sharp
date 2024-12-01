@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace EvoSC.Modules.Official.ScoreboardModule.Interfaces;
+﻿namespace EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 
 public interface IScoreboardNicknamesService
 {

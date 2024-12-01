@@ -12,7 +12,7 @@ public abstract class RoundRankingUtils
     /// <param name="checkpoints"></param>
     /// <returns></returns>
     public static bool HasPlayerInFinish(List<CheckpointData> checkpoints) =>
-        checkpoints.Any(checkpoint => checkpoint.IsFinish);
+        checkpoints.Exists(checkpoint => checkpoint.IsFinish);
 
     /// <summary>
     /// Determines the winning team based on the given checkpoint data.

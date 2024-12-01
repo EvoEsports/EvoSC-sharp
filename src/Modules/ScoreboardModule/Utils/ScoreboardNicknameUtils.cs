@@ -2,7 +2,7 @@
 
 namespace EvoSC.Modules.Official.ScoreboardModule.Utils;
 
-public class ScoreboardNicknameUtils
+public static class ScoreboardNicknameUtils
 {
     /// <summary>
     /// Converts the nickname repo to a ManiaScript array.
