@@ -23,10 +23,10 @@
                   opacity="{{ Theme.ScoreboardModule_PositionBox_Opacity }}"
             />
             <label id="position_box_position_rank"
+                   class="text-xl"
                    pos='{{ (width-(Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0)) / 2f + (Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0) }} {{ height / -2f + 0.25 }}'
                    valign="center"
                    halign="center"
-                   textsize="{{ Theme.UI_FontSize*2 }}"
                    textfont="{{ Font.ExtraBold }}"
                    textcolor="{{ Theme.ScoreboardModule_PositionBox_TextColor }}"
                    opacity="{{ Theme.ScoreboardModule_PositionBox_TextOpacity }}"

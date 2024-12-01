@@ -76,10 +76,10 @@
 
                 <!-- Player Name -->
                 <label id="name"
+                       class="text-xl"
                        pos="{{ rowInnerHeight * 3f + columnSpacing * 2f }} 0"
                        size="{{ w / 3f }} {{ rowHeight }}"
                        valign="center2"
-                       textsize="{{ Theme.UI_FontSize*2 }}"
                        textfont="{{ Font.Regular }}"
                        textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
                 />
