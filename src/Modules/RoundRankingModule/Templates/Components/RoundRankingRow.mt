@@ -50,15 +50,15 @@
                         size="{{ width-20 }} {{ height }}"
                 />
                 <label
-                        text="{{ checkpoint.FormattedTime() ) }}"
-                        textprefix='{{ checkpoint.TimeDifference!=null&amp;&amp;!checkpoint.IsDNF ? "+" : "" }}'
+                        text="{{ checkpoint.FormattedTime() }}"
+                        textprefix='{{ checkpoint is { TimeDifference: not null, IsDNF: false } ? "+" : "" }}'
                         class="text-primary"
                         textsize="0.5"
                         pos="{{ width-4-(height * 1.25)-1.0 }} {{ -height/2.0 + 0.2 }}"
                         valign="center"
                         halign="right"
                         size="9 {{ height }}"
-                        opacity="{{ checkpoint.TimeDifference==null&amp;&amp;!checkpoint.IsDNF ? 1.0 : 0.75 }}"
+                        opacity="{{ checkpoint is { TimeDifference: null, IsDNF: false } ? 1.0 : 0.75 }}"
                 />
                 <frame>
                     <!-- CHECKPOINT ID & GAINED POINTS BOX -->
