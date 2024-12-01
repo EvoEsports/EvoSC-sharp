@@ -10,7 +10,7 @@ public class ScoreboardModule(IScoreboardService scoreboardService, IScoreboardN
 {
     public async Task EnableAsync()
     {
-        await nicknamesService.LoadNicknamesAsync();
+        await nicknamesService.InitializeNicknamesAsync();
         await scoreboardService.HideNadeoScoreboardAsync();
         await scoreboardService.SendScoreboardAsync();
     }

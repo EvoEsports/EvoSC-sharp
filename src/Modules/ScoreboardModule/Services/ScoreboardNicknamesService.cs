@@ -15,7 +15,16 @@ public class ScoreboardNicknamesService(IPlayerManagerService playerManagerServi
 {
     private readonly ConcurrentDictionary<string, string> _nicknames = new();
 
-    public async Task AddNicknameByLoginAsync(string login)
+    public async Task InitializeNicknamesAsync()
+    {
+        var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
+        foreach (var player in onlinePlayers.Where(player => player.NickName != player.UbisoftName))
+        {
+            _nicknames[player.GetLogin()] = player.NickName;
+        }
+    }
+
+    public async Task FetchAndAddNicknameByLoginAsync(string login)
     {
         var player = await playerManagerService.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(login));
 
@@ -27,20 +36,16 @@ public class ScoreboardNicknamesService(IPlayerManagerService playerManagerServi
         _nicknames[login] = player.NickName;
     }
 
+    public Task<ConcurrentDictionary<string, string>> GetNicknamesAsync()
+    {
+        return Task.FromResult(_nicknames);
+    }
+
     public Task ClearNicknamesAsync()
     {
         _nicknames.Clear();
 
         return Task.CompletedTask;
-    }
-
-    public async Task LoadNicknamesAsync()
-    {
-        var onlinePlayers = await playerManagerService.GetOnlinePlayersAsync();
-        foreach (var player in onlinePlayers.Where(player => player.NickName != player.UbisoftName))
-        {
-            _nicknames[player.GetLogin()] = player.NickName;
-        }
     }
 
     public Task SendNicknamesManialinkAsync() =>

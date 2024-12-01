@@ -19,12 +19,12 @@ public class ScoreboardEventController(
 {
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
     public Task OnPlayerConnectAsync(object sender, PlayerGbxEventArgs args) =>
-        nicknamesService.AddNicknameByLoginAsync(args.Login);
+        nicknamesService.FetchAndAddNicknameByLoginAsync(args.Login);
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
-        await nicknamesService.LoadNicknamesAsync();
+        await nicknamesService.InitializeNicknamesAsync();
         await scoreboardStateService.SetCurrentRoundNumberAsync(1);
         await scoreboardService.SendScoreboardAsync();
     }
