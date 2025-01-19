@@ -30,11 +30,14 @@ public class ScoreboardService(
         var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
         var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
         
+        //TODO: get is teams mode
+        
         await SendMetaDataAsync();
         await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, new
         {
             settings,
             MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue,
+            isTeamsMode = true
         });
         await nicknamesService.SendNicknamesManialinkAsync();
     }

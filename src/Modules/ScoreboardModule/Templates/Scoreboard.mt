@@ -10,6 +10,7 @@
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
+    <property type="bool" name="isTeamsMode" default="false"/>
 
     <property type="double" name="backgroundBorderRadius" default="3f"/>
     <property type="double" name="headerHeight" default="14f"/>
@@ -28,7 +29,7 @@
         <UIStyle/>
 
         <!-- Frame Models -->
-        <PlayerRowFramemodel w="{{ settings.Width }}"
+        <PlayerRowFramemodel w="{{ isTeamsMode ? settings.Width / 2f : settings.Width }}"
                              padding="{{ padding }}"
                              rowHeight="{{ rowHeight }}"
                              rowSpacing="{{ rowSpacing }}"
@@ -73,8 +74,13 @@
                            size="{{ settings.Width }} {{ settings.Height-headerHeight-legendHeight - 0.1 }}"
                     >
                         <frameinstance modelid="player_row"
-                                       foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
+                                       foreach="int rowId in Enumerable.Range(0, MaxPlayers * (isTeamsMode ? 1 : 2)).ToList()"
                                        pos="0 {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
+                        />
+                        <frameinstance if="isTeamsMode"
+                                       modelid="player_row"
+                                       foreach="int rowId in Enumerable.Range(0, MaxPlayers).ToList()"
+                                       pos="{{ settings.Width / 2f }} {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
                         />
                     </frame>
                 </frame>
@@ -95,6 +101,9 @@
         #Const C_Status_Spawned			1
         #Const C_Status_NotSpawned		2
         #Const C_Status_Spectating		3
+        
+        #Const C_Team_One               1
+        #Const C_Team_Two               2
 
         #Const UIModules_ScoresTable::C_Mode_BestTime as C_Mode_BestTime
         #Const UIModules_ScoresTable::C_Mode_PrevTime as C_Mode_PrevTime
@@ -193,7 +202,8 @@
             return SortedScores.sort();
         }
         
-        Void SetCountryFlag(CMlQuad flagQuad, Text login){
+        Void SetCountryFlag(CMlQuad flagQuad, CSmScore score){
+            declare login = score.User.Login;
             if(login != "" && !TL::StartsWith("*fakeplayer", login)){
                 flagQuad.ImageUrl = "file://ZoneFlags/Login/" ^ login ^ "/country";
                 flagQuad.Opacity = 1.0;
@@ -203,7 +213,7 @@
             }
         }
         
-        Void UpdateScoreAndPoints(CSmScore Score, CMlFrame playerRow, Integer position){
+        Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
             if(Score == Null || Score.User == Null || playerRow == Null){
                 return;
             }
@@ -402,7 +412,34 @@
             return user.Name;
         }
         
-        Void UpdateScoreTable() {
+        Void HideEmptyPlayerRows(Integer[Integer] rowsFilled) {
+            for(teamNumber, C_Team_One, C_Team_Two){
+                declare offset = 0;
+                
+                if(teamNumber == C_Team_Two){
+                    offset += MaxPlayers;
+                }
+                
+                for(i, rowsFilled[teamNumber], {{ MaxPlayers - 1 }}){
+                    if(!RowsFrame.Controls.existskey(i + offset)) continue;
+                    declare playerRow = (RowsFrame.Controls[i + offset] as CMlFrame);
+                    playerRow.Hide();
+                }
+            }
+        }
+        
+        Void SetClub(CMlLabel label, CSmScore score) {
+            label.Value = score.User.ClubTag;
+            if(label.Value == ""){
+                label.Value = "-";
+            }
+        }
+        
+        Void SetNickname(CMlLabel label, CSmScore score) {
+            label.Value = GetNickname(score.User);
+        }
+        
+        Void RefreshPlayerSpawnStatus() {
             foreach (PlayerIndex => Player in Players) {
                 if (Player.Score == Null) continue;
                 
@@ -415,9 +452,14 @@
                 declare CSmPlayer::ESpawnStatus Race_ScoresTable_SpawnStatus for Player.Score = CSmPlayer::ESpawnStatus::NotSpawned;
                 Race_ScoresTable_SpawnStatus = Player.SpawnStatus;
             }
+        }
+        
+        Void UpdateScoreTable() {
+            RefreshPlayerSpawnStatus();
             
             declare cursor = 0;
-           
+            declare Integer[Integer] rowsFilled = [C_Team_One => 0, C_Team_Two => 0];
+            
             foreach(Score => Weight in GetSortedScores()){
                 if(!RowsFrame.Controls.existskey(cursor)){
                     continue;
@@ -425,57 +467,50 @@
                 
                 declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
                 declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
+                declare playerRank = cursor + 1;
+                declare cursorOffset = 0;
+                
+                if(Score.TeamNum == C_Team_Two){
+                    cursorOffset = MaxPlayers;
+                }
+                
+                declare columnIndex = cursorOffset + rowsFilled[Score.TeamNum];
                 
                 if(!SB_Setting_ShowSpectators){
                     declare Boolean Race_ScoresTable_IsSpectator for Score = False;
-                    if(Race_ScoresTable_IsSpectator){
-                        continue;
-                    }
+                    if(Race_ScoresTable_IsSpectator) continue;
                 }
                 if(!SB_Setting_ShowDisconnected){
                     declare ScoresTable_PlayerLastUpdate for Score = -1;
                     declare Boolean PlayerIsConnected = ScoresTable_PlayerLastUpdate == Now;
-                    if(!PlayerIsConnected){
-                        continue;
-                    }
+                    if(!PlayerIsConnected) continue;
                 }
                 
-                declare playerRow = (RowsFrame.Controls[cursor] as CMlFrame);
-                declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
-                declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
-                declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
-                declare positionBoxFrame = (playerRow.GetFirstChild("position_box") as CMlFrame);
-                
-                SetPlayerRank(positionBoxFrame, cursor + 1);
-                nameLabel.Value = GetNickname(Score.User);
-                clubLabel.Value = Score.User.ClubTag;
-                if(clubLabel.Value == ""){
-                    clubLabel.Value = "-";
-                }
-                
-                declare Boolean CustomLabelVisible for playerRow = False;
+                declare playerRow = (RowsFrame.Controls[columnIndex] as CMlFrame);
+                //declare Boolean CustomLabelVisible for playerRow = False;
                 declare Boolean RowIsLocked for playerRow = False;
                 
                 if(!RowIsLocked){
-                    UpdateScoreAndPoints(Score, playerRow, cursor + 1);
-                    SetCountryFlag(flagQuad, Score.User.Login);
+                    declare clubLabel = (playerRow.GetFirstChild("club") as CMlLabel);
+                    declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
+                    declare flagQuad = (playerRow.GetFirstChild("flag") as CMlQuad);
+                    declare positionBoxFrame = (playerRow.GetFirstChild("position_box") as CMlFrame);
+                
+                    UpdateScoreAndPoints(playerRow, Score, playerRank);
+                    SetCountryFlag(flagQuad, Score);
+                    SetPlayerRank(positionBoxFrame, playerRank);
+                    SetNickname(nameLabel, Score);
+                    SetClub(clubLabel, Score);
                 }
                 
                 playerRow.Show();
                 
                 cursor += 1;
+                rowsFilled[Score.TeamNum] += 1;
             }
             
-            //Hide remaining rows
-            for(i, cursor, {{ MaxPlayers - 1 }}){
-                if(!RowsFrame.Controls.existskey(i)){
-                    continue;
-                }
-            
-                declare playerRow = (RowsFrame.Controls[i] as CMlFrame);
-                playerRow.Hide();
-            }
-            UpdateScrollSize(cursor);
+            HideEmptyPlayerRows(rowsFilled);
+            UpdateScrollSize(ML::Max(rowsFilled[C_Team_One], rowsFilled[C_Team_Two]));
         }
         -->
     </script>

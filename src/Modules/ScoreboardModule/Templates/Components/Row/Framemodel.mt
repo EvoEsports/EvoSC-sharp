@@ -17,6 +17,7 @@
     <property type="double" name="rowInnerHeight"/>
     <property type="double" name="pointsWidth"/>
     <property type="int" name="actionButtonCount"/>
+    <property type="bool" name="isTeamsMode" default="false"/>
 
     <property type="double" name="textSize" default="2.4"/>
     <property type="double" name="positionBoxWidth" default="9.6"/>
