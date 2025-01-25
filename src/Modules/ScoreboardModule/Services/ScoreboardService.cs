@@ -47,6 +47,8 @@ public class ScoreboardService(
         var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
         int currentRoundNumber = await scoreboardStateService.GetCurrentRoundNumberAsync();
         bool isWarmUp = await scoreboardStateService.GetIsWarmUpAsync();
+        
+        //TODO: team info
 
         await manialinks.SendPersistentManialinkAsync(MetaDataTemplate, new
         {

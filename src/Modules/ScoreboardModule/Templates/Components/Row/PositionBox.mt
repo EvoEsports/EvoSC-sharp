@@ -49,8 +49,17 @@
             SetPositionBoxColor(backgroundFrame, color, {! Color.ToMlColor(Theme.UI_AccentSecondary) !});
         }
         
-        Void SetPlayerRank(CMlFrame pointsBoxFrame, Integer rank) {
-            declare positionLabel = (pointsBoxFrame.GetFirstChild("position_box_position_rank") as CMlLabel);
+        Void SetPositionBoxTeamColor(CMlFrame backgroundFrame, Integer teamNum) {
+            if(teamNum == 1){
+                SetPositionBoxColor(backgroundFrame, <0.0,0.0,1.0>);
+            }else{
+                SetPositionBoxColor(backgroundFrame, <1.0,0.0,0.0>);
+            }
+        }
+        
+        Void SetPlayerRank(CMlFrame playerRow, Integer rank) {
+            declare positionBoxFrame = (playerRow.GetFirstChild("position_box") as CMlFrame);
+            declare positionLabel = (positionBoxFrame.GetFirstChild("position_box_position_rank") as CMlLabel);
             positionLabel.Value = rank ^ "";
         }
         -->

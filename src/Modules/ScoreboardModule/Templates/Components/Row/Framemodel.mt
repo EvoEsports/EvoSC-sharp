@@ -1,6 +1,6 @@
 ﻿<component>
     <using namespace="EvoSC.Modules.Official.ScoreboardModule.Config"/>
-    
+
     <import component="ScoreboardModule.Components.Row.CustomLabelBackground" as="CustomLabelBackground"/>
     <import component="ScoreboardModule.Components.Row.PlayerRowBackground" as="PlayerRowBackground"/>
     <import component="ScoreboardModule.Components.Row.PlayerActions" as="PlayerActions"/>
@@ -25,10 +25,7 @@
     <template>
         <framemodel id="player_row">
             <!-- Scroll activation -->
-            <quad id="player_row_trigger"
-                  size="{{ w }} {{ rowHeight + rowSpacing }}"
-                  ScriptEvents="1"
-            />
+            <quad id="player_row_trigger" size="{{ w }} {{ rowHeight + rowSpacing }}" ScriptEvents="1"/>
 
             <!-- Player Row Background -->
             <PlayerRowBackground id="player_row_bg"
@@ -54,7 +51,7 @@
 
             <frame pos="{{ positionBoxWidth + columnSpacing }} {{ rowHeight / -2f }}" z-index="10">
                 <!-- Flag -->
-                <Flag height="{{ rowInnerHeight }}" />
+                <Flag height="{{ rowInnerHeight }}"/>
 
                 <frame pos="{{ rowInnerHeight * 1.5 + columnSpacing }} 0">
                     <quad id="club_bg"
@@ -143,5 +140,5 @@
         </framemodel>
     </template>
 
-    <script resource="ScoreboardModule.Scripts.Framemodel" once="true" />
+    <script resource="ScoreboardModule.Scripts.Framemodel" once="true"/>
 </component>
