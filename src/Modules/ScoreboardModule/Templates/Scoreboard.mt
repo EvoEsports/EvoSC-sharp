@@ -10,7 +10,6 @@
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
-    <property type="bool" name="isTeamsMode" default="false"/>
 
     <property type="double" name="backgroundBorderRadius" default="3f"/>
     <property type="double" name="headerHeight" default="14f"/>
@@ -29,7 +28,7 @@
         <UIStyle/>
 
         <!-- Frame Models -->
-        <PlayerRowFramemodel w="{{ isTeamsMode ? settings.Width / 2f : settings.Width }}"
+        <PlayerRowFramemodel w="{{ settings.Width }}"
                              padding="{{ padding }}"
                              rowHeight="{{ rowHeight }}"
                              rowSpacing="{{ rowSpacing }}"
@@ -70,17 +69,10 @@
                    size="{{ settings.Width }} {{ settings.Height-headerHeight }}"
             >
                 <frame id="rows_inner">
-                    <frame id="frame_scroll"
-                           size="{{ settings.Width }} {{ settings.Height-headerHeight-legendHeight - 0.1 }}"
-                    >
+                    <frame id="frame_scroll" size="{{ settings.Width }} {{ settings.Height-headerHeight-legendHeight - 0.1 }}">
                         <frameinstance modelid="player_row"
-                                       foreach="int rowId in Enumerable.Range(0, MaxPlayers * (isTeamsMode ? 1 : 2)).ToList()"
+                                       foreach="int rowId in Enumerable.Range(0, MaxPlayers * 2).ToList()"
                                        pos="0 {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
-                        />
-                        <frameinstance if="isTeamsMode"
-                                       modelid="player_row"
-                                       foreach="int rowId in Enumerable.Range(0, MaxPlayers).ToList()"
-                                       pos="{{ settings.Width / 2f }} {{ rowId * -rowHeight + (rowId+1) * -rowSpacing }}"
                         />
                     </frame>
                 </frame>
@@ -135,8 +127,28 @@
                 || CurrentScoreMode == C_Mode_Points;
         }
         
+        Void MoveAndScalePlayerRows() {
+            declare index = 0;
+            
+            foreach(playerRowControl in RowsFrame.Controls){
+                index += 1;
+                declare playerRow = (playerRowControl as CMlFrame);
+                playerRow.RelativePosition_V3 = <0.0, 1.0 * (index-1) * {{ -rowHeight }} + index * {{ -rowSpacing }}>;
+                playerRow.Size.X = {{ settings.Width }} * 1.0;
+                
+                if(UseClans){
+                    playerRow.Size.X /= 2.0;
+                    if(index > {{ MaxPlayers }}){
+                        playerRow.RelativePosition_V3.X = playerRow.Size.X;
+                        playerRow.RelativePosition_V3.Y += {{ rowHeight * MaxPlayers }};
+                    }
+                }
+            }
+        }
+        
         Void UpdateScoreboardLayout() {
             UpdateLegend(ShouldShowPointsBox());
+            MoveAndScalePlayerRows();
         }
         
         Text StripLeadingZeroes(Text timeString) {
@@ -332,7 +344,7 @@
             declare positionBox = (playerRow.GetFirstChild("position_box") as CMlFrame);
             declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
             
-            if({{ isTeamsMode ? "True" : "False" }}){
+            if(UseClans){
                 SetPositionBoxTeamColor(playerRow, Score.TeamNum);
             }else if({{ Theme.ScoreboardModule_PositionBox_ShowAccent }}){
                 if(PositionColors.existskey(position) && colorizePosition){
@@ -375,7 +387,7 @@
         
         Void UpdateScrollSize(Integer playerRowsFilled) {
             declare filledHeight = playerRowsFilled * {{ rowHeight + rowSpacing }};
-            declare contentHeight = {{ settings.Height - headerHeight - legendHeight }};
+            declare contentHeight = {{ settings.Height - headerHeight - legendHeight * 2.0 }};
             
             if(filledHeight > contentHeight) {
                 RowsFrame.ScrollMax.Y = (filledHeight - contentHeight) * 1.0;
@@ -405,6 +417,8 @@
                 
                 for(i, rowsFilled[teamNumber], {{ MaxPlayers - 1 }}){
                     if(!RowsFrame.Controls.existskey(i + offset)) continue;
+                    log("hide ->" ^ (i + offset));
+                    
                     declare playerRow = (RowsFrame.Controls[i + offset] as CMlFrame);
                     playerRow.Hide();
                 }
@@ -458,15 +472,20 @@
                 
                 declare playerRank = cursor + 1;
                 declare cursorOffset = 0;
+                declare teamNumber = C_Team_One;
                 
-                if(Score.TeamNum == C_Team_Two){
+                if(UseClans && Score.TeamNum == C_Team_Two){
+                    teamNumber = C_Team_Two;
+                }
+                
+                if(UseClans && teamNumber == C_Team_Two){
                     cursorOffset = MaxPlayers; //Skip to second half of rows.
                 }
                 
                 if(IgnoreSpectators(Score)) continue;
                 if(IgnoreDisconnected(Score)) continue;
                 
-                declare columnIndex = cursorOffset + rowsFilled[Score.TeamNum];
+                declare columnIndex = cursorOffset + rowsFilled[teamNumber];
                 declare playerRow = (RowsFrame.Controls[columnIndex] as CMlFrame);
                 declare Boolean RowIsLocked for playerRow = False;
                 
@@ -479,7 +498,7 @@
                 }
                 
                 cursor += 1;
-                rowsFilled[Score.TeamNum] += 1;
+                rowsFilled[teamNumber] += 1;
                 playerRow.Show();
             }
             
@@ -514,6 +533,8 @@
                 2 => "{{ Theme.Silver }}",
                 3 => "{{ Theme.Bronze }}"
             ];
+            
+            UpdateScoreboardLayout();
         ***
         
         *** OnLoop *** 

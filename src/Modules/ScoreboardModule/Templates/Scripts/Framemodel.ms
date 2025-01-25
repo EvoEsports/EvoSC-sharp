@@ -40,6 +40,13 @@ Void TogglePlayerActions(CMlFrame playerRow) {
     }
 }
 
+Void SetPlayerRowWidth(CMlFrame playerRow, Real width) {
+    declare container <=> (playerRow.GetFirstChild("player_row_container") as CMlFrame);
+    container.Size.X = width;
+    
+    //TODO: align items/content
+}
+
 Vec3 GetCustomLabelColor(Text value, Text defaultColorHex){
     declare customLabelColorHex = "";
     switch(value){
