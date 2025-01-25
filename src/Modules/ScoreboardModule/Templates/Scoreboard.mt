@@ -116,6 +116,11 @@
         #Const C_CustomPoints_Text 0
         #Const C_CustomPoints_Color 1
         
+        #Struct EvoSC_Team {
+            Text Name;
+            Vec3 Color;
+        }
+        
         declare Integer CurrentScoreMode;
         declare Integer PlayerRowsVisible;
         declare Integer PlayerRowsFilled;

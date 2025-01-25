@@ -50,11 +50,14 @@
         }
         
         Void SetPositionBoxTeamColor(CMlFrame backgroundFrame, Integer teamNum) {
-            if(teamNum == 1){
-                SetPositionBoxColor(backgroundFrame, <0.0,0.0,1.0>);
-            }else{
-                SetPositionBoxColor(backgroundFrame, <1.0,0.0,0.0>);
+            declare EvoSC_Team[Integer] EvoSC_Teams for UI = [];
+            
+            if(!EvoSC_Teams.existskey(teamNum)){
+                return;
             }
+            
+            declare teamInfo = EvoSC_Teams[teamNum];
+            SetPositionBoxColor(backgroundFrame, teamInfo.Color);
         }
         
         Void SetPlayerRank(CMlFrame playerRow, Integer rank) {

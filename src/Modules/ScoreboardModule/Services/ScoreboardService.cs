@@ -29,16 +29,18 @@ public class ScoreboardService(
     {
         var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
         var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
-        
+
         //TODO: get is teams mode
-        
+        //TODO: resend metadata on team info change
+
         await SendMetaDataAsync();
-        await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, new
-        {
-            settings,
-            MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue,
-            isTeamsMode = true
-        });
+        await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate,
+            new
+            {
+                settings,
+                MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue,
+                isTeamsMode = true
+            });
         await nicknamesService.SendNicknamesManialinkAsync();
     }
 
@@ -47,11 +49,11 @@ public class ScoreboardService(
         var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
         int currentRoundNumber = await scoreboardStateService.GetCurrentRoundNumberAsync();
         bool isWarmUp = await scoreboardStateService.GetIsWarmUpAsync();
-        
-        //TODO: team info
 
         await manialinks.SendPersistentManialinkAsync(MetaDataTemplate, new
         {
+            team1 = await server.Remote.GetTeamInfoAsync(1),
+            team2 = await server.Remote.GetTeamInfoAsync(2),
             roundNumber = currentRoundNumber,
             isWarmUp,
             warmUpCount = (int)(modeScriptSettings?.GetValueOrDefault("S_WarmUpNb") ?? 0),
