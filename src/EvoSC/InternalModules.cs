@@ -46,6 +46,7 @@ public static class InternalModules
         typeof(PlayerRecordsModule),
         typeof(MatchManagerModule),
         typeof(SetNameModule),
+        typeof(TeamSettingsModule),
         typeof(ScoreboardModule),
         typeof(FastestCpModule),
         typeof(CurrentMapModule),
@@ -63,7 +64,6 @@ public static class InternalModules
         typeof(MapListModule),
         typeof(LocalRecordsModule),
         typeof(ForceTeamModule),
-        typeof(TeamSettingsModule),
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(TeamChatModule),
@@ -89,7 +89,7 @@ public static class InternalModules
             }
         }
     }
-    
+
     /// <summary>
     /// Load all internal modules.
     /// </summary>

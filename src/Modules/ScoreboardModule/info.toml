@@ -7,3 +7,4 @@ author = "Evo"
 
 [dependencies]
 GameModeUiModule = "1.0.0"
+TeamSettingsModule = "1.0.0"
