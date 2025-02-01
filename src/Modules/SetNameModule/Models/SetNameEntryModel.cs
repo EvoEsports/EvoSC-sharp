@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using EvoSC.Manialinks.Attributes;
 
-namespace EvoSC.Modules.Official.SetName.Models;
+namespace EvoSC.Modules.Official.SetNameModule.Models;
 
 [FormEntryModel]
 public class SetNameEntryModel

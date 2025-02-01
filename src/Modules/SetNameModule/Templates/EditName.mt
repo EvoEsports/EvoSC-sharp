@@ -33,8 +33,8 @@
         />
         
         <frame pos="0 {{ (Validation != null && !Validation.IsValid) ? -10 : 0 }}">
-            <Button id="btnEdit" text="{{ Locale.PlayerLanguage.UI_Submit }}" action="SetName/EditName" x="0"  y="-11" />
-            <Button id="btnCancel" text="{{ Locale.PlayerLanguage.UI_Cancel }}" action="SetName/Cancel" x="32" y="-11" type="secondary" />
+            <Button id="btnEdit" text="{{ Locale.PlayerLanguage.UI_Submit }}" action="SetNameModule/EditName" x="0"  y="-11" />
+            <Button id="btnCancel" text="{{ Locale.PlayerLanguage.UI_Cancel }}" action="SetNameModule/Cancel" x="32" y="-11" type="secondary" />
         </frame>
       </Window>
     </template>
