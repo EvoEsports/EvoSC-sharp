@@ -118,7 +118,6 @@
                            halign="right"
                            textsize="{{ Theme.UI_FontSize*2 }}"
                            textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
-                           text="0:00.000"
                     />
 
                     <!-- Player Score -->

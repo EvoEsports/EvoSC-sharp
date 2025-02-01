@@ -2,13 +2,14 @@
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Manialinks.Interfaces;
 
 namespace EvoSC.Modules.Official.SetNameModule.Controllers;
 
 [Controller]
-public class SetNameCommandsController(IManialinkManager manialinks, Locale locale)
+public class SetNameCommandsController(IManialinkManager manialinks, Locale locale, IServerClient server)
     : EvoScController<ICommandInteractionContext>
 {
     private readonly dynamic _locale = locale;
@@ -18,5 +19,11 @@ public class SetNameCommandsController(IManialinkManager manialinks, Locale loca
     {
         await manialinks.SendManialinkAsync(Context.Player, "SetNameModule.EditName",
             new { Nickname = Context.Player.NickName, Locale = _locale });
+    }
+
+    [ChatCommand("fp", "fakeplayer")]
+    public async Task AddFakePlayerAsync()
+    {
+        await server.Remote.ConnectFakePlayerAsync();
     }
 }

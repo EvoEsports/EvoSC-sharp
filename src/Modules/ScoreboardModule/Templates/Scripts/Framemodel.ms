@@ -41,10 +41,22 @@ Void TogglePlayerActions(CMlFrame playerRow) {
 }
 
 Void SetPlayerRowWidth(CMlFrame playerRow, Real width) {
-    declare container <=> (playerRow.GetFirstChild("player_row_container") as CMlFrame);
-    container.Size.X = width;
-    
+    declare containerFrame <=> (playerRow.GetFirstChild("player_row_container") as CMlFrame);
+    declare nameLabel <=> (playerRow.GetFirstChild("name") as CMlLabel);
+    declare scoreLabel <=> (playerRow.GetFirstChild("score") as CMlLabel);
+    containerFrame.Size.X = width;
+    nameLabel.Size.X = width / 3.0;
+    scoreLabel.RelativePosition_V3.X = (width - {{ columnSpacing }}) * 1.0;
+
     //TODO: align items/content
+}
+
+Void HidePlayerRowElement(CMlFrame playerRow, Text id){
+    playerRow.GetFirstChild(id).Hide();
+}
+
+Void ShowPlayerRowElement(CMlFrame playerRow, Text id){
+    playerRow.GetFirstChild(id).Show();
 }
 
 Vec3 GetCustomLabelColor(Text value, Text defaultColorHex){

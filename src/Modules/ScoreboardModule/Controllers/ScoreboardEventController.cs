@@ -4,7 +4,9 @@ using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
+using EvoSC.Common.Util;
 using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
+using EvoSC.Modules.Official.SetNameModule.Events;
 using EvoSC.Modules.Official.TeamSettingsModule.Events;
 using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using GbxRemoteNet.Events;
@@ -74,5 +76,12 @@ public class ScoreboardEventController(
     {
         Thread.Sleep(500);
         await scoreboardService.SendMetaDataAsync();
+    }
+
+    [Subscribe(SetNameEvents.NicknameUpdated)]
+    public async Task OnPlayerNicknameChange(object sender, NicknameUpdatedEventArgs args)
+    {
+        await nicknamesService.OverwriteNickname(args.Player.GetLogin(), args.NewName);
+        await nicknamesService.SendNicknamesManialinkAsync();
     }
 }
