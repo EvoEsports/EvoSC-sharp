@@ -32,7 +32,7 @@ public interface IRoundRankingService
     /// Sorts and returns the current checkpoint data.
     /// </summary>
     /// <returns></returns>
-    public List<CheckpointData> GetSortedCheckpoints();
+    public Task<List<CheckpointData>> GetSortedCheckpointsAsync();
     
     /// <summary>
     /// Clears all checkpoint data.
@@ -69,7 +69,7 @@ public interface IRoundRankingService
     /// Detects if team mode is active and caches the result.
     /// </summary>
     /// <returns></returns>
-    public Task DetectIsTeamsModeAsync();
+    public Task DetectAndSetIsTeamsModeAsync();
 
     /// <summary>
     /// Gets the latest team infos and caches them.

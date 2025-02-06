@@ -10,10 +10,11 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Tests.Controllers;
 public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEventController, IEventControllerContext>
 {
     private Mock<IRoundRankingService> _roundRankingService = new();
+    private Mock<IRoundRankingStateService> _roundRankingStateService = new();
 
     public RoundRankingEventControllerTests()
     {
-        InitMock(_roundRankingService);
+        InitMock(_roundRankingService, _roundRankingStateService);
     }
 
     [Fact]
@@ -114,7 +115,7 @@ public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEvent
     {
         await Controller.OnStartMapAsync(null, EventArgs.Empty);
 
-        _roundRankingService.Verify(rrs => rrs.DetectIsTeamsModeAsync(), Times.Once());
+        _roundRankingService.Verify(rrs => rrs.DetectAndSetIsTeamsModeAsync(), Times.Once());
         _roundRankingService.Verify(rrs => rrs.FetchAndCacheTeamInfoAsync(), Times.Once());
         _roundRankingService.Verify(rrs => rrs.LoadPointsRepartitionFromSettingsAsync(), Times.Once());
         _roundRankingService.Verify(rrs => rrs.ClearCheckpointDataAsync(), Times.Once());
@@ -125,7 +126,7 @@ public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEvent
     {
         await Controller.OnWarmUpStartAsync(null, EventArgs.Empty);
 
-        _roundRankingService.Verify(rrs => rrs.SetIsTimeAttackModeAsync(true), Times.Once());
+        _roundRankingStateService.Verify(rrs => rrs.SetIsTimeAttackModeAsync(true), Times.Once());
     }
 
     [Fact]
@@ -133,6 +134,6 @@ public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEvent
     {
         await Controller.OnWarmUpEndAsync(null, EventArgs.Empty);
 
-        _roundRankingService.Verify(rrs => rrs.SetIsTimeAttackModeAsync(false), Times.Once());
+        _roundRankingStateService.Verify(rrs => rrs.SetIsTimeAttackModeAsync(false), Times.Once());
     }
 }

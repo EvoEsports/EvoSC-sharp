@@ -26,6 +26,7 @@ public class RoundRankingServiceTests
     private IRoundRankingService RoundRankingServiceMock()
     {
         return new RoundRankingService(
+            new RoundRankingStateService(),
             _settings.Object,
             _manialinkManager.Object,
             _playerManagerService.Object,
@@ -44,12 +45,11 @@ public class RoundRankingServiceTests
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer2*", 2, 1200, true, false);
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer3*", 3, 1300, true, false);
 
-        var sortedCheckpoints = roundRankingService.GetSortedCheckpoints();
-        var firstCheckpointData = sortedCheckpoints.First();
-
+        var sortedCheckpoints = await roundRankingService.GetSortedCheckpointsAsync();
+        
         Assert.Equal(3, sortedCheckpoints.Count);
-        Assert.Equal(3, firstCheckpointData.CheckpointId);
-        Assert.Equal(1300, firstCheckpointData.Time.TotalMilliseconds);
+        Assert.Equal(3, sortedCheckpoints.First().CheckpointId);
+        Assert.Equal(1300, sortedCheckpoints.First().Time.TotalMilliseconds);
 
         _manialinkManager.Verify(mlm =>
             mlm.SendPersistentManialinkAsync("RoundRankingModule.RoundRanking", It.IsAny<object>()), Times.Exactly(3));
@@ -64,10 +64,10 @@ public class RoundRankingServiceTests
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer1*", 1, 1000, true, false);
         await roundRankingService.ConsumeDnfAsync("*fakeplayer1*");
 
-        var sortedCheckpoints = roundRankingService.GetSortedCheckpoints();
-        var firstCheckpointData = sortedCheckpoints.First();
-
-        Assert.Equal("DNF", firstCheckpointData.FormattedTime());
+        var sortedCheckpoints = await roundRankingService.GetSortedCheckpointsAsync();
+        
+        Assert.NotEmpty(sortedCheckpoints);
+        Assert.Equal("DNF", sortedCheckpoints.First().FormattedTime());
     }
 
     [Fact]
@@ -80,11 +80,10 @@ public class RoundRankingServiceTests
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer2*", 1, 2000, true, false);
         await roundRankingService.ConsumeDnfAsync("*fakeplayer1*");
 
-        var sortedCheckpoints = roundRankingService.GetSortedCheckpoints();
-        var firstCheckpointData = sortedCheckpoints.First();
-
+        var sortedCheckpoints = await roundRankingService.GetSortedCheckpointsAsync();
+        
         Assert.Single(sortedCheckpoints);
-        Assert.Equal("2.000", firstCheckpointData.FormattedTime());
+        Assert.Equal("2.000", sortedCheckpoints.First().FormattedTime());
     }
 
     [Fact]
@@ -97,7 +96,7 @@ public class RoundRankingServiceTests
         await roundRankingService.RemovePlayerCheckpointDataAsync("*fakeplayer1*");
         await roundRankingService.RemovePlayerCheckpointDataAsync("*fakeplayer2*");
 
-        var sortedCheckpoints = roundRankingService.GetSortedCheckpoints();
+        var sortedCheckpoints = await roundRankingService.GetSortedCheckpointsAsync();
 
         Assert.Empty(sortedCheckpoints);
     }
@@ -111,7 +110,7 @@ public class RoundRankingServiceTests
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer1*", 1, 1234, true, false);
         await roundRankingService.RemovePlayerCheckpointDataAsync("*fakeplayer1*");
 
-        var sortedCheckpoints = roundRankingService.GetSortedCheckpoints();
+        var sortedCheckpoints = await roundRankingService.GetSortedCheckpointsAsync();
         var firstCheckpointData = sortedCheckpoints.First();
 
         Assert.Single(sortedCheckpoints);
@@ -127,7 +126,7 @@ public class RoundRankingServiceTests
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer2*", 2, 2345, true, false);
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer3*", 1, 1234, true, false);
 
-        var sortedCheckpoints = roundRankingService.GetSortedCheckpoints();
+        var sortedCheckpoints = await roundRankingService.GetSortedCheckpointsAsync();
         Assert.Equal(2345, sortedCheckpoints[0].Time.TotalMilliseconds);
         Assert.Equal(1234, sortedCheckpoints[1].Time.TotalMilliseconds);
         Assert.Equal("DNF", sortedCheckpoints[2].FormattedTime());
@@ -143,7 +142,7 @@ public class RoundRankingServiceTests
         await roundRankingService.ConsumeCheckpointAsync("*fakeplayer2*", 1, 2345, true, false);
         await roundRankingService.ClearCheckpointDataAsync();
 
-        var sortedCheckpoints = roundRankingService.GetSortedCheckpoints();
+        var sortedCheckpoints = await roundRankingService.GetSortedCheckpointsAsync();
 
         Assert.Empty(sortedCheckpoints);
     }
@@ -156,7 +155,7 @@ public class RoundRankingServiceTests
         _matchSettingsService.Setup(mss => mss.GetCurrentModeAsync())
             .ReturnsAsync(DefaultModeScriptName.Cup);
 
-        await roundRankingService.DetectIsTeamsModeAsync();
+        await roundRankingService.DetectAndSetIsTeamsModeAsync();
         await roundRankingService.SendRoundRankingWidgetAsync();
 
         _manialinkManager.Verify(
