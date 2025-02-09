@@ -1,0 +1,9 @@
+﻿[info]
+name = "ScoreboardModule"
+title = "Scoreboard Module"
+summary = "Custom EvoSC Scoreboards."
+version = "1.0.0"
+author = "Evo"
+
+[dependencies]
+GameModeUiModule = "1.0.0"
