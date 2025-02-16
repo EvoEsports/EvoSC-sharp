@@ -31,7 +31,20 @@ For a roadmap of planned features and what we're currently working on, have a lo
 * **DO NOT USE IN A PRODUCTION SCENARIO, THE SOFTWARE IS STILL HEAVILY IN DEVELOPMENT.**
 * **DO NOT ASK FOR ASSISTANCE IN USING THE SOFTWARE IN ITS UNFINISHED STATE.**
 
+## Installation with Docker
+
+> [!WARNING]  
+> EvoSC# is pre-release software. It is not recommended to be used in production environments yet.
+> 
+> Please continue only if you know what you're doing.
+
+Refer to our example [docker-compose.yml](https://github.com/EvoEsports/EvoSC-sharp/blob/master/docker/docker-compose.yml) file.
+An (incomplete) list of available environment variables can be found [here](https://github.com/EvoEsports/EvoSC-sharp/blob/master/docker/evosc.env.example).
+
 ## Developing for EvoSC#
+
+> [!WARNING]  
+> The setup below is strictly meant for development purposes and does not reflect best practices on how to use EvoSC# in a production setting.
 
 To setup a development environment for EvoSC#, we recommend having Docker installed and using the following Docker Compose template.
 It sets up a TM2020 dedicated server for you as well as all the required other services.
@@ -46,9 +59,9 @@ services:
       - 2350:2350/tcp
       - "5001:5000/tcp" # Be careful opening XMLRPC! Only if you really need to.
     environment:
-      MASTER_LOGIN: "CHANGEME :)" # Create server credentials at https://www.trackmania.com/player/dedicated-servers
-      MASTER_PASSWORD: "CHANGEME :)" # Create server credentials at https://www.trackmania.com/player/dedicated-servers
-      XMLRPC_ALLOWREMOTE: "True"
+      TM_MASTERSERVER_LOGIN: "CHANGEME :)" # Create server credentials at https://www.trackmania.com/player/dedicated-servers
+      TM_MASTERSERVER_PASSWORD: "CHANGEME :)" # Create server credentials at https://www.trackmania.com/player/dedicated-servers
+      TM_SYSTEM_XMLRPC_ALLOWREMOTE: "True"
     volumes:
       - UserData:/server/UserData
   db:

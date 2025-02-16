@@ -93,6 +93,13 @@ public class GameModeUiModuleService(IServerClient server, IGameModeUiModuleSett
                 settings.ScoresTableScale
             ),
             new GameModeUiComponentSettings(
+                GameModeUiComponents.SmallScoresTable,
+                settings.SmallScoresTableVisible,
+                settings.SmallScoresTableX,
+                settings.SmallScoresTableY,
+                settings.SmallScoresTableScale
+            ),
+            new GameModeUiComponentSettings(
                 GameModeUiComponents.DisplayMessage,
                 settings.DisplayMessageVisible,
                 settings.DisplayMessageX,
