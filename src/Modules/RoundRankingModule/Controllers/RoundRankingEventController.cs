@@ -9,7 +9,10 @@ using EvoSC.Modules.Official.RoundRankingModule.Interfaces;
 namespace EvoSC.Modules.Official.RoundRankingModule.Controllers;
 
 [Controller]
-public class RoundRankingEventController(IRoundRankingService roundRankingService)
+public class RoundRankingEventController(
+    IRoundRankingService roundRankingService,
+    IRoundRankingStateService roundRankingStateService
+)
     : EvoScController<IEventControllerContext>
 {
     [Subscribe(ModeScriptEvent.WayPoint)]
@@ -55,7 +58,7 @@ public class RoundRankingEventController(IRoundRankingService roundRankingServic
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnStartMapAsync(object sender, EventArgs args)
     {
-        await roundRankingService.DetectIsTeamsModeAsync();
+        await roundRankingService.DetectAndSetIsTeamsModeAsync();
         await roundRankingService.FetchAndCacheTeamInfoAsync();
         await roundRankingService.LoadPointsRepartitionFromSettingsAsync();
         await roundRankingService.ClearCheckpointDataAsync();
@@ -63,9 +66,9 @@ public class RoundRankingEventController(IRoundRankingService roundRankingServic
 
     [Subscribe(ModeScriptEvent.WarmUpStart)]
     public Task OnWarmUpStartAsync(object sender, EventArgs args) =>
-        roundRankingService.SetIsTimeAttackModeAsync(true);
+        roundRankingStateService.SetIsTimeAttackModeAsync(true);
 
     [Subscribe(ModeScriptEvent.WarmUpEnd)]
     public Task OnWarmUpEndAsync(object sender, EventArgs args) =>
-        roundRankingService.SetIsTimeAttackModeAsync(false);
+        roundRankingStateService.SetIsTimeAttackModeAsync(false);
 }
