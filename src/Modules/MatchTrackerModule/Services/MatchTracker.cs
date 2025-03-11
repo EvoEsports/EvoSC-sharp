@@ -62,7 +62,8 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
                         var player = await players.GetPlayerAsync(playerScore.AccountId);
                         playerScores.Add(new PlayerScore
                         {
-                            Player = player,
+                            AccountId = player.AccountId,
+                            UbisoftName = player.UbisoftName,
                             Rank = playerScore.Rank,
                             RoundPoints = playerScore.RoundPoints,
                             MapPoints = playerScore.MapPoints,
