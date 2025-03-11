@@ -1,3 +1,4 @@
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces;
@@ -258,7 +259,7 @@ public class LocalRecordsServiceTests
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
         
-        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
         
         await mock.Service.UpdatePbAsync(newPb);
 
@@ -289,7 +290,7 @@ public class LocalRecordsServiceTests
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
         
-        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
         
         await mock.Service.UpdatePbAsync(newPb);
 
@@ -320,7 +321,7 @@ public class LocalRecordsServiceTests
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
 
-        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
         
         await mock.Service.UpdatePbAsync(newPb);
 
@@ -346,7 +347,7 @@ public class LocalRecordsServiceTests
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
         
-        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
 
         await mock.Service.UpdatePbAsync(newPb);
 

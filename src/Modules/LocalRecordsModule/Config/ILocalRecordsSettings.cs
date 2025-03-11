@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Config.Net;
+using EvoSC.Common.Config.Models;
 using EvoSC.Modules.Attributes;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Config;
@@ -16,6 +17,6 @@ public interface ILocalRecordsSettings
     [Option(DefaultValue = 100), Description("Maximum number of local records to keep track of per map.")]
     public int MaxRecordsPerMap { get; }
     
-    [Option(DefaultValue = true), Description("Send chat messages when a new local record has been achieved.")]
-    public bool SendChatMessages { get; }
+    [Option(DefaultValue = EchoOptions.Player), Description("Send chat messages when a new local record has been achieved.")]
+    public EchoOptions SendChatMessages { get; }
 }

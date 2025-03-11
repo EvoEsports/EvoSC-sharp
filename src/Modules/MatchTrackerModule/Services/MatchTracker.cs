@@ -64,6 +64,7 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
                         {
                             AccountId = player.AccountId,
                             UbisoftName = player.UbisoftName,
+                            Zone = player.Zone,
                             Rank = playerScore.Rank,
                             RoundPoints = playerScore.RoundPoints,
                             MapPoints = playerScore.MapPoints,

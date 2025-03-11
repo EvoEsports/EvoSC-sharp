@@ -7,6 +7,7 @@ public interface IPlayerScore
 {
     public string AccountId { get; }
     public string UbisoftName { get; }
+    public string? Zone { get; }
     public int Rank { get; }
     public int RoundPoints { get; }
     public int MapPoints { get; }

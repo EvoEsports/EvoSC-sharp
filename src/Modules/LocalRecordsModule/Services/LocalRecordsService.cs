@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
@@ -176,31 +177,40 @@ public class LocalRecordsService(
 
     private async Task SendNewLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord, string localRaceTime)
     {
-        if (!settings.SendChatMessages)
+        if (settings.SendChatMessages == EchoOptions.None)
         {
             return;
         }
 
-        await server.InfoMessageAsync(new TextFormatter()
+        var message = new TextFormatter()
             .AddText(player.NickName)
             .AddText(" gained the ")
             .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
             .AddText(" local record ")
             .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
-            .ToString());
+            .ToString();
+        
+        if (settings.SendChatMessages == EchoOptions.Player) 
+        {
+            await server.InfoMessageAsync(message, player);
+        }
+        else
+        {
+            await server.InfoMessageAsync(message);
+        }
     }
 
     private async Task SendImprovedLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord,
         ILocalRecord oldRecord, string localRaceTime, string timeDifferenceStr)
     {
-        if (!settings.SendChatMessages)
+        if (settings.SendChatMessages == EchoOptions.None)
         {
             return;
         }
 
         if (localRecord.Position < oldRecord.Position)
         {
-            await server.InfoMessageAsync(new TextFormatter()
+            var message = new TextFormatter()
                 .AddText(player.NickName)
                 .AddText(" claimed ")
                 .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
@@ -211,11 +221,19 @@ public class LocalRecordsService(
                 .AddText(" (-")
                 .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
                 .AddText(")")
-                .ToString());
+                .ToString();
+            if (settings.SendChatMessages == EchoOptions.Player) 
+            {
+                await server.InfoMessageAsync(message, player);
+            }
+            else
+            {
+                await server.InfoMessageAsync(message);
+            }
         }
         else
         {
-            await server.InfoMessageAsync(new TextFormatter()
+            var message = new TextFormatter()
                 .AddText(player.NickName)
                 .AddText(" improved their ")
                 .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
@@ -224,23 +242,39 @@ public class LocalRecordsService(
                 .AddText(" (-")
                 .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
                 .AddText(")")
-                .ToString());
+                .ToString();
+            if (settings.SendChatMessages == EchoOptions.Player)
+            {
+                await server.InfoMessageAsync(message, player);
+            }
+            else
+            {
+                await server.InfoMessageAsync(message);
+            }
         }
     }
 
     private async Task SendEqualLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord, string localRaceTime)
     {
-        if (!settings.SendChatMessages)
+        if (settings.SendChatMessages == EchoOptions.None)
         {
             return;
         }
 
-        await server.InfoMessageAsync(new TextFormatter()
+        var message = new TextFormatter()
             .AddText(player.NickName)
             .AddText(" equaled their ")
             .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
             .AddText(" local record ")
             .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
-            .ToString());
+            .ToString();
+        if (settings.SendChatMessages == EchoOptions.Player)
+        {
+            await server.InfoMessageAsync(message, player);
+        }
+        else
+        {
+            await server.InfoMessageAsync(message);
+        }
     }
 }
