@@ -257,7 +257,9 @@ public class LocalRecordsServiceTests
         mock.LocalRecordRepository
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
-
+        
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
+        
         await mock.Service.UpdatePbAsync(newPb);
 
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("gained the"))), Times.Once);
@@ -286,7 +288,9 @@ public class LocalRecordsServiceTests
         mock.LocalRecordRepository
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
-
+        
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
+        
         await mock.Service.UpdatePbAsync(newPb);
 
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("claimed"))), Times.Once);
@@ -316,6 +320,8 @@ public class LocalRecordsServiceTests
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
 
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
+        
         await mock.Service.UpdatePbAsync(newPb);
 
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("improved their"))), Times.Once);
@@ -339,6 +345,8 @@ public class LocalRecordsServiceTests
         mock.LocalRecordRepository
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
+        
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(true);
 
         await mock.Service.UpdatePbAsync(newPb);
 
