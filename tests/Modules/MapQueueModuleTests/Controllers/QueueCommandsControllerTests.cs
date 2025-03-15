@@ -1,12 +1,9 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Modules.Official.MapQueueModule.Controllers;
 using EvoSC.Modules.Official.MapQueueModule.Interfaces;
-using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
-using GbxRemoteNet.Interfaces;
 using Moq;
 
 namespace EvoSC.Modules.Official.MapQueueModuleTests.Tests.Controllers;

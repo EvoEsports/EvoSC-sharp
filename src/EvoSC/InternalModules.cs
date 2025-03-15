@@ -2,7 +2,6 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ASayModule;
 using EvoSC.Modules.Official.CurrentMapModule;
-using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCpModule;
 using EvoSC.Modules.Official.ForceTeamModule;
 using EvoSC.Modules.Official.GameModeUiModule;

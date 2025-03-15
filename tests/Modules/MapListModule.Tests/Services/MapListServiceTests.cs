@@ -3,7 +3,6 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
-using EvoSC.Common.Tests;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MapListModule.Interfaces;
 using EvoSC.Modules.Official.MapListModule.Interfaces.Models;

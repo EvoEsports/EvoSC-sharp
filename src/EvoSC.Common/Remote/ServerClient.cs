@@ -6,7 +6,6 @@ using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services;
 using GbxRemoteNet;
 using GbxRemoteNet.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Remote;

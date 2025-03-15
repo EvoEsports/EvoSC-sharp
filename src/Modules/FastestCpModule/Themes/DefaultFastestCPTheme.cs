@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Themes;
-using EvoSC.Common.Themes;
+﻿using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
 
 namespace EvoSC.Modules.Official.FastestCpModule.Themes;

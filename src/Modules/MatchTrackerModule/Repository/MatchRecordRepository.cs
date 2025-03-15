@@ -5,7 +5,6 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces;
 using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
-using EvoSC.Modules.Official.MatchTrackerModule.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Models.Database;
 using EvoSC.Modules.Official.MatchTrackerModule.Util;
 using LinqToDB;
