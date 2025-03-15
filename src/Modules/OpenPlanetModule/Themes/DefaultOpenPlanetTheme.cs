@@ -1,21 +1,18 @@
-﻿using EvoSC.Common.Interfaces.Themes;
-using EvoSC.Common.Themes;
+﻿using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
 using EvoSC.Common.Util;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Themes;
 
 [Theme(Name = "OpenPlanet", Description = "Default theme for the OpenPlanet module.")]
-public class DefaultOpenPlanetTheme(IThemeManager theme) : Theme<DefaultOpenPlanetTheme>
+public class DefaultOpenPlanetTheme : Theme<DefaultOpenPlanetTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
-        Set("OpenPlanetModule.WarningWindow.TextWarning").To(_theme.Warning);
+        Set("OpenPlanetModule.WarningWindow.TextWarning").To(theme.Warning);
         Set("OpenPlanetModule.WarningWindow.TextHighlight").To("99ddff");
-        Set("OpenPlanetModule.WarningWindow.Border").To(_theme.White);
-        Set("OpenPlanetModule.WarningWindow.BgSecondary").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
+        Set("OpenPlanetModule.WarningWindow.Border").To(theme.White);
+        Set("OpenPlanetModule.WarningWindow.BgSecondary").To(ColorUtils.Lighten(theme.UI_BgHighlight));
         
         return Task.CompletedTask;
     }

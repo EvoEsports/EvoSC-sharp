@@ -22,7 +22,7 @@
       <quad
               bgcolor="{{ Theme.UI_AccentSecondary }}"
               size="{{ height }} {{ height }}"
-              opacity="0.9"
+              opacity="{{ Theme.UI_LocalRecordsModule_Widget_Row_Bg_Opacity }}"
               pos="0.7 0"
       />
       <label 
