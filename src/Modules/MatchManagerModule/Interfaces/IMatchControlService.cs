@@ -27,6 +27,14 @@ public interface IMatchControlService
     public Task SkipMapAsync();
 
     /// <summary>
+    /// Sets the round, map and match points for a team.
+    /// </summary>
+    /// <param name="team">Team to set the round points for.</param>
+    /// <param name="points">Points to set.</param>
+    /// <returns></returns>
+    public Task SetTeamPointsAsync(PlayerTeam team, int points);
+
+    /// <summary>
     /// Sets the round points for a team.
     /// </summary>
     /// <param name="team">Team to set the round points for.</param>
@@ -61,4 +69,20 @@ public interface IMatchControlService
     /// </summary>
     /// <returns></returns>
     public Task UnpauseMatchAsync();
+
+    /// <summary>
+    /// Request the scores from the current match.
+    /// </summary>
+    /// <returns></returns>
+    public Task RequestScoresAsync();
+    
+    /// <summary>
+    /// Updates the cached team points.
+    /// </summary>
+    /// <param name="team1MapPoints"></param>
+    /// <param name="team1MatchPoints"></param>
+    /// <param name="team2MapPoints"></param>
+    /// <param name="team2MatchPoints"></param>
+    /// <returns></returns>
+    public Task UpdateTeamPointsAsync(int team1MapPoints, int team1MatchPoints, int team2MapPoints, int team2MatchPoints);
 }
