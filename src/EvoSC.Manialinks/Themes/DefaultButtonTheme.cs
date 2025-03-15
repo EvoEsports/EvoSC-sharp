@@ -4,7 +4,6 @@ using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks.Util;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace EvoSC.Manialinks.Themes;
 

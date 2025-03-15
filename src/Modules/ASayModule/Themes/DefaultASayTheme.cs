@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Themes;
-using EvoSC.Common.Themes;
+﻿using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
 
 namespace EvoSC.Modules.Official.ASayModule.Themes;
@@ -9,11 +8,15 @@ public class DefaultASayTheme : Theme<DefaultASayTheme>
 {
     public override Task ConfigureAsync(dynamic theme)
     {
-        Set("ASayModule.Announcement.Default.TextSize").To(3);
-        Set("ASayModule.Announcement.Default.IconSize").To(4);
-        Set("ASayModule.Announcement.Default.Bg").To(theme.UI_BgPrimary);
-        Set("ASayModule.Announcement.Default.BgSecondary").To(theme.UI_AccentSecondary);
-        Set("ASayModule.Announcement.Default.Text").To(theme.UI_TextPrimary);
+        Set("ASayModule.Announcement.Text").To(theme.UI_TextPrimary);
+        Set("ASayModule.Announcement.Text.Size").To(3);
+        
+        Set("ASayModule.Announcement.Icon.Size").To(4);
+        Set("ASayModule.Announcement.Icon").To(theme.UI_TextPrimary);
+        
+        Set("ASayModule.Announcement.Bg").To(theme.UI_BgPrimary);
+        Set("ASayModule.Announcement.Bg.Opacity").To(0.7);
+        Set("ASayModule.Announcement.Bg.Secondary").To(theme.UI_AccentPrimary);
         
         return Task.CompletedTask;
     }
