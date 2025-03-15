@@ -20,8 +20,9 @@ public class DefaultLocalRecordsTheme(IThemeManager theme) : Theme<DefaultLocalR
             _ => _theme.UI_AccentPrimary
         });
 
-        Set("UI.LocalRecordsModule.Widget.RowBg").To(_theme.UI_BgPrimary);
-        Set("UI.LocalRecordsModule.Widget.RowBgHighlight").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
+        Set("UI.LocalRecordsModule.Widget.Row.Bg").To(_theme.UI_BgPrimary);
+        Set("UI.LocalRecordsModule.Widget.Row.Bg.Opacity").To(_theme.UI_Widget_Body_Bg_Opacity);
+        Set("UI.LocalRecordsModule.Widget.Row.Bg.Highlight").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
 
         return Task.CompletedTask;
     }

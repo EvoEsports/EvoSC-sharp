@@ -20,8 +20,9 @@ public class DefaultRoundRankingTheme(IThemeManager theme) : Theme<DefaultRoundR
             _ => _theme.UI_AccentPrimary
         });
 
-        Set("UI.RoundRankingModule.Widget.RowBg").To(_theme.UI_BgPrimary);
-        Set("UI.RoundRankingModule.Widget.RowBgHighlight").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
+        Set("UI.RoundRankingModule.Widget.Row.Bg").To(_theme.UI_BgPrimary);
+        Set("UI.RoundRankingModule.Widget.Row.Bg.Opacity").To(_theme.UI_Widget_Body_Bg_Opacity);
+        Set("UI.RoundRankingModule.Widget.Row.Bg.Highlight").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
 
         return Task.CompletedTask;
     }
