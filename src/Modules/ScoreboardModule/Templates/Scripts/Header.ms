@@ -16,11 +16,11 @@ Boolean IsWarmUp () {
 }
 
 Vec3 GetHeaderSmallTextColor() {
-    return CL::HexToRgb("{{ Theme.UI_TextPrimary }}");
+    return CL::HexToRgb("{{ Theme.ScoreboardModule_Text_Color }}");
 }
 
 Vec3 GetHeaderSmallTextWarmUpColor(){
-    return CL::HexToRgb("ff9900");
+    return CL::HexToRgb("{{ Theme.ScoreboardModule_WarmUp_Color }}");
 }
 
 Text GetPlayerCountText() {

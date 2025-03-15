@@ -37,6 +37,7 @@ public class BaseEvoScTheme : Theme<BaseEvoScTheme>
         
         Set(DefaultThemeOptions.UIAccentPrimary).To("FF0058");
         Set(DefaultThemeOptions.UIAccentSecondary).To("FFFFFF");
+        Set(DefaultThemeOptions.UIAccentWarmUp).To("FF9900");
         
         Set(DefaultThemeOptions.UISurfaceBgPrimary).To("454252");
         Set(DefaultThemeOptions.UISurfaceBgSecondary).To("FFFFFF");
