@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.TeamSettingsModule.Controllers;
 using EvoSC.Modules.Official.TeamSettingsModule.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Models;

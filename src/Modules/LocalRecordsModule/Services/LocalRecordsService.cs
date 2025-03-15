@@ -1,4 +1,4 @@
-﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;

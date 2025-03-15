@@ -6,13 +6,13 @@
         <stylesheet>
             <style
                     class="lr-body-primary"
-                    bgcolor="{{ Theme.UI_RoundRankingModule_Widget_RowBg }}"
-                    opacity="0.9"
+                    bgcolor="{{ Theme.UI_RoundRankingModule_Widget_Row_Bg }}"
+                    opacity="{{ Theme.UI_LocalRecordsModule_Widget_Row_Bg_Opacity }}"
             />
             <style
                     class="lr-body-highlight"
-                    bgcolor="{{ Theme.UI_RoundRankingModule_Widget_RowBgHighlight }}"
-                    opacity="0.9"
+                    bgcolor="{{ Theme.UI_RoundRankingModule_Widget_Row_Bg_Highlight }}"
+                    opacity="{{ Theme.UI_LocalRecordsModule_Widget_Row_Bg_Opacity }}"
             />
         </stylesheet>
     </template>

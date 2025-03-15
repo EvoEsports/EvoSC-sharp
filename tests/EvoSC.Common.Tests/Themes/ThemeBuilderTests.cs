@@ -8,7 +8,7 @@ public class ThemeBuilderTests
 {
     public class ThemeSetOption : Theme<ThemeSetOption>
     {
-        public override Task ConfigureAsync()
+        public override Task ConfigureAsync(dynamic theme)
         {
             Set("MyOption").To("My Value");
 
@@ -18,7 +18,7 @@ public class ThemeBuilderTests
     
     public class ThemeReplaceComponent : Theme<ThemeReplaceComponent>
     {
-        public override Task ConfigureAsync()
+        public override Task ConfigureAsync(dynamic theme)
         {
             Replace("MyComponent").With("OtherComponent");
 
@@ -31,7 +31,7 @@ public class ThemeBuilderTests
     {
         var theme = new ThemeSetOption();
 
-        await theme.ConfigureAsync();
+        await theme.ConfigureAsync(null);
         
         Assert.True(theme.ThemeOptions.ContainsKey("MyOption"));
         Assert.Equal("My Value", theme.ThemeOptions["MyOption"]);
@@ -42,7 +42,7 @@ public class ThemeBuilderTests
     {
         var theme = new ThemeReplaceComponent();
 
-        await theme.ConfigureAsync();
+        await theme.ConfigureAsync(null);
         
         Assert.True(theme.ComponentReplacements.ContainsKey("MyComponent"));
         Assert.Equal("OtherComponent", theme.ComponentReplacements["MyComponent"]);

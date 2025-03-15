@@ -2,7 +2,6 @@
 using Config.Net;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Official.OpenPlanetModule.Models;
-using LinqToDB.Common;
 
 namespace EvoSC.Modules.Official.OpenPlanetModule.Config;
 
