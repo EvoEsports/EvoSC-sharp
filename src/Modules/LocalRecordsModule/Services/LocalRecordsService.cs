@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Config.Models;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
@@ -61,7 +62,11 @@ public class LocalRecordsService(
             foreach (var player in onlinePlayers)
             {
                 var playerRecords = GetRecordsWithPlayer(player, records);
-                await transaction.SendManialinkAsync(player, WidgetName, new { currentPlayer = player, records = playerRecords });
+                await transaction.SendManialinkAsync(
+                    player, 
+                    WidgetName,
+                    new { currentPlayer = player, records = playerRecords }
+                );
             }
 
             await transaction.CommitAsync();
@@ -79,7 +84,6 @@ public class LocalRecordsService(
 
         if (localRecord == null)
         {
-            // player did not get a local record good enough to be registered
             return;
         }
 
@@ -92,13 +96,7 @@ public class LocalRecordsService(
 
         if (oldRecord == null)
         {
-            await server.InfoMessageAsync(new TextFormatter()
-                .AddText(record.Player.NickName)
-                .AddText(" gained the ")
-                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                .AddText(" local record ")
-                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
-                .ToString());
+            await SendNewLocalRecordMessageAsync(record.Player, localRecord, localRaceTime);
             await ShowWidgetToAllAsync();
             return;
         }
@@ -113,48 +111,14 @@ public class LocalRecordsService(
                 throw new InvalidOperationException($"Failed to convert {timeDifference} to race time difference");
             }
 
-            if (localRecord.Position < oldRecord.Position)
-            {
-                await server.InfoMessageAsync(new TextFormatter()
-                    .AddText(record.Player.NickName)
-                    .AddText(" claimed ")
-                    .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                    .AddText(" (from ")
-                    .AddText($"{oldRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                    .AddText(") local record ")
-                    .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
-                    .AddText(" (-")
-                    .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
-                    .AddText(")")
-                    .ToString());
-            }
-            else
-            {
-                await server.InfoMessageAsync(new TextFormatter()
-                    .AddText(record.Player.NickName)
-                    .AddText(" improved their ")
-                    .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                    .AddText(" local record ")
-                    .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
-                    .AddText(" (-")
-                    .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
-                    .AddText(")")
-                    .ToString());
-            }
-
+            await SendImprovedLocalRecordMessageAsync(record.Player, localRecord, oldRecord, localRaceTime, timeDifferenceStr);
             await ShowWidgetToAllAsync();
         }
         else if (record.Score == localRecord.Record.Score)
         {
-            await server.InfoMessageAsync(new TextFormatter()
-                .AddText(record.Player.NickName)
-                .AddText(" equaled their ")
-                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
-                .AddText(" local record ")
-                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
-                .ToString());
+            await SendEqualLocalRecordMessageAsync(record.Player, localRecord, localRaceTime);
         }
-    }
+    } 
 
     public async Task ResetLocalRecordsAsync()
     {
@@ -211,5 +175,85 @@ public class LocalRecordsService(
         }
 
         return [..topRecords, ..records[(lower - 1)..(upper - 1)]];
+    }
+
+    private async Task SendNewLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord, string localRaceTime)
+    {
+        var message = new TextFormatter()
+            .AddText(player.NickName)
+            .AddText(" gained the ")
+            .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+            .AddText(" local record ")
+            .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
+            .ToString();
+
+        await SendLocalRecordMessageAsync(message, player);
+    }
+
+    private async Task SendImprovedLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord,
+        ILocalRecord oldRecord, string localRaceTime, string timeDifferenceStr)
+    {
+        string message;
+        if (localRecord.Position < oldRecord.Position)
+        {
+            message = new TextFormatter()
+                .AddText(player.NickName)
+                .AddText(" claimed ")
+                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" (from ")
+                .AddText($"{oldRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(") local record ")
+                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" (-")
+                .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
+                .AddText(")")
+                .ToString();
+            
+        }
+        else
+        {
+            message = new TextFormatter()
+                .AddText(player.NickName)
+                .AddText(" improved their ")
+                .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" local record ")
+                .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
+                .AddText(" (-")
+                .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
+                .AddText(")")
+                .ToString();
+
+        }
+        
+        await SendLocalRecordMessageAsync(message, player);
+    }
+
+    private async Task SendEqualLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord, string localRaceTime)
+    {
+
+        var message = new TextFormatter()
+            .AddText(player.NickName)
+            .AddText(" equaled their ")
+            .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
+            .AddText(" local record ")
+            .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
+            .ToString();
+        
+        await SendLocalRecordMessageAsync(message, player);
+    }
+    
+    private async Task SendLocalRecordMessageAsync(string message, IPlayer player)
+    {
+        switch (settings.SendChatMessages)
+        {
+            case EchoOptions.All:
+                await server.InfoMessageAsync(message);
+                break;
+            case EchoOptions.Player:
+                await server.InfoMessageAsync(message, player);
+                break;
+            default:
+                return;
+        }
     }
 }
