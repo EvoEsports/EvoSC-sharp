@@ -6,40 +6,93 @@ declare CMlLabel HeaderContentFrame_TextLeftSmall;
 declare CMlLabel HeaderContentFrame_TextRight;
 declare CMlLabel HeaderContentFrame_TextRightSmall;
 
+Text GetNadeoScoreboardInfoText() {
+    declare netread Text Net_TMGame_ScoresTable_FooterInfo for Teams[0];
+    return Net_TMGame_ScoresTable_FooterInfo;
+}
+
+Boolean IsWarmUp () {
+    return TL::EndsWith("Warm up", GetNadeoScoreboardInfoText());
+}
+
+Vec3 GetHeaderSmallTextColor() {
+    return CL::HexToRgb("{{ Theme.UI_TextPrimary }}");
+}
+
+Vec3 GetHeaderSmallTextWarmUpColor(){
+    return CL::HexToRgb("ff9900");
+}
+
+Text GetPlayerCountText() {
+    switch (Players.count) {
+        case 0: return _("No player");
+        case 1: return _("1 player");
+    }
+    
+    return TL::Compose(_("%1 players"), TL::ToText(Players.count));
+}
+
 Text GetRoundsLabelText() {
+    declare Integer EvoSC_PointsLimit for UI = -1;
     declare Integer EvoSC_RoundNumber for UI = -1;
     declare Integer EvoSC_RoundsPerMap for UI = -1;
+    
+    if(EvoSC_RoundsPerMap == -1){
+        if(EvoSC_PointsLimit == -1){
+            return TL::ToUpperCase(GetNadeoScoreboardInfoText());
+        }
+    
+        return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber);
+    }
+    
     return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber ^ " of " ^ EvoSC_RoundsPerMap);
 }
 
 Text GetRoundsLabelWarmUpText() {
     declare Integer EvoSC_RoundNumber for UI = -1;
     declare Integer EvoSC_WarmUpCount for UI = -1;
-    return "$f90" ^ TL::ToUpperCase("Round " ^ EvoSC_RoundNumber ^ " of " ^ EvoSC_WarmUpCount);
+    
+    if(EvoSC_WarmUpCount == -1){
+        return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber);
+    }
+    
+    return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber ^ " of " ^ EvoSC_WarmUpCount);
 }
 
 Text GetPointsLimitText() {
     declare Integer EvoSC_PointsLimit for UI = -1;
+    
+    if(EvoSC_PointsLimit == -1){
+        return TL::ToUpperCase(GetPlayerCountText());
+    }
+    
     return TL::ToUpperCase("Points Limit " ^ EvoSC_PointsLimit);
 }
 
-Text GetPointsLimitWarmUpText() {
-    return "$f90WARM UP";
+Void UpdateHeaderSmallTextColors() {
+    declare Vec3 textColor = <1.0, 1.0, 1.0>;
+    if(IsWarmUp()){
+        textColor = GetHeaderSmallTextWarmUpColor();
+    }else{
+        textColor = GetHeaderSmallTextColor();
+    }
+    HeaderContentFrame_TextRightSmall.TextColor = textColor;
+    HeaderContentFrame_TextLeftSmall.TextColor = textColor;
 }
 
-Void UpdateHeader() {
-    declare Boolean EvoSC_WarmUpActive for UI = False;
-    
+Void UpdateHeaderContent() {
     HeaderContentFrame_TextLeft.Value = TL::StripFormatting(CurrentServerName);
     HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName ^ " by " ^ Map.AuthorNickName));
     
-    if(EvoSC_WarmUpActive){
-        HeaderContentFrame_TextLeftSmall.Value = GetPointsLimitWarmUpText();
+    if(IsWarmUp()){
+        HeaderContentFrame_TextLeftSmall.Value = TL::ToUpperCase(GetNadeoScoreboardInfoText());
         HeaderContentFrame_TextRightSmall.Value = GetRoundsLabelWarmUpText();
     }else{
         HeaderContentFrame_TextLeftSmall.Value = GetPointsLimitText();
         HeaderContentFrame_TextRightSmall.Value = GetRoundsLabelText();
     }
+    
+    UpdateHeaderSmallTextColors();
 }
 
 *** OnInitialization ***
@@ -56,7 +109,7 @@ Void UpdateHeader() {
 ***
     if(Now > HeaderContentFrameLastUpdate + 1000){
         HeaderContentFrameLastUpdate = Now;
-        UpdateHeader();
+        UpdateHeaderContent();
     }
 ***
 -->
