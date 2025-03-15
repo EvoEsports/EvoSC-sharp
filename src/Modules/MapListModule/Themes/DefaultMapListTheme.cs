@@ -6,11 +6,9 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.MapListModule.Themes;
 
 [Theme(Name = "Map List", Description = "Default theme for the Map List.")]
-public class DefaultMapListTheme(IThemeManager theme) : Theme<DefaultMapListTheme>
+public class DefaultMapListTheme: Theme<DefaultMapListTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
 
         return Task.CompletedTask;

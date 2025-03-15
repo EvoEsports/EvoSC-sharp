@@ -6,18 +6,16 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.CurrentMapModule.Themes;
 
 [Theme(Name = "Current Map", Description = "Default theme for the Current Map Module.")]
-public class DefaultCurrentMapTheme(IThemeManager theme) : Theme<DefaultCurrentMapTheme>
+public class DefaultCurrentMapTheme : Theme<DefaultCurrentMapTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
-        Set("CurrentMapModule.CurrentMapWidget.Default.BgHeaderGrad1").To(_theme.UI_BgPrimary);
-        Set("CurrentMapModule.CurrentMapWidget.Default.BgHeaderGrad2").To(ColorUtils.Darken(_theme.UI_BgPrimary));
-        Set("CurrentMapModule.CurrentMapWidget.Default.BgContent").To(_theme.UI_BgHighlight);
-        Set("CurrentMapModule.CurrentMapWidget.Default.BgRow").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
-        Set("CurrentMapModule.CurrentMapWidget.Default.Logo").To(_theme.UI_LogoLight);
-        Set("CurrentMapModule.CurrentMapWidget.Default.Text").To(_theme.UI_TextPrimary);
+        Set("CurrentMapModule.CurrentMapWidget.Default.BgHeaderGrad1").To(theme.UI_BgPrimary);
+        Set("CurrentMapModule.CurrentMapWidget.Default.BgHeaderGrad2").To(ColorUtils.Darken(theme.UI_BgPrimary));
+        Set("CurrentMapModule.CurrentMapWidget.Default.BgContent").To(theme.UI_BgHighlight);
+        Set("CurrentMapModule.CurrentMapWidget.Default.BgRow").To(ColorUtils.Lighten(theme.UI_BgHighlight));
+        Set("CurrentMapModule.CurrentMapWidget.Default.Logo").To(theme.UI_LogoLight);
+        Set("CurrentMapModule.CurrentMapWidget.Default.Text").To(theme.UI_TextPrimary);
         
         return Task.CompletedTask;
     }

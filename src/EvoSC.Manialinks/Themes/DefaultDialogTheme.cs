@@ -5,11 +5,9 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Dialog Theme", Description = "Default theme for the dialog component.")]
-public class DefaultDialogTheme(IThemeManager theme) : Theme<DefaultDialogTheme>
+public class DefaultDialogTheme : Theme<DefaultDialogTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
         Set("UI.Dialog.BtnWidth").To((bool showOk, bool showCancel, double width) =>
             showOk && showCancel
@@ -23,7 +21,7 @@ public class DefaultDialogTheme(IThemeManager theme) : Theme<DefaultDialogTheme>
                 : 3.5
         );
         
-        Set("UI.Chip.Default.Text").To(_theme.UI_TextSecondary);
+        Set("UI.Chip.Default.Text").To(theme.UI_TextSecondary);
         
         return Task.CompletedTask;
     }

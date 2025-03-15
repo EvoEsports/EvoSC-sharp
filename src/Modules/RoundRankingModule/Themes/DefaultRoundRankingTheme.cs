@@ -6,23 +6,21 @@ using EvoSC.Common.Util;
 namespace EvoSC.Modules.Official.RoundRankingModule.Themes;
 
 [Theme(Name = "Round Ranking", Description = "Default theme for the round rankings widget.")]
-public class DefaultRoundRankingTheme(IThemeManager theme) : Theme<DefaultRoundRankingTheme>
+public class DefaultRoundRankingTheme : Theme<DefaultRoundRankingTheme>
 { 
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
         Set("UI.RoundRankingModule.Widget.AccentColor").To((int pos) => pos switch
         {
-            1 => _theme.Gold,
-            2 => _theme.Silver,
-            3 => _theme.Bronze,
-            _ => _theme.UI_AccentPrimary
+            1 => theme.Gold,
+            2 => theme.Silver,
+            3 => theme.Bronze,
+            _ => theme.UI_AccentPrimary
         });
 
-        Set("UI.RoundRankingModule.Widget.Row.Bg").To(_theme.UI_BgPrimary);
-        Set("UI.RoundRankingModule.Widget.Row.Bg.Opacity").To(_theme.UI_Widget_Body_Bg_Opacity);
-        Set("UI.RoundRankingModule.Widget.Row.Bg.Highlight").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
+        Set("UI.RoundRankingModule.Widget.Row.Bg").To(theme.UI_BgPrimary);
+        Set("UI.RoundRankingModule.Widget.Row.Bg.Opacity").To(theme.UI_Widget_Body_Bg_Opacity);
+        Set("UI.RoundRankingModule.Widget.Row.Bg.Highlight").To(ColorUtils.Lighten(theme.UI_BgPrimary));
 
         return Task.CompletedTask;
     }

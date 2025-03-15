@@ -5,16 +5,14 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "TextInput Component", Description = "Default theme for the TextInput component.")]
-public class DefaultTextInputTheme(IThemeManager theme) : Theme<DefaultTextInputTheme>
+public class DefaultTextInputTheme : Theme<DefaultTextInputTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
-        Set("UI.TextField.Default.Text").To(_theme.UI_TextPrimary);
-        Set("UI.TextField.Default.Bg").To(_theme.UI_BgHighlight);
-        Set("UI.TextField.Default.Border").To(_theme.UI_AccentSecondary);
-        Set("UI.TextField.Default.Placeholder").To(_theme.UI_TextSecondary);
+        Set("UI.TextField.Default.Text").To(theme.UI_TextPrimary);
+        Set("UI.TextField.Default.Bg").To(theme.UI_BgHighlight);
+        Set("UI.TextField.Default.Border").To(theme.UI_AccentSecondary);
+        Set("UI.TextField.Default.Placeholder").To(theme.UI_TextSecondary);
         
         return Task.CompletedTask;
     }

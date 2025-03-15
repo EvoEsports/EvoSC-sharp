@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -18,7 +19,8 @@ public class ScoreboardService(
     IScoreboardNicknamesService nicknamesService,
     IScoreboardSettings settings,
     IGameModeUiModuleService gameModeUiModuleService,
-    IMatchSettingsService matchSettingsService
+    IMatchSettingsService matchSettingsService,
+    IThemeManager themeManager
 )
     : IScoreboardService
 {
@@ -29,6 +31,8 @@ public class ScoreboardService(
     {
         var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
         var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
+
+        dynamic theme = themeManager.Theme;
         
         await SendMetaDataAsync();
         await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, new

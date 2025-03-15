@@ -6,14 +6,12 @@ using EvoSC.Common.Util;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Chip Component", Description = "Default theme for the Chip component.")]
-public class DefaultChipTheme(IThemeManager theme) : Theme<DefaultChipTheme>
+public class DefaultChipTheme : Theme<DefaultChipTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
-        Set("UI.Chip.Default.Bg").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
-        Set("UI.Chip.Default.Text").To(_theme.UI_TextSecondary);
+        Set("UI.Chip.Default.Bg").To(ColorUtils.Lighten(theme.UI_BgHighlight));
+        Set("UI.Chip.Default.Text").To(theme.UI_TextSecondary);
 
         return Task.CompletedTask;
     }

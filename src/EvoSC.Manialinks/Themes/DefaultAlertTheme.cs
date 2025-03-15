@@ -5,15 +5,13 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Alert Component", Description = "Default theme for the Alert component.")]
-public class DefaultAlertTheme(IThemeManager theme) : Theme<DefaultAlertTheme>
+public class DefaultAlertTheme : Theme<DefaultAlertTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
-        Set("UI.Alert.Default.Text").To(_theme.UI_TextPrimary);
-        Set("UI.Alert.Default.BgPrimary").To(_theme.UI_SurfaceBgPrimary);
-        Set("UI.Alert.Default.BgSecondary").To(_theme.UI_SurfaceBgSecondary);
+        Set("UI.Alert.Default.Text").To(theme.UI_TextPrimary);
+        Set("UI.Alert.Default.BgPrimary").To(theme.UI_SurfaceBgPrimary);
+        Set("UI.Alert.Default.BgSecondary").To(theme.UI_SurfaceBgSecondary);
 
         return Task.CompletedTask;
     }

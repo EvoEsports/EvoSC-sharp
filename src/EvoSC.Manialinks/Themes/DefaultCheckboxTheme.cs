@@ -5,15 +5,13 @@ using EvoSC.Common.Themes.Attributes;
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Checkbox Component", Description = "Default theme for the Checkbox component.")]
-public class DefaultCheckboxTheme(IThemeManager theme) : Theme<DefaultCheckboxTheme>
+public class DefaultCheckboxTheme : Theme<DefaultCheckboxTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
-        Set("UI.Checkbox.Default.Bg").To(_theme.UI_SurfaceBgPrimary);
-        Set("UI.Checkbox.Default.Text").To(_theme.UI_TextPrimary);
-        Set("UI.Checkbox.Default.CheckColor").To(_theme.UI_SurfaceBgSecondary);
+        Set("UI.Checkbox.Default.Bg").To(theme.UI_SurfaceBgPrimary);
+        Set("UI.Checkbox.Default.Text").To(theme.UI_TextPrimary);
+        Set("UI.Checkbox.Default.CheckColor").To(theme.UI_SurfaceBgSecondary);
 
         return Task.CompletedTask;
     }

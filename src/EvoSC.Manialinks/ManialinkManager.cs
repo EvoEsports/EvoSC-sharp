@@ -82,6 +82,7 @@ public class ManialinkManager : IManialinkManager
         _engine.GlobalVariables["Icons"] = new GameIcons();
         _engine.GlobalVariables["Font"] = new FontManialinkHelper(themeManager);
         _engine.GlobalVariables["Color"] = new ColorUtils();
+        _engine.GlobalVariables["Theme"] = themeManager.Theme;
     }
 
     public async Task AddDefaultTemplatesAsync()
