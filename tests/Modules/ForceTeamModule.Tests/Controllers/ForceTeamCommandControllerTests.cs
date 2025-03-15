@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.ForceTeamModule.Controllers;
 using EvoSC.Modules.Official.ForceTeamModule.Interfaces;
 using EvoSC.Testing.Controllers;

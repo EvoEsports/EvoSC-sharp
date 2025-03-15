@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
