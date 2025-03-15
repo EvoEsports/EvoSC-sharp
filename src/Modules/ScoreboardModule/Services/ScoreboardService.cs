@@ -31,8 +31,6 @@ public class ScoreboardService(
     {
         var currentNextMaxPlayers = await server.Remote.GetMaxPlayersAsync();
         var currentNextMaxSpectators = await server.Remote.GetMaxSpectatorsAsync();
-
-        dynamic theme = themeManager.Theme;
         
         await SendMetaDataAsync();
         await manialinks.SendPersistentManialinkAsync(ScoreboardTemplate, new
