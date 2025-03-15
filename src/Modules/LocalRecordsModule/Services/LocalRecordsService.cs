@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
@@ -63,8 +62,11 @@ public class LocalRecordsService(
             foreach (var player in onlinePlayers)
             {
                 var playerRecords = GetRecordsWithPlayer(player, records);
-                await transaction.SendManialinkAsync(player, WidgetName,
-                    new { currentPlayer = player, records = playerRecords });
+                await transaction.SendManialinkAsync(
+                    player, 
+                    WidgetName,
+                    new { currentPlayer = player, records = playerRecords }
+                );
             }
 
             await transaction.CommitAsync();
@@ -177,11 +179,6 @@ public class LocalRecordsService(
 
     private async Task SendNewLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord, string localRaceTime)
     {
-        if (settings.SendChatMessages == EchoOptions.None)
-        {
-            return;
-        }
-
         var message = new TextFormatter()
             .AddText(player.NickName)
             .AddText(" gained the ")
@@ -189,28 +186,17 @@ public class LocalRecordsService(
             .AddText(" local record ")
             .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
             .ToString();
-        
-        if (settings.SendChatMessages == EchoOptions.Player) 
-        {
-            await server.InfoMessageAsync(message, player);
-        }
-        else
-        {
-            await server.InfoMessageAsync(message);
-        }
+
+        await SendLocalRecordMessageAsync(message, player);
     }
 
     private async Task SendImprovedLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord,
         ILocalRecord oldRecord, string localRaceTime, string timeDifferenceStr)
     {
-        if (settings.SendChatMessages == EchoOptions.None)
-        {
-            return;
-        }
-
+        string message;
         if (localRecord.Position < oldRecord.Position)
         {
-            var message = new TextFormatter()
+            message = new TextFormatter()
                 .AddText(player.NickName)
                 .AddText(" claimed ")
                 .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
@@ -222,18 +208,11 @@ public class LocalRecordsService(
                 .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
                 .AddText(")")
                 .ToString();
-            if (settings.SendChatMessages == EchoOptions.Player) 
-            {
-                await server.InfoMessageAsync(message, player);
-            }
-            else
-            {
-                await server.InfoMessageAsync(message);
-            }
+            
         }
         else
         {
-            var message = new TextFormatter()
+            message = new TextFormatter()
                 .AddText(player.NickName)
                 .AddText(" improved their ")
                 .AddText($"{localRecord.Position}.", s => s.WithColor(themeManager.Theme.Info))
@@ -243,23 +222,14 @@ public class LocalRecordsService(
                 .AddText(timeDifferenceStr, s => s.WithColor(themeManager.Theme.Info))
                 .AddText(")")
                 .ToString();
-            if (settings.SendChatMessages == EchoOptions.Player)
-            {
-                await server.InfoMessageAsync(message, player);
-            }
-            else
-            {
-                await server.InfoMessageAsync(message);
-            }
+
         }
+        
+        await SendLocalRecordMessageAsync(message, player);
     }
 
     private async Task SendEqualLocalRecordMessageAsync(IPlayer player, ILocalRecord localRecord, string localRaceTime)
     {
-        if (settings.SendChatMessages == EchoOptions.None)
-        {
-            return;
-        }
 
         var message = new TextFormatter()
             .AddText(player.NickName)
@@ -268,13 +238,22 @@ public class LocalRecordsService(
             .AddText(" local record ")
             .AddText(localRaceTime, s => s.WithColor(themeManager.Theme.Info))
             .ToString();
-        if (settings.SendChatMessages == EchoOptions.Player)
+        
+        await SendLocalRecordMessageAsync(message, player);
+    }
+    
+    private async Task SendLocalRecordMessageAsync(string message, IPlayer player)
+    {
+        switch (settings.SendChatMessages)
         {
-            await server.InfoMessageAsync(message, player);
-        }
-        else
-        {
-            await server.InfoMessageAsync(message);
+            case EchoOptions.All:
+                await server.InfoMessageAsync(message);
+                break;
+            case EchoOptions.Player:
+                await server.InfoMessageAsync(message, player);
+                break;
+            default:
+                return;
         }
     }
 }

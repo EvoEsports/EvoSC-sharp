@@ -57,7 +57,7 @@ public class LocalRecordsServiceTests
 
         themeManager.SetupGet(m => m.Theme)
             .Returns(new DynamicThemeOptions(new Dictionary<string, object> { { "Info", "FFF" } }));
-        
+
         var localRecordsService = new LocalRecordsService(
             mapService.Object,
             localRecordRepository.Object,
@@ -98,7 +98,7 @@ public class LocalRecordsServiceTests
                 Score = 1337,
                 RecordType = PlayerRecordType.Time,
                 DbMap = new DbMap(currentMap),
-                DbPlayer = new DbPlayer{ Id = 2, AccountId = "myplayer2", NickName = "my player2"}
+                DbPlayer = new DbPlayer { Id = 2, AccountId = "myplayer2", NickName = "my player2" }
             },
             new DbPlayerRecord
             {
@@ -107,7 +107,7 @@ public class LocalRecordsServiceTests
                 Score = 1337,
                 RecordType = PlayerRecordType.Time,
                 DbMap = new DbMap(currentMap),
-                DbPlayer = new DbPlayer{ Id = 3, AccountId = "myplayer3", NickName = "my player3"}
+                DbPlayer = new DbPlayer { Id = 3, AccountId = "myplayer3", NickName = "my player3" }
             },
             new DbPlayerRecord
             {
@@ -116,7 +116,7 @@ public class LocalRecordsServiceTests
                 Score = 1337,
                 RecordType = PlayerRecordType.Time,
                 DbMap = new DbMap(currentMap),
-                DbPlayer =  new DbPlayer(player)
+                DbPlayer = new DbPlayer(player)
             },
             new DbPlayerRecord
             {
@@ -125,7 +125,7 @@ public class LocalRecordsServiceTests
                 Score = 1337,
                 RecordType = PlayerRecordType.Time,
                 DbMap = new DbMap(currentMap),
-                DbPlayer = new DbPlayer{ Id = 4, AccountId = "myplayer4", NickName = "my player4"}
+                DbPlayer = new DbPlayer { Id = 4, AccountId = "myplayer4", NickName = "my player4" }
             },
             new DbPlayerRecord
             {
@@ -134,7 +134,7 @@ public class LocalRecordsServiceTests
                 Score = 1337,
                 RecordType = PlayerRecordType.Time,
                 DbMap = new DbMap(currentMap),
-                DbPlayer = new DbPlayer{ Id = 5, AccountId = "myplayer5", NickName = "my player5"}
+                DbPlayer = new DbPlayer { Id = 5, AccountId = "myplayer5", NickName = "my player5" }
             },
         ];
 
@@ -204,9 +204,15 @@ public class LocalRecordsServiceTests
 
         await mock.Service.ShowWidgetToAllAsync();
 
-        transaction.Verify(m => m.SendManialinkAsync(player1, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()), Times.Once);
-        transaction.Verify(m => m.SendManialinkAsync(player2, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()), Times.Once);
-        transaction.Verify(m => m.SendManialinkAsync(player3, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()), Times.Once);
+        transaction.Verify(
+            m => m.SendManialinkAsync(player1, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()),
+            Times.Once);
+        transaction.Verify(
+            m => m.SendManialinkAsync(player2, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()),
+            Times.Once);
+        transaction.Verify(
+            m => m.SendManialinkAsync(player3, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()),
+            Times.Once);
     }
 
     [Fact]
@@ -236,7 +242,7 @@ public class LocalRecordsServiceTests
             .ReturnsAsync((DbLocalRecord?)null);
 
         await mock.Service.UpdatePbAsync(newPb);
-        
+
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.IsAny<string>()), Times.Never);
     }
 
@@ -247,7 +253,10 @@ public class LocalRecordsServiceTests
         var mockSetup = SetupMockRecords(mock);
         var newPb = new DbPlayerRecord
         {
-            PlayerId = 1, Score = 12345, RecordType = PlayerRecordType.Time, DbPlayer = new DbPlayer(mockSetup.Player)
+            PlayerId = 1,
+            Score = 12345,
+            RecordType = PlayerRecordType.Time,
+            DbPlayer = new DbPlayer(mockSetup.Player)
         };
         var localRecord = new DbLocalRecord { DbRecord = newPb, Position = 1337 };
 
@@ -258,14 +267,14 @@ public class LocalRecordsServiceTests
         mock.LocalRecordRepository
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
-        
+
         mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
-        
+
         await mock.Service.UpdatePbAsync(newPb);
 
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("gained the"))), Times.Once);
     }
-    
+
     [Fact]
     public async Task New_Pb_Is_Improved_From_Old_Record_With_Position_Change()
     {
@@ -289,14 +298,14 @@ public class LocalRecordsServiceTests
         mock.LocalRecordRepository
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
-        
+
         mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
-        
+
         await mock.Service.UpdatePbAsync(newPb);
 
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("claimed"))), Times.Once);
     }
-    
+
     [Fact]
     public async Task New_Pb_Is_Improved_From_Old_Record_Without_Position_Change()
     {
@@ -310,7 +319,7 @@ public class LocalRecordsServiceTests
         {
             Score = 123456, RecordType = PlayerRecordType.Time, DbPlayer = new DbPlayer(mockSetup.Player)
         };
-        var oldRecord = new DbLocalRecord { DbRecord = oldPlayerRecord, Position = 1337};
+        var oldRecord = new DbLocalRecord { DbRecord = oldPlayerRecord, Position = 1337 };
         var localRecord = new DbLocalRecord { DbRecord = newPb, Position = 1337 };
 
         mock.LocalRecordRepository
@@ -322,12 +331,12 @@ public class LocalRecordsServiceTests
             .ReturnsAsync(localRecord);
 
         mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
-        
+
         await mock.Service.UpdatePbAsync(newPb);
 
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("improved their"))), Times.Once);
     }
-    
+
     [Fact]
     public async Task New_Pb_Is_Equaled_To_Old_Record()
     {
@@ -346,11 +355,64 @@ public class LocalRecordsServiceTests
         mock.LocalRecordRepository
             .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
             .ReturnsAsync(localRecord);
-        
+
         mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.All);
 
         await mock.Service.UpdatePbAsync(newPb);
 
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("equaled their"))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Should_Only_Send_Message_To_Player()
+    {
+        var mock = NewLocalRecordsServiceMock();
+        var mockSetup = SetupMockRecords(mock);
+        var newPb = new DbPlayerRecord
+        {
+            PlayerId = 1, Score = 12345, RecordType = PlayerRecordType.Time, DbPlayer = new DbPlayer(mockSetup.Player),
+        };
+        var localRecord = new DbLocalRecord { DbRecord = newPb, Position = 1337 };
+
+        mock.LocalRecordRepository
+            .Setup(m => m.GetRecordOfPlayerInMapAsync(newPb.Player, newPb.Map))
+            .ReturnsAsync((DbLocalRecord?)localRecord);
+
+        mock.LocalRecordRepository
+            .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
+            .ReturnsAsync(localRecord);
+
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.Player);
+
+        await mock.Service.UpdatePbAsync(newPb);
+
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("equaled their")),
+            It.Is<IPlayer[]>(p => p.First().Id == mockSetup.Player.Id)), Times.Once);
+    }
+    
+    [Fact]
+    public async Task Should_Not_Send_Message()
+    {
+        var mock = NewLocalRecordsServiceMock();
+        var mockSetup = SetupMockRecords(mock);
+        var newPb = new DbPlayerRecord
+        {
+            PlayerId = 1, Score = 12345, RecordType = PlayerRecordType.Time, DbPlayer = new DbPlayer(mockSetup.Player),
+        };
+        var localRecord = new DbLocalRecord { DbRecord = newPb, Position = 1337 };
+
+        mock.LocalRecordRepository
+            .Setup(m => m.GetRecordOfPlayerInMapAsync(newPb.Player, newPb.Map))
+            .ReturnsAsync((DbLocalRecord?)localRecord);
+
+        mock.LocalRecordRepository
+            .Setup(m => m.AddOrUpdateRecordAsync(newPb.Map, newPb))
+            .ReturnsAsync(localRecord);
+
+        mock.Settings.Setup(m => m.SendChatMessages).Returns(EchoOptions.None);
+
+        await mock.Service.UpdatePbAsync(newPb);
+
+        mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.IsAny<string>()), Times.Never);
     }
 }
