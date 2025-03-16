@@ -1,0 +1,42 @@
+name: Publish Release to Docker Hub
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare Environment
+        id: env
+        run: |
+          DOCKER_IMAGE=evoesports/evosc-sharp-nightly
+          VERSION=$(git rev-parse --short HEAD)
+          echo "tags=${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:latest" >> $GITHUB_OUTPUT
+          echo "builddate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+          echo "revision=${{ github.sha }} >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+    
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.env.outputs.tags }}
+          build-args: |
+            BUILD_DATE=${{ steps.env.outputs.builddate }}
+            REVISION=${{ steps.env.outputs.revision }}
+            EVOSC_VERSION=${{ steps.env.outputs.version }}
