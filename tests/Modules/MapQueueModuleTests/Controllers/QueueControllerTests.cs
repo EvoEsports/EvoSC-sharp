@@ -2,7 +2,6 @@
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
-using EvoSC.Common.Tests;
 using EvoSC.Modules.Official.MapQueueModule.Controllers;
 using EvoSC.Modules.Official.MapQueueModule.Events.Args;
 using EvoSC.Modules.Official.MapQueueModule.Interfaces;

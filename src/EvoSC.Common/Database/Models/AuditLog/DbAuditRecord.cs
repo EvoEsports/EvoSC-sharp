@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Database.Migrations;
-using EvoSC.Common.Database.Models.Player;
+﻿using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Audit;
 using LinqToDB.Mapping;

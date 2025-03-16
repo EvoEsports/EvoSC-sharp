@@ -6,15 +6,12 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
-using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Manialinks.Interfaces;
 using GbxRemoteNet;
 using GbxRemoteNet.Events;
-using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;

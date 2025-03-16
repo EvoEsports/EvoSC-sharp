@@ -3,8 +3,6 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Util;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Attributes;
-using EvoSC.Modules.Official.OpenPlanetModule.Config;
-using EvoSC.Modules.Official.OpenPlanetModule.Events;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces.Models;
 

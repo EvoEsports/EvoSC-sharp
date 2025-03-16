@@ -7,7 +7,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using GbxRemoteNet;
-using GbxRemoteNet.Interfaces;
 using GbxRemoteNet.Structs;
 using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;

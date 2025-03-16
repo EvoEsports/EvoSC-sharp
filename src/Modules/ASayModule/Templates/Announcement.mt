@@ -9,11 +9,11 @@
                       size="160 10" 
                       valign="center2" 
                       halign="left" 
-                      textsize="{{ Theme.ASayModule_Announcement_Default_TextSize }}" 
+                      textsize="{{ Theme.ASayModule_Announcement_Text_Size }}" 
                       text="{{ text }}"
                       textfont="{{ Theme.UI_Font }}" 
                       pos="0 0" 
-                      textcolor="{{ Theme.ASayModule_Announcement_Default_Text }}" 
+                      textcolor="{{ Theme.ASayModule_Announcement_Text }}" 
                       z-index="1"
                       textprefix="$t$s" />
             </frame>
@@ -24,9 +24,9 @@
                     style="UICommon64_1" 
                     substyle="BgFrame1" 
                     halign="left" 
-                    colorize="{{ Theme.ASayModule_Announcement_Default_Bg }}"
-                    opacity="0.7"
-                    pos="0 0" 
+                    colorize="{{ Theme.ASayModule_Announcement_Bg }}"
+                    opacity="{{ Theme.ASayModule_Announcement_Bg_Opacity }}"
+                    pos="0 0"
                     valign="center" 
                     z-index="-1" />
           
@@ -34,9 +34,9 @@
                     size="10 10"
                     valign="center2"
                     halign="center" 
-                    textsize="{{ Theme.ASayModule_Announcement_Default_IconSize }}" 
+                    textsize="{{ Theme.ASayModule_Announcement_Icon_Size }}" 
                     text="{{ Icons.Bullhorn }}"
-                    textcolor="{{ Theme.ASayModule_Announcement_Default_Bg }}"
+                    textcolor="{{ Theme.ASayModule_Announcement_Icon }}"
                     z-index="3" 
                     pos="5 0" />
           
@@ -45,7 +45,7 @@
                     style="UICommon64_1"
                     substyle="BgFrame1"
                     halign="left" 
-                    colorize="{{ Theme.ASayModule_Announcement_Default_BgSecondary }}" 
+                    colorize="{{ Theme.ASayModule_Announcement_Bg_Secondary }}" 
                     opacity="1"
                     pos="0 0"
                     valign="center"

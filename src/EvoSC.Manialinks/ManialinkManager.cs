@@ -76,11 +76,13 @@ public class ManialinkManager : IManialinkManager
         themeManager.AddThemeAsync<DefaultSelectTheme>();
         themeManager.AddThemeAsync<DefaultDialogTheme>();
         themeManager.AddThemeAsync<DefaultClubTagTheme>();
+        themeManager.AddThemeAsync<DefaultWidgetTheme>();
         
         _engine.GlobalVariables["Util"] = new GlobalManialinkUtils(themeManager);
         _engine.GlobalVariables["Icons"] = new GameIcons();
         _engine.GlobalVariables["Font"] = new FontManialinkHelper(themeManager);
         _engine.GlobalVariables["Color"] = new ColorUtils();
+        _engine.GlobalVariables["Theme"] = themeManager.Theme;
     }
 
     public async Task AddDefaultTemplatesAsync()

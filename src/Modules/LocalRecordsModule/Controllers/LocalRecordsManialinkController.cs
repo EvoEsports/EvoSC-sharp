@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Attributes;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Services;

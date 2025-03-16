@@ -6,7 +6,6 @@ using EvoSC.Modules.Official.Player.Controllers;
 using EvoSC.Modules.Official.Player.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
-using GbxRemoteNet.Events;
 using Moq;
 
 namespace EvoSC.Modules.Official.Player.Tests;

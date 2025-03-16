@@ -8,8 +8,6 @@ using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
 using EvoSC.Common.Remote.ChatRouter;
-using EvoSC.Common.Util;
-using EvoSC.Common.Util.ServerUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

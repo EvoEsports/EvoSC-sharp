@@ -5,7 +5,9 @@ namespace EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 
 public interface IPlayerScore
 {
-    public IPlayer Player { get; }
+    public string AccountId { get; }
+    public string UbisoftName { get; }
+    public string? Zone { get; }
     public int Rank { get; }
     public int RoundPoints { get; }
     public int MapPoints { get; }

@@ -1,5 +1,4 @@
 using EvoSC.Common.Exceptions;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -8,7 +7,6 @@ using EvoSC.Modules.Official.MapsModule.Events;
 using EvoSC.Modules.Official.MapsModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
-using GbxRemoteNet.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 

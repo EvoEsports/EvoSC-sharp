@@ -2,7 +2,6 @@
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
-using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Commands.Middleware;
 

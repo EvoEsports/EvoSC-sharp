@@ -1,19 +1,16 @@
-﻿using EvoSC.Common.Interfaces.Themes;
-using EvoSC.Common.Themes;
+﻿using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Attributes;
 using EvoSC.Common.Util;
 
 namespace EvoSC.Manialinks.Themes;
 
 [Theme(Name = "Window Component", Description = "Default theme for the Window component.")]
-public class DefaultWindowTheme(IThemeManager theme) : Theme<DefaultWindowTheme>
+public class DefaultWindowTheme : Theme<DefaultWindowTheme>
 {
-    private readonly dynamic _theme = theme.Theme;
-
-    public override Task ConfigureAsync()
+    public override Task ConfigureAsync(dynamic theme)
     {
-        Set("UI.Window.Default.Title.Icon").To(ColorUtils.SetLightness(_theme.UI_AccentSecondary, 65));
-        Set("UI.Window.Default.Title.Text").To(ColorUtils.SetLightness(_theme.UI_TextPrimary, 65));
+        Set("UI.Window.Default.Title.Icon").To(ColorUtils.SetLightness(theme.UI_AccentSecondary, 65));
+        Set("UI.Window.Default.Title.Text").To(ColorUtils.SetLightness(theme.UI_TextPrimary, 65));
         
         /* Set("UI.Window.Default.Bg").To(_theme.UI_BgHighlight);
         Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgPrimary);

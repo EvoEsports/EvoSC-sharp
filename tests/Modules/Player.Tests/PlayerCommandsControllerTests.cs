@@ -1,12 +1,8 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.Player.Controllers;
 using EvoSC.Modules.Official.Player.Events;
 using EvoSC.Modules.Official.Player.Interfaces;
-using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
-using GbxRemoteNet.Interfaces;
 using Moq;
 
 namespace EvoSC.Modules.Official.Player.Tests;

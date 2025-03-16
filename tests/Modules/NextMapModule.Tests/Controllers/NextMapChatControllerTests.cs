@@ -1,13 +1,10 @@
 ﻿using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.NextMapModule.Controllers;
 using EvoSC.Modules.Official.NextMapModule.Interfaces;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
-using GbxRemoteNet.Interfaces;
 using Moq;
 using Xunit;
 

@@ -3,12 +3,10 @@ using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Common.Events.Arguments;
 using EvoSC.Common.Events.Attributes;
 using EvoSC.Common.Events.CoreEvents;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.Player.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.Player.Controllers;
 

@@ -8,6 +8,7 @@ public static class GameModeUiComponents
     public static readonly string LapsCounter = "Race_LapsCounter";
     public static readonly string TimeGap = "Race_TimeGap";
     public static readonly string ScoresTable = "Race_ScoresTable";
+    public static readonly string SmallScoresTable = "Rounds_SmallScoresTable";
     public static readonly string DisplayMessage = "Race_DisplayMessage";
     public static readonly string Countdown = "Race_Countdown";
     public static readonly string SpectatorBaseName = "Race_SpectatorBase_Name";
