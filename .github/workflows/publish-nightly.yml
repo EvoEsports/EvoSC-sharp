@@ -12,11 +12,10 @@ jobs:
         id: env
         run: |
           DOCKER_IMAGE=evoesports/evosc-sharp-nightly
-          VERSION=$(git rev-parse --short HEAD)
-          echo "tags=${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:latest" >> $GITHUB_OUTPUT
+          echo "tags=${DOCKER_IMAGE}:$(git rev-parse --short HEAD),${DOCKER_IMAGE}:latest" >> $GITHUB_OUTPUT
           echo "builddate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
           echo "revision=${{ github.sha }} >> $GITHUB_OUTPUT
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "version=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT
     
       - name: Checkout
         uses: actions/checkout@v4
