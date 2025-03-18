@@ -29,6 +29,12 @@ public class DefaultTeamInfoTheme : Theme<DefaultTeamInfoTheme>
         Set("TeamInfoModule.Widget.MatchPointBox.Accent").To(theme.UI_AccentPrimary);
         Set("TeamInfoModule.Widget.MatchPointBox.Accent.Opacity").To(1);
         
+        Set("TeamInfoModule.Widget.RoundCounter.Bg").To(theme.UI_TextPrimary);
+        Set("TeamInfoModule.Widget.RoundCounter.Bg.Opacity").To(1);
+        Set("TeamInfoModule.Widget.RoundCounter.Text").To(theme.UI_BgPrimary);
+        
+        Set("TeamInfoModule.Widget.TeamFullName.Text").To(theme.UI_TextPrimary);
+        
         return Task.CompletedTask;
     }
 
