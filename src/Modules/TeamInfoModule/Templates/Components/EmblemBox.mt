@@ -16,7 +16,7 @@
         <frame pos='{{ x - (halign=="right" ? width : 0) }} {{ y }}'>
             <Rectangle width="{{ width }}"
                        height="{{ height }}"
-                       bgColor="{{ Theme.UI_HeaderBg }}ee"
+                       bgColor="{{ Theme.TeamInfoModule_Widget_EmblemBox_Bg }}"
                        cornerRadius="0.75"
                        corners='{{ (halign=="right" ? "BottomLeft" : "BottomRight") }}'
             />
@@ -27,6 +27,7 @@
                   halign="center"
                   valign="center"
                   keepratio="Fit"
+                  opacity="{{ Theme.TeamInfoModule_Widget_EmblemBox_Emblem_Opacity }}"
                   image='{{ teamInfo.EmblemUrl == "" ? neutralEmblemUrl : teamInfo.EmblemUrl }}'
             />
 
@@ -35,7 +36,7 @@
                    size="{{ width - logoPadding }} {{ height - logoPadding }}"
                    text="{{ teamInfo.Name.ToUpper()[0] }}"
                    class="text-2xl"
-                   textcolor="{{ Theme.UI_TextPrimary }}"
+                   textcolor="{{ Theme.TeamInfoModule_Widget_EmblemBox_Text }}"
                    textfont="{{ Font.Bold }}"
                    halign="center"
                    valign="center"
