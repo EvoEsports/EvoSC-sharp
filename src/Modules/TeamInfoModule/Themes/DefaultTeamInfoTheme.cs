@@ -23,6 +23,12 @@ public class DefaultTeamInfoTheme : Theme<DefaultTeamInfoTheme>
         Set("TeamInfoModule.Widget.GainedPoints.Text").To(theme.UI_TextPrimary);
         Set("TeamInfoModule.Widget.GainedPoints.Text.Size").To(theme.UI_FontSize);
         
+        Set("TeamInfoModule.Widget.MatchPointBox.Text").To(theme.UI_TextPrimary);
+        Set("TeamInfoModule.Widget.MatchPointBox.Bg").To(theme.UI_BgPrimary);
+        Set("TeamInfoModule.Widget.MatchPointBox.Bg.Opacity").To(0.87);
+        Set("TeamInfoModule.Widget.MatchPointBox.Accent").To(theme.UI_AccentPrimary);
+        Set("TeamInfoModule.Widget.MatchPointBox.Accent.Opacity").To(1);
+        
         return Task.CompletedTask;
     }
 
