@@ -20,6 +20,9 @@ public class DefaultTeamInfoTheme : Theme<DefaultTeamInfoTheme>
         Set("TeamInfoModule.Widget.EmblemBox.Bg.Opacity").To(0.93);
         Set("TeamInfoModule.Widget.EmblemBox.Emblem.Opacity").To(1);
         
+        Set("TeamInfoModule.Widget.GainedPoints.Text").To(theme.UI_TextPrimary);
+        Set("TeamInfoModule.Widget.GainedPoints.Text.Size").To(theme.UI_FontSize);
+        
         return Task.CompletedTask;
     }
 
