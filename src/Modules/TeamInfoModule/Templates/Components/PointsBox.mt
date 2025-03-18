@@ -18,7 +18,7 @@
                    pos="{{ width / 2.0 }} {{ height / -2.0 + 0.5 }}"
                    class="text-3xl"
                    text="{{ points }}"
-                   textcolor="{{ Theme.UI_TextPrimary }}"
+                   textcolor="{{ Theme.TeamInfoModule_Widget_PointsBox_Text }}"
                    textfont="{{ Font.Bold }}"
                    valign="center"
                    halign="center"

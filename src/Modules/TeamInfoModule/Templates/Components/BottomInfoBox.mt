@@ -12,7 +12,7 @@
             <Rectangle x="{{ width / -2.0 }}"
                        width="{{ width }}"
                        height="{{ height }}"
-                       bgColor="{{ Theme.UI_BgPrimary }}dd"
+                       bgColor="{{ Theme.TeamInfoModule_Widget_BottomInfo_Bg }}"
                        cornerRadius="0.75"
                        corners="BottomLeft,BottomRight"
             />
@@ -21,6 +21,7 @@
                    size="{{ width -2.0 }} {{ height - 1.0 }}"
                    text="{{ text }}"
                    class="text-primary"
+                   textcolor="{{ Theme.TeamInfoModule_Widget_BottomInfo_Text }}"
                    halign="center"
                    valign="center"
             />
