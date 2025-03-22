@@ -81,7 +81,7 @@
                            teamInfo="{{ team2 }}"
                            neutralEmblemUrl="{{ neutralEmblemUrl }}"
                 />
-                <MatchPointBox
+                <MatchPointBox if="team2MatchPoint"
                                x="34"
                                halign="right"
                 />
