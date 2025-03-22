@@ -19,6 +19,12 @@
   <data name="DidNotChangeName" xml:space="preserve">
     <value>Did not change the nickname as it equals the old.</value>
   </data>
+  <data name="NewNameTooShort" xml:space="preserve">
+    <value>Your name cannot be empty.</value>
+  </data>
+  <data name="NewNameTooLong" xml:space="preserve">
+    <value>Your name can not exceed 39 characters.</value>
+  </data>
   <data name="NameSuccessfullySet" xml:space="preserve">
     <value>Nickname successfully set!</value>
   </data>
