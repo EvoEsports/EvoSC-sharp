@@ -5,6 +5,7 @@ declare CMlLabel HeaderContentFrame_TextLeft;
 declare CMlLabel HeaderContentFrame_TextLeftSmall;
 declare CMlLabel HeaderContentFrame_TextRight;
 declare CMlLabel HeaderContentFrame_TextRightSmall;
+declare CMlLabel ScoreboardSettingsLabel;
 
 Text GetNadeoScoreboardInfoText() {
     declare netread Text Net_TMGame_ScoresTable_FooterInfo for Teams[0];
@@ -103,6 +104,7 @@ Void UpdateHeaderContent() {
     HeaderContentFrame_TextLeftSmall <=> (HeaderContentFrame.GetFirstChild("header_text_left_small") as CMlLabel);
     HeaderContentFrame_TextRight <=> (HeaderContentFrame.GetFirstChild("header_text_right") as CMlLabel);
     HeaderContentFrame_TextRightSmall <=> (HeaderContentFrame.GetFirstChild("header_text_right_small") as CMlLabel);
+    ScoreboardSettingsLabel <=> (HeaderContentFrame.GetFirstChild("settings_button") as CMlLabel);
 ***
 
 *** OnLoop *** 
@@ -110,6 +112,24 @@ Void UpdateHeaderContent() {
     if(Now > HeaderContentFrameLastUpdate + 750){
         HeaderContentFrameLastUpdate = Now;
         UpdateHeaderContent();
+    }
+***
+
+*** OnMouseOver *** 
+***
+    if(Event.Control.ControlId == "header_trigger"){
+        AnimMgr.Flush(ScoreboardSettingsLabel);
+        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.5'/>", 200, CAnimManager::EAnimManagerEasing::ExpOut);
+        continue;
+    }
+***
+
+*** OnMouseOut *** 
+***
+    if(Event.Control.ControlId == "header_trigger"){
+        AnimMgr.Flush(ScoreboardSettingsLabel);
+        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.1'/>", 200, CAnimManager::EAnimManagerEasing::ExpOut);
+        continue;
     }
 ***
 -->

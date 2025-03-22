@@ -14,7 +14,7 @@
                 x="-30"
                 y="14"
                 title="{{ Locale.PlayerLanguage.ScoreboardSettingsAbbreviation }}"
-                icon="{{ Icons.Wrench }}"
+                icon="{{ Icons.Cog }}"
         >
             <Switch id="switchHideSpectators" value="false" />
             <label text="{{ Locale.PlayerLanguage.Setting_HideSpectators }}" class="text-primary" pos="12 -1" />

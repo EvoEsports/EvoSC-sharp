@@ -8,6 +8,10 @@
     <property type="double" name="padding" default="3.4"/>
 
     <template>
+        <quad id="header_trigger"
+              size="{{ width }} {{ height }}"
+              ScriptEvents="1"
+        />
         <frame id="header_content" pos="{{ width / 2f }} {{ height / -2f }}">
             <label id="header_text_left"
                    pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * -0.5 - 4f }} 1.75"
@@ -48,9 +52,25 @@
                    opacity="0.8"
             />
 
+            <frame pos="{{ width / 2f }} {{ height/ -2f + 4f }}">
+                <label id="settings_button"
+                       class="text-primary"
+                       size="16 4"
+                       pos="{{ -padding }}"
+                       text="SETTINGS {{ Icons.Cog }}"
+                       textsize="{{ Theme.UI_FontSize*0.5 }}"
+                       opacity="0.1"
+                       valign="center"
+                       halign="right"
+                       action="ScoreboardSettingsManialink/ShowSettings"
+                       focusareacolor1="00000000"
+                       focusareacolor2="00000000"
+                />
+            </frame>
+
             <Logo if='Theme.ScoreboardModule_Logo_URL != ""'/>
         </frame>
     </template>
 
-    <script resource="ScoreboardModule.Scripts.Header" />
+    <script resource="ScoreboardModule.Scripts.Header"/>
 </component>

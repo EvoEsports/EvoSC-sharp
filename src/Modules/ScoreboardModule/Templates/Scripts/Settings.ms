@@ -1,3 +1,12 @@
+*** OnInitialization ***
+***
+    declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
+    declare persistent Boolean SB_Setting_ShowDisconnected for LocalUser = True;
+    
+    SetSwitchState("switchHideSpectators", !SB_Setting_ShowSpectators);
+    SetSwitchState("switchHideDisconnected", !SB_Setting_ShowDisconnected);
+***
+
 *** OnSwitchToggle ***
 ***
     declare persistent Boolean SB_Setting_ShowSpectators for LocalUser = True;
