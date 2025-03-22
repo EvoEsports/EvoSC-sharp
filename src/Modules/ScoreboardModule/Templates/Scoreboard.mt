@@ -79,6 +79,15 @@
                     </frame>
                 </frame>
             </frame>
+
+            <!-- Footer -->
+            <label
+                    class="text-primary"
+                    pos="0 {{ -settings.Height }}"
+                    textprefix="{{ Icons.Wrench }} "
+                    text="Settings"
+                    action="ScoreboardSettingsManialink/ShowSettings"
+            />
         </frame>
     </template>
 

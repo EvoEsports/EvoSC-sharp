@@ -15,11 +15,11 @@ Boolean IsWarmUp () {
     return TL::EndsWith("Warm up", GetNadeoScoreboardInfoText());
 }
 
-Vec3 GetHeaderSmallTextColor() {
+Vec3 GetHeaderPrimaryTextColor() {
     return CL::HexToRgb("{{ Theme.ScoreboardModule_Text_Color }}");
 }
 
-Vec3 GetHeaderSmallTextWarmUpColor(){
+Vec3 GetHeaderWarmUpTextColor(){
     return CL::HexToRgb("{{ Theme.ScoreboardModule_WarmUp_Color }}");
 }
 
@@ -72,9 +72,9 @@ Text GetPointsLimitText() {
 Void UpdateHeaderSmallTextColors() {
     declare Vec3 textColor = <1.0, 1.0, 1.0>;
     if(IsWarmUp()){
-        textColor = GetHeaderSmallTextWarmUpColor();
+        textColor = GetHeaderWarmUpTextColor();
     }else{
-        textColor = GetHeaderSmallTextColor();
+        textColor = GetHeaderPrimaryTextColor();
     }
     HeaderContentFrame_TextRightSmall.TextColor = textColor;
     HeaderContentFrame_TextLeftSmall.TextColor = textColor;
@@ -107,7 +107,7 @@ Void UpdateHeaderContent() {
 
 *** OnLoop *** 
 ***
-    if(Now > HeaderContentFrameLastUpdate + 1000){
+    if(Now > HeaderContentFrameLastUpdate + 750){
         HeaderContentFrameLastUpdate = Now;
         UpdateHeaderContent();
     }
