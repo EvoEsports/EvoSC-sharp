@@ -13,6 +13,7 @@ public class MatchSettingsXmlSerializerTests
         var expected = File.ReadAllText("TestFiles/Util/MatchSettings/expected_default_matchsettings_with_mode.xml");
         var ms = new MatchSettingsBuilder()
             .WithMode("MyMode")
+            .WithName("Test")
             .Build();
 
         var xml = ms.ToXmlDocument().GetFullXmlString();
@@ -26,6 +27,7 @@ public class MatchSettingsXmlSerializerTests
         var expected = File.ReadAllText("TestFiles/Util/MatchSettings/expected_matchsettings_with_script_settings.xml");
         var ms = new MatchSettingsBuilder()
             .WithMode("MyMode")
+            .WithName("Test")
             .WithModeSettings(s => s["S_MySetting"] = 1337)
             .Build();
         
@@ -40,6 +42,7 @@ public class MatchSettingsXmlSerializerTests
         var expected = File.ReadAllText("TestFiles/Util/MatchSettings/expected_matchsettings_with_maps.xml");
         var ms = new MatchSettingsBuilder()
             .WithMode("MyMode")
+            .WithName("Test")
             .AddMap("MyMap.Map.Gbx", "my-ident")
             .Build();
         

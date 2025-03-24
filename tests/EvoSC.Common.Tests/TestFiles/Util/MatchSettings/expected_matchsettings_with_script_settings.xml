@@ -19,6 +19,7 @@
   </filter>
   <script_settings>
     <setting name="S_MySetting" value="1337" type="integer" />
+    <setting name="S_MATCHSETTINGS_NAME" value="Test" type="text" />
   </script_settings>
   <start_index>0</start_index>
 </playlist>

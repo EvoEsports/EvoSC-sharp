@@ -14,6 +14,7 @@ public class MatchSettingsXmlSerializer : IMatchSettings
     public Dictionary<string, ModeScriptSettingInfo>? ModeScriptSettings { get; set; }
     public List<IMap>? Maps { get; set; }
     public int StartIndex { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Convert the match settings to an XML document.
@@ -114,6 +115,16 @@ public class MatchSettingsXmlSerializer : IMatchSettings
                 new XAttribute("name", key),
                 new XAttribute("value", setting.Value?.ToString() ?? ""),
                 new XAttribute("type", MatchSettingsMapper.ToTypeString(setting.Type))
+            ));
+        }
+
+        if (!string.IsNullOrEmpty(Name))
+        {
+            scriptSettingsElement.Add(new XElement(
+                "setting",
+                new XAttribute("name", "S_MATCHSETTINGS_NAME"),
+                new XAttribute("value", Name),
+                new XAttribute("type", "string")
             ));
         }
     }

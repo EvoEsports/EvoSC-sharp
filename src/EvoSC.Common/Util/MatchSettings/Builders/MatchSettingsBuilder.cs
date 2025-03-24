@@ -18,6 +18,7 @@ public class MatchSettingsBuilder
     private Dictionary<string, ModeScriptSettingInfo> _scriptSettings;
     private List<IMap> _maps = new();
     private int _startIndex;
+    private string? _name;
 
     public MatchSettingsBuilder()
     {
@@ -201,6 +202,18 @@ public class MatchSettingsBuilder
     }
 
     /// <summary>
+    /// Set the name of the matchsettings, not to be confused with the script settings.
+    /// This is simply an identifier for the matchsettings itself.
+    /// </summary>
+    /// <param name="name">Name of the matchsettings</param>
+    /// <returns></returns>
+    public MatchSettingsBuilder WithName(string name)
+    {
+        _name = name;
+        return this;
+    }
+
+    /// <summary>
     /// Set the settings for this MatchSettings. Requires WithMode() without
     /// an empty script name to be called first.
     /// </summary>
@@ -230,13 +243,19 @@ public class MatchSettingsBuilder
     /// <returns></returns>
     public MatchSettingsInfo Build()
     {
+        if (_name == null)
+        {
+            throw new InvalidOperationException("A name must be provided for the match settings.");
+        }
+        
         return new MatchSettingsInfo
         {
             GameInfos = _gameInfosbuilder.Build(),
             Filter = _filterBuilder.Build(),
             ModeScriptSettings = _scriptSettings,
             Maps = _maps,
-            StartIndex = _startIndex
+            StartIndex = _startIndex,
+            Name = _name
         };
     }
 

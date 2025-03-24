@@ -15,6 +15,8 @@ namespace EvoSC.Common.Util.MatchSettings;
 /// </summary>
 public static class MatchSettingsXmlParser
 {
+    public const string NameScriptSettings = "S_MATCHSETTINGS_NAME";
+    
     private static ValueReaderManager _valueReader = new(
         new IntegerReader(),
         new BooleanReader(),
@@ -43,6 +45,7 @@ public static class MatchSettingsXmlParser
         var scriptSettings = await ParseScriptSettingsAsync(playlistElement);
         var startIndex = await ParseStartIndexAsync(playlistElement);
         var maps = await ParseMapsAsync(playlistElement);
+        scriptSettings.TryGetValue(NameScriptSettings, out var name);
 
         return new MatchSettingsInfo
         {
@@ -50,7 +53,8 @@ public static class MatchSettingsXmlParser
             Filter = filter,
             ModeScriptSettings = scriptSettings,
             Maps = maps,
-            StartIndex = startIndex
+            StartIndex = startIndex,
+            Name = name?.Value?.ToString()
         };
     }
 
