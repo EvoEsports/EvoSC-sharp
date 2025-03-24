@@ -110,9 +110,11 @@ public static class ApplicationSetup
 
             .AsyncAction("ActionEnableModules", EnableModulesAsync)
 
-            .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
+            .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks")
+                
+            .AsyncAction("ActionNameMatchSettings", NameMatchSettingsAsync, "InitializeGbxRemoteConnection");
     }
-    
+
     /// <summary>
     /// Preprocesses manialinks.
     /// </summary>
@@ -202,5 +204,11 @@ public static class ApplicationSetup
         s.GetInstance<IServerCallbackHandler>();
         s.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(CancellationToken.None);
+    }
+    
+    private static async Task NameMatchSettingsAsync(ServicesBuilder s)
+    {
+        var matchSettingsService = s.GetInstance<IMatchSettingsService>();
+        await matchSettingsService.AssignMatchSettingNamesInternalAsync();
     }
 }

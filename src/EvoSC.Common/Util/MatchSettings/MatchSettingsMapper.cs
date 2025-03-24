@@ -2,7 +2,6 @@
 using EvoSC.Common.TextParsing;
 using EvoSC.Common.TextParsing.ValueReaders;
 using EvoSC.Common.Util.EnumIdentifier;
-using Org.BouncyCastle.Security;
 using StringReader = EvoSC.Common.TextParsing.ValueReaders.StringReader;
 
 namespace EvoSC.Common.Util.MatchSettings;
@@ -21,6 +20,10 @@ public static class MatchSettingsMapper
         {typeof(string), "text"},
         {typeof(bool), "boolean"},
         {typeof(bool?), "boolean"},
+        {typeof(float?), "real"},
+        {typeof(float), "real"},
+        {typeof(double?), "real"},
+        {typeof(double), "real"}
     };
 
     private static Dictionary<string, Type> _stringToTypeMap = new()
@@ -29,7 +32,7 @@ public static class MatchSettingsMapper
         {"int", typeof(int)},
         {"text", typeof(string)},
         {"boolean", typeof(bool)},
-        {"real", typeof(float)}
+        {"real", typeof(double)}
     };
     
     private static ValueReaderManager _valueReader = new(
@@ -68,7 +71,7 @@ public static class MatchSettingsMapper
     {
         if (!_typeToStringMap.ContainsKey(t))
         {
-            throw new InvalidKeyException($"The type '{t.Name}' cannot be mapped to a string.");
+            throw new KeyNotFoundException($"The type '{t.Name}' cannot be mapped to a string.");
         }
         
         return _typeToStringMap[t];
@@ -84,7 +87,7 @@ public static class MatchSettingsMapper
     {
         if (!_stringToTypeMap.ContainsKey(typeString))
         {
-            throw new InvalidKeyException($"The type string '{typeString}' cannot be mapped to a type.");
+            throw new KeyNotFoundException($"The type string '{typeString}' cannot be mapped to a type.");
         }
 
         return _stringToTypeMap[typeString];

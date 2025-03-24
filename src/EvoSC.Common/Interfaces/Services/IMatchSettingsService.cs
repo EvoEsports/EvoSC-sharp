@@ -103,4 +103,17 @@ public interface IMatchSettingsService
     /// </summary>
     /// <returns></returns>
     public Task<DefaultModeScriptName> GetCurrentModeAsync();
+    
+    /// <summary>
+    /// Get the name of the currently loaded matchsettings.
+    /// </summary>
+    /// <returns></returns>
+    public Task<string?> GetCurrentMatchSettingsNameAsync();
+
+    /// <summary>
+    /// Go through all matchsettings, and assign a name to the
+    /// ones that does not have one already.
+    /// </summary>
+    /// <returns></returns>
+    internal Task AssignMatchSettingNamesInternalAsync();
 }

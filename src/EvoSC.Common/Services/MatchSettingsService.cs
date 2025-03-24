@@ -72,7 +72,7 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
 
     public Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
     {
-        var builder = new MatchSettingsBuilder();
+        var builder = new MatchSettingsBuilder().WithName(name);
         matchSettings(builder);
 
         return SaveMatchSettingsAsync(name, builder);
@@ -97,7 +97,7 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
     public async Task EditMatchSettingsAsync(string name, Action<MatchSettingsBuilder> builderAction)
     {
         var currentMatchSettings = await GetMatchSettingsAsync(name);
-        var builder = new MatchSettingsBuilder(currentMatchSettings);
+        var builder = new MatchSettingsBuilder(currentMatchSettings).WithName(name);
         builderAction(builder);
         await SaveMatchSettingsAsync(name, builder);
     }
@@ -118,6 +118,37 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
     {
         var scriptName = await GetCurrentScriptNameAsync();
         return scriptName.ToEnumValue<DefaultModeScriptName>() ?? DefaultModeScriptName.Unknown;
+    }
+
+    public async Task<string?> GetCurrentMatchSettingsNameAsync()
+    {
+        var settings = await GetCurrentScriptSettingsAsync();
+        
+        if (settings?.TryGetValue(MatchSettingsXmlParser.NameScriptSettings, out var name) == true)
+        {
+            return name.ToString();
+        }
+
+        return null;
+    }
+
+    public async Task AssignMatchSettingNamesInternalAsync()
+    {
+        var mapsDir = await server.GetMapsDirectoryAsync();
+        var msDir = Path.Combine(mapsDir, "MatchSettings");
+
+        foreach (var file in Directory.GetFiles(msDir, "*.txt"))
+        {
+            try
+            {
+                var name = Path.GetFileNameWithoutExtension(file);
+                await EditMatchSettingsAsync(name, builder => { });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to assign match settings name for file '{File}': {Msg}", file, ex.Message);
+            }
+        }
     }
 
     private async Task<string> GetFilePathAsync(string name)

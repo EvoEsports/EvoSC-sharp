@@ -9,6 +9,7 @@
     <ItemGroup>
         <InternalsVisibleTo Include="EvoSC.Common.Tests" />
         <InternalsVisibleTo Include="EvoSC.Testing" />
+        <InternalsVisibleTo Include="EvoSC" />
         <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
     </ItemGroup>
     
