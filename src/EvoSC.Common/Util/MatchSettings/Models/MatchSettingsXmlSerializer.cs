@@ -124,7 +124,7 @@ public class MatchSettingsXmlSerializer : IMatchSettings
                 "setting",
                 new XAttribute("name", "S_MATCHSETTINGS_NAME"),
                 new XAttribute("value", Name),
-                new XAttribute("type", "string")
+                new XAttribute("type", "text")
             ));
         }
     }
