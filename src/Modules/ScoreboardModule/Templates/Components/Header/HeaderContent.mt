@@ -8,10 +8,6 @@
     <property type="double" name="padding" default="3.4"/>
 
     <template>
-        <quad id="header_trigger"
-              size="{{ width }} {{ height }}"
-              ScriptEvents="1"
-        />
         <frame id="header_content" pos="{{ width / 2f }} {{ height / -2f }}">
             <label id="header_text_left"
                    pos="{{ float.Parse(Theme.ScoreboardModule_Logo_Width, CultureInfo.InvariantCulture) * -0.5 - 4f }} 1.75"
@@ -63,6 +59,7 @@
                        valign="center"
                        halign="right"
                        action="ScoreboardSettingsManialink/ShowSettings"
+                       ScriptEvents="1"
                        focusareacolor1="00000000"
                        focusareacolor2="00000000"
                 />

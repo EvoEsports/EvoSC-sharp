@@ -117,18 +117,18 @@ Void UpdateHeaderContent() {
 
 *** OnMouseOver *** 
 ***
-    if(Event.Control.ControlId == "header_trigger"){
+    if(Event.Control.ControlId == "settings_button"){
         AnimMgr.Flush(ScoreboardSettingsLabel);
-        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.5'/>", 200, CAnimManager::EAnimManagerEasing::ExpOut);
+        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.5'/>", 320, CAnimManager::EAnimManagerEasing::ExpOut);
         continue;
     }
 ***
 
 *** OnMouseOut *** 
 ***
-    if(Event.Control.ControlId == "header_trigger"){
+    if(Event.Control.ControlId == "settings_button"){
         AnimMgr.Flush(ScoreboardSettingsLabel);
-        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.1'/>", 200, CAnimManager::EAnimManagerEasing::ExpOut);
+        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.1'/>", 320, CAnimManager::EAnimManagerEasing::ExpOut);
         continue;
     }
 ***
