@@ -7,6 +7,7 @@
     <import component="ScoreboardModule.Components.ScoreboardBody" as="Body"/>
     <import component="ScoreboardModule.Components.ScoreboardBg" as="ScoreboardBg"/>
     <import component="ScoreboardModule.Components.Row.Framemodel" as="PlayerRowFramemodel"/>
+    <import component="EvoSC.Controls.Button" as="Button"/>
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>
@@ -380,7 +381,7 @@
             return "AUTHOR TIME | " ^ TL::TimeToText(Map.TMObjective_AuthorTime, True, True);
         }
         
-        Void UpdateScrollSize(Integer playerRowsFilled) {
+        Void UpdateScrollSizeAndFooterPosition(Integer playerRowsFilled) {
             declare filledHeight = playerRowsFilled * {{ rowHeight + rowSpacing }};
             declare contentHeight = {{ settings.Height - headerHeight - legendHeight }};
             
@@ -475,7 +476,8 @@
                 declare playerRow = (RowsFrame.Controls[i] as CMlFrame);
                 playerRow.Hide();
             }
-            UpdateScrollSize(cursor);
+            
+            UpdateScrollSizeAndFooterPosition(cursor);
         }
         -->
     </script>

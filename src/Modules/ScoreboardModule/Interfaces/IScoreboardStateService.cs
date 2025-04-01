@@ -14,17 +14,4 @@ public interface IScoreboardStateService
     /// </summary>
     /// <returns></returns>
     public Task<int> GetCurrentRoundNumberAsync();
-
-    /// <summary>
-    /// Sets whether warm is currently ongoing.
-    /// </summary>
-    /// <param name="isWarmUp"></param>
-    /// <returns></returns>
-    public Task SetIsWarmUpAsync(bool isWarmUp);
-    
-    /// <summary>
-    /// Returns whether the game mode is in warm up mode.
-    /// </summary>
-    /// <returns></returns>
-    public Task<bool> GetIsWarmUpAsync();
 }

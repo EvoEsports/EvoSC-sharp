@@ -9,6 +9,7 @@ public class DefaultScoreboardTheme : Theme<DefaultScoreboardTheme>
     public override Task ConfigureAsync(dynamic theme)
     {
         Set("ScoreboardModule.Text_Color").To(theme.UI_TextPrimary);
+        Set("ScoreboardModule.WarmUp_Color").To(theme.UI_AccentWarmUp);
 
         Set("ScoreboardModule.Logo_URL").To("file://Media/Manialinks/Nadeo/Trackmania/Menus/TMLogo.dds");
         Set("ScoreboardModule.Logo_Width").To("20.0");
