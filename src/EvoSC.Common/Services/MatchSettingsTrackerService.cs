@@ -1,10 +1,12 @@
 ﻿using EvoSC.Common.Config.Models;
 using EvoSC.Common.Events;
+using EvoSC.Common.Events.Arguments;
 using EvoSC.Common.Events.Arguments.MatchSettings;
 using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util;
+using MapEventArgs = EvoSC.Common.Remote.EventArgsModels.MapEventArgs;
 
 namespace EvoSC.Common.Services;
 

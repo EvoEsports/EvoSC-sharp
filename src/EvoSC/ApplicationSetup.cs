@@ -98,7 +98,7 @@ public static class ApplicationSetup
                 .GetInstance<IEventManager>()
             )
 
-            .AsyncAction("InitializeCaches", InitializeCachesAsync)
+            .AsyncAction("InitializeCaches", InitializeCachesAndTrackers)
 
             .Action("ActionInitializeManialinkInteractionHandler", s => s
                 .GetInstance<IManialinkInteractionHandler>()
@@ -207,11 +207,12 @@ public static class ApplicationSetup
     /// initialization methods to make them ready.
     /// </summary>
     /// <param name="s"></param>
-    private static async Task InitializeCachesAsync(ServicesBuilder s)
+    private static async Task InitializeCachesAndTrackers(ServicesBuilder s)
     {
         var msTrackerService = s.GetInstance<IMatchSettingsTrackerService>();
         await msTrackerService.SetDefaultMatchSettingsAsync();
         
         s.GetInstance<IPlayerCacheService>();
+        s.GetInstance<IMatchSettingsMaplistUpdateService>();
     }
 }

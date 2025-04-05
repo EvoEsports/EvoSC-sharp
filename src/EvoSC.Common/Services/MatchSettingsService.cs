@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Events.Arguments.MatchSettings;
+﻿using EvoSC.Common.Events.Arguments.MatchSettings;
 using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
@@ -15,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
-public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IMapService mapService, IEventManager events)
+public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IMapService mapService, IEventManager events, IMatchSettingsTrackerService matchSettingsTrackerService)
     : IMatchSettingsService
 {
     public async Task SetCurrentScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
@@ -140,6 +139,17 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
     {
         var scriptName = await GetCurrentScriptNameAsync();
         return scriptName.ToEnumValue<DefaultModeScriptName>() ?? DefaultModeScriptName.Unknown;
+    }
+
+    public IMatchSettings GetCurrentMatchSettingsAsync() => matchSettingsTrackerService.CurrentMatchSettings;
+    public Task ReloadCurrentMatchSettingsAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task EditCurrentMatchSettingsAsync(Action<MatchSettingsBuilder> builderAction)
+    {
+        throw new NotImplementedException();
     }
 
     private async Task<string> GetFilePathAsync(string name)

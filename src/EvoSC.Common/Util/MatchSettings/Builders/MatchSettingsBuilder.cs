@@ -19,6 +19,8 @@ public class MatchSettingsBuilder
     private List<IMap> _maps = new();
     private int _startIndex;
 
+    public List<IMap> Maps => _maps;
+    
     public MatchSettingsBuilder()
     {
     }

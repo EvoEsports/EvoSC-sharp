@@ -1,4 +1,6 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Events.Arguments;
+using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -14,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Common.Services;
 
 public class MapService(IMapRepository mapRepository, ILogger<MapService> logger, IEvoScBaseConfig config,
-        IPlayerManagerService playerService, IServerClient serverClient)
+        IPlayerManagerService playerService, IServerClient serverClient, IEventManager events)
     : IMapService
 {
     public async Task<IMap?> GetMapByIdAsync(long id) => await mapRepository.GetMapByIdAsync(id);
@@ -56,6 +58,8 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
         {
             logger.LogDebug("Updating map with ID {MapId} to the database", existingMap.Id);
             map = await mapRepository.UpdateMapAsync(existingMap.Id, mapMetadata);
+
+            await events.RaiseAsync(MapEvent.MapUpdated, new MapUpdatedEventArgs { Map = map, OldMap = existingMap });
         }
         else
         {
@@ -64,6 +68,8 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
             
             var mapDetails = await FetchMapDetailsAsync(map);
             await mapRepository.AddMapDetailsAsync(mapDetails, map);
+            
+            await events.RaiseAsync(MapEvent.MapAdded, new MapEventArgs { Map = map });
         }
         
         return map;
@@ -83,7 +89,10 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
 
     public async Task RemoveMapAsync(long mapId)
     {
+        var map = await GetMapByIdAsync(mapId);
         await mapRepository.RemoveMapAsync(mapId);
+
+        await events.RaiseAsync(MapEvent.MapRemoved, new MapEventArgs { Map = map });
     }
 
     public async Task AddCurrentMapListAsync()
