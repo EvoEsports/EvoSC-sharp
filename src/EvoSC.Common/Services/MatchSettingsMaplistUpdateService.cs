@@ -21,7 +21,7 @@ public class MatchSettingsMaplistUpdateService : IMatchSettingsMaplistUpdateServ
             .WithEvent(MapEvent.MapAdded)
             .WithInstance(this)
             .WithInstanceClass<MatchSettingsMaplistUpdateService>()
-            .WithHandlerMethod<MapEventArgs>(OnMapAdded)
+            .WithHandlerMethod<MapEventArgs>(OnMapAddedAsync)
             .WithPriority(EventPriority.High)
         );
         
@@ -29,12 +29,12 @@ public class MatchSettingsMaplistUpdateService : IMatchSettingsMaplistUpdateServ
             .WithEvent(MapEvent.MapUpdated)
             .WithInstance(this)
             .WithInstanceClass<MatchSettingsMaplistUpdateService>()
-            .WithHandlerMethod<MapUpdatedEventArgs>(OnMapUpdated)
+            .WithHandlerMethod<MapUpdatedEventArgs>(OnMapUpdatedAsync)
             .WithPriority(EventPriority.High)
         );
     }
 
-    private async Task OnMapUpdated(object sender, MapUpdatedEventArgs e)
+    private async Task OnMapUpdatedAsync(object sender, MapUpdatedEventArgs e)
     {
         await _matchSettingsService.EditCurrentMatchSettingsAsync(ms =>
         {
@@ -45,7 +45,7 @@ public class MatchSettingsMaplistUpdateService : IMatchSettingsMaplistUpdateServ
         await AddMapToLiveMapListAsync(e.Map);
     }
 
-    private async Task OnMapAdded(object sender, MapEventArgs e)
+    private async Task OnMapAddedAsync(object sender, MapEventArgs e)
     {
         await _matchSettingsService.EditCurrentMatchSettingsAsync(ms => ms.AddMap(e.Map));
         await AddMapToLiveMapListAsync(e.Map);
