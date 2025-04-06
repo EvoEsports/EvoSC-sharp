@@ -1,12 +1,9 @@
-﻿using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Events;
+﻿using EvoSC.Common.Events;
 using EvoSC.Common.Events.Arguments;
-using EvoSC.Common.Events.Arguments.MatchSettings;
 using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Interfaces.Util;
 
 namespace EvoSC.Common.Services;
 
@@ -23,7 +20,7 @@ public class MatchSettingsMaplistUpdateService : IMatchSettingsMaplistUpdateServ
         events.Subscribe(s => s
             .WithEvent(MapEvent.MapAdded)
             .WithInstance(this)
-            .WithInstanceClass<MatchSettingsTrackerService>()
+            .WithInstanceClass<MatchSettingsMaplistUpdateService>()
             .WithHandlerMethod<MapEventArgs>(OnMapAdded)
             .WithPriority(EventPriority.High)
         );
@@ -31,7 +28,7 @@ public class MatchSettingsMaplistUpdateService : IMatchSettingsMaplistUpdateServ
         events.Subscribe(s => s
             .WithEvent(MapEvent.MapUpdated)
             .WithInstance(this)
-            .WithInstanceClass<MatchSettingsTrackerService>()
+            .WithInstanceClass<MatchSettingsMaplistUpdateService>()
             .WithHandlerMethod<MapUpdatedEventArgs>(OnMapUpdated)
             .WithPriority(EventPriority.High)
         );

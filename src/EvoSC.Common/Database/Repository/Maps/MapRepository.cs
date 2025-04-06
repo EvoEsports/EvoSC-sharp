@@ -126,7 +126,7 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         {
             await transaction.RollbackTransactionAsync();
             
-            logger.LogError(ex, "Failed to update map with UID {MapMapUid}", map.Uid);
+            logger.LogError(ex, "Failed to update map with UID {MapUid}", map.Uid);
             throw new EvoScDatabaseException($"Failed to update map with UID {map.Uid}", ex);
         }
     }
