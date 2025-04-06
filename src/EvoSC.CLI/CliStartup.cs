@@ -68,10 +68,13 @@ public static class CliStartup
             .Services(AppFeature.PlayerCache, s => s
                     .RegisterSingleton<IPlayerCacheService, PlayerCacheService>()
                 , "Logging", "Events", "Database", "GbxRemoteClient", "ActionInitializePlayerCache")
-
-            .Services(AppFeature.MatchSettings, s => s
-                    .Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient)
-                , "Logging", "GbxRemoteClient", "Config")
+            
+            .Services(AppFeature.MatchSettings, s =>
+            {
+                s.Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient);
+                s.RegisterSingleton<IMatchSettingsTrackerService, MatchSettingsTrackerService>();
+                s.RegisterSingleton<IMatchSettingsMaplistUpdateService, MatchSettingsMaplistUpdateService>();
+            }, "Logging", "GbxRemoteClient", "Config", "Events")
 
             .Services(AppFeature.Auditing, s => s
                     .Register<IAuditService, AuditService>(Lifestyle.Transient)
@@ -111,9 +114,7 @@ public static class CliStartup
                 .GetInstance<IEventManager>()
             )
 
-            .Action("ActionInitializePlayerCache", s => s
-                .GetInstance<IPlayerCacheService>()
-            )
+            .AsyncAction("InitializeCaches", InitializeCachesAsync)
 
             .Action("ActionInitializeManialinkInteractionHandler", s => s
                     .GetInstance<IManialinkInteractionHandler>()
@@ -148,6 +149,19 @@ public static class CliStartup
         // main migrations
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
     }
+    
+    /// <summary>
+    /// Creates the singleton instances of caches and runs
+    /// initialization methods to make them ready.
+    /// </summary>
+    /// <param name="s"></param>
+    private static async Task InitializeCachesAsync(ServicesBuilder s)
+    {
+        var msTrackerService = s.GetInstance<IMatchSettingsTrackerService>();
+        await msTrackerService.SetDefaultMatchSettingsAsync();
+        
+        s.GetInstance<IPlayerCacheService>();
+    }
 
     /// <summary>
     /// Connect to XMLRPC and initialize server callback and chat router.
@@ -160,5 +174,4 @@ public static class CliStartup
         s.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(CancellationToken.None);
     }
-    
 }

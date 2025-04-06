@@ -61,9 +61,12 @@ public static class ApplicationSetup
                 .RegisterSingleton<IPlayerCacheService, PlayerCacheService>()
             )
 
-            .Services(AppFeature.MatchSettings, s => s
-                .Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient)
-            )
+            .Services(AppFeature.MatchSettings, s =>
+            {
+                s.Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient);
+                s.RegisterSingleton<IMatchSettingsTrackerService, MatchSettingsTrackerService>();
+                s.RegisterSingleton<IMatchSettingsMaplistUpdateService, MatchSettingsMaplistUpdateService>();
+            })
 
             .Services(AppFeature.Auditing, s => s
                 .Register<IAuditService, AuditService>(Lifestyle.Transient)
@@ -98,9 +101,7 @@ public static class ApplicationSetup
                 .GetInstance<IEventManager>()
             )
 
-            .Action("ActionInitializePlayerCache", s => s
-                .GetInstance<IPlayerCacheService>()
-            )
+            .AsyncAction("InitializeCaches", InitializeCachesAndTrackersAsync)
 
             .Action("ActionInitializeManialinkInteractionHandler", s => s
                 .GetInstance<IManialinkInteractionHandler>()
@@ -202,5 +203,19 @@ public static class ApplicationSetup
         s.GetInstance<IServerCallbackHandler>();
         s.GetInstance<IRemoteChatRouter>();
         await serverClient.StartAsync(CancellationToken.None);
+    }
+    
+    /// <summary>
+    /// Creates the singleton instances of caches and runs
+    /// initialization methods to make them ready.
+    /// </summary>
+    /// <param name="s"></param>
+    private static async Task InitializeCachesAndTrackersAsync(ServicesBuilder s)
+    {
+        var msTrackerService = s.GetInstance<IMatchSettingsTrackerService>();
+        await msTrackerService.SetDefaultMatchSettingsAsync();
+        
+        s.GetInstance<IPlayerCacheService>();
+        s.GetInstance<IMatchSettingsMaplistUpdateService>();
     }
 }
