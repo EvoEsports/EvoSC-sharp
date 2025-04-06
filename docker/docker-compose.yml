@@ -6,8 +6,8 @@ services:
       - 2350:2350/udp
       - 2350:2350/tcp
     environment:
-      - TM_MASTERSERVER_LOGIN=
-      - TM_MASTERSERVER_PASSWORD=
+      - TM_MASTERSERVER_LOGIN=testingdings
+      - TM_MASTERSERVER_PASSWORD=G1A@`SkMMfY0.vGh
       - TM_SYSTEM_XMLRPC_ALLOWREMOTE=True
     volumes:
       - UserData:/server/UserData
@@ -22,9 +22,6 @@ services:
 
   evosc_sharp:
     image: evoscsharp
-    build: 
-      context: .
-      dockerfile: ../Dockerfile
     restart: always
     depends_on:
       - trackmania
