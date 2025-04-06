@@ -29,4 +29,10 @@ public interface IMatchSettings
     /// The index to start in the map list.
     /// </summary>
     public int StartIndex { get; set; }
+    
+    /// <summary>
+    /// The name of the matchsettings, typically the same
+    /// as the file name without the .txt extension.
+    /// </summary>
+    public string Name { get; init; }
 }
