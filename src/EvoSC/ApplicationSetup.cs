@@ -61,9 +61,12 @@ public static class ApplicationSetup
                 .RegisterSingleton<IPlayerCacheService, PlayerCacheService>()
             )
 
-            .Services(AppFeature.MatchSettings, s => s
-                .Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient)
-            )
+            .Services(AppFeature.MatchSettings, s =>
+            {
+                s.Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient);
+                s.RegisterSingleton<IMatchSettingsTrackerService, MatchSettingsTrackerService>();
+                s.RegisterSingleton<IMatchSettingsMaplistUpdateService, MatchSettingsMaplistUpdateService>();
+            })
 
             .Services(AppFeature.Auditing, s => s
                 .Register<IAuditService, AuditService>(Lifestyle.Transient)

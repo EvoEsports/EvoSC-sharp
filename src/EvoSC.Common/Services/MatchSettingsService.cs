@@ -141,16 +141,12 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         return scriptName.ToEnumValue<DefaultModeScriptName>() ?? DefaultModeScriptName.Unknown;
     }
 
-    public IMatchSettings GetCurrentMatchSettingsAsync() => matchSettingsTrackerService.CurrentMatchSettings;
-    public Task ReloadCurrentMatchSettingsAsync()
-    {
-        throw new NotImplementedException();
-    }
+    public IMatchSettings GetCurrentMatchSettings() => matchSettingsTrackerService.CurrentMatchSettings;
 
-    public Task EditCurrentMatchSettingsAsync(Action<MatchSettingsBuilder> builderAction)
-    {
-        throw new NotImplementedException();
-    }
+    public Task ReloadCurrentMatchSettingsAsync() => LoadMatchSettingsAsync(GetCurrentMatchSettings().Name);
+
+    public Task EditCurrentMatchSettingsAsync(Action<MatchSettingsBuilder> builderAction) =>
+        EditMatchSettingsAsync(GetCurrentMatchSettings().Name, builderAction);
 
     private async Task<string> GetFilePathAsync(string name)
     {

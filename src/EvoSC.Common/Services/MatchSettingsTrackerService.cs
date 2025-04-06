@@ -17,7 +17,7 @@ public class MatchSettingsTrackerService : IMatchSettingsTrackerService
 
     private readonly IEvoSCApplication _app;
     
-    public MatchSettingsTrackerService(EventManager events, IEvoSCApplication app)
+    public MatchSettingsTrackerService(IEventManager events, IEvoSCApplication app)
     {
         _app = app;
         

@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
 
 namespace EvoSC.Common.Interfaces.Database.Repository;
@@ -51,7 +52,7 @@ public interface IMapRepository
     /// <param name="mapId"></param>
     /// <param name="map"></param>
     /// <returns></returns>
-    public Task<IMap> UpdateMapAsync(long mapId, MapMetadata map);
+    public Task<IMap> UpdateMapAsync(DbMap map);
     
     /// <summary>
     /// Removes a map from the database.

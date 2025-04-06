@@ -109,7 +109,7 @@ public interface IMatchSettingsService
     /// onto the server.
     /// </summary>
     /// <returns></returns>
-    public IMatchSettings GetCurrentMatchSettingsAsync();
+    public IMatchSettings GetCurrentMatchSettings();
     
     /// <summary>
     /// Re-load the current match settings.

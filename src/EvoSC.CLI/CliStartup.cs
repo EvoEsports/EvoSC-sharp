@@ -68,10 +68,13 @@ public static class CliStartup
             .Services(AppFeature.PlayerCache, s => s
                     .RegisterSingleton<IPlayerCacheService, PlayerCacheService>()
                 , "Logging", "Events", "Database", "GbxRemoteClient", "ActionInitializePlayerCache")
-
-            .Services(AppFeature.MatchSettings, s => s
-                    .Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient)
-                , "Logging", "GbxRemoteClient", "Config")
+            
+            .Services(AppFeature.MatchSettings, s =>
+            {
+                s.Register<IMatchSettingsService, MatchSettingsService>(Lifestyle.Transient);
+                s.RegisterSingleton<IMatchSettingsTrackerService, MatchSettingsTrackerService>();
+                s.RegisterSingleton<IMatchSettingsMaplistUpdateService, MatchSettingsMaplistUpdateService>();
+            }, "Logging", "GbxRemoteClient", "Config", "Events")
 
             .Services(AppFeature.Auditing, s => s
                     .Register<IAuditService, AuditService>(Lifestyle.Transient)
