@@ -38,7 +38,7 @@ public static class InternalModules
 {
     public static readonly Type[] Modules =
     [
-        typeof(ExampleModule),
+        // typeof(ExampleModule),
         typeof(GameModeUiModule),
         typeof(PlayerModule),
         typeof(MapsModule),
