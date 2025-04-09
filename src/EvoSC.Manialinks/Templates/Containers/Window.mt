@@ -5,6 +5,7 @@ The window is designed to only be used once per Manialink.
 <component>
     <import component="EvoSC.Containers.Container" as="Container" />
     <import component="EvoSC.Controls.IconButton" as="IconButton" />
+    <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   
     <!-- The ID of the window. Default is 'evosc-window' -->
     <property type="string" name="id" default="evosc-window" />
@@ -51,73 +52,70 @@ The window is designed to only be used once per Manialink.
                size="{{ width+2 }} {{ height }}" 
                id="{{ id }}"
         >
-          <!-- Header BG Icon -->
-          <quad size="7 7" 
-                pos="1 0"
-                bgcolor="{{ Theme.UI_AccentSecondary }}" />
+          <Rectangle 
+                  id="bg-header"
+                  width="{{ width }}"
+                  height="8"
+                  bgColor="{{ Theme.UI_Window_Header_Bg }}"
+                  corners="TopLeft,TopRight"
+                  cornerRadius="0.75"
+                  opacity="{{ Theme.UI_Window_Header_Bg_Opacity }}"
+          />
 
-          <!-- Header BG Line -->
-          <quad pos="1 -7" 
-                size="{{ width }} 1" 
-                bgcolor="{{ Theme.UI_AccentSecondary }}" />
-
-          <!-- Header BG -->
-          <quad class="bg-header" 
-                size="{{ width-7 }} 7" 
-                pos="8 0" />
-
-          <!-- Header BG Accent Line Left -->
-          <quad class="accent-primary"
-                size="1 {{ height }}"
+          <quad pos="0 -8"
+                size="{{ width }} 0.5"
+                bgcolor="{{ Theme.UI_Window_Header_Separator }}"
+                opacity="{{ Theme.UI_Window_Header_Separator_Opacity }}"
           />
           
-          <!-- Header BG Accent Line Right -->
-          <quad class="accent-primary"
-                pos="{{ width+1 }} 0"
-                size="1 {{ height }}"
-          />
-
-          <!-- Body BG -->
-          <quad class="bg-primary"
-                pos="1 -8"
-                size="{{ width }} {{ height-8 }}"
-          />
-
-          <!-- Window Icon -->
           <label
                   class="window-title-icon"
                   valign="center"
                   halign="center"
                   text="{{ icon }}"
-                  pos="4.5 -3"
+                  textcolor="{{ Theme.UI_Window_Header_Icon }}"
+                  pos="4.2 -3.5"
+                  textsize="2"
           />
 
-          <!-- Window Title Text -->
           <label
-                  class="text-header"
+                  class="text-primary"
+                  textfont="{{ Font.Regular }}"
+                  textsize="{{ Theme.UI_FontSize*1.75 }}"
                   valign="center"
+                  textcolor="{{ Theme.UI_Window_Header_Title }}"
                   text="{{ title.ToUpper() }}"
-                  pos="10 -3.2"
+                  pos="8 -3.5"
           />
-          
+
           <IconButton className="evosc-window-closebtn"
                       id="btnClose-{{ id }}"
-                      icon="{{ Icons.Close }}" 
+                      icon="{{ Icons.Close }}"
                       style="round"
-                      type="accent"
-                      x="{{ width-4.5 }}"
-                      y="-1.6"
+                      type="secondary"
+                      x="{{ width-6 }}"
+                      y="-2"
                       data="{{ id }}"
                       size="small"
                       if="canClose"
           />
+          
+          <Rectangle
+                  width="{{ width }}"
+                  height="{{ height - 8.5 }}"
+                  x="0"
+                  y="-8.5"
+                  bgColor="{{ Theme.UI_Window_Body_Bg }}"
+                  corners="BottomLeft,BottomRight"
+                  cornerRadius="0.75"
+                  opacity="{{ Theme.UI_Window_Body_Bg_Opacity }}"
+          />
 
-          <!-- Body Contents -->
           <Container
-                  x="{{ padding+1 }}"
-                  y="-{{ 8+padding }}"
+                  x="{{ padding }}"
+                  y="-{{ 8.5+padding }}"
                   width="{{ width-padding*2 }}"
-                  height="{{ height - (8+padding*2) }}"
+                  height="{{ height - (8.5+padding*2) }}"
                   scrollable="{{ scrollable }}"
           >
             <slot />
