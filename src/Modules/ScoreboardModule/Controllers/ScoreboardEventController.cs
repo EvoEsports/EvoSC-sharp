@@ -7,8 +7,6 @@ using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 using EvoSC.Modules.Official.SetNameModule.Events;
-using EvoSC.Modules.Official.TeamSettingsModule.Events;
-using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.ScoreboardModule.Controllers;
@@ -68,13 +66,6 @@ public class ScoreboardEventController(
     {
         await scoreboardStateService.SetIsWarmUpAsync(true);
         await scoreboardStateService.SetCurrentRoundNumberAsync(args.Current);
-        await scoreboardService.SendMetaDataAsync();
-    }
-
-    [Subscribe(TeamSettingsEvents.SettingsUpdated, IsAsync = true)]
-    public async Task OnTeamSettingsUpdatedAsync(object sender, TeamSettingsEventArgs args)
-    {
-        Thread.Sleep(500);
         await scoreboardService.SendMetaDataAsync();
     }
 

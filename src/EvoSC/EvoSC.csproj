@@ -48,7 +48,7 @@
         <ProjectReference Include="..\Modules\RoundRankingModule\RoundRankingModule.csproj" />
         <ProjectReference Include="..\Modules\ScoreboardModule\ScoreboardModule.csproj" />
         <ProjectReference Include="..\Modules\ServerManagementModule\ServerManagementModule.csproj" />
-        <ProjectReference Include="..\Modules\SetName\SetName.csproj" />
+        <ProjectReference Include="..\Modules\SetNameModule\SetNameModule.csproj" />
         <ProjectReference Include="..\Modules\SpectatorCamModeModule\SpectatorCamModeModule.csproj" />
         <ProjectReference Include="..\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj" />
         <ProjectReference Include="..\Modules\TeamChatModule\TeamChatModule.csproj" />

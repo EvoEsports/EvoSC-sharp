@@ -12,7 +12,6 @@
       <ProjectReference Include="..\GameModeUiModule\GameModeUiModule.csproj" />
       <ProjectReference Include="..\MatchManagerModule\MatchManagerModule.csproj" />
       <ProjectReference Include="..\SetNameModule\SetNameModule.csproj" />
-      <ProjectReference Include="..\TeamSettingsModule\TeamSettingsModule.csproj" />
     </ItemGroup>
 
     <ItemGroup>
