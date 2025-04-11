@@ -9,6 +9,6 @@ public class SetNameEntryModel
     /// <summary>
     /// The new desired nickname of the player.
     /// </summary>
-    [MinLength(1)]
+    [MinLength(0)]
     public string Nickname { get; set; }
 }
