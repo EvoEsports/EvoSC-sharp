@@ -293,18 +293,14 @@ Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
     declare positionBox = (playerRow.GetFirstChild("position_box") as CMlFrame);
     declare playerRowBg = (playerRow.GetFirstChild("player_row_bg") as CMlFrame);
     
-    /*
     if(UseClans){
         SetPositionBoxTeamColor(playerRow, Score.TeamNum);
-    }else if({{ Theme.ScoreboardModule_PositionBox_ShowAccent }}){
-        if(PositionColors.existskey(position) && colorizePosition){
-            declare positionColor = PositionColors[position];
-            SetPositionBoxColor(positionBox, CL::HexToRgb(positionColor));
-        }else{
-            SetPositionBoxColor(positionBox, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
-        }
+    }else if({{ Theme.ScoreboardModule_PositionBox_ShowAccent }} && colorizePosition && PositionColors.existskey(position)){
+        declare positionColor = PositionColors[position];
+        SetPositionBoxColor(positionBox, CL::HexToRgb(positionColor));
+    }else{
+        SetPositionBoxColor(positionBox, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
     }
-    */
     
     if (PlayerIsConnected) {
         //connected
