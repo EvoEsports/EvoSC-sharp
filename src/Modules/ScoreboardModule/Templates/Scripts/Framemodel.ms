@@ -44,9 +44,12 @@ Void SetPlayerRowWidth(CMlFrame playerRow, Real width) {
     declare containerFrame <=> (playerRow.GetFirstChild("player_row_container") as CMlFrame);
     declare nameLabel <=> (playerRow.GetFirstChild("name") as CMlLabel);
     declare scoreLabel <=> (playerRow.GetFirstChild("score") as CMlLabel);
+    declare playerActionsFrame <=> (playerRow.GetFirstChild("player_actions") as CMlFrame);
+    
     containerFrame.Size.X = width;
     nameLabel.Size.X = width / 3.0;
     scoreLabel.RelativePosition_V3.X = (width - {{ columnSpacing }}) * 1.0;
+    playerActionsFrame.RelativePosition_V3.X = width - ({{ rowHeight*1.2/2f }}) * 1.0;
 
     //TODO: align items/content
 }
