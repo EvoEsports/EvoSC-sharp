@@ -48,7 +48,7 @@ public class RoundRankingEventController(
         roundRankingService.RemovePlayerCheckpointDataAsync(args.AccountId);
 
     [Subscribe(ModeScriptEvent.Respawn)]
-    public Task OnRespawnAsync(object sender, PlayerUpdateEventArgs args) =>
+    public Task OnRespawnAsync(object sender, RespawnEventArgs args) =>
         roundRankingService.RemovePlayerCheckpointDataAsync(args.AccountId);
 
     [Subscribe(ModeScriptEvent.PodiumStart)]

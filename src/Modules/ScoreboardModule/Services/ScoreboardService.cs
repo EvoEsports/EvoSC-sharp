@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -18,7 +19,8 @@ public class ScoreboardService(
     IScoreboardNicknamesService nicknamesService,
     IScoreboardSettings settings,
     IGameModeUiModuleService gameModeUiModuleService,
-    IMatchSettingsService matchSettingsService
+    IMatchSettingsService matchSettingsService,
+    IThemeManager themeManager
 )
     : IScoreboardService
 {
@@ -48,8 +50,6 @@ public class ScoreboardService(
 
         await manialinks.SendPersistentManialinkAsync(MetaDataTemplate, new
         {
-            team1 = await server.Remote.GetTeamInfoAsync(1),
-            team2 = await server.Remote.GetTeamInfoAsync(2),
             roundNumber = currentRoundNumber,
             isWarmUp,
             warmUpCount = (int)(modeScriptSettings?.GetValueOrDefault("S_WarmUpNb") ?? 0),

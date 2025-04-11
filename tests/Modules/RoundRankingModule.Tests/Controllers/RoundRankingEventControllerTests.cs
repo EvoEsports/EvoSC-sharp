@@ -97,7 +97,18 @@ public class RoundRankingEventControllerTests : ControllerMock<RoundRankingEvent
     public async Task Removes_Checkpoint_Data_Of_Player_On_Respawn()
     {
         await Controller.OnRespawnAsync(null,
-            new PlayerUpdateEventArgs { Login = "*fakeplayer1*", AccountId = "*fakeplayer1*", Time = 0 });
+            new RespawnEventArgs
+            {
+                NbRespawns = 1,
+                Login = "*fakeplayer1*",
+                AccountId = "*fakeplayer1*",
+                RaceTime = 5,
+                LapTime = 5,
+                CheckpointInRace = 0,
+                CheckpointInLap = 0,
+                Speed = 250,
+                Time = 15912,
+            });
 
         _roundRankingService.Verify(rrs => rrs.RemovePlayerCheckpointDataAsync("*fakeplayer1*"), Times.Once());
     }

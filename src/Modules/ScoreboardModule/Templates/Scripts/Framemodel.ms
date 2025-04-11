@@ -114,6 +114,7 @@ Void SetCountryFlag(CMlFrame playerRow, CSmScore score){
     }
 }
 
+
 *** OnMouseClick ***
 ***
     if(Event.Control.ControlId == "player_row_trigger"){

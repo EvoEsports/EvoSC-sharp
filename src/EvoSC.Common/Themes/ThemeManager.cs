@@ -108,7 +108,10 @@ public class ThemeManager(IServiceContainerManager serviceManager, IEvoSCApplica
 
         _activeThemes[themeInfo.EffectiveThemeType] = theme;
         
-        await theme.ConfigureAsync();
+        await theme.ConfigureAsync(Theme);
+        InvalidateCache();
+        
+        await theme.ConfigureDynamicAsync(Theme);
         InvalidateCache();
 
         await events.RaiseAsync(ThemeEvents.CurrentThemeChanged, new ThemeUpdatedEventArgs());

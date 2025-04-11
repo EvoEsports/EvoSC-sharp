@@ -31,7 +31,6 @@ Void UpdateHeader() {
     declare Boolean EvoSC_WarmUpActive for UI = False;
     
     HeaderContentFrame_TextLeft.Value = TL::StripFormatting(CurrentServerName);
-    //HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName ^ " by " ^ Map.AuthorNickName));
     HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName));
     
     if(EvoSC_WarmUpActive){
