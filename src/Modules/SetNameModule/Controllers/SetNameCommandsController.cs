@@ -9,7 +9,7 @@ using EvoSC.Manialinks.Interfaces;
 namespace EvoSC.Modules.Official.SetNameModule.Controllers;
 
 [Controller]
-public class SetNameCommandsController(IManialinkManager manialinks, Locale locale, IServerClient server)
+public class SetNameCommandsController(IManialinkManager manialinks, Locale locale)
     : EvoScController<ICommandInteractionContext>
 {
     private readonly dynamic _locale = locale;
@@ -19,11 +19,5 @@ public class SetNameCommandsController(IManialinkManager manialinks, Locale loca
     {
         await manialinks.SendManialinkAsync(Context.Player, "SetNameModule.EditName",
             new { Nickname = Context.Player.NickName, Locale = _locale });
-    }
-
-    [ChatCommand("fp", "fakeplayer")]
-    public async Task AddFakePlayerAsync()
-    {
-        await server.Remote.ConnectFakePlayerAsync();
     }
 }
