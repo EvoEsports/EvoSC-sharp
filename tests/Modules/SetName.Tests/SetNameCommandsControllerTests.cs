@@ -1,7 +1,7 @@
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.SetName.Controllers;
+using EvoSC.Modules.Official.SetNameModule.Controllers;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using Moq;
@@ -27,6 +27,6 @@ public class SetNameCommandsControllerTests : CommandInteractionControllerTestBa
         await Controller.SetNameAsync();
 
         _manialinkManager.Verify(m =>
-            m.SendManialinkAsync(_actor.Object, "SetName.EditName", It.IsAny<It.IsAnyType>()));
+            m.SendManialinkAsync(_actor.Object, "SetNameModule.EditName", It.IsAny<It.IsAnyType>()));
     }
 }

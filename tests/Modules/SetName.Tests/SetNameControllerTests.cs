@@ -2,9 +2,9 @@
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Manialinks.Interfaces.Models;
-using EvoSC.Modules.Official.SetName.Controllers;
-using EvoSC.Modules.Official.SetName.Interfaces;
-using EvoSC.Modules.Official.SetName.Models;
+using EvoSC.Modules.Official.SetNameModule.Controllers;
+using EvoSC.Modules.Official.SetNameModule.Interfaces;
+using EvoSC.Modules.Official.SetNameModule.Models;
 using EvoSC.Testing;
 using EvoSC.Testing.Controllers;
 using Moq;
@@ -35,7 +35,7 @@ public class SetNameControllerTests : ManialinkControllerTestBase<SetNameControl
         await Controller.EditNameAsync(entry);
 
         _setNameService.Verify(m => m.SetNicknameAsync(_actor.Object, entry.Nickname), Times.Once);
-        ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "SetName.EditName"), Times.Once);
+        ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "SetNameModule.EditName"), Times.Once);
         AuditEventBuilder.Verify(m => m.Success(), Times.Once);
         AuditEventBuilder.Verify(m => m.WithEventName("EditNickname"), Times.Once);
     }
@@ -49,7 +49,7 @@ public class SetNameControllerTests : ManialinkControllerTestBase<SetNameControl
         await Controller.EditNameAsync(entry);
         
         _setNameService.Verify(m => m.SetNicknameAsync(_actor.Object, entry.Nickname), Times.Never);
-        ManialinkManager.Verify(m => m.SendManialinkAsync(_actor.Object, "SetName.EditName", It.IsAny<ExpandoObject>()),
+        ManialinkManager.Verify(m => m.SendManialinkAsync(_actor.Object, "SetNameModule.EditName", It.IsAny<ExpandoObject>()),
             Times.Once);
     }
 
@@ -58,6 +58,6 @@ public class SetNameControllerTests : ManialinkControllerTestBase<SetNameControl
     {
         await Controller.CancelAsync();
         
-        ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "SetName.EditName"));
+        ManialinkManager.Verify(m => m.HideManialinkAsync(_actor.Object, "SetNameModule.EditName"));
     }
 }

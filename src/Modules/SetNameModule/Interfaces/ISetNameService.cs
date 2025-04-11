@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Modules.Official.SetName.Interfaces;
+namespace EvoSC.Modules.Official.SetNameModule.Interfaces;
 
 public interface ISetNameService
 {

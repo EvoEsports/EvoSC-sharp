@@ -36,6 +36,13 @@ public class ScoreboardNicknamesService(IPlayerManagerService playerManagerServi
         _nicknames[login] = player.NickName;
     }
 
+    public Task OverwriteNickname(string login, string nickname)
+    {
+        _nicknames[login] = nickname;
+
+        return Task.CompletedTask;
+    }
+
     public Task<ConcurrentDictionary<string, string>> GetNicknamesAsync()
     {
         return Task.FromResult(_nicknames);

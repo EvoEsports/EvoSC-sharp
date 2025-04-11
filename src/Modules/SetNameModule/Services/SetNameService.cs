@@ -5,10 +5,10 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Modules.Official.SetName.Events;
-using EvoSC.Modules.Official.SetName.Interfaces;
+using EvoSC.Modules.Official.SetNameModule.Events;
+using EvoSC.Modules.Official.SetNameModule.Interfaces;
 
-namespace EvoSC.Modules.Official.SetName.Services;
+namespace EvoSC.Modules.Official.SetNameModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Scoped)]
 public class SetNameService(IChatService chat, IPlayerRepository playerRepository, IPlayerCacheService playerCache,

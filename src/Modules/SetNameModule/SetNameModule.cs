@@ -1,6 +1,6 @@
 ﻿using EvoSC.Modules.Attributes;
 
-namespace EvoSC.Modules.Official.SetName;
+namespace EvoSC.Modules.Official.SetNameModule;
 
 [Module(IsInternal = true)]
 public class SetNameModule : EvoScModule
