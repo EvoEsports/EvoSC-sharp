@@ -43,7 +43,6 @@
                 declare playerRow = (Event.Control.Parent.Parent.Parent as CMlFrame);
                 declare playerRowContainer = (playerRow.GetFirstChild("player_row_container") as CMlFrame);
                 TogglePlayerActions(playerRowContainer);
-                log(playerRow);
                 declare CSmScore playerScore for playerRow;
                 if(!IsSpectatorClient) RequestSpectatorClient(True);
                 SetSpectateTarget(playerScore.User.Login);

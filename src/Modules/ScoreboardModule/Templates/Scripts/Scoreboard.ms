@@ -170,14 +170,11 @@ Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
     scoreLabel.Value = "";
     roundPointsLabel.Value = "";
 
-    //log("mode points: " ^ C_Mode_Points ^ ", mode ta: " ^ C_Mode_BestTime);
-    
     if (!(CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy)) {
         HideCustomLabel(playerRow);
     }
     
     if (CustomPointsEnabled && CurrentScoreMode != C_Mode_Trophy) {
-    log("score mode: trophy");
         declare CustomLabelColorHex = "000";
         declare CustomLabelValue = "";
         
@@ -196,7 +193,6 @@ Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
             HideCustomLabel(playerRow);
         }
     } else if (CurrentScoreMode == C_Mode_Points || UseClans) {
-    log("score mode: points");
         customLabel.Value = "";
         scoreLabel.Value = TL::ToText(Score.Points);
         colorizePosition = Score.Points > 0;
@@ -222,7 +218,6 @@ Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
             roundPointsLabel.Value = "";
         }
     } else if (Net_TMxSM_ScoresTable_CustomTimes.existskey(Score.User.WebServicesUserId)) {
-    log("score mode: custom time");
         customLabel.Value = "";
         if (Net_TMxSM_ScoresTable_CustomTimes[Score.User.WebServicesUserId] > 0){
             scoreLabel.Value = TL::TimeToText(Net_TMxSM_ScoresTable_CustomTimes[Score.User.WebServicesUserId], True, True);
@@ -231,28 +226,23 @@ Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
             scoreLabel.Value = "nope";
         }
     } else if (CurrentScoreMode == C_Mode_BestTime && Score.BestRaceTimes.count > 0) {
-    log("score mode: best time");
         customLabel.Value = "";
         declare bestRaceTime = Score.BestRaceTimes[Score.BestRaceTimes.count - 1];
         scoreLabel.Value = TL::TimeToText(bestRaceTime, True, True);
         colorizePosition = bestRaceTime > 0;
     } else if (CurrentScoreMode == C_Mode_PrevTime && Score.PrevRaceTimes.count > 0) {
-    log("score mode: prev time");
         customLabel.Value = "";
         declare bestPrevTime = Score.PrevRaceTimes[Score.PrevRaceTimes.count - 1];
         scoreLabel.Value = TL::TimeToText(bestPrevTime, True, True);
         colorizePosition = bestPrevTime > 0;
     } else if (CurrentScoreMode == C_Mode_LapTime && Score.BestLapTimes.count > 0) {
-    log("score mode: lap time");
         customLabel.Value = "";
         scoreLabel.Value = TL::TimeToText(Score.BestLapTimes[Score.BestLapTimes.count - 1], True, True);
     } else if (CurrentScoreMode == C_Mode_Laps && Score.BestRaceTimes.count > 0) {
-    log("score mode: laps");
         customLabel.Value = "";
         scoreLabel.Value = TL::TimeToText(Score.BestRaceTimes[Score.BestRaceTimes.count - 1], True, True);
         scoreLabel.Value = ""^Score.BestRaceTimes.count;
     } else if (CurrentScoreMode == C_Mode_RaceProgression) {
-    log("score mode: race progression");
         customLabel.Value = "";
         declare netread Int2 Net_TMxSM_ScoresTable_RaceProgression for Score;
         scoreLabel.Value = ""^Net_TMxSM_ScoresTable_RaceProgression.X;
@@ -263,13 +253,11 @@ Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
             scoreLabel.Value = "0:00.000";
         }
     } else if (CurrentScoreMode == C_Mode_Trophy) {
-    log("score mode: trophy");
         customLabel.Value = "";
         scoreLabel.Value = "0:00.000"; //todo: implement trophy mode
     } else {
         declare clans = "no";
         if(UseClans) clans = "yes";
-    //log("score mode: unknown -> "^CurrentScoreMode^" clans:"^clans);
     
         if(ShouldShowPointsBox()){
             customLabel.Value = "";

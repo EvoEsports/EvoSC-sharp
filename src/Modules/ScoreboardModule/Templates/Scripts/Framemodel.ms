@@ -50,8 +50,6 @@ Void SetPlayerRowWidth(CMlFrame playerRow, Real width) {
     nameLabel.Size.X = width / 3.0;
     scoreLabel.RelativePosition_V3.X = (width - {{ columnSpacing }}) * 1.0;
     playerActionsFrame.RelativePosition_V3.X = width - ({{ rowHeight*1.2/2f }}) * 1.0;
-
-    //TODO: align items/content
 }
 
 Void HidePlayerRowElement(CMlFrame playerRow, Text id){
