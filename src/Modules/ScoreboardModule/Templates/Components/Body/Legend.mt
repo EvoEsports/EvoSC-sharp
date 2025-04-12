@@ -101,9 +101,11 @@
             }else if(isPointsBased){
                 bestTimeLabel.Show();
                 scoreLabel.Value = "POINTS";
+                scoreLabel.RelativePosition_V3.X = {{ width-columnSpacing }} * 1.0;
             }else{
                 bestTimeLabel.Hide();
                 scoreLabel.Value = "BEST TIME";
+                scoreLabel.RelativePosition_V3.X = {{ width-columnSpacing }} * 1.0;
             }
         }
     }
