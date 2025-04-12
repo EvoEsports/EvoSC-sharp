@@ -54,10 +54,8 @@ Void MoveAndScalePlayerRows() {
         index += 1;
         declare playerRow = (playerRowControl as CMlFrame);
         playerRow.RelativePosition_V3 = <0.0, 1.0 * (index-1) * {{ -rowHeight }} + index * {{ -rowSpacing }}>;
-        //playerRow.Size.X = {{ settings.Width }} * 1.0;
         
         if(UseClans){
-            //playerRow.Size.X /= 2.0;
             declare Real halfWidth = {{ settings.Width }} * 0.5;
             SetPlayerRowWidth(playerRow, halfWidth);
             HidePlayerRowElement(playerRow, "best_time");
