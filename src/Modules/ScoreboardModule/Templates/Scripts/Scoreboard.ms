@@ -83,7 +83,7 @@ Text StripLeadingZeroes(Text timeString) {
 }
 
 Text StyleTime(Text timeString) {
-    declare mutedTextColor = "{{ Color.ToTextColor(Theme.UI_TextMuted) }}";
+    declare mutedTextColor = "{{ Color.ToTextColor(Theme.ScoreboardModule_Text_Color_Muted) }}";
     declare primaryTextColor = "{{ Color.ToTextColor(Theme.ScoreboardModule_Text_Color) }}";
 
     if(timeString == "0:00.000") {
@@ -97,7 +97,7 @@ Text StyleTime(Text timeString) {
 }
 
 Text StylePoints(Text points, Integer padding) {
-    declare mutedTextColor = "{{ Color.ToTextColor(Theme.UI_TextMuted) }}";
+    declare mutedTextColor = "{{ Color.ToTextColor(Theme.ScoreboardModule_Text_Color_Muted) }}";
     declare primaryTextColor = "{{ Color.ToTextColor(Theme.ScoreboardModule_Text_Color) }}";
     declare out = mutedTextColor;
     
@@ -287,7 +287,7 @@ Void UpdateScoreAndPoints(CMlFrame playerRow, CSmScore Score, Integer position){
         declare positionColor = PositionColors[position];
         SetPositionBoxColor(positionBox, CL::HexToRgb(positionColor));
     }else{
-        SetPositionBoxColor(positionBox, CL::HexToRgb("{{ Theme.UI_AccentPrimary }}"));
+        ResetPositionBoxColor(positionBox);
     }
     
     if (PlayerIsConnected) {

@@ -19,7 +19,7 @@
                   class="accent-secondary"
                   pos='{{ Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? accentBarWidth : 0 }}'
                   size='{{ Theme.ScoreboardModule_PositionBox_ShowAccent=="True" ? (width - accentBarWidth) : (width) }} {{ height }}'
-                  bgcolor="{{ Theme.ScoreboardModule_PositionBox_Color }}"
+                  bgcolor="{{ Theme.ScoreboardModule_PositionBox_BgColor }}"
                   opacity="{{ Theme.ScoreboardModule_PositionBox_Opacity }}"
             />
             <label id="position_box_position_rank"
@@ -46,7 +46,11 @@
         }
         
         Void SetPositionBoxColor(CMlFrame backgroundFrame, Vec3 color) {
-            SetPositionBoxColor(backgroundFrame, color, {! Color.ToMlColor(Theme.UI_AccentSecondary) !});
+            SetPositionBoxColor(backgroundFrame, color, {! Color.ToMlColor(Theme.ScoreboardModule_PositionBox_BgColor) !});
+        }
+        
+        Void ResetPositionBoxColor(CMlFrame backgroundFrame) {
+            SetPositionBoxColor(backgroundFrame, {! Color.ToMlColor(Theme.ScoreboardModule_PositionBox_Accent) !});
         }
         
         Void SetPositionBoxTeamColor(CMlFrame backgroundFrame, Integer teamNum) {

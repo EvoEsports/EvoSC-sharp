@@ -15,7 +15,7 @@
                  text="{{ Icons.VideoCamera }}"
                  textsize="{{ Theme.UI_FontSize*2 }}"
                  ScriptEvents="1"
-                 focusareacolor1="{{ Theme.UI_HeaderBg }}"
+                 focusareacolor1="{{ Theme.ScoreboardModule_Background_Header_Color }}"
                  focusareacolor2="{{ Theme.ScoreboardModule_Background_Hover_Color }}"
                  textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
 
@@ -29,7 +29,7 @@
                  text="{{ Icons.Vcard }}"
                  textsize="{{ Theme.UI_FontSize*2 }}"
                  ScriptEvents="1"
-                 focusareacolor1="{{ Theme.UI_HeaderBg }}"
+                 focusareacolor1="{{ Theme.ScoreboardModule_Background_Header_Color }}"
                  focusareacolor2="{{ Theme.ScoreboardModule_Background_Hover_Color }}"
                  textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
         </frame>

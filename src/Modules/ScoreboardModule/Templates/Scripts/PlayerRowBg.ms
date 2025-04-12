@@ -7,7 +7,7 @@ Void RowMouseOver(CMlFrame backgroundFrame) {
 
 Void RowMouseOut(CMlFrame backgroundFrame) {
     declare backgroundQuad = (backgroundFrame.Controls[0] as CMlQuad);
-    backgroundQuad.BgColor = {! Color.ToMlColor(Theme.ScoreboardModule_Background_Row_Color) !};
+    backgroundQuad.BgColor = {! Color.ToMlColor(Theme.ScoreboardModule_Background_Row_BgColor) !};
     backgroundQuad.Opacity = {{ Theme.ScoreboardModule_Background_Row_Opacity }};
 }
 
