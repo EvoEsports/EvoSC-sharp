@@ -10,7 +10,7 @@ public class DefaultScoreboardTheme : Theme<DefaultScoreboardTheme>
     {
         Set("ScoreboardModule.Text_Color").To(theme.UI_TextPrimary);
         Set("ScoreboardModule.Text_Color_Muted").To(theme.UI_TextMuted);
-        Set("ScoreboardModule.WarmUp_Color").To(theme.UI_AccentWarmUp);
+        Set("ScoreboardModule.Text_Color_WarmUp").To(theme.UI_AccentWarmUp);
 
         Set("ScoreboardModule.Logo_URL").To("file://Media/Manialinks/Nadeo/Trackmania/Menus/TMLogo.dds");
         Set("ScoreboardModule.Logo_Width").To("20.0");

@@ -13,7 +13,7 @@ Text GetNadeoScoreboardInfoText() {
 }
 
 Boolean IsWarmUp () {
-    return TL::EndsWith("Warm up", GetNadeoScoreboardInfoText());
+    return TL::EndsWith("Warmup", TL::Replace(GetNadeoScoreboardInfoText(), " ", ""));
 }
 
 Vec3 GetHeaderPrimaryTextColor() {
@@ -21,7 +21,7 @@ Vec3 GetHeaderPrimaryTextColor() {
 }
 
 Vec3 GetHeaderWarmUpTextColor(){
-    return CL::HexToRgb("{{ Theme.ScoreboardModule_WarmUp_Color }}");
+    return CL::HexToRgb("{{ Theme.ScoreboardModule_Text_Color_WarmUp }}");
 }
 
 Text GetPlayerCountText() {
