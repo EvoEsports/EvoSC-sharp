@@ -1,4 +1,6 @@
 <component>
+    <using namespace="GbxRemoteNet.Structs"/>
+    
     <property type="int" name="roundNumber" />
     <property type="int" name="warmUpCount" />
     <property type="int" name="roundsPerMap" />
@@ -6,6 +8,8 @@
     
     <template/>
     <script><!--
+    #Include "ColorLib" as CL
+    
     main() {
         declare Integer EvoSC_RoundsPerMap for UI = -1;
         declare Integer EvoSC_RoundNumber for UI = -1;

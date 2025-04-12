@@ -83,7 +83,7 @@ Void UpdateHeaderSmallTextColors() {
 
 Void UpdateHeaderContent() {
     HeaderContentFrame_TextLeft.Value = TL::StripFormatting(CurrentServerName);
-    HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName ^ " by " ^ Map.AuthorNickName));
+    HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName));
     
     if(IsWarmUp()){
         HeaderContentFrame_TextLeftSmall.Value = TL::ToUpperCase(GetNadeoScoreboardInfoText());

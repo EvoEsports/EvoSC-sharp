@@ -25,16 +25,18 @@ public static class MatchSettingsXmlParser
     /// <summary>
     /// Parse a string containing a XML document.
     /// </summary>
+    /// <param name="name">The name of the matchsettings.</param>
     /// <param name="xml">The XML document to parse.</param>
     /// <returns></returns>
-    public static Task<IMatchSettings> ParseAsync(string xml) => ParseAsync(XDocument.Parse(xml));
+    public static Task<IMatchSettings> ParseAsync(string name, string xml) => ParseAsync(name, XDocument.Parse(xml));
 
     /// <summary>
     /// Parse a XML document.
     /// </summary>
+    /// <param name="name">The name of the matchsettings</param>
     /// <param name="document">The XML document to parse.</param>
     /// <returns></returns>
-    public static async Task<IMatchSettings> ParseAsync(XDocument document)
+    public static async Task<IMatchSettings> ParseAsync(string name, XDocument document)
     {
         var playlistElement = document.Elements("playlist").First();
 
@@ -50,7 +52,8 @@ public static class MatchSettingsXmlParser
             Filter = filter,
             ModeScriptSettings = scriptSettings,
             Maps = maps,
-            StartIndex = startIndex
+            StartIndex = startIndex,
+            Name = name
         };
     }
 
