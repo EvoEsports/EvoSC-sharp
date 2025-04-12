@@ -70,7 +70,7 @@ public class ScoreboardEventController(
     }
 
     [Subscribe(SetNameEvents.NicknameUpdated)]
-    public async Task OnPlayerNicknameChange(object sender, NicknameUpdatedEventArgs args)
+    public async Task OnPlayerNicknameChangeAsync(object sender, NicknameUpdatedEventArgs args)
     {
         await nicknamesService.OverwriteNicknameAsync(args.Player.GetLogin(), args.NewName);
         await nicknamesService.SendNicknamesManialinkAsync();
