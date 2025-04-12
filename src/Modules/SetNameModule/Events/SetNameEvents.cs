@@ -1,4 +1,4 @@
-﻿namespace EvoSC.Modules.Official.SetName.Events;
+﻿namespace EvoSC.Modules.Official.SetNameModule.Events;
 
 public enum SetNameEvents
 {

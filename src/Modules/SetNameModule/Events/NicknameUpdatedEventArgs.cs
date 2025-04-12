@@ -1,6 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 
-namespace EvoSC.Modules.Official.SetName.Events;
+namespace EvoSC.Modules.Official.SetNameModule.Events;
 
 public class NicknameUpdatedEventArgs : EventArgs
 {
