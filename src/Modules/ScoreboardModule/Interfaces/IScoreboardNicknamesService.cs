@@ -23,7 +23,7 @@ public interface IScoreboardNicknamesService
     /// <param name="login"></param>
     /// <param name="nickname"></param>
     /// <returns></returns>
-    public Task OverwriteNickname(string login, string nickname);
+    public Task OverwriteNicknameAsync(string login, string nickname);
     
     /// <summary>
     /// Returns the nicknames map.
