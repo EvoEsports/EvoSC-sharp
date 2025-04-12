@@ -60,17 +60,14 @@ public class MapRepositoryTests
         var (repo, dbFactory) = CreateNewRepository();
         var addedMap = await AddTestMap(dbFactory);
 
-        await repo.UpdateMapAsync(addedMap.Id,
-            new MapMetadata
-            {
-                MapUid = "TestMapUid1",
-                MapName = "MyMap1",
-                AuthorId = "",
-                AuthorName = "",
-                ExternalId = "MyExternalMapId1",
-                ExternalVersion = new DateTime(2, 2, 3, 4, 5, 6, 7),
-                ExternalMapProvider = MapProviders.TrackmaniaIo
-            });
+        await repo.UpdateMapAsync(new DbMap(addedMap)
+        {
+            Uid = "TestMapUid1",
+            Name = "MyMap1",
+            ExternalId = "MyExternalMapId1",
+            ExternalVersion = new DateTime(2, 2, 3, 4, 5, 6, 7),
+            ExternalMapProvider = MapProviders.TrackmaniaIo
+        });
         
         var updatedMap = await dbFactory.GetConnection().GetTable<DbMap>().FirstOrDefaultAsync(r => r.Id == addedMap.Id);
         

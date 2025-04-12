@@ -42,6 +42,9 @@ Draws a rectangle.
   
   <!-- Corners to round off, can be a combined comma-separated list of the following values: TopLeft, TopRight, BottomLeft or BottomRight -->
   <property type="string" name="corners" default="TopLeft,TopRight,BottomLeft,BottomRight" />
+  
+  <!-- Controls the opacity of the background -->
+  <property type="double" name="opacity" default="1.0" />
 
   <!-- Styling class to pass to the rectangle -->
   <property type="string" name="className" default="" />
@@ -62,10 +65,10 @@ Draws a rectangle.
     >
         <frame>
           <frame if="cornerRadius > 0">
-            <QuarterCircle scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopLeft")' quadrant="TopLeft" radius="{{ cornerRadius }}" x="0" y="0" color="{{ bgColor }}" data-id="{{ dataId }}" />
-            <QuarterCircle scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopRight")' quadrant="TopRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" color="{{ bgColor }}" data-id="{{ dataId }}" />
-            <QuarterCircle scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomLeft")' quadrant="BottomLeft" radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" data-id="{{ dataId }}" />
-            <QuarterCircle scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomRight")' quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" data-id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopLeft")' quadrant="TopLeft" radius="{{ cornerRadius }}" x="0" y="0" color="{{ bgColor }}" data-id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopRight")' quadrant="TopRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" color="{{ bgColor }}" data-id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomLeft")' quadrant="BottomLeft" radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" data-id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomRight")' quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" data-id="{{ dataId }}" />
           </frame>
 
           <!-- Top -->
@@ -74,6 +77,7 @@ Draws a rectangle.
                 size='{{ width-cornerRadius*2 + (Util.HasItem(corners, "TopLeft") ? 0 : cornerRadius) + (Util.HasItem(corners, "TopRight") ? 0 : cornerRadius) }} {{ cornerRadius }}'
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
+                opacity="{{ opacity }}"
           />
 
           <!-- Left -->
@@ -82,6 +86,7 @@ Draws a rectangle.
                 size='{{ cornerRadius }} {{ height-cornerRadius*2 }}'
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
+                opacity="{{ opacity }}"
           />
 
           <!-- Bottom -->
@@ -90,6 +95,7 @@ Draws a rectangle.
                 size='{{ width-cornerRadius*2 + (Util.HasItem(corners, "BottomLeft") ? 0 : cornerRadius) + (Util.HasItem(corners, "BottomRight") ? 0 : cornerRadius) }} {{ cornerRadius }}'
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
+                opacity="{{ opacity }}"
           />
 
           <!-- Right -->
@@ -98,6 +104,7 @@ Draws a rectangle.
                 size='{{ cornerRadius }} {{ height-cornerRadius*2 }}'
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
+                opacity="{{ opacity }}"
           />
         </frame>
 
@@ -107,6 +114,7 @@ Draws a rectangle.
                 bgcolor="{{ bgColor }}"
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
+                opacity="{{ opacity }}"
         />
     </frame>
   </template>

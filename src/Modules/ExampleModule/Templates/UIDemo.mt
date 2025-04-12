@@ -19,7 +19,7 @@
   
   <template>
     <UIStyle />
-    <Window title="UI Demo" icon="" width="160" height="95" x="-80" y="47.5">
+    <Window title="Movable Window" icon="" width="160" height="95" x="-80" y="47.5">
         <label text="BUTTONS:" class="text-primary" />
         <frame pos="0 -4">
             <Button id="btnDefault" text="Default" />
