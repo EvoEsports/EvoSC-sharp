@@ -479,7 +479,6 @@ Void UpdateScoreTable() {
     if(CurrentScoreMode != Net_TMGame_ScoresTable_ScoreMode){
         CurrentScoreMode = Net_TMGame_ScoresTable_ScoreMode;
         UpdateScoreboardLayout();
-        log("[EvoSC#] Update scoreboard layout.");
     }
 ***
 
