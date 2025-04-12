@@ -3,8 +3,10 @@ services:
     image: evoesports/trackmania
     restart: always
     ports:
-      - 2350:2350/udp
-      - 2350:2350/tcp
+      - 2351:2350/udp
+      - 2351:2350/tcp
+      - 5000:5000/tcp
+      - 5000:5000/udp
     environment:
       - TM_MASTERSERVER_LOGIN=testingdings
       - TM_MASTERSERVER_PASSWORD=G1A@`SkMMfY0.vGh
@@ -15,13 +17,28 @@ services:
   postgres:
     image: postgres:latest
     restart: always
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=evosc_sharp
       - POSTGRES_USER=evosc_sharp
       - POSTGRES_DB=evosc_sharp
 
+  nats:
+    image: nats
+    build: .
+    restart: always
+    ports:
+      - 4222:4222
+      - 6222:6222
+      - 8222:8222
+      - 6922:6922
+        
   evosc_sharp:
     image: evoscsharp
+    build:
+      context: .
+      dockerfile: ../Dockerfile
     restart: always
     depends_on:
       - trackmania
