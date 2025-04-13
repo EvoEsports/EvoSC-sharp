@@ -23,7 +23,7 @@ using EvoSC.Modules.Official.PlayerRecords;
 using EvoSC.Modules.Official.RoundRankingModule;
 using EvoSC.Modules.Official.ScoreboardModule;
 using EvoSC.Modules.Official.ServerManagementModule;
-using EvoSC.Modules.Official.SetName;
+using EvoSC.Modules.Official.SetNameModule;
 using EvoSC.Modules.Official.SpectatorCamModeModule;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.TeamChatModule;
@@ -38,7 +38,7 @@ public static class InternalModules
 {
     public static readonly Type[] Modules =
     [
-        //typeof(ExampleModule),
+        // typeof(ExampleModule),
         typeof(GameModeUiModule),
         typeof(PlayerModule),
         typeof(MapsModule),
@@ -46,8 +46,9 @@ public static class InternalModules
         typeof(PlayerRecordsModule),
         typeof(MatchManagerModule),
         typeof(SetNameModule),
+        typeof(TeamSettingsModule),
         typeof(ScoreboardModule),
-        typeof(FastestCpModule),
+        // typeof(FastestCpModule),
         typeof(CurrentMapModule),
         typeof(MotdModule),
         typeof(OpenPlanetModule),
@@ -55,7 +56,7 @@ public static class InternalModules
         typeof(MatchReadyModule),
         typeof(NextMapModule),
         typeof(LiveRankingModule),
-        typeof(MatchRankingModule),
+        // typeof(MatchRankingModule),
         typeof(ASayModule),
         typeof(SpectatorTargetInfoModule),
         typeof(SpectatorCamModeModule),
@@ -63,7 +64,6 @@ public static class InternalModules
         typeof(MapListModule),
         typeof(LocalRecordsModule),
         typeof(ForceTeamModule),
-        typeof(TeamSettingsModule),
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(TeamChatModule),

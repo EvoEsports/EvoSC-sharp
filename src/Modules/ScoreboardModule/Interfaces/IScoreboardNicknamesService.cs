@@ -18,6 +18,14 @@ public interface IScoreboardNicknamesService
     public Task FetchAndAddNicknameByLoginAsync(string login);
     
     /// <summary>
+    /// Sets a new nickname for the given login.
+    /// </summary>
+    /// <param name="login"></param>
+    /// <param name="nickname"></param>
+    /// <returns></returns>
+    public Task OverwriteNicknameAsync(string login, string nickname);
+    
+    /// <summary>
     /// Returns the nicknames map.
     /// </summary>
     /// <returns></returns>

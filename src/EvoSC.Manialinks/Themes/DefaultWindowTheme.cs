@@ -12,21 +12,15 @@ public class DefaultWindowTheme : Theme<DefaultWindowTheme>
         Set("UI.Window.Default.Title.Icon").To(ColorUtils.SetLightness(theme.UI_AccentSecondary, 65));
         Set("UI.Window.Default.Title.Text").To(ColorUtils.SetLightness(theme.UI_TextPrimary, 65));
         
-        /* Set("UI.Window.Default.Bg").To(_theme.UI_BgHighlight);
-        Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgPrimary);
-        Set("UI.Window.Default.Header.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgPrimary));
-        Set("UI.Window.Default.Title.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
-        Set("UI.Window.Default.CloseBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
-        Set("UI.Window.Default.MinimizeBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
+        Set("UI.Window.Header.Bg").To(theme.UI_HeaderBg);
+        Set("UI.Window.Header.Bg.Opacity").To(1.0);
+        Set("UI.Window.Header.Icon").To(theme.UI_TextPrimary);
+        Set("UI.Window.Header.Title").To(theme.UI_TextPrimary);
+        Set("UI.Window.Header.Separator").To(theme.UI_AccentPrimary);
+        Set("UI.Window.Header.Separator.Opacity").To(1.0);
         
-        Set("UI.Window.Secondary.Bg").To(_theme.UI_BgHighlight);
-        Set("UI.Window.Secondary.Header.Bg").To(_theme.UI_BgHighlight);
-        Set("UI.Window.Secondary.Header.BgFocus").To(ColorUtils.Lighten(_theme.UI_BgHighlight));
-        Set("UI.Window.Secondary.Title.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
-        Set("UI.Window.Secondary.CloseBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
-        Set("UI.Window.Secondary.MinimizeBtn.Text").To(ColorUtils.Lighten(_theme.UI_TextPrimary));
-        
-        Set("UI.Window.Default.Header.Bg").To(_theme.UI_BgHighlight); */
+        Set("UI.Window.Body.Bg").To(theme.UI_BgPrimary);
+        Set("UI.Window.Body.Bg.Opacity").To(1.0);
 
         return Task.CompletedTask;
     }

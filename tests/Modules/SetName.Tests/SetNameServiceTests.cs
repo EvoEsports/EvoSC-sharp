@@ -4,8 +4,8 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
-using EvoSC.Modules.Official.SetName.Events;
-using EvoSC.Modules.Official.SetName.Services;
+using EvoSC.Modules.Official.SetNameModule.Events;
+using EvoSC.Modules.Official.SetNameModule.Services;
 using EvoSC.Testing;
 using Moq;
 

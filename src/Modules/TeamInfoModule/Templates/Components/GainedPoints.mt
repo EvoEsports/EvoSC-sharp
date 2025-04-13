@@ -22,9 +22,9 @@
             <label pos='{{ halign=="right" ? 0 : -0.15 }} {{ height / -2.0 + 0.25 }}'
                    text="{{ gained }}"
                    textprefix="{{ gained >= 0 ? '+' : '-' }}"
-                   textcolor="{{ Theme.UI_TextPrimary }}"
+                   textcolor="{{ Theme.TeamInfoModule_Widget_GainedPoints_Text }}"
                    textfont="{{ Font.Bold }}"
-                   textsize="{{ Theme.UI_FontSize }}"
+                   textsize="{{ Theme.TeamInfoModule_Widget_GainedPoints_Text_Size }}"
                    halign="center"
                    valign="center"
             />

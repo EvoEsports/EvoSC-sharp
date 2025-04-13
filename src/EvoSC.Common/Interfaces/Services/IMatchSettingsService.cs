@@ -103,6 +103,26 @@ public interface IMatchSettingsService
     /// </summary>
     /// <returns></returns>
     public Task<DefaultModeScriptName> GetCurrentModeAsync();
+    
+    /// <summary>
+    /// Get the matchsettings that is currently loaded
+    /// onto the server.
+    /// </summary>
+    /// <returns></returns>
+    public IMatchSettings GetCurrentMatchSettings();
+    
+    /// <summary>
+    /// Re-load the current match settings.
+    /// </summary>
+    /// <returns></returns>
+    public Task ReloadCurrentMatchSettingsAsync();
+    
+    /// <summary>
+    /// Edit the current match settings.
+    /// </summary>
+    /// <param name="builderAction">Fluent builder for editing the contents.</param>
+    /// <returns></returns>
+    public Task EditCurrentMatchSettingsAsync(Action<MatchSettingsBuilder> builderAction);
 
     /// <summary>
     /// Get all available match settings.

@@ -9,12 +9,22 @@ declare CMlLabel HeaderContentFrame_TextRightSmall;
 Text GetRoundsLabelText() {
     declare Integer EvoSC_RoundNumber for UI = -1;
     declare Integer EvoSC_RoundsPerMap for UI = -1;
+    
+    if(EvoSC_RoundsPerMap == -1){
+        return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber);
+    }
+    
     return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber ^ " of " ^ EvoSC_RoundsPerMap);
 }
 
 Text GetRoundsLabelWarmUpText() {
     declare Integer EvoSC_RoundNumber for UI = -1;
     declare Integer EvoSC_WarmUpCount for UI = -1;
+    
+    if(EvoSC_WarmUpCount == -1){
+        return "$f90" ^ TL::ToUpperCase("Round " ^ EvoSC_RoundNumber);
+    }
+    
     return "$f90" ^ TL::ToUpperCase("Round " ^ EvoSC_RoundNumber ^ " of " ^ EvoSC_WarmUpCount);
 }
 
@@ -31,7 +41,7 @@ Void UpdateHeader() {
     declare Boolean EvoSC_WarmUpActive for UI = False;
     
     HeaderContentFrame_TextLeft.Value = TL::StripFormatting(CurrentServerName);
-    HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName ^ " by " ^ Map.AuthorNickName));
+    HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName));
     
     if(EvoSC_WarmUpActive){
         HeaderContentFrame_TextLeftSmall.Value = GetPointsLimitWarmUpText();
