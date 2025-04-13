@@ -38,6 +38,7 @@
         <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
         <ProjectReference Include="..\Modules\MatchRankingModule\MatchRankingModule.csproj" />
         <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
+        <ProjectReference Include="..\Modules\MatchSettingsEditorModule\MatchSettingsEditorModule.csproj" />
         <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
         <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />

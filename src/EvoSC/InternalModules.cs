@@ -13,6 +13,7 @@ using EvoSC.Modules.Official.MapsModule;
 using EvoSC.Modules.Official.MatchManagerModule;
 using EvoSC.Modules.Official.MatchRankingModule;
 using EvoSC.Modules.Official.MatchReadyModule;
+using EvoSC.Modules.Official.MatchSettingsEditorModule;
 using EvoSC.Modules.Official.MatchTrackerModule;
 using EvoSC.Modules.Official.MotdModule;
 using EvoSC.Modules.Official.NextMapModule;
@@ -66,7 +67,8 @@ public static class InternalModules
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(TeamChatModule),
-        typeof(RoundRankingModule)
+        typeof(RoundRankingModule),
+        typeof(MatchSettingsEditorModule)
     ];
 
     /// <summary>
