@@ -1,6 +1,8 @@
-﻿namespace EvoSC.Modules.Official.MatchSettingsEditorModule.Interfaces;
+﻿using EvoSC.Common.Interfaces.Models;
+
+namespace EvoSC.Modules.Official.MatchSettingsEditorModule.Interfaces;
 
 public interface IMatchSettingsEditorService
 {
-    public Task ShowEditorAsync();
+    public Task ShowEditorAsync(IOnlinePlayer player);
 }

@@ -22,9 +22,7 @@
         <ProjectReference Include="../../EvoSC.Modules/EvoSC.Modules.csproj" Private="true" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Models\" />
-    <Folder Include="Themes\" />
   </ItemGroup>
   
   </Project>

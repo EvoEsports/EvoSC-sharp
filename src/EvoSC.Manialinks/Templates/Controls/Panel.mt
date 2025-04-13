@@ -51,7 +51,7 @@ Features multiple properties such as background, border, rounded corners, and tr
   <property type="string" name="borderColor" default="ffffff" />
 
   <!-- Custom data attribute to set. -->
-  <property type="string" name="data" default="" />
+  <property type="string" name="data" default="a" />
 
   <!-- ID data attribute to set. -->
   <property type="string" name="dataId" default="" />

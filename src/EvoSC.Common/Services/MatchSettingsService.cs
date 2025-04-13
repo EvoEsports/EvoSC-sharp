@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Config.Models;
+﻿using EvoSC.Common.Events.Arguments.MatchSettings;
+using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -146,6 +147,35 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
 
     public Task EditCurrentMatchSettingsAsync(Action<MatchSettingsBuilder> builderAction) =>
         EditMatchSettingsAsync(GetCurrentMatchSettings().Name, builderAction);
+
+    public async Task<IEnumerable<IMatchSettings>> GetAllMatchSettingsAsync()
+    {
+        var mapsDir = await server.GetMapsDirectoryAsync();
+        var matchSettingsDir = Path.Combine(mapsDir, "MatchSettings");
+
+        if (!Directory.Exists(matchSettingsDir))
+        {
+            throw new DirectoryNotFoundException("The match settings directory does not exist.");
+        }
+
+        var matchSettingsFiles = new List<IMatchSettings>();
+        foreach (var msFileName in Directory.GetFiles(matchSettingsDir, "*.txt", SearchOption.TopDirectoryOnly))
+        {
+            try
+            {
+                var name = Path.GetFileNameWithoutExtension(msFileName);
+                var matchSettings = await GetMatchSettingsAsync(name);
+                matchSettingsFiles.Add(matchSettings);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to load match settings file: {File}", msFileName);
+            }
+        }
+
+        return matchSettingsFiles.ToArray();
+    }
+
 
     private async Task<string> GetFilePathAsync(string name)
     {

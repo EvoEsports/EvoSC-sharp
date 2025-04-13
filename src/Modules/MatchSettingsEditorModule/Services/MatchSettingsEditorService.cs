@@ -1,5 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Services;
-using EvoSC.Common.Interfaces.Util;
+﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
@@ -10,13 +10,10 @@ namespace EvoSC.Modules.Official.MatchSettingsEditorModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MatchSettingsEditorService(IManialinkManager manialinks, IMatchSettingsService matchSettingsService) : IMatchSettingsEditorService
 {
-    public Task ShowEditorAsync()
+    public async Task ShowEditorAsync(IOnlinePlayer player)
     {
-        throw new NotImplementedException();
-    }
-
-    private async IEnumerable<IMatchSettings> GetAllMatchSettingsAsync()
-    {
-        
+        var matchSettingsList = await matchSettingsService.GetAllMatchSettingsAsync();
+        await manialinks.SendManialinkAsync(player, "MatchSettingsEditorModule.MatchSettingsEditor",
+            new { matchSettingsList });
     }
 }
