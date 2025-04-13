@@ -2,6 +2,9 @@
 Draws a quarter of a circle from different quadrants.
 -->
 <component>
+  <!-- The ID of the element. -->
+  <property type="string" name="id" default="" />
+    
   <!-- Radius of the quarter -->
   <property type="double" name="radius" />
 
@@ -30,7 +33,7 @@ Draws a quarter of a circle from different quadrants.
   <property type="string" name="className" default="" />
   
   <template>
-    <frame pos="{{ x }} {{ y }}" size="{{ radius }} {{ radius }}" >
+    <frame pos="{{ x }} {{ y }}" size="{{ radius }} {{ radius }}" data-id="{{ id }}">
       <quad
               size="{{ radius*2 }} {{ radius*2 }}"
               modulatecolor="{{ color }}"

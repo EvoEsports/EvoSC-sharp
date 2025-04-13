@@ -65,10 +65,10 @@ Draws a rectangle.
     >
         <frame>
           <frame if="cornerRadius > 0">
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopLeft")' quadrant="TopLeft" radius="{{ cornerRadius }}" x="0" y="0" color="{{ bgColor }}" data-id="{{ dataId }}" />
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopRight")' quadrant="TopRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" color="{{ bgColor }}" data-id="{{ dataId }}" />
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomLeft")' quadrant="BottomLeft" radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" data-id="{{ dataId }}" />
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomRight")' quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" data-id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopLeft")' quadrant="TopLeft" radius="{{ cornerRadius }}" x="0" y="0" color="{{ bgColor }}" id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopRight")' quadrant="TopRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" color="{{ bgColor }}" id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomLeft")' quadrant="BottomLeft" radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomRight")' quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" id="{{ dataId }}" />
           </frame>
 
           <!-- Top -->
