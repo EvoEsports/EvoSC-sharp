@@ -7,5 +7,8 @@ namespace EvoSC.Modules.Official.LocalRecordsModule.Permissions;
 public enum LocalRecordsPermission
 {
     [Description("Can reset the local records table on all maps.")]
-    ResetLocals
+    ResetLocals,
+    
+    [Description("Can transfer the local records between maps.")]
+    TransferLocals,
 }

@@ -37,4 +37,6 @@ public interface ILocalRecordsService
     /// </summary>
     /// <returns></returns>
     public Task ResetLocalRecordsAsync();
+
+    public Task TransferLocalRecordsAsync(long originMapId, long targetMapId);
 }

@@ -9,6 +9,7 @@ using EvoSC.Modules.Official.PlayerRecords.Database.Models;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB;
+using LinqToDB.Data;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Database.Repository;
@@ -57,6 +58,37 @@ public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<
         .DeleteAsync(r => r.MapId == map.Id && r.PlayerId == player.Id);
 
     public Task DeleteRecordAsync(IPlayerRecord record) => Database.DeleteAsync(record);
+
+    public async Task<IEnumerable<DbPlayerRecord>> TransferPlayerRecordsAsync(IMap originMap, IMap targetMap)
+    {
+        var t = await Database.BeginTransactionAsync();
+        
+        var records = await GetRecordsOfMapAsync(originMap.Id);
+        var update = records.Select(record =>
+        {
+            record.MapId = targetMap.Id;
+            record.DbMap = new DbMap(targetMap);
+            return record;
+        }).ToArray();
+        
+        var tasks = update.Select(record => Database.InsertWithIdentityAsync(record));
+        
+        try
+        {
+            var ids = await Task.WhenAll(tasks);
+            await t.CommitTransactionAsync();
+            return update.Zip(ids.Cast<long>()).Select(res =>
+            {
+                res.First.Id = res.Second;
+                return res.First;
+            });
+        }
+        catch (Exception ex)
+        {
+            await t.RollbackTransactionAsync();
+            throw;
+        }
+    }
 
     public Task<DbPlayerRecord[]> GetRecordsOfMapAsync(long mapId) =>
         Table<DbPlayerRecord>()

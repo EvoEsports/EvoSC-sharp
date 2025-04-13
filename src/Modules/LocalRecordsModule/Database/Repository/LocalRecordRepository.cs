@@ -83,7 +83,7 @@ public class LocalRecordRepository(
 
         var updated = await RecalculatePositionsOfMapAsync(map);
         var updatedRecord = updated.FirstOrDefault(r => r.Id == localRecord.Id);
-        
+
         logger.LogDebug("player got a new local record");
         return updatedRecord;
     }

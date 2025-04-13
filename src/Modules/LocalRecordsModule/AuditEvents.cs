@@ -6,4 +6,7 @@ public enum AuditEvents
 {
     [Identifier(Name = "LocalRecords:ResetAll")]
     ResetAll,
+    
+    [Identifier(Name = "LocalRecords:Transfer")]
+    Transfer,
 }

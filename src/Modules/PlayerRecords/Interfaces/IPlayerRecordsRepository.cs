@@ -13,7 +13,7 @@ public interface IPlayerRecordsRepository
     /// <param name="map">The map to get the record from.</param>
     /// <returns></returns>
     public Task<DbPlayerRecord?> GetRecordAsync(IPlayer player, IMap map);
-    
+
     /// <summary>
     /// Add a new record to the database.
     /// </summary>
@@ -25,4 +25,6 @@ public interface IPlayerRecordsRepository
     public Task DeleteRecordAsync(IPlayerRecord record);
 
     public Task<DbPlayerRecord[]> GetRecordsOfMapAsync(long mapId);
+
+    public Task<IEnumerable<DbPlayerRecord>> TransferPlayerRecordsAsync(IMap originMap, IMap targetMap);
 }

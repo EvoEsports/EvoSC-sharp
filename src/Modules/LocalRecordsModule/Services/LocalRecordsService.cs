@@ -10,6 +10,7 @@ using EvoSC.Modules.Official.LocalRecordsModule.Config;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Database;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Services;
+using EvoSC.Modules.Official.PlayerRecords.Database.Models;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,30 @@ public class LocalRecordsService(
 
         IEnumerable<ILocalRecord> records = await localRecordRepository.GetLocalRecordsOfMapByIdAsync(currentMap.Id);
         return records.ToArray();
+    }
+
+    public async Task TransferLocalRecordsAsync(long originMapId, long targetMapId)
+    {
+        var originMap = await mapService.GetMapByIdAsync(originMapId);
+        var targetMap = await mapService.GetMapByIdAsync(targetMapId);
+        
+        if (originMapId == targetMapId || targetMap == null || originMap == null)
+        {
+            throw new InvalidOperationException("Records cannot be transferred to target map");
+        }
+        
+        var dbRecords = await playerRecordsRepository.TransferPlayerRecordsAsync(originMap, targetMap);
+        var localRecords = dbRecords.GroupBy(record => (record.MapId, record.PlayerId))
+            .Select(records => records.MinBy(record => record.Score)!);
+        
+        await localRecordRepository.DeleteRecordsAsync(targetMap);
+        await localRecordRepository.AddRecordsAsync(targetMap, localRecords);
+
+        var currentMap = await mapService.GetCurrentMapAsync();
+        if (currentMap?.Id == targetMapId)
+        {
+            await ShowWidgetToAllAsync();
+        }
     }
 
     public async Task ShowWidgetAsync(IPlayer player)
