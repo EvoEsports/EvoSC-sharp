@@ -5,5 +5,7 @@ namespace EvoSC.Modules.Official.MatchSettingsEditorModule.Permissions;
 [PermissionGroup]
 public enum MatchSettingsEditorPermissions
 {
-    CanOpen
+    OpenOverview,
+    EditMatchSettings,
+    DeleteMatchSettings
 }

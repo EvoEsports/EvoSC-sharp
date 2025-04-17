@@ -32,8 +32,8 @@
       />
       
       <frame pos="{{ width - (6*3) - 2 }} -2.5">
-        <IconButton id="{{ matchSettings.Name }}-btnLoad" icon="{{ Icons.Play }}" x="0" />
-        <IconButton id="{{ matchSettings.Name }}-btnEdit" icon="{{ Icons.Pencil }}" x="6" />
+        <IconButton id="{{ matchSettings.Name }}-btnLoad" icon="{{ Icons.Play }}" x="0" action="EditorOverviewManialinkController/LoadMatchSettings/{{ matchSettings.Name }}" />
+        <IconButton id="{{ matchSettings.Name }}-btnEdit" icon="{{ Icons.Edit }}" x="6" action="EditorOverviewManialinkController/EditMatchSettings/{{ matchSettings.Name }}" />
         <IconButton id="{{ matchSettings.Name }}-btnRemove" icon="{{ Icons.Remove }}" x="12" />
       </frame>
     </frame>

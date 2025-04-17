@@ -31,6 +31,9 @@ Draws a quarter of a circle from different quadrants.
   
   <!-- Styling class to pass to the quarter -->
   <property type="string" name="className" default="" />
+
+  <!-- Data Id attribute to set -->
+  <property type="string" name="dataId" default="" />
   
   <template>
     <frame pos="{{ x }} {{ y }}" size="{{ radius }} {{ radius }}" data-id="{{ id }}">
@@ -43,6 +46,8 @@ Draws a quarter of a circle from different quadrants.
               opacity="{{ opacity }}"
               class="{{ className }}"
               scriptevents="{{ scriptevents ? 1 : 0 }}"
+              id="{{ id }}-quarter-topleft"
+              data-id="{{ dataId }}"
       />
 
       <quad
@@ -54,6 +59,8 @@ Draws a quarter of a circle from different quadrants.
               opacity="{{ opacity }}"
               class="{{ className }}"
               scriptevents="{{ scriptevents ? 1 : 0 }}"
+              id="{{ id }}-quarter-topright"
+              data-id="{{ dataId }}"
       />
 
       <quad
@@ -65,6 +72,8 @@ Draws a quarter of a circle from different quadrants.
               opacity="{{ opacity }}"
               class="{{ className }}"
               scriptevents="{{ scriptevents ? 1 : 0 }}"
+              id="{{ id }}-quarter-bottomleft"
+              data-id="{{ dataId }}"
       />
 
       <quad
@@ -76,6 +85,8 @@ Draws a quarter of a circle from different quadrants.
               opacity="{{ opacity }}"
               class="{{ className }}"
               scriptevents="{{ scriptevents ? 1 : 0 }}"
+              id="{{ id }}-quarter-bottomright"
+              data-id="{{ dataId }}"
       />
     </frame>
   </template>

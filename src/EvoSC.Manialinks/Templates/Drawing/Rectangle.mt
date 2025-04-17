@@ -65,10 +65,41 @@ Draws a rectangle.
     >
         <frame>
           <frame if="cornerRadius > 0">
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopLeft")' quadrant="TopLeft" radius="{{ cornerRadius }}" x="0" y="0" color="{{ bgColor }}" id="{{ dataId }}" />
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "TopRight")' quadrant="TopRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" color="{{ bgColor }}" id="{{ dataId }}" />
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomLeft")' quadrant="BottomLeft" radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" id="{{ dataId }}" />
-            <QuarterCircle opacity="{{ opacity }}" scriptevents="{{ scriptEvents }}" if='Util.HasItem(corners, "BottomRight")' quadrant="BottomRight" radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" color="{{ bgColor }}" id="{{ dataId }}" />
+            <QuarterCircle opacity="{{ opacity }}" 
+                           scriptevents="{{ scriptEvents }}" 
+                           if='Util.HasItem(corners, "TopLeft")' 
+                           quadrant="TopLeft" radius="{{ cornerRadius }}" 
+                           x="0" y="0" 
+                           color="{{ bgColor }}" 
+                           id="{{ id }}-rect" 
+                           dataId="{{ dataId }}" />
+            
+            <QuarterCircle opacity="{{ opacity }}" 
+                           scriptevents="{{ scriptEvents }}" 
+                           if='Util.HasItem(corners, "TopRight")' 
+                           quadrant="TopRight" 
+                           radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="0" 
+                           color="{{ bgColor }}" 
+                           id="{{ id }}-rect" 
+                           dataId="{{ dataId }}" />
+            
+            <QuarterCircle opacity="{{ opacity }}" 
+                           scriptevents="{{ scriptEvents }}" 
+                           if='Util.HasItem(corners, "BottomLeft")' 
+                           quadrant="BottomLeft" 
+                           radius="{{ cornerRadius }}" x="0" y="-{{ height-cornerRadius }}" 
+                           color="{{ bgColor }}" 
+                           id="{{ id }}-rect" 
+                           dataId="{{ dataId }}" />
+            
+            <QuarterCircle opacity="{{ opacity }}" 
+                           scriptevents="{{ scriptEvents }}" 
+                           if='Util.HasItem(corners, "BottomRight")' 
+                           quadrant="BottomRight" 
+                           radius="{{ cornerRadius }}" x="{{ width-cornerRadius }}" y="-{{ height-cornerRadius }}" 
+                           color="{{ bgColor }}" 
+                           id="{{ id }}-rect" 
+                           dataId="{{ dataId }}"  />
           </frame>
 
           <!-- Top -->
@@ -78,6 +109,7 @@ Draws a rectangle.
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
                 opacity="{{ opacity }}"
+                id="{{ id }}-rect-quad-top"
           />
 
           <!-- Left -->
@@ -87,6 +119,7 @@ Draws a rectangle.
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
                 opacity="{{ opacity }}"
+                id="{{ id }}-rect-quad-left"
           />
 
           <!-- Bottom -->
@@ -96,6 +129,7 @@ Draws a rectangle.
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
                 opacity="{{ opacity }}"
+                id="{{ id }}-rect-quad-bottom"
           />
 
           <!-- Right -->
@@ -105,6 +139,7 @@ Draws a rectangle.
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
                 opacity="{{ opacity }}"
+                id="{{ id }}-rect-quad-right"
           />
         </frame>
 
@@ -115,7 +150,10 @@ Draws a rectangle.
                 scriptevents="{{ scriptEvents ? 1 : 0 }}"
                 data-id="{{ dataId }}"
                 opacity="{{ opacity }}"
+                id="{{ id }}-rect-quad-middle"
         />
     </frame>
   </template>
+
+  <script resource="EvoSC.Scripts.Rectangle" once="true" />
 </component>

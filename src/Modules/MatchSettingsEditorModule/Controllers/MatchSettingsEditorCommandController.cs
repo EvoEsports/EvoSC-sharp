@@ -10,11 +10,11 @@ namespace EvoSC.Modules.Official.MatchSettingsEditorModule.Controllers;
 [Controller]
 public class MatchSettingsEditorCommandController(IMatchSettingsEditorService editorService) : EvoScController<ICommandInteractionContext>
 {
-    [ChatCommand("matchsettingseditor", "Open the matchsettings editor.", MatchSettingsEditorPermissions.CanOpen)]
+    [ChatCommand("matchsettingseditor", "Open the matchsettings editor.", MatchSettingsEditorPermissions.OpenOverview)]
     [CommandAlias("/mse", true)]
     public async Task OpenMatchSettingsEditorAsync()
     {
-        await editorService.ShowEditorAsync(Context.Player);
+        await editorService.ShowOverviewAsync(Context.Player);
 
         Context.AuditEvent
             .WithEventName("MatchSettingsEditor.OpenMatchSettingsOverview")
