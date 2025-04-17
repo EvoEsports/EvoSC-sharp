@@ -31,9 +31,6 @@
   <!-- Possible values: normal, round -->
   <property type="string" name="style" default="normal" />
   
-  <!-- Set a custom background color for the button -->
-  <property type="string?" name="bgColor" default="null" />
-  
   <!-- The action to call when clicking the button. This disables script events. -->
   <property type="string" name="action" default="" />
   

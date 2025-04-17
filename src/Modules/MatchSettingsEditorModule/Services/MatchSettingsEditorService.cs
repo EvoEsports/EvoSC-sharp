@@ -13,7 +13,7 @@ public class MatchSettingsEditorService(IManialinkManager manialinks, IMatchSett
     public async Task ShowEditorAsync(IOnlinePlayer player)
     {
         var matchSettingsList = await matchSettingsService.GetAllMatchSettingsAsync();
-        await manialinks.SendManialinkAsync(player, "MatchSettingsEditorModule.MatchSettingsEditor",
+        await manialinks.SendManialinkAsync(player, "MatchSettingsEditorModule.MatchSettingsOverview",
             new { matchSettingsList });
     }
 }

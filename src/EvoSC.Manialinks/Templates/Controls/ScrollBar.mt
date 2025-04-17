@@ -1,4 +1,6 @@
 <component>
+  <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
+  
   <property type="string" name="id" />
   <property type="string" name="forFrame" default="" />
   
@@ -13,11 +15,12 @@
   
   <template>
     <frame pos="{{ x }} {{ y }}" id="{{ id }}">
-      <quad
-              size="2 5"
-              bgcolor="{{ Theme.UI_BgPrimary }}"
-              scriptevents="1"
-              id="scrollbar_quad_{{ id }}"
+      <Rectangle id="scrollbar_quad_{{ id }}"
+                 width="2"
+                 height="5"
+                 bgColor="{{ Theme.UI_SurfaceBgPrimary }}"
+                 cornerRadius="1"
+                 scriptEvents="true"
       />
     </frame>
   </template>
