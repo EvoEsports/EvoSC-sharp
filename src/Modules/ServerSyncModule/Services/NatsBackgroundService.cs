@@ -15,11 +15,11 @@ namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Services;
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class NatsBackgroundService : IBackgroundService
 {
-    private readonly INatsConnectionService _nats;
+    private readonly INatsConnectionServiceOld _nats;
     private readonly INatsSettings _natsSettings;
     private readonly IEventManager _events;
     
-    public NatsBackgroundService(INatsConnectionService nats, INatsSettings natsSettings, IEventManager events)
+    public NatsBackgroundService(INatsConnectionServiceOld nats, INatsSettings natsSettings, IEventManager events)
     {
         _nats = nats;
         _natsSettings = natsSettings;

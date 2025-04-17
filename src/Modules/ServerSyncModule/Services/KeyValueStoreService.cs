@@ -1,49 +1,51 @@
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Interfaces;
+using GBX.NET.Extensions;
 using Microsoft.Extensions.Logging;
 using NATS.Client.KeyValue;
+using NATS.Client.KeyValueStore;
 
 namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class KeyValueStoreService(INatsConnectionService nats, ILogger<KeyValueStoreService> logger) : IKeyValueStoreService
 {
-    public ulong CreateEntry(string key, byte[] value)
+    public async ValueTask<ulong> CreateEntryAsync<T>(string key, T value)
     {
         logger.LogInformation("Creating key value entry from store with key: {Key}", key);
-        return nats.KeyValue.Create(key, value);
+        return await nats.NatsKV.CreateAsync(key, value);
     }
 
-    public ulong CreateOrUpdateEntry(string key, byte[] value)
+    public async ValueTask<ulong> CreateOrUpdateEntryAsync<T>(string key, T value)
     {
-        var entryExists = nats.KeyValue.Get(key);
+        NatsKVEntry<T> entryExists = await nats.NatsKV.GetEntryAsync<T>(key);
 
-        if (entryExists is null)
+        if (entryExists.Error != null)
         {
             logger.LogInformation("Creating key value entry from store with key: {Key}", key);
-            return nats.KeyValue.Create(key, value);
+            return await nats.NatsKV.C(key, value);
         }
         
         logger.LogInformation("Updating existing key value entry with key: {Key}", key);
-        return nats.KeyValue.Update(entryExists.Key, value, entryExists.Revision);
+        return await nats.NatsKV.UpdateAsync(key, value, entryExists.Revision);
     }
     
-    public void UpdateEntry(string key, byte[] value, ulong revision)
+    public async ValueTask<ulong> UpdateEntryAsync<T>(string key, T value, ulong revision)
     {
         logger.LogInformation("Updating key value entry from store with key: {Key}", key);
-        nats.KeyValue.Update(key, value, revision);
+        return await nats.NatsKV.UpdateAsync(key, value, revision);
     }
     
-    public KeyValueEntry GetEntry(string key, ulong revision)
+    public async ValueTask<NatsKVEntry<T>> GetEntryAsync<T>(string key, ulong revision)
     {
         logger.LogInformation("Getting key value entry from store with key: {Key}", key);
-        return nats.KeyValue.Get(key, revision);
+        return await nats.NatsKV.GetEntryAsync<T>(key, revision);
     }
     
-    public void DeleteEntry(string key, ulong revision)
+    public async ValueTask DeleteEntryAsync(string key, ulong revision)
     {
         logger.LogInformation("Deleting key value entry from store with key: {Key}", key);
-        nats.KeyValue.Delete(key, revision);
+        await nats.NatsKV.DeleteAsync(key);
     }
 }

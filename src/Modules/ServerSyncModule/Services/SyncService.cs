@@ -10,15 +10,8 @@ using EvoSC.Modules.EvoEsports.ServerSyncModule.Models.StateMessages;
 namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class SyncService : ISyncService
+public class SyncService(INatsConnectionService nats) : ISyncService
 {
-    private readonly INatsConnectionService _nats;
-
-    public SyncService(INatsConnectionService nats)
-    {
-        _nats = nats;
-    }
-
     public Task PublishChatMessageAsync(IPlayer player, string message)
     {
         var stateMessage = new ChatStateStateMessage
@@ -29,7 +22,7 @@ public class SyncService : ISyncService
             NickName = player.NickName
         };
 
-        return _nats.PublishStateAsync(StateSubjects.ChatMessages, stateMessage);
+        return nats.NatsJetstream.(StateSubjects.ChatMessages, stateMessage);
     }
 
     public Task PublishPlayerStateAsync(IPlayer player, long position, IEnumerable<long> scores, IEnumerable<long> checkpointScores, IEnumerable<long> times)
@@ -45,22 +38,22 @@ public class SyncService : ISyncService
             Times = times
         };
 
-        return _nats.PublishStateAsync(StateSubjects.PlayerState, stateMessage);
+        return nats.PublishStateAsync(StateSubjects.PlayerState, stateMessage);
     }
 
     public Task PublishMapFinishedAsync()
     {
-        return _nats.PublishStateAsync(StateSubjects.MapFinished, new StateMessage());
+        return nats.PublishStateAsync(StateSubjects.MapFinished, new StateMessage());
     }
 
     public Task PublishEndRoundAsync()
     {
-        return _nats.PublishStateAsync(StateSubjects.EndRound, new StateMessage());
+        return nats.PublishStateAsync(StateSubjects.EndRound, new StateMessage());
     }
 
     public Task PublishEndMatchAsync()
     {
-        return _nats.PublishStateAsync(StateSubjects.EndMatch, new StateMessage());
+        return nats.PublishStateAsync(StateSubjects.EndMatch, new StateMessage());
     }
 
     public Task PublishWayPointAsync(IOnlinePlayer player, int raceTime, int checkpointInRace,
@@ -77,7 +70,7 @@ public class SyncService : ISyncService
             Speed = speed
         };
 
-        return _nats.PublishStateAsync(StateSubjects.Waypoint, stateMessage);
+        return nats.PublishStateAsync(StateSubjects.Waypoint, stateMessage);
     }
 
     public Task PublishScoresAsync(IEnumerable<PlayerScore?> playerScores, IEnumerable<TeamScore?> teamScores, int winnerTeam,
@@ -93,6 +86,6 @@ public class SyncService : ISyncService
             UseTeams = useTeams
         };
 
-        return _nats.PublishStateAsync(StateSubjects.Scores, message);
+        return nats.PublishStateAsync(StateSubjects.Scores, message);
     }
 }
