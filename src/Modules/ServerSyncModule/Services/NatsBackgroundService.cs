@@ -12,23 +12,13 @@ using NATS.Client.JetStream;
 
 namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class NatsBackgroundService : IBackgroundService
+// [Service(LifeStyle = ServiceLifeStyle.Singleton)]
+public class NatsBackgroundService(INatsConnectionService nats, INatsSettings natsSettings, IEventManager events)
 {
-    private readonly INatsConnectionServiceOld _nats;
-    private readonly INatsSettings _natsSettings;
-    private readonly IEventManager _events;
-    
-    public NatsBackgroundService(INatsConnectionServiceOld nats, INatsSettings natsSettings, IEventManager events)
-    {
-        _nats = nats;
-        _natsSettings = natsSettings;
-        _events = events;
-    }
 
-    public async Task StartAsync()
+    /*public async Task StartAsync()
     {
-        await _nats.ConnectAsync();
+        await nats.ConnectAsync();
 
         var opts = new PushSubscribeOptions.PushSubscribeOptionsBuilder()
             .WithConfiguration(new ConsumerConfiguration.ConsumerConfigurationBuilder()
@@ -38,7 +28,7 @@ public class NatsBackgroundService : IBackgroundService
             )
             .Build();
         
-        _nats.PlayerStateUpdated += NatsOnPlayerStateUpdated;
+        nats.PlayerStateUpdated += NatsOnPlayerStateUpdated;
         _nats.ChatMessageReceived += NatsOnChatMessageReceived;
         _nats.MapFinishedReceived += NatsOnMapFinishedReceived;
     }
@@ -66,5 +56,5 @@ public class NatsBackgroundService : IBackgroundService
         _nats.DisconnectAsync();
 
         return Task.CompletedTask;
-    }
+    }*/
 }

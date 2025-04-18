@@ -1,6 +1,10 @@
-﻿using EvoSC.Modules.EvoEsports.ServerSyncModule.Interfaces;
+﻿using Castle.Core.Logging;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
+using EvoSC.Modules.EvoEsports.ServerSyncModule.Interfaces;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Settings;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Utils;
+using Microsoft.Extensions.Logging;
 using NATS.Client.JetStream;
 using NATS.Client.JetStream.Models;
 using NATS.Client.KeyValueStore;
@@ -8,58 +12,64 @@ using NATS.Net;
 
 namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Services;
 
-public class NatsConnectionService(NatsClient? natsClient, INatsSettings natsSettings)
+[Service(LifeStyle = ServiceLifeStyle.Singleton)]
+public class NatsConnectionService(INatsSettings natsSettings, ILogger<INatsConnectionService> logger)
     : INatsConnectionService, IAsyncDisposable
 {
-    private NatsClient? _natsClient = natsClient;
 
-    private INatsJSContext? _natsJsContext = null;
-    private INatsKVStore? _natsKVStore = null;
-    private INatsJSConsumer? _natsJSConsumer = null;
+    private INatsJSContext? natsJsContext = null;
+    private INatsKVStore? natsKVStore = null;
+    private INatsJSConsumer? natsJSConsumer = null;
+    private NatsClient? natsClient = null;
 
-    public INatsJSContext NatsJsContext => _natsJsContext ?? throw new InvalidOperationException(
+    public INatsJSContext NatsJsContext => natsJsContext ?? throw new InvalidOperationException(
         "NATS JetStream context is not initialized."
     );
 
-    public INatsKVStore NatsKvStore => _natsKVStore ?? throw new InvalidOperationException(
+    public INatsKVStore NatsKvStore => natsKVStore ?? throw new InvalidOperationException(
         "NATS Key Value context is not initialized."
     );
     
-    public INatsJSConsumer NatsJsConsumer => _natsJSConsumer ?? throw new InvalidOperationException(
+    public INatsJSConsumer NatsJsConsumer => natsJSConsumer ?? throw new InvalidOperationException(
         "NATS JetStream consumer is not initialized."
     );
 
     public async Task ConnectAsync()
     {
-        if (_natsClient is not null)
+        if (natsClient is not null)
         {
+            logger.LogInformation("NATS connection is already initialized.");
             return;
         }
 
-        _natsClient = new NatsClient(natsSettings.GetConnectionUrl());
+        natsClient = new NatsClient(natsSettings.GetConnectionUrl());
 
-        var jsContext = _natsClient.CreateJetStreamContext();
+        logger.LogDebug("Connecting to NATS server at {Url}", natsSettings.GetConnectionUrl());
+        natsJsContext = natsClient.CreateJetStreamContext();
 
-        await jsContext.CreateOrUpdateStreamAsync(new StreamConfig(
+        await natsJsContext.CreateOrUpdateStreamAsync(new StreamConfig(
             name: natsSettings.StreamName,
             subjects: [$"{natsSettings.MessageGroup}.>"]
         ));
-        _natsJSConsumer = await jsContext.CreateOrUpdateConsumerAsync(natsSettings.StreamName,
+        natsJSConsumer = await natsJsContext.CreateOrUpdateConsumerAsync(natsSettings.StreamName,
             new ConsumerConfig(name: natsSettings.ConsumerName));
 
         if (natsSettings.UseKeyValueStore)
         {
-            var kvStoreContext = _natsClient.CreateKeyValueStoreContext();
-            _natsKVStore =
+            logger.LogDebug("Creating NATS Key Value store with bucket name {BucketName}",
+                natsSettings.KeyVaultBucketName);
+            var kvStoreContext = natsClient.CreateKeyValueStoreContext();
+            natsKVStore =
                 await kvStoreContext.CreateOrUpdateStoreAsync(new NatsKVConfig(natsSettings.KeyVaultBucketName));
         }
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_natsClient != null)
+        if (natsClient != null)
         {
-            await _natsClient.DisposeAsync();
+            logger.LogDebug("Disposing NATS connection.");
+            await natsClient.DisposeAsync();
         }
     }
 }
