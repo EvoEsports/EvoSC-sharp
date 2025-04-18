@@ -5,12 +5,44 @@ declare CMlLabel HeaderContentFrame_TextLeft;
 declare CMlLabel HeaderContentFrame_TextLeftSmall;
 declare CMlLabel HeaderContentFrame_TextRight;
 declare CMlLabel HeaderContentFrame_TextRightSmall;
+declare CMlLabel ScoreboardSettingsLabel;
+
+Text GetNadeoScoreboardInfoText() {
+    declare netread Text Net_TMGame_ScoresTable_FooterInfo for Teams[0];
+    return Net_TMGame_ScoresTable_FooterInfo;
+}
+
+Boolean IsWarmUp () {
+    return TL::EndsWith("Warmup", TL::Replace(GetNadeoScoreboardInfoText(), " ", ""));
+}
+
+Vec3 GetHeaderPrimaryTextColor() {
+    return CL::HexToRgb("{{ Theme.ScoreboardModule_Text_Color }}");
+}
+
+Vec3 GetHeaderWarmUpTextColor(){
+    return CL::HexToRgb("{{ Theme.ScoreboardModule_Text_Color_WarmUp }}");
+}
+
+Text GetPlayerCountText() {
+    switch (Players.count) {
+        case 0: return _("No player");
+        case 1: return _("1 player");
+    }
+    
+    return TL::Compose(_("%1 players"), TL::ToText(Players.count));
+}
 
 Text GetRoundsLabelText() {
+    declare Integer EvoSC_PointsLimit for UI = -1;
     declare Integer EvoSC_RoundNumber for UI = -1;
     declare Integer EvoSC_RoundsPerMap for UI = -1;
     
     if(EvoSC_RoundsPerMap == -1){
+        if(EvoSC_PointsLimit == -1){
+            return TL::ToUpperCase(GetNadeoScoreboardInfoText());
+        }
+    
         return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber);
     }
     
@@ -22,34 +54,46 @@ Text GetRoundsLabelWarmUpText() {
     declare Integer EvoSC_WarmUpCount for UI = -1;
     
     if(EvoSC_WarmUpCount == -1){
-        return "$f90" ^ TL::ToUpperCase("Round " ^ EvoSC_RoundNumber);
+        return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber);
     }
     
-    return "$f90" ^ TL::ToUpperCase("Round " ^ EvoSC_RoundNumber ^ " of " ^ EvoSC_WarmUpCount);
+    return TL::ToUpperCase("Round " ^ EvoSC_RoundNumber ^ " of " ^ EvoSC_WarmUpCount);
 }
 
 Text GetPointsLimitText() {
     declare Integer EvoSC_PointsLimit for UI = -1;
+    
+    if(EvoSC_PointsLimit == -1){
+        return TL::ToUpperCase(GetPlayerCountText());
+    }
+    
     return TL::ToUpperCase("Points Limit " ^ EvoSC_PointsLimit);
 }
 
-Text GetPointsLimitWarmUpText() {
-    return "$f90WARM UP";
+Void UpdateHeaderSmallTextColors() {
+    declare Vec3 textColor = <1.0, 1.0, 1.0>;
+    if(IsWarmUp()){
+        textColor = GetHeaderWarmUpTextColor();
+    }else{
+        textColor = GetHeaderPrimaryTextColor();
+    }
+    HeaderContentFrame_TextRightSmall.TextColor = textColor;
+    HeaderContentFrame_TextLeftSmall.TextColor = textColor;
 }
 
-Void UpdateHeader() {
-    declare Boolean EvoSC_WarmUpActive for UI = False;
-    
+Void UpdateHeaderContent() {
     HeaderContentFrame_TextLeft.Value = TL::StripFormatting(CurrentServerName);
     HeaderContentFrame_TextRight.Value = TL::StripFormatting(TL::Trim(Map.MapName));
     
-    if(EvoSC_WarmUpActive){
-        HeaderContentFrame_TextLeftSmall.Value = GetPointsLimitWarmUpText();
+    if(IsWarmUp()){
+        HeaderContentFrame_TextLeftSmall.Value = TL::ToUpperCase(GetNadeoScoreboardInfoText());
         HeaderContentFrame_TextRightSmall.Value = GetRoundsLabelWarmUpText();
     }else{
         HeaderContentFrame_TextLeftSmall.Value = GetPointsLimitText();
         HeaderContentFrame_TextRightSmall.Value = GetRoundsLabelText();
     }
+    
+    UpdateHeaderSmallTextColors();
 }
 
 *** OnInitialization ***
@@ -60,13 +104,32 @@ Void UpdateHeader() {
     HeaderContentFrame_TextLeftSmall <=> (HeaderContentFrame.GetFirstChild("header_text_left_small") as CMlLabel);
     HeaderContentFrame_TextRight <=> (HeaderContentFrame.GetFirstChild("header_text_right") as CMlLabel);
     HeaderContentFrame_TextRightSmall <=> (HeaderContentFrame.GetFirstChild("header_text_right_small") as CMlLabel);
+    ScoreboardSettingsLabel <=> (HeaderContentFrame.GetFirstChild("settings_button") as CMlLabel);
 ***
 
 *** OnLoop *** 
 ***
-    if(Now > HeaderContentFrameLastUpdate + 1000){
+    if(Now > HeaderContentFrameLastUpdate + 750){
         HeaderContentFrameLastUpdate = Now;
-        UpdateHeader();
+        UpdateHeaderContent();
+    }
+***
+
+*** OnMouseOver *** 
+***
+    if(Event.Control.ControlId == "settings_button"){
+        AnimMgr.Flush(ScoreboardSettingsLabel);
+        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.5'/>", 320, CAnimManager::EAnimManagerEasing::ExpOut);
+        continue;
+    }
+***
+
+*** OnMouseOut *** 
+***
+    if(Event.Control.ControlId == "settings_button"){
+        AnimMgr.Flush(ScoreboardSettingsLabel);
+        AnimMgr.Add(ScoreboardSettingsLabel, "<anim opacity='0.1'/>", 320, CAnimManager::EAnimManagerEasing::ExpOut);
+        continue;
     }
 ***
 -->

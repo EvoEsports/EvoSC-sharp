@@ -48,9 +48,26 @@
                    opacity="0.8"
             />
 
+            <frame pos="{{ width / 2f }} {{ height/ -2f + 4f }}">
+                <label id="settings_button"
+                       class="text-primary"
+                       size="16 4"
+                       pos="{{ -padding }}"
+                       text="SETTINGS {{ Icons.Cog }}"
+                       textsize="{{ Theme.UI_FontSize*0.5 }}"
+                       opacity="0.1"
+                       valign="center"
+                       halign="right"
+                       action="ScoreboardSettingsManialink/ShowSettings"
+                       ScriptEvents="1"
+                       focusareacolor1="00000000"
+                       focusareacolor2="00000000"
+                />
+            </frame>
+
             <Logo if='Theme.ScoreboardModule_Logo_URL != ""'/>
         </frame>
     </template>
 
-    <script resource="ScoreboardModule.Scripts.Header" />
+    <script resource="ScoreboardModule.Scripts.Header"/>
 </component>

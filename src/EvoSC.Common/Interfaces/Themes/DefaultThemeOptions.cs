@@ -17,6 +17,7 @@ public interface DefaultThemeOptions
     public static readonly string UIBgHighlight = "UI.BgHighlight";
     public static readonly string UIAccentPrimary = "UI.AccentPrimary";
     public static readonly string UIAccentSecondary = "UI.AccentSecondary";
+    public static readonly string UIAccentWarmUp = "UI.AccentWarmUp";
     public static readonly string UISurfaceBgPrimary = "UI.SurfaceBgPrimary";
     public static readonly string UISurfaceBgSecondary = "UI.SurfaceBgSecondary";
     public static readonly string UITextPrimary = "UI.TextPrimary";
