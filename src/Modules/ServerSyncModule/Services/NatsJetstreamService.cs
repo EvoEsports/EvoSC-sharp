@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Services.Attributes;
+﻿using System.Text.Json;
+using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Interfaces;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Settings;
@@ -21,7 +22,8 @@ public class NatsJetstreamService(
             throw new InvalidOperationException("Message cannot be null");
         }
         var fullSubject = $"{natsSettings.MessageGroup}.{subject}";
-        logger.LogDebug("Publishing message to {Subject} with content {Data}", fullSubject, message.ToString());
+        var messageJson = JsonSerializer.Serialize<T>(message);
+        logger.LogTrace("Publishing message to {Subject} with content {Data}", fullSubject, messageJson);
         PubAckResponse ack =
             await natsConnection.NatsJsContext.PublishAsync(fullSubject, message);
 
