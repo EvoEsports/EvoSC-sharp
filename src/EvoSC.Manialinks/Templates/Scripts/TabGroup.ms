@@ -1,16 +1,17 @@
 <!--
-Void SelectTab(Integer _TabIndex) {
-    declare Integer EvoSC_TabGroup_{{ id }}_SelectedTab for This;
+Void SelectTab(Text _NewTabPageId) {
+    declare Text EvoSC_TabGroup_{{ id }}_SelectedTab for This;
     declare Text[] EvoSC_TabGroup_{{ id }}_Tabs for This;
-    declare Integer Index = 0;
     
-    log(EvoSC_TabGroup_{{ id }}_Tabs );
+    if (!EvoSC_TabGroup_{{ id }}_Tabs.exists(_NewTabPageId)) {
+        return;
+    }
     
     foreach (TabPageId in EvoSC_TabGroup_{{ id }}_Tabs) {
         declare HeaderText <=> (Page.MainFrame.GetFirstChild(TabPageId ^ "-header-text") as CMlLabel);
         declare Body <=> (Page.MainFrame.GetFirstChild(TabPageId ^ "-body-frame") as CMlFrame);
         
-        if (Index == _TabIndex) {
+        if (TabPageId == _NewTabPageId) {
             Body.Visible = True;
             Rectangle_SetBgColor(TabPageId ^ "-header-bg", {! Color.ToMlColor(Theme.UI_SurfaceBgSecondary) !});
             HeaderText.TextColor = {! Color.ToMlColor(Theme.UI_TextSecondary) !};
@@ -19,11 +20,9 @@ Void SelectTab(Integer _TabIndex) {
             Rectangle_SetBgColor(TabPageId ^ "-header-bg", {! Color.ToMlColor(Theme.UI_SurfaceBgPrimary) !});
             HeaderText.TextColor = {! Color.ToMlColor(Theme.UI_TextPrimary) !};
         }
-        
-        Index += 1;
     }
     
-    EvoSC_TabGroup_{{ id }}_SelectedTab = _TabIndex;
+    EvoSC_TabGroup_{{ id }}_SelectedTab = _NewTabPageId;
 }
 
 Void InitializeTabs() {
@@ -36,10 +35,7 @@ Void InitializeTabs() {
     foreach (TabPageFrame in Page.GetClassChildren_Result) {
         declare Text TabPageId = TabPageFrame.ControlId;
         
-        log("init: " ^ TabPageId);
-        
         Tabs.add(TabPageId);
-        log(Tabs);
         declare HeaderFrame <=> (Page.MainFrame.GetFirstChild(TabPageId ^ "-header-frame") as CMlFrame);
         declare HeaderBg <=> (Page.MainFrame.GetFirstChild(TabPageId ^ "-header-bg") as CMlQuad);
         
@@ -55,26 +51,46 @@ Void InitializeTabs() {
 
 *** OnInitialization ***
 ***
-declare Integer EvoSC_TabGroup_{{ id }}_SelectedTab for This = {{ selectedIndex }};
+declare Text EvoSC_TabGroup_{{ id }}_SelectedTab for This = "{{ selectedTab }}";
 declare Text[] EvoSC_TabGroup_{{ id }}_Tabs for This;
 
 InitializeTabs();
-SelectTab({{ selectedIndex }});
+SelectTab("{{ selectedTab }}");
 ***
 
 *** OnMouseClick ***
 ***
 {
     declare Text[] EvoSC_TabGroup_{{ id }}_Tabs for This;
-    declare TabIndex = 0;
+    declare TabPageId = Event.Control.DataAttributeGet("id");
     
-    foreach (TabPageId in EvoSC_TabGroup_{{ id }}_Tabs) {
-        if (Event.Control.DataAttributeGet("id") == TabPageId) {
-            SelectTab(TabIndex);
-            break;
-        }
-        
-        TabIndex += 1;
+    if (EvoSC_TabGroup_{{ id }}_Tabs.exists(TabPageId)) {
+        SelectTab(TabPageId);
+    }
+}
+***
+
+*** OnMouseOver ***
+***
+{
+    declare Text EvoSC_TabGroup_{{ id }}_SelectedTab for This;
+    declare Text[] EvoSC_TabGroup_{{ id }}_Tabs for This;
+    declare TabPageId = Event.Control.DataAttributeGet("id");
+    
+    if (TabPageId != EvoSC_TabGroup_{{ id }}_SelectedTab && EvoSC_TabGroup_{{ id }}_Tabs.exists(TabPageId)) {
+        Rectangle_SetBgColor(TabPageId ^ "-header-bg", {! Color.ToMlColor(Theme.UI_BgHighlight) !});
+    }
+}
+***
+
+*** OnMouseOut ***
+***
+{
+    declare Text[] EvoSC_TabGroup_{{ id }}_Tabs for This;
+    declare TabPageId = Event.Control.DataAttributeGet("id");
+    
+    if (TabPageId != EvoSC_TabGroup_{{ id }}_SelectedTab && EvoSC_TabGroup_{{ id }}_Tabs.exists(TabPageId)) {
+        Rectangle_SetBgColor(TabPageId ^ "-header-bg", {! Color.ToMlColor(Theme.UI_SurfaceBgPrimary) !});
     }
 }
 ***

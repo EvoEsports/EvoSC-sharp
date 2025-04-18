@@ -1,7 +1,7 @@
 <component>
   
   <property type="string" name="id" default="evosc_tabgroup" />
-  <property type="int" name="selectedIndex" default="0" />
+  <property type="string" name="selectedTab" />
   <property type="double" name="width" />
   <property type="double" name="height" />
   
