@@ -95,7 +95,7 @@
               color='{{ disabled ? Theme.UI_Button_Disabled_Bg : Theme.UI_Button_Bg(type) }}'
               quadrant="TopLeft"
               scriptevents="{{ !disabled }}"
-              data-id="{{ id }}"
+              id="{{ id }}"
       />
 
       <QuarterCircle
@@ -105,7 +105,7 @@
               quadrant="TopRight"
               x='{{ width-(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ !disabled }}"
-              data-id="{{ id }}"
+              id="{{ id }}"
       />
       
       <QuarterCircle
@@ -115,7 +115,7 @@
               quadrant="BottomLeft"
               y='{{ -Theme.UI_Button_Size(size, height)+(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ !disabled }}"
-              data-id="{{ id }}"
+              id="{{ id }}"
       />
       
       <QuarterCircle
@@ -126,7 +126,7 @@
               x='{{ width-(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               y='{{ -Theme.UI_Button_Size(size, height)+(style == "normal" ? 0.5 : Theme.UI_Button_Size(size, height)/2) }}'
               scriptevents="{{ !disabled }}"
-              data-id="{{ id }}"
+              id="{{ id }}"
       />
 
       <!-- Text -->

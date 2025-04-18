@@ -15,7 +15,7 @@
                  text="{{ Icons.VideoCamera }}"
                  textsize="{{ Theme.UI_FontSize*2 }}"
                  ScriptEvents="1"
-                 focusareacolor1="{{ Theme.UI_HeaderBg }}"
+                 focusareacolor1="{{ Theme.ScoreboardModule_Background_Header_Color }}"
                  focusareacolor2="{{ Theme.ScoreboardModule_Background_Hover_Color }}"
                  textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
 
@@ -29,7 +29,7 @@
                  text="{{ Icons.Vcard }}"
                  textsize="{{ Theme.UI_FontSize*2 }}"
                  ScriptEvents="1"
-                 focusareacolor1="{{ Theme.UI_HeaderBg }}"
+                 focusareacolor1="{{ Theme.ScoreboardModule_Background_Header_Color }}"
                  focusareacolor2="{{ Theme.ScoreboardModule_Background_Hover_Color }}"
                  textcolor="{{ Theme.ScoreboardModule_Text_Color }}"/>
         </frame>
@@ -40,17 +40,19 @@
         *** OnMouseClick *** 
         ***
             if (Event.Control.ControlId == "spectate_player") {
-                declare playerRow = (Event.Control.Parent.Parent as CMlFrame);
+                declare playerRow = (Event.Control.Parent.Parent.Parent as CMlFrame);
+                declare playerRowContainer = (playerRow.GetFirstChild("player_row_container") as CMlFrame);
+                TogglePlayerActions(playerRowContainer);
                 declare CSmScore playerScore for playerRow;
                 if(!IsSpectatorClient) RequestSpectatorClient(True);
                 SetSpectateTarget(playerScore.User.Login);
-                TogglePlayerActions(playerRow);
             }else if (Event.Control.ControlId == "show_player_profile") {
-                declare playerRow = (Event.Control.Parent.Parent as CMlFrame);
+                declare playerRow = (Event.Control.Parent.Parent.Parent as CMlFrame);
+                declare playerRowContainer = (playerRow.GetFirstChild("player_row_container") as CMlFrame);
+                TogglePlayerActions(playerRowContainer);
                 declare CSmScore playerScore for playerRow;
                 declare Text TMGame_ScoresTable_OpenProfileUserId for ClientUI = "";
                 TMGame_ScoresTable_OpenProfileUserId = playerScore.User.WebServicesUserId;
-                TogglePlayerActions(playerRow);
             }
         ***
         -->
