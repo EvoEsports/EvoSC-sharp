@@ -23,7 +23,7 @@ public interface IMatchSettings
     /// <summary>
     /// The map list of this match settings.
     /// </summary>
-    public List<IMap>? Maps { get; set; }
+    public List<IMap> Maps { get; set; }
 
     /// <summary>
     /// The index to start in the map list.

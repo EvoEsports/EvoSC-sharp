@@ -4,6 +4,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util;
+using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Common.Util.MatchSettings;
@@ -98,9 +99,23 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
     public async Task<IMatchSettings> GetMatchSettingsAsync(string name)
     {
         var filePath = await GetFilePathAsync(name);
+        var mapsDir = await server.GetMapsDirectoryAsync();
         
         var contents = await File.ReadAllTextAsync(filePath);
-        return await MatchSettingsXmlParser.ParseAsync(name, contents);
+        var matchSettings = await MatchSettingsXmlParser.ParseAsync(name, contents);
+
+        var enrichedMaps = new List<IMap>();
+        foreach (var map in matchSettings.Maps)
+        {
+            var mapFilePath = Path.Combine(mapsDir, map.FilePath);
+            var enrichedMap = await mapService.GetMapByUidAsync(map.Uid) ??
+                              await mapService.AddLocalMapAsync(mapFilePath);
+            
+            enrichedMaps.Add(enrichedMap);
+        }
+
+        matchSettings.Maps = enrichedMaps;
+        return matchSettings;
     }
 
     public async Task<IEnumerable<IMap>> GetCurrentMapListAsync()

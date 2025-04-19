@@ -35,7 +35,7 @@ public class MatchSettingsBuilder
         _gameInfosbuilder = new GameInfosConfigBuilder(matchSettings.GameInfos);
         _filterBuilder = new FilterConfigBuilder(matchSettings.Filter);
         _scriptSettings = matchSettings.ModeScriptSettings ?? new Dictionary<string, ModeScriptSettingInfo>();
-        _maps = matchSettings.Maps ?? new List<IMap>();
+        _maps = matchSettings.Maps;
         _startIndex = matchSettings.StartIndex;
     }
 

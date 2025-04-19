@@ -35,6 +35,12 @@ public class MatchSettingsEditorService(
         try
         {
             var matchSettings = await matchSettingsService.GetMatchSettingsAsync(name);
+
+            foreach (var map in matchSettings.Maps)
+            {
+                Console.WriteLine(map.Name);
+            }
+            
             await manialinks.SendManialinkAsync(player, "MatchSettingsEditorModule.MatchSettingsEditor",
                 new { matchSettings });
         }

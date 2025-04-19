@@ -9,6 +9,8 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
+using GBX.NET;
+using GBX.NET.Engines.Game;
 using GbxRemoteNet;
 using GbxRemoteNet.Structs;
 using GbxRemoteNet.XmlRpc.ExtraTypes;
@@ -133,6 +135,48 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
                     serverMap.UId);
             }
         }
+    }
+
+    public async Task<IMap> AddLocalMapAsync(string filePath)
+    {
+        var mapNode = GameBox.Parse<CGameCtnChallenge>(filePath);
+        var authorAccountId = PlayerUtils.ConvertLoginToAccountId(mapNode.Node.AuthorLogin);
+        var author = await playerService.GetOrCreatePlayerAsync(authorAccountId, mapNode.Node.AuthorNickname);
+        
+        var mapMeta = new MapMetadata
+        {
+            MapUid = mapNode.Node.MapUid,
+            MapName = mapNode.Node.MapName,
+            AuthorId = mapNode.Node.AuthorLogin,
+            AuthorName = mapNode.Node.AuthorNickname ?? mapNode.Node.AuthorLogin,
+            ExternalId = null,
+            ExternalVersion = null,
+            ExternalMapProvider = null
+        };
+        
+        var map = await mapRepository.AddMapAsync(mapMeta, author, filePath);
+        
+        var mapDetails = new ParsedMap(new TmMapInfo
+        {
+            UId = mapNode.Node.MapUid,
+            Name = mapNode.Node.MapName,
+            FileName = filePath,
+            Author = mapNode.Node.AuthorLogin,
+            AuthorNickname = mapNode.Node.AuthorNickname,
+            BronzeTime = mapNode.Node.TMObjective_BronzeTime?.TotalMilliseconds ?? 0,
+            SilverTime = mapNode.Node.TMObjective_SilverTime?.TotalMilliseconds ?? 0,
+            GoldTime = mapNode.Node.TMObjective_GoldTime?.TotalMilliseconds ?? 0,
+            AuthorTime = mapNode.Node.TMObjective_AuthorTime?.TotalMilliseconds ?? 0,
+            CopperPrice = mapNode.Node.Cost ?? 0,
+            LapRace = mapNode.Node.TMObjective_IsLapRace ?? false,
+            NbLaps = mapNode.Node.TMObjective_NbLaps ?? 0,
+            NbCheckpoints = mapNode.Node.NbCheckpoints ?? 0,
+            MapType = mapNode.Node.MapType,
+            MapStyle = mapNode.Node.MapStyle
+        }, map);
+        
+        await mapRepository.AddMapDetailsAsync(mapDetails, map);
+        return map;
     }
 
     public async Task<IMap> GetOrAddCurrentMapAsync()

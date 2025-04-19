@@ -33,7 +33,7 @@
           <TabScriptSettings matchSettings="{{ matchSettings }}" width="{{ winW-6 }}" height="{{ winH - 14.5 - 8 }}" />
         </TabPage>
         <TabPage id="tabMaps" title="Maps">
-          <TabMaps matchSettings="{{ matchSettings }}" />
+          <TabMaps matchSettings="{{ matchSettings }}" width="{{ winW-6 }}" height="{{ winH - 14.5 - 8 }}" />
         </TabPage>
       </TabGroup>
       

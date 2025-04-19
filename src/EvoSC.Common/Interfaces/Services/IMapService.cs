@@ -68,6 +68,8 @@ public interface IMapService
     /// <returns></returns>
     public Task<IMap> GetOrAddCurrentMapAsync();
 
+    public Task<IMap> AddLocalMapAsync(string filePath);
+
     /// <summary>
     /// Get the next map on the server
     /// </summary>
