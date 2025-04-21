@@ -23,6 +23,11 @@ Void SelectTab(Text _NewTabPageId) {
     }
     
     EvoSC_TabGroup_{{ id }}_SelectedTab = _NewTabPageId;
+    
+    {
+        declare Text TabPageId = _NewTabPageId;
+        +++ OnTabChanged +++
+    }
 }
 
 Void InitializeTabs() {

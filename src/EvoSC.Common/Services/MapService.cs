@@ -140,6 +140,13 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
     public async Task<IMap> AddLocalMapAsync(string filePath)
     {
         var mapNode = GameBox.Parse<CGameCtnChallenge>(filePath);
+        
+        var existingMap = await GetMapByUidAsync(mapNode.Node.MapUid);
+        if (existingMap != null)
+        {
+            return existingMap;
+        }
+        
         var authorAccountId = PlayerUtils.ConvertLoginToAccountId(mapNode.Node.AuthorLogin);
         var author = await playerService.GetOrCreatePlayerAsync(authorAccountId, mapNode.Node.AuthorNickname);
         
@@ -163,14 +170,14 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
             FileName = filePath,
             Author = mapNode.Node.AuthorLogin,
             AuthorNickname = mapNode.Node.AuthorNickname,
-            BronzeTime = mapNode.Node.TMObjective_BronzeTime?.TotalMilliseconds ?? 0,
-            SilverTime = mapNode.Node.TMObjective_SilverTime?.TotalMilliseconds ?? 0,
-            GoldTime = mapNode.Node.TMObjective_GoldTime?.TotalMilliseconds ?? 0,
-            AuthorTime = mapNode.Node.TMObjective_AuthorTime?.TotalMilliseconds ?? 0,
-            CopperPrice = mapNode.Node.Cost ?? 0,
-            LapRace = mapNode.Node.TMObjective_IsLapRace ?? false,
-            NbLaps = mapNode.Node.TMObjective_NbLaps ?? 0,
-            NbCheckpoints = mapNode.Node.NbCheckpoints ?? 0,
+            BronzeTime = mapNode.Node.BronzeTime?.TotalMilliseconds ?? 0,
+            SilverTime = mapNode.Node.SilverTime?.TotalMilliseconds ?? 0,
+            GoldTime = mapNode.Node.GoldTime?.TotalMilliseconds ?? 0,
+            AuthorTime = mapNode.Node.AuthorTime?.TotalMilliseconds ?? 0,
+            CopperPrice = mapNode.Node.Cost,
+            LapRace = mapNode.Node.IsLapRace,
+            NbLaps = mapNode.Node.NbLaps,
+            NbCheckpoints = mapNode.Node.NbCheckpoints,
             MapType = mapNode.Node.MapType,
             MapStyle = mapNode.Node.MapStyle
         }, map);

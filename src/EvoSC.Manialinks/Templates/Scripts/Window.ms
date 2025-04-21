@@ -105,6 +105,8 @@ if ({{ canMove }}) {
         declare NewY = DragStartPosition.Y + (MouseY - MouseDragStart.Y);
         
         WindowInstance.RelativePosition_V3 = <NewX, NewY>;
+        
+        +++ OnWindowsDragged +++
     }
 }
 ***

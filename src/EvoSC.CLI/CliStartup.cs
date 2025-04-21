@@ -16,6 +16,8 @@ using EvoSC.Common.Themes;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
+using GBX.NET;
+using GBX.NET.LZO;
 using SimpleInjector;
 
 namespace EvoSC.CLI;
@@ -108,6 +110,8 @@ public static class CliStartup
             .Services(AppFeature.Themes, s => s.AddEvoScThemes())
 
             // initialization of features
+            .Action("ActionSetupLibraries", SetupLibraries)
+            
             .Action("ActionMigrateDatabase", MigrateDatabase)
 
             .Action("ActionInitializeEventManager", s => s
@@ -125,6 +129,11 @@ public static class CliStartup
                 "ActionInitializeManialinkInteractionHandler")
 
             .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync);
+    }
+    
+    public static void SetupLibraries(ServicesBuilder s)
+    {
+        Gbx.LZO = new Lzo();
     }
     
     /// <summary>

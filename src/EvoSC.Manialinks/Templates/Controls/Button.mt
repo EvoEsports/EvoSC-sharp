@@ -42,12 +42,16 @@
   
   <!-- Custom data passed to the component -->
   <property type="string" name="data" default="" />
+
+  <!-- Whether the button is hidden or not -->
+  <property type="bool" name="hidden" default="false" />
   
   <template>
     <frame
             id="{{ id }}-frame"
             pos="{{ x }} {{ y }}"
             data-type="{{ type }}"
+            hidden='{{ hidden ? "1" : "0" }}'
     >
       <!-- Background -->
       <quad

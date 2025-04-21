@@ -14,7 +14,7 @@
   <import component="MatchSettingsEditorModule.Editor.TabMaps" as="TabMaps" />
   
   <property type="IMatchSettings" name="matchSettings" />
-  <property type="double" name="winH" default="80.5" />
+  <property type="double" name="winH" default="88.5" />
   <property type="double" name="winW" default="120" />
   
   <template>
@@ -25,6 +25,17 @@
             width="{{ winW }}"
             height="{{ winH }}"
     >
+      <IconButton id="btnAddMaps"
+                  x="{{ winW - 6 - 20 }}"
+                  hasText="true"
+                  text="Add Maps"
+                  width="20"
+                  icon="{{ Icons.AngleRight }}"
+                  iconPos="right"
+                  size="small"
+                  hidden="true"
+      />
+      
       <TabGroup width="{{ winW - 6 }}" height="{{ winH - 14.5 - 8 }}" selectedTab="tabGeneral">
         <TabPage id="tabGeneral" title="General">
           <TabGeneral matchSettings="{{ matchSettings }}" width="{{ winW-6 }}" />
@@ -44,5 +55,17 @@
     </Window>
   </template>
 
+  <script><!--
+  *** OnTabChanged ***
+  ***
+    declare AddMapsButton <=> (Page.MainFrame.GetFirstChild("btnAddMaps-frame"));
+    if (TabPageId == "tabMaps") {
+      AddMapsButton.Visible = True;
+    } else {
+      AddMapsButton.Visible = False;
+    }
+  ***
+  --></script>
+  
   <script resource="EvoSC.Scripts.UIScripts" main="true" />
 </component>

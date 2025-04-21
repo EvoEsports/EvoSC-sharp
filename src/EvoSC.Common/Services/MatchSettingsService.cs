@@ -107,11 +107,18 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         var enrichedMaps = new List<IMap>();
         foreach (var map in matchSettings.Maps)
         {
-            var mapFilePath = Path.Combine(mapsDir, map.FilePath);
-            var enrichedMap = await mapService.GetMapByUidAsync(map.Uid) ??
-                              await mapService.AddLocalMapAsync(mapFilePath);
-            
-            enrichedMaps.Add(enrichedMap);
+            try
+            {
+                var mapFilePath = Path.Combine(mapsDir, map.FilePath);
+                var enrichedMap = await mapService.GetMapByUidAsync(map.Uid) ??
+                                  await mapService.AddLocalMapAsync(mapFilePath);
+
+                enrichedMaps.Add(enrichedMap);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to get map '{FilePath}' from the match settings '{Name}'", map.FilePath, name);
+            }
         }
 
         matchSettings.Maps = enrichedMaps;

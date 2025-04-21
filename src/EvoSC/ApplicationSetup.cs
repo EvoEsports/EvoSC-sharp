@@ -21,6 +21,8 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Util;
+using GBX.NET;
+using GBX.NET.LZO;
 using SimpleInjector;
 
 namespace EvoSC;
@@ -90,6 +92,8 @@ public static class ApplicationSetup
                 
             .Services(AppFeature.Themes, s => s.AddEvoScThemes())
 
+            .Action("ActionSetupLibraries", SetupLibraries)
+                
                 // initialize the application
             .Action("ActionMigrateDatabase", MigrateDatabase)
 
@@ -112,6 +116,11 @@ public static class ApplicationSetup
             .AsyncAction("ActionEnableModules", EnableModulesAsync)
 
             .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
+    }
+
+    public static void SetupLibraries(ServicesBuilder s)
+    {
+        Gbx.LZO = new Lzo();
     }
     
     /// <summary>

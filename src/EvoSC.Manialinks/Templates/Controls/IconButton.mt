@@ -52,6 +52,9 @@
   <!-- Size of the button can be normal, small, big or custom. -->
   <property type="string" name="size" default="normal" />
 
+  <!-- Whether the button is hidden or not -->
+  <property type="bool" name="hidden" default="false" />
+
   <template>
     <Button 
             text='{{ hasText ? (iconPos == "right" ? $"{text}{(text == "" ? "" : " ")}{icon}" : $"{icon}{(text == "" ? "" : " ")}{text}") : icon }}'
@@ -67,6 +70,7 @@
             className="{{ className }}"
             data="{{ data }}"
             size="{{ size }}"
+            hidden="{{ hidden }}"
     />
   </template>
 </component>
