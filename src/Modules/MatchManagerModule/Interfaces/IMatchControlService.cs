@@ -60,13 +60,6 @@ public interface IMatchControlService
     public Task SetTeamMatchPointsAsync(PlayerTeam team, int newMatchPoints);
 
     /// <summary>
-    /// Retrieves the current score for the given player team.
-    /// </summary>
-    /// <param name="team"></param>
-    /// <returns></returns>
-    public Task<TeamScore> GetTeamScoreAsync(PlayerTeam team);
-
-    /// <summary>
     /// Sets the round, map and match points for a team.
     /// </summary>
     /// <param name="team"></param>
@@ -75,6 +68,13 @@ public interface IMatchControlService
     /// <param name="matchPoints"></param>
     /// <returns></returns>
     public Task UpdateTeamScoreAsync(PlayerTeam team, int roundPoints, int mapPoints, int matchPoints);
+
+    /// <summary>
+    /// Retrieves the current score for the given player team.
+    /// </summary>
+    /// <param name="team"></param>
+    /// <returns></returns>
+    public Task<TeamScore> GetTeamScoreAsync(PlayerTeam team);
     
     /// <summary>
     /// Pause the current match. Only works on round-based modes.

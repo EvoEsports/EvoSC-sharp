@@ -5,12 +5,11 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchManagerModule.Events;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class MatchControlService(IServerClient server, IEventManager events, ILogger<MatchControlService> logger)
+public class MatchControlService(IServerClient server, IEventManager events)
     : IMatchControlService
 {
     public async Task StartMatchAsync()
@@ -61,9 +60,6 @@ public class MatchControlService(IServerClient server, IEventManager events, ILo
     {
         var current = await GetTeamScoreAsync(team);
 
-        logger.LogInformation("Current map points: {map}, current match points: {match}.", current.MapPoints,
-            current.MatchPoints);
-
         await UpdateTeamScoreAsync(team, current.RoundPoints, newMapPoints, current.MatchPoints);
     }
 
@@ -71,23 +67,26 @@ public class MatchControlService(IServerClient server, IEventManager events, ILo
     {
         var current = await GetTeamScoreAsync(team);
 
-        logger.LogInformation("Current map points: {map}, current match points: {match}.", current.MapPoints,
-            current.MatchPoints);
-
         await UpdateTeamScoreAsync(team, current.RoundPoints, current.MapPoints, newMatchPoints);
-    }
-
-    public async Task<TeamScore> GetTeamScoreAsync(PlayerTeam team)
-    {
-        var (response, _) = await server.Remote.GetModeScriptResponseAsync("Trackmania.GetScores");
-        var teamScores = response.GetValue("teams", StringComparison.Ordinal)?.ToObject<TeamScore[]>();
-
-        return teamScores != null ? teamScores[(int)team] : new TeamScore();
     }
 
     public Task UpdateTeamScoreAsync(PlayerTeam team, int roundPoints, int mapPoints, int matchPoints) =>
         server.Remote.TriggerModeScriptEventArrayAsync("Trackmania.SetTeamPoints", ((int)team).ToString(),
             roundPoints.ToString(), mapPoints.ToString(), matchPoints.ToString());
+
+    public async Task<TeamScore> GetTeamScoreAsync(PlayerTeam team)
+    {
+        var (getScoresResponse, _) = await server.Remote.GetModeScriptResponseAsync("Trackmania.GetScores");
+
+        if (getScoresResponse == null)
+        {
+            return new TeamScore();
+        }
+
+        var teamScores = getScoresResponse.GetValue("teams", StringComparison.Ordinal)?.ToObject<TeamScore[]>();
+
+        return teamScores != null ? teamScores[(int)team] : new TeamScore();
+    }
 
     public Task PauseMatchAsync() =>
         server.Remote.TriggerModeScriptEventArrayAsync("Maniaplanet.Pause.SetActive", "true");
