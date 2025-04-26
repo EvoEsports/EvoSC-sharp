@@ -110,4 +110,32 @@ public class GlobalManialinkUtils(IThemeManager themeManager)
 
         return styledTime.ToString();
     }
+    
+    public string VerticalAlign(string name) => name switch
+    {
+        "TopLeft" => "top",
+        "TopMiddle" => "top",
+        "TopRight" => "top",
+        "CenterLeft" => "center",
+        "CenterMiddle" => "center",
+        "CenterRight" => "center",
+        "BottomLeft" => "bottom",
+        "BottomMiddle" => "bottom",
+        "BottomRight" => "bottom",
+        _ => "top"
+    };
+    
+    public string HorizontalAlign(string name) => name switch
+    {
+        "TopLeft" => "left",
+        "TopMiddle" => "center",
+        "TopRight" => "right",
+        "CenterLeft" => "left",
+        "CenterMiddle" => "center",
+        "CenterRight" => "right",
+        "BottomLeft" => "left",
+        "BottomMiddle" => "center",
+        "BottomRight" => "right",
+        _ => "left"
+    };
 }

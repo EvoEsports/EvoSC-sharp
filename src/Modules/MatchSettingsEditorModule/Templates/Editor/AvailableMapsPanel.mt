@@ -2,6 +2,7 @@
   
   <import component="EvoSC.Drawing.Rectangle" as="Rectangle" />
   <import component="EvoSC.Controls.Separator" as="Separator" />
+  <import component="EvoSC.Controls.Loader" as="Loader" />
   
   <property type="double" name="width" />
   <property type="double" name="height" />
@@ -24,6 +25,8 @@
       />
       
       <Separator x="2" y="-7" length="{{ width - 4 }}" />
+      
+      <Loader x="{{ width/2 }}" y="{{ -height/2 }}" align="CenterMiddle" />
       
     </frame>
   </template>

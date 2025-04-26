@@ -5,6 +5,8 @@ namespace EvoSC.Manialinks.Util;
 
 public static class ManialinkUtils
 {
+    
+    
     public static string CreateHideManialink(string name)
     {
         var sb = new StringBuilder()
