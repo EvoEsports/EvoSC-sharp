@@ -94,7 +94,7 @@ public class MatchCommandsController(IMatchControlService matchControl, Locale l
             .WithEventName(AuditEvents.TeamPointsSet)
             .HavingProperties(new { Points = points, Team = playerTeam });
 
-        await server.SuccessMessageAsync(Context.Player, $"Points for team {playerTeam} was set to {points}.");
+        await Context.Chat.SuccessMessageAsync($"All points for team {playerTeam} were set to {points}.", Context.Player);
     }
     
     [ChatCommand("setteammappoints", "Set the map points of a team.", MatchControlPermissions.SetTeamPoints)]
