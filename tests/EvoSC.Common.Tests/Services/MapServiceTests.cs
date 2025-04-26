@@ -30,8 +30,9 @@ public class MapServiceTests
     private readonly Mock<ILogger<MapService>> _logger = new();
     private readonly Mock<IEvoScBaseConfig> _config = new();
     private readonly Mock<IPlayerManagerService> _playerService = new();
+    private readonly Mock<IEventManager> _eventManager = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
         _server = Mocking.NewServerClientMock();
 
     private readonly MapService _mapService;
@@ -39,7 +40,7 @@ public class MapServiceTests
     public MapServiceTests()
     {
         _mapService = new MapService(_mapRepository.Object, _logger.Object, _config.Object, _playerService.Object,
-            _server.Client.Object);
+            _server.Client.Object, _eventManager.Object);
 
         _server.Remote.Setup(m => m.GetMapInfoAsync(It.IsAny<string>()))
             .Returns(Task.FromResult(new TmMapInfo
@@ -223,7 +224,7 @@ public class MapServiceTests
 
         _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
             .Returns(Task.FromResult((IMap?)map));
-        _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
+        _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<DbMap>()))
             .Returns(Task.FromResult((IMap)map));
         _config.Setup(c => c.Path.Maps).Returns("maps");
         _playerService.Setup(p => p.GetPlayerAsync(It.IsAny<string>())).Returns(Task.FromResult((IPlayer?)player));
@@ -236,53 +237,6 @@ public class MapServiceTests
         Assert.Equal(map.Uid, updatedMap.Uid);
         Assert.Equal(map.Name, updatedMap.Name);
         Assert.Equal(map.AuthorId, updatedMap.Author.Id);
-    }
-
-    [Fact]
-    public async Task Add_Map_With_Same_Version_Throws_DuplicateMapException()
-    {
-        using var testStream = new MemoryStream("whatever"u8.ToArray());
-        var version = new DateTime();
-        var mapMetadata = new MapMetadata
-        {
-            AuthorId = "0efeba8a-9cda-49fa-ab25-35f1d9218c95",
-            AuthorName = "snippen",
-            MapUid = "mapUid",
-            MapName = "snippens track",
-            ExternalId = "",
-            ExternalVersion = version,
-            ExternalMapProvider = MapProviders.ManiaExchange
-        };
-        var mapStream = new MapStream(mapMetadata, testStream);
-        var player = new DbPlayer
-        {
-            Id = 1,
-            UbisoftName = "snippen",
-            AccountId = "0efeba8a-9cda-49fa-ab25-35f1d9218c95",
-            NickName = "snippen",
-            CreatedAt = new DateTime(),
-            UpdatedAt = new DateTime(),
-            LastVisit = new DateTime()
-        };
-        var map = new DbMap
-        {
-            AuthorId = 1,
-            Enabled = true,
-            Id = 123,
-            ExternalId = "1337",
-            Name = "snippens dream",
-            Uid = "Uid",
-            ExternalMapProvider = MapProviders.ManiaExchange,
-            ExternalVersion = version,
-            DbAuthor = player
-        };
-
-        _mapRepository.Setup(m => m.GetMapByUidAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult((IMap?)map));
-        _mapRepository.Setup(m => m.UpdateMapAsync(It.IsAny<long>(), It.IsAny<MapMetadata>()))
-            .Returns(Task.FromResult((IMap)map));
-
-        await Assert.ThrowsAsync<DuplicateMapException>(() => _mapService.AddMapAsync(mapStream));
     }
 
     [Fact]

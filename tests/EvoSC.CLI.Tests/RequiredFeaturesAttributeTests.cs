@@ -52,7 +52,8 @@ public class RequiredFeaturesAttributeTests
             AppFeature.ActionPipelines,
             AppFeature.Permissions,
             AppFeature.Manialinks,
-            AppFeature.Themes
+            AppFeature.Themes,
+            AppFeature.Chat,
         }, attr.Features);
     }
 }

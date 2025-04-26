@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 using EvoSC.Modules.Official.MatchManagerModule.Services;
 using EvoSC.Testing;
@@ -15,7 +16,7 @@ public class MatchControlServiceTests
 {
     private (
         IMatchControlService MatchControlService,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
+        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server,
         Mock<IEventManager> EventManager
         ) NewMatchControlServiceMock()
     {

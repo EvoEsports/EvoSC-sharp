@@ -2,6 +2,7 @@
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using GbxRemoteNet.Interfaces;
 using Moq;
 
@@ -10,7 +11,7 @@ namespace EvoSC.Testing.Controllers;
 public class CommandInteractionControllerTestBase<TController> : ControllerMock<TController, ICommandInteractionContext>
     where TController : class, IController
 {
-    protected readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server =
+    protected readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server =
         Mocking.NewServerClientMock();
     
     /// <summary>

@@ -1,18 +1,15 @@
 ﻿using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Interfaces;
-using SpectatorTargetInfo.Interfaces;
+using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule;
 
 [Module(IsInternal = true)]
-public class SpectatorTargetInfoModule(ISpectatorTargetInfoService spectatorTargetInfoService) : EvoScModule,
-    IToggleable
+public class SpectatorTargetInfoModule(ISpectatorTargetInfoService spectatorTargetInfoService)
+    : EvoScModule, IToggleable
 {
-    public Task EnableAsync()
-    {
-        spectatorTargetInfoService.HideNadeoSpectatorInfoAsync();
-        return spectatorTargetInfoService.SendManiaLinkAsync();
-    }
+    public Task EnableAsync() =>
+        spectatorTargetInfoService.InitializeAsync();
 
-    public Task DisableAsync() => spectatorTargetInfoService.ShowNadeoSpectatorInfoAsync();
+    public Task DisableAsync() => Task.CompletedTask;
 }

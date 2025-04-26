@@ -6,13 +6,13 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
-using EvoSC.Common.Util.ServerUtils;
 using EvoSC.Manialinks.Interfaces;
+using GbxRemoteNet;
 using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
@@ -30,11 +30,12 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     private readonly Locale _locale;
     private readonly IEventManager _events;
     private readonly IMapService _mapService;
+    private readonly ILogger<ExampleController> _logger;
 
     public ExampleController(IMySettings settings, IChatCommandManager cmds, IServerClient server,
         IChatCommandManager chatCommands, IPermissionManager permissions, IPermissionRepository permRepo,
         IMapRepository mapRepo, IMatchSettingsService matchSettings, IManialinkActionManager manialinkActions,
-        Locale locale, IEventManager events, IMapService mapService)
+        Locale locale, IEventManager events, IMapService mapService, ILogger<ExampleController> logger)
     {
         _settings = settings;
         _server = server;
@@ -47,12 +48,13 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
         _locale = locale;
         _events = events;
         _mapService = mapService;
+        _logger = logger;
     }
 
     [ChatCommand("hey", "Say hey!")]
     public async Task TmxAddMap(string name)
     {
-        await _server.SendChatMessageAsync(Context.Player, $"hello, {name}!");
+        await _server.Chat.SendChatMessageAsync($"hello, {name}!", Context.Player);
     }
 
     [ChatCommand("ratemap", "Rate the current map.", "test")]
@@ -66,20 +68,36 @@ public class ExampleController : EvoScController<IPlayerInteractionContext>
     {
         if (rating is < 0 or > 100)
         {
-            await _server.SendChatMessageAsync(Context.Player, "Rating must be between 0 and 100 inclusively.");
+            await _server.Chat.SendChatMessageAsync("Rating must be between 0 and 100 inclusively.", Context.Player);
         }
         else
         {
-            await _server.SendChatMessageAsync($"Your rating: {rating}");
+            await _server.Chat.SendChatMessageAsync($"Your rating: {rating}");
         }
     }
 
     [ChatCommand("test", "Some testing.")]
     public async Task TestCommand()
     {
-        var mode = await _matchSettings.GetCurrentModeAsync();
-        
-        Console.WriteLine(mode);
+        try
+        {
+            var mc = new MultiCall();
+            var n = 50000;
+
+            for (var i = 0; i < n; i++)
+            {
+                mc.Add("GetVersion");
+            }
+
+            Console.WriteLine($"Calling {n} methods with multicall ...");
+            var result = await _server.Remote.MultiCallAsync(mc);
+
+            Console.WriteLine($"Got {result.Length} results.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "");
+        }
     }
 
     [ChatCommand("rejoin", "Simulates the player joining the server.")]

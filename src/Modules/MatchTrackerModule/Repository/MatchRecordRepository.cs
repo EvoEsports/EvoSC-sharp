@@ -40,4 +40,6 @@ public class MatchRecordRepository(IDbConnectionFactory dbConnFactory, ILogger<M
             throw;
         }
     }
+
+    public Task<DbMatchRecord[]> GetRecordsAsync() => Table<DbMatchRecord>().ToArrayAsync();
 }

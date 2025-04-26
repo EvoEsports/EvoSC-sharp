@@ -1,10 +1,9 @@
-﻿using EvoSC.Common.Config.Models;
-using EvoSC.Common.Database.Repository.Maps;
+﻿using EvoSC.Common.Events.Arguments.MatchSettings;
+using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util;
-using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Common.Util.MatchSettings;
@@ -15,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Services;
 
-public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IEvoScBaseConfig config, IMapService mapService)
+public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerClient server, IMapService mapService, IEventManager events, IMatchSettingsTrackerService matchSettingsTrackerService)
     : IMatchSettingsService
 {
     public async Task SetCurrentScriptSettingsAsync(Action<Dictionary<string, object>> settingsAction)
@@ -29,6 +28,10 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         
         settingsAction(settings);
         await server.Remote.SetModeScriptSettingsAsync(settings);
+        await events.RaiseAsync(MatchSettingsEvent.ScriptSettingsChanged, new ScriptSettingsChangedEventArgs
+        {
+            NewScriptSettings = settings 
+        });
     }
 
     public Task SetCurrentScriptSettingsAsync(IMatchSettings matchSettings) => SetCurrentScriptSettingsAsync(settings =>
@@ -54,6 +57,16 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
             var file = Path.GetFileName($"{name}.txt");
             await server.Remote.LoadMatchSettingsAsync($"MatchSettings/{file}");
 
+            try
+            {
+                var ms = await GetMatchSettingsAsync(name);
+                await events.RaiseAsync(MatchSettingsEvent.MatchSettingsLoaded, new MatchSettingsEventArgs { MatchSettings = ms });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to get matchsettings of name '{Name}'", name);
+            }
+
             if (skipMap)
             {
                 await server.Remote.NextMapAsync();
@@ -72,12 +85,14 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         }
     }
 
-    public Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
+    public async Task<IMatchSettings> CreateMatchSettingsAsync(string name, Action<MatchSettingsBuilder> matchSettings)
     {
         var builder = new MatchSettingsBuilder();
         matchSettings(builder);
 
-        return SaveMatchSettingsAsync(name, builder);
+        var ms = await SaveMatchSettingsAsync(name, builder);
+        await events.RaiseAsync(MatchSettingsEvent.MatchSettingsCreated, new MatchSettingsEventArgs { MatchSettings = ms });
+        return ms;
     }
 
     public async Task<IMatchSettings> GetMatchSettingsAsync(string name)
@@ -85,7 +100,7 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         var filePath = await GetFilePathAsync(name);
         
         var contents = await File.ReadAllTextAsync(filePath);
-        return await MatchSettingsXmlParser.ParseAsync(contents);
+        return await MatchSettingsXmlParser.ParseAsync(name, contents);
     }
 
     public async Task<IEnumerable<IMap>> GetCurrentMapListAsync()
@@ -101,13 +116,17 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         var currentMatchSettings = await GetMatchSettingsAsync(name);
         var builder = new MatchSettingsBuilder(currentMatchSettings);
         builderAction(builder);
-        await SaveMatchSettingsAsync(name, builder);
+        var newMatchsettings = await SaveMatchSettingsAsync(name, builder);
+        
+        await events.RaiseAsync(MatchSettingsEvent.MatchSettingsUpdated, new MatchSettingsEventArgs { MatchSettings = newMatchsettings });
     }
 
     public async Task DeleteMatchSettingsAsync(string name)
     {
+        var ms = await GetMatchSettingsAsync(name);
         var filePath = await GetFilePathAsync(name);
         File.Delete(filePath);
+        await events.RaiseAsync(MatchSettingsEvent.MatchSettingsDeleted, new MatchSettingsEventArgs { MatchSettings = ms });
     }
 
     public async Task<string> GetCurrentScriptNameAsync()
@@ -121,6 +140,13 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
         var scriptName = await GetCurrentScriptNameAsync();
         return scriptName.ToEnumValue<DefaultModeScriptName>() ?? DefaultModeScriptName.Unknown;
     }
+
+    public IMatchSettings GetCurrentMatchSettings() => matchSettingsTrackerService.CurrentMatchSettings;
+
+    public Task ReloadCurrentMatchSettingsAsync() => LoadMatchSettingsAsync(GetCurrentMatchSettings().Name);
+
+    public Task EditCurrentMatchSettingsAsync(Action<MatchSettingsBuilder> builderAction) =>
+        EditMatchSettingsAsync(GetCurrentMatchSettings().Name, builderAction);
 
     private async Task<string> GetFilePathAsync(string name)
     {

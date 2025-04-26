@@ -48,7 +48,7 @@ public class QueueController(IMapQueueService mapQueue, IServerClient server, IM
             await server.Remote.ChooseNextMapAsync(args.Map.FilePath);
         }
 
-        await server.InfoMessageAsync($"Map queued: {args.Map.Name}");
+        await server.Chat.InfoMessageAsync($"Map queued: {args.Map.Name}");
     }
 
     [Subscribe(MapQueueEvents.MapDropped)]
@@ -62,7 +62,7 @@ public class QueueController(IMapQueueService mapQueue, IServerClient server, IM
         
         if (!args.WasNext)
         {
-            await server.InfoMessageAsync($"Map removed from queue: {args.Map.Name}");
+            await server.Chat.InfoMessageAsync($"Map removed from queue: {args.Map.Name}");
         }
     }
 }

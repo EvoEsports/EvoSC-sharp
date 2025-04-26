@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Util.TextFormatting;
 using EvoSC.Modules.Interfaces;
@@ -13,7 +13,7 @@ namespace EvoSC.Modules.Official.ModuleManagerModule.Services;
 
 
 [Service]
-public class ModuleManagerService(IContextService context, IModuleManager modules, IServerClient server, Locale locale)
+public class ModuleManagerService(IContextService context, IModuleManager modules, IChatService chat, Locale locale)
     : IModuleManagerService
 {
     private readonly dynamic _locale = locale;
@@ -34,7 +34,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.SuccessMessageAsync(actor, _locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name));
+                await chat.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name), actor);
             }
         }
         catch (Exception ex)
@@ -43,7 +43,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.ErrorMessageAsync(actor, _locale.PlayerLanguage.FailedEnablingModule(ex.Message));
+                await chat.ErrorMessageAsync(_locale.PlayerLanguage.FailedEnablingModule(ex.Message), actor);
             }
             
             throw;
@@ -66,7 +66,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.SuccessMessageAsync(actor, _locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name));
+                await chat.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name), actor);
             }
         }
         catch (Exception ex)
@@ -75,7 +75,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await server.ErrorMessageAsync(actor, _locale.PlayerLanguage.FailedDisablingModule(ex.Message));
+                await chat.ErrorMessageAsync(_locale.PlayerLanguage.FailedDisablingModule(ex.Message), actor);
             }
             
             throw;
@@ -96,6 +96,6 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             message.AddText(", ");
         }
 
-        return server.InfoMessageAsync(actor, message.ToString());
+        return chat.InfoMessageAsync(message.ToString(), actor);
     }
 }

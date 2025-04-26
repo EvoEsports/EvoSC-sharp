@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Localization;
 using EvoSC.Common.Models.Audit;
@@ -40,6 +41,7 @@ public static class Mocking
     {
         mock.Context.Setup(c => c.Player).Returns(actor);
         mock.Context.Setup(c => c.Server).Returns(serverClient.Object);
+        mock.Context.Setup(c => c.Chat).Returns(serverClient.Object.Chat);
         mock.Context.Object.AuditEvent.CausedBy(actor);
 
         return mock;
@@ -65,6 +67,7 @@ public static class Mocking
     {
         mock.Context.Setup(c => c.Player).Returns(actor);
         mock.Context.Setup(c => c.Server).Returns(serverClient.Object);
+        mock.Context.Setup(c => c.Chat).Returns(serverClient.Object.Chat);
         mock.Context.Object.AuditEvent.CausedBy(actor);
 
         return mock;
@@ -88,12 +91,14 @@ public static class Mocking
     /// <param name="mlManager">The mocked manialink manager to use.</param>
     /// <returns></returns>
     public static ControllerContextMock<IManialinkInteractionContext> SetupMock(
-        this ControllerContextMock<IManialinkInteractionContext> mock, IOnlinePlayer actor,
+        this ControllerContextMock<IManialinkInteractionContext> mock, Mock<IServerClient> serverClient, IOnlinePlayer actor,
         IManialinkActionContext actionContext, IManialinkManager mlManager)
     {
         mock.Context.Setup(c => c.Player).Returns(actor);
         mock.Context.Setup(c => c.ManialinkAction).Returns(actionContext);
         mock.Context.Setup(m => m.ManialinkManager).Returns(mlManager);
+        mock.Context.Setup(m => m.Server).Returns(serverClient.Object);
+        mock.Context.Setup(m => m.Chat).Returns(serverClient.Object.Chat);
         mock.Context.Object.AuditEvent.CausedBy(actor);
 
         return mock;
@@ -107,8 +112,8 @@ public static class Mocking
     /// <param name="mlManager">The mocked manialink manager to use.</param>
     /// <returns></returns>
     public static ControllerContextMock<IManialinkInteractionContext> NewManialinkInteractionContextMock(
-        IOnlinePlayer actor, IManialinkActionContext actionContext, IManialinkManager mlManager) =>
-        new ControllerContextMock<IManialinkInteractionContext>().SetupMock(actor, actionContext, mlManager);
+        Mock<IServerClient> serverClient, IOnlinePlayer actor, IManialinkActionContext actionContext, IManialinkManager mlManager) =>
+        new ControllerContextMock<IManialinkInteractionContext>().SetupMock(serverClient, actor, actionContext, mlManager);
 
     /// <summary>
     /// Create a new controller instance that will use the mocked context and services given.
@@ -237,13 +242,15 @@ public static class Mocking
     /// Create a new mock of the server client and it's GBXRemoteClient.
     /// </summary>
     /// <returns></returns>
-    public static (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) NewServerClientMock()
+    public static (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) NewServerClientMock()
     {
         var remote = new Mock<IGbxRemoteClient>();
         var client = new Mock<IServerClient>();
+        var chat = new Mock<IChatService>();
         client.Setup(m => m.Remote).Returns(remote.Object);
+        client.Setup(m => m.Chat).Returns(chat.Object);
 
-        return (client, remote);
+        return (client, remote, chat);
     }
 
     /// <summary>

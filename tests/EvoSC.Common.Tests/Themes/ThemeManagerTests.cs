@@ -22,7 +22,7 @@ public class ThemeManagerTests
     [Theme(Name = "MyTheme", Description = "This is my theme.")]
     public class MyTheme : Theme<MyTheme>
     {
-        public override Task ConfigureAsync()
+        public override Task ConfigureAsync(dynamic theme)
         {
             Set("MyThemeOption").To("MyThemeOptionValue");
             Replace("MyComponent").With("MyOtherComponent");
@@ -33,7 +33,7 @@ public class ThemeManagerTests
     [Theme(Name = "MyTheme2", Description = "This is my second theme.")]
     public class MyTheme2 : Theme<MyTheme2>
     {
-        public override Task ConfigureAsync()
+        public override Task ConfigureAsync(dynamic theme)
         {
             Set("MyThemeOption2").To("MyThemeOptionValue2");
             return Task.CompletedTask;
@@ -43,7 +43,7 @@ public class ThemeManagerTests
     [Theme(Name = "MyTheme3", Description = "This is my third theme.")]
     public class MyTheme3 : Theme<MyTheme3>
     {
-        public override Task ConfigureAsync()
+        public override Task ConfigureAsync(dynamic theme)
         {
             Set("MyThemeOption3").To("MyThemeOptionValue3");
             return Task.CompletedTask;
@@ -53,7 +53,7 @@ public class ThemeManagerTests
     [Theme(Name = "MyThemeOverride", Description = "This is my theme override.", OverrideTheme = typeof(MyTheme))]
     public class MyThemeOverride : Theme<MyThemeOverride>
     {
-        public override Task ConfigureAsync()
+        public override Task ConfigureAsync(dynamic theme)
         {
             Set("MyThemeOption").To("NewMyThemeOptionValue");
             return Task.CompletedTask;
@@ -62,7 +62,7 @@ public class ThemeManagerTests
     
     public class InvalidTheme : Theme<InvalidTheme>
     {
-        public override Task ConfigureAsync() => Task.CompletedTask;
+        public override Task ConfigureAsync(dynamic theme) => Task.CompletedTask;
     }
 
     private (

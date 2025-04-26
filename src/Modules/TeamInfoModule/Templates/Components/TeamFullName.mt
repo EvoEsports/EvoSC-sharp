@@ -28,7 +28,7 @@
                    size="{{ width - 4.0 }} {{ height - barHeight - 2.0 }}"
                    text="{{ teamInfo.Name.ToUpper() }}"
                    class="text-xl"
-                   textcolor="{{ Theme.UI_TextPrimary }}"
+                   textcolor="{{ Theme.TeamInfoModule_Widget_TeamFullName_Text }}"
                    textfont="{{ Font.Bold }}"
                    halign="center"
                    valign="center"

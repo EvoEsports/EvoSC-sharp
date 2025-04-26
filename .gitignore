@@ -44,3 +44,4 @@ EvoSC/ext_plugins/*
 docker-compose.yml
 global.json
 .env
+nuget.config

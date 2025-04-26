@@ -14,7 +14,7 @@ public class MatchSettingsXmlParserTests
     {
         var xml = File.ReadAllText("TestFiles/Util/MatchSettings/matchsettings_with_all_sections.xml");
 
-        var ms = await MatchSettingsXmlParser.ParseAsync(xml);
+        var ms = await MatchSettingsXmlParser.ParseAsync("Test", xml);
         
         Assert.NotNull(ms);
         Assert.NotNull(ms.GameInfos);
@@ -46,6 +46,8 @@ public class MatchSettingsXmlParserTests
         Assert.NotNull(ms.Maps.FirstOrDefault());
         Assert.Equal("MyMap.Map.Gbx", ms.Maps.FirstOrDefault()?.FilePath);
         Assert.Equal("my-ident", ms.Maps.FirstOrDefault()?.Uid);
+        
+        Assert.Equal("Test", ms.Name);
     }
 
     [Fact]
@@ -55,7 +57,7 @@ public class MatchSettingsXmlParserTests
 
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
-            await MatchSettingsXmlParser.ParseAsync(xml);
+            await MatchSettingsXmlParser.ParseAsync("Test", xml);
         });
     }
     
@@ -64,7 +66,7 @@ public class MatchSettingsXmlParserTests
     {
         var xml = File.ReadAllText("TestFiles/Util/MatchSettings/matchsettings_for_default_values.xml");
 
-        var ms = await MatchSettingsXmlParser.ParseAsync(xml);
+        var ms = await MatchSettingsXmlParser.ParseAsync("Test", xml);
         
         Assert.NotNull(ms.GameInfos);
         Assert.Equal(10000, ms.GameInfos.ChatTime);

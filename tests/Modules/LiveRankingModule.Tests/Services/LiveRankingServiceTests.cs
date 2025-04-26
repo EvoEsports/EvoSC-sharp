@@ -25,7 +25,7 @@ public class LiveRankingServiceTests
     private readonly Mock<IPlayerManagerService> _playerManagerService = new();
     private readonly Mock<IMatchSettingsService> _matchSettingsService = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
         _server = Mocking.NewServerClientMock();
 
     private ILiveRankingService LiveRankingServiceMock()

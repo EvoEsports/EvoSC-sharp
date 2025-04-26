@@ -4,7 +4,6 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
-using EvoSC.Common.Remote;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
 using EvoSC.Modules.Official.ASayModule.Services;
@@ -25,7 +24,7 @@ public class ASayServiceTest
     private readonly Mock<IManialinkManager> _manialinkManager = new();
     private ControllerContextMock<ICommandInteractionContext> _commandContext;
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) _serverClient =
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) _serverClient =
         Mocking.NewServerClientMock();
 
     public ASayServiceTest()
@@ -40,7 +39,7 @@ public class ASayServiceTest
         IASayService ASayService,
         Mock<IContextService> ContextService,
         Mock<IPlayerManagerService> PlayerManager,
-        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote) Server,
+        (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat) Server,
         Mock<IOnlinePlayer> Player,
         Mock<IOnlinePlayer> Actor,
         Mock<IAuditEventBuilder> Audit

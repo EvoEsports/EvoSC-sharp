@@ -1,0 +1,6 @@
+﻿[info]
+name = "RoundRankingModule"
+title = "Round Ranking"
+summary = "Shows positions of players for ongoing rounds."
+version = "1.0.0"
+author = "Evo"

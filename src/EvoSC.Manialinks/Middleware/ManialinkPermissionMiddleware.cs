@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
 
@@ -9,7 +8,7 @@ namespace EvoSC.Manialinks.Middleware;
 /// This middleware checks if a user has the permission to execute a Manialink Action.
 /// A message in chat is sent to the player in case of insufficient permissions.
 /// </summary>
-public class ManialinkPermissionMiddleware(ActionDelegate next, IPermissionManager permissions, IServerClient server)
+public class ManialinkPermissionMiddleware(ActionDelegate next, IPermissionManager permissions, IChatService chat)
 {
     public async Task ExecuteAsync(IControllerContext context)
     {
@@ -25,6 +24,6 @@ public class ManialinkPermissionMiddleware(ActionDelegate next, IPermissionManag
             return;
         }
 
-        await server.ErrorMessageAsync(mlContext.Player, "Sorry, you don't have permission to do that.");
+        await chat.ErrorMessageAsync("Sorry, you don't have permission to do that.", mlContext.Player);
     }
 }

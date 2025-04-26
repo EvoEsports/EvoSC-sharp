@@ -2,7 +2,6 @@
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Middleware;
-using EvoSC.Common.Util.ServerUtils;
 
 namespace EvoSC.Commands.Middleware;
 
@@ -26,6 +25,6 @@ public class CommandsPermissionMiddleware(ActionDelegate next, IPermissionManage
             return;
         }
 
-        await server.SendChatMessageAsync(cmdContext.Player, "Insufficient permissions to run this command.");
+        await server.Chat.SendChatMessageAsync("Insufficient permissions to run this command.", cmdContext.Player);
     }
 }

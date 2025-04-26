@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -10,7 +9,7 @@ namespace EvoSC.Modules.Official.MatchReadyModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class PlayerReadyService(IPlayerReadyTrackerService playerReadyTrackerService, IManialinkManager manialinks,
-        IServerClient server, IPlayerManagerService players)
+        IChatService chat, IPlayerManagerService players)
     : IPlayerReadyService
 {
     private bool _widgetEnabled;
@@ -29,11 +28,11 @@ public class PlayerReadyService(IPlayerReadyTrackerService playerReadyTrackerSer
 
         if (isReady)
         {
-            await server.InfoMessageAsync($"$<{player.NickName}$> is ready.");
+            await chat.InfoMessageAsync($"$<{player.NickName}$> is ready.");
         }
         else
         {
-            await server.InfoMessageAsync($"$<{player.NickName}$> is no longer ready.");
+            await chat.InfoMessageAsync($"$<{player.NickName}$> is no longer ready.");
         }
 
         await UpdateWidgetAsync();

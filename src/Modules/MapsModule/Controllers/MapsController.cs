@@ -3,7 +3,6 @@ using EvoSC.Commands.Attributes;
 using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
-using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -15,12 +14,10 @@ namespace EvoSC.Modules.Official.MapsModule.Controllers;
 
 [Controller]
 public class MapsController(
-        ILogger<MapsController> logger,
-        IMxMapService mxMapService,
-        IMapService mapService,
-        IServerClient server,
-        Locale locale
-    )
+    ILogger<MapsController> logger,
+    IMxMapService mxMapService,
+    IMapService mapService,
+    Locale locale)
     : EvoScController<ICommandInteractionContext>
 {
     private readonly dynamic _locale = locale;
@@ -36,18 +33,18 @@ public class MapsController(
         }
         catch (DuplicateNameException)
         {
-            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.DuplicateMap(mapId));
+            await Context.Chat.ErrorMessageAsync(_locale.PlayerLanguage.DuplicateMap(mapId), Context.Player);
             return;
         }
         catch (Exception)
         {
-            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.FailedAddingMap(mapId));
+            await Context.Chat.ErrorMessageAsync(_locale.PlayerLanguage.FailedAddingMap(mapId), Context.Player);
             throw;
         }
 
         if (map == null)
         {
-            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.MapIdNotFound(mapId));
+            await Context.Chat.ErrorMessageAsync(_locale.PlayerLanguage.MapIdNotFound(mapId), Context.Player);
             return;
         }
 
@@ -56,7 +53,7 @@ public class MapsController(
             .HavingProperties(new { Map = map })
             .Comment(_locale.Audit_MapAdded);
 
-        await server.SuccessMessageAsync(Context.Player, _locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author?.NickName));
+        await Context.Chat.SuccessMessageAsync(_locale.PlayerLanguage.MapAddedSuccessfully(map.Name, map.Author?.NickName), Context.Player);
     }
 
     [ChatCommand("removemap", "[Command.Remove]", MapsPermissions.RemoveMap)]
@@ -67,7 +64,7 @@ public class MapsController(
 
         if (map == null)
         {
-            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.MapIdNotFound(mapId));
+            await Context.Chat.ErrorMessageAsync(_locale.PlayerLanguage.MapIdNotFound(mapId), Context.Player);
             return;
         }
 
@@ -77,7 +74,7 @@ public class MapsController(
         }
         catch (Exception)
         {
-            await server.ErrorMessageAsync(Context.Player, _locale.PlayerLanguage.MapRemovedFailed(mapId));
+            await Context.Chat.ErrorMessageAsync(_locale.PlayerLanguage.MapRemovedFailed(mapId), Context.Player);
             throw;
         }
 
@@ -86,7 +83,7 @@ public class MapsController(
             .HavingProperties(new { Map = map })
             .Comment(_locale.Audit_MapRemoved);
 
-        await server.SuccessMessageAsync(Context.Player, _locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName));
+        await Context.Chat.SuccessMessageAsync(_locale.PlayerLanguage.MapRemovedSuccessfully(map.Name, map.Author.NickName), Context.Player);
         logger.LogDebug("Player {PlayerId} removed map {MapName}", Context.Player.Id, map.Name);
     }
 }

@@ -6,15 +6,10 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Stores;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Services;
 
-[Service(LifeStyle = ServiceLifeStyle.Transient)]
+[Service(LifeStyle = ServiceLifeStyle.Singleton)]
 public class TrackerStoreService : ITrackerStoreService
 {
     private readonly List<IMatchTrackerStore> _stores = new();
-
-    public TrackerStoreService(IDatabaseMatchTrackerStore dbStore)
-    {
-        _stores.Add(dbStore);
-    }
     
     public async Task SaveTimelineAsync(IMatchTimeline timeline)
     {
@@ -31,4 +26,6 @@ public class TrackerStoreService : ITrackerStoreService
             await store.SaveStateAsync(state);
         }
     }
+
+    public void AddStore(IMatchTrackerStore store) => _stores.Add(store);
 }

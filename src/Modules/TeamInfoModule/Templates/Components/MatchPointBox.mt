@@ -10,15 +10,18 @@
         <frame pos='{{ x - (halign=="right" ? width : 0) }} {{ y + height }}'>
             <quad pos='{{ (halign=="right" ? width - 0.7 : 0) }}'
                   size="0.7 {{ height }}"
-                  bgcolor="{{ Theme.UI_AccentPrimary }}"
+                  bgcolor="{{ Theme.TeamInfoModule_Widget_MatchPointBox_Accent }}"
+                  opacity="{{ Theme.TeamInfoModule_Widget_MatchPointBox_Accent_Opacity }}"
             />
             <quad pos='{{ (halign=="right" ? 0 : 0.7) }} 0'
                   size="{{ width - 0.7 }} {{ height }}"
-                  bgcolor="{{ Theme.UI_BgPrimary }}dd"
+                  bgcolor="{{ Theme.TeamInfoModule_Widget_MatchPointBox_Bg }}"
+                  opacity="{{ Theme.TeamInfoModule_Widget_MatchPointBox_Bg_Opacity }}"
             />
             <label pos='{{ (halign=="right" ? width-2 : 2) }} {{ height / -2.0 + 0.25 }}'
                    text="{{ text.ToUpper() }}"
                    class="text-primary"
+                   textcolor="{{ Theme.TeamInfoModule_Widget_MatchPointBox_Text }}"
                    valign="center"
                    halign="{{ halign }}"
             />

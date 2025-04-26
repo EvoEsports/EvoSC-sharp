@@ -7,7 +7,7 @@ namespace EvoSC.Common.Themes;
 [Theme(Name = "Default", Description = "The default theme as defined in the EvoSC# config.")]
 public class BaseEvoScTheme : Theme<BaseEvoScTheme>
 {
-    public async override Task ConfigureAsync()
+    public async override Task ConfigureAsync(dynamic theme)
     {
         SetDefaultUtilityColors();
         GenerateUtilityColorShades();

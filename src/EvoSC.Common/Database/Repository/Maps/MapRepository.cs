@@ -7,8 +7,6 @@ using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
 using LinqToDB;
-using LinqToDB.DataProvider.MySql;
-using LinqToDB.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database.Repository.Maps;
@@ -101,6 +99,7 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         try
         {
             await Database.InsertAsync(dbMapDetails);
+            await transaction.CommitTransactionAsync();
         }
         catch (Exception ex)
         {
@@ -112,43 +111,24 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         return dbMapDetails;
     }
 
-    public async Task<IMap> UpdateMapAsync(long mapId, MapMetadata map)
+    public async Task<IMap> UpdateMapAsync(DbMap map)
     {
-        var updatedMap = new DbMap
-        {
-            Id = mapId,
-            Uid = map.MapUid,
-            Enabled = true,
-            Name = map.MapName,
-            ExternalId = map.ExternalId,
-            ExternalVersion = map.ExternalVersion,
-            ExternalMapProvider = map.ExternalMapProvider,
-            UpdatedAt = DateTime.Now
-        };
-
         await using var transaction = await Database.BeginTransactionAsync();
+        
         try
         {
-            await Table<DbMap>()
-                .Where(m => m.Id == updatedMap.Id)
-                .Set(m => m.Uid, updatedMap.Uid)
-                .Set(m => m.Enabled, updatedMap.Enabled)
-                .Set(m => m.Name, updatedMap.Name)
-                .Set(m => m.ExternalId, updatedMap.ExternalId)
-                .Set(m => m.ExternalVersion, updatedMap.ExternalVersion)
-                .Set(m => m.ExternalMapProvider, updatedMap.ExternalMapProvider)
-                .Set(m => m.UpdatedAt, updatedMap.UpdatedAt)
-                .UpdateAsync();
+            await Database.UpdateAsync(map);
             await transaction.CommitTransactionAsync();
+            
+            return new Map(map);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            logger.LogError(e, "Failed to update map with UID {MapMapUid}", map.MapUid);
             await transaction.RollbackTransactionAsync();
-            throw new EvoScDatabaseException($"Failed to update map with UID {map.MapUid}", e);
+            
+            logger.LogError(ex, "Failed to update map with UID {MapUid}", map.Uid);
+            throw new EvoScDatabaseException($"Failed to update map with UID {map.Uid}", ex);
         }
-
-        return new Map(updatedMap);
     }
 
     public Task RemoveMapAsync(long id) => 

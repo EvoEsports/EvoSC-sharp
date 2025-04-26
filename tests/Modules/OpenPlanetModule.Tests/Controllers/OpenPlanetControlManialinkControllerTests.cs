@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Modules.Official.OpenPlanetModule.Controllers;
 using EvoSC.Modules.Official.OpenPlanetModule.Interfaces;
@@ -18,7 +19,7 @@ public class OpenPlanetControlManialinkControllerTests : ManialinkControllerTest
     private readonly Mock<IOnlinePlayer> _player = new();
     private readonly Mock<IManialinkActionContext> _actionContext = new();
     private readonly Mock<IOpenPlanetControlService> _controlService = new();
-    private readonly (Mock<IServerClient> Server, Mock<IGbxRemoteClient> Client) _server = Mocking.NewServerClientMock();
+    private readonly (Mock<IServerClient> Server, Mock<IGbxRemoteClient> Client, Mock<IChatService> Chat) _server = Mocking.NewServerClientMock();
     private readonly Mock<IOpenPlanetTrackerService> _trackerService = new();
     private readonly Mock<IOpenPlanetScheduler> _scheduler = new();
 

@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces;
-using EvoSC.Common.Interfaces.Controllers;
+﻿using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
@@ -23,7 +22,7 @@ public class MapListService(
     IContextService context,
     IMapService mapService,
     ILogger<MapListService> logger,
-    IServerClient serverClient,
+    IChatService chat,
     IManialinkManager manialinkManager,
     IPermissionManager permissions) : IMapListService
 {
@@ -80,11 +79,11 @@ public class MapListService(
             logger.LogError(ex, "Failed to Remove map");
             context.Audit().Error();
 
-            await serverClient.ErrorMessageAsync(actor, $"Failed to remove the map '{map.Name}'");
+            await chat.ErrorMessageAsync($"Failed to remove the map '{map.Name}'", actor);
             return;
         }
         
-        await serverClient.SuccessMessageAsync(actor, $"'{map.Name}' was removed from the map list.");
+        await chat.SuccessMessageAsync($"'{map.Name}' was removed from the map list.", actor);
     }
 
     public async Task ShowMapListAsync(IPlayer player)

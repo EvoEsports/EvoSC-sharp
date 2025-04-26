@@ -1,6 +1,6 @@
-﻿using System.Collections.Specialized;
-using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Modules.Official.TeamSettingsModule.Events;
@@ -22,14 +22,15 @@ public class TeamSettingsServiceTests
     private readonly Mock<IManialinkManager> _manialinkManager = new();
     private readonly Mock<IEventManager> _events = new();
 
-    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote)
+    private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
         _server = Mocking.NewServerClientMock();
 
     private ITeamSettingsService TeamSettingsServiceMock()
     {
         var mlAction = new Mock<IManialinkActionContext>();
+        var server = Mocking.NewServerClientMock();
         var context =
-            Mocking.NewManialinkInteractionContextMock(_player.Object, mlAction.Object, _manialinkManager.Object);
+            Mocking.NewManialinkInteractionContextMock(server.Client, _player.Object, mlAction.Object, _manialinkManager.Object);
         var contextService = Mocking.NewContextServiceMock(context.Context.Object, null);
         var locale = Mocking.NewLocaleMock(contextService.Object);
 

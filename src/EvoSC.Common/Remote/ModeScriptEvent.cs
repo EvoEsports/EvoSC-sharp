@@ -47,6 +47,18 @@ public enum ModeScriptEvent
     WarmUpStart,
     
     /// <summary>
+    /// When a warm-up round starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.WarmUpStartRound")]
+    WarmUpStartRound,
+    
+    /// <summary>
+    /// When a warm-up round starts.
+    /// </summary>
+    [Identifier(Name = "ModeScript.WarmUpEndRound")]
+    WarmUpEndRound,
+    
+    /// <summary>
     /// When a player got eliminated by an obstacle.
     /// </summary>
     [Identifier(Name = "ModeScript.Eliminated")]

@@ -1,5 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Interfaces.Models.Enums;
+﻿using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Models.Players;

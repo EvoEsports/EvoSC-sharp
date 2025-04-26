@@ -1,4 +1,7 @@
 ﻿using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Events.Arguments;
+using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Exceptions;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -7,7 +10,6 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Util;
 using GbxRemoteNet;
-using GbxRemoteNet.Interfaces;
 using GbxRemoteNet.Structs;
 using GbxRemoteNet.XmlRpc.ExtraTypes;
 using Microsoft.Extensions.Logging;
@@ -15,7 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace EvoSC.Common.Services;
 
 public class MapService(IMapRepository mapRepository, ILogger<MapService> logger, IEvoScBaseConfig config,
-        IPlayerManagerService playerService, IServerClient serverClient)
+        IPlayerManagerService playerService, IServerClient serverClient, IEventManager events)
     : IMapService
 {
     public async Task<IMap?> GetMapByIdAsync(long id) => await mapRepository.GetMapByIdAsync(id);
@@ -29,45 +31,44 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
 
     public async Task<IMap> AddMapAsync(MapStream mapStream)
     {
-        var mapMetadata = mapStream.MapMetadata;
-        var mapFile = mapStream.MapFile;
+        var mapFileName = $"{mapStream.MapMetadata.MapUid}.Map.Gbx";
+        var mapFullPath = Path.Combine(config.Path.Maps, "EvoSC", mapFileName);
+        var mapRelativePath = Path.Combine("EvoSC", mapFileName);
 
-        IMap? existingMap = await GetMapByUidAsync(mapMetadata.MapUid);
-        if (existingMap != null && MapVersionExistsInDb(existingMap, mapMetadata))
-        {
-            logger.LogDebug("Map with UID {MapUid} already exists in database", mapMetadata.MapUid);
-            throw new DuplicateMapException($"Map with UID {mapMetadata.MapUid} already exists in database");
-        }
-
-        var fileName = $"{mapMetadata.MapUid}.Map.Gbx";
-        var filePath = Path.Combine(config.Path.Maps, "EvoSC", fileName);
-        var relativePath = Path.Combine("EvoSC", fileName);
-
-        await SaveMapFileAsync(mapFile, filePath);
-
-        var playerId = PlayerUtils.IsAccountId(mapMetadata.AuthorId)
-            ? mapMetadata.AuthorId
-            : PlayerUtils.ConvertLoginToAccountId(mapMetadata.AuthorId);
-
-        var author = await playerService.GetOrCreatePlayerAsync(playerId);
-
-        IMap map;
-
+        await SaveMapFileAsync(mapStream.MapFile, mapFullPath);
+        
+        var existingMap = await GetMapByUidAsync(mapStream.MapMetadata.MapUid);
         if (existingMap != null)
         {
-            logger.LogDebug("Updating map with ID {MapId} to the database", existingMap.Id);
-            map = await mapRepository.UpdateMapAsync(existingMap.Id, mapMetadata);
-        }
-        else
-        {
-            logger.LogDebug("Adding map {Name} ({Uid}) to the database", mapMetadata.MapName, mapMetadata.MapUid);
-            map = await mapRepository.AddMapAsync(mapMetadata, author, relativePath);
+            var updatedMap = await mapRepository.UpdateMapAsync(new DbMap(existingMap)
+            {
+                Id = 0,
+                Uid = mapStream.MapMetadata.MapUid,
+                FilePath = mapRelativePath,
+                Name = mapStream.MapMetadata.MapName,
+                ExternalId = mapStream.MapMetadata.ExternalId,
+                ExternalVersion = mapStream.MapMetadata.ExternalVersion,
+                ExternalMapProvider = mapStream.MapMetadata.ExternalMapProvider,
+                UpdatedAt = DateTime.Now
+            });
             
-            var mapDetails = await FetchMapDetailsAsync(map);
-            await mapRepository.AddMapDetailsAsync(mapDetails, map);
+            await events.RaiseAsync(MapEvent.MapUpdated, new MapUpdatedEventArgs { Map = updatedMap, OldMap = existingMap });
+            
+            return updatedMap;
         }
         
-        return map;
+        var authorAccountId = PlayerUtils.IsAccountId(mapStream.MapMetadata.AuthorId)
+            ? mapStream.MapMetadata.AuthorId
+            : PlayerUtils.ConvertLoginToAccountId(mapStream.MapMetadata.AuthorId);
+        
+        var author = await playerService.GetOrCreatePlayerAsync(authorAccountId, mapStream.MapMetadata.AuthorName);
+        var newMap = await mapRepository.AddMapAsync(mapStream.MapMetadata, author, mapRelativePath);
+        var mapDetails = await FetchMapDetailsAsync(newMap);
+        
+        await mapRepository.AddMapDetailsAsync(mapDetails, newMap);
+        await events.RaiseAsync(MapEvent.MapAdded, new MapEventArgs { Map = newMap });
+        
+        return newMap;
     }
 
     public async Task<IEnumerable<IMap>> AddMapsAsync(List<MapStream> mapStreams)
@@ -84,7 +85,10 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
 
     public async Task RemoveMapAsync(long mapId)
     {
+        var map = await GetMapByIdAsync(mapId);
         await mapRepository.RemoveMapAsync(mapId);
+
+        await events.RaiseAsync(MapEvent.MapRemoved, new MapEventArgs { Map = map });
     }
 
     public async Task AddCurrentMapListAsync()
