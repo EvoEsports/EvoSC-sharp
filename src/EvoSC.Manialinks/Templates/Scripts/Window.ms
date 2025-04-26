@@ -106,7 +106,7 @@ if ({{ canMove }}) {
         
         WindowInstance.RelativePosition_V3 = <NewX, NewY>;
         
-        +++ OnWindowsDragged +++
+        +++ OnWindowDragged +++
     }
 }
 ***

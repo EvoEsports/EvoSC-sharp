@@ -12,6 +12,7 @@
   <import component="MatchSettingsEditorModule.Editor.TabGeneral" as="TabGeneral" />
   <import component="MatchSettingsEditorModule.Editor.TabScriptSettings" as="TabScriptSettings" />
   <import component="MatchSettingsEditorModule.Editor.TabMaps" as="TabMaps" />
+  <import component="MatchSettingsEditorModule.Editor.AvailableMapsPanel" as="AvailableMapsPanel" />
   
   <property type="IMatchSettings" name="matchSettings" />
   <property type="double" name="winH" default="88.5" />
@@ -53,6 +54,8 @@
       <IconButton id="btnBack" y="{{ -winH+14.5 + 5 }}" hasText="true" icon="{{ Icons.ArrowLeft }}" text="Back" type="secondary" />
       <IconButton id="btnSave" x="{{ winW - 23 }}" y="{{ -winH+14.5 + 5 }}" hasText="true" icon="{{ Icons.Check }}" text="Save" />
     </Window>
+    
+    <AvailableMapsPanel width="70" height="{{ winH - 20 }}" x="{{ winW }}" y="-11" />
   </template>
 
   <script><!--
@@ -64,6 +67,23 @@
     } else {
       AddMapsButton.Visible = False;
     }
+  ***
+  
+  *** OnWindowDragged ***
+  ***
+  declare ampFrame <=> (Page.MainFrame.GetFirstChild("amp-frame") as CMlFrame);
+  ampFrame.RelativePosition_V3 = <NewX + {{ winW }}, NewY - 10>;
+  ***
+
+  *** OnMouseClick ***
+  ***
+  log(Event.Control.ControlId);
+  if (Event.Control.ControlId == "btnAddMaps") {
+    declare ampFrame <=> (Page.MainFrame.GetFirstChild("amp-frame") as CMlFrame);
+    declare Boolean ampFrameVisible for This = False;
+    ampFrameVisible = !ampFrameVisible;
+    ampFrame.Visible = ampFrameVisible;
+  }
   ***
   --></script>
   
