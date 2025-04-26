@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Models.Callbacks;
 
 namespace EvoSC.Modules.Official.MatchManagerModule.Interfaces;
 
@@ -38,25 +39,42 @@ public interface IMatchControlService
     /// Sets the round points for a team.
     /// </summary>
     /// <param name="team">Team to set the round points for.</param>
-    /// <param name="points">Points to set.</param>
+    /// <param name="newRoundPoints">Points to set.</param>
     /// <returns></returns>
-    public Task SetTeamRoundPointsAsync(PlayerTeam team, int points);
+    public Task SetTeamRoundPointsAsync(PlayerTeam team, int newRoundPoints);
     
     /// <summary>
     /// Sets the map points for a team.
     /// </summary>
     /// <param name="team">Team to set the map points for.</param>
-    /// <param name="points">Points to set.</param>
+    /// <param name="newMapPoints">Points to set.</param>
     /// <returns></returns>
-    public Task SetTeamMapPointsAsync(PlayerTeam team, int points);
+    public Task SetTeamMapPointsAsync(PlayerTeam team, int newMapPoints);
     
     /// <summary>
     /// Sets the match points for a team.
     /// </summary>
     /// <param name="team">Team to set the match points for.</param>
-    /// <param name="points">Points to set.</param>
+    /// <param name="newMatchPoints">Points to set.</param>
     /// <returns></returns>
-    public Task SetTeamMatchPointsAsync(PlayerTeam team, int points);
+    public Task SetTeamMatchPointsAsync(PlayerTeam team, int newMatchPoints);
+
+    /// <summary>
+    /// Retrieves the current score for the given player team.
+    /// </summary>
+    /// <param name="team"></param>
+    /// <returns></returns>
+    public Task<TeamScore> GetTeamScoreAsync(PlayerTeam team);
+
+    /// <summary>
+    /// Sets the round, map and match points for a team.
+    /// </summary>
+    /// <param name="team"></param>
+    /// <param name="roundPoints"></param>
+    /// <param name="mapPoints"></param>
+    /// <param name="matchPoints"></param>
+    /// <returns></returns>
+    public Task UpdateTeamScoreAsync(PlayerTeam team, int roundPoints, int mapPoints, int matchPoints);
     
     /// <summary>
     /// Pause the current match. Only works on round-based modes.
@@ -75,14 +93,4 @@ public interface IMatchControlService
     /// </summary>
     /// <returns></returns>
     public Task RequestScoresAsync();
-    
-    /// <summary>
-    /// Updates the cached team points.
-    /// </summary>
-    /// <param name="team1MapPoints"></param>
-    /// <param name="team1MatchPoints"></param>
-    /// <param name="team2MapPoints"></param>
-    /// <param name="team2MatchPoints"></param>
-    /// <returns></returns>
-    public Task UpdateTeamPointsAsync(int team1MapPoints, int team1MatchPoints, int team2MapPoints, int team2MatchPoints);
 }
