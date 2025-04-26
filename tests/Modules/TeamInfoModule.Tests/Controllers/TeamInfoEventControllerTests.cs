@@ -69,7 +69,7 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
                 WinnerPlayer = null,
                 Teams = new List<TeamScore?>
                 {
-                    new TeamScore { MatchPoints = team1Points }, new TeamScore { MatchPoints = team2Points },
+                    new() { MapPoints = team1Points }, new() { MapPoints = team2Points },
                 },
                 Players = new List<PlayerScore?>()
             });
@@ -102,7 +102,7 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
                 WinnerPlayer = null,
                 Teams = new List<TeamScore?>
                 {
-                    new TeamScore { MatchPoints = team1Points }, new TeamScore { MatchPoints = team2Points },
+                    new TeamScore { MapPoints = team1Points }, new TeamScore { MapPoints = team2Points },
                 },
                 Players = new List<PlayerScore?>()
             });
