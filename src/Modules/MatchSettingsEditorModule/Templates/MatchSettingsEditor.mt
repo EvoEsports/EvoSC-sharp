@@ -72,7 +72,9 @@
   *** OnWindowDragged ***
   ***
   declare ampFrame <=> (Page.MainFrame.GetFirstChild("amp-frame") as CMlFrame);
+  declare Real EvoSC_Window_Z_Index for This;
   ampFrame.RelativePosition_V3 = <NewX + {{ winW }}, NewY - 10>;
+  ampFrame.ZIndex = EvoSC_Window_Z_Index;
   ***
 
   *** OnMouseClick ***
@@ -80,10 +82,35 @@
   log(Event.Control.ControlId);
   if (Event.Control.ControlId == "btnAddMaps") {
     declare ampFrame <=> (Page.MainFrame.GetFirstChild("amp-frame") as CMlFrame);
+    declare AddMapsButton <=> (Page.MainFrame.GetFirstChild("btnAddMaps") as CMlLabel);
     declare Boolean ampFrameVisible for This = False;
+    
     ampFrameVisible = !ampFrameVisible;
     ampFrame.Visible = ampFrameVisible;
+    
+    if (ampFrameVisible) {
+      AddMapsButton.SetText("ADD MAPS {{ Icons.AngleLeft }}");
+    } else {
+      AddMapsButton.SetText("ADD MAPS {{ Icons.AngleRight }}");
+    }
   }
+  ***
+  
+  *** OnTabChanged ***
+  ***
+  declare ampFrame <=> (Page.MainFrame.GetFirstChild("amp-frame") as CMlFrame);
+  if (TabPageId == "tabMaps") {
+    declare Boolean ampFrameVisible for This = False;
+    ampFrame.Visible = ampFrameVisible;
+  } else {
+    ampFrame.Visible = False;
+  }
+  ***
+  
+  *** OnWindowClosed ***
+  ***
+  declare ampFrame <=> (Page.MainFrame.GetFirstChild("amp-frame") as CMlFrame);
+  ampFrame.Visible = False;
   ***
   --></script>
   
