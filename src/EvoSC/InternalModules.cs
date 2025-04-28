@@ -1,4 +1,5 @@
 using EvoSC.Common.Interfaces;
+using EvoSC.Modules.EvoEsports.ServerSyncModule;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ASayModule;
 using EvoSC.Modules.Official.CurrentMapModule;
@@ -66,6 +67,7 @@ public static class InternalModules
         typeof(ForceTeamModule),
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
+        typeof(ServerSyncModule),
         typeof(TeamChatModule),
         typeof(RoundRankingModule)
     ];

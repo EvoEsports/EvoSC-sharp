@@ -55,6 +55,7 @@
         <ProjectReference Include="..\Modules\TeamInfoModule\TeamInfoModule.csproj" />
         <ProjectReference Include="..\Modules\TeamSettingsModule\TeamSettingsModule.csproj" />
         <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
+        <ProjectReference Include="..\Modules\ServerSyncModule\ServerSyncModule.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -62,6 +63,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="bin\Debug\net8.0\config\" />
+      <Folder Include="bin\Debug\net8.0\" />
     </ItemGroup>
 </Project>
