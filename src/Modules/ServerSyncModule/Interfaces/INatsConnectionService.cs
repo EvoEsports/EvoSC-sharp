@@ -25,4 +25,9 @@ public interface INatsConnectionService
     /// </summary>
     /// <returns></returns>
     Task ConnectAsync();
+
+    /// <summary>
+    /// Dispose the NATS connection.
+    /// </summary>
+    ValueTask DisposeAsync();
 }

@@ -25,5 +25,6 @@
   <ItemGroup>
     <PackageReference Include="NATS.Client" Version="1.1.7" />
     <PackageReference Include="NATS.Net" Version="2.5.16" />
+    <PackageReference Include="NATS.NKeys" Version="1.0.0-preview.3" />
   </ItemGroup>
 </Project>

@@ -36,4 +36,10 @@ public interface INatsSettings
     [Option(DefaultValue = "EvoSC-bucket")]
     [Description("The name of the key vault bucket.")]
     public string KeyVaultBucketName { get; set; }
+    
+    [Option, Description("NKey for authentication. Leave empty if not using NKey authentication.")]
+    public string? NKey { get; set; }
+    
+    [Option, Description("NKey seed for authentication. Leave empty if not using NKey authentication.")]
+    public string? NKeySeed { get; set; }
 }

@@ -1,91 +1,121 @@
-using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Models;
-using EvoSC.Common.Models.Callbacks;
+using EvoSC.Common.Events.CoreEvents;
+using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util;
+using EvoSC.Common.Util.EnumIdentifier;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Interfaces;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Models;
 using EvoSC.Modules.EvoEsports.ServerSyncModule.Models.StateMessages;
+using GbxRemoteNet.Events;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class SyncService(INatsJetstreamService natsJsService) : ISyncService
+public class SyncService(
+    INatsJetstreamService natsJsService,
+    IPlayerManagerService players,
+    IServerClient server,
+    ILogger<ISyncService> logger)
+    : ISyncService
 {
-    public Task PublishChatMessageAsync(IPlayer player, string message)
+    public async Task PublishChatMessageAsync(PlayerChatGbxEventArgs args)
     {
-        var stateMessage = new ChatStateStateMessage
+        logger.LogTrace("Publishing chat message");
+        var player = await players.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(args.Login));
+        var serverName = await server.Remote.GetServerNameAsync();
+        var stateMessage = new ChatStateMessage
         {
-            Message = message,
-            AccountId = player.AccountId,
+            ClientId = serverName,
             Timestamp = DateTime.Now,
+            Message = args.Text,
+            AccountId = player.AccountId,
             NickName = player.NickName
         };
 
-        return natsJsService.PublishMessageAsync(nameof (StateSubjects.ChatMessages), stateMessage);
+        await natsJsService.PublishMessageAsync(nameof(StateSubjects.ChatMessages), stateMessage);
     }
 
-    public Task PublishPlayerStateAsync(IPlayer player, long position, IEnumerable<long> scores, IEnumerable<long> checkpointScores, IEnumerable<long> times)
+    public async Task PublishChatMessageAsync(ChatMessageEventArgs args)
     {
-        var stateMessage = new PlayerStateUpdateMessage
+        logger.LogTrace("Publishing chat message");
+        var serverName = await server.Remote.GetServerNameAsync();
+        var stateMessage = new ChatStateMessage
         {
+            ClientId = serverName,
             Timestamp = DateTime.Now,
-            AccountId = player.AccountId,
-            NickName = player.NickName,
-            Scores = scores,
-            Position = position,
-            CheckpointScores = checkpointScores,
-            Times = times
+            Message = args.MessageText,
+            AccountId = args.Player.AccountId,
+            NickName = args.Player.NickName
         };
 
-        return natsJsService.PublishMessageAsync<PlayerStateUpdateMessage>(nameof (StateSubjects.PlayerState), stateMessage);
+        await natsJsService.PublishMessageAsync(nameof(StateSubjects.ChatMessages), stateMessage);
     }
 
-    public Task PublishMapFinishedAsync()
+    public async Task PublishMapFinishedAsync()
     {
-        return natsJsService.PublishMessageAsync(nameof (StateSubjects.MapFinished), new StateMessage());
+        logger.LogTrace("Publishing map finished");
+        var serverName = await server.Remote.GetServerNameAsync();
+        await natsJsService.PublishMessageAsync(StateSubjects.MapFinished.GetIdentifier(),
+            new StateMessage { ClientId = serverName, Timestamp = DateTime.Now });
     }
 
-    public Task PublishEndRoundAsync()
+    public async Task PublishEndRoundAsync()
     {
-        return natsJsService.PublishMessageAsync(nameof (StateSubjects.EndRound), new StateMessage());
+        logger.LogTrace("Publishing end round");
+        var serverName = await server.Remote.GetServerNameAsync();
+        await natsJsService.PublishMessageAsync(StateSubjects.EndRound.GetIdentifier(),
+            new StateMessage { ClientId = serverName, Timestamp = DateTime.Now });
     }
 
-    public Task PublishEndMatchAsync()
+    public async Task PublishEndMatchAsync()
     {
-        return natsJsService.PublishMessageAsync(nameof (StateSubjects.EndMatch), new StateMessage());
+        logger.LogTrace("Publishing end match");
+        var serverName = await server.Remote.GetServerNameAsync();
+        await natsJsService.PublishMessageAsync(StateSubjects.EndMatch.GetIdentifier(),
+            new StateMessage { ClientId = serverName, Timestamp = DateTime.Now });
     }
 
-    public Task PublishWayPointAsync(IOnlinePlayer player, int raceTime, int checkpointInRace,
-        IEnumerable<int> currentRaceCheckpoints, bool isEndRace, float speed)
+    public async Task PublishWaypointAsync(WayPointEventArgs waypointEventArgs)
     {
+        logger.LogTrace("Publishing waypoint");
+        var player = await players.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(waypointEventArgs.Login));
+        var serverName = await server.Remote.GetServerNameAsync();
         var stateMessage = new WaypointMessage
         {
+            ClientId = serverName,
+            Timestamp = DateTime.Now,
             NickName = player.NickName,
             AccountId = player.AccountId,
-            RaceTime = raceTime,
-            CheckpointInRace = checkpointInRace,
-            CurrentRaceCheckpoints = currentRaceCheckpoints,
-            IsEndRace = isEndRace,
-            Speed = speed
+            RaceTime = waypointEventArgs.RaceTime,
+            CheckpointInRace = waypointEventArgs.CheckpointInRace,
+            CurrentRaceCheckpoints = waypointEventArgs.CurrentRaceCheckpoints,
+            IsEndRace = waypointEventArgs.IsEndRace,
+            Speed = waypointEventArgs.Speed
         };
 
-        return natsJsService.PublishMessageAsync(nameof (StateSubjects.Waypoint), stateMessage);
+        await natsJsService.PublishMessageAsync(StateSubjects.Waypoint.GetIdentifier(), stateMessage);
     }
 
-    public Task PublishScoresAsync(IEnumerable<PlayerScore?> playerScores, IEnumerable<TeamScore?> teamScores, int winnerTeam,
-        string? winnerPlayer, ModeScriptSection section, bool useTeams)
+    public async Task PublishScoresAsync(ScoresEventArgs scoresEventArgs)
     {
+        logger.LogTrace("Publishing scores");
+        var serverName = await server.Remote.GetServerNameAsync();
         var message = new ScoresMessage
         {
-            Scores = playerScores,
-            TeamScores = teamScores,
-            WinnerTeam = winnerTeam,
-            WinnerPlayer = winnerPlayer,
-            Section = section,
-            UseTeams = useTeams
+            ClientId = serverName,
+            Timestamp = DateTime.Now,
+            Scores = scoresEventArgs.Players,
+            TeamScores = scoresEventArgs.Teams,
+            WinnerTeam = scoresEventArgs.WinnerTeam,
+            WinnerPlayer = scoresEventArgs.WinnerPlayer,
+            Section = scoresEventArgs.Section,
+            UseTeams = scoresEventArgs.UseTeams
         };
 
-        return natsJsService.PublishMessageAsync(nameof (StateSubjects.Scores), message);
+        await natsJsService.PublishMessageAsync(StateSubjects.Scores.GetIdentifier(), message);
     }
 }

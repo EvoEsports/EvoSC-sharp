@@ -14,6 +14,6 @@ public class ServerSyncModule(INatsConnectionService natsConnection) : EvoScModu
 
     public async Task DisableAsync()
     {
-        await Task.CompletedTask;
+        await natsConnection.DisposeAsync();
     }
 }

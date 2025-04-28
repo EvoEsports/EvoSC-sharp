@@ -5,5 +5,5 @@ namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Events.Args;
 
 public class ChatStateMessageEventArgs : EventArgs
 {
-    public required IChatStateStateMessage ChatMessage { get; init; }
+    public required IChatStateMessage ChatMessage { get; init; }
 }

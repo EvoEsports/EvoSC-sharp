@@ -2,7 +2,7 @@ using EvoSC.Modules.EvoEsports.ServerSyncModule.Interfaces.StateMessages;
 
 namespace EvoSC.Modules.EvoEsports.ServerSyncModule.Models.StateMessages;
 
-public class ChatStateStateMessage : IChatStateStateMessage
+public class ChatStateMessage : IChatStateMessage
 {
     public string ClientId { get; set; }
     public required DateTime Timestamp { get; set; }
