@@ -66,7 +66,7 @@
                             size="{{ height * 1.25 }} {{ height }}"
                             pos="{{ width-4 }}"
                             class='lr-body-highlight'
-                            bgcolor="{{ checkpoint.AccentColor != null ? checkpoint.AccentColor : Theme.UI_RoundRankingModule_Widget_RowBgHighlight }}"
+                            bgcolor="{{ checkpoint.AccentColor != null ? checkpoint.AccentColor : Theme.UI_RoundRankingModule_Widget_Row_Bg_Highlight }}"
                             halign="right"
                     />
                     <label
