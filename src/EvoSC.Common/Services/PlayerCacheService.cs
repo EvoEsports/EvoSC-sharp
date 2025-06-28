@@ -204,6 +204,7 @@ public class PlayerCacheService : IPlayerCacheService
 
         var onlinePlayer = new OnlinePlayer(player)
         {
+            PlayerServerId = onlinePlayerDetails.PlayerId,
             State = onlinePlayerDetails.GetState(),
             Flags = onlinePlayerInfo.GetFlags(),
             Team = onlinePlayerDetails.TeamId == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2
@@ -285,6 +286,7 @@ public class PlayerCacheService : IPlayerCacheService
 
             var onlinePlayer = new OnlinePlayer(player.Player)
             {
+                PlayerServerId = onlinePlayerDetails.PlayerId,
                 State = onlinePlayerDetails.GetState(),
                 Flags = onlinePlayerInfo.GetFlags(),
                 Team = onlinePlayerDetails.TeamId == 0 ? PlayerTeam.Team1 : PlayerTeam.Team2

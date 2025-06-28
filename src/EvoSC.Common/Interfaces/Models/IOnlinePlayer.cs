@@ -8,6 +8,11 @@ namespace EvoSC.Common.Interfaces.Models;
 public interface IOnlinePlayer : IPlayer
 {
     /// <summary>
+    /// The player's ID in the current server.
+    /// </summary>
+    public int PlayerServerId { get; }
+    
+    /// <summary>
     /// The current in-game state of the player.
     /// </summary>
     public PlayerState State { get; }

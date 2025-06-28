@@ -56,6 +56,11 @@ public interface IPlayerManagerService
     /// <param name="player">Information about the player to get.</param>
     /// <returns>Returns an IOnlinePlayer instance of the player.</returns>
     public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player);
+
+    /// <summary>
+    /// Get a player by their server ID.
+    /// </summary>
+    public IOnlinePlayer? GetOnlinePlayerByServerIdAsync(int playerServerId);
     
     /// <summary>
     /// Update the last visited column of a player in the database.

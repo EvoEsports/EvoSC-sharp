@@ -75,6 +75,9 @@ public class PlayerManagerService(IPlayerRepository playerRepository, IPlayerCac
 
     public Task<IOnlinePlayer> GetOnlinePlayerAsync(IPlayer player) => GetOnlinePlayerAsync(player.AccountId);
 
+    public IOnlinePlayer? GetOnlinePlayerByServerIdAsync(int playerServerId)
+        => playerCache.OnlinePlayers.FirstOrDefault(p => p.PlayerServerId == playerServerId);
+
     public Task UpdateLastVisitAsync(IPlayer player) => playerRepository.UpdateLastVisitAsync(player);
 
     public Task<IEnumerable<IOnlinePlayer>> GetOnlinePlayersAsync() => Task.FromResult(playerCache.OnlinePlayers);

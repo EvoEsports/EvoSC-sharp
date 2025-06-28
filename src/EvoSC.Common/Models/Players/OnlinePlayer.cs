@@ -7,6 +7,8 @@ public class OnlinePlayer : IOnlinePlayer
 {
     public long Id { get; init; }
     public string AccountId { get; set; }
+    
+    public int PlayerServerId { get; set; }
     public string NickName { get; set; }
     public string UbisoftName { get; set; }
     public string Zone { get; set; }
