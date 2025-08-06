@@ -35,7 +35,7 @@
                         foreach="string moduleName in moduleNames"
                         y="{{ __index * -6 }}"
                         isChecked='{{ hiddenModules.Contains(moduleName) }}'
-                        text="{{ moduleName }}"
+                        text='{{ moduleName.Replace("Module", "").Replace(".", " / ") }}'
                 />
             </Container>
             

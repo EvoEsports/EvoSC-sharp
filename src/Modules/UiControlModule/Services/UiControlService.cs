@@ -43,6 +43,7 @@ public class UiControlService(
             .Where(manialinkTemplate => !manialinkTemplate.Name.StartsWith("UiControl"))
             .Where(manialinkTemplate => manialinkTemplate.Name.Split('.').Length <= 2)
             .Select(manialinkTemplate => manialinkManager.GetEffectiveName(manialinkTemplate.Name))
+            .Order()
             .ToList();
     }
 
