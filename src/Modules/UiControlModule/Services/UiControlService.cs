@@ -24,15 +24,8 @@ public class UiControlService(
 
     public async Task DisplayMenuAsync(IOnlinePlayer player)
     {
-        var hiddenModules = new List<string>();
-
-        if (player.Settings.HiddenManialinks != null)
-        {
-            hiddenModules.AddRange(player.Settings.GetHiddenManialinks());
-        }
-
         await manialinkManager.SendManialinkAsync(player, ConfigMenuTemplate,
-            new { hiddenModules, moduleNames = GetTemplateNames() });
+            new { hiddenModules = player.Settings.GetHiddenManialinks(), moduleNames = GetTemplateNames() });
     }
 
     public List<string> GetTemplateNames()
