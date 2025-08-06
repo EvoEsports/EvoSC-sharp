@@ -6,7 +6,7 @@ public interface IPlayerSettings
 
     public string? HiddenManialinks { get; set; }
 
-    public List<string> GetHiddenManialinks();
+    public IEnumerable<string> GetHiddenManialinks();
 
     public void SetHiddenManialinks(List<string> hiddenManialinks);
 }
