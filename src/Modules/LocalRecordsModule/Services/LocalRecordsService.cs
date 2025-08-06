@@ -61,7 +61,7 @@ public class LocalRecordsService(
         {
             foreach (var player in onlinePlayers)
             {
-                if (player.Settings.GetHiddenManialinks().Contains(WidgetName))
+                if (manialinkManager.IsTemplateHiddenForPlayer(player, WidgetName))
                 {
                     continue;
                 }
