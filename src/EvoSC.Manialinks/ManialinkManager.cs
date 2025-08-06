@@ -191,12 +191,8 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        var players = _playerCache.OnlinePlayers
-            .Where(onlinePlayer => !onlinePlayer.Settings.GetHiddenManialinks().Contains(name))
-            .ToList();
-
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
-
+        var players = RejectPlayersWithHiddenManialinks(_playerCache.OnlinePlayers, name);
         var multiCall = CreateMultiCall(players, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
     }
@@ -205,12 +201,8 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        var players = _playerCache.OnlinePlayers
-            .Where(onlinePlayer => !onlinePlayer.Settings.GetHiddenManialinks().Contains(name))
-            .ToList();
-
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
-
+        var players = RejectPlayersWithHiddenManialinks(_playerCache.OnlinePlayers, name);
         var multiCall = CreateMultiCall(players, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
     }
@@ -221,12 +213,8 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        var players = _playerCache.OnlinePlayers
-            .Where(onlinePlayer => !onlinePlayer.Settings.GetHiddenManialinks().Contains(name))
-            .ToList();
-
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
-
+        var players = RejectPlayersWithHiddenManialinks(_playerCache.OnlinePlayers, name);
         var multiCall = CreateMultiCall(players, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
 
@@ -240,12 +228,8 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        var players = _playerCache.OnlinePlayers
-            .Where(onlinePlayer => !onlinePlayer.Settings.GetHiddenManialinks().Contains(name))
-            .ToList();
-
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
-
+        var players = RejectPlayersWithHiddenManialinks(_playerCache.OnlinePlayers, name);
         var multiCall = CreateMultiCall(players, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
 
@@ -275,10 +259,6 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        var players = _playerCache.OnlinePlayers
-            .Where(onlinePlayer => !onlinePlayer.Settings.GetHiddenManialinks().Contains(name))
-            .ToList();
-
         _persistentManialinks[name] = new PersistentManialink
         {
             Name = name, Type = PersistentManialinkType.Static, DynamicDataCallbackAsync = setupData
@@ -286,7 +266,7 @@ public class ManialinkManager : IManialinkManager
 
         var data = await setupData();
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
-
+        var players = RejectPlayersWithHiddenManialinks(_playerCache.OnlinePlayers, name);
         var multiCall = CreateMultiCall(players, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
     }
@@ -302,7 +282,7 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        if (player.Settings.GetHiddenManialinks().Contains(name))
+        if (IsTemplateHiddenForPlayer(player, name))
         {
             return;
         }
@@ -315,7 +295,7 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        if (player.Settings.GetHiddenManialinks().Contains(name))
+        if (IsTemplateHiddenForPlayer(player, name))
         {
             return;
         }
@@ -328,9 +308,9 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
         var playerAccountId = PlayerUtils.ConvertLoginToAccountId(playerLogin);
-        var player = await _playerCache.GetOnlinePlayerCachedAsync(playerAccountId);
+        var (player, isNewPlayer) = await _playerCache.GetOnlinePlayerCachedAsync(playerAccountId);
 
-        if (player.Player != null && player.Player.Settings.GetHiddenManialinks().Contains(name))
+        if (player != null && IsTemplateHiddenForPlayer(player, name))
         {
             return;
         }
@@ -342,7 +322,7 @@ public class ManialinkManager : IManialinkManager
     public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, IDictionary<string, object?> data)
     {
         name = GetEffectiveName(name);
-        var filteredPlayers = players.Where(p => !p.Settings.GetHiddenManialinks().Contains(name));
+        var filteredPlayers = RejectPlayersWithHiddenManialinks(players, name);
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         var multiCall = CreateMultiCall(filteredPlayers, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
@@ -351,7 +331,7 @@ public class ManialinkManager : IManialinkManager
     public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, dynamic data)
     {
         name = GetEffectiveName(name);
-        var filteredPlayers = players.Where(p => !p.Settings.GetHiddenManialinks().Contains(name));
+        var filteredPlayers = RejectPlayersWithHiddenManialinks(players, name);
         var manialinkOutput = await PrepareAndRenderAsync(name, data);
         var multiCall = CreateMultiCall(filteredPlayers, manialinkOutput);
         await _server.Remote.MultiCallAsync(multiCall);
@@ -460,11 +440,10 @@ public class ManialinkManager : IManialinkManager
                     continue;
                 }
 
-                var onlinePlayer =
+                var (onlinePlayer, isNewPlayer) =
                     await _playerCache.GetOnlinePlayerCachedAsync(PlayerUtils.ConvertLoginToAccountId(e.Login));
 
-                if (onlinePlayer.Player != null &&
-                    onlinePlayer.Player.Settings.GetHiddenManialinks().Contains(manialink.Name))
+                if (onlinePlayer != null && IsTemplateHiddenForPlayer(onlinePlayer, manialink.Name))
                 {
                     continue;
                 }
@@ -548,4 +527,14 @@ public class ManialinkManager : IManialinkManager
             : name;
 
     public IManialinkTransaction CreateTransaction() => new ManialinkTransaction(this, _server);
+
+    public IEnumerable<IPlayer> RejectPlayersWithHiddenManialinks(IEnumerable<IPlayer> players, string templateName)
+    {
+        return players.Where(player => IsTemplateHiddenForPlayer(player, templateName));
+    }
+
+    public bool IsTemplateHiddenForPlayer(IPlayer player, string templateName)
+    {
+        return player.Settings.GetHiddenManialinks().Contains(templateName);
+    }
 }

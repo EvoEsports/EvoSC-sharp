@@ -1,4 +1,5 @@
-﻿using EvoSC.Manialinks.Interfaces.Models;
+﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Manialinks.Interfaces.Models;
 
 namespace EvoSC.Manialinks.Interfaces;
 
@@ -163,4 +164,20 @@ public interface IManialinkManager : IManialinkOperations
     /// </summary>
     /// <returns></returns>
     public IManialinkTransaction CreateTransaction();
+
+    /// <summary>
+    /// Searches the given collection for hidden templates and excludes them from the result.
+    /// </summary>
+    /// <param name="players"></param>
+    /// <param name="templateName"></param>
+    /// <returns></returns>
+    public IEnumerable<IPlayer> RejectPlayersWithHiddenManialinks(IEnumerable<IPlayer> players, string templateName);
+
+    /// <summary>
+    /// Checks whether the template name is hidden for the player.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="templateName"></param>
+    /// <returns></returns>
+    public bool IsTemplateHiddenForPlayer(IPlayer player, string templateName);
 }
