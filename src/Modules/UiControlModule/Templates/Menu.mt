@@ -49,13 +49,21 @@
                         id="btnSave"
                         text="Submit"
                         action="UiControlModule/SaveConfiguration"
+                        width="20"
                 />
-                <Button
-                        id="btnHideAll"
-                        text="Hide all"
-                        action="UiControlModule/HideAll"
-                        x="22"
-                />
+                <frame pos="67">
+                    <Button
+                            id="btnSelectAll"
+                            text="Select all"
+                            width="22"
+                    />
+                    <Button
+                            id="btnUnselectAll"
+                            text="Deselect all"
+                            width="24"
+                            x="23"
+                    />
+                </frame>
             </frame>
         </Window>
     </template>
