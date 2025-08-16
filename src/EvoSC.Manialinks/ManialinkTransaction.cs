@@ -27,17 +27,21 @@ public class ManialinkTransaction(IManialinkManager manialinkManager, IServerCli
 
     public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, IDictionary<string, object?> data)
     {
+        var output = await GetSendOutputAsync(name, data);
+        
         foreach (var player in players)
         {
-            await AddSendCallAsync(player, name, data);
+            _serverCalls.Add(nameof(IGbxRemoteClient.SendDisplayManialinkPageToLoginAsync), player.GetLogin(), output, 0, false);
         }
     }
 
     public async Task SendManialinkAsync(IEnumerable<IPlayer> players, string name, dynamic data)
     {
+        var output = await GetSendOutputAsync(name, data);
+        
         foreach (var player in players)
         {
-            await AddSendCallAsync(player, name, data);
+            _serverCalls.Add(nameof(IGbxRemoteClient.SendDisplayManialinkPageToLoginAsync), player.GetLogin(), output, 0, false);
         }
     }
 
