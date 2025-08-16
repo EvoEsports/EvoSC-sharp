@@ -13,23 +13,19 @@ public class DbPlayerSettings : IPlayerSettings
 
     [Column] public string DisplayLanguage { get; set; }
 
-    [Column] public string? HiddenManialinks { get; set; }
+    [Column(nameof(HiddenManialinks))]
+    public string? DbHiddenManialinks { get; set; }
+    
+    public string? HiddenManialinks  {
+         get => DbHiddenManialinks != null ? DbHiddenManialinks.Split(",").ToList()  : [];
+         set {
+               if (hiddenManialinks.IsNullOrEmpty())
+              {
+                  DbHiddenManialinks = null;
+                  return;
+              }
 
-    public List<string> GetHiddenManialinks()
-    {
-        return HiddenManialinks != null
-            ? HiddenManialinks.Split(",").ToList()
-            : [];
-    }
-
-    public void SetHiddenManialinks(List<string> hiddenManialinks)
-    {
-        if (hiddenManialinks.IsNullOrEmpty())
-        {
-            HiddenManialinks = null;
-            return;
-        }
-
-        HiddenManialinks = string.Join(",", hiddenManialinks);
+              DbHiddenManialinks = string.Join(",", value);
+         }
     }
 }
