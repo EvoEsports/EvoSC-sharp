@@ -52,7 +52,12 @@ public class UiControlService(
         await manialinkManager.HideManialinkAsync(player, ConfigMenuTemplate);
         await playerCache.UpdatePlayerAsync(player);
 
-        player.Settings.HiddenManialinks.ForEach(templateName =>
-            manialinkManager.HideManialinkAsync(player, templateName));
+        var transaction = manialinkManager.CreateTransaction();
+        foreach (var templateName in player.Settings.HiddenManialinks)
+        {
+            await transaction.HideManialinkAsync(player, templateName);
+        }
+
+        await transaction.CommitAsync();
     }
 }
