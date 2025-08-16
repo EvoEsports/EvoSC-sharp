@@ -10,11 +10,11 @@ public class UiControlManialinkController(IUiControlService uiControlService) : 
 {
     public async Task SaveConfigurationAsync(UiControlEntryModel formData)
     {
-        List<string> hiddenManialinks = [];
+        string[] hiddenManialinks = [];
 
         if (formData.HiddenManialinks.Length > 0)
         {
-            hiddenManialinks = formData.HiddenManialinks.Split("|")
+            hiddenManialinks = formData.HiddenManialinks.Split("|");
         }
 
         await uiControlService.SaveSettingsAsync(Context.Player, hiddenManialinks);

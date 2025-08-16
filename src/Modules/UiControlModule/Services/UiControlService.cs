@@ -25,7 +25,7 @@ public class UiControlService(
     public async Task DisplayMenuAsync(IOnlinePlayer player)
     {
         await manialinkManager.SendManialinkAsync(player, ConfigMenuTemplate,
-            new { hiddenModules = player.Settings.GetHiddenManialinks(), moduleNames = GetTemplateNames() });
+            new { hiddenModules = player.Settings.HiddenManialinks, moduleNames = GetTemplateNames() });
     }
 
     public List<string> GetTemplateNames()
@@ -40,9 +40,9 @@ public class UiControlService(
             .ToList();
     }
 
-    public async Task SaveSettingsAsync(IOnlinePlayer player, List<string> hiddenManialinks)
+    public async Task SaveSettingsAsync(IOnlinePlayer player, IEnumerable<string> hiddenManialinks)
     {
-        player.Settings.SetHiddenManialinks(hiddenManialinks);
+        player.Settings.HiddenManialinks = hiddenManialinks.ToList();
 
         await Table<DbPlayerSettings>()
             .Where(dbPlayer => dbPlayer.PlayerId == player.Id)
@@ -52,6 +52,7 @@ public class UiControlService(
         await manialinkManager.HideManialinkAsync(player, ConfigMenuTemplate);
         await playerCache.UpdatePlayerAsync(player);
 
-        hiddenManialinks.ForEach(templateName => manialinkManager.HideManialinkAsync(player, templateName));
+        player.Settings.HiddenManialinks.ForEach(templateName =>
+            manialinkManager.HideManialinkAsync(player, templateName));
     }
 }

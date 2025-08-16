@@ -2,6 +2,7 @@ using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Models.Extensions;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
@@ -26,7 +27,8 @@ public class LocalRecordsService(
     ILocalRecordsSettings settings,
     IChatService server,
     IThemeManager themeManager,
-    IPlayerRecordsRepository playerRecordsRepository) : ILocalRecordsService
+    IPlayerRecordsRepository playerRecordsRepository
+) : ILocalRecordsService
 {
     private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
 
@@ -61,7 +63,7 @@ public class LocalRecordsService(
         {
             foreach (var player in onlinePlayers)
             {
-                if (manialinkManager.IsTemplateHiddenForPlayer(player, WidgetName))
+                if (player.ManialinkIsHidden(WidgetName))
                 {
                     continue;
                 }

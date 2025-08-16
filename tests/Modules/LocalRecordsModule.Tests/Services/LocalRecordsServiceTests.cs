@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Models.Enums;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Models.Extensions;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Themes;
@@ -193,7 +194,7 @@ public class LocalRecordsServiceTests
         var player4 = new OnlinePlayer { Id = 4, AccountId = "player4", State = PlayerState.Playing, Settings = new DbPlayerSettings
         {
             DisplayLanguage = "en",
-            HiddenManialinks = "LocalRecordsModule.LocalRecordsWidget"
+            HiddenManialinks = ["LocalRecordsModule.LocalRecordsWidget"]
         }};
 
         mock.PlayerManagerService
@@ -202,7 +203,7 @@ public class LocalRecordsServiceTests
 
         var transaction = new Mock<IManialinkTransaction>();
         mock.ManialinkManager.Setup(m => m.CreateTransaction()).Returns(transaction.Object);
-        mock.ManialinkManager.Setup(m => m.IsTemplateHiddenForPlayer(player4, "LocalRecordsModule.LocalRecordsWidget")).Returns(true);
+        mock.ManialinkManager.Setup(m => player4.ManialinkIsHidden("LocalRecordsModule.LocalRecordsWidget")).Returns(true);
 
         await mock.Service.ShowWidgetToAllAsync();
 

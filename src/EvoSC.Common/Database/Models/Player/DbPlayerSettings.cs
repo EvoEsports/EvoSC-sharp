@@ -1,5 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Models;
-using LinqToDB.Common;
+﻿using EvoSC.Common.Database.Models.ValueConverters;
+using EvoSC.Common.Interfaces.Models;
 using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Player;
@@ -13,19 +13,7 @@ public class DbPlayerSettings : IPlayerSettings
 
     [Column] public string DisplayLanguage { get; set; }
 
-    [Column(nameof(HiddenManialinks))]
-    public string? DbHiddenManialinks { get; set; }
-    
-    public string? HiddenManialinks  {
-         get => DbHiddenManialinks != null ? DbHiddenManialinks.Split(",").ToList()  : [];
-         set {
-               if (hiddenManialinks.IsNullOrEmpty())
-              {
-                  DbHiddenManialinks = null;
-                  return;
-              }
-
-              DbHiddenManialinks = string.Join(",", value);
-         }
-    }
+    [Column]
+    [ValueConverter(ConverterType = typeof(NullableStringListConverter))]
+    public List<string> HiddenManialinks { get; set; }
 }

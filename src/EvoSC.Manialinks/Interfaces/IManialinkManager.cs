@@ -172,12 +172,4 @@ public interface IManialinkManager : IManialinkOperations
     /// <param name="templateName"></param>
     /// <returns></returns>
     public IEnumerable<IPlayer> RejectPlayersWithHiddenManialinks(IEnumerable<IPlayer> players, string templateName);
-
-    /// <summary>
-    /// Checks whether the template name is hidden for the player.
-    /// </summary>
-    /// <param name="player"></param>
-    /// <param name="templateName"></param>
-    /// <returns></returns>
-    public bool IsTemplateHiddenForPlayer(IPlayer player, string templateName);
 }

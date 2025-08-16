@@ -7,6 +7,7 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Models.Extensions;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Themes;
 using EvoSC.Common.Themes.Events;
@@ -282,7 +283,7 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        if (IsTemplateHiddenForPlayer(player, name))
+        if (player.ManialinkIsHidden(name))
         {
             return;
         }
@@ -295,7 +296,7 @@ public class ManialinkManager : IManialinkManager
     {
         name = GetEffectiveName(name);
 
-        if (IsTemplateHiddenForPlayer(player, name))
+        if (player.ManialinkIsHidden(name))
         {
             return;
         }
@@ -310,7 +311,7 @@ public class ManialinkManager : IManialinkManager
         var playerAccountId = PlayerUtils.ConvertLoginToAccountId(playerLogin);
         var player = await _playerManager.GetOnlinePlayerAsync(playerAccountId);
 
-        if (IsTemplateHiddenForPlayer(player, name))
+        if (player.ManialinkIsHidden(name))
         {
             return;
         }
@@ -412,7 +413,7 @@ public class ManialinkManager : IManialinkManager
 
             foreach (var (_, manialink) in _persistentManialinks)
             {
-                if (IsTemplateHiddenForPlayer(player, manialink.Name))
+                if (player.ManialinkIsHidden(manialink.Name))
                 {
                     continue;
                 }
@@ -528,11 +529,6 @@ public class ManialinkManager : IManialinkManager
 
     public IEnumerable<IPlayer> RejectPlayersWithHiddenManialinks(IEnumerable<IPlayer> players, string templateName)
     {
-        return players.Where(player => !IsTemplateHiddenForPlayer(player, templateName));
-    }
-
-    public bool IsTemplateHiddenForPlayer(IPlayer player, string templateName)
-    {
-        return player.Settings.GetHiddenManialinks().Contains(templateName);
+        return players.Where(player => player.ManialinkIsHidden(templateName) == false);
     }
 }

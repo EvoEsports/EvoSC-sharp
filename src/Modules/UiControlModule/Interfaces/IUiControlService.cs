@@ -23,5 +23,5 @@ public interface IUiControlService
     /// <param name="player"></param>
     /// <param name="hiddenManialinks"></param>
     /// <returns></returns>
-    public Task SaveSettingsAsync(IOnlinePlayer player, List<string> hiddenManialinks);
+    public Task SaveSettingsAsync(IOnlinePlayer player, IEnumerable<string> hiddenManialinks);
 }
