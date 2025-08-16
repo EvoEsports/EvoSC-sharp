@@ -166,10 +166,18 @@ public interface IManialinkManager : IManialinkOperations
     public IManialinkTransaction CreateTransaction();
 
     /// <summary>
+    /// Returns a list of all online players, without the ones
+    /// that have the template hidden through their settings.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public Task<IEnumerable<IPlayer>> GetOnlinePlayersWithoutHiddenAsync(string name);
+    
+    /// <summary>
     /// Searches the given collection for hidden templates and excludes them from the result.
     /// </summary>
     /// <param name="players"></param>
-    /// <param name="templateName"></param>
+    /// <param name="name"></param>
     /// <returns></returns>
-    public IEnumerable<IPlayer> RejectPlayersWithHiddenManialinks(IEnumerable<IPlayer> players, string templateName);
+    public IEnumerable<IPlayer> RejectPlayersThatHaveManialinkHidden(IEnumerable<IPlayer> players, string name);
 }
