@@ -1,6 +1,4 @@
-using EvoSC.Common.Database.Models.Player;
-using EvoSC.Common.Database.Repository;
-using EvoSC.Common.Interfaces.Database;
+using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
@@ -8,7 +6,6 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.UiControlModule.Interfaces;
-using LinqToDB;
 
 namespace EvoSC.Modules.Official.UiControlModule.Services;
 
@@ -17,8 +14,8 @@ public class UiControlService(
     IManialinkManager manialinkManager,
     IModuleManager moduleManager,
     IPlayerCacheService playerCache,
-    IDbConnectionFactory dbConnFactory
-) : DbRepository(dbConnFactory), IUiControlService
+    IPlayerSettingsRepository playerSettingsRepository
+) : IUiControlService
 {
     private const string ConfigMenuTemplate = "UiControlModule.Menu";
 
@@ -44,11 +41,7 @@ public class UiControlService(
     {
         player.Settings.HiddenManialinks = hiddenManialinks.ToList();
 
-        await Table<DbPlayerSettings>()
-            .Where(dbPlayer => dbPlayer.PlayerId == player.Id)
-            .Set(settings => settings.HiddenManialinks, player.Settings.HiddenManialinks)
-            .UpdateAsync();
-
+        await playerSettingsRepository.UpdateHiddenManialinksAsync(player, player.Settings.HiddenManialinks);
         await manialinkManager.HideManialinkAsync(player, ConfigMenuTemplate);
         await playerCache.UpdatePlayerAsync(player);
 
