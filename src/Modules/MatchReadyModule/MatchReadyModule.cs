@@ -3,6 +3,4 @@
 namespace EvoSC.Modules.Official.MatchReadyModule;
 
 [Module(IsInternal = true)]
-public class MatchReadyModule : EvoScModule
-{
-}
+public class MatchReadyModule : EvoScModule;

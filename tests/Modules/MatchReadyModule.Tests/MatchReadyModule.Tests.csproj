@@ -27,6 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
       <ProjectReference Include="..\..\..\src\Modules\MatchReadyModule\MatchReadyModule.csproj" />
     </ItemGroup>
 
