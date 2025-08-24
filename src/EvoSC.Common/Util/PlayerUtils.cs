@@ -215,4 +215,15 @@ public static class PlayerUtils
     /// <param name="player"></param>
     /// <returns></returns>
     public static bool IsTeam2(this IOnlinePlayer player) => player.Team == PlayerTeam.Team2;
+    
+    /// <summary>
+    /// Checks whether the given manialink template should be hidden for the player.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="templateName"></param>
+    /// <returns></returns>
+    public static bool ManialinkIsHidden(this IPlayer player, string templateName)
+    {
+        return player.Settings.HiddenManialinks.Contains(templateName);
+    }
 }

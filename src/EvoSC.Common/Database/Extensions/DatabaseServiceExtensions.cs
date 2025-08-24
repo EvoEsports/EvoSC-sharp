@@ -22,6 +22,7 @@ public static class DatabaseServiceExtensions
         services.Register<IMapRepository, MapRepository>(Lifestyle.Transient);
         services.Register<IPermissionRepository, PermissionRepository>(Lifestyle.Transient);
         services.Register<IPlayerRepository, PlayerRepository>();
+        services.Register<IPlayerSettingsRepository, PlayerSettingsRepository>();
         services.Register<IAuditRepository, AuditRepository>();
 
         return services;

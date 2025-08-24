@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces.Models;
+﻿using EvoSC.Common.Database.Models.ValueConverters;
+using EvoSC.Common.Interfaces.Models;
 using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.Player;
@@ -7,10 +8,12 @@ namespace EvoSC.Common.Database.Models.Player;
 public class DbPlayerSettings : IPlayerSettings
 {
     public const string TableName = "PlayerSettings";
-    
+
+    [Column] public long PlayerId { get; set; }
+
+    [Column] public string DisplayLanguage { get; set; }
+
     [Column]
-    public long PlayerId { get; set; }
-    
-    [Column]
-    public string DisplayLanguage { get; set; }
+    [ValueConverter(ConverterType = typeof(NullableStringListConverter))]
+    public List<string> HiddenManialinks { get; set; }
 }

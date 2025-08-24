@@ -1,0 +1,6 @@
+﻿[info]
+name = "UiControlModule"
+title = "UI Control Module"
+summary = "Specify which UI elements to show."
+version = "1.0.0"
+author = "Evo"

@@ -29,6 +29,7 @@ using EvoSC.Modules.Official.SpectatorTargetInfoModule;
 using EvoSC.Modules.Official.TeamChatModule;
 using EvoSC.Modules.Official.TeamInfoModule;
 using EvoSC.Modules.Official.TeamSettingsModule;
+using EvoSC.Modules.Official.UiControlModule;
 using EvoSC.Modules.Official.WorldRecordModule;
 using FluentMigrator.Runner.Exceptions;
 
@@ -67,7 +68,8 @@ public static class InternalModules
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(TeamChatModule),
-        typeof(RoundRankingModule)
+        typeof(RoundRankingModule),
+        typeof(UiControlModule)
     ];
 
     /// <summary>

@@ -26,7 +26,8 @@ public class LocalRecordsService(
     ILocalRecordsSettings settings,
     IChatService server,
     IThemeManager themeManager,
-    IPlayerRecordsRepository playerRecordsRepository) : ILocalRecordsService
+    IPlayerRecordsRepository playerRecordsRepository
+) : ILocalRecordsService
 {
     private const string WidgetName = "LocalRecordsModule.LocalRecordsWidget";
 
@@ -61,6 +62,11 @@ public class LocalRecordsService(
         {
             foreach (var player in onlinePlayers)
             {
+                if (player.ManialinkIsHidden(WidgetName))
+                {
+                    continue;
+                }
+                
                 var playerRecords = GetRecordsWithPlayer(player, records);
                 await transaction.SendManialinkAsync(
                     player, 

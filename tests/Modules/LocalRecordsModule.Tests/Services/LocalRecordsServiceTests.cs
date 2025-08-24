@@ -187,13 +187,41 @@ public class LocalRecordsServiceTests
     {
         var mock = NewLocalRecordsServiceMock();
         var mockSetup = SetupMockRecords(mock);
-        var player1 = new OnlinePlayer { Id = 1, AccountId = "player1", State = PlayerState.Playing };
-        var player2 = new OnlinePlayer { Id = 2, AccountId = "player2", State = PlayerState.Playing };
-        var player3 = new OnlinePlayer { Id = 3, AccountId = "player3", State = PlayerState.Playing };
+        var player1 = new OnlinePlayer
+        {
+            Id = 1,
+            AccountId = "player1",
+            State = PlayerState.Playing,
+            Settings = new DbPlayerSettings { DisplayLanguage = "en", HiddenManialinks = [] }
+        };
+        var player2 = new OnlinePlayer
+        {
+            Id = 2,
+            AccountId = "player2",
+            State = PlayerState.Playing,
+            Settings = new DbPlayerSettings { DisplayLanguage = "en", HiddenManialinks = [] }
+        };
+        var player3 = new OnlinePlayer
+        {
+            Id = 3,
+            AccountId = "player3",
+            State = PlayerState.Playing,
+            Settings = new DbPlayerSettings { DisplayLanguage = "en", HiddenManialinks = [] }
+        };
+        var player4 = new OnlinePlayer
+        {
+            Id = 4,
+            AccountId = "player4",
+            State = PlayerState.Playing,
+            Settings = new DbPlayerSettings
+            {
+                DisplayLanguage = "en", HiddenManialinks = ["LocalRecordsModule.LocalRecordsWidget"]
+            }
+        };
 
         mock.PlayerManagerService
             .Setup(m => m.GetOnlinePlayersAsync())
-            .ReturnsAsync([player1, player2, player3]);
+            .ReturnsAsync([player1, player2, player3, player4]);
 
         var transaction = new Mock<IManialinkTransaction>();
         mock.ManialinkManager.Setup(m => m.CreateTransaction()).Returns(transaction.Object);
@@ -209,6 +237,9 @@ public class LocalRecordsServiceTests
         transaction.Verify(
             m => m.SendManialinkAsync(player3, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()),
             Times.Once);
+        transaction.Verify(
+            m => m.SendManialinkAsync(player4, "LocalRecordsModule.LocalRecordsWidget", It.IsAny<object>()),
+            Times.Never);
     }
 
     [Fact]
@@ -385,7 +416,7 @@ public class LocalRecordsServiceTests
         mock.Server.Chat.Verify(m => m.InfoMessageAsync(It.Is<string>(s => s.Contains("equaled their")),
             It.Is<IPlayer[]>(p => p.First().Id == mockSetup.Player.Id)), Times.Once);
     }
-    
+
     [Fact]
     public async Task Should_Not_Send_Message()
     {

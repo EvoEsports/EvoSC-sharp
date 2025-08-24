@@ -54,6 +54,7 @@
         <ProjectReference Include="..\Modules\TeamChatModule\TeamChatModule.csproj" />
         <ProjectReference Include="..\Modules\TeamInfoModule\TeamInfoModule.csproj" />
         <ProjectReference Include="..\Modules\TeamSettingsModule\TeamSettingsModule.csproj" />
+        <ProjectReference Include="..\Modules\UiControlModule\UiControlModule.csproj" />
         <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
     </ItemGroup>
 
