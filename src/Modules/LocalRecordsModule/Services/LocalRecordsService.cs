@@ -2,7 +2,6 @@ using EvoSC.Common.Config.Models;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
-using EvoSC.Common.Models.Extensions;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Util;
 using EvoSC.Common.Util.TextFormatting;
