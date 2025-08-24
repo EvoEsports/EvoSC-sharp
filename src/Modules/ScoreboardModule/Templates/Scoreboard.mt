@@ -6,7 +6,8 @@
     <import component="ScoreboardModule.Components.ScoreboardHeader" as="ScoreboardHeader"/>
     <import component="ScoreboardModule.Components.ScoreboardBody" as="Body"/>
     <import component="ScoreboardModule.Components.ScoreboardBg" as="ScoreboardBg"/>
-    <import component="ScoreboardModule.Components.Row.PlayerRowFramemodel" as="PlayerRowFramemodel"/>
+    <import component="ScoreboardModule.Components.Row.Framemodel" as="PlayerRowFramemodel"/>
+    <import component="EvoSC.Controls.Button" as="Button"/>
 
     <property type="IScoreboardSettings" name="settings"/>
     <property type="int" name="MaxPlayers" default="0"/>

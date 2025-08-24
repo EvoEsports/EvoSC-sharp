@@ -46,15 +46,13 @@ public class ScoreboardService(
     {
         var modeScriptSettings = await matchSettingsService.GetCurrentScriptSettingsAsync();
         int currentRoundNumber = await scoreboardStateService.GetCurrentRoundNumberAsync();
-        bool isWarmUp = await scoreboardStateService.GetIsWarmUpAsync();
 
         await manialinks.SendPersistentManialinkAsync(MetaDataTemplate, new
         {
             roundNumber = currentRoundNumber,
-            isWarmUp,
-            warmUpCount = (int)(modeScriptSettings?.GetValueOrDefault("S_WarmUpNb") ?? 0),
-            roundsPerMap = (int)(modeScriptSettings?.GetValueOrDefault("S_RoundsPerMap") ?? 0),
-            pointsLimit = (int)(modeScriptSettings?.GetValueOrDefault("S_PointsLimit") ?? 0),
+            warmUpCount = (int)(modeScriptSettings?.GetValueOrDefault("S_WarmUpNb") ?? -1),
+            roundsPerMap = (int)(modeScriptSettings?.GetValueOrDefault("S_RoundsPerMap") ?? -1),
+            pointsLimit = (int)(modeScriptSettings?.GetValueOrDefault("S_PointsLimit") ?? -1),
         });
     }
 
