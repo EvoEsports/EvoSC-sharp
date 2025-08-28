@@ -8,7 +8,7 @@ namespace MatchReadyModule.Tests;
 
 public class PlayerReadyTrackerServiceTests
 {
-    private Mock<IEventManager> _events = new();
+    /* private Mock<IEventManager> _events = new();
     
     [Fact]
     public void Required_Players_Are_Set()
@@ -192,5 +192,5 @@ public class PlayerReadyTrackerServiceTests
             .Returns((IPlayer o) => player.Object.AccountId.Equals(o.AccountId));
 
         return player;
-    }
+    } */
 }

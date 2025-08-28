@@ -1,0 +1,19 @@
+﻿using EvoSC.Common.Interfaces.Models;
+
+namespace EvoSC.Modules.Official.MatchReadyModule.Interfaces;
+
+public interface IReadyManialinkService
+{
+    /// <summary>
+    /// Send the ready widget to all players.
+    /// </summary>
+    /// <returns></returns>
+    public Task SendWidgetAsync();
+    
+    /// <summary>
+    /// Send the ready widget to one player, if possible.
+    /// </summary>
+    /// <param name="player">The player to attempt sending the ready widget to.</param>
+    /// <returns></returns>
+    public Task SendWidgetAsync(IPlayer player);
+}

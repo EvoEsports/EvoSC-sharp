@@ -5,7 +5,7 @@ using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 namespace EvoSC.Modules.Official.MatchReadyModule.Controllers;
 
 [Controller]
-public class ReadyManialinkController(IPlayerReadyService playerReady) : ManialinkController
+public class ReadyManialinkController(IReadyService readyService) : ManialinkController
 {
-    public Task ReadyButtonAsync(bool isReady) => playerReady.SetPlayerReadyStatusAsync(Context.Player, isReady);
+    public Task ReadyButtonAsync(bool isReady) => readyService.SetPlayerReadyStatusAsync(Context.Player, isReady);
 }
