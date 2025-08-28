@@ -16,7 +16,7 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.MatchTrackerModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class MatchTracker(ITrackerSettings settings, IPlayerManagerService players, ITrackerStoreService trackerStore,
+public class MatchTracker(ITrackerSettings settings, IPlayerManagerService players, ITrackerStoreService trackerStore, IMapService maps,
         IEventManager events)
     : IMatchTracker
 {
@@ -145,6 +145,35 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         await events.RaiseAsync(MatchTrackerEvent.StateTracked,
             new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
     }
+
+    public async Task TrackCurrentMapAsync()
+    {
+        if (!IsTracking)
+        {
+            return;
+        }
+        
+        await VerifyTracker();
+        
+        var map = await maps.GetCurrentMapAsync();
+
+        var state  = new MapMatchState
+        {
+            Status = MatchStatus.Running,
+            Timestamp = DateTime.UtcNow,
+            TimelineId = _currentTimeline.TimelineId,
+            MapUid = map?.Uid
+        };
+        
+        _currentTimeline.States.Add(state);
+
+        if (settings.ImmediateStoring)
+        {
+            await trackerStore.SaveState(state);
+        }
+        await events.RaiseAsync(MatchTrackerEvent.StateTracked,
+            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+    }
     
     public async Task<Guid> BeginMatchAsync()
     {
@@ -170,6 +199,12 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         if (settings.ImmediateStoring)
         {
             await trackerStore.SaveState(state);
+        }
+        
+        // Avoid missing first map due to race condition with BeginMap call after match start
+        if (settings.RecordMapChanges)
+        {
+            await TrackCurrentMapAsync();
         }
 
         return _currentTimeline.TimelineId;

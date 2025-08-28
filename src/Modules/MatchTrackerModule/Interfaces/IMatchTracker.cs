@@ -13,7 +13,8 @@ public interface IMatchTracker
     
     public Task TrackScoresAsync(ScoresEventArgs scoreArgs);
     public Task TrackMapChangeAsync(MapGbxEventArgs mapArgs);
-    
+
+    public Task TrackCurrentMapAsync();
     public Task<Guid> BeginMatchAsync();
     public Task<IMatchTimeline> EndMatchAsync();
 }
