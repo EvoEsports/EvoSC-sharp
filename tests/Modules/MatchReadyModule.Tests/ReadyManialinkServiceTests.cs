@@ -8,6 +8,7 @@ using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Services;
+using EvoSC.Testing;
 using Moq;
 
 namespace MatchReadyModule.Tests;
@@ -32,8 +33,9 @@ public class ReadyManialinkServiceTests
         var readyServiceMock = new Mock<IReadyService>();
         var manialinkManagerMock = new Mock<IManialinkManager>();
         var playerManagerServiceMock = new Mock<IPlayerManagerService>();
+        var logger = TestLoggerSetup.CreateLogger<ReadyManialinkService>();
         
-        var service = new ReadyManialinkService(readyServiceMock.Object, manialinkManagerMock.Object, playerManagerServiceMock.Object);
+        var service = new ReadyManialinkService(readyServiceMock.Object, manialinkManagerMock.Object, playerManagerServiceMock.Object, logger);
         
         return (service, readyServiceMock, manialinkManagerMock, playerManagerServiceMock);
     }

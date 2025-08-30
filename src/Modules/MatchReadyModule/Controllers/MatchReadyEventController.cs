@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Official.MatchReadyModule.Events;
+using EvoSC.Modules.Official.MatchReadyModule.Events.Args;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using GbxRemoteNet.Events;
 using Microsoft.Extensions.Logging;
@@ -44,4 +45,8 @@ public class MatchReadyEventController(
     
     [Subscribe(MatchReadyEvents.Disabled)]
     public Task OnMatchReadyDisabled(object sender, EventArgs args) => readyManialinkService.SendWidgetAsync();
+
+    [Subscribe(MatchReadyEvents.PlayerReadyChanged)]
+    public Task OnReadyChangedAsync(object sender, PlayerReadyEventArgs args) =>
+        readyManialinkService.UpdateWidgetAsync();
 }

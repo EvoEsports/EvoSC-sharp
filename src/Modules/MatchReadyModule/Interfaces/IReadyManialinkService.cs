@@ -16,4 +16,10 @@ public interface IReadyManialinkService
     /// <param name="player">The player to attempt sending the ready widget to.</param>
     /// <returns></returns>
     public Task SendWidgetAsync(IPlayer player);
+
+    /// <summary>
+    /// Update the widget based on the current state.
+    /// </summary>
+    /// <returns></returns>
+    public Task UpdateWidgetAsync();
 }

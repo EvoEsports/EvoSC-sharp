@@ -85,7 +85,7 @@ public class ReadyTrackerService : IReadyTrackerService
     {
         lock (_mainLock)
         {
-            if (!_players.Contains(player))
+            if (_players.All(p => p.AccountId != player.AccountId))
             {
                 throw new PlayerNotAddedMatchReadyException(player);
             }
