@@ -17,12 +17,17 @@ public class CheckpointsRepository : ConcurrentDictionary<string, List<Checkpoin
     {
         return this.Values
             .OrderByDescending(cpData => cpData.Last().CheckpointId)
-            .ThenBy(cpData => cpData.Last().Time.TotalMilliseconds)
-            .ThenBy(cpDataList => cpDataList, new CheckpointListComparer(1))
+            .ThenBy(cpDataList => cpDataList, new CheckpointListPlacementComparer())
             .Select(cpDataList => cpDataList.Last())
             .ToList();
     }
 
+    /// <summary>
+    /// Adds a checkpoint data to the players list.
+    /// Capped at 3 entries.
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="checkpointData"></param>
     public void AddCheckpoint(string accountId, CheckpointData checkpointData)
     {
         List<CheckpointData> playerCheckpoints = this.GetOrAdd(accountId, (k) => []);
@@ -30,8 +35,7 @@ public class CheckpointsRepository : ConcurrentDictionary<string, List<Checkpoin
         lock (playerCheckpoints)
         {
             playerCheckpoints.Add(checkpointData);
-            //TODO: Limit to 3.
-            // this[accountId] = playerCheckpoints;
+            playerCheckpoints.RemoveRange(0, 1);
         }
     }
 }
