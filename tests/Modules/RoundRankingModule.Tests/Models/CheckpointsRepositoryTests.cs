@@ -95,14 +95,14 @@ public class CheckpointsRepositoryTests
     [Fact]
     public void Keeps_Latest_Checkpoints_Only()
     {
-        var cpRepository = new CheckpointsRepository(2);
+        var checkpointRepository = new CheckpointsRepository(2);
 
-        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 4, 4000));
-        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 3, 3000));
-        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 2, 2000));
-        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 1, 1000));
+        checkpointRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 4, 4000));
+        checkpointRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 3, 3000));
+        checkpointRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 2, 2000));
+        checkpointRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 1, 1000));
 
-        var checkpointList = cpRepository.GetCheckpoints("unittest");
+        var checkpointList = checkpointRepository.GetCheckpoints("unittest");
 
         Assert.Equal(2, checkpointList.Count);
         Assert.Equal(3, checkpointList.First().CheckpointId);
