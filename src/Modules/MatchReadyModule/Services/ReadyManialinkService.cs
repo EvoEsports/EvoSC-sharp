@@ -1,10 +1,13 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Services.Attributes;
+using EvoSC.Common.Services.Models;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 
 namespace EvoSC.Modules.Official.MatchReadyModule.Services;
 
+[Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class ReadyManialinkService(IReadyService readyService, IManialinkManager manialinks, IPlayerManagerService playerManager) : IReadyManialinkService
 {
     public async Task SendWidgetAsync()
