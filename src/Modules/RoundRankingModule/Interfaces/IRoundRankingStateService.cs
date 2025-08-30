@@ -31,7 +31,7 @@ public interface IRoundRankingStateService
     /// <param name="accountId"></param>
     /// <param name="checkpointData"></param>
     /// <returns></returns>
-    public Task UpdateRepositoryEntryAsync(string accountId, CheckpointData checkpointData);
+    public Task AddRepositoryEntryAsync(string accountId, CheckpointData checkpointData);
 
     /// <summary>
     /// Returns the checkpoint data for the given account ID.

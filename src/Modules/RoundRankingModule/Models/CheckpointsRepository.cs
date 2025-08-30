@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using EvoSC.Modules.Official.RoundRankingModule.Utils;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 
@@ -6,7 +7,7 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 /// CheckpointsRepository contains all <seealso cref="CheckpointData"/> for the ongoing round,
 /// where the key of the dictionary is the players account-ID.
 /// </summary>
-public class CheckpointsRepository : ConcurrentDictionary<string, CheckpointData>
+public class CheckpointsRepository : ConcurrentDictionary<string, List<CheckpointData>>
 {
     /// <summary>
     /// Sorts and returns the contents of the dictionary by the checkpoint progression and times at each checkpoint.
@@ -15,8 +16,22 @@ public class CheckpointsRepository : ConcurrentDictionary<string, CheckpointData
     public List<CheckpointData> GetSortedData()
     {
         return this.Values
-            .OrderByDescending(cpData => cpData.CheckpointId)
-            .ThenBy(cpData => cpData.Time.TotalMilliseconds)
+            .OrderByDescending(cpData => cpData.Last().CheckpointId)
+            .ThenBy(cpData => cpData.Last().Time.TotalMilliseconds)
+            .ThenBy(cpDataList => cpDataList, new CheckpointListComparer(1))
+            .Select(cpDataList => cpDataList.Last())
             .ToList();
+    }
+
+    public void AddCheckpoint(string accountId, CheckpointData checkpointData)
+    {
+        List<CheckpointData> playerCheckpoints = this.GetOrAdd(accountId, (k) => []);
+
+        lock (playerCheckpoints)
+        {
+            playerCheckpoints.Add(checkpointData);
+            //TODO: Limit to 3.
+            // this[accountId] = playerCheckpoints;
+        }
     }
 }

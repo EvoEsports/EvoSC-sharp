@@ -30,7 +30,7 @@ public class RoundRankingService(
 
     public async Task ConsumeCheckpointAsync(string accountId, int checkpointId, int time, bool isFinish, bool isDnf)
     {
-        await stateService.UpdateRepositoryEntryAsync(accountId,
+        await stateService.AddRepositoryEntryAsync(accountId,
             new CheckpointData
             {
                 Player = await playerManagerService.GetOnlinePlayerAsync(accountId),

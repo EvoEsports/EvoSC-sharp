@@ -42,16 +42,16 @@ public class RoundRankingStateService : IRoundRankingStateService
         return Task.FromResult(_checkpointsRepository);
     }
 
-    public Task UpdateRepositoryEntryAsync(string accountId, CheckpointData checkpointData)
+    public Task AddRepositoryEntryAsync(string accountId, CheckpointData checkpointData)
     {
-        _checkpointsRepository[accountId] = checkpointData;
-
+        _checkpointsRepository.AddCheckpoint(accountId, checkpointData);
+        
         return Task.CompletedTask;
     }
 
     public Task RemoveRepositoryEntryAsync(string accountId)
     {
-        _checkpointsRepository.Remove(accountId, out var removedCheckpointData);
+        _checkpointsRepository.Remove(accountId, out var removedCheckpointDataList);
 
         return Task.CompletedTask;
     }
