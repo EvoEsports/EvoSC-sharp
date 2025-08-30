@@ -7,10 +7,8 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 /// CheckpointsRepository contains all <seealso cref="CheckpointData"/> for the ongoing round,
 /// where the key of the dictionary is the players account-ID.
 /// </summary>
-public class CheckpointsRepository : ConcurrentDictionary<string, List<CheckpointData>>
+public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<string, List<CheckpointData>>
 {
-    private const int MaxLookBack = 3;
-
     /// <summary>
     /// Sorts and returns the contents of the dictionary by the checkpoint progression and times at each checkpoint.
     /// </summary>
@@ -19,7 +17,7 @@ public class CheckpointsRepository : ConcurrentDictionary<string, List<Checkpoin
     {
         return this.Values
             .OrderByDescending(cpData => cpData.Last().CheckpointId)
-            .ThenBy(cpDataList => cpDataList, new CheckpointListTimesComparer(MaxLookBack))
+            .ThenBy(cpDataList => cpDataList, new CheckpointListTimesComparer(maxLookBack))
             .Select(cpDataList => cpDataList.Last())
             .ToList();
     }
@@ -32,19 +30,37 @@ public class CheckpointsRepository : ConcurrentDictionary<string, List<Checkpoin
     /// <param name="checkpointData"></param>
     public void AddCheckpoint(string accountId, CheckpointData checkpointData)
     {
-        List<CheckpointData> playerCheckpoints = this.GetOrAdd(accountId, (k) => []);
+        List<CheckpointData> playerCheckpoints = GetOrAdd(accountId, (k) => []);
 
         lock (playerCheckpoints)
         {
             playerCheckpoints.Add(checkpointData);
             playerCheckpoints.Sort((a, b) => a.CheckpointId.CompareTo(b.CheckpointId));
 
-            if (playerCheckpoints.Count <= MaxLookBack)
+            if (playerCheckpoints.Count <= maxLookBack)
             {
                 return;
             }
 
             playerCheckpoints.RemoveRange(0, 1);
+        }
+    }
+
+    /// <summary>
+    /// Gets the latest checkpoints of the player.
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <returns></returns>
+    public List<CheckpointData> GetCheckpoints(string accountId)
+    {
+        if (!TryGetValue(accountId, out var list))
+        {
+            return [];
+        }
+
+        lock (list)
+        {
+            return list.ToList();
         }
     }
 }

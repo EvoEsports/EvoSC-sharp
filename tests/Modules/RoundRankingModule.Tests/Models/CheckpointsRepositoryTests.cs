@@ -62,8 +62,8 @@ public class CheckpointsRepositoryTests
             ], // Expected placement: 6.
             ["*fakeplayer7*"] =
             [
-                CreateFakeCheckpointData("*fakeplayer7*", -1, 00),
-                CreateFakeCheckpointData("*fakeplayer7*", -1, 100),
+                CreateFakeCheckpointData("*fakeplayer7*", -1, 10),
+                CreateFakeCheckpointData("*fakeplayer7*", -1, 110),
                 CreateFakeCheckpointData("*fakeplayer7*", -1, 2500)
             ], // Expected placement: 7.
         };
@@ -90,5 +90,24 @@ public class CheckpointsRepositoryTests
 
         Assert.Equal("*fakeplayer7*", sorted[6].Player.AccountId);
         Assert.Equal(2500, sorted[6].Time.TotalMilliseconds);
+    }
+
+    [Fact]
+    public void Keeps_Latest_Checkpoints_Only()
+    {
+        var cpRepository = new CheckpointsRepository(2);
+
+        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 4, 4000));
+        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 3, 3000));
+        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 2, 2000));
+        cpRepository.AddCheckpoint("unittest", CreateFakeCheckpointData("unittest", 1, 1000));
+
+        var checkpointList = cpRepository.GetCheckpoints("unittest");
+
+        Assert.Equal(2, checkpointList.Count);
+        Assert.Equal(3, checkpointList.First().CheckpointId);
+        Assert.Equal(3000, checkpointList.First().Time.TotalMilliseconds);
+        Assert.Equal(4, checkpointList.Last().CheckpointId);
+        Assert.Equal(4000, checkpointList.Last().Time.TotalMilliseconds);
     }
 }
