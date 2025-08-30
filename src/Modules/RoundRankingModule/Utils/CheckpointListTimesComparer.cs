@@ -2,7 +2,7 @@
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Utils;
 
-public class CheckpointListPlacementComparer(int maxCheckpointsToLookBack = 3) : IComparer<List<CheckpointData>>
+public class CheckpointListTimesComparer(int maxCheckpointsToLookBack = 3) : IComparer<List<CheckpointData>>
 {
     public int Compare(List<CheckpointData>? x, List<CheckpointData>? y)
     {
@@ -17,13 +17,12 @@ public class CheckpointListPlacementComparer(int maxCheckpointsToLookBack = 3) :
         {
             var xTime = x[^i].Time.TotalMilliseconds;
             var yTime = y[^i].Time.TotalMilliseconds;
+            var comparisonResult = xTime.CompareTo(yTime);
 
-            if (xTime == yTime)
+            if (comparisonResult != 0)
             {
-                continue;
+                return comparisonResult;
             }
-
-            return xTime < yTime ? -1 : 1;
         }
 
         return 0;

@@ -9,6 +9,8 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 /// </summary>
 public class CheckpointsRepository : ConcurrentDictionary<string, List<CheckpointData>>
 {
+    private const int MaxLookBack = 3;
+
     /// <summary>
     /// Sorts and returns the contents of the dictionary by the checkpoint progression and times at each checkpoint.
     /// </summary>
@@ -17,7 +19,7 @@ public class CheckpointsRepository : ConcurrentDictionary<string, List<Checkpoin
     {
         return this.Values
             .OrderByDescending(cpData => cpData.Last().CheckpointId)
-            .ThenBy(cpDataList => cpDataList, new CheckpointListPlacementComparer())
+            .ThenBy(cpDataList => cpDataList, new CheckpointListTimesComparer(MaxLookBack))
             .Select(cpDataList => cpDataList.Last())
             .ToList();
     }
@@ -35,6 +37,13 @@ public class CheckpointsRepository : ConcurrentDictionary<string, List<Checkpoin
         lock (playerCheckpoints)
         {
             playerCheckpoints.Add(checkpointData);
+            playerCheckpoints.Sort((a, b) => a.CheckpointId.CompareTo(b.CheckpointId));
+
+            if (playerCheckpoints.Count <= MaxLookBack)
+            {
+                return;
+            }
+
             playerCheckpoints.RemoveRange(0, 1);
         }
     }
