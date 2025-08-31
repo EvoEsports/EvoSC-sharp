@@ -76,7 +76,7 @@ public class RoundRankingService(
     {
         var cpRepository = await stateService.GetRepositoryAsync();
 
-        return cpRepository.IsNullOrEmpty() ? [] : cpRepository.GetSortedData();
+        return cpRepository.IsEmpty() ? [] : cpRepository.GetSortedData();
     }
 
     public async Task ClearCheckpointDataAsync()

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using EvoSC.Modules.Official.RoundRankingModule.Utils;
+using LinqToDB.Common;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 
@@ -7,8 +8,9 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 /// CheckpointsRepository contains all <seealso cref="CheckpointData"/> for the ongoing round,
 /// where the key of the dictionary is the players account-ID.
 /// </summary>
-public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<string, List<CheckpointData>>
+public class CheckpointsRepository(int maxLookBack = 3)
 {
+    private readonly ConcurrentDictionary<string, List<CheckpointData>> _playerCheckpoints = new();
     private readonly object _lock = new();
 
     /// <summary>
@@ -21,7 +23,7 @@ public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<s
 
         lock (_lock)
         {
-            checkpoints = Values.ToList();
+            checkpoints = _playerCheckpoints.Values.ToList();
         }
 
         return checkpoints
@@ -41,7 +43,7 @@ public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<s
     {
         lock (_lock)
         {
-            List<CheckpointData> playerCheckpoints = GetOrAdd(accountId, (v) => []);
+            List<CheckpointData> playerCheckpoints = _playerCheckpoints.GetOrAdd(accountId, (v) => []);
 
             if (checkpointData.IsDNF)
             {
@@ -69,12 +71,47 @@ public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<s
     {
         lock (_lock)
         {
-            if (TryGetValue(accountId, out List<CheckpointData>? checkpointList))
+            if (_playerCheckpoints.TryGetValue(accountId, out List<CheckpointData>? checkpointList))
             {
                 return checkpointList.ToList();
             }
         }
 
         return [];
+    }
+
+    /// <summary>
+    /// Removes all entries from the repository.
+    /// </summary>
+    public void Clear()
+    {
+        lock (_lock)
+        {
+            _playerCheckpoints.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Checks whether the repository contains any values.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsEmpty()
+    {
+        lock (_lock)
+        {
+            return _playerCheckpoints.IsNullOrEmpty();
+        }
+    }
+
+    /// <summary>
+    /// Removes all checkpoints of that player.
+    /// </summary>
+    /// <param name="accountId"></param>
+    public void Remove(string accountId)
+    {
+        lock (_lock)
+        {
+            _playerCheckpoints.TryRemove(accountId, out _);
+        }
     }
 }

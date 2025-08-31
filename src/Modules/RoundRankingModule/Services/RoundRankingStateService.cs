@@ -51,7 +51,7 @@ public class RoundRankingStateService : IRoundRankingStateService
 
     public Task RemoveRepositoryEntryAsync(string accountId)
     {
-        _checkpointsRepository.Remove(accountId, out var removedCheckpointDataList);
+        _checkpointsRepository.Remove(accountId);
 
         return Task.CompletedTask;
     }
