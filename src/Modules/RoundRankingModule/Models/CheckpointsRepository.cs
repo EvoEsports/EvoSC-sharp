@@ -10,7 +10,7 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 /// </summary>
 public class CheckpointsRepository(int maxLookBack = 3)
 {
-    private readonly ConcurrentDictionary<string, List<CheckpointData>> _playerCheckpoints = new();
+    private readonly ConcurrentDictionary<string, PlayerCheckpointsData> _playerCheckpoints = new();
     private readonly object _lock = new();
 
     /// <summary>
@@ -19,14 +19,8 @@ public class CheckpointsRepository(int maxLookBack = 3)
     /// <returns></returns>
     public List<CheckpointData> GetSortedData()
     {
-        List<List<CheckpointData>> checkpoints;
-
-        lock (_lock)
-        {
-            checkpoints = _playerCheckpoints.Values.ToList();
-        }
-
-        return checkpoints
+        return _playerCheckpoints.Values
+            .Select(playerCheckpointsData => playerCheckpointsData.Checkpoints)
             .OrderByDescending(cpData => cpData.Last().CheckpointId)
             .ThenBy(cpDataList => cpDataList, new CheckpointListTimesComparer(maxLookBack))
             .Select(cpDataList => cpDataList.Last())
@@ -41,24 +35,25 @@ public class CheckpointsRepository(int maxLookBack = 3)
     /// <param name="checkpointData"></param>
     public void AddCheckpoint(string accountId, CheckpointData checkpointData)
     {
-        lock (_lock)
-        {
-            List<CheckpointData> playerCheckpoints = _playerCheckpoints.GetOrAdd(accountId, (v) => []);
+        PlayerCheckpointsData playerCheckpointsData =
+            _playerCheckpoints.GetOrAdd(accountId, new PlayerCheckpointsData());
 
+        lock (playerCheckpointsData.Lock)
+        {
             if (checkpointData.IsDNF)
             {
-                playerCheckpoints.Clear();
+                playerCheckpointsData.Checkpoints.Clear();
             }
 
-            playerCheckpoints.Add(checkpointData);
-            playerCheckpoints.Sort((x, y) => x.CheckpointId.CompareTo(y.CheckpointId));
+            playerCheckpointsData.Checkpoints.Add(checkpointData);
+            playerCheckpointsData.Checkpoints.Sort((x, y) => x.CheckpointId.CompareTo(y.CheckpointId));
 
-            if (playerCheckpoints.Count <= maxLookBack)
+            if (playerCheckpointsData.Checkpoints.Count <= maxLookBack)
             {
                 return;
             }
 
-            playerCheckpoints.RemoveRange(0, 1);
+            playerCheckpointsData.Checkpoints.RemoveRange(0, 1);
         }
     }
 
@@ -69,15 +64,15 @@ public class CheckpointsRepository(int maxLookBack = 3)
     /// <returns></returns>
     public List<CheckpointData> GetCheckpoints(string accountId)
     {
-        lock (_lock)
+        if (!_playerCheckpoints.TryGetValue(accountId, out PlayerCheckpointsData? playerCheckpointsData))
         {
-            if (_playerCheckpoints.TryGetValue(accountId, out List<CheckpointData>? checkpointList))
-            {
-                return checkpointList.ToList();
-            }
+            return [];
         }
 
-        return [];
+        lock (playerCheckpointsData.Lock)
+        {
+            return playerCheckpointsData.Checkpoints.ToList();
+        }
     }
 
     /// <summary>
@@ -99,7 +94,7 @@ public class CheckpointsRepository(int maxLookBack = 3)
     {
         lock (_lock)
         {
-            return _playerCheckpoints.IsNullOrEmpty();
+            return _playerCheckpoints.IsEmpty;
         }
     }
 
@@ -109,7 +104,12 @@ public class CheckpointsRepository(int maxLookBack = 3)
     /// <param name="accountId"></param>
     public void Remove(string accountId)
     {
-        lock (_lock)
+        if (!_playerCheckpoints.TryGetValue(accountId, out PlayerCheckpointsData? playerCheckpointsData))
+        {
+            return;
+        }
+
+        lock (playerCheckpointsData.Lock)
         {
             _playerCheckpoints.TryRemove(accountId, out _);
         }
