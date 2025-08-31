@@ -9,6 +9,8 @@ namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 /// </summary>
 public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<string, List<CheckpointData>>
 {
+    private readonly ConcurrentDictionary<string, object> _locks = new();
+
     /// <summary>
     /// Sorts and returns the contents of the dictionary by the checkpoint progression and times at each checkpoint.
     /// </summary>
@@ -30,17 +32,19 @@ public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<s
     /// <param name="checkpointData"></param>
     public void AddCheckpoint(string accountId, CheckpointData checkpointData)
     {
-        List<CheckpointData> playerCheckpoints = GetOrAdd(accountId, (k) => []);
+        object accountIdLock = _locks.GetOrAdd(accountId, new object());
 
-        lock (playerCheckpoints)
+        lock (accountIdLock)
         {
+            List<CheckpointData> playerCheckpoints = GetOrAdd(accountId, (v) => []);
+
             if (checkpointData.IsDNF)
             {
                 playerCheckpoints.Clear();
             }
 
             playerCheckpoints.Add(checkpointData);
-            playerCheckpoints.Sort((a, b) => a.CheckpointId.CompareTo(b.CheckpointId));
+            playerCheckpoints.Sort((x, y) => x.CheckpointId.CompareTo(y.CheckpointId));
 
             if (playerCheckpoints.Count <= maxLookBack)
             {
@@ -58,14 +62,19 @@ public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<s
     /// <returns></returns>
     public List<CheckpointData> GetCheckpoints(string accountId)
     {
-        if (!TryGetValue(accountId, out var list))
+        if (!_locks.TryGetValue(accountId, out object? accountIdLock))
         {
             return [];
         }
 
-        lock (list)
+        lock (accountIdLock)
         {
-            return list.ToList();
+            if (TryGetValue(accountId, out List<CheckpointData>? checkpointList))
+            {
+                return checkpointList;
+            }
         }
+
+        return [];
     }
 }
