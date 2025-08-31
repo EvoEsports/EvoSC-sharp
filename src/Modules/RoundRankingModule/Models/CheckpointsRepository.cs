@@ -34,6 +34,11 @@ public class CheckpointsRepository(int maxLookBack = 3) : ConcurrentDictionary<s
 
         lock (playerCheckpoints)
         {
+            if (checkpointData.IsDNF)
+            {
+                playerCheckpoints.Clear();
+            }
+
             playerCheckpoints.Add(checkpointData);
             playerCheckpoints.Sort((a, b) => a.CheckpointId.CompareTo(b.CheckpointId));
 
