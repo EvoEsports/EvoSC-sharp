@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using EvoSC.Modules.Official.RoundRankingModule.Utils;
-using LinqToDB.Common;
 
 namespace EvoSC.Modules.Official.RoundRankingModule.Models;
 
