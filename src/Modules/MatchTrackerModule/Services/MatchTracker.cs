@@ -16,15 +16,19 @@ using GbxRemoteNet.Events;
 namespace EvoSC.Modules.Official.MatchTrackerModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Singleton)]
-public class MatchTracker(ITrackerSettings settings, IPlayerManagerService players, ITrackerStoreService trackerStore, IMapService maps,
-        IEventManager events)
+public class MatchTracker(
+    ITrackerSettings settings,
+    IPlayerManagerService players,
+    ITrackerStoreService trackerStore,
+    IMapService maps,
+    IEventManager events)
     : IMatchTracker
 {
     private MatchStatus _status = MatchStatus.Unknown;
     private IMatchTimeline _currentTimeline;
 
     public bool IsTracking { get; private set; }
-    
+
     public IMatchTimeline LatestTimeline => _status != MatchStatus.Unknown && _currentTimeline != null
         ? _currentTimeline
         : throw new InvalidOperationException(
@@ -38,9 +42,9 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         {
             return;
         }
-        
+
         await VerifyTracker();
-        
+
         IMatchState state;
 
         switch (scoreArgs.Section)
@@ -52,7 +56,12 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
             case ModeScriptSection.PreEndRound when !settings.RecordPreEndRound:
                 return;
             case ModeScriptSection.Undefined:
-                state = new MatchState {Status = MatchStatus.Unknown, Timestamp = DateTime.UtcNow, TimelineId = _currentTimeline.TimelineId};
+                state = new MatchState
+                {
+                    Status = MatchStatus.Unknown,
+                    Timestamp = DateTime.UtcNow,
+                    TimelineId = _currentTimeline.TimelineId
+                };
                 break;
             default:
                 {
@@ -74,7 +83,8 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
                             BestRaceTime = RaceTime.FromMilliseconds(playerScore.BestRaceTime),
                             BestLapTime = RaceTime.FromMilliseconds(playerScore.BestLapTime),
                             BestRaceCheckpoints = playerScore.BestRaceCheckpoints.Select(RaceTime.FromMilliseconds),
-                            PreviousRaceCheckpoints = playerScore.PreviousRaceCheckpoints.Select(RaceTime.FromMilliseconds),
+                            PreviousRaceCheckpoints =
+                                playerScore.PreviousRaceCheckpoints.Select(RaceTime.FromMilliseconds),
                             BestLapCheckpoints = playerScore.BestLapCheckpoints.Select(RaceTime.FromMilliseconds)
                         });
                     }
@@ -98,16 +108,16 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
                     break;
                 }
         }
-        
+
         _currentTimeline.States.Add(state);
 
         if (settings.ImmediateStoring)
         {
             await trackerStore.SaveState(state);
         }
-        
+
         await events.RaiseAsync(MatchTrackerEvent.StateTracked,
-            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+            new MatchStateTrackedEventArgs { Timeline = _currentTimeline, State = state }, this);
 
         if (scoreArgs.Section == ModeScriptSection.EndMatch && settings.AutomaticMatchEnd)
         {
@@ -121,12 +131,10 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         {
             return;
         }
-        
+
         await VerifyTracker();
 
-        IMatchState state;
-        
-        state = new MapMatchState
+        IMatchState state = new MapMatchState
         {
             Status =
                 MatchStatus.Running,
@@ -134,16 +142,16 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
             TimelineId = _currentTimeline.TimelineId,
             MapUid = mapArgs.Map.UId
         };
-        
+
         _currentTimeline.States.Add(state);
 
         if (settings.ImmediateStoring)
         {
             await trackerStore.SaveState(state);
         }
-        
+
         await events.RaiseAsync(MatchTrackerEvent.StateTracked,
-            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+            new MatchStateTrackedEventArgs { Timeline = _currentTimeline, State = state }, this);
     }
 
     public async Task TrackCurrentMapAsync()
@@ -152,36 +160,41 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         {
             return;
         }
-        
+
         await VerifyTracker();
-        
+
         var map = await maps.GetCurrentMapAsync();
 
-        var state  = new MapMatchState
+        var state = new MapMatchState
         {
             Status = MatchStatus.Running,
             Timestamp = DateTime.UtcNow,
             TimelineId = _currentTimeline.TimelineId,
             MapUid = map?.Uid
         };
-        
+
         _currentTimeline.States.Add(state);
 
         if (settings.ImmediateStoring)
         {
             await trackerStore.SaveState(state);
         }
+
         await events.RaiseAsync(MatchTrackerEvent.StateTracked,
-            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+            new MatchStateTrackedEventArgs { Timeline = _currentTimeline, State = state }, this);
     }
-    
-    public async Task<Guid> BeginMatchAsync()
+
+    public async Task<Guid?> BeginMatchAsync()
     {
-        if (IsTracking)
+        switch (IsTracking)
         {
-            await EndMatchAsync();
+            case true when IsPreviousMatchAsync():
+                await EndMatchAsync();
+                break;
+            case true:
+                return null;
         }
-        
+
         _status = MatchStatus.Started;
         _currentTimeline = new MatchTimeline();
         IsTracking = true;
@@ -190,17 +203,17 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         {
             TimelineId = _currentTimeline.TimelineId, Status = MatchStatus.Started, Timestamp = DateTime.UtcNow
         };
-        
+
         _currentTimeline.States.Add(state);
-        
+
         await events.RaiseAsync(MatchTrackerEvent.StateTracked,
-            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+            new MatchStateTrackedEventArgs { Timeline = _currentTimeline, State = state }, this);
 
         if (settings.ImmediateStoring)
         {
             await trackerStore.SaveState(state);
         }
-        
+
         // Avoid missing first map due to race condition with BeginMap call after match start
         if (settings.RecordMapChanges)
         {
@@ -216,7 +229,7 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         {
             throw new InvalidOperationException("Cannot end a match that has already ended.");
         }
-        
+
         _status = MatchStatus.Ended;
         IsTracking = false;
 
@@ -224,11 +237,11 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         {
             TimelineId = _currentTimeline.TimelineId, Status = MatchStatus.Ended, Timestamp = DateTime.UtcNow
         };
-        
+
         _currentTimeline.States.Add(state);
-        
+
         await events.RaiseAsync(MatchTrackerEvent.StateTracked,
-            new MatchStateTrackedEventArgs {Timeline = _currentTimeline, State = state}, this);
+            new MatchStateTrackedEventArgs { Timeline = _currentTimeline, State = state }, this);
 
         if (settings.ImmediateStoring)
         {
@@ -238,9 +251,12 @@ public class MatchTracker(ITrackerSettings settings, IPlayerManagerService playe
         {
             await trackerStore.SaveTimelineAsync(_currentTimeline);
         }
-        
+
         return _currentTimeline;
     }
+
+    private bool IsPreviousMatchAsync() =>
+        DateTime.UtcNow - _currentTimeline.States.Last().Timestamp < TimeSpan.FromMinutes(5);
 
     private async Task VerifyTracker()
     {

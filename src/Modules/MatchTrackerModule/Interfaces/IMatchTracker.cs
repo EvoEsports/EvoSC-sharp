@@ -15,6 +15,6 @@ public interface IMatchTracker
     public Task TrackMapChangeAsync(MapGbxEventArgs mapArgs);
 
     public Task TrackCurrentMapAsync();
-    public Task<Guid> BeginMatchAsync();
+    public Task<Guid?> BeginMatchAsync();
     public Task<IMatchTimeline> EndMatchAsync();
 }
