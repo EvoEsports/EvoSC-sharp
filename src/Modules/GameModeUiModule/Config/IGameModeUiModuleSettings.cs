@@ -100,7 +100,7 @@ public interface IGameModeUiModuleSettings
     /*
      * Settings for Race_SmallScoresTable
      */
-    [Option(DefaultValue = true), Description("The visibility of the SmallScoresTable module.")]
+    [Option(DefaultValue = false), Description("The visibility of the SmallScoresTable module.")]
     public bool SmallScoresTableVisible { get; set; }
 
     [Option(DefaultValue = -160.0), Description("The x position of the SmallScoresTable module.")]

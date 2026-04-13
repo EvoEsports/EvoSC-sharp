@@ -20,37 +20,28 @@ public class MatchTrackerEventController(ITrackerSettings settings, IMatchTracke
         return tracker.TrackScoresAsync(args);
     }
 
-    [Subscribe(GbxRemoteEvent.BeginMatch)]
+    [Subscribe(ModeScriptEvent.StartMatchStart)]
     public Task OnBeginMatchAsync(object sender, EventArgs args)
     {
-        if (!settings.AutomaticTracking)
-        {
-            return Task.CompletedTask;
-        }
-
-        return tracker.BeginMatchAsync();
+        return settings.AutomaticTracking ? tracker.BeginMatchAsync() : Task.CompletedTask;
     }
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
     {
-        if (!settings.RecordMapChanges)
-        {
-            return Task.CompletedTask;
-        }
-        
-        return tracker.TrackMapChangeAsync(args);
+        return settings.RecordMapChanges ? tracker.TrackMapChangeAsync(args) : Task.CompletedTask;
+    }
+
+    [Subscribe(ModeScriptEvent.EndMatchStart)]
+    public Task OnMatchEndedAsync(object sender, EventArgs args)
+    {
+        return tracker.EndMatchAsync();
     }
 
     [Subscribe(FlowControlEvent.MatchStarted)]
     public Task OnMatchStarted(object sender, EventArgs args)
     {
-        if (settings.AutomaticTracking)
-        {
-            return Task.CompletedTask;
-        }
-        
-        return tracker.BeginMatchAsync();
+        return settings.AutomaticTracking ? Task.CompletedTask : tracker.BeginMatchAsync();
     }
 
     [Subscribe(FlowControlEvent.MatchEnded)]

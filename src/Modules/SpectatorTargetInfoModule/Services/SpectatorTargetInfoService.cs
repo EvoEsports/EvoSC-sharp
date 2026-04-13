@@ -236,8 +236,15 @@ public class SpectatorTargetInfoService(
     {
         foreach (var (spectatorLogin, targetPlayer) in GetSpectatorTargets())
         {
-            var widgetData = GetWidgetData(targetPlayer, 1, 0);
-            await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
+            try
+            {
+                var widgetData = GetWidgetData(targetPlayer, 1, 0);
+                await SendSpectatorInfoWidgetAsync(spectatorLogin, targetPlayer, widgetData);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to reset widget for player");
+            }
         }
     }
 

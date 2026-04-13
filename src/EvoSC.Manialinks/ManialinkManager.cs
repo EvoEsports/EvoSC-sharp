@@ -518,7 +518,7 @@ public class ManialinkManager : IManialinkManager
             ? effectiveName
             : name;
 
-    public IManialinkTransaction CreateTransaction() => new ManialinkTransaction(this, _server);
+    public IManialinkTransaction CreateTransaction() => new ManialinkTransaction(this, _server, _playerManager);
 
     public async Task<IEnumerable<IPlayer>> GetOnlinePlayersWithoutHiddenAsync(string name)
     {
