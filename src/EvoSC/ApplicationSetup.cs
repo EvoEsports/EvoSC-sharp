@@ -97,9 +97,7 @@ public static class ApplicationSetup
             .Action("ActionInitializeEventManager", s => s
                 .GetInstance<IEventManager>()
             )
-                
-            .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync)
-                
+
             .Action("ActionInitializePlayerCache", s => s
                 .GetInstance<IPlayerCacheService>()
             )
@@ -107,7 +105,9 @@ public static class ApplicationSetup
             .Action("ActionInitializeManialinkInteractionHandler", s => s
                 .GetInstance<IManialinkInteractionHandler>()
             )
-                
+
+            .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync)
+
             .AsyncAction("ActionEnableModules", EnableModulesAsync)
 
             .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
