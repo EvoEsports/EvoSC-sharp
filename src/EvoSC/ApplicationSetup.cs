@@ -101,14 +101,14 @@ public static class ApplicationSetup
                 .GetInstance<IEventManager>()
             )
 
+            .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync)
+                
             .AsyncAction("InitializeCaches", InitializeCachesAndTrackersAsync)
 
             .Action("ActionInitializeManialinkInteractionHandler", s => s
                 .GetInstance<IManialinkInteractionHandler>()
             )
-
-            .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync)
-
+                
             .AsyncAction("ActionEnableModules", EnableModulesAsync)
 
             .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
