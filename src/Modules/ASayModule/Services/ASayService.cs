@@ -14,6 +14,7 @@ public class ASayService(IManialinkManager manialinkManager, IContextService con
     public async Task ShowAnnouncementAsync(string text)
     {
         await manialinkManager.SendPersistentManialinkAsync("ASayModule.Announcement", new {text});
+        
         context.Audit().Success()
             .WithEventName(AuditEvents.ShowAnnouncement)
             .HavingProperties(new {Text = text})
@@ -23,6 +24,7 @@ public class ASayService(IManialinkManager manialinkManager, IContextService con
     public async Task HideAnnouncementAsync()
     {
         await manialinkManager.HideManialinkAsync("ASayModule.Announcement");
+        
         context.Audit().Success()
             .WithEventName(AuditEvents.ClearAnnouncement)
             .Comment("Announcement was cleared.");

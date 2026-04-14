@@ -2,6 +2,7 @@
 using EvoSC.Commands.Attributes;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
+using EvoSC.Modules.Official.ASayModule.Events;
 using EvoSC.Modules.Official.ASayModule.Interfaces;
 
 namespace EvoSC.Modules.Official.ASayModule.Controllers;
@@ -15,11 +16,21 @@ public class ASayController(IASayService asayService) : EvoScController<CommandI
         if (!string.IsNullOrEmpty(text))
         {
             await asayService.ShowAnnouncementAsync(text);
-
+            
+            Context.AuditEvent.Success()
+                .WithEventName(AuditEvents.ShowAnnouncement)
+                .HavingProperties(new {Text = text})
+                .Comment("Announcement was shown.");
         }
         else
         {
             await asayService.HideAnnouncementAsync();
+            Context.AuditEvent.Success()
+                .WithEventName(AuditEvents.ClearAnnouncement)
+                .Comment("Announcement was cleared.");
+            Context.AuditEvent.Success()
+                .WithEventName(AuditEvents.ClearAnnouncement)
+                .Comment("Announcement was cleared.");
         }
     }
     
