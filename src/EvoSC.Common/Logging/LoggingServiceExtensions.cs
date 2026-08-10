@@ -27,18 +27,14 @@ public static class LoggingServiceExtensions
                 builder.AddJsonConsole(o =>
                 {
                     o.IncludeScopes = true;
-                    o.TimestampFormat = "dd.MM.yyyy hh:mm:ss.ffff";
+                    o.TimestampFormat = "dd.MM.yyyy HH:mm:ss.fff";
                     o.UseUtcTimestamp = true;
                 });
             }
             else
             {
-                builder.AddSimpleConsole(c =>
-                {
-                    c.ColorBehavior = LoggerColorBehavior.Enabled;
-                    c.SingleLine = true;
-                    c.TimestampFormat = "[dd.MM.yyyy hh:mm:ss.ffff] ";
-                });
+                builder.AddConsole(o => o.FormatterName = EvoScConsoleFormatter.FormatterName)
+                    .AddConsoleFormatter<EvoScConsoleFormatter, ConsoleFormatterOptions>();
             }
         });
 
@@ -66,18 +62,14 @@ public static class LoggingServiceExtensions
                 builder.AddJsonConsole(o =>
                 {
                     o.IncludeScopes = true;
-                    o.TimestampFormat = "dd.MM.yyyy hh:mm:ss.ffff";
+                    o.TimestampFormat = "dd.MM.yyyy HH:mm:ss.fff";
                     o.UseUtcTimestamp = true;
                 });
             }
             else
             {
-                builder.AddSimpleConsole(c =>
-                {
-                    c.ColorBehavior = LoggerColorBehavior.Enabled;
-                    c.SingleLine = true;
-                    c.TimestampFormat = "[dd.MM.yyyy hh:mm:ss.ffff] ";
-                });
+                builder.AddConsole(o => o.FormatterName = EvoScConsoleFormatter.FormatterName)
+                    .AddConsoleFormatter<EvoScConsoleFormatter, ConsoleFormatterOptions>();
             }
         });
     }
