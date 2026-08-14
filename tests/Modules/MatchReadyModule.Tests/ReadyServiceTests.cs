@@ -14,14 +14,16 @@ public class ReadyServiceTests
         IReadyService ReadyService,
         Mock<IEventManager> EventManagerMock,
         Mock<IReadyTrackerService> TrackerServiceMock
+        Mock<ILogger<IReadyService>> LoggerMock
         ) NewServiceMock()
     {
         var eventManagerMock = new Mock<IEventManager>();
         var readyTrackerMock = new Mock<IReadyTrackerService>();
+        var loggerMock = new Mock<ILogger<IReadyService>>();
         
-        var service = new ReadyService(readyTrackerMock.Object, eventManagerMock.Object);
+        var service = new ReadyService(readyTrackerMock.Object, eventManagerMock.Object, loggerMock.Object);
         
-        return (service, eventManagerMock, readyTrackerMock);
+        return (service, eventManagerMock, readyTrackerMock, loggerMock);
     }
 
     [Fact]
