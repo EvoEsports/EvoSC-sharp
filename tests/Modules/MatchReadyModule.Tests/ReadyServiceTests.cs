@@ -13,7 +13,7 @@ public class ReadyServiceTests
     private (
         IReadyService ReadyService,
         Mock<IEventManager> EventManagerMock,
-        Mock<IReadyTrackerService> TrackerServiceMock
+        Mock<IReadyTrackerService> TrackerServiceMock,
         Mock<ILogger<IReadyService>> LoggerMock
         ) NewServiceMock()
     {
