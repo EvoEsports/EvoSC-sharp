@@ -4,6 +4,7 @@ using EvoSC.Modules.Official.MatchReadyModule.Events;
 using EvoSC.Modules.Official.MatchReadyModule.Events.Args;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Services;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace MatchReadyModule.Tests;
