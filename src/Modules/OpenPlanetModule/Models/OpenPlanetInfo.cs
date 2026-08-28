@@ -7,7 +7,7 @@ namespace EvoSC.Modules.Official.OpenPlanetModule.Models;
 public class OpenPlanetInfo : IOpenPlanetInfo
 {
     private static readonly Regex OpenPlanetRegex =
-        new("^Openplanet ([\\d.]+) \\((\\w+), ([A-Z]\\w+), (\\d{4}-\\d{2}-\\d{2})\\)(?:\\s(?:\\[([A-Z]+)\\]))*$");
+        new("^Openplanet ([\\d.]+) \\((\\w+), ([A-Z]\\w+), (\\w+)\\)(?:\\s\\[([A-Z]+)\\])?$");
     
     public Version Version { get; set; }
     public string Game { get; set; }
