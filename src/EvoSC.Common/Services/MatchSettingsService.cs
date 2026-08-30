@@ -69,7 +69,7 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
 
             if (skipMap)
             {
-                await server.Remote.NextMapAsync();
+                await server.Remote.JumpToMapIndexAsync(0);
             }
         }
         catch (XmlRpcFaultException ex)
