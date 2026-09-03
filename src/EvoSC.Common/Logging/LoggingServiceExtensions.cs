@@ -27,7 +27,7 @@ public static class LoggingServiceExtensions
                 builder.AddJsonConsole(o =>
                 {
                     o.IncludeScopes = true;
-                    o.TimestampFormat = "dd.MM.yyyy HH:mm:ss.fff";
+                    o.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffK";
                     o.UseUtcTimestamp = true;
                 });
             }
@@ -40,7 +40,7 @@ public static class LoggingServiceExtensions
 
         services.RegisterInstance<ILoggerFactory>(loggerFactory);
         services.RegisterSingleton(typeof(ILogger<>), typeof(Logger<>));
-        
+
         return services;
     }
 
@@ -62,7 +62,7 @@ public static class LoggingServiceExtensions
                 builder.AddJsonConsole(o =>
                 {
                     o.IncludeScopes = true;
-                    o.TimestampFormat = "dd.MM.yyyy HH:mm:ss.fff";
+                    o.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffK";
                     o.UseUtcTimestamp = true;
                 });
             }

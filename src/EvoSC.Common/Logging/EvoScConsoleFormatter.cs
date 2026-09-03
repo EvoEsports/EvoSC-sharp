@@ -27,11 +27,10 @@ public class EvoScConsoleFormatter : ConsoleFormatter
             return;
         }
 
-        var timestamp = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff");
+        var timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
 
-        textWriter.Write('[');
         textWriter.Write(timestamp);
-        textWriter.Write("] ");
+        textWriter.Write(" ");
 
         textWriter.Write(GetLevelColor(logEntry.LogLevel));
         textWriter.Write(GetLevelText(logEntry.LogLevel));
