@@ -66,4 +66,6 @@ public class ReadyManialinkService(IReadyService readyService, IManialinkManager
         
         await trans.CommitAsync();
     }
+
+    public Task HideWidgetAsync() => manialinks.HideManialinkAsync("MatchReadyModule.ReadyWidget");
 }

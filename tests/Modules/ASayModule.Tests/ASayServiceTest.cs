@@ -51,7 +51,7 @@ public class ASayServiceTest
 
         var server = Mocking.NewServerClientMock();
 
-        var aSayService = new ASayService(_manialinkManager.Object, contextService.Object);
+        var aSayService = new ASayService(_manialinkManager.Object);
 
         var player = new Mock<IOnlinePlayer>();
         player.Setup(m => m.AccountId).Returns(PlayerAccountId);
