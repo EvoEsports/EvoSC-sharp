@@ -222,8 +222,6 @@ public static class PlayerUtils
     /// <param name="player"></param>
     /// <param name="templateName"></param>
     /// <returns></returns>
-    public static bool ManialinkIsHidden(this IPlayer player, string templateName)
-    {
-        return player.Settings.HiddenManialinks.Contains(templateName);
-    }
+    public static bool ManialinkIsHidden(this IPlayer player, string templateName) =>
+        player.Settings?.HiddenManialinks?.Contains(templateName) ?? false;
 }
