@@ -23,10 +23,12 @@ public class LocalRecordRepository(
     ILogger<LocalRecordRepository> logger)
     : DbRepository(dbConnFactory), ILocalRecordRepository
 {
+    // NOTE: Where/OrderBy qualified with Queryable because .NET 10's
+    // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous.
     public async Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId) =>
-        await NewLoadAll()
-            .Where(r => r.DbMap.Id == mapId)
-            .OrderBy(r => r.Position)
+        await System.Linq.Queryable.OrderBy(
+            System.Linq.Queryable.Where(NewLoadAll(), r => r.DbMap.Id == mapId),
+            r => r.Position)
             .ToArrayAsync();
 
     public async Task<DbLocalRecord?> AddOrUpdateRecordAsync(IMap map, IPlayerRecord record)
@@ -40,9 +42,9 @@ public class LocalRecordRepository(
             return oldRecord;
         }
 
-        var worstRecord = await NewLoadAll()
-            .Where(r => r.DbMap.Id == map.Id)
-            .OrderByDescending(r => r.Position)
+        var worstRecord = await System.Linq.Queryable.OrderByDescending(
+            System.Linq.Queryable.Where(NewLoadAll(), r => r.DbMap.Id == map.Id),
+            r => r.Position)
             .FirstOrDefaultAsync();
 
         if (worstRecord != null && worstRecord.Position >= settings.MaxRecordsPerMap && worstRecord.Record.CompareTo(record) < 0)
@@ -170,13 +172,12 @@ public class LocalRecordRepository(
     }
 
     public async Task<IEnumerable<DbLocalRecord>> GetRecordsByPlayerAsync(IPlayer player) =>
-        await NewLoadAll()
-            .Where(r => r.DbRecord.DbPlayer.Id == player.Id)
+        await System.Linq.Queryable.Where(NewLoadAll(), r => r.DbRecord.DbPlayer.Id == player.Id)
             .ToArrayAsync();
 
     public async Task<DbLocalRecord?> GetRecordOfPlayerInMapAsync(IPlayer player, IMap map) =>
-        await NewLoadAll()
-            .FirstOrDefaultAsync(r => r.DbRecord.DbPlayer.Id == player.Id && r.DbMap.Id == map.Id);
+        await AsyncExtensions.FirstOrDefaultAsync(NewLoadAll(),
+            r => r.DbRecord.DbPlayer.Id == player.Id && r.DbMap.Id == map.Id);
 
     public async Task DeleteRecordAsync(IPlayer player, IMap map)
     {

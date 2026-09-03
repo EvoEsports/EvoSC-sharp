@@ -1,5 +1,5 @@
 # Build EvoSC#
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 WORKDIR /source
 COPY . .
@@ -7,7 +7,7 @@ COPY . .
 RUN dotnet publish "src/EvoSC/EvoSC.csproj" -r linux-musl-x64 --self-contained true -c Release -o /publish
 
 # Create the image
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine3.20 AS create-image
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine3.22 AS create-image
 
 ARG VERSION \
     BUILD_DATE \
