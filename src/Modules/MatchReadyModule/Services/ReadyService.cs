@@ -5,11 +5,12 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MatchReadyModule.Events;
 using EvoSC.Modules.Official.MatchReadyModule.Events.Args;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchReadyModule.Services;
 
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
-public class ReadyService(IReadyTrackerService readyTracker, IEventManager events) : IReadyService
+public class ReadyService(IReadyTrackerService readyTracker, IEventManager events, ILogger<IReadyService> logger) : IReadyService
 {
     public IEnumerable<IPlayer> ReadyPlayers => readyTracker.ReadyPlayers;
     public IEnumerable<IPlayer> Players => readyTracker.Players;
@@ -48,6 +49,7 @@ public class ReadyService(IReadyTrackerService readyTracker, IEventManager event
 
         if (readyTracker.AllReady)
         {
+            logger.LogInformation("All players ready");
             await events.RaiseAsync(MatchReadyEvents.AllPlayersReady, EventArgs.Empty);
         }
     }
