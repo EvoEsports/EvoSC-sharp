@@ -19,6 +19,12 @@ public class ChatCommandParser(IChatCommandManager cmdManager)
             }
 
             var cmdAlias = parts[0];
+
+            if (cmdManager.IsIgnoredCommand(cmdAlias, false))
+            {
+                return new ParserResult {Command = null, Arguments = null, Success = false, IsIntended = false, IsIgnored = true};
+            }
+            
             bool intendedCommand = cmdAlias.StartsWith(CommandPrefix, StringComparison.Ordinal);
             var cmd = cmdManager.FindCommand(cmdAlias, false);
 

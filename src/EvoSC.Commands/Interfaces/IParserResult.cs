@@ -33,4 +33,9 @@ public interface IParserResult
     /// The alias that was used to execute this command.
     /// </summary>
     public string AliasUsed { get; }
+    
+    /// <summary>
+    /// Whether the command was ignored or not.
+    /// </summary>
+    public bool IsIgnored { get; }
 }
