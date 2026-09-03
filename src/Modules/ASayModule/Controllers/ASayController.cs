@@ -28,9 +28,6 @@ public class ASayController(IASayService asayService) : EvoScController<CommandI
             Context.AuditEvent.Success()
                 .WithEventName(AuditEvents.ClearAnnouncement)
                 .Comment("Announcement was cleared.");
-            Context.AuditEvent.Success()
-                .WithEventName(AuditEvents.ClearAnnouncement)
-                .Comment("Announcement was cleared.");
         }
     }
     
@@ -38,5 +35,8 @@ public class ASayController(IASayService asayService) : EvoScController<CommandI
     public async Task ClearAnnouncementMessageForPlayersAsync()
     {
         await asayService.HideAnnouncementAsync();
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.ClearAnnouncement)
+            .Comment("Announcement was cleared.");
     }
 }
