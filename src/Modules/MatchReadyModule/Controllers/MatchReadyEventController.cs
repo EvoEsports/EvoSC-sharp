@@ -44,10 +44,22 @@ public class MatchReadyEventController(
     }
 
     [Subscribe(MatchReadyEvents.Enabled)]
-    public Task OnMatchReadyEnabled(object sender, EventArgs args) => readyManialinkService.SendWidgetAsync();
-    
+    public async Task OnMatchReadyEnabled(object sender, EnabledEventArgs args)
+    {
+        readyService.Enabled = true;
+        
+        await readyService.AddPlayersAsync(args.Players.ToArray());
+        
+        await readyManialinkService.SendWidgetAsync();
+    }
+
     [Subscribe(MatchReadyEvents.Disabled)]
-    public Task OnMatchReadyDisabled(object sender, EventArgs args) => readyManialinkService.SendWidgetAsync();
+    public async Task OnMatchReadyDisabled(object sender, EventArgs args)
+    {
+        readyService.Enabled = false;
+        
+        readyManialinkService.SendWidgetAsync();
+    }
 
     [Subscribe(MatchReadyEvents.PlayerReadyChanged)]
     public async Task OnReadyChangedAsync(object sender, PlayerReadyEventArgs args)

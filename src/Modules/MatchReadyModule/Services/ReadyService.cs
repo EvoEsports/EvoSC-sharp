@@ -13,7 +13,12 @@ public class ReadyService(IReadyTrackerService readyTracker, IEventManager event
 {
     public IEnumerable<IPlayer> ReadyPlayers => readyTracker.ReadyPlayers;
     public IEnumerable<IPlayer> Players => readyTracker.Players;
-    public bool Enabled => readyTracker.Enabled;
+    
+    public bool Enabled
+    {
+        get => readyTracker.Enabled;
+        set => readyTracker.Enabled = value;
+    }
     public Task ResetAsync() => readyTracker.ClearAsync();
 
     public async Task AddPlayersAsync(params IPlayer[] players)
