@@ -83,7 +83,6 @@ public class MatchReadyEventController(
     [Subscribe(MatchReadyEvents.AllPlayersReady)]
     public async Task OnAllPlayersReadyAsync(object sender, EventArgs args)
     {
-        readyService.Enabled = false;
-        await readyManialinkService.HideWidgetAsync();
+        await readyService.DisableAsync();
     }
 }
