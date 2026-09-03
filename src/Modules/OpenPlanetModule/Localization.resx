@@ -37,7 +37,7 @@
     <value>The OpenPlanet configuration you are using is not allowed on this server! Forced into spectator.</value>
   </data>
   <data name="Explanations.SwitchSignatureMode" xml:space="preserve">
-    <value>In the Openplanet menu click $9dfDeveloper$g then $9dfSignature Mode$g.</value>
+    <value>In the Openplanet menu click $9dfOpenplanet$g then $9dfSignature Mode$g.</value>
   </data>
   <data name="Explanations.UpdateOpenPlanet" xml:space="preserve">
     <value>Go to the $L[https://openplanet.dev/download/next]$9dfOpenPlanet Download$L$g website and download the latest version.</value>

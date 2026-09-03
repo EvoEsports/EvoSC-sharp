@@ -14,31 +14,32 @@ namespace EvoSC.Common.Database.Repository.Maps;
 public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapRepository> logger)
     : DbRepository(dbConnFactory), IMapRepository
 {
-    public async Task<IMap?> GetMapByIdAsync(long id) => await Table<DbMap>()
+    // NOTE: terminal calls are qualified with AsyncExtensions because .NET 10's
+    // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous with linq2db's.
+    public async Task<IMap?> GetMapByIdAsync(long id) => await AsyncExtensions.SingleOrDefaultAsync(Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
-        .LoadWith(t => t.DbDetails)
-        .SingleOrDefaultAsync(m => m.Id == id);
+        .LoadWith(t => t.DbDetails),
+        m => m.Id == id);
 
-    public async Task<IMap[]> GetMapsAsync() => await Table<DbMap>()
+    public async Task<IMap[]> GetMapsAsync() => await AsyncExtensions.ToArrayAsync(Table<DbMap>()
         .LoadWith(m => m.DbAuthor)
-        .LoadWith(m => m.DbDetails)
-        .ToArrayAsync();
+        .LoadWith(m => m.DbDetails));
 
-    public async Task<IMap?> GetMapByUidAsync(string uid) => await Table<DbMap>()
+    public async Task<IMap?> GetMapByUidAsync(string uid) => await AsyncExtensions.SingleOrDefaultAsync(Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
-        .LoadWith(t => t.DbDetails)
-        .SingleOrDefaultAsync(m => m.Uid == uid);
+        .LoadWith(t => t.DbDetails),
+        m => m.Uid == uid);
 
-    public async Task<IMap?> GetMapByExternalIdAsync(string id) => await Table<DbMap>()
+    public async Task<IMap?> GetMapByExternalIdAsync(string id) => await AsyncExtensions.SingleOrDefaultAsync(Table<DbMap>()
         .LoadWith(t => t.DbAuthor)
-        .LoadWith(t => t.DbDetails)
-        .SingleOrDefaultAsync(m => m.ExternalId == id);
+        .LoadWith(t => t.DbDetails),
+        m => m.ExternalId == id);
 
-    public async Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids) => await Table<DbMap>()
-        .LoadWith(t => t.DbAuthor)
-        .LoadWith(t => t.DbDetails)
-        .Where(m => mapUids.Contains(m.Uid))
-        .ToArrayAsync();
+    public async Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids) => await AsyncExtensions.ToArrayAsync(
+        System.Linq.Queryable.Where(Table<DbMap>()
+            .LoadWith(t => t.DbAuthor)
+            .LoadWith(t => t.DbDetails),
+            m => mapUids.Contains(m.Uid)));
 
     public async Task<IMap> AddMapAsync(MapMetadata map, IPlayer author, string filePath)
     {

@@ -44,10 +44,24 @@ public class MatchReadyEventController(
     }
 
     [Subscribe(MatchReadyEvents.Enabled)]
-    public Task OnMatchReadyEnabled(object sender, EventArgs args) => readyManialinkService.SendWidgetAsync();
-    
+    public async Task OnMatchReadyEnabled(object sender, EnabledEventArgs args)
+    {
+        readyService.Enabled = true;
+        await readyService.ResetAsync();
+
+        await readyService.AddPlayersAsync(args.Players.ToArray());
+        
+        await readyManialinkService.SendWidgetAsync();
+    }
+
     [Subscribe(MatchReadyEvents.Disabled)]
-    public Task OnMatchReadyDisabled(object sender, EventArgs args) => readyManialinkService.SendWidgetAsync();
+    public async Task OnMatchReadyDisabled(object sender, EventArgs args)
+    {
+        readyService.Enabled = false;
+        await readyService.ResetAsync();
+        
+        await readyManialinkService.HideWidgetAsync();
+    }
 
     [Subscribe(MatchReadyEvents.PlayerReadyChanged)]
     public async Task OnReadyChangedAsync(object sender, PlayerReadyEventArgs args)
@@ -61,5 +75,14 @@ public class MatchReadyEventController(
         );
         
         await readyManialinkService.UpdateWidgetAsync();
+    }
+
+    [Subscribe(GbxRemoteEvent.BeginMatch)]
+    public Task OnMatchStartedAsync(object sender, EventArgs args) => readyManialinkService.HideWidgetAsync();
+
+    [Subscribe(MatchReadyEvents.AllPlayersReady)]
+    public async Task OnAllPlayersReadyAsync(object sender, EventArgs args)
+    {
+        await readyService.DisableAsync();
     }
 }

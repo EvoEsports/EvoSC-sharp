@@ -17,6 +17,10 @@ public class ChatCommandManager : IChatCommandManager
     
     private readonly Dictionary<string, IChatCommand> _cmds = new();
     private readonly Dictionary<string, string> _aliasMap = new();
+    private readonly List<string> _ignoredCommands = new()
+    {
+        "/chatformat",
+    };
     private readonly Dictionary<Type, List<IChatCommand>> _controllerCommands = new();
     private readonly IValueReaderManager _valueReader;
 
@@ -176,5 +180,12 @@ public class ChatCommandManager : IChatCommandManager
         }
 
         return null;
+    }
+
+    public bool IsIgnoredCommand(string alias, bool withPrefix)
+    {
+        var lookupName = (withPrefix ? CommandPrefix : "") + alias;
+        
+        return _ignoredCommands.Contains(lookupName);
     }
 }

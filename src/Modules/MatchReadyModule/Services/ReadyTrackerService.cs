@@ -58,6 +58,13 @@ public class ReadyTrackerService : IReadyTrackerService
                 return _enabled;
             }
         }
+        set
+        {
+            lock (_mainLock)
+            {
+                _enabled = value;
+            }
+        }
     }
 
     public Task AddPlayerAsync(IPlayer player)

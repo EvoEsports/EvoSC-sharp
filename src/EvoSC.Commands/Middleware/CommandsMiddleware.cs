@@ -122,6 +122,10 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
             {
                 await HandleUserErrorsAsync(parserResult, context.Author);
             }
+            else if (parserResult.IsIgnored)
+            {
+                logger.LogDebug("Command '{Name}' is ignored", context.MessageText);
+            }
             else
             {
                 logger.LogError(

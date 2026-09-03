@@ -10,4 +10,5 @@ public class ParserResult : IParserResult
     public Exception Exception { get; init; }
     public required bool IsIntended { get; init; }
     public string AliasUsed { get; init; }
+    public bool IsIgnored { get; init; }
 }

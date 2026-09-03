@@ -13,13 +13,29 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
 {
     public async Task<DbPlayer?> GetPlayerByAccountIdAsync(string accountId)
     {
-        var player = await Table<DbPlayer>()
-            .LoadWith(p => p.DbSettings)
-            .SingleOrDefaultAsync(t => t.AccountId == accountId);
+        // NOTE: qualified with AsyncExtensions because .NET 10's
+        // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous with linq2db's.
+        var player = await AsyncExtensions.SingleOrDefaultAsync(Table<DbPlayer>()
+            .LoadWith(p => p.DbSettings),
+            t => t.AccountId == accountId);
 
         if (player == null)
         {
             return null;
+        }
+
+        if (player.DbSettings == null)
+        {
+            var playerSettings = new DbPlayerSettings
+            {
+                PlayerId = player.Id,
+                DisplayLanguage = "en",
+                HiddenManialinks = []
+            };
+
+            await Database.InsertAsync(playerSettings);
+
+            player.DbSettings = playerSettings;
         }
 
         var groups = await permissionRepository.GetGroupsAsync(player.Id);
@@ -55,11 +71,14 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
 
         var playerSettings = new DbPlayerSettings
         {
-            PlayerId = player.Id, 
-            DisplayLanguage = "en"
+            PlayerId = player.Id,
+            DisplayLanguage = "en",
+            HiddenManialinks = []
         };
 
         await Database.InsertAsync(playerSettings);
+
+        player.DbSettings = playerSettings;
 
         return player;
     }

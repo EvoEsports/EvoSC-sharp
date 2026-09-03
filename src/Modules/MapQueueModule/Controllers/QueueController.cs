@@ -21,6 +21,11 @@ public class QueueController(IMapQueueService mapQueue, IServerClient server, IM
     {
         var map = await maps.GetCurrentMapAsync();
 
+        if (map == null)
+        {
+            return;
+        }
+
         try
         {
             await mapQueue.DropAsync(map);
