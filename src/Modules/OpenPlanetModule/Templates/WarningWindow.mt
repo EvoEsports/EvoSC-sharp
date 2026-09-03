@@ -31,10 +31,10 @@
                 <label class="text" text="{{ Locale.PlayerLanguage.WarningMl_OpenPlanetRestricted }}" halign="center" pos="100 -24"/>
                 
                 <label class="text" text="{{ Locale.PlayerLanguage.WarningMl_ChoseSignatureMode }}" halign="center" pos="100 -32" if="Reason == OpJailReason.InvalidSignatureMode" />
-                <label class="text" textcolor="{{ Theme.OpenPlanetModule_WarningWindow_TextHighlight }}" text='{{ string.Join(", ", AllowedSignatures) }}' halign="center" pos="100 -36" if="Reason == OpJailReason.InvalidSignatureMode"/>
+                <label class="text" textcolor="{{ Theme.OpenPlanetModule_WarningWindow_TextHighlight }}" text='{{ string.Join(", ", AllowedSignatures) }}' halign="center" pos="100 -37" if="Reason == OpJailReason.InvalidSignatureMode"/>
 
                 <label class="text" text="{{ Locale.PlayerLanguage.WarningMl_MinimumVersionRequired }}" halign="center" pos="100 -32" if="Reason == OpJailReason.InvalidVersion" />
-                <label class="text" textcolor="{{ Theme.OpenPlanetModule_WarningWindow_TextHighlight }}" text='{{ Config.MinimumRequiredVersion }}' halign="center" pos="100 -36" if="Reason == OpJailReason.InvalidVersion"/>
+                <label class="text" textcolor="{{ Theme.OpenPlanetModule_WarningWindow_TextHighlight }}" text='{{ Config.MinimumRequiredVersion }}' halign="center" pos="100 -37" if="Reason == OpJailReason.InvalidVersion"/>
 
                 <label class="text" text="{{ Locale.PlayerLanguage.WarningMl_DisableOpenPlanet }}" halign="center" pos="100 -32" if="Reason == OpJailReason.OpenPlanetNotAllowed" />
                 
@@ -54,7 +54,7 @@
                 
                 <label class="text" text="$iYou will be automatically kicked in {{ Config.KickTimeout }} seconds." halign="center" pos="100 -73" id="countdownText" />
                 
-                <IconButton icon="{{ Icons.SignIn }}" text="Disconnect Now" hasText="true" width="30" y="-78" x="84" id="btnDisconnect" action="ManialinkActions/Disconnect" />
+                <IconButton icon="{{ Icons.SignIn }}" text="Disconnect Now" hasText="true" width="30" y="-79" x="84" id="btnDisconnect" action="ManialinkActions/Disconnect" />
             </frame>
         </Window>
     </template>

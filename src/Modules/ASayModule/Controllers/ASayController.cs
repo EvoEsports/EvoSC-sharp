@@ -1,5 +1,5 @@
-﻿using EvoSC.Commands;
-using EvoSC.Commands.Attributes;
+﻿using EvoSC.Commands.Attributes;
+using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Modules.Official.ASayModule.Events;
@@ -8,7 +8,7 @@ using EvoSC.Modules.Official.ASayModule.Interfaces;
 namespace EvoSC.Modules.Official.ASayModule.Controllers;
 
 [Controller]
-public class ASayController(IASayService asayService) : EvoScController<CommandInteractionContext>
+public class ASayController(IASayService asayService) : EvoScController<ICommandInteractionContext>
 {
     [ChatCommand("asay", "Shows a message to all connected players as manialink.", ASayPermissions.UseASay, true)]
     public async Task ShowAnnounceMessageToPlayersAsync(string? text)
@@ -28,9 +28,6 @@ public class ASayController(IASayService asayService) : EvoScController<CommandI
             Context.AuditEvent.Success()
                 .WithEventName(AuditEvents.ClearAnnouncement)
                 .Comment("Announcement was cleared.");
-            Context.AuditEvent.Success()
-                .WithEventName(AuditEvents.ClearAnnouncement)
-                .Comment("Announcement was cleared.");
         }
     }
     
@@ -38,5 +35,8 @@ public class ASayController(IASayService asayService) : EvoScController<CommandI
     public async Task ClearAnnouncementMessageForPlayersAsync()
     {
         await asayService.HideAnnouncementAsync();
+        Context.AuditEvent.Success()
+            .WithEventName(AuditEvents.ClearAnnouncement)
+            .Comment("Announcement was cleared.");
     }
 }

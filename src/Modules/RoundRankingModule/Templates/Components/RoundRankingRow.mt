@@ -21,7 +21,7 @@
             <quad
                     bgcolor="{{ Theme.UI_AccentSecondary }}"
                     size="{{ height }} {{ height }}"
-                    opacity="{{ Theme.UI_LocalRecordsModule_Widget_Row_Bg_Opacity }}"
+                    opacity="{{ Theme.UI_RoundRankingModule_Widget_Row_Bg_Opacity }}"
                     pos="0.7 0"
             />
             <label

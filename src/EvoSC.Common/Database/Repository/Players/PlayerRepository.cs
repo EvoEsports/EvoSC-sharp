@@ -22,6 +22,20 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
             return null;
         }
 
+        if (player.DbSettings == null)
+        {
+            var playerSettings = new DbPlayerSettings
+            {
+                PlayerId = player.Id,
+                DisplayLanguage = "en",
+                HiddenManialinks = []
+            };
+
+            await Database.InsertAsync(playerSettings);
+
+            player.DbSettings = playerSettings;
+        }
+
         var groups = await permissionRepository.GetGroupsAsync(player.Id);
         player.Groups = groups;
 
@@ -55,11 +69,14 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
 
         var playerSettings = new DbPlayerSettings
         {
-            PlayerId = player.Id, 
-            DisplayLanguage = "en"
+            PlayerId = player.Id,
+            DisplayLanguage = "en",
+            HiddenManialinks = []
         };
 
         await Database.InsertAsync(playerSettings);
+
+        player.DbSettings = playerSettings;
 
         return player;
     }

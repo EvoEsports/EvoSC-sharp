@@ -64,6 +64,7 @@ public partial class ServerClient : IServerClient
 
         await _gbxRemote.SetApiVersionAsync(GbxRemoteClient.DefaultApiVersion);
         await _gbxRemote.EnableCallbackTypeAsync();
+        await _gbxRemote.TriggerModeScriptEventArrayAsync("Trackmania.Event.SetCurRaceCheckpointsMode", "always");
         await _gbxRemote.SendHideManialinkPageAsync(); //hide all manialinks on connect
         await _gbxRemote.ChatEnableManualRoutingAsync();
 

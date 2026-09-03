@@ -17,7 +17,7 @@ public interface IReadyService
     /// <summary>
     /// Whether the ready widget and it's commands are enabled.
     /// </summary>
-    public bool Enabled { get; }
+    public bool Enabled { get; set; }
     
     /// <summary>
     /// Reset everything to the initial state.

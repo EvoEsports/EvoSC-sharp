@@ -4,6 +4,7 @@ using EvoSC.Modules.Official.MatchReadyModule.Events;
 using EvoSC.Modules.Official.MatchReadyModule.Events.Args;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Services;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace MatchReadyModule.Tests;
@@ -13,15 +14,17 @@ public class ReadyServiceTests
     private (
         IReadyService ReadyService,
         Mock<IEventManager> EventManagerMock,
-        Mock<IReadyTrackerService> TrackerServiceMock
+        Mock<IReadyTrackerService> TrackerServiceMock,
+        Mock<ILogger<IReadyService>> LoggerMock
         ) NewServiceMock()
     {
         var eventManagerMock = new Mock<IEventManager>();
         var readyTrackerMock = new Mock<IReadyTrackerService>();
+        var loggerMock = new Mock<ILogger<IReadyService>>();
         
-        var service = new ReadyService(readyTrackerMock.Object, eventManagerMock.Object);
+        var service = new ReadyService(readyTrackerMock.Object, eventManagerMock.Object, loggerMock.Object);
         
-        return (service, eventManagerMock, readyTrackerMock);
+        return (service, eventManagerMock, readyTrackerMock, loggerMock);
     }
 
     [Fact]

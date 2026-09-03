@@ -27,24 +27,20 @@ public static class LoggingServiceExtensions
                 builder.AddJsonConsole(o =>
                 {
                     o.IncludeScopes = true;
-                    o.TimestampFormat = "dd.MM.yyyy hh:mm:ss.ffff";
+                    o.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffK";
                     o.UseUtcTimestamp = true;
                 });
             }
             else
             {
-                builder.AddSimpleConsole(c =>
-                {
-                    c.ColorBehavior = LoggerColorBehavior.Enabled;
-                    c.SingleLine = true;
-                    c.TimestampFormat = "[dd.MM.yyyy hh:mm:ss.ffff] ";
-                });
+                builder.AddConsole(o => o.FormatterName = EvoScConsoleFormatter.FormatterName)
+                    .AddConsoleFormatter<EvoScConsoleFormatter, ConsoleFormatterOptions>();
             }
         });
 
         services.RegisterInstance<ILoggerFactory>(loggerFactory);
         services.RegisterSingleton(typeof(ILogger<>), typeof(Logger<>));
-        
+
         return services;
     }
 
@@ -66,18 +62,14 @@ public static class LoggingServiceExtensions
                 builder.AddJsonConsole(o =>
                 {
                     o.IncludeScopes = true;
-                    o.TimestampFormat = "dd.MM.yyyy hh:mm:ss.ffff";
+                    o.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffK";
                     o.UseUtcTimestamp = true;
                 });
             }
             else
             {
-                builder.AddSimpleConsole(c =>
-                {
-                    c.ColorBehavior = LoggerColorBehavior.Enabled;
-                    c.SingleLine = true;
-                    c.TimestampFormat = "[dd.MM.yyyy hh:mm:ss.ffff] ";
-                });
+                builder.AddConsole(o => o.FormatterName = EvoScConsoleFormatter.FormatterName)
+                    .AddConsoleFormatter<EvoScConsoleFormatter, ConsoleFormatterOptions>();
             }
         });
     }
