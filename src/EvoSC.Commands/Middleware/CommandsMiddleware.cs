@@ -28,8 +28,7 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
                 return;
             }
 
-            var message = $"Error: {cmdParserException.Message}";
-            await serverClient.Chat.ErrorMessageAsync($"Error: {message}", player);
+            await serverClient.Chat.ErrorMessageAsync($"Error: {cmdParserException.Message}", player);
         }
 
         if (result.Exception is PlayerNotFoundException playerNotFoundException)
