@@ -1,0 +1,6 @@
+﻿[info]
+name = "VdomSpikeModule"
+title = "VDOM Transport Spike"
+summary = "Throwaway lab module for the M0 VDOM transport spike. Safe to delete once the spike concludes."
+version = "0.0.1"
+author = "EvoSC"

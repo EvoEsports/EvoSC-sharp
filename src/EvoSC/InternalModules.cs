@@ -30,6 +30,7 @@ using EvoSC.Modules.Official.TeamChatModule;
 using EvoSC.Modules.Official.TeamInfoModule;
 using EvoSC.Modules.Official.TeamSettingsModule;
 using EvoSC.Modules.Official.UiControlModule;
+using EvoSC.Modules.Official.VdomSpikeModule;
 using EvoSC.Modules.Official.WorldRecordModule;
 using FluentMigrator.Runner.Exceptions;
 
@@ -69,7 +70,9 @@ public static class InternalModules
         typeof(TeamInfoModule),
         typeof(TeamChatModule),
         typeof(RoundRankingModule),
-        typeof(UiControlModule)
+        typeof(UiControlModule),
+        // M0 VDOM transport spike - throwaway, remove once the spike concludes.
+        typeof(VdomSpikeModule)
     ];
 
     /// <summary>
