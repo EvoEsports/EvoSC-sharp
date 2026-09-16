@@ -75,7 +75,7 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
                 } 
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Failed to jump to map index 0, trying to restart map", name);
+                    logger.LogError(ex, "Failed to jump to map index 0 for matchsettings '{Name}', trying to restart map", name);
                     await server.Remote.RestartMapAsync();
                 }
             }

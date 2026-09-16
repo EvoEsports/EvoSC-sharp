@@ -31,4 +31,26 @@ public class MatchReadyEventControllerTests : EventControllerTestBase<MatchReady
 
         _readyService.Verify(s => s.DisableAsync(), Times.Once);
     }
+
+    [Fact]
+    public async Task MatchStarted_Disables_The_Ready_Service_When_Still_Enabled()
+    {
+        _readyService.SetupGet(s => s.Enabled).Returns(true);
+
+        await Controller.OnMatchStartedAsync(new object(), EventArgs.Empty);
+
+        _readyService.Verify(s => s.DisableAsync(), Times.Once);
+        _readyManialinkService.Verify(s => s.HideWidgetAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task MatchStarted_Just_Hides_The_Widget_When_Already_Disabled()
+    {
+        _readyService.SetupGet(s => s.Enabled).Returns(false);
+
+        await Controller.OnMatchStartedAsync(new object(), EventArgs.Empty);
+
+        _readyService.Verify(s => s.DisableAsync(), Times.Never);
+        _readyManialinkService.Verify(s => s.HideWidgetAsync(), Times.Once);
+    }
 }
