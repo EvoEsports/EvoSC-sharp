@@ -90,11 +90,15 @@ public class ReadyServiceTests
     public async Task Enable_Sets_Enabled_To_True_In_Tracker_And_Raises_Enabled_Event()
     {
         var mock = NewServiceMock();
-        
-        await mock.ReadyService.EnableAsync();
-        
+        var player = new Player { AccountId = "1" };
+
+        await mock.ReadyService.EnableAsync(player);
+
         mock.TrackerServiceMock.Verify(m => m.EnableAsync());
-        mock.EventManagerMock.Verify(m => m.RaiseAsync(MatchReadyEvents.Enabled, EventArgs.Empty));
+        mock.EventManagerMock.Verify(m => m.RaiseAsync(
+            MatchReadyEvents.Enabled,
+            It.Is<EnabledEventArgs>(args => args.Players.Contains(player))
+        ));
     }
     
     [Fact]

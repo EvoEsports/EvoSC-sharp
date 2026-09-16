@@ -31,7 +31,22 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
                 HiddenManialinks = []
             };
 
-            await Database.InsertAsync(playerSettings);
+            try
+            {
+                await Database.InsertAsync(playerSettings);
+            }
+            catch (Exception)
+            {
+                // PlayerId is unique, so a concurrent lookup for the same player may have
+                // already inserted the settings row between our check and this insert.
+                playerSettings = await Table<DbPlayerSettings>()
+                    .SingleOrDefaultAsync(s => s.PlayerId == player.Id);
+
+                if (playerSettings == null)
+                {
+                    throw;
+                }
+            }
 
             player.DbSettings = playerSettings;
         }

@@ -78,7 +78,8 @@ public class MatchReadyEventController(
     }
 
     [Subscribe(GbxRemoteEvent.BeginMatch)]
-    public Task OnMatchStartedAsync(object sender, EventArgs args) => readyManialinkService.HideWidgetAsync();
+    public Task OnMatchStartedAsync(object sender, EventArgs args) =>
+        readyService.Enabled ? readyService.DisableAsync() : readyManialinkService.HideWidgetAsync();
 
     [Subscribe(MatchReadyEvents.AllPlayersReady)]
     public async Task OnAllPlayersReadyAsync(object sender, EventArgs args)

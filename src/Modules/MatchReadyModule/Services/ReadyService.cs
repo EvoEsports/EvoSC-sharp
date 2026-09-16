@@ -54,10 +54,13 @@ public class ReadyService(IReadyTrackerService readyTracker, IEventManager event
         }
     }
 
-    public async Task EnableAsync()
+    public async Task EnableAsync(params IPlayer[] players)
     {
         await readyTracker.EnableAsync();
-        await events.RaiseAsync(MatchReadyEvents.Enabled, EventArgs.Empty);
+        await events.RaiseAsync(MatchReadyEvents.Enabled, new EnabledEventArgs
+        {
+            Players = players
+        });
     }
 
     public async Task DisableAsync()
