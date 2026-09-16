@@ -22,4 +22,10 @@ public interface IReadyManialinkService
     /// </summary>
     /// <returns></returns>
     public Task UpdateWidgetAsync();
+
+    /// <summary>
+    /// Hide the widget for all players.
+    /// </summary>
+    /// <returns></returns>
+    public Task HideWidgetAsync();
 }

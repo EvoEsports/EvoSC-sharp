@@ -35,4 +35,11 @@ public interface IChatCommandManager : IControllerActionRegistry
     /// <param name="withPrefix">Whether to include prefix in the name.</param>
     /// <returns></returns>
     public IChatCommand FindCommand(string alias, bool withPrefix);
+    /// <summary>
+    /// Check if command is in ignored list.
+    /// </summary>
+    /// <param name="alias">Name or alias of the command to check.</param>
+    /// <param name="withPrefix">Whether to include prefix in the name.</param>
+    /// <returns></returns>
+    public Boolean IsIgnoredCommand(string alias, bool withPrefix);
 }

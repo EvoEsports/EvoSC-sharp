@@ -22,7 +22,7 @@ public interface IReadyTrackerService
     /// <summary>
     /// Whether the ready tracker is enabled or not.
     /// </summary>
-    public bool Enabled { get; }
+    public bool Enabled { get; set; }
     
     /// <summary>
     /// Add a player to the tracker.

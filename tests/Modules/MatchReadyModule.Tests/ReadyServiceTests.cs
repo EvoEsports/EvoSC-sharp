@@ -4,6 +4,7 @@ using EvoSC.Modules.Official.MatchReadyModule.Events;
 using EvoSC.Modules.Official.MatchReadyModule.Events.Args;
 using EvoSC.Modules.Official.MatchReadyModule.Interfaces;
 using EvoSC.Modules.Official.MatchReadyModule.Services;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace MatchReadyModule.Tests;
@@ -13,15 +14,17 @@ public class ReadyServiceTests
     private (
         IReadyService ReadyService,
         Mock<IEventManager> EventManagerMock,
-        Mock<IReadyTrackerService> TrackerServiceMock
+        Mock<IReadyTrackerService> TrackerServiceMock,
+        Mock<ILogger<IReadyService>> LoggerMock
         ) NewServiceMock()
     {
         var eventManagerMock = new Mock<IEventManager>();
         var readyTrackerMock = new Mock<IReadyTrackerService>();
+        var loggerMock = new Mock<ILogger<IReadyService>>();
         
-        var service = new ReadyService(readyTrackerMock.Object, eventManagerMock.Object);
+        var service = new ReadyService(readyTrackerMock.Object, eventManagerMock.Object, loggerMock.Object);
         
-        return (service, eventManagerMock, readyTrackerMock);
+        return (service, eventManagerMock, readyTrackerMock, loggerMock);
     }
 
     [Fact]
@@ -87,11 +90,15 @@ public class ReadyServiceTests
     public async Task Enable_Sets_Enabled_To_True_In_Tracker_And_Raises_Enabled_Event()
     {
         var mock = NewServiceMock();
-        
-        await mock.ReadyService.EnableAsync();
-        
+        var player = new Player { AccountId = "1" };
+
+        await mock.ReadyService.EnableAsync(player);
+
         mock.TrackerServiceMock.Verify(m => m.EnableAsync());
-        mock.EventManagerMock.Verify(m => m.RaiseAsync(MatchReadyEvents.Enabled, EventArgs.Empty));
+        mock.EventManagerMock.Verify(m => m.RaiseAsync(
+            MatchReadyEvents.Enabled,
+            It.Is<EnabledEventArgs>(args => args.Players.Contains(player))
+        ));
     }
     
     [Fact]

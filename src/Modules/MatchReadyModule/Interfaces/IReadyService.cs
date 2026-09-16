@@ -17,7 +17,7 @@ public interface IReadyService
     /// <summary>
     /// Whether the ready widget and it's commands are enabled.
     /// </summary>
-    public bool Enabled { get; }
+    public bool Enabled { get; set; }
     
     /// <summary>
     /// Reset everything to the initial state.
@@ -43,8 +43,9 @@ public interface IReadyService
     /// <summary>
     /// Enable the ready widget.
     /// </summary>
+    /// <param name="players">Players to track for the ready status.</param>
     /// <returns></returns>
-    public Task EnableAsync();
+    public Task EnableAsync(params IPlayer[] players);
     
     /// <summary>
     /// Disable the ready widget.

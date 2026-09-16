@@ -1,6 +1,7 @@
 ﻿using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Util;
 using FluentMigrator;
+using FluentMigrator.Postgres;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -11,7 +12,7 @@ public class AddPlayersTable : Migration
     public override void Up()
     {
         Create.Table(DbPlayer.TableName)
-            .WithColumn("Id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("Id").AsInt32().PrimaryKey().Identity(PostgresGenerationType.ByDefault)
             .WithColumn("AccountId").AsString().Unique()
             .WithColumn("UbisoftName").AsString().Indexed()
             .WithColumn("NickName").AsString()

@@ -22,6 +22,35 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
             return null;
         }
 
+        if (player.DbSettings == null)
+        {
+            var playerSettings = new DbPlayerSettings
+            {
+                PlayerId = player.Id,
+                DisplayLanguage = "en",
+                HiddenManialinks = []
+            };
+
+            try
+            {
+                await Database.InsertAsync(playerSettings);
+            }
+            catch (Exception)
+            {
+                // PlayerId is unique, so a concurrent lookup for the same player may have
+                // already inserted the settings row between our check and this insert.
+                playerSettings = await Table<DbPlayerSettings>()
+                    .SingleOrDefaultAsync(s => s.PlayerId == player.Id);
+
+                if (playerSettings == null)
+                {
+                    throw;
+                }
+            }
+
+            player.DbSettings = playerSettings;
+        }
+
         var groups = await permissionRepository.GetGroupsAsync(player.Id);
         player.Groups = groups;
 
@@ -55,11 +84,14 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
 
         var playerSettings = new DbPlayerSettings
         {
-            PlayerId = player.Id, 
-            DisplayLanguage = "en"
+            PlayerId = player.Id,
+            DisplayLanguage = "en",
+            HiddenManialinks = []
         };
 
         await Database.InsertAsync(playerSettings);
+
+        player.DbSettings = playerSettings;
 
         return player;
     }

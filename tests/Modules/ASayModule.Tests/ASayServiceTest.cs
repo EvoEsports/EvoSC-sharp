@@ -51,7 +51,7 @@ public class ASayServiceTest
 
         var server = Mocking.NewServerClientMock();
 
-        var aSayService = new ASayService(_manialinkManager.Object, contextService.Object);
+        var aSayService = new ASayService(_manialinkManager.Object);
 
         var player = new Mock<IOnlinePlayer>();
         player.Setup(m => m.AccountId).Returns(PlayerAccountId);
@@ -72,10 +72,9 @@ public class ASayServiceTest
     private async void Should_Show_Announcement_Message()
     {
         var mock = NewASayServiceMock();
-        
+
         var text = "example message";
         await mock.ASayService.ShowAnnouncementAsync(text);
-        mock.Audit.Verify(m=>m.Success(), Times.Once());
         _manialinkManager.Verify(manager => manager.SendPersistentManialinkAsync("ASayModule.Announcement", It.Is<object>(o => text.Equals(o.GetType().GetProperty("text")!.GetValue(o)))));
     }
 
@@ -84,7 +83,6 @@ public class ASayServiceTest
     {
         var mock = NewASayServiceMock();
         await mock.ASayService.HideAnnouncementAsync();
-        mock.Audit.Verify(m => m.Success(), Times.Once());
         _manialinkManager.Verify(manager => manager.HideManialinkAsync("ASayModule.Announcement"));
     }
 }

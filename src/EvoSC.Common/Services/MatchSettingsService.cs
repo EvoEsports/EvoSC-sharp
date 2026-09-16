@@ -69,7 +69,15 @@ public class MatchSettingsService(ILogger<MatchSettingsService> logger, IServerC
 
             if (skipMap)
             {
-                await server.Remote.NextMapAsync();
+                try 
+                {
+                    await server.Remote.JumpToMapIndexAsync(0);
+                } 
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Failed to jump to map index 0 for matchsettings '{Name}', trying to restart map", name);
+                    await server.Remote.RestartMapAsync();
+                }
             }
         }
         catch (XmlRpcFaultException ex)

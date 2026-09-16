@@ -13,12 +13,12 @@ public enum MatchReadyEvents
     PlayerReadyChanged,
     
     /// <summary>
-    /// Raised when the ready widget and service enabled.
+    /// Raised when the ready widget and service are enabled.
     /// </summary>
     Enabled,
     
     /// <summary>
-    /// Raised when the ready widget and service enabled.
+    /// Raised when the ready widget and service are disabled.
     /// </summary>
     Disabled
 }

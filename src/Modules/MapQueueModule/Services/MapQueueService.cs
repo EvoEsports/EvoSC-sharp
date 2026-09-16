@@ -39,6 +39,11 @@ public class MapQueueService(IEventManager events) : IMapQueueService
 
     public Task DropAsync(IMap map)
     {
+        if (_mapQueue.Count == 0)
+        {
+            return Task.CompletedTask;
+        }
+
         var isNext = _mapQueue.PeekFirst() == map;
         _mapQueue.Drop(map);
         return events.RaiseAsync(MapQueueEvents.MapDropped, new MapQueueMapDroppedEventArgs
