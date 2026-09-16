@@ -26,9 +26,7 @@ public class LocalRecordRepository(
     // NOTE: Where/OrderBy qualified with Queryable because .NET 10's
     // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous.
     public async Task<IEnumerable<DbLocalRecord>> GetLocalRecordsOfMapByIdAsync(long mapId) =>
-        await System.Linq.Queryable.OrderBy(
-            System.Linq.Queryable.Where(NewLoadAll(), r => r.DbMap.Id == mapId),
-            r => r.Position)
+        await Queryable.Where(NewLoadAll(), r => r.DbMap.Id == mapId).OrderBy(r => r.Position)
             .ToArrayAsync();
 
     public async Task<DbLocalRecord?> AddOrUpdateRecordAsync(IMap map, IPlayerRecord record)
@@ -42,12 +40,12 @@ public class LocalRecordRepository(
             return oldRecord;
         }
 
-        var worstRecord = await System.Linq.Queryable.OrderByDescending(
-            System.Linq.Queryable.Where(NewLoadAll(), r => r.DbMap.Id == map.Id),
-            r => r.Position)
+        var worstRecord = await Queryable.Where(NewLoadAll(), r => r.DbMap.Id == map.Id)
+            .OrderByDescending(r => r.Position)
             .FirstOrDefaultAsync();
 
-        if (worstRecord != null && worstRecord.Position >= settings.MaxRecordsPerMap && worstRecord.Record.CompareTo(record) < 0)
+        if (worstRecord != null && worstRecord.Position >= settings.MaxRecordsPerMap &&
+            worstRecord.Record.CompareTo(record) < 0)
         {
             logger.LogDebug("player got a new record that is worse than the worst local record of the map");
             return null;
@@ -85,7 +83,7 @@ public class LocalRecordRepository(
 
         var updated = await RecalculatePositionsOfMapAsync(map);
         var updatedRecord = updated.FirstOrDefault(r => r.Id == localRecord.Id);
-        
+
         logger.LogDebug("player got a new local record");
         return updatedRecord;
     }
@@ -172,7 +170,7 @@ public class LocalRecordRepository(
     }
 
     public async Task<IEnumerable<DbLocalRecord>> GetRecordsByPlayerAsync(IPlayer player) =>
-        await System.Linq.Queryable.Where(NewLoadAll(), r => r.DbRecord.DbPlayer.Id == player.Id)
+        await Queryable.Where(NewLoadAll(), r => r.DbRecord.DbPlayer.Id == player.Id)
             .ToArrayAsync();
 
     public async Task<DbLocalRecord?> GetRecordOfPlayerInMapAsync(IPlayer player, IMap map) =>

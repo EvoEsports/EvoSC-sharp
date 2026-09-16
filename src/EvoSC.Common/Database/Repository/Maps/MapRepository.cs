@@ -36,7 +36,7 @@ public class MapRepository(IDbConnectionFactory dbConnFactory, ILogger<MapReposi
         m => m.ExternalId == id);
 
     public async Task<IEnumerable<IMap>> GetMapsByUidAsync(IEnumerable<string> mapUids) => await AsyncExtensions.ToArrayAsync(
-        System.Linq.Queryable.Where(Table<DbMap>()
+        Queryable.Where(Table<DbMap>()
             .LoadWith(t => t.DbAuthor)
             .LoadWith(t => t.DbDetails),
             m => mapUids.Contains(m.Uid)));

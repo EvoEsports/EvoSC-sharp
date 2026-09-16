@@ -61,10 +61,8 @@ public class PlayerRecordsRepository(DbConnectionFactory dbConnFactory, ILogger<
     // NOTE: qualified because .NET 10's System.Linq.AsyncEnumerable overloads
     // would otherwise be ambiguous with Queryable/linq2db's.
     public Task<DbPlayerRecord[]> GetRecordsOfMapAsync(long mapId) =>
-        AsyncExtensions.ToArrayAsync(System.Linq.Queryable.OrderBy(
-            System.Linq.Queryable.Where(Table<DbPlayerRecord>()
+        Queryable.Where(Table<DbPlayerRecord>()
                 .LoadWith(r => r.DbMap)
                 .LoadWith(r => r.DbPlayer),
-                r => r.MapId == mapId),
-            r => r.Score));
+            r => r.MapId == mapId).OrderBy(r => r.Score).ToArrayAsync();
 }
