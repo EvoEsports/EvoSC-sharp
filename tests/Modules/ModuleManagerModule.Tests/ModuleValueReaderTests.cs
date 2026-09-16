@@ -34,7 +34,8 @@ public class ModuleValueReaderTests
             LoadedDependencies = null,
             ManialinkTemplates = null,
             RootNamespace = null,
-            Localization = null
+            Localization = null,
+            Themes = Array.Empty<Type>()
         };
 
         var moduleManager = new Mock<IModuleManager>();

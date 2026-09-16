@@ -13,9 +13,11 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
 {
     public async Task<DbPlayer?> GetPlayerByAccountIdAsync(string accountId)
     {
-        var player = await Table<DbPlayer>()
-            .LoadWith(p => p.DbSettings)
-            .SingleOrDefaultAsync(t => t.AccountId == accountId);
+        // NOTE: qualified with AsyncExtensions because .NET 10's
+        // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous with linq2db's.
+        var player = await AsyncExtensions.SingleOrDefaultAsync(Table<DbPlayer>()
+            .LoadWith(p => p.DbSettings),
+            t => t.AccountId == accountId);
 
         if (player == null)
         {
@@ -39,8 +41,8 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
             {
                 // PlayerId is unique, so a concurrent lookup for the same player may have
                 // already inserted the settings row between our check and this insert.
-                playerSettings = await Table<DbPlayerSettings>()
-                    .SingleOrDefaultAsync(s => s.PlayerId == player.Id);
+                playerSettings = await AsyncExtensions.SingleOrDefaultAsync(Table<DbPlayerSettings>(),
+                    s => s.PlayerId == player.Id);
 
                 if (playerSettings == null)
                 {

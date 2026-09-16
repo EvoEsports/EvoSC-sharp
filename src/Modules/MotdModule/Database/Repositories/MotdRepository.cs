@@ -13,10 +13,12 @@ namespace EvoSC.Modules.Official.MotdModule.Database.Repositories;
 [Service(LifeStyle = ServiceLifeStyle.Transient)]
 public class MotdRepository(IDbConnectionFactory dbConnFactory) : DbRepository(dbConnFactory), IMotdRepository
 {
+    // NOTE: qualified with AsyncExtensions because .NET 10's
+    // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous with linq2db's.
     public Task<MotdEntry?> GetEntryAsync(IPlayer player)
-        => Table<MotdEntry>()
-            .LoadWith(r => r.DbPlayer)
-            .SingleOrDefaultAsync(r => r.PlayerId == player.Id);
+        => AsyncExtensions.SingleOrDefaultAsync(Table<MotdEntry>()
+            .LoadWith(r => r.DbPlayer),
+            r => r.PlayerId == player.Id);
     
     public async Task<MotdEntry> InsertOrUpdateEntryAsync(IPlayer player, bool hidden)
     {

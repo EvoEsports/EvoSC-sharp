@@ -14,11 +14,13 @@ jobs:
       pull-requests: write
       checks: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
       - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@v2024.1
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        uses: JetBrains/qodana-action@v2026.2
