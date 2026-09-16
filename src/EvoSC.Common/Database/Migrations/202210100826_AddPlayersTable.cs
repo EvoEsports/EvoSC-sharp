@@ -29,11 +29,6 @@ public class AddPlayersTable : Migration
             UbisoftName = PlayerUtils.NadeoPlayer.UbisoftName,
             Zone = PlayerUtils.NadeoPlayer.Zone
         });
-
-        // Postgres identity sequences aren't advanced by explicit inserts, so the next
-        // auto-assigned player Id would collide with the seeded Nadeo row (Id = 1).
-        IfDatabase("Postgres").Execute.Sql(
-            "SELECT setval(pg_get_serial_sequence('\"Players\"', 'Id'), (SELECT MAX(\"Id\") FROM \"Players\"));");
     }
 
     public override void Down()

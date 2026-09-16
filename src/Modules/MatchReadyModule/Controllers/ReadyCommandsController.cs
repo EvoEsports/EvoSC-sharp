@@ -48,7 +48,7 @@ public class ReadyCommandsController(
     [ChatCommand("readyforceall", "Dev testing: force all tracked players to be ready.")]
     public async Task ForceAllReadyAsync()
     {
-        foreach (var player in readyService.Players)
+        foreach (var player in readyService.Players.ToArray())
         {
             await readyService.SetPlayerReadyStatusAsync(player, true);
         }
