@@ -107,10 +107,16 @@ public static class VdomSpikeManialinks
     }
 
     /// <summary>
-    /// Mounts a pool of <paramref name="count"/> generic scriptevents-enabled quads in a grid,
-    /// to measure mount payload size / visible hitch at realistic pool sizes.
+    /// Mounts a pool of <paramref name="count"/> generic quads in a grid, to measure mount
+    /// payload size / visible hitch at realistic pool sizes.
     /// </summary>
-    public static string BuildPoolPage(int count)
+    /// <param name="count">Number of pooled quads.</param>
+    /// <param name="scriptEvents">
+    /// Whether every quad has scriptevents="1" (fires MouseOver/MouseOut on hover, the realistic
+    /// case for a reactive pool). Set false to isolate raw mount/render cost from event-volume
+    /// cost -- compare against the true variant at the same count.
+    /// </param>
+    public static string BuildPoolPage(int count, bool scriptEvents = true)
     {
         var cols = Math.Max(1, (int)Math.Ceiling(Math.Sqrt(count)));
         var rows = (int)Math.Ceiling(count / (double)cols);
@@ -138,8 +144,12 @@ public static class VdomSpikeManialinks
                 .Append((cellSize - gap).ToString("0.###"))
                 .Append("\" bgcolor=\"")
                 .Append(color)
-                .Append("\" scriptevents=\"1\"/>\n");
+                .Append("\" scriptevents=\"")
+                .Append(scriptEvents ? '1' : '0')
+                .Append("\"/>\n");
         }
+
+        var scriptEventsLabel = scriptEvents ? "scriptevents ON" : "scriptevents OFF";
 
         return $$"""
             <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
@@ -152,7 +162,7 @@ public static class VdomSpikeManialinks
                 declare Integer EventCount = 0;
                 declare CMlLabel StatsLabel <=> (Page.GetFirstChild("poolstats") as CMlLabel);
 
-                StatsLabel.Value = "Pool mounted: {{count}} controls. Move the mouse across the grid and watch for hitching.";
+                StatsLabel.Value = "Pool mounted: {{count}} controls ({{scriptEventsLabel}}). Move the mouse across the grid and watch for hitching.";
 
                 while (True) {
                     yield;
@@ -163,7 +173,7 @@ public static class VdomSpikeManialinks
                     }
 
                     if (Ticks % 10 == 0) {
-                        StatsLabel.Value = "{{count}} controls | ticks: " ^ Ticks ^ " | events seen: " ^ EventCount;
+                        StatsLabel.Value = "{{count}} controls ({{scriptEventsLabel}}) | ticks: " ^ Ticks ^ " | events seen: " ^ EventCount;
                     }
                 }
             }

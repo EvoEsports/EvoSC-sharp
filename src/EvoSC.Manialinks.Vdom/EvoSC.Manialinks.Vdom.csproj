@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\EvoSC.Common\EvoSC.Common.csproj" />
+        <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
+        <EmbeddedResource Include="Runtime\**\*" />
+        <InternalsVisibleTo Include="EvoSC.Manialinks.Vdom.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.15.0.81779">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+</Project>

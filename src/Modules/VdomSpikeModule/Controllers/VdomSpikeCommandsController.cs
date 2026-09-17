@@ -14,7 +14,7 @@ namespace EvoSC.Modules.Official.VdomSpikeModule.Controllers;
 /// what each page proves. Everything targets the invoking player only.
 /// </summary>
 [Controller]
-public class VdomSpikeCommandsController(VdomSpikeState state) : EvoScController<ICommandInteractionContext>
+public class VdomSpikeCommandsController(IVdomSpikeState state) : EvoScController<ICommandInteractionContext>
 {
     [ChatCommand("vdomspikemount", "VDOM spike: mount the view page (step 1 of the spike).")]
     public async Task MountAsync()
@@ -75,13 +75,19 @@ public class VdomSpikeCommandsController(VdomSpikeState state) : EvoScController
             + "confirming the LAST seq sent always eventually shows up.");
     }
 
-    [ChatCommand("vdomspikepool", "VDOM spike: mount N generic pooled controls to measure mount cost.")]
-    public async Task PoolAsync(int count)
+    [ChatCommand("vdomspikepool", "VDOM spike: mount N pooled controls (scriptevents on) to measure mount cost.")]
+    public Task PoolAsync(int count) => SendPoolAsync(count, scriptEvents: true);
+
+    [ChatCommand("vdomspikepoolflat",
+        "VDOM spike: mount N pooled controls with scriptevents OFF, to isolate mount/render cost from event-volume cost.")]
+    public Task PoolFlatAsync(int count) => SendPoolAsync(count, scriptEvents: false);
+
+    private async Task SendPoolAsync(int count, bool scriptEvents)
     {
         var login = Context.Player.GetLogin();
 
         var buildSw = Stopwatch.StartNew();
-        var xml = VdomSpikeManialinks.BuildPoolPage(count);
+        var xml = VdomSpikeManialinks.BuildPoolPage(count, scriptEvents);
         buildSw.Stop();
 
         var sendSw = Stopwatch.StartNew();
@@ -89,9 +95,10 @@ public class VdomSpikeCommandsController(VdomSpikeState state) : EvoScController
         sendSw.Stop();
 
         var bytes = Encoding.UTF8.GetByteCount(xml);
+        var variant = scriptEvents ? "scriptevents ON" : "scriptevents OFF";
 
         await Context.Chat.SuccessMessageAsync(
-            $"Pool of {count} controls mounted: {bytes:N0} bytes, "
+            $"Pool of {count} controls ({variant}) mounted: {bytes:N0} bytes, "
             + $"build {buildSw.Elapsed.TotalMilliseconds:0.0}ms, "
             + $"send call {sendSw.Elapsed.TotalMilliseconds:0.0}ms. "
             + "Move your mouse across the grid and watch for visible hitching, and check the "

@@ -18,6 +18,8 @@ using EvoSC.Common.Services;
 using EvoSC.Common.Themes;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
+using EvoSC.Manialinks.Vdom;
+using EvoSC.Manialinks.Vdom.Views;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Util;
@@ -87,13 +89,25 @@ public static class ApplicationSetup
             .Services(AppFeature.Permissions, s => s.AddEvoScPermissions())
 
             .Services(AppFeature.Manialinks, s => s.AddEvoScManialinks())
-                
+
+            .Services(AppFeature.Vdom, s => s.AddEvoScVdom())
+
             .Services(AppFeature.Themes, s => s.AddEvoScThemes())
 
                 // initialize the application
             .Action("ActionMigrateDatabase", MigrateDatabase)
 
             .Action("ActionSetupControllerManager", SetupControllerManager)
+
+            // VdomAckController is a plain library [Controller], not a module's -- ModuleManager
+            // never sees it, so it needs the same explicit AddController call a module's
+            // EnableControllersAsync would otherwise make. Must run after
+            // ActionSetupControllerManager, so the action-pipeline registries (in particular
+            // IManialinkActionManager) are already wired up to actually register its route.
+            .Action("ActionRegisterVdomAckController", s => s
+                .GetInstance<IControllerManager>()
+                .AddController<VdomAckController>(Guid.Empty, s)
+            )
 
             .AsyncAction("ActionSetupModules", SetupModulesAsync)
 

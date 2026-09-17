@@ -128,4 +128,11 @@ public enum AppFeature
     /// </summary>
     [Identifier(NoPrefix = true)]
     Chat,
+
+    /// <summary>
+    /// The reactive VDOM manialink engine: pooled/patched views, as opposed to the
+    /// full-re-render-per-send Manialinks framework.
+    /// </summary>
+    [Identifier(NoPrefix = true)]
+    Vdom,
 }
