@@ -79,9 +79,23 @@ public static class MountXmlWriter
         xml.Append('<').Append(TagName(kind))
             .Append(" id=\"").Append(ControlId(kind, slot)).Append('"')
             .Append(" pos=\"").Append(pos).Append('"')
-            .Append(" size=\"").Append(size).Append('"')
-            .Append(" hidden=\"").Append(visible ? '0' : '1').Append('"')
-            .Append(" scriptevents=\"").Append(interactive ? '1' : '0').Append('"');
+            .Append(" size=\"").Append(size).Append('"');
+
+        // Only emitted when non-default -- matching ManiaLink.cs's own default-attribute
+        // stripping in the old engine (it strips scriptevents="0" unconditionally, and never
+        // emits redundant defaults generally). A visible, non-interactive control -- the common
+        // case -- gets neither attribute at all, exactly matching the one label recipe confirmed
+        // to render visible text in-game (M0's spike, src/Modules/VdomSpikeModule): no `hidden`,
+        // no `scriptevents` on its always-shown label.
+        if (!visible)
+        {
+            xml.Append(" hidden=\"1\"");
+        }
+
+        if (interactive)
+        {
+            xml.Append(" scriptevents=\"1\"");
+        }
 
         if (mountProps?.Class is { } cls)
         {

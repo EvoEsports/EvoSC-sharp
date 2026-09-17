@@ -7,13 +7,20 @@ namespace EvoSC.Manialinks.Vdom.Patch;
 
 /// <summary>
 /// Serializes <see cref="VPatchOp"/>s to the JSON <c>Runtime/VdomRuntime.ms</c> decodes via
-/// ManiaScript's <c>.fromjson()</c>, matching these declared structs exactly (field names are
+/// ManiaScript's <c>.fromjson()</c>, matching this declared struct exactly (field names are
 /// case-sensitive on the ManiaScript side):
 ///
 /// <code>
-/// #Struct EvoSC_Vdom_Op    { Integer S; Integer K; Integer P; Text V; }
-/// #Struct EvoSC_Vdom_Patch { Integer Seq; EvoSC_Vdom_Op[] Ops; }
+/// #Struct EvoSC_Vdom_Op { Integer S; Integer K; Integer P; Text V; }
 /// </code>
+///
+/// The JSON root is a plain array of these (<c>[{...},{...}]</c>), not an object wrapping an
+/// "Ops" array with a "Seq" field alongside it -- deliberately, matching the one JSON shape
+/// ManiaScript's <c>.fromjson()</c> is documented to support ("the JSON root is an array") when
+/// called on an array-typed variable directly. The seq number travels on its own, in a separate
+/// plain Integer LocalUser variable (see <see cref="VdomNaming.PatchSeqVariableName"/>) that
+/// needs no JSON parsing at all -- see that method's docs for why nesting them together was
+/// avoided.
 ///
 /// There is deliberately no separate "Free" array (the plan's L4 sketch has one) -- a Free is
 /// just a <see cref="VPatchOp.Set"/>-shaped entry with <see cref="FreePropSentinel"/> as its
@@ -35,23 +42,17 @@ public static class PatchSerializer
     /// </summary>
     public const int FreePropSentinel = -1;
 
-    /// <param name="seq">
-    /// The highest diff sequence number included in this patch -- the client echoes this back in
-    /// its ack (see <see cref="IPatchTransport"/>), so it must be monotonic and identify exactly
-    /// how much of the backlog this patch covers.
-    /// </param>
     /// <param name="ops">
     /// Every op to include, already flattened across however many diffs this patch is catching
     /// the client up on (see the "cumulative since last ack" note in the plan's L4).
     /// </param>
-    public static string Serialize(int seq, IEnumerable<VPatchOp> ops)
+    /// <returns>A JSON array, e.g. <c>[{"S":0,"K":1,"P":12,"V":"Alice"}]</c> -- not an object.</returns>
+    public static string SerializeOps(IEnumerable<VPatchOp> ops)
     {
         using var stream = new MemoryStream();
         using (var writer = new Utf8JsonWriter(stream))
         {
-            writer.WriteStartObject();
-            writer.WriteNumber("Seq", seq);
-            writer.WriteStartArray("Ops");
+            writer.WriteStartArray();
 
             foreach (var op in ops)
             {
@@ -59,7 +60,6 @@ public static class PatchSerializer
             }
 
             writer.WriteEndArray();
-            writer.WriteEndObject();
         }
 
         return Encoding.UTF8.GetString(stream.ToArray());

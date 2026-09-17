@@ -18,7 +18,8 @@ public static class RuntimeScriptBuilder
             .Replace("{{QuadCount}}", TotalForKind(layout, VKind.Quad).ToString())
             .Replace("{{LabelCount}}", TotalForKind(layout, VKind.Label).ToString())
             .Replace("{{EntryCount}}", TotalForKind(layout, VKind.Entry).ToString())
-            .Replace("{{PatchVariableName}}", VdomNaming.PatchVariableName(viewName))
+            .Replace("{{PatchSeqVariableName}}", VdomNaming.PatchSeqVariableName(viewName))
+            .Replace("{{PatchOpsVariableName}}", VdomNaming.PatchOpsVariableName(viewName))
             .Replace("{{AckRoutePrefix}}", AckRoutePrefix(viewName));
     }
 

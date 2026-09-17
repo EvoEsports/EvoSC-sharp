@@ -57,10 +57,17 @@ public sealed class ManialinkViewManager : IManialinkViewManager
 
     public void RecordAck(string viewName, string login, int seq)
     {
-        if (_viewsByName.TryGetValue(viewName, out var view))
+        // Confirms the client actually received, parsed and applied a patch -- the only direct
+        // evidence of that, short of eyeballing the game. See VdomAckController.
+        _logger.LogInformation("Vdom ack for view '{View}' from '{Login}': seq {Seq}.", viewName, login, seq);
+
+        if (!_viewsByName.TryGetValue(viewName, out var view))
         {
-            view.RecordAck(login, seq);
+            _logger.LogWarning("Vdom ack for unknown view '{View}' (already unmounted?).", viewName);
+            return;
         }
+
+        view.RecordAck(login, seq);
     }
 
     internal void Forget(string viewName) => _viewsByName.TryRemove(viewName, out _);
@@ -119,6 +126,12 @@ public sealed class ManialinkViewManager : IManialinkViewManager
                 xml = BuildMountPageXml();
             }
 
+            // Deliberately LogInformation, not LogDebug: the whole L4-L6 pipeline is unverified
+            // in-game (see the plan's M1 progress notes), so the mount XML needs to be visible
+            // in default-level logs the first several times this runs, not hidden behind a log
+            // level someone has to remember to enable.
+            logger.LogInformation("Vdom mount XML for view '{View}':\n{Xml}", Name, xml);
+
             foreach (var player in players)
             {
                 _playersByLogin[player.GetLogin()] = player;
@@ -142,6 +155,7 @@ public sealed class ManialinkViewManager : IManialinkViewManager
 
                     if (diffOps.Count == 0)
                     {
+                        logger.LogInformation("Vdom update for view '{View}': no-op diff, nothing to send.", Name);
                         return;
                     }
 
@@ -187,8 +201,15 @@ public sealed class ManialinkViewManager : IManialinkViewManager
                 return;
             }
 
-            var json = PatchSerializer.Serialize(seqToSend, opsToSend);
-            await patchTransport.SendAsync(_playersByLogin.Values, Name, json);
+            var opsJson = PatchSerializer.SerializeOps(opsToSend);
+
+            // Same reasoning as the mount log: this whole path is unverified in-game, so it
+            // needs to be visible by default while that's true.
+            logger.LogInformation(
+                "Vdom patch for view '{View}': seq {Seq}, {OpCount} ops, {PlayerCount} players.\n{Json}",
+                Name, seqToSend, opsToSend.Count, _playersByLogin.Count, opsJson);
+
+            await patchTransport.SendAsync(_playersByLogin.Values, Name, seqToSend, opsJson);
         }
 
         public async Task AddPlayersAsync(IEnumerable<IPlayer> players)

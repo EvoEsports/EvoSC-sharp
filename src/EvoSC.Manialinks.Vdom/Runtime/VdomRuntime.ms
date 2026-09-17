@@ -5,18 +5,28 @@ a "for LocalUser" variable written by the small, disposable patch page
 (Patch/LocalUserPatchTransport.cs) -- confirmed working cross-page in the M0 spike
 (src/Modules/VdomSpikeModule).
 
-Three tokens are text-substituted per view before this is embedded (see
+Tokens are text-substituted per view before this is embedded (see
 Runtime/RuntimeScriptBuilder.cs) -- everything else on this page is identical across every
 reactive view:
   {{QuadCount}}, {{LabelCount}}, {{EntryCount}}  -- this view's total pool size per Kind
-  {{PatchVariableName}}                          -- the "for LocalUser" variable to read
+  {{PatchSeqVariableName}}                       -- "for LocalUser" Integer: latest patch's seq
+  {{PatchOpsVariableName}}                       -- "for LocalUser" Text: latest patch's ops JSON
   {{AckRoutePrefix}}                             -- TriggerPageAction route prefix for acks
 
+The seq and ops travel in two separate LocalUser variables, not one combined
+"{Seq, Ops}" object -- deliberately: ManiaScript's .fromjson() is documented to support "the JSON
+root is an array" when called on an array-typed variable directly, but a struct field that is
+itself an array of structs is an unverified extension of that (and M0's spike never exercised
+.fromjson() at all, only plain Text/Integer LocalUser variables). Two flat variables of
+directly-supported shapes were substituted in after the combined-object version was confirmed
+in-game to silently fail (patch computed and sent correctly server-side; client never applied it
+or acked -- consistent with .fromjson() failing on the nested shape). See the plan's M1 notes.
+
 Wire format (must match PatchSerializer.cs exactly -- field names are case-sensitive):
-  #Struct EvoSC_Vdom_Op    { Integer S; Integer K; Integer P; Text V; }
-  #Struct EvoSC_Vdom_Patch { Integer Seq; EvoSC_Vdom_Op[] Ops; }
-A Free is a Set-shaped entry with P == -1 (PatchSerializer.FreePropSentinel) and an empty V, so
-there is exactly one array to iterate rather than two struct types to keep in sync.
+  #Struct EvoSC_Vdom_Op { Integer S; Integer K; Integer P; Text V; }
+The ops JSON is a plain array of these: [{...},{...}]. A Free is a Set-shaped entry with P == -1
+(PatchSerializer.FreePropSentinel) and an empty V, so there is exactly one array to iterate
+rather than two struct types to keep in sync.
 
 VKind (K) and VPropId (P) numeric values are pinned in VTypes.cs / VProps.cs -- see the comments
 there. If those files are ever renumbered, this file's dispatch below must be updated to match;
@@ -42,11 +52,6 @@ same way src/Modules/VdomSpikeModule verified the transport.
     Integer K;
     Integer P;
     Text V;
-}
-
-#Struct EvoSC_Vdom_Patch {
-    Integer Seq;
-    EvoSC_Vdom_Op[] Ops;
 }
 
 Vec2 __VdomParseVec2(Text V) {
@@ -159,17 +164,18 @@ main() {
     }
 
     declare Integer __VdomLastAppliedSeq = 0;
-    declare Text {{PatchVariableName}} for LocalUser;
+    declare Integer {{PatchSeqVariableName}} for LocalUser;
+    declare Text {{PatchOpsVariableName}} for LocalUser;
 
     while (True) {
         yield;
 
-        if ({{PatchVariableName}} != "") {
-            declare EvoSC_Vdom_Patch __VdomPatch;
-            declare Boolean __VdomOk = __VdomPatch.fromjson({{PatchVariableName}});
+        if ({{PatchSeqVariableName}} > __VdomLastAppliedSeq) {
+            declare EvoSC_Vdom_Op[] __VdomOps;
+            declare Boolean __VdomOk = __VdomOps.fromjson({{PatchOpsVariableName}});
 
-            if (__VdomOk && __VdomPatch.Seq > __VdomLastAppliedSeq) {
-                foreach (__VdomOp in __VdomPatch.Ops) {
+            if (__VdomOk) {
+                foreach (__VdomOp in __VdomOps) {
                     if (__VdomOp.K == 0) {
                         if (__VdomOp.P == -1) {
                             __VdomQuads[__VdomOp.S].Hide();
@@ -191,7 +197,7 @@ main() {
                     }
                 }
 
-                __VdomLastAppliedSeq = __VdomPatch.Seq;
+                __VdomLastAppliedSeq = {{PatchSeqVariableName}};
                 TriggerPageAction("{{AckRoutePrefix}}" ^ __VdomLastAppliedSeq);
             }
         }

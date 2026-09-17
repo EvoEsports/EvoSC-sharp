@@ -11,5 +11,7 @@ namespace EvoSC.Manialinks.Vdom.Patch;
 /// </summary>
 public interface IPatchTransport
 {
-    Task SendAsync(IEnumerable<IPlayer> players, string viewName, string patchJson);
+    /// <param name="seq">Written to the plain Integer LocalUser seq variable, no serialization needed.</param>
+    /// <param name="opsJson">The JSON array from <see cref="PatchSerializer.SerializeOps"/>.</param>
+    Task SendAsync(IEnumerable<IPlayer> players, string viewName, int seq, string opsJson);
 }

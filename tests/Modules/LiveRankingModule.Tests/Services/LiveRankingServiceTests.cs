@@ -1,4 +1,5 @@
-﻿using EvoSC.Common.Interfaces;
+﻿using EvoSC.Common.Events;
+using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models;
@@ -6,7 +7,7 @@ using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util.MatchSettings;
-using EvoSC.Manialinks.Interfaces;
+using EvoSC.Manialinks.Vdom.Views;
 using EvoSC.Modules.Official.LiveRankingModule.Config;
 using EvoSC.Modules.Official.LiveRankingModule.Interfaces;
 using EvoSC.Modules.Official.LiveRankingModule.Models;
@@ -20,22 +21,30 @@ namespace EvoSC.Modules.Official.LiveRankingModule.Tests.Services;
 
 public class LiveRankingServiceTests
 {
-    private readonly Mock<IManialinkManager> _manialinkManager = new();
+    private readonly Mock<IManialinkViewManager> _viewManager = new();
     private readonly Mock<ILiveRankingSettings> _settings = new();
     private readonly Mock<IPlayerManagerService> _playerManagerService = new();
     private readonly Mock<IMatchSettingsService> _matchSettingsService = new();
+    private readonly Mock<IEventManager> _events = new();
 
     private readonly (Mock<IServerClient> Client, Mock<IGbxRemoteClient> Remote, Mock<IChatService> Chat)
         _server = Mocking.NewServerClientMock();
 
     private ILiveRankingService LiveRankingServiceMock()
     {
+        _playerManagerService.Setup(p => p.GetOnlinePlayersAsync())
+            .Returns(Task.FromResult(Enumerable.Empty<IOnlinePlayer>()));
+
+        _viewManager.Setup(v => v.MountAsync(It.IsAny<IEnumerable<IPlayer>>(), It.IsAny<IVdomView>(), It.IsAny<object>()))
+            .Returns(Task.FromResult(new Mock<IManialinkView>().Object));
+
         return new LiveRankingService(
-            _manialinkManager.Object,
+            _viewManager.Object,
             _server.Client.Object,
             _settings.Object,
             _playerManagerService.Object,
-            _matchSettingsService.Object
+            _matchSettingsService.Object,
+            _events.Object
         );
     }
 
@@ -141,8 +150,8 @@ public class LiveRankingServiceTests
 
         await liveRankingService.MapScoresAndSendWidgetAsync(scoresEventArgs);
 
-        _manialinkManager.Verify(
-            m => m.SendPersistentManialinkAsync("LiveRankingModule.LiveRanking", It.IsAny<object>()),
+        _viewManager.Verify(
+            v => v.MountAsync(It.IsAny<IEnumerable<IPlayer>>(), It.IsAny<IVdomView>(), It.IsAny<object>()),
             Times.Once
         );
     }
