@@ -45,7 +45,15 @@ public sealed class Application : IEvoSCApplication, IDisposable
     {
         var moduleManager = Services.GetInstance<IModuleManager>();
 
-        foreach (var module in moduleManager.LoadedModules)
+        // Disable everything first so feature registration is torn down in a predictable
+        // state, then unload all external modules (internal modules are compiled into the
+        // host and cannot be unloaded).
+        foreach (var module in moduleManager.LoadedModules.Where(m => m.IsEnabled))
+        {
+            await moduleManager.DisableAsync(module.LoadId);
+        }
+
+        foreach (var module in moduleManager.LoadedModules.Where(m => !m.ModuleInfo.IsInternal))
         {
             await moduleManager.UnloadAsync(module.LoadId);
         }

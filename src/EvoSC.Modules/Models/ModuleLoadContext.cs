@@ -29,8 +29,15 @@ public class ModuleLoadContext : IModuleLoadContext
 
     public bool IsEnabled { get; private set; }
 
+    public ModuleStatus Status { get; private set; } = ModuleStatus.Loaded;
+
     void IModuleLoadContext.SetEnabled(bool enabled)
     {
         IsEnabled = enabled;
+    }
+
+    void IModuleLoadContext.SetStatus(ModuleStatus status)
+    {
+        Status = status;
     }
 }

@@ -88,4 +88,12 @@ public interface IModuleManager
     /// <param name="loadId">The load ID of the module to unload.</param>
     /// <returns></returns>
     public Task UnloadAsync(Guid loadId);
+
+    /// <summary>
+    /// Reload an external module from its directory. Dependents that were unloaded as
+    /// part of the dependency cascade are not automatically reloaded.
+    /// </summary>
+    /// <param name="loadId">The load ID of the module to reload.</param>
+    /// <returns></returns>
+    public Task ReloadAsync(Guid loadId);
 }

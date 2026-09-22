@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>EvoSC.Modules.Official.ContractApiProviderModule</RootNamespace>
+        <EvoSCModulesOutDir>$(MSBuildThisFileDirectory)..\..\..\tests\EvoSC.Modules.Tests\bin\$(Configuration)\$(TargetFramework)\modules\ContractApiProviderModule</EvoSCModulesOutDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
+        <ProjectReference Include="..\..\EvoSC.Modules.Build\EvoSC.Modules.Build.csproj" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <Import Project="..\..\EvoSC.Modules.Build\build\EvoSC.Modules.Build.targets" />
+
+</Project>

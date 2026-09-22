@@ -90,8 +90,19 @@ public interface IModuleLoadContext
     public bool IsEnabled { get; }
 
     /// <summary>
+    /// The lifecycle status of the module.
+    /// </summary>
+    public ModuleStatus Status { get; }
+
+    /// <summary>
     /// Set the enabled status of this module.
     /// </summary>
     /// <param name="enabled">True if enabled, false otherwise.</param>
     internal void SetEnabled(bool enabled);
+
+    /// <summary>
+    /// Set the lifecycle status of this module.
+    /// </summary>
+    /// <param name="status">The new status.</param>
+    internal void SetStatus(ModuleStatus status);
 }
