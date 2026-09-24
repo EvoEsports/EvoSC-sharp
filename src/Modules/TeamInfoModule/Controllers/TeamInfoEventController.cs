@@ -40,8 +40,8 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
         if (teamInfoService.ShouldUpdateTeamPoints(eventArgs.Section))
         {
             await teamInfoService.UpdatePointsAsync(
-                eventArgs.Teams.FirstOrDefault()?.MatchPoints ?? 0,
-                eventArgs.Teams.Skip(1).FirstOrDefault()?.MatchPoints ?? 0,
+                eventArgs.Teams.FirstOrDefault()?.MapPoints ?? 0,
+                eventArgs.Teams.Skip(1).FirstOrDefault()?.MapPoints ?? 0,
                 teamInfoService.ShouldExecuteManiaScript(eventArgs.Section)
             );
         }
