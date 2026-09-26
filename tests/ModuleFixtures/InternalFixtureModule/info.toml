@@ -1,9 +1,11 @@
 [info]
-id = "SimpleModule"
-name = "Simple Module"
+id = "InternalFixtureModule"
+name = "Internal Fixture Module"
 # A short description of what the module is and does
-summary = "The most basic module possible."
+summary = "Declares itself internal and is registered by id, like the modules that ship with EvoSC."
 # The current version of this module, using SEMVER
 version = "1.0.0"
 # The name of the author that created this module
 author = "Evo"
+
+[dependencies]

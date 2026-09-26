@@ -1,6 +1,4 @@
-﻿using EvoSC.Common.Interfaces.Models;
-
-namespace EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
+﻿namespace EvoSC.Common.Interfaces.Models;
 
 public interface IPlayerRecord : IComparable<IPlayerRecord>
 {

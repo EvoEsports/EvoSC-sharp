@@ -1,9 +1,14 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Modules.Official.PlayerRecords.Database.Models;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
+using EvoSC.Common.Database.Models.PlayerRecords;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Interfaces;
 
+/// <summary>
+/// Exported so other modules can read the records table without a reference to this module. The
+/// record entity is part of the shared framework, which is what lets a module's own table hold a
+/// foreign key to it.
+/// </summary>
+[Export]
 public interface IPlayerRecordsRepository
 {
     /// <summary>

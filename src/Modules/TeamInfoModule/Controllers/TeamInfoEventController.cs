@@ -6,7 +6,6 @@ using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 using EvoSC.Modules.Official.TeamSettingsModule.Events;
-using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
 using GbxRemoteNet.Events;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Controllers;
@@ -92,7 +91,7 @@ public class TeamInfoEventController(ITeamInfoService teamInfoService) : EvoScCo
     }
 
     [Subscribe(TeamSettingsEvents.SettingsUpdated, IsAsync = true)]
-    public async Task OnTeamSettingsUpdatedAsync(object sender, TeamSettingsEventArgs args)
+    public async Task OnTeamSettingsUpdatedAsync(object sender, System.EventArgs args)
     {
         if (!await teamInfoService.GetModeIsTeamsAsync())
         {

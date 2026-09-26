@@ -1,12 +1,66 @@
 <Project>
 
   <!--
-    A module's info.toml is compiled into assembly attributes by the module info source
-    generator, which reads it as an additional file. Adding it here means a module only has to
-    place info.toml next to its project file; no per-project wiring is needed.
+    Everything under src/Modules is a module, so the module build contract is applied here
+    rather than per project. A module only has to place an info.toml next to its project
+    file; this file provides:
+
+      * the info.toml additional file read by the module info source generator,
+      * the build-time export split, so [Export] contracts land in a separate
+        <AssemblyName>.Exports.dll that is shared with the modules consuming them, and
+      * staging of the module's assemblies, its export assembly and its info.toml into
+        $(EvoSCModulesOutRoot)<ProjectName>.
+
+    Modules are staged rather than copied next to the host executable so that a module is
+    loaded from a directory of its own, in its own assembly load context, exactly like a
+    third-party module. The host stages these directories into the "modules" directory of its
+    output, which is the default ModuleDirectories entry.
   -->
-  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)/info.toml')">
-    <AdditionalFiles Include="$(MSBuildProjectDirectory)/info.toml" />
+
+  <PropertyGroup>
+    <!-- Staging root shared by all modules. The host copies from here into its own output. -->
+    <EvoSCModulesOutRoot Condition="'$(EvoSCModulesOutRoot)' == ''">$(MSBuildThisFileDirectory)..\..\artifacts\modules\</EvoSCModulesOutRoot>
+    <EvoSCModulesOutDir Condition="'$(EvoSCModulesOutDir)' == ''">$(EvoSCModulesOutRoot)$(MSBuildProjectName)\</EvoSCModulesOutDir>
+
+    <!--
+      A module is a library, so its NuGet assets are not copied to its output by default and
+      would instead be resolved from whatever application references it. A module is loaded on
+      its own instead, so it has to carry the assets it needs.
+    -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Supplies the ExportAssemblyAnalyzer MSBuild task used by the imported targets. -->
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\EvoSC.Modules.Build\EvoSC.Modules.Build.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\EvoSC.Modules.Build\build\EvoSC.Modules.Build.targets" />
+
+  <!--
+    A module is loaded on its own, so the NuGet assets it needs must sit next to its
+    assemblies: a class library would otherwise leave them to the application that references
+    it, and a module has no such application.
+
+    A module declares the assets that are private to it:
+      <ItemGroup>
+        <EvoSCModulePackage Include="Flurl" />
+      </ItemGroup>
+    Everything else a module uses comes from the shared framework and is deliberately left out
+    so the module's load context binds it from the default load context, keeping a single type
+    identity for e.g. Microsoft.Extensions.Logging or linq2db.
+  -->
+  <Target Name="EvoSC_StageModuleDependencies"
+          AfterTargets="EvoSC_CopyModuleOutput"
+          Condition="'$(Language)' == 'C#'">
+
+    <ItemGroup>
+      <EvoSC_ModuleDependency Include="@(EvoSCModulePackage->'$(TargetDir)%(Identity).dll')" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(EvoSC_ModuleDependency)"
+          DestinationFolder="$(EvoSCModulesOutDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

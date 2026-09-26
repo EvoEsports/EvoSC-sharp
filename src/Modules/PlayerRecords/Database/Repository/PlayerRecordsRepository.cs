@@ -5,9 +5,8 @@ using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
-using EvoSC.Modules.Official.PlayerRecords.Database.Models;
+using EvoSC.Common.Database.Models.PlayerRecords;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 

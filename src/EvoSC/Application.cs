@@ -46,8 +46,8 @@ public sealed class Application : IEvoSCApplication, IDisposable
         var moduleManager = Services.GetInstance<IModuleManager>();
 
         // Disable everything first so feature registration is torn down in a predictable
-        // state, then unload all external modules (internal modules are compiled into the
-        // host and cannot be unloaded).
+        // state, then unload the external modules. The modules that ship with EvoSC stay
+        // loaded: they are part of the host for as long as it runs.
         foreach (var module in moduleManager.GetLoadedModules().Where(m => m.IsEnabled))
         {
             await moduleManager.DisableAsync(module.LoadId);

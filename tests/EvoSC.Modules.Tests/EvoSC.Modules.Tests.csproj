@@ -36,6 +36,10 @@
         <ProjectReference Include="..\ModuleFixtures\ContractApiConsumerModule\ContractApiConsumerModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
         <ProjectReference Include="..\ModuleFixtures\CyclicModuleA\CyclicModuleA.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
         <ProjectReference Include="..\ModuleFixtures\CyclicModuleB\CyclicModuleB.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+        <ProjectReference Include="..\ModuleFixtures\InternalFixtureModule\InternalFixtureModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+        <!-- The example stages into its own output, so this only makes sure it is built before the
+             test that loads it. -->
+        <ProjectReference Include="..\..\examples\SimpleModule\SimpleModule.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <Import Project="..\..\src\EvoSC.Modules.Build\build\EvoSC.Modules.Build.targets" />

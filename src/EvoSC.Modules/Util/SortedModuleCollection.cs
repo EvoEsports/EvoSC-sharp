@@ -15,6 +15,8 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
     /// </summary>
     public IEnumerable<T> SortedModules => GetSortedModules();
 
+    public int Count => _modules.Count;
+
     public void Add(T module)
     {
         _modules[module.Id] = module;

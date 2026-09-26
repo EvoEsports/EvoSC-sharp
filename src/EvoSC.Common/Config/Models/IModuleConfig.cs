@@ -15,6 +15,6 @@ public interface IModuleConfig
     public string[] ModuleDirectories { get; }
     
     [Description("Modules that will not load on startup. Note that if a module depend on a disabled module, it will load anyways.")]
-    [Option(Alias = "disabledModules")]
+    [Option(Alias = "disabledModules", DefaultValue = new []{"ExampleModule", "FastestCpModule", "MatchRankingModule"})]
     public string[] DisabledModules { get; }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.Loader;
 using EvoSC.Modules.Exceptions;
@@ -61,6 +62,26 @@ internal sealed class ExportAssemblyStore
         lock (_gate)
         {
             return _knownPaths.ContainsKey(moduleId) || _exports.ContainsKey(moduleId);
+        }
+    }
+
+    /// <summary>
+    /// The already loaded export of <paramref name="moduleId"/>, without taking a reference.
+    /// A module's own export holds types the module declares itself, so the module needs it for
+    /// its own metadata scans; asking for a reference it already holds would leak one.
+    /// </summary>
+    public bool TryGetLoadedExport(string moduleId, [NotNullWhen(true)] out Assembly? assembly)
+    {
+        lock (_gate)
+        {
+            if (_exports.TryGetValue(moduleId, out var registration))
+            {
+                assembly = registration.Assembly;
+                return true;
+            }
+
+            assembly = null;
+            return false;
         }
     }
 

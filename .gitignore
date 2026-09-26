@@ -45,3 +45,6 @@ docker-compose.yml
 global.json
 .env
 nuget.config
+
+# Module staging output (see src/Modules/Directory.Build.targets)
+artifacts/

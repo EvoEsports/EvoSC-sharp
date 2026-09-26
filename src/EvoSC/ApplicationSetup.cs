@@ -90,12 +90,14 @@ public static class ApplicationSetup
                 
             .Services(AppFeature.Themes, s => s.AddEvoScThemes())
 
-                // initialize the application
-            .Action("ActionMigrateDatabase", MigrateDatabase)
-
             .Action("ActionSetupControllerManager", SetupControllerManager)
 
+            // Modules are loaded before the database is migrated, because a module's migrations live
+            // in its load context: they can only be found once the module has been loaded. They run
+            // before anything is enabled, so no module is ever enabled against an unmigrated table.
             .AsyncAction("ActionSetupModules", SetupModulesAsync)
+
+            .Action("ActionMigrateDatabase", MigrateDatabase)
 
             .Action("ActionInitializeEventManager", s => s
                 .GetInstance<IEventManager>()
@@ -142,12 +144,12 @@ public static class ApplicationSetup
     {
         using var scope = new Scope(s);
         var manager = scope.GetInstance<IMigrationManager>();
-    
+
         // main migrations
         manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
-    
-        // internal modules
-        manager.RunInternalModuleMigrations();
+
+        // module migrations, each from the load context of the module that owns them
+        manager.RunModuleMigrations(scope.GetInstance<IModuleManager>());
     }
 
     /// <summary>
@@ -175,7 +177,9 @@ public static class ApplicationSetup
         var modules = s.GetInstance<IModuleManager>();
         var config = s.GetInstance<IEvoScBaseConfig>();
 
-        await modules.LoadInternalModulesAsync();
+        // The modules that ship with EvoSC come from a fixed directory, picked by id. Everything
+        // else is discovered in the configured module directories.
+        await modules.LoadInternalModulesAsync(InternalModules.ModuleIds, InternalModules.DefaultDirectory);
 
         var dirs = config.Modules.ModuleDirectories;
         var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
@@ -186,7 +190,9 @@ public static class ApplicationSetup
                 continue;
             }
 
-            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
+            // The internal modules are deployed to the default module directory, so they have to be
+            // left out here or they would be loaded a second time as external modules.
+            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules, InternalModules.ModuleIds);
         }
 
         externalModules.SetIgnoredDependencies(modules.GetLoadedModules().Select(m => m.ModuleInfo.Id));

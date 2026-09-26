@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using EvoSC.Modules.Attributes;
-using EvoSC.Modules.Exceptions;
+﻿using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
 using Tomlet;
@@ -19,35 +17,6 @@ public static class ModuleInfoUtils
         return value;
     }
     
-    /// <summary>
-    /// Create an internal module info object from an assembly.
-    /// </summary>
-    /// <param name="assembly">The assembly containing a module.</param>
-    public static IInternalModuleInfo CreateFromAssembly(Assembly assembly)
-    {
-        var id = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleIdentifierAttribute>()?.Name, "Id");
-        var name = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleNameAttribute>()?.Name, "Name");
-        var summary = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleSummaryAttribute>()?.Summary, "Summary");
-        var version = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleVersionAttribute>()?.Version, "Version");
-        var author = ValidateModuleProperty(assembly.GetCustomAttribute<ModuleAuthorAttribute>()?.Author, "Author");
-
-        var dependencies = assembly.GetCustomAttributes<ModuleDependencyAttribute>().Select(d => new ModuleDependency
-        {
-            Name = d.Name, Version = Version.Parse(d.RequiredVersion)
-        });
-
-        return new InternalModuleInfo
-        {
-            Id = id!,
-            Name = name!,
-            Summary = summary!,
-            Version = version!,
-            Author = author!,
-            Dependencies = dependencies,
-            Assembly = assembly
-        };
-    }
-
     /// <summary>
     /// Create an external module info object from a module directory.
     /// </summary>
@@ -98,7 +67,8 @@ public static class ModuleInfoUtils
             Author = author,
             Dependencies = dependencies,
             Directory = dir,
-            ModuleFiles = moduleFiles
+            ModuleFiles = moduleFiles,
+            IsInternal = false
         };
     }
 }

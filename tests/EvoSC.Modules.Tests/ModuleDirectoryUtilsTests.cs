@@ -12,7 +12,11 @@ public class ModuleDirectoryUtilsTests
         var modules = ModuleDirectoryUtils.FindModulesFromDirectory(ModulesDirectory).ToArray();
 
         Assert.Equal(
-            new[] { "ContractApiConsumerModule", "ContractApiProviderModule", "CyclicModuleA", "CyclicModuleB" },
+            new[]
+            {
+                "ContractApiConsumerModule", "ContractApiProviderModule", "CyclicModuleA", "CyclicModuleB",
+                "InternalFixtureModule"
+            },
             modules.Select(m => m.Id).OrderBy(id => id, StringComparer.Ordinal));
     }
 

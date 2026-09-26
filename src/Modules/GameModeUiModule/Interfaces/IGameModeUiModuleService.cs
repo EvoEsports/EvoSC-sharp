@@ -2,6 +2,12 @@
 
 namespace EvoSC.Modules.Official.GameModeUiModule.Interfaces;
 
+/// <summary>
+/// Exported so other modules can drive the game mode UI without a reference to this module.
+/// GameModeUiComponentSettings and the models it mentions are part of the export surface too,
+/// so both sides exchange the same types.
+/// </summary>
+[Export]
 public interface IGameModeUiModuleService
 {
     /// <summary>

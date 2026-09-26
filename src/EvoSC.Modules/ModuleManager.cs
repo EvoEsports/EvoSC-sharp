@@ -70,6 +70,45 @@ public class ModuleManager : IModuleManager
 
 	public IReadOnlyList<IModuleLoadContext> GetLoadedModules() => _loadedModules.Values.ToList();
 
+	/// <summary>
+	/// Orders the loaded modules so that every module follows the ones it depends on. Loading
+	/// doesn't require dependencies to be loaded first, so load order says nothing about this.
+	/// </summary>
+	public IReadOnlyList<IModuleLoadContext> GetLoadedModulesByDependency()
+	{
+		var remaining = GetLoadedModules().ToList();
+		var ordered = new List<IModuleLoadContext>(remaining.Count);
+		var placed = new HashSet<Guid>();
+
+		while (remaining.Count > 0)
+		{
+			IModuleLoadContext? next = null;
+
+			foreach (var module in remaining)
+			{
+				if (module.LoadedDependencies.All(placed.Contains))
+				{
+					next = module;
+					break;
+				}
+			}
+
+			if (next == null)
+			{
+				// What is left depends on itself, so no order satisfies it. Hand out the rest in
+				// load order rather than dropping them.
+				ordered.AddRange(remaining);
+				break;
+			}
+
+			remaining.Remove(next);
+			placed.Add(next.LoadId);
+			ordered.Add(next);
+		}
+
+		return ordered;
+	}
+
 	internal ExportAssemblyStore ExportAssemblies => _exportAssemblies;
 
 	public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers, IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions, IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager)
@@ -486,6 +525,24 @@ public class ModuleManager : IModuleManager
 		return (type, evoScModuleLoadContext);
 	}
 
+	/// <summary>
+	/// A module classifies itself with [Module(IsInternal = true)]. The application also knows which
+	/// modules it registered as internal, so either declaration is enough to protect a module from
+	/// being unloaded or reloaded.
+	/// </summary>
+	private void ApplyModuleDeclaration(IExternalModuleInfo moduleInfo, Type mainClass)
+	{
+		if (mainClass.GetCustomAttribute<ModuleAttribute>() is not { IsInternal: true })
+		{
+			return;
+		}
+
+		if (moduleInfo is ExternalModuleInfo module)
+		{
+			module.IsInternal = true;
+		}
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private void EnsureExportDependenciesLoaded(Guid ownerLoadId, IModuleInfo moduleInfo)
 	{
@@ -540,6 +597,15 @@ public class ModuleManager : IModuleManager
 		var moduleServices = _servicesManager.NewContainer(loadId, assemblies, loadedDependencies);
 		moduleServices.RegisterInstance(moduleInfo);
 
+		// A module's own export assembly holds types the module declares itself, such as a
+		// [PermissionGroup] enum it shares with other modules, so it takes part in the same
+		// metadata scans as the module's own assemblies. It is deliberately left out of the
+		// service registrations above: an export only contains contracts and data, and
+		// registering those as services would be meaningless.
+		IReadOnlyList<Assembly> declaredAssemblies = _exportAssemblies.TryGetLoadedExport(moduleInfo.Id, out var ownExport)
+			? [.. assemblies, ownExport]
+			: assemblies;
+
 		var localization = GetModuleLocalization(mainClass.Assembly, rootNamespace, moduleInfo);
 
 		if (localization != null)
@@ -548,9 +614,9 @@ public class ModuleManager : IModuleManager
 			moduleServices.Register<Locale, LocaleResource>(Lifestyle.Scoped);
 		}
 
-		var themes = GetModuleThemes(assemblies);
+		var themes = GetModuleThemes(declaredAssemblies);
 
-		await RegisterModuleConfigAsync(assemblies, moduleServices, moduleInfo);
+		await RegisterModuleConfigAsync(declaredAssemblies, moduleServices, moduleInfo);
 		var moduleInstance = CreateModuleInstance(mainClass, moduleServices);
 		return new ModuleLoadContext
 		{
@@ -560,7 +626,7 @@ public class ModuleManager : IModuleManager
 			LoadId = loadId,
 			MainClass = mainClass,
 			ModuleInfo = moduleInfo,
-			Assemblies = assemblies,
+			Assemblies = declaredAssemblies,
 			Pipelines = CreateDefaultPipelines(),
 			Permissions = new List<IPermission>(),
 			LoadedDependencies = loadedDependencies,
@@ -811,24 +877,65 @@ public class ModuleManager : IModuleManager
 		var (type, asmLoadContext) = CreateAssemblyLoadContext(loadId, moduleInfo);
 		if (type != null)
 		{
+			ApplyModuleDeclaration(moduleInfo, type);
 			await LoadAndLinkAsync(moduleInfo, type, asmLoadContext, loadId);
 			return;
 		}
 		_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", moduleInfo.Id);
 	}
 
+	/// <summary>
+	/// Loads the modules that ship with EvoSC. They come from a module directory like any other
+	/// module, but are picked by id from a list the application controls rather than by discovery,
+	/// so that what is part of EvoSC is decided in code and a module missing from the deployment
+	/// is reported instead of silently ignored.
+	/// </summary>
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public async Task LoadAsync(Assembly assembly)
+	public async Task LoadInternalModulesAsync(IEnumerable<string> moduleIds, string directory)
 	{
-		IInternalModuleInfo internalModuleInfo = ModuleInfoUtils.CreateFromAssembly(assembly);
-		Guid loadId = Guid.NewGuid();
-		Type? type = internalModuleInfo.Assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
-		if (type != null)
+		if (!Directory.Exists(directory))
 		{
-			await LoadAndLinkAsync(internalModuleInfo, type, null, loadId);
+			throw new DirectoryNotFoundException("The internal module directory was not found at: " + directory);
+		}
+
+		var available = ModuleDirectoryUtils.FindModulesIn(directory).ToDictionary(module => module.Id);
+		var internalModules = new SortedModuleCollection<IExternalModuleInfo>();
+		var missing = new List<string>();
+
+		foreach (string moduleId in moduleIds)
+		{
+			if (!available.TryGetValue(moduleId, out var moduleInfo))
+			{
+				missing.Add(moduleId);
+				continue;
+			}
+
+			internalModules.Add(new ExternalModuleInfo
+			{
+				Id = moduleInfo.Id,
+				Name = moduleInfo.Name,
+				Summary = moduleInfo.Summary,
+				Version = moduleInfo.Version,
+				Author = moduleInfo.Author,
+				Dependencies = moduleInfo.Dependencies,
+				Directory = moduleInfo.Directory,
+				ModuleFiles = moduleInfo.ModuleFiles,
+				IsInternal = true
+			});
+		}
+
+		if (missing.Count > 0)
+		{
+			throw new EvoScModuleException(
+				$"The following internal modules were not found in '{directory}': {string.Join(", ", missing)}");
+		}
+
+		if (internalModules.Count == 0)
+		{
 			return;
 		}
-		_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", internalModuleInfo.Id);
+
+		await LoadAsync(internalModules);
 	}
 
 	/// <summary>
@@ -857,6 +964,7 @@ public class ModuleManager : IModuleManager
 				_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", module.Id);
 				continue;
 			}
+			ApplyModuleDeclaration(module, type);
 			prepared.Add((module, type, asmLoadContext, loadId));
 		}
 

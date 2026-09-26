@@ -1,10 +1,9 @@
 ﻿using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Database.Models.Player;
 using EvoSC.Common.Interfaces.Models;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB.Mapping;
 
-namespace EvoSC.Modules.Official.PlayerRecords.Database.Models;
+namespace EvoSC.Common.Database.Models.PlayerRecords;
 
 [Table("PlayerRecords")]
 public class DbPlayerRecord : IPlayerRecord
