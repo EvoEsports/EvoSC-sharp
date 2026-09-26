@@ -1,8 +1,6 @@
 [info]
-# A unique name for this module, this is used as a identifier
-name = "ForceTeamModule"
-# The title of the module
-title = "Force Team"
+id = "ForceTeamModule"
+name = "Force Team"
 # A short description of what the module is and does
 summary = "Moderator tool to switch players between teams."
 # The current version of this module, using SEMVER

@@ -20,6 +20,7 @@ public class ModuleValueReaderTests
             MainClass = null,
             ModuleInfo = new InternalModuleInfo
             {
+                Id = "MyTestModule",
                 Name = "MyTestModule",
                 Title = null,
                 Summary = null,

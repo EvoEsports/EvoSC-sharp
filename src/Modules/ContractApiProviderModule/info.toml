@@ -1,8 +1,6 @@
 [info]
-# A unique name for this module, this is used as a identifier
-name = "ContractApiProviderModule"
-# The title of the module
-title = "Contract API Provider"
+id = "ContractApiProviderModule"
+name = "Contract API Provider"
 # A short description of what the module is and does
 summary = "Provides a cross-module scoreboard API to other modules through an export assembly."
 # The current version of this module, using SEMVER

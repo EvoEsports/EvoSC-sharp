@@ -34,7 +34,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await chat.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Name), actor);
+                await chat.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasEnabled(module.ModuleInfo.Id), actor);
             }
         }
         catch (Exception ex)
@@ -66,7 +66,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
             
             if (actor != null)
             {
-                await chat.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Name), actor);
+                await chat.SuccessMessageAsync(_locale.PlayerLanguage.ModuleWasDisabled(module.ModuleInfo.Id), actor);
             }
         }
         catch (Exception ex)
@@ -89,7 +89,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
 
         foreach (var module in modules.LoadedModules)
         {
-            message.AddText(module.ModuleInfo.Name, style => style
+            message.AddText(module.ModuleInfo.Id, style => style
                 .WithColor(module.IsEnabled ? Color.Green : Color.Red)
             );
 

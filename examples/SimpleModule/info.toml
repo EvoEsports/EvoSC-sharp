@@ -1,6 +1,6 @@
 ﻿[info]
-name = "SimpleModule"
-title = "Simple Module"
+id = "SimpleModule"
+name = "Simple Module"
 summary = "The most basic module possible."
 version = "1.0.0"
 author = "Evo"

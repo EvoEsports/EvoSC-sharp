@@ -4,7 +4,7 @@
 public class ModuleIdentifierAttribute(string name) : Attribute
 {
     /// <summary>
-    /// The name of the module.
+    /// The unique identifier of the module.
     /// </summary>
     public string Name { get; } = name;
 }

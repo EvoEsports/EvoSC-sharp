@@ -1,6 +1,6 @@
 ﻿[info]
+id = "Scoreboard"
 name = "Scoreboard"
-title = "Scoreboard"
 summary = "Custom EvoSC Scoreboards."
 version = "1.0.0"
 author = "Evo"

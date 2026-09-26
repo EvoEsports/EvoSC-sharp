@@ -1,8 +1,6 @@
 ﻿[info]
-# A unique name for this module, this is used as a identifier
-name = "ASayModule"
-# The title of the module
-title = "ASay Module"
+id = "ASayModule"
+name = "ASay Module"
 # A short description of what the module is and does
 summary = "A module for displaying an announcement message to all players in a prominent position on the screen."
 # The current version of this module, using SEMVER

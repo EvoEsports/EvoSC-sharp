@@ -12,7 +12,7 @@ public class ModuleValueReader(IModuleManager modules) : IValueReader
     {
         foreach (var module in modules.LoadedModules)
         {
-            if (module.ModuleInfo.Name.Equals(input, StringComparison.Ordinal))
+            if (module.ModuleInfo.Id.Equals(input, StringComparison.Ordinal))
             {
                 return Task.FromResult((object)module);
             }

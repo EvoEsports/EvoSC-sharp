@@ -79,7 +79,7 @@ public class ConfigGeneratorCommand(IModuleManager modules)
         {
             foreach (var moduleAssembly in module.Assemblies)
             {
-                moduleAssemblies.Add((module.ModuleInfo.Name, module.ModuleInfo.Version.ToString(), moduleAssembly));
+                moduleAssemblies.Add((module.ModuleInfo.Id, module.ModuleInfo.Version.ToString(), moduleAssembly));
             }
         }
 

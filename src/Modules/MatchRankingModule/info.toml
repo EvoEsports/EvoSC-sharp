@@ -1,8 +1,6 @@
 ﻿[info]
-# A unique name for this module, this is used as a identifier
-name = "MatchRankingModule"
-# The title of the module
-title = "MatchRanking Module"
+id = "MatchRankingModule"
+name = "MatchRanking Module"
 # A short description of what the module is and does
 summary = "A module to display the scores of the current match."
 # The current version of this module, using SEMVER

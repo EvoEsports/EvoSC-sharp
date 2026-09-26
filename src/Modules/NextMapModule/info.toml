@@ -1,6 +1,6 @@
 ﻿[info]
-name = "NextMapModule"
-title = "Next Map"
+id = "NextMapModule"
+name = "Next Map"
 summary = "Module for showing what map is next in line."
 version = "1.0.0"
 author = "Evo"
