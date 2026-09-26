@@ -32,8 +32,10 @@
         <ProjectReference Include="..\..\src\EvoSC.Common\EvoSC.Common.csproj" />
         <ProjectReference Include="..\..\src\EvoSC.Modules\EvoSC.Modules.csproj" />
         <ProjectReference Include="..\..\src\EvoSC.Modules.Build\EvoSC.Modules.Build.csproj" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="..\..\src\Modules\ContractApiProviderModule\ContractApiProviderModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
-        <ProjectReference Include="..\..\src\Modules\ContractApiConsumerModule\ContractApiConsumerModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+        <ProjectReference Include="..\ModuleFixtures\ContractApiProviderModule\ContractApiProviderModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+        <ProjectReference Include="..\ModuleFixtures\ContractApiConsumerModule\ContractApiConsumerModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+        <ProjectReference Include="..\ModuleFixtures\CyclicModuleA\CyclicModuleA.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+        <ProjectReference Include="..\ModuleFixtures\CyclicModuleB\CyclicModuleB.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
     </ItemGroup>
 
     <Import Project="..\..\src\EvoSC.Modules.Build\build\EvoSC.Modules.Build.targets" />

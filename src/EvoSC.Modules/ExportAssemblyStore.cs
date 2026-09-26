@@ -2,161 +2,170 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.Loader;
 using EvoSC.Modules.Exceptions;
+using EvoSC.Modules.Util;
 
 namespace EvoSC.Modules;
 
 /// <summary>
-/// Loads every module's export assembly into its own dedicated collectible
-/// <see cref="AssemblyLoadContext"/> so that:
-///
-/// - All modules that reference a given export resolve the same assembly instance
-///   (and therefore the same type identities), because they all resolve through this store.
-/// - An export assembly can be unloaded and later reloaded once no module that still
-///   references it remains loaded — i.e. exports are as reloadable as the modules
-///   themselves.
-///
-/// Exports are reference-counted. Every module that references an export (its own or
-/// another module's) adds a reference; releasing a module decrements each of its
-/// references. An export is only unloaded when no live module reference remains and no
-/// other still-loaded export assembly references it.
+/// Shared, reloadable home for module export assemblies. Exports are keyed by the providing
+/// module's id so all consumers bind the same type identities. The runtime binder is answered
+/// through a private name index — callers never deal in assembly names.
 /// </summary>
 internal sealed class ExportAssemblyStore
 {
     private readonly Lock _gate = new();
 
-    /// <summary>known export simple name -> path it was registered from.</summary>
     private readonly Dictionary<string, string> _knownPaths = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>export simple name -> registration (assembly + owning ALC).</summary>
+    private readonly Dictionary<string, string> _assemblyNameToModuleId = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, ExportRegistration> _exports = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>export simple name -> set of export names that reference it.</summary>
     private readonly Dictionary<string, HashSet<string>> _referencedBy = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>export simple name -> number of live modules referencing it.</summary>
     private readonly Dictionary<string, int> _moduleReferenceCounts = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>live module load id -> set of export simple names it references.</summary>
-    private readonly Dictionary<Guid, HashSet<string>> _moduleReferences = new();
+    private readonly Dictionary<Guid, HashSet<string>> _instanceReferences = new();
 
     private readonly ConcurrentDictionary<Assembly, byte> _loadedAssemblies = new();
 
-    /// <summary>
-    /// Registers the location of an export assembly so it can be loaded on demand,
-    /// even by a module that does not itself ship the export file.
-    /// </summary>
-    public void RegisterExportPath(string simpleName, string assemblyPath)
+    /// <summary>Registers the export assembly provided by <paramref name="moduleId"/>.</summary>
+    public void RegisterExportPath(string moduleId, string assemblyPath)
     {
         lock (_gate)
         {
-            _knownPaths[simpleName] = assemblyPath;
+            _knownPaths[moduleId] = assemblyPath;
+            _assemblyNameToModuleId[Path.GetFileNameWithoutExtension(assemblyPath)!] = moduleId;
         }
     }
 
     /// <summary>
-    /// True when <paramref name="assembly"/> is an export assembly loaded through this store.
+    /// True when <paramref name="assemblyPath"/> is this module's own export: unclaimed, or the
+    /// exact location the export was registered from.
     /// </summary>
-    public bool IsExportAssembly(Assembly assembly) => _loadedAssemblies.ContainsKey(assembly);
-
-    /// <summary>
-    /// Acquires (loading on first use) the export assembly and records a reference on behalf
-    /// of <paramref name="ownerLoadId"/>. Multiple acquires by the same module are idempotent.
-    /// </summary>
-    public Assembly AcquireExportForModule(Guid ownerLoadId, string simpleName)
+    public bool IsOwnExportPath(string assemblyPath)
     {
         lock (_gate)
         {
-            AddModuleReferenceLocked(ownerLoadId, simpleName);
-            return AcquireOrLoadLocked(simpleName);
-        }
-    }
-
-    /// <summary>
-    /// Resolves an export assembly that is expected to already be loaded. Records a module
-    /// reference when found. Returns null when the export is unknown.
-    /// </summary>
-    public Assembly? ResolveExportForModule(Guid ownerLoadId, string simpleName)
-    {
-        lock (_gate)
-        {
-            if (!_exports.TryGetValue(simpleName, out var registration))
+            var simpleName = Path.GetFileNameWithoutExtension(assemblyPath);
+            if (!_assemblyNameToModuleId.TryGetValue(simpleName, out var moduleId))
             {
-                return null;
+                return true;
             }
 
-            AddModuleReferenceLocked(ownerLoadId, simpleName);
-            return registration.Assembly;
+            return string.Equals(_knownPaths[moduleId], Path.GetFullPath(assemblyPath), StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    /// <summary>True when <paramref name="assembly"/> was loaded through this store.</summary>
+    public bool IsExportAssembly(Assembly assembly) => _loadedAssemblies.ContainsKey(assembly);
+
+    /// <summary>True when the module with id <paramref name="moduleId"/> provides an export.</summary>
+    public bool HasExport(string moduleId)
+    {
+        lock (_gate)
+        {
+            return _knownPaths.ContainsKey(moduleId) || _exports.ContainsKey(moduleId);
         }
     }
 
     /// <summary>
-    /// Releases every export reference owned by <paramref name="ownerLoadId"/> and unloads
-    /// any export that has become unreferenced.
+    /// Resolver used by a module's load context to answer the CLR: only registered exports are
+    /// handed back, as a single shared identity.
     /// </summary>
-    public void ReleaseModule(Guid ownerLoadId)
+    public Func<string, Assembly?> CreateExportResolver(Guid ownerLoadId)
+        => requestedAssemblyName => ResolveForBinder(ownerLoadId, requestedAssemblyName);
+
+    /// <summary>Loads the export of <paramref name="moduleId"/> for module instance <paramref name="ownerLoadId"/>.</summary>
+    public Assembly AcquireExportForModule(Guid ownerLoadId, string moduleId)
     {
-        HashSet<string>? names;
         lock (_gate)
         {
-            if (!_moduleReferences.Remove(ownerLoadId, out names))
+            AddInstanceReferenceLocked(ownerLoadId, moduleId);
+            return AcquireOrLoadLocked(moduleId);
+        }
+    }
+
+    /// <summary>Releases <paramref name="ownerLoadId"/>'s export references and unloads any export left unreferenced.</summary>
+    public void ReleaseModule(Guid ownerLoadId)
+    {
+        HashSet<string>? referenced;
+        lock (_gate)
+        {
+            if (!_instanceReferences.Remove(ownerLoadId, out referenced))
             {
                 return;
             }
 
-            foreach (var name in names)
+            foreach (var moduleId in referenced)
             {
-                if (!_moduleReferenceCounts.TryGetValue(name, out var count))
+                if (!_moduleReferenceCounts.TryGetValue(moduleId, out var count))
                 {
                     continue;
                 }
 
                 if (count <= 1)
                 {
-                    _moduleReferenceCounts.Remove(name);
+                    _moduleReferenceCounts.Remove(moduleId);
                 }
                 else
                 {
-                    _moduleReferenceCounts[name] = count - 1;
+                    _moduleReferenceCounts[moduleId] = count - 1;
                 }
             }
         }
 
-        foreach (var name in names)
+        foreach (var moduleId in referenced)
         {
-            TryUnload(name);
+            TryUnload(moduleId);
         }
     }
 
-    private void AddModuleReferenceLocked(Guid ownerLoadId, string simpleName)
+    private void AddInstanceReferenceLocked(Guid ownerLoadId, string moduleId)
     {
-        if (!_moduleReferences.TryGetValue(ownerLoadId, out var set))
+        if (!_instanceReferences.TryGetValue(ownerLoadId, out var set))
         {
             set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _moduleReferences[ownerLoadId] = set;
+            _instanceReferences[ownerLoadId] = set;
         }
 
-        if (set.Add(simpleName))
+        if (set.Add(moduleId))
         {
-            _moduleReferenceCounts.TryGetValue(simpleName, out var count);
-            _moduleReferenceCounts[simpleName] = count + 1;
+            _moduleReferenceCounts.TryGetValue(moduleId, out var count);
+            _moduleReferenceCounts[moduleId] = count + 1;
         }
     }
 
-    private Assembly AcquireOrLoadLocked(string simpleName)
+    /// <summary>Answers a single CLR assembly-binding request. Only exports resolve here.</summary>
+    private Assembly? ResolveForBinder(Guid ownerLoadId, string requestedAssemblyName)
     {
-        if (_exports.TryGetValue(simpleName, out var existing))
+        lock (_gate)
+        {
+            if (!_assemblyNameToModuleId.TryGetValue(requestedAssemblyName, out var moduleId))
+            {
+                return null;
+            }
+
+            if (!_exports.TryGetValue(moduleId, out var registration))
+            {
+                return null;
+            }
+
+            AddInstanceReferenceLocked(ownerLoadId, moduleId);
+            return registration.Assembly;
+        }
+    }
+
+    private Assembly AcquireOrLoadLocked(string moduleId)
+    {
+        if (_exports.TryGetValue(moduleId, out var existing))
         {
             return existing.Assembly;
         }
 
-        if (!_knownPaths.TryGetValue(simpleName, out var path))
+        if (!_knownPaths.TryGetValue(moduleId, out var path))
         {
             throw new EvoScModuleException(
-                $"No export assembly registered for '{simpleName}'. A module that ships an export assembly " +
-                $"named '{simpleName}.Exports' must be loaded first.");
+                $"No export assembly registered for module id '{moduleId}'. A module that ships this export assembly " +
+                $"must be loaded first.");
         }
 
-        var alc = new AssemblyLoadContext($"{simpleName}:exports", isCollectible: true);
+        var alc = new AssemblyLoadContext($"{moduleId}:exports", isCollectible: true);
         var resolver = new AssemblyDependencyResolver(path);
 
         Assembly loaded;
@@ -171,22 +180,20 @@ internal sealed class ExportAssemblyStore
             throw;
         }
 
-        // Record cross-export edges so we never unload an export that another
-        // still-loaded export assembly references.
-        var dependencyNames = new List<string>();
-        foreach (var referenceName in loaded.GetReferencedAssemblies())
+        var dependencyModuleIds = new List<string>();
+        foreach (var referenceName in loaded.GetReferencedAssemblies().Select(static r => r.Name).OfType<string>())
         {
-            if (referenceName.Name is not null && _exports.ContainsKey(referenceName.Name))
+            if (_assemblyNameToModuleId.TryGetValue(referenceName, out var dependencyModuleId))
             {
-                dependencyNames.Add(referenceName.Name);
+                dependencyModuleIds.Add(dependencyModuleId);
             }
         }
 
-        var registration = new ExportRegistration(loaded, alc, dependencyNames);
-        _exports[simpleName] = registration;
+        var registration = new ExportRegistration(loaded, alc, dependencyModuleIds);
+        _exports[moduleId] = registration;
         _loadedAssemblies.TryAdd(loaded, 0);
 
-        foreach (var dependency in dependencyNames)
+        foreach (var dependency in dependencyModuleIds)
         {
             if (!_referencedBy.TryGetValue(dependency, out var by))
             {
@@ -194,7 +201,7 @@ internal sealed class ExportAssemblyStore
                 _referencedBy[dependency] = by;
             }
 
-            by.Add(simpleName);
+            by.Add(moduleId);
         }
 
         return loaded;
@@ -209,7 +216,8 @@ internal sealed class ExportAssemblyStore
         }
 
         // Another export? Resolve through the store (same identity everywhere).
-        if (_exports.TryGetValue(name.Name, out var otherExport))
+        if (_assemblyNameToModuleId.TryGetValue(name.Name, out var dependencyModuleId) &&
+            _exports.TryGetValue(dependencyModuleId, out var otherExport))
         {
             return otherExport.Assembly;
         }
@@ -224,64 +232,46 @@ internal sealed class ExportAssemblyStore
         return path is not null ? callerAlc.LoadFromAssemblyPath(path) : null;
     }
 
-    private void TryUnload(string simpleName)
+    private void TryUnload(string moduleId)
     {
         ExportRegistration? registration;
 
         lock (_gate)
         {
-            if (!_exports.TryGetValue(simpleName, out registration))
+            if (!_exports.TryGetValue(moduleId, out registration))
             {
                 return;
             }
 
-            if (_moduleReferenceCounts.GetValueOrDefault(simpleName) > 0)
+            if (_moduleReferenceCounts.GetValueOrDefault(moduleId) > 0)
             {
                 return;
             }
 
-            if (_referencedBy.TryGetValue(simpleName, out var referencing) && referencing.Count > 0)
+            if (_referencedBy.TryGetValue(moduleId, out var referencing) && referencing.Count > 0)
             {
                 return;
             }
 
-            _exports.Remove(simpleName);
-            _moduleReferenceCounts.Remove(simpleName);
+            _exports.Remove(moduleId);
+            _moduleReferenceCounts.Remove(moduleId);
             _loadedAssemblies.TryRemove(registration.Assembly, out _);
+            _knownPaths.Remove(moduleId);
+            _assemblyNameToModuleId.Remove(registration.Assembly.GetName().Name!);
 
             // Remove this export from the reverse-edge sets it contributed to.
             foreach (var dependency in registration.Dependencies)
             {
                 if (_referencedBy.TryGetValue(dependency, out var by))
                 {
-                    by.Remove(simpleName);
+                    by.Remove(moduleId);
                 }
             }
         }
 
         var weak = new WeakReference(registration.LoadContext);
         registration.LoadContext.Unload();
-        ForceCollection(weak);
-    }
-
-    /// <summary>
-    /// Forces garbage collection until the export's load context (referenced only through
-    /// <paramref name="weak"/>) has been collected. Never inline: the JIT must not keep a
-    /// strong reference to the load context in this frame during the pass.
-    /// </summary>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    private static void ForceCollection(WeakReference? weak)
-    {
-        if (weak is null)
-        {
-            return;
-        }
-
-        for (var i = 0; i < 10 && weak.IsAlive; i++)
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
+        CollectibleLoadContext.WaitForUnload(weak);
     }
 
     private sealed record ExportRegistration(

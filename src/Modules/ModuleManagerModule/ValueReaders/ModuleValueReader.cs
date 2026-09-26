@@ -10,7 +10,7 @@ public class ModuleValueReader(IModuleManager modules) : IValueReader
 
     public Task<object> ReadAsync(Type type, string input)
     {
-        foreach (var module in modules.LoadedModules)
+        foreach (var module in modules.GetLoadedModules())
         {
             if (module.ModuleInfo.Id.Equals(input, StringComparison.Ordinal))
             {

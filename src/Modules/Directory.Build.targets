@@ -1,0 +1,12 @@
+<Project>
+
+  <!--
+    A module's info.toml is compiled into assembly attributes by the module info source
+    generator, which reads it as an additional file. Adding it here means a module only has to
+    place info.toml next to its project file; no per-project wiring is needed.
+  -->
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)/info.toml')">
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/info.toml" />
+  </ItemGroup>
+
+</Project>

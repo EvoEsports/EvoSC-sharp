@@ -32,6 +32,7 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Manialinks.Models;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
+using EvoSC.Modules.Exceptions.ModuleDependency;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
@@ -65,9 +66,9 @@ public class ModuleManager : IModuleManager
 
 	private readonly Dictionary<string, Guid> _moduleNameMap = new Dictionary<string, Guid>();
 
-	private readonly ExportAssemblyStore _exportAssemblies = new ExportAssemblyStore();
+	private readonly ExportAssemblyStore _exportAssemblies;
 
-	public IReadOnlyList<IModuleLoadContext> LoadedModules => _loadedModules.Values.ToList();
+	public IReadOnlyList<IModuleLoadContext> GetLoadedModules() => _loadedModules.Values.ToList();
 
 	internal ExportAssemblyStore ExportAssemblies => _exportAssemblies;
 
@@ -82,6 +83,7 @@ public class ModuleManager : IModuleManager
 		_configStoreRepository = configStoreRepository;
 		_manialinkManager = manialinkManager;
 		_themeManager = themeManager;
+		_exportAssemblies = new ExportAssemblyStore();
 		WarnForDisabledVerification();
 	}
 
@@ -127,7 +129,7 @@ public class ModuleManager : IModuleManager
 			foreach (Type item in assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
 			{
 				string name = item.Name;
-				IdentifierAttribute customAttribute = item.GetCustomAttribute<IdentifierAttribute>();
+				IdentifierAttribute? customAttribute = item.GetCustomAttribute<IdentifierAttribute>();
 				if (customAttribute != null)
 				{
 					name = customAttribute.Name;
@@ -135,7 +137,7 @@ public class ModuleManager : IModuleManager
 				FieldInfo[] fields = item.GetFields();
 				foreach (FieldInfo fieldInfo in fields)
 				{
-					if (!(fieldInfo.FieldType != item))
+					if (fieldInfo.FieldType == item)
 					{
 						string text = fieldInfo.GetCustomAttribute<IdentifierAttribute>()?.Name ?? fieldInfo.Name;
 						loadContext.Permissions.Add(new Permission
@@ -155,7 +157,7 @@ public class ModuleManager : IModuleManager
 		List<IPermission> identifiedPermissions = new List<IPermission>();
 		foreach (IPermission permission in moduleContext.Permissions)
 		{
-			IPermission existingPermission = await _permissions.GetPermissionAsync(permission.Name);
+			IPermission? existingPermission = await _permissions.GetPermissionAsync(permission.Name);
 			if (existingPermission != null)
 			{
 				_logger.LogDebug("Wont install permission '{Name}' as it already exists", permission.Name);
@@ -164,7 +166,7 @@ public class ModuleManager : IModuleManager
 			}
 			_logger.LogDebug("Installing permission: {Name}", permission.Name);
 			await _permissions.AddPermissionAsync(permission);
-			IPermission identifiedPermission = await _permissions.GetPermissionAsync(permission.Name);
+			IPermission? identifiedPermission = await _permissions.GetPermissionAsync(permission.Name);
 			if (identifiedPermission == null)
 			{
 				_logger.LogError("Could not identify permission '{Name}' after installing it. Was it not added to the database?", permission.Name);
@@ -205,8 +207,11 @@ public class ModuleManager : IModuleManager
 		{
 			foreach (Type item in assembly.AssemblyTypesWithAttribute<MiddlewareAttribute>())
 			{
-				MiddlewareAttribute customAttribute = item.GetCustomAttribute<MiddlewareAttribute>();
-				moduleContext.Pipelines[customAttribute.For].AddComponent(item, moduleContext.Services);
+				MiddlewareAttribute? customAttribute = item.GetCustomAttribute<MiddlewareAttribute>();
+				if (customAttribute is not null)
+				{
+					moduleContext.Pipelines[customAttribute.For].AddComponent(item, moduleContext.Services);
+				}
 			}
 		}
 		return Task.CompletedTask;
@@ -231,7 +236,7 @@ public class ModuleManager : IModuleManager
 				{
 					continue;
 				}
-				Stream resourceStream = assembly.GetManifestResourceStream(resourceName);
+				Stream? resourceStream = assembly.GetManifestResourceStream(resourceName);
 				if (resourceStream != null)
 				{
 					using StreamReader streamReader = new StreamReader(resourceStream);
@@ -250,15 +255,16 @@ public class ModuleManager : IModuleManager
 
 	private static string GetManialinkTemplateName(IModuleLoadContext loadContext, string[] namespaceParts, string[] nameComponents)
 	{
-		int i;
-		for (i = 0; i < namespaceParts.Length && nameComponents[i].Equals(namespaceParts[i], StringComparison.Ordinal); i++)
+		int i = 0;
+		while (i < namespaceParts.Length && nameComponents[i].Equals(namespaceParts[i], StringComparison.Ordinal))
 		{
+			i++;
 		}
 		if (nameComponents[i].Equals("Templates", StringComparison.Ordinal))
 		{
 			i++;
 		}
-		return loadContext.ModuleInfo.Name + "." + string.Join(".", nameComponents[i..^1]);
+		return loadContext.ModuleInfo.Id + "." + string.Join(".", nameComponents[i..^1]);
 	}
 
 	private Task EnableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
@@ -352,7 +358,7 @@ public class ModuleManager : IModuleManager
 			{
 				foreach (Type item in assembly.AssemblyTypesWithAttribute<ControllerAttribute>())
 				{
-					ControllerAttribute customAttribute = item.GetCustomAttribute<ControllerAttribute>();
+					ControllerAttribute? customAttribute = item.GetCustomAttribute<ControllerAttribute>();
 					if (customAttribute != null)
 					{
 						_controllers.AddController(item, moduleContext.LoadId, moduleContext.Services);
@@ -382,7 +388,7 @@ public class ModuleManager : IModuleManager
 			{
 				foreach (Type type in assembly.AssemblyTypesWithAttribute<SettingsAttribute>())
 				{
-					SettingsAttribute configAttr = type.GetCustomAttribute<SettingsAttribute>();
+					SettingsAttribute? configAttr = type.GetCustomAttribute<SettingsAttribute>();
 					if (configAttr != null)
 					{
 						if (!type.IsInterface)
@@ -390,7 +396,7 @@ public class ModuleManager : IModuleManager
 							_logger.LogError("Settings type {Type} must be an interface", type);
 							throw new ServicesException($"Settings type {type} must be an interface.");
 						}
-						object config = CreateConfigInstance(type, await CreateModuleConfigStoreAsync(moduleInfo.Name, type));
+						object? config = CreateConfigInstance(type, await CreateModuleConfigStoreAsync(moduleInfo.Id, type));
 						if (config == null)
 						{
 							_logger.LogError("An instance of the module config {Type} could not be created", type);
@@ -417,7 +423,7 @@ public class ModuleManager : IModuleManager
 
 	private object? CreateConfigInstance(Type configInterface, IConfigStore store)
 	{
-		object obj = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), configInterface);
+		object? obj = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), configInterface);
 		if (obj == null)
 		{
 			throw new InvalidOperationException("Failed to create module config builder.");
@@ -438,27 +444,41 @@ public class ModuleManager : IModuleManager
 	{
 		string[] array = moduleInfo.AssemblyFiles.Select((IModuleFile f) => f.File.FullName).ToArray();
 		string[] array2 = array.Where((string f) => Path.GetFileNameWithoutExtension(f).EndsWith(".Exports", StringComparison.OrdinalIgnoreCase)).ToArray();
+
+		// A dependency's export must never be shipped inside the depending module's directory —
+		// it is loaded dynamically from the provider. Skip stale copies so they neither register
+		// as the module's own export nor load as a private copy.
+		var foreignExports = array2
+			.Where(exportPath => !_exportAssemblies.IsOwnExportPath(exportPath))
+			.ToArray();
+		foreach (string foreignPath in foreignExports)
+		{
+			_logger.LogWarning(
+				"Module '{Module}' ships an export assembly '{Export}' that belongs to another module. " +
+				"The file will be ignored; the export is loaded dynamically from its provider.",
+				moduleInfo.Id, Path.GetFileName(foreignPath));
+		}
+
 		string[] array3 = array.Except<string>(array2, StringComparer.OrdinalIgnoreCase).ToArray();
 		if (array3.Length == 0)
 		{
-			_logger.LogError("No assemblies found in module directory for '{Name}'. The module will not load", moduleInfo.Name);
+			_logger.LogError("No assemblies found in module directory for '{Name}'. The module will not load", moduleInfo.Id);
 			return (null, null);
 		}
-		string[] array4 = array2;
+		string[] array4 = array2.Except<string>(foreignExports, StringComparer.OrdinalIgnoreCase).ToArray();
 		foreach (string text in array4)
 		{
-			string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(text);
-			_exportAssemblies.RegisterExportPath(fileNameWithoutExtension, text);
-			_exportAssemblies.AcquireExportForModule(loadId, fileNameWithoutExtension);
-			_logger.LogDebug("Registered export assembly '{Export}' for module {Module}", fileNameWithoutExtension, moduleInfo.Name);
+			_exportAssemblies.RegisterExportPath(moduleInfo.Id, text);
+			_exportAssemblies.AcquireExportForModule(loadId, moduleInfo.Id);
+			_logger.LogDebug("Registered export assembly '{Export}' for module {Module}", Path.GetFileName(text), moduleInfo.Id);
 		}
-		EvoScModuleLoadContext evoScModuleLoadContext = new EvoScModuleLoadContext(array3[0], (string name) => _exportAssemblies.ResolveExportForModule(loadId, name));
-		Type type = null;
+		EvoScModuleLoadContext evoScModuleLoadContext = new EvoScModuleLoadContext(array3[0], _exportAssemblies.CreateExportResolver(loadId));
+		Type? type = null;
 		string[] array5 = array3;
 		foreach (string path in array5)
 		{
 			Assembly assembly = evoScModuleLoadContext.LoadModuleAssembly(path);
-			if ((object)type == null)
+			if (type == null)
 			{
 				type = assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
 			}
@@ -466,14 +486,19 @@ public class ModuleManager : IModuleManager
 		return (type, evoScModuleLoadContext);
 	}
 
-	private IModuleLoadContext? GetLoadedDependency(IModuleDependency dependency)
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private void EnsureExportDependenciesLoaded(Guid ownerLoadId, IModuleInfo moduleInfo)
 	{
-		IModuleLoadContext moduleLoadContext = _loadedModules.Values.FirstOrDefault((IModuleLoadContext m) => m.ModuleInfo.Name.Equals(dependency.Name));
-		if (moduleLoadContext == null)
+		// Exports are registered by module id when the provider's load context is created, so the
+		// provider does not have to be loaded before its consumers. This is what allows two modules
+		// to depend on each other.
+		foreach (string providerModuleId in moduleInfo.Dependencies.Select(dependency => dependency.Name).Where(_exportAssemblies.HasExport))
 		{
-			throw new InvalidOperationException("Tried to get module " + dependency.Name + " a loaded dependency, but it is not loaded.");
+			// Load the dependency's export now so the module binds against the shared export
+			// assembly. Binary incompatibility is enforced by the runtime binder.
+			_exportAssemblies.AcquireExportForModule(ownerLoadId, providerModuleId);
+			_logger.LogDebug("Loaded export assembly for dependency '{Dependency}'", providerModuleId);
 		}
-		return moduleLoadContext;
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
@@ -508,10 +533,10 @@ public class ModuleManager : IModuleManager
 	private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
 	{
 		IReadOnlyList<Assembly> assemblies = asmLoadContext is EvoScModuleLoadContext moduleAlc
-			? moduleAlc.ModuleAssemblies
+			? moduleAlc.GetModuleAssemblies()
 			: new Assembly[1] { mainClass.Assembly };
 		string rootNamespace = mainClass.Namespace ?? throw new InvalidOperationException("Failed to detect root namespace for module.");
-		List<Guid> loadedDependencies = GetLoadedDependencies(moduleInfo);
+		List<Guid> loadedDependencies = [];
 		var moduleServices = _servicesManager.NewContainer(loadId, assemblies, loadedDependencies);
 		moduleServices.RegisterInstance(moduleInfo);
 
@@ -561,75 +586,147 @@ public class ModuleManager : IModuleManager
 		try
 		{
 			var localization = new LocalizationManager(assembly, rootNamespace + ".Localization");
-			_logger.LogDebug("Registered localization for module {Module}", moduleInfo.Name);
+			_logger.LogDebug("Registered localization for module {Module}", moduleInfo.Id);
 			return localization;
 		}
 		catch (Exception exception)
 		{
-			_logger.LogDebug(exception, "Localization not found for module {Module}", moduleInfo.Name);
+			_logger.LogDebug(exception, "Localization not found for module {Module}", moduleInfo.Id);
 		}
 		return null;
 	}
 
-	private List<Guid> GetLoadedDependencies(IModuleInfo moduleInfo)
-	{
-		var dependencies = new List<Guid>();
-		foreach (IModuleDependency dependency in moduleInfo.Dependencies)
-		{
-			IModuleLoadContext loadedDependency = GetLoadedDependency(dependency);
-			dependencies.Add(loadedDependency.LoadId);
-		}
-		return dependencies;
-	}
-
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	private async Task LoadInternalAsync(Guid loadId, IModuleInfo moduleInfo, Type mainClass, AssemblyLoadContext? asmLoadContext)
+	private async Task<IModuleLoadContext?> RegisterModuleAsync(Guid loadId, IModuleInfo moduleInfo, Type mainClass, AssemblyLoadContext? asmLoadContext)
 	{
-		if (_moduleNameMap.ContainsKey(moduleInfo.Name))
+		if (_moduleNameMap.ContainsKey(moduleInfo.Id))
 		{
-			_logger.LogError("A module with the identifier '{Name}' is already loaded. Will not load again", moduleInfo.Name);
-			return;
+			_logger.LogError("A module with the identifier '{Name}' is already loaded. Will not load again", moduleInfo.Id);
+			return null;
 		}
-		_logger.LogDebug("Loading module '{Name}' as load ID '{LoadId}'", moduleInfo.Name, loadId);
+		_logger.LogDebug("Loading module '{Name}' as load ID '{LoadId}'", moduleInfo.Id, loadId);
 		IModuleLoadContext loadContext = await CreateModuleLoadContextAsync(loadId, mainClass, asmLoadContext, moduleInfo);
-		await RegisterMiddlewaresAsync(loadContext);
-		await RegisterPermissionsAsync(loadContext);
-		await RegisterManialinksTemplatesAsync(loadContext);
 
 		_loadedModules.Add(loadId, loadContext);
-		_moduleNameMap[moduleInfo.Name] = loadId;
-		_logger.LogDebug("External Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Name, loadId);
+		_moduleNameMap[moduleInfo.Id] = loadId;
+		_logger.LogDebug("Module '{Name}' loaded with ID: {LoadId}", moduleInfo.Id, loadId);
 
-		await InstallAsync(loadId);
+		return loadContext;
+	}
+
+	/// <summary>
+	/// Connects a loaded module to the modules it depends on and registers what it contributes.
+	/// This runs after every module of a load operation has been loaded, which is what allows two
+	/// modules to depend on each other: no module has to be loaded before another one, they only
+	/// have to be linked once all of them exist.
+	/// </summary>
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private async Task LinkModuleAsync(IModuleLoadContext moduleContext)
+	{
+		IModuleInfo moduleInfo = moduleContext.ModuleInfo;
+
+		if (moduleContext.AsmLoadContext is EvoScModuleLoadContext)
+		{
+			EnsureExportDependenciesLoaded(moduleContext.LoadId, moduleInfo);
+		}
+
+		foreach (string dependencyId in moduleInfo.Dependencies.Select(dependency => dependency.Name))
+		{
+			if (!_moduleNameMap.TryGetValue(dependencyId, out Guid dependencyLoadId))
+			{
+				throw new DependencyNotFoundException(moduleInfo.Id, dependencyId);
+			}
+
+			moduleContext.LoadedDependencies.Add(dependencyLoadId);
+			_servicesManager.RegisterDependency(moduleContext.LoadId, dependencyLoadId);
+			_logger.LogDebug("Module '{Name}' is linked to dependency '{Dependency}'", moduleInfo.Id, dependencyId);
+		}
+
+		await RegisterMiddlewaresAsync(moduleContext);
+		await RegisterPermissionsAsync(moduleContext);
+		await RegisterManialinksTemplatesAsync(moduleContext);
+	}
+
+	/// <summary>
+	/// Undoes the registration of a module that could not be linked or installed, so a failed
+	/// dependency does not leave a half-loaded module behind.
+	/// </summary>
+	private void RollbackModule(IModuleLoadContext moduleContext)
+	{
+		_loadedModules.Remove(moduleContext.LoadId);
+		_moduleNameMap.Remove(moduleContext.ModuleInfo.Id);
+
+		try
+		{
+			_servicesManager.RemoveContainer(moduleContext.LoadId);
+		}
+		catch (ServicesException exception)
+		{
+			_logger.LogWarning(exception, "Failed to remove service container for module {LoadId}", moduleContext.LoadId);
+		}
+
+		_exportAssemblies.ReleaseModule(moduleContext.LoadId);
+		_logger.LogDebug("Rolled back module '{Name}' after a failed load", moduleContext.ModuleInfo.Id);
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public async Task EnableAsync(Guid loadId)
+	public Task EnableAsync(Guid loadId) => EnableAsync(loadId, new HashSet<Guid>());
+
+	private async Task EnableAsync(Guid loadId, HashSet<Guid> enabling)
 	{
-		IModuleLoadContext moduleContext = GetModule(loadId);
-		await EnsureDependenciesEnabledAsync(moduleContext);
-		await EnableThemesAsync(moduleContext);
-		await EnableControllersAsync(moduleContext);
-		await EnableMiddlewaresAsync(moduleContext);
-		await EnableManialinkTemplatesAsync(moduleContext);
-		await StartBackgroundServicesAsync(moduleContext);
-		await TryCallModuleEnableAsync(moduleContext);
-		moduleContext.SetEnabled(enabled: true);
-		moduleContext.SetStatus(ModuleStatus.Enabled);
-		_logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
+		// A module that is already being enabled further up the stack is a cyclic dependency:
+		// it will be enabled once the enable it is waiting on has finished.
+		if (!enabling.Add(loadId))
+		{
+			return;
+		}
+
+		try
+		{
+			IModuleLoadContext moduleContext = GetModule(loadId);
+			if (moduleContext.IsEnabled)
+			{
+				return;
+			}
+			await EnableDependenciesAsync(moduleContext, enabling);
+			await EnableThemesAsync(moduleContext);
+			await EnableControllersAsync(moduleContext);
+			await EnableMiddlewaresAsync(moduleContext);
+			await EnableManialinkTemplatesAsync(moduleContext);
+			await StartBackgroundServicesAsync(moduleContext);
+			await TryCallModuleEnableAsync(moduleContext);
+			moduleContext.SetEnabled(enabled: true);
+			moduleContext.SetStatus(ModuleStatus.Enabled);
+			_logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
+		}
+		finally
+		{
+			enabling.Remove(loadId);
+		}
 	}
 
-	private async Task EnsureDependenciesEnabledAsync(IModuleLoadContext moduleContext)
+	/// <summary>
+	/// Enables the modules this one depends on. Dependencies are enabled instead of required to be
+	/// enabled already, because two modules that depend on each other can never satisfy that.
+	/// </summary>
+	private async Task EnableDependenciesAsync(IModuleLoadContext moduleContext, HashSet<Guid> enabling)
 	{
 		foreach (Guid dependencyId in moduleContext.LoadedDependencies)
 		{
 			IModuleLoadContext dependency = GetModule(dependencyId);
-			if (!dependency.IsEnabled)
+			if (dependency.IsEnabled || enabling.Contains(dependencyId))
 			{
-				throw new EvoScModuleException($"Module '{moduleContext.ModuleInfo.Name}' cannot be enabled: dependency '{dependency.ModuleInfo.Name}' is not enabled.");
+				continue;
 			}
+
+			if (_config.Modules.DisabledModules.Contains(dependency.ModuleInfo.Id))
+			{
+				throw new EvoScModuleException($"Module '{moduleContext.ModuleInfo.Id}' cannot be enabled: dependency '{dependency.ModuleInfo.Id}' is disabled in the configuration.");
+			}
+
+			_logger.LogDebug("Enabling dependency '{Dependency}' of module '{Module}'", dependency.ModuleInfo.Id, moduleContext.ModuleInfo.Id);
+			await EnableAsync(dependencyId, enabling);
 		}
-		await Task.CompletedTask;
 	}
 
 	private async Task EnableThemesAsync(IModuleLoadContext moduleContext)
@@ -650,11 +747,11 @@ public class ModuleManager : IModuleManager
 
 	public async Task EnableModulesAsync()
 	{
-		foreach (IModuleLoadContext module in LoadedModules)
+		foreach (IModuleLoadContext module in GetLoadedModules())
 		{
-			if (_config.Modules.DisabledModules.Contains(module.ModuleInfo.Name))
+			if (_config.Modules.DisabledModules.Contains(module.ModuleInfo.Id))
 			{
-				_logger.LogDebug("Module {Name} is disabled", module.ModuleInfo.Name);
+				_logger.LogDebug("Module {Name} is disabled", module.ModuleInfo.Id);
 			}
 			else
 			{
@@ -703,43 +800,118 @@ public class ModuleManager : IModuleManager
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public Task LoadAsync(IExternalModuleInfo moduleInfo)
+	public async Task LoadAsync(IExternalModuleInfo moduleInfo)
 	{
 		if (!VerifyExternalModule(moduleInfo))
 		{
-			_logger.LogError("File signature verification failed for module {Name}. The module will not load", moduleInfo.Name);
-			return Task.CompletedTask;
+			_logger.LogError("File signature verification failed for module {Name}. The module will not load", moduleInfo.Id);
+			return;
 		}
 		Guid loadId = Guid.NewGuid();
 		var (type, asmLoadContext) = CreateAssemblyLoadContext(loadId, moduleInfo);
 		if (type != null)
 		{
-			return LoadInternalAsync(loadId, moduleInfo, type, asmLoadContext);
+			await LoadAndLinkAsync(moduleInfo, type, asmLoadContext, loadId);
+			return;
 		}
-		_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", moduleInfo.Name);
-		return Task.CompletedTask;
+		_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", moduleInfo.Id);
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public Task LoadAsync(Assembly assembly)
+	public async Task LoadAsync(Assembly assembly)
 	{
 		IInternalModuleInfo internalModuleInfo = ModuleInfoUtils.CreateFromAssembly(assembly);
 		Guid loadId = Guid.NewGuid();
-		Type type = internalModuleInfo.Assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
+		Type? type = internalModuleInfo.Assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
 		if (type != null)
 		{
-			return LoadInternalAsync(loadId, internalModuleInfo, type, null);
+			await LoadAndLinkAsync(internalModuleInfo, type, null, loadId);
+			return;
 		}
-		_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", internalModuleInfo.Name);
-		return Task.CompletedTask;
+		_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", internalModuleInfo.Id);
 	}
 
+	/// <summary>
+	/// Loads a set of modules in phases: every load context is created first, then every module is
+	/// loaded, then they are linked to each other and installed. Dependencies therefore do not
+	/// dictate the order modules are loaded in, and modules may depend on each other in a cycle.
+	/// </summary>
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	public async Task LoadAsync(IModuleCollection<IExternalModuleInfo> collection)
 	{
+		var prepared = new List<(IExternalModuleInfo ModuleInfo, Type Type, AssemblyLoadContext? AsmLoadContext, Guid LoadId)>();
+
+		// Create all load contexts up front so that every module's export assembly is registered
+		// before any module type is loaded.
 		foreach (IExternalModuleInfo module in collection)
 		{
-			await LoadAsync(module);
+			if (!VerifyExternalModule(module))
+			{
+				_logger.LogError("File signature verification failed for module {Name}. The module will not load", module.Id);
+				continue;
+			}
+			Guid loadId = Guid.NewGuid();
+			var (type, asmLoadContext) = CreateAssemblyLoadContext(loadId, module);
+			if (type == null)
+			{
+				_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", module.Id);
+				continue;
+			}
+			prepared.Add((module, type, asmLoadContext, loadId));
+		}
+
+		var loaded = new List<IModuleLoadContext>();
+		foreach (var (moduleInfo, type, asmLoadContext, loadId) in prepared)
+		{
+			IModuleLoadContext? loadContext = await RegisterModuleAsync(loadId, moduleInfo, type, asmLoadContext);
+			if (loadContext != null)
+			{
+				loaded.Add(loadContext);
+			}
+		}
+
+		foreach (IModuleLoadContext loadContext in loaded)
+		{
+			try
+			{
+				await LinkModuleAsync(loadContext);
+			}
+			catch
+			{
+				// A dependency that could not be resolved fails the whole load operation, but none
+				// of the modules it registered are left behind.
+				foreach (IModuleLoadContext registered in loaded)
+				{
+					RollbackModule(registered);
+				}
+				throw;
+			}
+		}
+
+		foreach (IModuleLoadContext loadContext in loaded)
+		{
+			await InstallAsync(loadContext.LoadId);
+		}
+	}
+
+	private async Task LoadAndLinkAsync(IModuleInfo moduleInfo, Type type, AssemblyLoadContext? asmLoadContext, Guid loadId)
+	{
+		IModuleLoadContext? loadContext = await RegisterModuleAsync(loadId, moduleInfo, type, asmLoadContext);
+
+		if (loadContext == null)
+		{
+			return;
+		}
+
+		try
+		{
+			await LinkModuleAsync(loadContext);
+			await InstallAsync(loadId);
+		}
+		catch
+		{
+			RollbackModule(loadContext);
+			throw;
 		}
 	}
 
@@ -751,12 +923,14 @@ public class ModuleManager : IModuleManager
 		{
 			throw new EvoScModuleException($"Attempted to unload internal module '{loadId}' but this is not allowed");
 		}
-		foreach (IModuleLoadContext module in LoadedModules)
+		var dependentModules = GetLoadedModules()
+			.Where(m => m.LoadedDependencies.Exists(d => d == loadId))
+			.Select(m => m.LoadId)
+			.ToArray();
+
+		foreach (var dependentLoadId in dependentModules)
 		{
-			if (module.LoadedDependencies.Any((Guid d) => d == loadId))
-			{
-				await UnloadAsync(module.LoadId);
-			}
+			await UnloadAsync(dependentLoadId);
 		}
 		if (moduleContext.IsEnabled)
 		{
@@ -773,22 +947,21 @@ public class ModuleManager : IModuleManager
 			_logger.LogWarning(exception, "Failed to remove service container for module {LoadId}", loadId);
 		}
 		_loadedModules.Remove(loadId);
-		_moduleNameMap.Remove(moduleContext.ModuleInfo.Name);
+		_moduleNameMap.Remove(moduleContext.ModuleInfo.Id);
 		_exportAssemblies.ReleaseModule(loadId);
 		GC.AddMemoryPressure(50000000L);
-		WeakReference alcWeakRef = DetachLoadContext(moduleContext.AsmLoadContext);
+		WeakReference? alcWeakRef = DetachLoadContext(moduleContext.AsmLoadContext);
 		return (Instance: instanceWeakRef, LoadContext: alcWeakRef);
 	}
 
 	private static async Task DisposeModuleInstanceAsync(IModuleLoadContext moduleContext)
 	{
-		IEvoScModule instance = moduleContext.Instance;
+		IEvoScModule? instance = moduleContext.Instance;
 		if (instance is IAsyncDisposable asyncDisposable)
 		{
 			await asyncDisposable.DisposeAsync();
 			return;
 		}
-		instance = moduleContext.Instance;
 		if (instance is IDisposable disposable)
 		{
 			disposable.Dispose();
@@ -810,14 +983,14 @@ public class ModuleManager : IModuleManager
 	public async Task UnloadAsync(Guid loadId)
 	{
 		var (instanceWeakRef, alcWeakRef) = await UnloadInternalAsync(loadId);
-		ForceCollection(instanceWeakRef);
+		CollectibleLoadContext.WaitForUnload(instanceWeakRef);
 		if (instanceWeakRef.IsAlive)
 		{
 			_logger.LogWarning("Some references for module '{LoadId}' are still alive", loadId);
 		}
 		if (alcWeakRef != null)
 		{
-			ForceCollection(alcWeakRef);
+			CollectibleLoadContext.WaitForUnload(alcWeakRef);
 			if (alcWeakRef.IsAlive)
 			{
 				_logger.LogWarning("The load context for module '{LoadId}' is still alive after unload", loadId);
@@ -835,26 +1008,8 @@ public class ModuleManager : IModuleManager
 			throw new EvoScModuleException($"Attempted to reload internal module '{loadId}' but this is not allowed");
 		}
 		DirectoryInfo directory = ((IExternalModuleInfo)moduleContext.ModuleInfo).Directory;
-		_logger.LogDebug("Reloading module '{Name}' ({LoadId})", moduleContext.ModuleInfo.Name, loadId);
+		_logger.LogDebug("Reloading module '{Name}' ({LoadId})", moduleContext.ModuleInfo.Id, loadId);
 		await UnloadAsync(loadId);
 		await LoadAsync(directory.FullName);
-	}
-
-	[MethodImpl(MethodImplOptions.NoInlining)]
-	private static void ForceCollection(WeakReference? weak)
-	{
-		if (weak == null)
-		{
-			return;
-		}
-		for (int i = 0; i < 10; i++)
-		{
-			if (!weak.IsAlive)
-			{
-				break;
-			}
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
-		}
 	}
 }

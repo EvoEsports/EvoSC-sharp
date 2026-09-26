@@ -10,6 +10,7 @@ using EvoSC.Common.Services.Exceptions;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
+using EvoSC.Modules.Exceptions.ModuleDependency;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ContractApiProviderModule.Contracts;
 using EvoSC.Modules.Util;
@@ -31,8 +32,17 @@ public class ModuleSystemIntegrationTests
     [Fact]
     public void TestAssembly_CompilesAgainstProviderExportAssembly()
     {
+        // Compile-time proof: these types are only visible through the provider's export assembly.
         _ = typeof(IScoreboardService);
         _ = typeof(MatchResult);
+
+        // The export assembly is deliberately never copied next to the test assembly: at runtime it
+        // is only ever loaded through the shared export store. So assert it was built and deployed
+        // with the module rather than that this assembly references it.
+        var exportAssembly = Path.Combine(
+            AppContext.BaseDirectory, "modules", "ContractApiProviderModule", "ContractApiProviderModule.Exports.dll");
+
+        Assert.True(File.Exists(exportAssembly), $"Expected the provider's export assembly at: {exportAssembly}");
     }
 
     [Fact]
@@ -45,7 +55,8 @@ public class ModuleSystemIntegrationTests
 
         // The export assembly is loaded once into the shared store and referenced by both modules.
         var store = harness.Manager.ExportAssemblies;
-        var exportAssembly = store.ResolveExportForModule(consumer.LoadId, "ContractApiProviderModule.Exports");
+        Assert.True(store.HasExport(provider.ModuleInfo.Id));
+        var exportAssembly = store.AcquireExportForModule(consumer.LoadId, provider.ModuleInfo.Id);
         Assert.NotNull(exportAssembly);
         Assert.True(store.IsExportAssembly(exportAssembly));
 
@@ -86,12 +97,16 @@ public class ModuleSystemIntegrationTests
         Assert.Equal(3, (int)dPosted.BlueScore);
 
         // The provider's singleton holds the posted value -> state is shared across the ALC boundary.
-        var stored = (object?)currentResult.Invoke(reporter, null);
-        Assert.Equal((object)posted, stored);
+        var stored = currentResult.Invoke(reporter, null);
+        Assert.Same(posted, stored);
     }
 
+    /// <summary>
+    /// A dependency that is loaded but not enabled yet is enabled along with the module that needs
+    /// it. Two modules that depend on each other can therefore both end up enabled.
+    /// </summary>
     [Fact]
-    public async Task Enable_DependentBeforeDependency_Throws()
+    public async Task Enable_DependsOnDisabledDependency_EnablesIt()
     {
         using var harness = new ModuleManagerHarness();
 
@@ -99,8 +114,27 @@ public class ModuleSystemIntegrationTests
         await harness.Manager.DisableAsync(provider.LoadId);
 
         await harness.Manager.LoadAsync(harness.ConsumerDirectory);
+        var consumer = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "ContractApiConsumerModule");
 
-        var consumer = harness.Manager.LoadedModules.Single(m => m.ModuleInfo.Name == "ContractApiConsumerModule");
+        await harness.Manager.EnableAsync(consumer.LoadId);
+
+        Assert.True(consumer.IsEnabled);
+        Assert.True(provider.IsEnabled);
+    }
+
+    /// <summary>
+    /// A dependency that is turned off in the configuration is never enabled implicitly, since
+    /// that would override an explicit choice.
+    /// </summary>
+    [Fact]
+    public async Task Enable_DependencyDisabledInConfig_Throws()
+    {
+        using var harness = new ModuleManagerHarness();
+        harness.ModulesConfig.Setup(c => c.DisabledModules).Returns(new[] { "ContractApiProviderModule" });
+
+        await harness.Manager.LoadAsync(harness.ProviderDirectory);
+        await harness.Manager.LoadAsync(harness.ConsumerDirectory);
+        var consumer = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "ContractApiConsumerModule");
 
         await Assert.ThrowsAsync<EvoScModuleException>(() => harness.Manager.EnableAsync(consumer.LoadId));
     }
@@ -118,7 +152,7 @@ public class ModuleSystemIntegrationTests
 
         Assert.Equal(ModuleStatus.Disabled, provider.Status);
         Assert.False(provider.IsEnabled);
-        Assert.Contains(harness.Manager.LoadedModules, m => m.LoadId == provider.LoadId);
+        Assert.Contains(harness.Manager.GetLoadedModules(), m => m.LoadId == provider.LoadId);
     }
 
     [Fact]
@@ -142,7 +176,7 @@ public class ModuleSystemIntegrationTests
         var consumerAlcWeak = new WeakReference(consumer.AsmLoadContext!);
         ModuleManagerHarness.UnloadBlocking(harness.Manager, providerId);
 
-        Assert.Empty(harness.Manager.LoadedModules);
+        Assert.Empty(harness.Manager.GetLoadedModules());
 
         return (providerAlcWeak, consumerAlcWeak);
     }
@@ -166,7 +200,7 @@ public class ModuleSystemIntegrationTests
 
         ModuleManagerHarness.UnloadBlocking(harness.Manager, loadId);
 
-        Assert.DoesNotContain(harness.Manager.LoadedModules, m => m.LoadId == loadId);
+        Assert.DoesNotContain(harness.Manager.GetLoadedModules(), m => m.LoadId == loadId);
 
         bool containerRemoved = false;
         try
@@ -203,22 +237,23 @@ public class ModuleSystemIntegrationTests
         var consumer = ModuleManagerHarness.LoadAndEnableBlocking(harness, harness.ConsumerDirectory);
         var providerId = provider.LoadId;
         var consumerId = consumer.LoadId;
+        var providerModuleId = provider.ModuleInfo.Id;
         var providerAlcWeak = new WeakReference(provider.AsmLoadContext!);
         var consumerAlcWeak = new WeakReference(consumer.AsmLoadContext!);
         var exportAssembly = harness.Manager.ExportAssemblies
-            .ResolveExportForModule(consumerId, "ContractApiProviderModule.Exports")!;
+            .AcquireExportForModule(consumerId, providerModuleId)!;
         var exportWeak = new WeakReference(exportAssembly);
 
         ModuleManagerHarness.UnloadBlocking(harness.Manager, consumerId);
-        Assert.DoesNotContain(harness.Manager.LoadedModules,
-            m => m.ModuleInfo.Name == "ContractApiConsumerModule");
+        Assert.DoesNotContain(harness.Manager.GetLoadedModules(),
+            m => m.ModuleInfo.Id == "ContractApiConsumerModule");
 
         // Provider is still loaded, so its export must still be shared and alive.
         exportWeak.ForceCollect();
         Assert.True(exportWeak.IsAlive, "The export assembly should remain alive while its provider is loaded.");
 
         ModuleManagerHarness.UnloadBlocking(harness.Manager, providerId);
-        Assert.Empty(harness.Manager.LoadedModules);
+        Assert.Empty(harness.Manager.GetLoadedModules());
 
         return (providerAlcWeak, consumerAlcWeak, exportWeak);
     }
@@ -241,7 +276,7 @@ public class ModuleSystemIntegrationTests
         var providerAlcWeak = new WeakReference(provider.AsmLoadContext!);
         ModuleManagerHarness.ReloadBlocking(harness.Manager, providerId);
 
-        var reloaded = harness.Manager.LoadedModules.Single(m => m.ModuleInfo.Name == "ContractApiProviderModule");
+        var reloaded = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "ContractApiProviderModule");
         Assert.Equal(ModuleStatus.Loaded, reloaded.Status);
         Assert.NotEqual(providerId, reloaded.LoadId);
 
@@ -255,7 +290,7 @@ public class ModuleSystemIntegrationTests
     private static void ForceCollectAll(params WeakReference[] weaks)
     {
         var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(20);
-        while (weaks.Any(w => w.IsAlive) && DateTime.UtcNow < deadline)
+        while (Array.Exists(weaks, w => w.IsAlive) && DateTime.UtcNow < deadline)
         {
             foreach (var w in weaks)
             {
@@ -265,23 +300,110 @@ public class ModuleSystemIntegrationTests
     }
 
     [Fact]
-    public async Task Unload_ReleasesExportReference()
+    public void Unload_ReleasesExportReference()
     {
         using var harness = new ModuleManagerHarness();
 
-        Guid providerId;
-        Guid consumerId;
-        {
-            var provider = await harness.LoadAndEnableAsync(harness.ProviderDirectory);
-            var consumer = await harness.LoadAndEnableAsync(harness.ConsumerDirectory);
-            providerId = provider.LoadId;
-            consumerId = consumer.LoadId;
-        }
+        string providerModuleId = LoadAndUnloadProvider(harness);
 
-        await harness.Manager.UnloadAsync(providerId);
+        Assert.Empty(harness.Manager.GetLoadedModules());
+        Assert.False(harness.Manager.ExportAssemblies.HasExport(providerModuleId));
+    }
 
-        Assert.Empty(harness.Manager.LoadedModules);
-        Assert.Null(harness.Manager.ExportAssemblies.ResolveExportForModule(consumerId, "ContractApiProviderModule.Exports"));
-        Assert.Null(harness.Manager.ExportAssemblies.ResolveExportForModule(providerId, "ContractApiProviderModule.Exports"));
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static string LoadAndUnloadProvider(ModuleManagerHarness harness)
+    {
+        var provider = ModuleManagerHarness.LoadAndEnableBlocking(harness, harness.ProviderDirectory);
+        ModuleManagerHarness.LoadAndEnableBlocking(harness, harness.ConsumerDirectory);
+        var providerModuleId = provider.ModuleInfo.Id;
+
+        ModuleManagerHarness.UnloadBlocking(harness.Manager, provider.LoadId);
+
+        return providerModuleId;
+    }
+
+    [Fact]
+    public void ConsumerModuleDirectory_DoesNotShipProviderExportAssembly()
+    {
+        using var harness = new ModuleManagerHarness();
+
+        var providerExportExpectedLocation = Path.Combine(
+            Path.GetDirectoryName(harness.ConsumerDirectory)!,
+            "ContractApiProviderModule",
+            "ContractApiProviderModule.Exports.dll");
+        Assert.True(File.Exists(providerExportExpectedLocation),
+            "The provider export assembly must be emitted into the provider's module directory by the build.");
+
+        // The consumer must never carry a copy of the provider's export assembly: at runtime it is
+        // loaded dynamically from the provider via the export store.
+        Assert.False(File.Exists(Path.Combine(harness.ConsumerDirectory, "ContractApiProviderModule.Exports.dll")));
+        Assert.False(File.Exists(Path.Combine(harness.ConsumerDirectory, "ContractApiProviderModule.dll")));
+    }
+
+    /// <summary>
+    /// Two modules may depend on each other. Loading is done in phases for exactly this reason:
+    /// every module is loaded before any of them is linked to its dependencies, so no module has to
+    /// be loaded before the one depending on it.
+    /// </summary>
+    [Fact]
+    public async Task LoadCollection_LoadsModulesThatDependOnEachOther()
+    {
+        using var harness = new ModuleManagerHarness();
+        var collection = ModuleDirectoryUtils.FindModulesFromDirectory(harness.ModulesDirectory);
+
+        await harness.Manager.LoadAsync(collection);
+
+        var a = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "CyclicModuleA");
+        var b = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "CyclicModuleB");
+
+        Assert.Equal(ModuleStatus.Loaded, a.Status);
+        Assert.Equal(ModuleStatus.Loaded, b.Status);
+        Assert.Equal(new[] { b.LoadId }, a.LoadedDependencies);
+        Assert.Equal(new[] { a.LoadId }, b.LoadedDependencies);
+    }
+
+    [Fact]
+    public async Task Enable_EnablesModulesThatDependOnEachOther()
+    {
+        using var harness = new ModuleManagerHarness();
+        await harness.Manager.LoadAsync(ModuleDirectoryUtils.FindModulesFromDirectory(harness.ModulesDirectory));
+
+        var a = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "CyclicModuleA");
+        var b = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "CyclicModuleB");
+
+        await harness.Manager.EnableAsync(a.LoadId);
+
+        Assert.True(a.IsEnabled);
+        Assert.True(b.IsEnabled, "Enabling a module must enable the dependency that depends back on it.");
+    }
+
+    [Fact]
+    public async Task Enable_FromTheOtherSideOfTheCycle_EnablesBoth()
+    {
+        using var harness = new ModuleManagerHarness();
+        await harness.Manager.LoadAsync(ModuleDirectoryUtils.FindModulesFromDirectory(harness.ModulesDirectory));
+
+        var a = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "CyclicModuleA");
+        var b = harness.Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id == "CyclicModuleB");
+
+        await harness.Manager.EnableAsync(b.LoadId);
+
+        Assert.True(a.IsEnabled);
+        Assert.True(b.IsEnabled);
+    }
+
+    /// <summary>
+    /// A cyclic pair can only be loaded as a set: loaded on its own, a module's dependency is
+    /// genuinely absent and the load fails instead of leaving the module half-registered.
+    /// </summary>
+    [Fact]
+    public async Task Load_ModuleInCycleWithoutItsDependency_ThrowsAndLeavesNothingLoaded()
+    {
+        using var harness = new ModuleManagerHarness();
+
+        await Assert.ThrowsAsync<DependencyNotFoundException>(
+            () => harness.Manager.LoadAsync(harness.CyclicModuleADirectory));
+
+        Assert.Empty(harness.Manager.GetLoadedModules());
     }
 }

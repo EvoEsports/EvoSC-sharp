@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
@@ -104,7 +105,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManagerModule", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchTrackerModule.Tests", "tests\Modules\MatchTrackerModule.Tests\MatchTrackerModule.Tests.csproj", "{9EF4D340-0C49-4A15-9BCF-6CD9508AA7DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapQueueModule", "src/Modules/MapQueueModule/MapQueueModule.csproj", "{28C14D85-DD8A-4933-A0A0-B655682B5D02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapQueueModule", "src\Modules\MapQueueModule\MapQueueModule.csproj", "{28C14D85-DD8A-4933-A0A0-B655682B5D02}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapQueueModuleTests", "tests\Modules\MapQueueModuleTests\MapQueueModuleTests.csproj", "{2D2D3AC6-C8BD-4615-BCC7-9A64007DB762}"
 EndProject
@@ -112,11 +113,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapListModule", "src\Module
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapListModule.Tests", "tests\Modules\MapListModule.Tests\MapListModule.Tests.csproj", "{098D1F9B-054D-4158-BB6C-AC908C4595F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalRecordsModule", "src/Modules/LocalRecordsModule/LocalRecordsModule.csproj", "{1D8DBFC8-EC21-4DDA-9D88-DE7CA04C8449}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalRecordsModule", "src\Modules\LocalRecordsModule\LocalRecordsModule.csproj", "{1D8DBFC8-EC21-4DDA-9D88-DE7CA04C8449}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalRecordsModule.Tests", "tests\Modules\LocalRecordsModule.Tests\LocalRecordsModule.Tests.csproj", "{7401429B-B842-4316-B7A2-B77E9AD966CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForceTeamModule", "src/Modules/ForceTeamModule/ForceTeamModule.csproj", "{ACFF2B23-0518-493C-93A0-08CF9FD4F8E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForceTeamModule", "src\Modules\ForceTeamModule\ForceTeamModule.csproj", "{ACFF2B23-0518-493C-93A0-08CF9FD4F8E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForceTeamModule.Tests", "tests\Modules\ForceTeamModule.Tests\ForceTeamModule.Tests.csproj", "{DE9532E8-F0ED-400B-9592-AF8F74BC83EB}"
 EndProject
@@ -128,7 +129,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamInfoModule", "src\Modul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamInfoModule.Tests", "tests\Modules\TeamInfoModule.Tests\TeamInfoModule.Tests.csproj", "{71D8BDA5-6787-471A-8064-CEEE4203EBEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManagementModule", "src/Modules/ServerManagementModule/ServerManagementModule.csproj", "{AAE1AC39-4C4B-48A9-8B7B-08D2CD461FC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManagementModule", "src\Modules\ServerManagementModule\ServerManagementModule.csproj", "{AAE1AC39-4C4B-48A9-8B7B-08D2CD461FC1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManagementModule.Tests", "tests\Modules\ServerManagementModule.Tests\ServerManagementModule.Tests.csproj", "{F8C7FE5E-B389-4BA8-B0DF-6D9D0A9B0949}"
 EndProject
@@ -138,7 +139,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameModeUiModule.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveRankingModule.Tests", "tests\Modules\LiveRankingModule.Tests\LiveRankingModule.Tests.csproj", "{4AA1890A-1423-4831-95B2-E29B9A7A58D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamChatModule", "src/Modules/TeamChatModule/TeamChatModule.csproj", "{DDB0A249-BD1C-4556-BFE1-362B17EDA874}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamChatModule", "src\Modules\TeamChatModule\TeamChatModule.csproj", "{DDB0A249-BD1C-4556-BFE1-362B17EDA874}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamChatModule.Tests", "tests\Modules\TeamChatModule.Tests\TeamChatModule.Tests.csproj", "{7BD60D6E-7B7E-4771-87C0-7F98FC82F990}"
 EndProject
@@ -162,11 +163,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Modules.Build", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Modules.Tests", "tests\EvoSC.Modules.Tests\EvoSC.Modules.Tests.csproj", "{9018A17A-FB53-4293-8C73-B3FC5576E7AD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{EC447DCF-ABFA-6E24-52A5-D7FD48A5C558}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModuleFixtures", "ModuleFixtures", "{E92837C6-4B48-6BAC-5B99-FA3EABD7D36A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractApiProviderModule", "src\Modules\ContractApiProviderModule\ContractApiProviderModule.csproj", "{F0886C90-2279-48E6-98AA-FCC35A2D281C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractApiProviderModule", "tests\ModuleFixtures\ContractApiProviderModule\ContractApiProviderModule.csproj", "{7A7C0C32-27A5-49B5-B254-E67D9E6F9682}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractApiConsumerModule", "src\Modules\ContractApiConsumerModule\ContractApiConsumerModule.csproj", "{59248ABB-9E5A-431C-B9FA-08C403C1832C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractApiConsumerModule", "tests\ModuleFixtures\ContractApiConsumerModule\ContractApiConsumerModule.csproj", "{0C154542-2A05-42B5-893D-966F28FD0AA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyclicModuleA", "tests\ModuleFixtures\CyclicModuleA\CyclicModuleA.csproj", "{0323EB19-20C7-4176-A571-EDD1094B7247}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyclicModuleB", "tests\ModuleFixtures\CyclicModuleB\CyclicModuleB.csproj", "{F3FE93FD-5B7E-4F5D-B58F-9C1D1C9872C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -474,14 +479,22 @@ Global
 		{9018A17A-FB53-4293-8C73-B3FC5576E7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9018A17A-FB53-4293-8C73-B3FC5576E7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9018A17A-FB53-4293-8C73-B3FC5576E7AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0886C90-2279-48E6-98AA-FCC35A2D281C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0886C90-2279-48E6-98AA-FCC35A2D281C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0886C90-2279-48E6-98AA-FCC35A2D281C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0886C90-2279-48E6-98AA-FCC35A2D281C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59248ABB-9E5A-431C-B9FA-08C403C1832C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59248ABB-9E5A-431C-B9FA-08C403C1832C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59248ABB-9E5A-431C-B9FA-08C403C1832C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59248ABB-9E5A-431C-B9FA-08C403C1832C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A7C0C32-27A5-49B5-B254-E67D9E6F9682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A7C0C32-27A5-49B5-B254-E67D9E6F9682}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A7C0C32-27A5-49B5-B254-E67D9E6F9682}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A7C0C32-27A5-49B5-B254-E67D9E6F9682}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C154542-2A05-42B5-893D-966F28FD0AA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C154542-2A05-42B5-893D-966F28FD0AA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C154542-2A05-42B5-893D-966F28FD0AA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C154542-2A05-42B5-893D-966F28FD0AA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0323EB19-20C7-4176-A571-EDD1094B7247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0323EB19-20C7-4176-A571-EDD1094B7247}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0323EB19-20C7-4176-A571-EDD1094B7247}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0323EB19-20C7-4176-A571-EDD1094B7247}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3FE93FD-5B7E-4F5D-B58F-9C1D1C9872C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3FE93FD-5B7E-4F5D-B58F-9C1D1C9872C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3FE93FD-5B7E-4F5D-B58F-9C1D1C9872C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3FE93FD-5B7E-4F5D-B58F-9C1D1C9872C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -555,9 +568,11 @@ Global
 		{DFE00E7F-944C-488D-9F03-1561FBAB3A02} = {DC47658A-F421-4BA4-B617-090A7DFB3900}
 		{4C40FE36-A82E-44BC-9799-126D16E253C8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{9018A17A-FB53-4293-8C73-B3FC5576E7AD} = {46D790A2-EA9B-44A0-ABD2-A2A2CDC670D4}
-		{EC447DCF-ABFA-6E24-52A5-D7FD48A5C558} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{F0886C90-2279-48E6-98AA-FCC35A2D281C} = {EC447DCF-ABFA-6E24-52A5-D7FD48A5C558}
-		{59248ABB-9E5A-431C-B9FA-08C403C1832C} = {EC447DCF-ABFA-6E24-52A5-D7FD48A5C558}
+		{E92837C6-4B48-6BAC-5B99-FA3EABD7D36A} = {46D790A2-EA9B-44A0-ABD2-A2A2CDC670D4}
+		{7A7C0C32-27A5-49B5-B254-E67D9E6F9682} = {E92837C6-4B48-6BAC-5B99-FA3EABD7D36A}
+		{0C154542-2A05-42B5-893D-966F28FD0AA8} = {E92837C6-4B48-6BAC-5B99-FA3EABD7D36A}
+		{0323EB19-20C7-4176-A571-EDD1094B7247} = {E92837C6-4B48-6BAC-5B99-FA3EABD7D36A}
+		{F3FE93FD-5B7E-4F5D-B58F-9C1D1C9872C2} = {E92837C6-4B48-6BAC-5B99-FA3EABD7D36A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B420040-3D8C-4169-A5F0-30BDB8324F71}

@@ -8,9 +8,9 @@ namespace EvoSC.Modules.Interfaces;
 public interface IModuleManager
 {
     /// <summary>
-    /// Warning: creates a copy of loaded modules. O(n)
+    /// Get a snapshot of the currently loaded modules.
     /// </summary>
-    public IReadOnlyList<IModuleLoadContext> LoadedModules { get; }
+    public IReadOnlyList<IModuleLoadContext> GetLoadedModules();
 
     /// <summary>
     /// Get the load context of a module by it's load ID.

@@ -19,6 +19,9 @@
       <None Update="info.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <!-- Read by the module info source generator. Modules built against the EvoSC.Modules
+           package get this added automatically. -->
+      <AdditionalFiles Include="info.toml" />
     </ItemGroup>
 
     <ItemGroup>

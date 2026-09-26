@@ -40,7 +40,7 @@ public class ModuleValueReaderTests
         };
 
         var moduleManager = new Mock<IModuleManager>();
-        moduleManager.Setup(mm => mm.LoadedModules).Returns(new[] {testModule});
+        moduleManager.Setup(mm => mm.GetLoadedModules()).Returns(new[] {testModule});
         
         var valueReader = new ModuleValueReader(moduleManager.Object);
 
@@ -54,7 +54,7 @@ public class ModuleValueReaderTests
     public async Task Fails_On_Nonexistent_Module()
     {
         var moduleManager = new Mock<IModuleManager>();
-        moduleManager.Setup(mm => mm.LoadedModules).Returns(Array.Empty<IModuleLoadContext>());
+        moduleManager.Setup(mm => mm.GetLoadedModules()).Returns(Array.Empty<IModuleLoadContext>());
         var valueReader = new ModuleValueReader(moduleManager.Object);
 
         await Assert.ThrowsAsync<ValueConversionException>(() =>

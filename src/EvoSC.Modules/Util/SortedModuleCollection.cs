@@ -2,7 +2,6 @@
 using EvoSC.Modules.Exceptions.ModuleDependency;
 using EvoSC.Modules.Interfaces;
 using DependencyGraph = System.Collections.Generic.Dictionary<string, System.Collections.Generic.IList<string>>;
-
 namespace EvoSC.Modules.Util;
 
 public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleInfo
@@ -18,7 +17,7 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
 
     public void Add(T module)
     {
-        _modules[module.Name] = module;
+        _modules[module.Id] = module;
     }
 
     public IEnumerator<T> GetEnumerator()
@@ -40,29 +39,30 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
 
         while (true)
         {
-            bool found = false;
-            
-            foreach (var node in graph)
-            {
-                if (node.Value.Count > 0)
-                {
-                    continue;
-                }
-                
-                sortedDependencies.Add(_modules[node.Key]);
-                RemoveNodeReferences(graph, node.Key);
-                found = true;
-            }
+            var resolved = graph.Where(node => node.Value.Count == 0).Select(node => node.Key).ToArray();
 
-            if (!found)
+            if (resolved.Length == 0)
             {
                 break;
+            }
+
+            foreach (var moduleId in resolved)
+            {
+                sortedDependencies.Add(_modules[moduleId]);
+                RemoveNodeReferences(graph, moduleId);
             }
         }
 
         if (graph.Count > 0)
         {
-            throw new DependencyCycleException(graph);
+            // What remains are modules that depend on each other. No order can satisfy them all,
+            // so they are emitted in a stable order instead of being rejected: loading a module
+            // does not require its dependencies to be loaded first, only linking and enabling do,
+            // and both happen once every module of the collection is loaded.
+            foreach (var moduleId in graph.Keys.OrderBy(id => id, StringComparer.Ordinal))
+            {
+                sortedDependencies.Add(_modules[moduleId]);
+            }
         }
 
         return sortedDependencies;
@@ -75,12 +75,9 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
             graph.Remove(nodeName);
         }
         
-        foreach (var node in graph)
+        foreach (var node in graph.Where(node => node.Value.Contains(nodeName)))
         {
-            if (node.Value.Contains(nodeName))
-            {
-                node.Value.Remove(nodeName);
-            }
+            node.Value.Remove(nodeName);
         }
     }
         
@@ -90,16 +87,11 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
 
         foreach (var module in _modules.Values)
         {
-            adjList.Add(module.Name, new List<string>());
+            adjList.Add(module.Id, new List<string>());
 
-            foreach (var dependency in module.Dependencies)
+            foreach (var dependency in module.Dependencies.Where(dependency => !_ignoredDependencies.Contains(dependency.Name)))
             {
-                if (_ignoredDependencies.Contains(dependency.Name))
-                {
-                    continue;
-                }
-                
-                adjList[module.Name].Add(dependency.Name);
+                adjList[module.Id].Add(dependency.Name);
             }
         }
 
@@ -117,14 +109,6 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
                     throw new DependencyNotFoundException(dependent, dependency);
                 }
             }
-        }
-    }
-
-    private static void DetectCycle(DependencyGraph dependencies)
-    {
-        if (dependencies.Count > 0)
-        {
-            throw new DependencyCycleException(dependencies);
         }
     }
 

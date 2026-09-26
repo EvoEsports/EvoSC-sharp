@@ -85,9 +85,9 @@ public class ModuleManagerService(IContextService context, IModuleManager module
     public Task ListModulesAsync(IPlayer actor)
     {
         var message = new TextFormatter();
-        message.AddText(_locale.PlayerLanguage.LoadedModules);
+        message.AddText(_locale.PlayerLanguage.GetLoadedModules());
 
-        foreach (var module in modules.LoadedModules)
+        foreach (var module in modules.GetLoadedModules())
         {
             message.AddText(module.ModuleInfo.Id, style => style
                 .WithColor(module.IsEnabled ? Color.Green : Color.Red)

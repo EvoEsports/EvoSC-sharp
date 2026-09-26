@@ -9,6 +9,7 @@ using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Util;
 using SimpleInjector;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -57,14 +58,18 @@ public class ModuleManagerHarness : IDisposable
 
     public string ConsumerDirectory => Path.Combine(AppContext.BaseDirectory, "modules", "ContractApiConsumerModule");
 
+    public string ModulesDirectory => Path.Combine(AppContext.BaseDirectory, "modules");
+
+    public string CyclicModuleADirectory => Path.Combine(ModulesDirectory, "CyclicModuleA");
+
     public async Task<IModuleLoadContext> LoadAndEnableAsync(string directory)
     {
-        var before = Manager.LoadedModules.Count;
+        var before = Manager.GetLoadedModules().Count;
         await Manager.LoadAsync(directory);
-        var module = Manager.LoadedModules.Single(m => m.ModuleInfo.Name.Contains(
+        var module = Manager.GetLoadedModules().Single(m => m.ModuleInfo.Id.Contains(
             Path.GetFileName(directory), StringComparison.OrdinalIgnoreCase));
         Assert.Equal(ModuleStatus.Loaded, module.Status);
-        Assert.Equal(before + 1, Manager.LoadedModules.Count);
+        Assert.Equal(before + 1, Manager.GetLoadedModules().Count);
         await Manager.EnableAsync(module.LoadId);
         Assert.Equal(ModuleStatus.Enabled, module.Status);
         Assert.True(module.IsEnabled);
@@ -74,18 +79,7 @@ public class ModuleManagerHarness : IDisposable
     /// <summary>Forces GC until <paramref name="weak"/> is collected.</summary>
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ForceCollection(WeakReference? weak)
-    {
-        if (weak is null)
-        {
-            return;
-        }
-
-        for (var i = 0; i < 20 && weak.IsAlive; i++)
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-    }
+        => CollectibleLoadContext.WaitForUnload(weak, 20);
 
     /// <summary>
     /// Runs <see cref="LoadAndEnableAsync"/> without letting the awaited task's state machine
@@ -114,17 +108,34 @@ public class ModuleManagerHarness : IDisposable
 
     private sealed class FakeApp(Container services) : IEvoSCApplication
     {
-        public IStartupPipeline? StartupPipeline => null;
+        public IStartupPipeline StartupPipeline => null!;
         public CancellationToken MainCancellationToken => CancellationToken.None;
         public Container Services => services;
         public Task RunAsync() => Task.CompletedTask;
         public Task ShutdownAsync() => Task.CompletedTask;
     }
 
+    private bool _disposed;
+
     public void Dispose()
     {
-        RootServices.Dispose();
+        Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            RootServices.Dispose();
+        }
+
+        _disposed = true;
     }
 }
 

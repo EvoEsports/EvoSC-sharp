@@ -189,7 +189,7 @@ public static class ApplicationSetup
             ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
         }
 
-        externalModules.SetIgnoredDependencies(modules.LoadedModules.Select(m => m.ModuleInfo.Id));
+        externalModules.SetIgnoredDependencies(modules.GetLoadedModules().Select(m => m.ModuleInfo.Id));
         await modules.LoadAsync(externalModules);
     }
 

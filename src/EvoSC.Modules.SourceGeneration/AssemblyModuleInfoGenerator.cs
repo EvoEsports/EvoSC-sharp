@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Tomlet;
@@ -48,16 +49,10 @@ namespace EvoSC.Modules.SourceGeneration
 
         public void Execute(GeneratorExecutionContext context)
         {
-            context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out var dir);
+            var infoToml = context.AdditionalFiles.FirstOrDefault(text =>
+                string.Equals(Path.GetFileName(text.Path), "info.toml", StringComparison.OrdinalIgnoreCase));
 
-            if (dir == null)
-            {
-                return;
-            }
-            
-            var infoFile = Path.Combine(dir, "info.toml");
-
-            if (!File.Exists(infoFile))
+            if (infoToml == null)
             {
                 FileNotFoundError(context);
                 return;
@@ -65,10 +60,10 @@ namespace EvoSC.Modules.SourceGeneration
 
             try
             {
-                var document = TomlParser.ParseFile(infoFile);
+                var document = new TomlParser().Parse(infoToml.GetText()?.ToString() ?? string.Empty);
 
-                var moduleIdentifier = document.GetValue("info.name").StringValue;
-                var moduleTitle = document.GetValue("info.title").StringValue;
+                var moduleIdentifier = document.GetValue("info.id").StringValue;
+                var moduleName = document.GetValue("info.name").StringValue;
                 var moduleSummary = document.GetValue("info.summary").StringValue;
                 var moduleVersion = document.GetValue("info.version").StringValue;
                 var moduleAuthor = document.GetValue("info.author").StringValue;
@@ -78,7 +73,7 @@ namespace EvoSC.Modules.SourceGeneration
                 source.AppendLine("using EvoSC.Modules.Attributes;");
                 source.AppendLine();
                 source.AppendLine($"[assembly: ModuleIdentifier(\"{moduleIdentifier}\")]");
-                source.AppendLine($"[assembly: ModuleTitle(\"{moduleTitle}\")]");
+                source.AppendLine($"[assembly: ModuleName(\"{moduleName}\")]");
                 source.AppendLine($"[assembly: ModuleSummary(\"{moduleSummary}\")]");
                 source.AppendLine($"[assembly: ModuleVersion(\"{moduleVersion}\")]");
                 source.AppendLine($"[assembly: ModuleAuthor(\"{moduleAuthor}\")]");
@@ -86,10 +81,10 @@ namespace EvoSC.Modules.SourceGeneration
                 if (document.ContainsKey("dependencies"))
                 {
                     var dependencies = document.GetSubTable("dependencies");
-                    foreach (var dependency in dependencies.Entries)
+                    foreach (var (name, value) in dependencies.Entries
+                                 .Select(entry => (entry.Key, Value: dependencies.GetValue(entry.Key).StringValue)))
                     {
-                        var value = dependencies.GetValue(dependency.Key);
-                        source.AppendLine($"[assembly: ModuleDependency(\"{dependency.Key}\", \"{value.StringValue}\")]");
+                        source.AppendLine($"[assembly: ModuleDependency(\"{name}\", \"{value}\")]");
                     }
                 }
                 

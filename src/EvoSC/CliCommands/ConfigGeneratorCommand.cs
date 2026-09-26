@@ -73,7 +73,7 @@ public class ConfigGeneratorCommand(IModuleManager modules)
             return (name.Name, version.Version.ToString(), t.Assembly);
         }));
         
-        var loadedModules = modules.LoadedModules;
+        var loadedModules = modules.GetLoadedModules();
 
         foreach (var module in loadedModules)
         {

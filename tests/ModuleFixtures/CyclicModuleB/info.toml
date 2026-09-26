@@ -1,0 +1,12 @@
+[info]
+id = "CyclicModuleB"
+name = "Cyclic Module B"
+# A short description of what the module is and does
+summary = "Depends on CyclicModuleA, which depends back on this module. Exists to cover cyclic module dependencies."
+# The current version of this module, using SEMVER
+version = "1.0.0"
+# The name of the author that created this module
+author = "Evo"
+
+[dependencies]
+CyclicModuleA = "1.0.0"
