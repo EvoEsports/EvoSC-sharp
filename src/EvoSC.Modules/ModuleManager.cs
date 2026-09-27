@@ -332,21 +332,20 @@ public class ModuleManager : IModuleManager
 		return Task.CompletedTask;
 	}
 
-	private Task DisableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
+	private async Task DisableManialinkTemplatesAsync(IModuleLoadContext moduleContext)
 	{
 		foreach (IModuleManialinkTemplate manialinkTemplate in moduleContext.ManialinkTemplates)
 		{
 			switch (manialinkTemplate.Type)
 			{
-			case ManialinkTemplateType.Script:
-				_manialinkManager.RemoveManiaScript(manialinkTemplate.Name);
-				break;
-			case ManialinkTemplateType.Template:
-				_manialinkManager.RemoveAndHideTemplateAsync(manialinkTemplate.Name);
-				break;
+				case ManialinkTemplateType.Script:
+					_manialinkManager.RemoveManiaScript(manialinkTemplate.Name);
+					break;
+				case ManialinkTemplateType.Template:
+					await _manialinkManager.RemoveAndHideTemplateAsync(manialinkTemplate.Name);
+					break;
 			}
 		}
-		return Task.CompletedTask;
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]

@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Reflection;
 using EvoSC.Common.Events;
+using EvoSC.Common.Events.Arguments;
+using EvoSC.Common.Events.CoreEvents;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
@@ -52,10 +54,10 @@ public class ManialinkManager : IManialinkManager
         _playerManager = playerManager;
 
         events.Subscribe(s => s
-            .WithEvent(GbxRemoteEvent.PlayerConnect)
+            .WithEvent(PlayerEvents.PlayerJoined)
             .WithInstance(this)
             .WithInstanceClass<ManialinkManager>()
-            .WithHandlerMethod<PlayerConnectGbxEventArgs>(HandlePlayerConnectAsync)
+            .WithHandlerMethod<PlayerJoinedEventArgs>(HandlePlayerJoinedAsync)
             .AsAsync()
         );
 
@@ -409,13 +411,14 @@ public class ManialinkManager : IManialinkManager
     public void ClearGlobalVariables() => _engine.GlobalVariables.Clear();
 
     /// <summary>
-    /// Used to send persistent manialinks to newly connected players.
+    /// Used to send persistent manialinks to players. This runs for players which connected while the
+    /// controller was already running as well as for players which were online before it connected.
     /// </summary>
-    private async Task HandlePlayerConnectAsync(object sender, PlayerConnectGbxEventArgs e)
+    private async Task HandlePlayerJoinedAsync(object sender, PlayerJoinedEventArgs e)
     {
         try
         {
-            var player = await _playerManager.GetOnlinePlayerAsync(PlayerUtils.ConvertLoginToAccountId(e.Login));
+            var player = await _playerManager.GetOnlinePlayerAsync(e.Player.AccountId);
 
             foreach (var (_, manialink) in _persistentManialinks)
             {
@@ -452,13 +455,13 @@ public class ManialinkManager : IManialinkManager
                     continue;
                 }
 
-                await _server.Remote.SendDisplayManialinkPageToLoginAsync(e.Login, manialink.CompiledOutput, 0, false);
+                await _server.Remote.SendDisplayManialinkPageToLoginAsync(player.GetLogin(), output, 0, false);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to send persistent manialink login '{Login}'. Did they leave already?",
-                e.Login);
+            _logger.LogWarning(ex, "Failed to send persistent manialink for login '{Login}'. Did they leave already?",
+                e.Player.AccountId);
         }
     }
 

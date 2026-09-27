@@ -270,6 +270,8 @@ public class PlayerCacheService : IPlayerCacheService
                 $"Missing player information. {callResult.Length / 2} results returned but need {onlinePlayers.Length - 1}.");
         }
 
+        var joinedPlayers = new List<(IOnlinePlayer Player, bool IsNewPlayer)>();
+
         for (var i = 0; i < callResult.Length; i += 2)
         {
             var onlinePlayerInfo = GbxRemoteUtils.DynamicToType<TmPlayerInfo>(callResult[i]);
@@ -301,8 +303,20 @@ public class PlayerCacheService : IPlayerCacheService
             {
                 await _events.RaiseAsync(PlayerEvents.NewPlayerAdded, new NewPlayerAddedEventArgs { Player = player.Player });
             }
-            
+
+            joinedPlayers.Add((onlinePlayer, player.IsNew));
+
             _logger.LogDebug("Cached online player '{AccountId}'", accountId);
+        }
+
+        // Players which were already online before the controller connected never raise PlayerConnect, so
+        // announce them as well. Otherwise nothing which reacts to a player joining (sending the persistent
+        // manialinks, for example) would ever run for them. Announced after the whole list is cached so that
+        // handlers see every online player.
+        foreach (var (onlinePlayer, isNewPlayer) in joinedPlayers)
+        {
+            await _events.RaiseAsync(PlayerEvents.PlayerJoined,
+                new PlayerJoinedEventArgs { Player = onlinePlayer, IsNewPlayer = isNewPlayer });
         }
     }
 
