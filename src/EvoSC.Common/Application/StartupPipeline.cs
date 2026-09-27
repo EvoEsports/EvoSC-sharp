@@ -101,7 +101,9 @@ public class StartupPipeline(IEvoScBaseConfig config) : IStartupPipeline, IDispo
         }
     }
 
-    public async Task ExecuteAsync(params string[] components)
+    public async Task ExecuteAsync(params string[] components) => await ExecuteAsync(CancellationToken.None, components);
+
+    public async Task ExecuteAsync(CancellationToken token, params string[] components)
     {
         var services = new Dictionary<string, IStartupComponent>();
         var actions = new Dictionary<string, IStartupComponent>();
@@ -110,21 +112,42 @@ public class StartupPipeline(IEvoScBaseConfig config) : IStartupPipeline, IDispo
 
         foreach (var (_, component) in services)
         {
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
             await ExecuteComponentAsync(component);
         }
 
         foreach (var (_, component) in actions)
         {
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
             await ExecuteComponentAsync(component);
         }
         
         LogExecutionSuccess();
     }
 
-    public async Task ExecuteAllAsync()
+    public async Task ExecuteAllAsync() => await ExecuteAllAsync(CancellationToken.None);
+
+    public async Task ExecuteAllAsync(CancellationToken token)
     {
         foreach (var component in _components.Values)
         {
+            // A component can shut the application down, for example when the connection to the
+            // Trackmania server cannot be established. The components that come after it expect
+            // the state it was supposed to set up, so they must not run in that case.
+            if (token.IsCancellationRequested)
+            {
+                _logger.LogWarning("Startup was aborted before the component {Name} could be executed", component.Name);
+                return;
+            }
+
             await ExecuteComponentAsync(component);
         }
         

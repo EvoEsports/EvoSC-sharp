@@ -92,12 +92,16 @@ public static class ApplicationSetup
 
             .Action("ActionSetupControllerManager", SetupControllerManager)
 
-            // Modules are loaded before the database is migrated, because a module's migrations live
-            // in its load context: they can only be found once the module has been loaded. They run
-            // before anything is enabled, so no module is ever enabled against an unmigrated table.
+            // The schema has to exist before a module is loaded: reading a module's settings goes
+            // through the config table, so loading first would query a table that isn't there yet.
+            .Action("ActionMigrateDatabase", MigrateDatabase)
+
+            // A module's migrations live in its own load context, so they can only be found once
+            // the module is loaded. They run before anything is enabled, so no module is ever
+            // enabled against an unmigrated table.
             .AsyncAction("ActionSetupModules", SetupModulesAsync)
 
-            .Action("ActionMigrateDatabase", MigrateDatabase)
+            .Action("ActionMigrateModuleDatabases", MigrateModuleDatabases)
 
             .Action("ActionInitializeEventManager", s => s
                 .GetInstance<IEventManager>()
@@ -143,13 +147,17 @@ public static class ApplicationSetup
     private static void MigrateDatabase(ServicesBuilder s)
     {
         using var scope = new Scope(s);
-        var manager = scope.GetInstance<IMigrationManager>();
+        scope.GetInstance<IMigrationManager>().MigrateFromAssembly(typeof(MigrationManager).Assembly);
+    }
 
-        // main migrations
-        manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
-
-        // module migrations, each from the load context of the module that owns them
-        manager.RunModuleMigrations(scope.GetInstance<IModuleManager>());
+    /// <summary>
+    /// Run the migrations of the loaded modules.
+    /// </summary>
+    /// <param name="s"></param>
+    private static void MigrateModuleDatabases(ServicesBuilder s)
+    {
+        using var scope = new Scope(s);
+        scope.GetInstance<IMigrationManager>().RunModuleMigrations(scope.GetInstance<IModuleManager>());
     }
 
     /// <summary>

@@ -421,35 +421,33 @@ public class ModuleManager : IModuleManager
 
 	private async Task RegisterModuleConfigAsync(IEnumerable<Assembly> assemblies, SimpleInjector.Container container, IModuleInfo moduleInfo)
 	{
-		try
+		foreach (Assembly assembly in assemblies)
 		{
-			foreach (Assembly assembly in assemblies)
+			foreach (Type type in assembly.AssemblyTypesWithAttribute<SettingsAttribute>())
 			{
-				foreach (Type type in assembly.AssemblyTypesWithAttribute<SettingsAttribute>())
+				SettingsAttribute? configAttr = type.GetCustomAttribute<SettingsAttribute>();
+				if (configAttr == null)
 				{
-					SettingsAttribute? configAttr = type.GetCustomAttribute<SettingsAttribute>();
-					if (configAttr != null)
-					{
-						if (!type.IsInterface)
-						{
-							_logger.LogError("Settings type {Type} must be an interface", type);
-							throw new ServicesException($"Settings type {type} must be an interface.");
-						}
-						object? config = CreateConfigInstance(type, await CreateModuleConfigStoreAsync(moduleInfo.Id, type));
-						if (config == null)
-						{
-							_logger.LogError("An instance of the module config {Type} could not be created", type);
-							throw new InvalidOperationException("Failed to create module config instance.");
-						}
-						container.RegisterInstance(type, config);
-					}
+					continue;
 				}
+
+				if (!type.IsInterface)
+				{
+					_logger.LogError("Settings type {Type} must be an interface", type);
+					throw new ServicesException($"Settings type {type} must be an interface.");
+				}
+
+				// A module whose settings cannot be built must not load: it would fail later on with an
+				// unrelated error, as a service cannot be resolved without its settings.
+				object? config = CreateConfigInstance(type, await CreateModuleConfigStoreAsync(moduleInfo.Id, type));
+				if (config == null)
+				{
+					_logger.LogError("An instance of the module config {Type} could not be created", type);
+					throw new InvalidOperationException("Failed to create module config instance.");
+				}
+
+				container.RegisterInstance(type, config);
 			}
-		}
-		catch (Exception ex)
-		{
-			Exception ex2 = ex;
-			_logger.LogError(ex2, "Failed to add module config");
 		}
 	}
 
@@ -470,6 +468,14 @@ public class ModuleManager : IModuleManager
 		ReflectionUtils.CallMethod(obj, "UseConfigStore", store);
 		ReflectionUtils.CallMethod(obj, "UseTypeParser", new TextColorTypeParser());
 		ReflectionUtils.CallMethod(obj, "UseTypeParser", new VersionParser());
+
+		// Config.Net emits the settings object with Castle, which cannot be used from a collectible
+		// load context. The configuration is still Config.Net's, only the emitted type differs.
+		if (configInterface.Assembly.IsCollectible)
+		{
+			return CollectibleConfigProxy.Create(configInterface, ConfigNetInterceptor.Create(obj, configInterface));
+		}
+
 		return ReflectionUtils.CallMethod(obj, "Build");
 	}
 
@@ -616,6 +622,10 @@ public class ModuleManager : IModuleManager
 
 		var themes = GetModuleThemes(declaredAssemblies);
 
+		// A module's own constructor may take services from a module it depends on, so its
+		// container has to be connected to those dependencies before the instance exists.
+		LinkLoadedDependencies(loadId, moduleInfo, loadedDependencies);
+
 		await RegisterModuleConfigAsync(declaredAssemblies, moduleServices, moduleInfo);
 		var moduleInstance = CreateModuleInstance(mainClass, moduleServices);
 		return new ModuleLoadContext
@@ -662,6 +672,28 @@ public class ModuleManager : IModuleManager
 		return null;
 	}
 
+	/// <summary>
+	/// Connects a module that is being created to the dependencies that are already loaded, so
+	/// services of those modules can be resolved while the instance is constructed. A dependency
+	/// that is not loaded yet is left to <see cref="LinkModuleAsync"/>, which runs once every
+	/// module of the load operation exists.
+	/// </summary>
+	private void LinkLoadedDependencies(Guid loadId, IModuleInfo moduleInfo, List<Guid> loadedDependencies)
+	{
+		foreach (string dependencyId in moduleInfo.Dependencies.Select(dependency => dependency.Name))
+		{
+			if (!_moduleNameMap.TryGetValue(dependencyId, out Guid dependencyLoadId) ||
+			    loadedDependencies.Contains(dependencyLoadId))
+			{
+				continue;
+			}
+
+			loadedDependencies.Add(dependencyLoadId);
+			_servicesManager.RegisterDependency(loadId, dependencyLoadId);
+			_logger.LogDebug("Module '{Name}' is linked to dependency '{Dependency}'", moduleInfo.Id, dependencyId);
+		}
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private async Task<IModuleLoadContext?> RegisterModuleAsync(Guid loadId, IModuleInfo moduleInfo, Type mainClass, AssemblyLoadContext? asmLoadContext)
 	{
@@ -701,6 +733,12 @@ public class ModuleManager : IModuleManager
 			if (!_moduleNameMap.TryGetValue(dependencyId, out Guid dependencyLoadId))
 			{
 				throw new DependencyNotFoundException(moduleInfo.Id, dependencyId);
+			}
+
+			// A dependency that was already available when the instance was created is linked then.
+			if (moduleContext.LoadedDependencies.Contains(dependencyLoadId))
+			{
+				continue;
 			}
 
 			moduleContext.LoadedDependencies.Add(dependencyLoadId);

@@ -9,8 +9,8 @@ namespace EvoSC.Modules;
 /// from the module's directory; export assemblies resolve through the
 /// <see cref="ExportAssemblyStore"/> (owner-injected resolver).
 /// </summary>
-internal sealed class EvoScModuleLoadContext(string moduleAssemblyPath, Func<string, Assembly?>? exportResolver = null)
-    : AssemblyLoadContext(Path.GetFileNameWithoutExtension(moduleAssemblyPath), isCollectible: true)
+internal sealed class EvoScModuleLoadContext(string moduleAssemblyPath, Func<string, Assembly?>? exportResolver = null, bool isCollectible = true)
+    : AssemblyLoadContext(Path.GetFileNameWithoutExtension(moduleAssemblyPath), isCollectible)
 {
     private readonly AssemblyDependencyResolver _resolver = new(moduleAssemblyPath);
     private readonly List<string> _moduleAssemblyPaths = new();

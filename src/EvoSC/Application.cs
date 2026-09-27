@@ -35,7 +35,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
     public async Task RunAsync()
     {
         StartupPipeline.SetupPipeline(_config);
-        await StartupPipeline.ExecuteAllAsync();
+        await StartupPipeline.ExecuteAllAsync(_runningToken.Token);
 
         // wait indefinitely
         WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
