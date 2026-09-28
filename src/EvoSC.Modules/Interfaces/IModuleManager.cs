@@ -72,8 +72,11 @@ public interface IModuleManager
     /// Load an external module.
     /// </summary>
     /// <param name="moduleInfo">Module info for the external module.</param>
+    /// <param name="install">Whether to run the module's installation as part of the load. Pass
+    /// false to load a module that was previously unloaded without running its installation
+    /// again.</param>
     /// <returns></returns>
-    public Task LoadAsync(IExternalModuleInfo moduleInfo);
+    public Task LoadAsync(IExternalModuleInfo moduleInfo, bool install = true);
     
     /// <summary>
     /// Load the modules that ship with EvoSC from a fixed directory. An internal module is loaded

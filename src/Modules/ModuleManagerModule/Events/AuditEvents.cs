@@ -14,5 +14,35 @@ public enum AuditEvents
     /// Triggered when a module is disabled by a user.
     /// </summary>
     [Identifier(Name = "ModuleManager:ModuleDisabled")]
-    ModuleDisabled
+    ModuleDisabled,
+    
+    /// <summary>
+    /// Triggered when a module is reloaded by a user.
+    /// </summary>
+    [Identifier(Name = "ModuleManager:ModuleReloaded")]
+    ModuleReloaded,
+    
+    /// <summary>
+    /// Triggered when a module is loaded by a user.
+    /// </summary>
+    [Identifier(Name = "ModuleManager:ModuleLoaded")]
+    ModuleLoaded,
+    
+    /// <summary>
+    /// Triggered when a module is unloaded by a user.
+    /// </summary>
+    [Identifier(Name = "ModuleManager:ModuleUnloaded")]
+    ModuleUnloaded,
+    
+    /// <summary>
+    /// Triggered when a module is installed by a user.
+    /// </summary>
+    [Identifier(Name = "ModuleManager:ModuleInstalled")]
+    ModuleInstalled,
+    
+    /// <summary>
+    /// Triggered when a module is uninstalled by a user.
+    /// </summary>
+    [Identifier(Name = "ModuleManager:ModuleUninstalled")]
+    ModuleUninstalled
 }

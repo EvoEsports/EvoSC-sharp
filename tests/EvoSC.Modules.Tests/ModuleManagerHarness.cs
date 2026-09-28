@@ -7,6 +7,7 @@ using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Themes;
+using EvoSC.Common.Localization;
 using EvoSC.Common.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Interfaces;
@@ -73,6 +74,7 @@ public class ModuleManagerHarness : IDisposable
 
         Manager = new ModuleManager(
             NullLogger<ModuleManager>.Instance,
+            NullLogger<LocalizationManager>.Instance,
             Config.Object,
             new Mock<IControllerManager>().Object,
             ServicesManager,

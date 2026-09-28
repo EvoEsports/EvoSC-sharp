@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Localization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Localization;
@@ -13,7 +15,7 @@ public class LocalizationManagerTests
     public LocalizationManagerTests()
     {
         _manager = new LocalizationManager(typeof(LocalizationManagerTests).Assembly,
-            "EvoSC.Common.Tests.Localization.TestLocalization");
+            "EvoSC.Common.Tests.Localization.TestLocalization", NullLogger<LocalizationManager>.Instance);
     }
 
     [Theory]
@@ -27,8 +29,26 @@ public class LocalizationManagerTests
     }
 
     [Fact]
-    public void Throws_If_Locale_Name_Was_Not_Found()
+    public void Uses_Key_As_Value_When_Locale_Name_Was_Not_Found()
     {
-        Assert.Throws<KeyNotFoundException>(() => _manager.GetString(CultureInfo.InvariantCulture, "DoesNotExit"));
+        Assert.Equal("DoesNotExit", _manager.GetString(CultureInfo.InvariantCulture, "DoesNotExit"));
+    }
+
+    [Fact]
+    public void Logs_A_Warning_When_Locale_Name_Was_Not_Found()
+    {
+        var logger = new Mock<ILogger<LocalizationManager>>();
+        var manager = new LocalizationManager(typeof(LocalizationManagerTests).Assembly,
+            "EvoSC.Common.Tests.Localization.TestLocalization", logger.Object);
+
+        manager.GetString(CultureInfo.InvariantCulture, "DoesNotExit");
+
+        logger.Verify(l => l.Log(
+            LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<Exception>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+        ), Times.Once);
     }
 }

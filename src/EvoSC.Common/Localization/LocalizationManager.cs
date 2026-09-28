@@ -2,15 +2,18 @@
 using System.Reflection;
 using System.Resources;
 using EvoSC.Common.Interfaces.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Localization;
 
 public class LocalizationManager : ILocalizationManager
 {
     private readonly ResourceManager _resourceManager;
+    private readonly ILogger<LocalizationManager> _logger;
 
-    public LocalizationManager(Assembly assembly, string resource)
+    public LocalizationManager(Assembly assembly, string resource, ILogger<LocalizationManager> logger)
     {
+        _logger = logger;
         _resourceManager = new ResourceManager(resource, assembly);
         
         // verify resource
@@ -25,7 +28,9 @@ public class LocalizationManager : ILocalizationManager
 
         if (localeString == null)
         {
-            throw new KeyNotFoundException($"Failed to find locale name {name}.");
+            _logger.LogWarning("Failed to find locale name '{Name}', using the key as the value.", name);
+
+            return string.Format(name, args);
         }
 
         return string.Format(localeString, args);

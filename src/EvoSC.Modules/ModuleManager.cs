@@ -45,6 +45,7 @@ namespace EvoSC.Modules;
 public class ModuleManager : IModuleManager
 {
 	private readonly ILogger<ModuleManager> _logger;
+	private readonly ILogger<LocalizationManager> _localizationLogger;
 
 	private readonly IControllerManager _controllers;
 
@@ -111,9 +112,11 @@ public class ModuleManager : IModuleManager
 
 	internal ExportAssemblyStore ExportAssemblies => _exportAssemblies;
 
-	public ModuleManager(ILogger<ModuleManager> logger, IEvoScBaseConfig config, IControllerManager controllers, IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions, IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager)
+	public ModuleManager(ILogger<ModuleManager> logger, ILogger<LocalizationManager> localizationLogger,
+        IEvoScBaseConfig config, IControllerManager controllers, IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions, IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager)
 	{
 		_logger = logger;
+		_localizationLogger = localizationLogger;
 		_config = config;
 		_controllers = controllers;
 		_servicesManager = servicesManager;
@@ -660,7 +663,7 @@ public class ModuleManager : IModuleManager
 	{
 		try
 		{
-			var localization = new LocalizationManager(assembly, rootNamespace + ".Localization");
+			var localization = new LocalizationManager(assembly, rootNamespace + ".Localization", _localizationLogger);
 			_logger.LogDebug("Registered localization for module {Module}", moduleInfo.Id);
 			return localization;
 		}
@@ -903,7 +906,7 @@ public class ModuleManager : IModuleManager
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public async Task LoadAsync(IExternalModuleInfo moduleInfo)
+	public async Task LoadAsync(IExternalModuleInfo moduleInfo, bool install = true)
 	{
 		if (!VerifyExternalModule(moduleInfo))
 		{
@@ -915,7 +918,7 @@ public class ModuleManager : IModuleManager
 		if (type != null)
 		{
 			ApplyModuleDeclaration(moduleInfo, type);
-			await LoadAndLinkAsync(moduleInfo, type, asmLoadContext, loadId);
+			await LoadAndLinkAsync(moduleInfo, type, asmLoadContext, loadId, install);
 			return;
 		}
 		_logger.LogError("Failed to find the module main class for module {Name}. The module will not load", moduleInfo.Id);
@@ -1039,7 +1042,7 @@ public class ModuleManager : IModuleManager
 		}
 	}
 
-	private async Task LoadAndLinkAsync(IModuleInfo moduleInfo, Type type, AssemblyLoadContext? asmLoadContext, Guid loadId)
+	private async Task LoadAndLinkAsync(IModuleInfo moduleInfo, Type type, AssemblyLoadContext? asmLoadContext, Guid loadId, bool install = true)
 	{
 		IModuleLoadContext? loadContext = await RegisterModuleAsync(loadId, moduleInfo, type, asmLoadContext);
 
@@ -1051,7 +1054,11 @@ public class ModuleManager : IModuleManager
 		try
 		{
 			await LinkModuleAsync(loadContext);
-			await InstallAsync(loadId);
+
+			if (install)
+			{
+				await InstallAsync(loadId);
+			}
 		}
 		catch
 		{
