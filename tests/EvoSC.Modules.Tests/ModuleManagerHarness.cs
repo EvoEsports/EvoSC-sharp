@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using EvoSC.Common.Config.Models;
+using EvoSC.Common.Database.Models.Config;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Interfaces.Database.Repository;
@@ -28,8 +29,18 @@ public class ModuleManagerHarness : IDisposable
     public ModuleManager Manager { get; }
     public Mock<IEvoScBaseConfig> Config { get; }
     public Mock<IModuleConfig> ModulesConfig { get; }
+    public Mock<IManialinkManager> ManialinkManager { get; }
+    public Mock<IConfigStoreRepository> ConfigStoreRepository { get; }
 
-    public ModuleManagerHarness()
+    /// <summary>
+    /// The config options which module configs were written to, so tests can assert what a module
+    /// persisted and so a reloaded module reads back the same values.
+    /// </summary>
+    public IReadOnlyDictionary<string, DbConfigOption> ConfigOptions => _configOptions;
+
+    private readonly Dictionary<string, DbConfigOption> _configOptions = new();
+
+    public ModuleManagerHarness(Mock<IManialinkManager>? manialinkManager = null)
     {
         var app = new FakeApp(RootServices);
 
@@ -42,6 +53,24 @@ public class ModuleManagerHarness : IDisposable
 
         ServicesManager = new ServiceContainerManager(app, NullLogger<ServiceContainerManager>.Instance);
 
+        ConfigStoreRepository = new Mock<IConfigStoreRepository>();
+        ConfigStoreRepository.Setup(r => r.GetConfigOptionsByKeyAsync(It.IsAny<string>()))
+            .Returns<string>(key => Task.FromResult(_configOptions.GetValueOrDefault(key)));
+        ConfigStoreRepository.Setup(r => r.AddConfigOptionAsync(It.IsAny<DbConfigOption>()))
+            .Returns<DbConfigOption>(option =>
+            {
+                _configOptions[option.Key] = option;
+                return Task.CompletedTask;
+            });
+        ConfigStoreRepository.Setup(r => r.UpdateConfigOptionAsync(It.IsAny<DbConfigOption>()))
+            .Returns<DbConfigOption>(option =>
+            {
+                _configOptions[option.Key] = option;
+                return Task.CompletedTask;
+            });
+
+        ManialinkManager = manialinkManager ?? new Mock<IManialinkManager>();
+
         Manager = new ModuleManager(
             NullLogger<ModuleManager>.Instance,
             Config.Object,
@@ -49,8 +78,8 @@ public class ModuleManagerHarness : IDisposable
             ServicesManager,
             new Mock<IActionPipelineManager>().Object,
             new Mock<IPermissionManager>().Object,
-            new Mock<IConfigStoreRepository>().Object,
-            new Mock<IManialinkManager>().Object,
+            ConfigStoreRepository.Object,
+            ManialinkManager.Object,
             new Mock<IThemeManager>().Object);
     }
 
@@ -61,6 +90,8 @@ public class ModuleManagerHarness : IDisposable
     public string ModulesDirectory => Path.Combine(AppContext.BaseDirectory, "modules");
 
     public string CyclicModuleADirectory => Path.Combine(ModulesDirectory, "CyclicModuleA");
+
+    public string ConfigManialinkModuleDirectory => Path.Combine(ModulesDirectory, "ConfigManialinkModule");
 
     public async Task<IModuleLoadContext> LoadAndEnableAsync(string directory)
     {

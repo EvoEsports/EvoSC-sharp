@@ -100,7 +100,9 @@ internal static class CollectibleConfigProxy
 
         public IInvocationProceedInfo CaptureProceedInfo() => throw new NotSupportedException();
 
-        private static object? DefaultValue(Type type) => type.IsValueType ? Activator.CreateInstance(type) : null;
+        // Setters are void, and Activator cannot create an instance of System.Void.
+        private static object? DefaultValue(Type type) =>
+            type == typeof(void) || !type.IsValueType ? null : Activator.CreateInstance(type);
     }
 
     /// <summary>The emitted type together with the member order it was emitted for.</summary>

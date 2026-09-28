@@ -14,8 +14,8 @@ public class ModuleDirectoryUtilsTests
         Assert.Equal(
             new[]
             {
-                "ContractApiConsumerModule", "ContractApiProviderModule", "CyclicModuleA", "CyclicModuleB",
-                "InternalFixtureModule"
+                "ConfigManialinkModule", "ContractApiConsumerModule", "ContractApiProviderModule", "CyclicModuleA",
+                "CyclicModuleB", "InternalFixtureModule"
             },
             modules.Select(m => m.Id).OrderBy(id => id, StringComparer.Ordinal));
     }

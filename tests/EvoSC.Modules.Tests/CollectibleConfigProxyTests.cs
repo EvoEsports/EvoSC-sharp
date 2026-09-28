@@ -47,6 +47,26 @@ public class CollectibleConfigProxyTests
         Assert.Equal([7], interceptor.Written);
     }
 
+    /// <summary>
+    /// Config.Net exposes settings as properties, so the proxy has to cope with the void setters
+    /// too, not just the plain methods the other test writes through.
+    /// </summary>
+    [Fact]
+    public void Create_SupportsPropertySetters()
+    {
+        var context = new AssemblyLoadContext("settings-module", isCollectible: true);
+        var settingsInterface = DefineSettingsInterface(context);
+        var interceptor = new StubInterceptor();
+
+        var proxy = CollectibleConfigProxy.Create(settingsInterface, interceptor);
+
+        var round = settingsInterface.GetProperty("Round")!;
+        round.SetValue(proxy, 7);
+
+        Assert.Equal([7], interceptor.Written);
+        Assert.Equal(7, round.GetValue(proxy));
+    }
+
     [Fact]
     public void Create_RejectsAnInterfaceWithByRefMembers()
     {
@@ -125,6 +145,9 @@ public class CollectibleConfigProxyTests
                 case "SetRound":
                     Written.Add(invocation.Arguments[0]);
                     invocation.ReturnValue = invocation.Arguments[0];
+                    break;
+                case "set_Round":
+                    Written.Add(invocation.Arguments[0]);
                     break;
                 case "get_Round":
                 case "GetRound":
