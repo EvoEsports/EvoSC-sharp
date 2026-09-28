@@ -1,0 +1,127 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    Build-time export split for EvoSC modules.
+
+    Modules that reference EvoSC.Modules may declare export entry-point interfaces with
+    [EvoSC.Modules.Export]. During the module compile those interfaces and every type
+    reachable from their methods/properties (and the whole files containing them) are
+    extracted into a dedicated export assembly "&lt;AssemblyName&gt;.Exports.dll", which
+    is emitted next to the module assembly and referenced by the module's main assembly.
+    Every consumer of the module's exports (other modules at their build time) references
+    this export dll, and the runtime loads it into a dedicated shared export load context.
+
+    Cross-module export references are declared in a consuming module as:
+      <ProjectReference Include="..\Modules.X\Modules.X.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+
+    The exports dll path is then derived from the referenced project's own output
+    path (obtained by invoking its GetTargetPath target) in EvoSC_ResolveExportReferences
+    below, so the bin directory, configuration and target framework needn't be spelled
+    out. An explicit path
+    (e.g. <ModuleExportReference Include="..\Modules.X\bin\$(Configuration)\$(TargetFramework)\X.Exports.dll" />)
+    is still honored when a project reference isn't desirable.
+  -->
+
+  <PropertyGroup>
+    <!-- Lets the export reference logic tell a module from a project that merely consumes
+         modules: a module resolves dependencies' exports through the export load context at
+         run time, anything else needs the export assembly in its own output directory. -->
+    <EvoSCModuleProject>true</EvoSCModuleProject>
+  </PropertyGroup>
+
+  <UsingTask TaskName="EvoSC.Modules.Build.ExportAssemblyAnalyzer"
+             AssemblyFile="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\$(TargetFramework)\EvoSC.Modules.Build.dll" />
+
+  <!--
+    The module info source generator reads a module's info.toml as an additional file, so a
+    module only has to place info.toml next to its project file.
+  -->
+  <ItemGroup Condition="'$(Language)' == 'C#' and Exists('$(MSBuildProjectDirectory)/info.toml')">
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/info.toml" />
+  </ItemGroup>
+
+  <!--
+    Adds cross-module export references to the assembly reference lists *after*
+    ResolveReferences has produced ReferencePathWithRefAssemblies, so they feed both the export
+    analyzer and the module's own CoreCompile. The logic lives in its own file because projects
+    that merely consume modules - test projects, tools - need it without the rest of the module
+    build contract.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)EvoSC.Modules.Build.ExportReferences.targets" />
+
+  <!--
+    Runs right before CoreCompile (after the generated global usings file has been added
+    to @(Compile)): analyzes the compilation, emits the export assembly, removes the
+    export files from the main compile, and references the emitted export assembly.
+  -->
+  <Target Name="EvoSC_GenerateExportAssembly"
+          BeforeTargets="CoreCompile"
+          DependsOnTargets="ResolveReferences;GenerateGlobalUsings;EvoSC_ResolveExportReferences"
+          Condition="'$(Language)' == 'C#'">
+
+    <PropertyGroup>
+      <EvoSCModuleExportIntermediate>$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', '$(AssemblyName).Exports.dll'))</EvoSCModuleExportIntermediate>
+      <_EvoSCEmitPdb Condition="'$(DebugType)' == 'none' or '$(DebugSymbols)' == 'false'">false</_EvoSCEmitPdb>
+      <_EvoSCEmitPdb Condition="'$(_EvoSCEmitPdb)' == ''">true</_EvoSCEmitPdb>
+    </PropertyGroup>
+
+    <EvoSC.Modules.Build.ExportAssemblyAnalyzer
+        Sources="@(Compile)"
+        References="@(ReferencePathWithRefAssemblies)"
+        ExportAttribute="EvoSC.Modules.ExportAttribute"
+        OutputAssembly="$(EvoSCModuleExportIntermediate)"
+        ExportAssemblyName="$(AssemblyName).Exports"
+        LangVersion="$(LangVersion)"
+        DefineConstants="$(DefineConstants)"
+        AllowUnsafeBlocks="$(AllowUnsafeBlocks)"
+        CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
+        Nullable="$(Nullable)"
+        Deterministic="$(Deterministic)"
+        EmitDebugInformation="$(_EvoSCEmitPdb)"
+        Version="$(Version)">
+      <Output TaskParameter="ExportCompileItems" ItemName="EvoSC_ExportCompileItems" />
+      <Output TaskParameter="HasExportAssembly" PropertyName="EvoSC_HasExportAssembly" />
+    </EvoSC.Modules.Build.ExportAssemblyAnalyzer>
+
+    <ItemGroup Condition="'$(EvoSC_HasExportAssembly)' == 'true'">
+      <Compile Remove="@(EvoSC_ExportCompileItems)" />
+      <ReferencePath Include="$(EvoSCModuleExportIntermediate)" />
+      <ReferencePathWithRefAssemblies Include="$(EvoSCModuleExportIntermediate)" />
+      <ReferenceCopyLocalPaths Include="$(EvoSCModuleExportIntermediate)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Optional: after the module (and its export assembly) have been built, copy them
+    into a dedicated modules output folder so the runtime catalog can discover them.
+    Enabled by setting $(EvoSCModulesOutDir) on the module project.
+  -->
+  <Target Name="EvoSC_CopyModuleOutput"
+          AfterTargets="Build"
+          Condition="'$(Language)' == 'C#' and '$(EvoSCModulesOutDir)' != ''">
+
+    <ItemGroup>
+      <EvoSC_ModuleOutput Include="$(TargetDir)$(AssemblyName).dll" />
+      <EvoSC_ModuleOutput Include="$(EvoSCModuleExportIntermediate)" Condition="'$(EvoSC_HasExportAssembly)' == 'true'" />
+      <EvoSC_ModuleOutput Include="$(TargetDir)$(AssemblyName).deps.json" />
+      <EvoSC_ModuleManifest Include="$(MSBuildProjectDirectory)\info.toml" Condition="Exists('$(MSBuildProjectDirectory)\info.toml')" />
+    </ItemGroup>
+
+    <!-- Guard against accidentally shipping a dependency's export assembly with the depending
+         module: dependency exports are loaded dynamically from the provider, never from a
+         module's own directory. The module's OWN export is emitted into the target directory
+         by reference, so it is excluded — everything else matching *.Exports.dll is foreign. -->
+    <ItemGroup>
+      <_EvoSCForeignExport Include="$(TargetDir)*.Exports.dll"
+                           Exclude="$(TargetDir)$(AssemblyName).Exports.dll" />
+    </ItemGroup>
+    <Warning Condition="'@(_EvoSCForeignExport)' != ''"
+             Text="Module '$(AssemblyName)' is shipping foreign export assembly(s) '@(_EvoSCForeignExport)' in its output directory. Dependency export assemblies must be loaded dynamically from their provider and must never be copied into a depending module's output. EvoSC will ignore such files at runtime." />
+
+    <MakeDir Directories="$(EvoSCModulesOutDir)" />
+    <Copy SourceFiles="@(EvoSC_ModuleOutput);@(EvoSC_ModuleManifest)"
+          DestinationFolder="$(EvoSCModulesOutDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

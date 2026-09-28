@@ -1,0 +1,108 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    Wires export assemblies into the reference lists of a project that compiles against a module.
+
+    A module consumes another module's contracts through an export-only project reference:
+      <ProjectReference Include="..\Modules.X\Modules.X.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+    whose exports dll path is derived from the referenced project's own output path (obtained by
+    invoking its GetTargetPath target), so bin directory, configuration and target framework needn't
+    be spelled out. An explicit path
+    (<ModuleExportReference Include="..\Modules.X\bin\$(Configuration)\$(TargetFramework)\X.Exports.dll" />)
+    is still honored when a project reference isn't desirable.
+
+    A project that references a module outright - a test project, or a tool - needs the module's
+    export assembly too, because the contracts it compiles against were moved out of the module's
+    main assembly. Those are ordinary references: the caller is not a module, so nothing has to be
+    kept out of its output.
+
+    This file is imported by EvoSC.Modules.Build.targets for module projects, and can be imported
+    on its own by projects that only consume modules.
+  -->
+
+  <Target Name="EvoSC_ResolveExportReferences"
+          AfterTargets="FindReferenceAssembliesForReferences"
+          DependsOnTargets="ResolveProjectReferences"
+          Condition="'$(Language)' == 'C#' and (@(ModuleExportReference) != '' or @(ProjectReference) != '')">
+    <ItemGroup>
+      <_EvoSCModuleProjectRef Include="@(ProjectReference)"
+          Condition="'%(ProjectReference.ReferenceOutputAssembly)' == 'false' and
+                     '%(ProjectReference.EvoSCModule)' == 'true'" />
+    </ItemGroup>
+    <MSBuild Projects="@(_EvoSCModuleProjectRef)"
+             Targets="GetTargetPath"
+             Condition="'@(_EvoSCModuleProjectRef)' != ''">
+      <Output TaskParameter="TargetOutputs" ItemName="_EvoSCModuleTargetPaths" />
+    </MSBuild>
+    <ItemGroup>
+      <_EvoSCModuleTargetPaths>
+        <ExportDir>$([System.IO.Path]::GetDirectoryName('%(Identity)'))</ExportDir>
+        <ExportBase>$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</ExportBase>
+      </_EvoSCModuleTargetPaths>
+      <ModuleExportReference Include="@(_EvoSCModuleTargetPaths->'%(ExportDir)\%(ExportBase).Exports.dll')"
+                             Condition="Exists('%(ExportDir)\%(ExportBase).Exports.dll')">
+        <!-- A dependency's export assembly must never ship with the depending module: it is
+             resolved dynamically from the provider at runtime. Keep it compile-only so it is
+             neither copied to the output directory nor embedded anywhere in the module. -->
+        <Private>false</Private>
+        <CopyLocal>false</CopyLocal>
+      </ModuleExportReference>
+    </ItemGroup>
+    <ItemGroup>
+      <!--
+        Only the compile reference list. GenerateDepsFile reads ReferencePath and derives project
+        entries from it, and an export assembly sitting next to the main assembly of the same
+        module makes it record the provider twice.
+      -->
+      <ReferencePathWithRefAssemblies Include="@(ModuleExportReference)" />
+      <!-- A module resolves a dependency's exports through the export load context, but a project
+           that merely consumes modules - a test project - has to load them itself. -->
+      <ReferenceCopyLocalPaths Include="@(ModuleExportReference)"
+                              Condition="'$(EvoSCModuleProject)' != 'true'" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+      <!--
+        Design-time builds compile from ReferencePathWithRefAssemblies but write no deps file, so
+        this is the only place the export assemblies can be added to ReferencePath without affecting
+        the produced build. It matters because ReferencePath is the list an IDE builds its assembly
+        graph from: without the export assemblies there, every module that compiles against an
+        export looks like it is missing references, even though the real build resolves them.
+      -->
+      <ReferencePath Include="@(ModuleExportReference)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_EvoSCReferencedModuleProjectRef Include="@(ProjectReference)"
+          Condition="'%(ProjectReference.ReferenceOutputAssembly)' != 'false' and
+                     '%(ProjectReference.EvoSCModule)' != 'true'" />
+    </ItemGroup>
+    <MSBuild Projects="@(_EvoSCReferencedModuleProjectRef)"
+             Targets="GetTargetPath"
+             Condition="'@(_EvoSCReferencedModuleProjectRef)' != ''">
+      <Output TaskParameter="TargetOutputs" ItemName="_EvoSCReferencedModuleTargetPaths" />
+    </MSBuild>
+    <ItemGroup>
+      <_EvoSCReferencedModuleTargetPaths>
+        <ExportDir>$([System.IO.Path]::GetDirectoryName('%(Identity)'))</ExportDir>
+        <ExportBase>$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</ExportBase>
+      </_EvoSCReferencedModuleTargetPaths>
+      <_EvoSCReferencedModuleExport
+          Include="@(_EvoSCReferencedModuleTargetPaths->'%(ExportDir)\%(ExportBase).Exports.dll')"
+          Condition="Exists('%(ExportDir)\%(ExportBase).Exports.dll')" />
+    </ItemGroup>
+    <ItemGroup>
+      <ReferencePathWithRefAssemblies Include="@(_EvoSCReferencedModuleExport)" />
+      <!-- Unlike a dependency of a module, the contracts a plain reference pulls in are needed at
+           run time too - a test executes against them - so the export assembly is copied next to
+           the module it belongs to. -->
+      <ReferenceCopyLocalPaths Include="@(_EvoSCReferencedModuleExport)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+      <!-- See the note above: an IDE needs these in ReferencePath, a real build must not. -->
+      <ReferencePath Include="@(_EvoSCReferencedModuleExport)" />
+    </ItemGroup>
+  </Target>
+
+</Project>
