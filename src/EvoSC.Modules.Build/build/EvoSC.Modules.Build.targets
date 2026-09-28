@@ -14,12 +14,9 @@
     Cross-module export references are declared in a consuming module as:
       <ProjectReference Include="..\Modules.X\Modules.X.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
 
-    The exports dll path is then derived from the referenced project's own output
-    path (obtained by invoking its GetTargetPath target) in EvoSC_ResolveExportReferences
-    below, so the bin directory, configuration and target framework needn't be spelled
-    out. An explicit path
-    (e.g. <ModuleExportReference Include="..\Modules.X\bin\$(Configuration)\$(TargetFramework)\X.Exports.dll" />)
-    is still honored when a project reference isn't desirable.
+    and EvoSC_ResolveExportReferences in the file imported below turns that into the references
+    the module compiles against, for a project that merely consumes modules and for an editor as
+    well. Its own documentation describes how, and where the editor reads them from.
   -->
 
   <PropertyGroup>
@@ -27,7 +24,13 @@
          modules: a module resolves dependencies' exports through the export load context at
          run time, anything else needs the export assembly in its own output directory. -->
     <EvoSCModuleProject>true</EvoSCModuleProject>
+
+    <!-- Where EvoSC_WriteModuleExportsProps records the export references of this module, for an
+         editor to read while it evaluates the project. -->
+    <_EvoSCModuleExportsProps>$(MSBuildProjectDirectory)/obj/$(Configuration)/$(TargetFramework)/$(MSBuildProjectName).ModuleExports.props</_EvoSCModuleExportsProps>
   </PropertyGroup>
+
+  <Import Project="$(_EvoSCModuleExportsProps)" Condition="Exists('$(_EvoSCModuleExportsProps)')" />
 
   <UsingTask TaskName="EvoSC.Modules.Build.ExportAssemblyAnalyzer"
              AssemblyFile="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\$(TargetFramework)\EvoSC.Modules.Build.dll" />
