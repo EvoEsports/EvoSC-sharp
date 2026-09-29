@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using Castle.DynamicProxy;
 using Config.Net;
 using EvoSC.Modules.Exceptions;
@@ -71,7 +72,7 @@ internal static class ConfigNetInterceptor
                        "with this version of Config.Net.");
 
         var constructor = Array.Find(type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
-            ctor => MatchesArity(ctor, arguments));
+            ctor => ctor.GetParameters().Length == arguments.Length);
 
         if (constructor is null)
         {
@@ -85,10 +86,9 @@ internal static class ConfigNetInterceptor
         }
         catch (TargetInvocationException e) when (e.InnerException is not null)
         {
-            throw e.InnerException;
+            // Re-throw the original exception, preserving its stack trace.
+            ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+            throw;
         }
     }
-
-    private static bool MatchesArity(ConstructorInfo constructor, object?[] arguments) =>
-        constructor.GetParameters().Length == arguments.Length;
 }

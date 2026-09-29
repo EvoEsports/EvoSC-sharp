@@ -65,8 +65,6 @@ public static class InternalModules
     /// is migrated from the assemblies of its own load context, so migrations stay with the module
     /// that owns them.
     /// </summary>
-    /// <param name="migrations"></param>
-    /// <param name="modules"></param>
     public static void RunModuleMigrations(this IMigrationManager migrations, IModuleManager modules)
     {
         foreach (var module in modules.GetLoadedModulesByDependency())

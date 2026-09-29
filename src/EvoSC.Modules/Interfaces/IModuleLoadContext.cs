@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
-using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Middleware;
 using SimpleInjector;
 
@@ -73,11 +72,6 @@ public interface IModuleLoadContext
     /// The root namespace of the assembly which the main class is part of.
     /// </summary>
     public string RootNamespace { get; init; }
-    
-    /// <summary>
-    /// The localization manager for this module if the module includes localizations.
-    /// </summary>
-    public ILocalizationManager? Localization { get; }
     
     /// <summary>
     /// List of themes available from this module.

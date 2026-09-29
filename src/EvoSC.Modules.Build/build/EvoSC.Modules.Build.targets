@@ -80,8 +80,7 @@
         CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
         Nullable="$(Nullable)"
         Deterministic="$(Deterministic)"
-        EmitDebugInformation="$(_EvoSCEmitPdb)"
-        Version="$(Version)">
+        EmitDebugInformation="$(_EvoSCEmitPdb)">
       <Output TaskParameter="ExportCompileItems" ItemName="EvoSC_ExportCompileItems" />
       <Output TaskParameter="HasExportAssembly" PropertyName="EvoSC_HasExportAssembly" />
     </EvoSC.Modules.Build.ExportAssemblyAnalyzer>

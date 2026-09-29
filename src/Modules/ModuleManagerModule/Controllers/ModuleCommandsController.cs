@@ -17,7 +17,7 @@ public class ModuleCommandsController(IModuleManagerService moduleManagerService
     public Task DisableModuleAsync(IModuleLoadContext module) => moduleManagerService.DisableModuleAsync(module);
 
     [ChatCommand("modules", "[Command.Modules]")]
-    public Task ListLoadedModulesAsync() => moduleManagerService.ListModulesAsync(Context.Player);
+    public Task ListModulesAsync() => moduleManagerService.ListModulesAsync();
 
     [ChatCommand("reloadmodule", "[Command.ReloadModule]", ModuleManagerPermissions.ConfigureModules)]
     public Task ReloadModuleAsync(IModuleLoadContext module) => moduleManagerService.ReloadModuleAsync(module);

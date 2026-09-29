@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
@@ -24,7 +23,6 @@ public class ModuleLoadContext : IModuleLoadContext
     public required List<IModuleManialinkTemplate> ManialinkTemplates { get; init; }
     public required string RootNamespace { get; init; }
     
-    public required ILocalizationManager? Localization { get; init; }
     public required IReadOnlyList<Type> Themes { get; init; }
 
     public bool IsEnabled { get; private set; }

@@ -46,8 +46,6 @@ public sealed class ExportAssemblyAnalyzer : Microsoft.Build.Utilities.Task
     /// <summary>Assembly name for the export assembly, e.g. <c>MyModule.Exports</c>.</summary>
     public string ExportAssemblyName { get; set; } = "";
 
-    public string Version { get; set; } = "1.0.0";
-
     public string LangVersion { get; set; } = "";
 
     /// <summary>Semicolon-separated preprocessor symbols.</summary>
@@ -230,23 +228,15 @@ public sealed class ExportAssemblyAnalyzer : Microsoft.Build.Utilities.Task
     {
         var value = string.IsNullOrWhiteSpace(LangVersion) ? "latest" : LangVersion;
 
-        // The common SDK values that are not enum members.
-        switch (value)
+        return value switch
         {
-            case "default":
-                return LanguageVersion.Default;
-            case "latest":
-                return LanguageVersion.Latest;
-            case "latestMajor":
-            case "latestMinor":
-                return LanguageVersion.LatestMajor;
-            case "preview":
-                return LanguageVersion.Preview;
-        }
-
-        return Enum.TryParse<LanguageVersion>(value, out var parsed) 
-            ? parsed 
-            : LanguageVersion.Latest;
+            "default" => LanguageVersion.Default,
+            "latest" => LanguageVersion.Latest,
+            "latestMajor" => LanguageVersion.LatestMajor,
+            "preview" => LanguageVersion.Preview,
+            _ when Enum.TryParse<LanguageVersion>(value, out var parsed) => parsed,
+            _ => LanguageVersion.Latest
+        };
     }
 
     private static NullableContextOptions NullableContextOptionsFromProperty(string nullable)

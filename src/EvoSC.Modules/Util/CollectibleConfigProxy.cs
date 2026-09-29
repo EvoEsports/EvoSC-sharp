@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -152,12 +151,12 @@ internal static class CollectibleConfigProxy
 
                 if (getter is not null)
                 {
-                    members.Add(ProxyMember.ForAccessor(settingsInterface, getter, property.PropertyType, isGetter: true));
+                    members.Add(ProxyMember.ForAccessor(property, getter, isGetter: true));
                 }
 
                 if (setter is not null)
                 {
-                    members.Add(ProxyMember.ForAccessor(settingsInterface, setter, property.PropertyType, isGetter: false));
+                    members.Add(ProxyMember.ForAccessor(property, setter, isGetter: false));
                 }
             }
 
@@ -206,8 +205,7 @@ internal static class CollectibleConfigProxy
                 FieldAttributes.Private | FieldAttributes.InitOnly);
 
             EmitConstructor(typeBuilder, dispatchField, accessorsField);
-            EmitProperties(typeBuilder, members, dispatchField, accessorsField);
-            EmitMethods(typeBuilder, members, dispatchField, accessorsField);
+            EmitMembers(typeBuilder, members, dispatchField, accessorsField);
 
             typeBuilder.AddInterfaceImplementation(settingsInterface);
 
@@ -232,57 +230,43 @@ internal static class CollectibleConfigProxy
             il.Emit(OpCodes.Ret);
         }
 
-        private static void EmitProperties(TypeBuilder typeBuilder,
+        private static void EmitMembers(TypeBuilder typeBuilder,
             IReadOnlyList<ProxyMember> members, FieldBuilder dispatchField, FieldBuilder accessorsField)
         {
             for (var i = 0; i < members.Count; i++)
             {
                 var member = members[i];
-                if (member.Property is not { } propertyInfo)
-                {
-                    continue;
-                }
-
-                var property = typeBuilder.DefineProperty(propertyInfo.Name, PropertyAttributes.None,
-                    propertyInfo.PropertyType, Type.EmptyTypes);
-
-                if (member.IsGetter)
-                {
-                    property.SetGetMethod(EmitAccessor(typeBuilder, member, i, dispatchField, accessorsField,
-                        Type.EmptyTypes));
-                }
-                else
-                {
-                    property.SetSetMethod(EmitAccessor(typeBuilder, member, i, dispatchField, accessorsField,
-                        [propertyInfo.PropertyType]));
-                }
-            }
-        }
-
-        private static void EmitMethods(TypeBuilder typeBuilder, IReadOnlyList<ProxyMember> members,
-            FieldBuilder dispatchField, FieldBuilder accessorsField)
-        {
-            for (var i = 0; i < members.Count; i++)
-            {
-                var member = members[i];
-                if (member.Property is not null)
-                {
-                    continue;
-                }
-
                 var parameterTypes = member.Method.GetParameters()
                     .Select(parameter => parameter.ParameterType)
                     .ToArray();
 
-                var method = typeBuilder.DefineMethod(member.Method.Name,
-                MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot |
-                MethodAttributes.Final | MethodAttributes.HideBySig,
-                member.Method.ReturnType, parameterTypes);
+                if (member.Property is { } property)
+                {
+                    var propertyBuilder = typeBuilder.DefineProperty(property.Name, PropertyAttributes.None,
+                        property.PropertyType, Type.EmptyTypes);
+                    var accessor = EmitAccessor(typeBuilder, member, i, dispatchField, accessorsField, parameterTypes);
 
-                var il = method.GetILGenerator();
-                EmitDispatch(il, i, dispatchField, accessorsField, parameterTypes);
-                EmitReturn(il, member.Method.ReturnType);
-                il.Emit(OpCodes.Ret);
+                    if (member.IsGetter)
+                    {
+                        propertyBuilder.SetGetMethod(accessor);
+                    }
+                    else
+                    {
+                        propertyBuilder.SetSetMethod(accessor);
+                    }
+                }
+                else
+                {
+                    var method = typeBuilder.DefineMethod(member.Method.Name,
+                        MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.NewSlot |
+                        MethodAttributes.Final | MethodAttributes.HideBySig,
+                        member.Method.ReturnType, parameterTypes);
+
+                    var il = method.GetILGenerator();
+                    EmitDispatch(il, i, dispatchField, accessorsField, parameterTypes);
+                    EmitReturn(il, member.Method.ReturnType);
+                    il.Emit(OpCodes.Ret);
+                }
             }
         }
 
@@ -362,27 +346,17 @@ internal static class CollectibleConfigProxy
     /// <summary>One member of the settings interface, as it is emitted and dispatched.</summary>
     private sealed record ProxyMember(MethodInfo Method, PropertyInfo? Property, bool IsGetter)
     {
-        internal static ProxyMember ForAccessor(Type settingsInterface, MethodInfo accessor, Type propertyType,
-            bool isGetter)
+        internal static ProxyMember ForAccessor(PropertyInfo property, MethodInfo accessor, bool isGetter)
         {
-            var property = settingsInterface.GetProperties()
-                .FirstOrDefault(candidate => candidate.GetMethod == accessor || candidate.SetMethod == accessor);
-
-            if (property is null)
-            {
-                throw new EvoScModuleException(
-                    $"Failed to find the property of '{settingsInterface.FullName}' for '{accessor.Name}'.");
-            }
-
             // A getter returns the property's type, a setter returns void and takes it.
             var accessorType = isGetter
                 ? accessor.ReturnType
                 : accessor.GetParameters().FirstOrDefault()?.ParameterType;
 
-            if (accessorType != propertyType)
+            if (accessorType != property.PropertyType)
             {
                 throw new EvoScModuleException(
-                    $"The property '{property.Name}' of '{settingsInterface.FullName}' does not match its accessor.");
+                    $"The property '{property.Name}' of '{property.DeclaringType}' does not match its accessor.");
             }
 
             return new ProxyMember(accessor, property, isGetter);

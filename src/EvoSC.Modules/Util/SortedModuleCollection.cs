@@ -9,12 +9,6 @@ public class SortedModuleCollection<T> : IModuleCollection<T> where T : IModuleI
     private readonly Dictionary<string, T> _modules = new();
     private readonly List<string> _ignoredDependencies = new();
 
-    /// <summary>
-    /// Get a list of modules sorted by their dependencies.
-    /// Complexity: O(n+m)
-    /// </summary>
-    public IEnumerable<T> SortedModules => GetSortedModules();
-
     public int Count => _modules.Count;
 
     public void Add(T module)

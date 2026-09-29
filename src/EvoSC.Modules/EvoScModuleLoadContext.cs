@@ -9,8 +9,8 @@ namespace EvoSC.Modules;
 /// from the module's directory; export assemblies resolve through the
 /// <see cref="ExportAssemblyStore"/> (owner-injected resolver).
 /// </summary>
-internal sealed class EvoScModuleLoadContext(string moduleAssemblyPath, Func<string, Assembly?>? exportResolver = null, bool isCollectible = true)
-    : AssemblyLoadContext(Path.GetFileNameWithoutExtension(moduleAssemblyPath), isCollectible)
+internal sealed class EvoScModuleLoadContext(string moduleAssemblyPath, Func<string, Assembly?>? exportResolver = null)
+    : AssemblyLoadContext(Path.GetFileNameWithoutExtension(moduleAssemblyPath), isCollectible: true)
 {
     private readonly AssemblyDependencyResolver _resolver = new(moduleAssemblyPath);
     private readonly List<string> _moduleAssemblyPaths = new();
@@ -58,15 +58,7 @@ internal sealed class EvoScModuleLoadContext(string moduleAssemblyPath, Func<str
         "FluentMigrator.Runner.Core",
         "FluentMigrator.Runner.Postgres",
         "FluentMigrator.Runner.MySql",
-        "Humanizer",
-        "Microsoft.Extensions.DependencyInjection",
-        "Microsoft.Extensions.DependencyInjection.Abstractions",
-        "Microsoft.Extensions.Configuration",
-        "Microsoft.Extensions.Configuration.Abstractions",
-        "Microsoft.Extensions.Logging",
-        "Microsoft.Extensions.Logging.Abstractions",
-        "Microsoft.Extensions.Options",
-        "Microsoft.Extensions.Primitives"
+        "Humanizer"
     };
 
     /// <summary>Assembly name prefixes that must always resolve from the Default ALC.</summary>

@@ -30,7 +30,7 @@ public class LocalizationManager : ILocalizationManager
         {
             _logger.LogWarning("Failed to find locale name '{Name}', using the key as the value.", name);
 
-            return string.Format(name, args);
+            return name;
         }
 
         return string.Format(localeString, args);

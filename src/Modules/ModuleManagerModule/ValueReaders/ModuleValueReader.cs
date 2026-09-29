@@ -6,18 +6,14 @@ namespace EvoSC.Modules.Official.ModuleManagerModule.ValueReaders;
 
 public class ModuleValueReader(IModuleManager modules) : IValueReader
 {
-    public IEnumerable<Type> AllowedTypes => new[] {typeof(IModuleLoadContext)};
+    public IEnumerable<Type> AllowedTypes { get; } = [typeof(IModuleLoadContext)];
 
     public Task<object> ReadAsync(Type type, string input)
     {
-        foreach (var module in modules.GetLoadedModules())
-        {
-            if (module.ModuleInfo.Id.Equals(input, StringComparison.Ordinal))
-            {
-                return Task.FromResult((object)module);
-            }
-        }
+        var module = modules.GetLoadedModules()
+            .FirstOrDefault(m => m.ModuleInfo.Id.Equals(input, StringComparison.Ordinal))
+            ?? throw new ValueConversionException($"No module with the identifier '{input}' is loaded.");
 
-        throw new ValueConversionException();
+        return Task.FromResult((object)module);
     }
 }

@@ -81,10 +81,10 @@ namespace EvoSC.Modules.SourceGeneration
                 if (document.ContainsKey("dependencies"))
                 {
                     var dependencies = document.GetSubTable("dependencies");
-                    foreach (var (name, value) in dependencies.Entries
-                                 .Select(entry => (entry.Key, Value: dependencies.GetValue(entry.Key).StringValue)))
+                    foreach (var dependency in dependencies.Entries)
                     {
-                        source.AppendLine($"[assembly: ModuleDependency(\"{name}\", \"{value}\")]");
+                        source.AppendLine(
+                            $"[assembly: ModuleDependency(\"{dependency.Key}\", \"{dependency.Value.StringValue}\")]");
                     }
                 }
                 

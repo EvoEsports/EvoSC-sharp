@@ -157,35 +157,35 @@ public class ModuleManager : IModuleManager
 
 	public IModuleLoadContext GetModule(Guid loadId)
 	{
-		if (loadId == Guid.Empty || !_loadedModules.ContainsKey(loadId))
+		if (loadId == Guid.Empty || !_loadedModules.TryGetValue(loadId, out var module))
 		{
 			throw new EvoScModuleException($"Module with Id {loadId} does not exist.");
 		}
-		return _loadedModules[loadId];
+		return module;
 	}
 
 	private Task RegisterPermissionsAsync(IModuleLoadContext loadContext)
 	{
 		foreach (Assembly assembly in loadContext.Assemblies)
 		{
-			foreach (Type item in assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
+			foreach (Type permissionGroup in assembly.AssemblyTypesWithAttribute<PermissionGroupAttribute>())
 			{
-				string name = item.Name;
-				IdentifierAttribute? customAttribute = item.GetCustomAttribute<IdentifierAttribute>();
+				string groupName = permissionGroup.Name;
+				IdentifierAttribute? customAttribute = permissionGroup.GetCustomAttribute<IdentifierAttribute>();
 				if (customAttribute != null)
 				{
-					name = customAttribute.Name;
+					groupName = customAttribute.Name;
 				}
-				FieldInfo[] fields = item.GetFields();
+				FieldInfo[] fields = permissionGroup.GetFields();
 				foreach (FieldInfo fieldInfo in fields)
 				{
-					if (fieldInfo.FieldType == item)
+					if (fieldInfo.FieldType == permissionGroup)
 					{
-						string text = fieldInfo.GetCustomAttribute<IdentifierAttribute>()?.Name ?? fieldInfo.Name;
+						string permissionName = fieldInfo.GetCustomAttribute<IdentifierAttribute>()?.Name ?? fieldInfo.Name;
 						loadContext.Permissions.Add(new Permission
 						{
-							Name = name + "." + text,
-							Description = (fieldInfo.GetCustomAttribute<DescriptionAttribute>()?.Description ?? "")
+							Name = groupName + "." + permissionName,
+							Description = fieldInfo.GetCustomAttribute<DescriptionAttribute>()?.Description ?? ""
 						});
 					}
 				}
@@ -462,23 +462,23 @@ public class ModuleManager : IModuleManager
 
 	private object? CreateConfigInstance(Type configInterface, IConfigStore store)
 	{
-		object? obj = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), configInterface);
-		if (obj == null)
+		object? configBuilder = ReflectionUtils.CreateGenericInstance(typeof(ConfigurationBuilder<>), configInterface);
+		if (configBuilder == null)
 		{
 			throw new InvalidOperationException("Failed to create module config builder.");
 		}
-		ReflectionUtils.CallMethod(obj, "UseConfigStore", store);
-		ReflectionUtils.CallMethod(obj, "UseTypeParser", new TextColorTypeParser());
-		ReflectionUtils.CallMethod(obj, "UseTypeParser", new VersionParser());
+		ReflectionUtils.CallMethod(configBuilder, "UseConfigStore", store);
+		ReflectionUtils.CallMethod(configBuilder, "UseTypeParser", new TextColorTypeParser());
+		ReflectionUtils.CallMethod(configBuilder, "UseTypeParser", new VersionParser());
 
 		// Config.Net emits the settings object with Castle, which cannot be used from a collectible
 		// load context. The configuration is still Config.Net's, only the emitted type differs.
 		if (configInterface.Assembly.IsCollectible)
 		{
-			return CollectibleConfigProxy.Create(configInterface, ConfigNetInterceptor.Create(obj, configInterface));
+			return CollectibleConfigProxy.Create(configInterface, ConfigNetInterceptor.Create(configBuilder, configInterface));
 		}
 
-		return ReflectionUtils.CallMethod(obj, "Build");
+		return ReflectionUtils.CallMethod(configBuilder, "Build");
 	}
 
 	private bool VerifyExternalModule(IExternalModuleInfo moduleInfo)
@@ -489,13 +489,13 @@ public class ModuleManager : IModuleManager
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private (Type?, AssemblyLoadContext?) CreateAssemblyLoadContext(Guid loadId, IExternalModuleInfo moduleInfo)
 	{
-		string[] array = moduleInfo.AssemblyFiles.Select((IModuleFile f) => f.File.FullName).ToArray();
-		string[] array2 = array.Where((string f) => Path.GetFileNameWithoutExtension(f).EndsWith(".Exports", StringComparison.OrdinalIgnoreCase)).ToArray();
+		string[] assemblyPaths = moduleInfo.AssemblyFiles.Select((IModuleFile f) => f.File.FullName).ToArray();
+		string[] exportPaths = assemblyPaths.Where((string f) => Path.GetFileNameWithoutExtension(f).EndsWith(".Exports", StringComparison.OrdinalIgnoreCase)).ToArray();
 
 		// A dependency's export must never be shipped inside the depending module's directory —
 		// it is loaded dynamically from the provider. Skip stale copies so they neither register
 		// as the module's own export nor load as a private copy.
-		var foreignExports = array2
+		var foreignExports = exportPaths
 			.Where(exportPath => !_exportAssemblies.IsOwnExportPath(exportPath))
 			.ToArray();
 		foreach (string foreignPath in foreignExports)
@@ -506,31 +506,30 @@ public class ModuleManager : IModuleManager
 				moduleInfo.Id, Path.GetFileName(foreignPath));
 		}
 
-		string[] array3 = array.Except<string>(array2, StringComparer.OrdinalIgnoreCase).ToArray();
-		if (array3.Length == 0)
+		string[] loadablePaths = assemblyPaths.Except<string>(exportPaths, StringComparer.OrdinalIgnoreCase).ToArray();
+		if (loadablePaths.Length == 0)
 		{
 			_logger.LogError("No assemblies found in module directory for '{Name}'. The module will not load", moduleInfo.Id);
 			return (null, null);
 		}
-		string[] array4 = array2.Except<string>(foreignExports, StringComparer.OrdinalIgnoreCase).ToArray();
-		foreach (string text in array4)
+		string[] ownedExports = exportPaths.Except<string>(foreignExports, StringComparer.OrdinalIgnoreCase).ToArray();
+		foreach (string exportPath in ownedExports)
 		{
-			_exportAssemblies.RegisterExportPath(moduleInfo.Id, text);
+			_exportAssemblies.RegisterExportPath(moduleInfo.Id, exportPath);
 			_exportAssemblies.AcquireExportForModule(loadId, moduleInfo.Id);
-			_logger.LogDebug("Registered export assembly '{Export}' for module {Module}", Path.GetFileName(text), moduleInfo.Id);
+			_logger.LogDebug("Registered export assembly '{Export}' for module {Module}", Path.GetFileName(exportPath), moduleInfo.Id);
 		}
-		EvoScModuleLoadContext evoScModuleLoadContext = new EvoScModuleLoadContext(array3[0], _exportAssemblies.CreateExportResolver(loadId));
-		Type? type = null;
-		string[] array5 = array3;
-		foreach (string path in array5)
+		EvoScModuleLoadContext loadContext = new EvoScModuleLoadContext(loadablePaths[0], _exportAssemblies.CreateExportResolver(loadId));
+		Type? mainType = null;
+		foreach (string path in loadablePaths)
 		{
-			Assembly assembly = evoScModuleLoadContext.LoadModuleAssembly(path);
-			if (type == null)
+			Assembly assembly = loadContext.LoadModuleAssembly(path);
+			if (mainType == null)
 			{
-				type = assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
+				mainType = assembly.AssemblyTypesWithAttribute<ModuleAttribute>().FirstOrDefault();
 			}
 		}
-		return (type, evoScModuleLoadContext);
+		return (mainType, loadContext);
 	}
 
 	/// <summary>
@@ -579,20 +578,11 @@ public class ModuleManager : IModuleManager
 		}
 	}
 
-	private Dictionary<PipelineType, IActionPipeline> CreateDefaultPipelines()
+	private Dictionary<PipelineType, IActionPipeline> CreateDefaultPipelines() => new()
 	{
-		return new Dictionary<PipelineType, IActionPipeline>
-		{
-			{
-				PipelineType.ChatRouter,
-				new ActionPipeline()
-			},
-			{
-				PipelineType.ControllerAction,
-				new ActionPipeline()
-			}
-		};
-	}
+		[PipelineType.ChatRouter] = new ActionPipeline(),
+		[PipelineType.ControllerAction] = new ActionPipeline()
+	};
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private async Task<IModuleLoadContext> CreateModuleLoadContextAsync(Guid loadId, Type mainClass, AssemblyLoadContext? asmLoadContext, IModuleInfo moduleInfo)
@@ -644,7 +634,6 @@ public class ModuleManager : IModuleManager
 			LoadedDependencies = loadedDependencies,
 			ManialinkTemplates = new List<IModuleManialinkTemplate>(),
 			RootNamespace = rootNamespace,
-			Localization = localization,
 			Themes = themes
 		};
 	}
@@ -1076,7 +1065,7 @@ public class ModuleManager : IModuleManager
 			throw new EvoScModuleException($"Attempted to unload internal module '{loadId}' but this is not allowed");
 		}
 		var dependentModules = GetLoadedModules()
-			.Where(m => m.LoadedDependencies.Exists(d => d == loadId))
+			.Where(m => m.LoadedDependencies.Contains(loadId))
 			.Select(m => m.LoadId)
 			.ToArray();
 
@@ -1122,7 +1111,7 @@ public class ModuleManager : IModuleManager
 
 	private static WeakReference? DetachLoadContext(AssemblyLoadContext? loadContext)
 	{
-		if (!(loadContext is EvoScModuleLoadContext evoScModuleLoadContext))
+		if (loadContext is not EvoScModuleLoadContext evoScModuleLoadContext)
 		{
 			return null;
 		}

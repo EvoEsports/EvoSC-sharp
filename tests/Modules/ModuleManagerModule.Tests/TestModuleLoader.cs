@@ -1,5 +1,4 @@
 using System.Reflection;
-using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Middleware;
@@ -36,7 +35,6 @@ internal static class TestModuleLoader
             LoadedDependencies = loadedDependencies ?? new List<Guid>(),
             ManialinkTemplates = new List<IModuleManialinkTemplate>(),
             RootNamespace = "Test",
-            Localization = null,
             Themes = Array.Empty<Type>()
         };
 

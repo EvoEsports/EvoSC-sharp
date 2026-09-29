@@ -10,8 +10,6 @@ namespace EvoSC;
 
 public sealed class Application : IEvoSCApplication, IDisposable
 {
-    private readonly bool _isDebug;
-
     private readonly IEvoScBaseConfig _config;
 
     private readonly CancellationTokenSource _runningToken = new();
@@ -24,7 +22,6 @@ public sealed class Application : IEvoSCApplication, IDisposable
     public Application(IEvoScBaseConfig config, ICliContext cliContext)
     {
         _config = config;
-        _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
         StartupPipeline = new StartupPipeline(_config);
 
         StartupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();

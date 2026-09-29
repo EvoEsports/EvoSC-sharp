@@ -11,7 +11,7 @@ using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ModuleManagerModule.Events;
 using EvoSC.Modules.Official.ModuleManagerModule.Services;
 using EvoSC.Testing;
-using Microsoft.CSharp.RuntimeBinder;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace EvoSC.Modules.Official.ModuleManagerModule.Tests;
@@ -48,7 +48,8 @@ public class ModuleManagerServiceTests
             .Callback((string text, IPlayer[] _) => _errors.Add(text))
             .Returns(Task.CompletedTask);
 
-        _service = new ModuleManagerService(_context.Object, _modules.Object, _chat.Object, new TestLocale());
+        _service = new ModuleManagerService(_context.Object, _modules.Object, _chat.Object, new TestLocale(),
+            Mock.Of<ILogger<ModuleManagerService>>());
     }
 
     private static IModuleLoadContext CreateModule(string id, ModuleStatus status = ModuleStatus.Enabled,
@@ -213,7 +214,8 @@ public class ModuleManagerServiceTests
         {
             await _service.InstallModuleAsync(directory);
 
-            _modules.Verify(m => m.LoadAsync(directory), Times.Once);
+            _modules.Verify(m => m.LoadAsync(It.IsAny<IExternalModuleInfo>(), true), Times.Once);
+            _modules.Verify(m => m.LoadAsync(It.IsAny<string>()), Times.Never);
             _audit.Verify(a => a.Success(), Times.Once);
             _audit.Verify(a => a.WithEventName(AuditEvents.ModuleInstalled), Times.Once);
             Assert.Contains(_success, s => s.Contains("ModuleWasInstalled(TestModule)"));
@@ -317,7 +319,7 @@ public class ModuleManagerServiceTests
         var errored = CreateModule("ZzzModule", ModuleStatus.Error);
         SetLoadedModules(errored, internalModule, disabled, enabled);
 
-        await _service.ListModulesAsync(_actor.Object);
+        await _service.ListModulesAsync();
 
         // header plus one message per module
         Assert.Equal(5, _info.Count);
@@ -345,7 +347,7 @@ public class ModuleManagerServiceTests
     {
         SetLoadedModules();
 
-        await _service.ListModulesAsync(_actor.Object);
+        await _service.ListModulesAsync();
 
         Assert.Single(_info);
         Assert.Equal("GetLoadedModules", _info[0]);
