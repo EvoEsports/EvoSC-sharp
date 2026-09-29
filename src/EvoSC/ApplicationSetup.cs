@@ -90,12 +90,18 @@ public static class ApplicationSetup
                 
             .Services(AppFeature.Themes, s => s.AddEvoScThemes())
 
-                // initialize the application
-            .Action("ActionMigrateDatabase", MigrateDatabase)
-
             .Action("ActionSetupControllerManager", SetupControllerManager)
 
+            // The schema has to exist before a module is loaded: reading a module's settings goes
+            // through the config table, so loading first would query a table that isn't there yet.
+            .Action("ActionMigrateDatabase", MigrateDatabase)
+
+            // A module's migrations live in its own load context, so they can only be found once
+            // the module is loaded. They run before anything is enabled, so no module is ever
+            // enabled against an unmigrated table.
             .AsyncAction("ActionSetupModules", SetupModulesAsync)
+
+            .Action("ActionMigrateModuleDatabases", MigrateModuleDatabases)
 
             .Action("ActionInitializeEventManager", s => s
                 .GetInstance<IEventManager>()
@@ -141,13 +147,17 @@ public static class ApplicationSetup
     private static void MigrateDatabase(ServicesBuilder s)
     {
         using var scope = new Scope(s);
-        var manager = scope.GetInstance<IMigrationManager>();
-    
-        // main migrations
-        manager.MigrateFromAssembly(typeof(MigrationManager).Assembly);
-    
-        // internal modules
-        manager.RunInternalModuleMigrations();
+        scope.GetInstance<IMigrationManager>().MigrateFromAssembly(typeof(MigrationManager).Assembly);
+    }
+
+    /// <summary>
+    /// Run the migrations of the loaded modules.
+    /// </summary>
+    /// <param name="s"></param>
+    private static void MigrateModuleDatabases(ServicesBuilder s)
+    {
+        using var scope = new Scope(s);
+        scope.GetInstance<IMigrationManager>().RunModuleMigrations(scope.GetInstance<IModuleManager>());
     }
 
     /// <summary>
@@ -175,7 +185,9 @@ public static class ApplicationSetup
         var modules = s.GetInstance<IModuleManager>();
         var config = s.GetInstance<IEvoScBaseConfig>();
 
-        await modules.LoadInternalModulesAsync();
+        // The modules that ship with EvoSC come from a fixed directory, picked by id. Everything
+        // else is discovered in the configured module directories.
+        await modules.LoadInternalModulesAsync(InternalModules.ModuleIds, InternalModules.DefaultDirectory);
 
         var dirs = config.Modules.ModuleDirectories;
         var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
@@ -186,10 +198,12 @@ public static class ApplicationSetup
                 continue;
             }
 
-            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules);
+            // The internal modules are deployed to the default module directory, so they have to be
+            // left out here or they would be loaded a second time as external modules.
+            ModuleDirectoryUtils.FindModulesFromDirectory(dir, externalModules, InternalModules.ModuleIds);
         }
 
-        externalModules.SetIgnoredDependencies(modules.LoadedModules.Select(m => m.ModuleInfo.Name));
+        externalModules.SetIgnoredDependencies(modules.GetLoadedModules().Select(m => m.ModuleInfo.Id));
         await modules.LoadAsync(externalModules);
     }
 

@@ -2,6 +2,12 @@
 
 namespace EvoSC.Modules.Official.SetNameModule.Events;
 
+/// <summary>
+/// Exported so other modules can handle the nickname event without a reference to this module:
+/// the event manager invokes handlers by reflection, so the handler parameter has to be the
+/// very same type on both sides.
+/// </summary>
+[Export]
 public class NicknameUpdatedEventArgs : EventArgs
 {
     /// <summary>

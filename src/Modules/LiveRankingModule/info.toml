@@ -1,8 +1,6 @@
 ﻿[info]
-# A unique name for this module, this is used as an identifier
-name = "LiveRankingModule"
-# The title of the module
-title = "LiveRanking Module"
+id = "LiveRankingModule"
+name = "LiveRanking Module"
 # A short description of what the module is and does
 summary = "Shows a widget with the best scores of the running match."
 # The current version of this module, using SEMVER

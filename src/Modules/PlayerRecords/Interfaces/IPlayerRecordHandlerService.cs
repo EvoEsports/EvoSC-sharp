@@ -1,6 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Remote.EventArgsModels;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Interfaces;
 

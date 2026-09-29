@@ -4,7 +4,7 @@ using EvoSC.Common.Models.Maps;
 using EvoSC.Common.Models.Players;
 using EvoSC.Modules.Official.LocalRecordsModule.Controllers;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Services;
-using EvoSC.Modules.Official.PlayerRecords.Database.Models;
+using EvoSC.Common.Database.Models.PlayerRecords;
 using EvoSC.Modules.Official.PlayerRecords.Events;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;

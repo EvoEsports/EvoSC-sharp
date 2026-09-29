@@ -1,8 +1,13 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Events;
 
+/// <summary>
+/// Exported so other modules can handle the personal best event without a reference to this
+/// module: the event manager invokes handlers by reflection, so the handler parameter has to be
+/// the very same type on both sides.
+/// </summary>
+[Export]
 public class PbRecordUpdateEventArgs : EventArgs
 {
     /// <summary>

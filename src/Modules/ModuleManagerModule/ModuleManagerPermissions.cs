@@ -12,6 +12,6 @@ public enum ModuleManagerPermissions
     [Description("[Permission.InstallModule]")]
     InstallModule,
     
-    [Description("Permission.ConfigureModules")]
+    [Description("[Permission.ConfigureModules]")]
     ConfigureModules
 }

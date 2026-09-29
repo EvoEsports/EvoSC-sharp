@@ -59,27 +59,15 @@ public class ConfigGeneratorCommand(IModuleManager modules)
     {
         var moduleAssemblies = new List<(string, string, Assembly)>();
 
-        moduleAssemblies.AddRange(InternalModules.Modules.Select(t =>
-        {
-            var name = t.Assembly.GetCustomAttribute<ModuleIdentifierAttribute>();
-            var version = t.Assembly.GetCustomAttribute<ModuleVersionAttribute>();
-
-            if (name == null || version == null)
-            {
-                throw new InvalidOperationException(
-                    $"Module type {t} does not contain the assembly attributes for module info");
-            }
-
-            return (name.Name, version.Version.ToString(), t.Assembly);
-        }));
-        
-        var loadedModules = modules.LoadedModules;
+        // Internal and external modules alike are loaded by the time this runs, and each module's
+        // settings live in the assemblies of its own load context.
+        var loadedModules = modules.GetLoadedModules();
 
         foreach (var module in loadedModules)
         {
             foreach (var moduleAssembly in module.Assemblies)
             {
-                moduleAssemblies.Add((module.ModuleInfo.Name, module.ModuleInfo.Version.ToString(), moduleAssembly));
+                moduleAssemblies.Add((module.ModuleInfo.Id, module.ModuleInfo.Version.ToString(), moduleAssembly));
             }
         }
 

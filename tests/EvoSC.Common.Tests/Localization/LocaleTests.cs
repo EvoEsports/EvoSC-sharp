@@ -13,6 +13,7 @@ using EvoSC.Common.Models.Audit;
 using EvoSC.Common.Models.Players;
 using EvoSC.Common.Util.Auditing;
 using EvoSC.Testing;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -27,7 +28,7 @@ public class LocaleTests
     public LocaleTests()
     {
         _manager = new LocalizationManager(typeof(LocalizationManagerTests).Assembly,
-            "EvoSC.Common.Tests.Localization.TestLocalization");
+            "EvoSC.Common.Tests.Localization.TestLocalization", NullLogger<LocalizationManager>.Instance);
 
         var localeConfigMock = new Mock<ILocaleConfig>();
         localeConfigMock.Setup(lc => lc.DefaultLanguage)

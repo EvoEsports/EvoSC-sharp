@@ -10,7 +10,6 @@ using EvoSC.Modules.Official.MapListModule.Models;
 using EvoSC.Modules.Official.MapsModule;
 using EvoSC.Modules.Official.MapsModule.Events;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MapListModule.Services;

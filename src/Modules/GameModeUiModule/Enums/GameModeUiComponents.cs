@@ -1,5 +1,10 @@
 ﻿namespace EvoSC.Modules.Official.GameModeUiModule.Enums;
 
+/// <summary>
+/// Exported so other modules can refer to the game mode UI components by name without a
+/// reference to this module.
+/// </summary>
+[Export]
 public static class GameModeUiComponents
 {
     public static readonly string Chrono = "Race_Chrono";

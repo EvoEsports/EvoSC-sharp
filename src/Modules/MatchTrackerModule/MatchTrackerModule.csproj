@@ -16,7 +16,7 @@
     <!-- Source generator for Module Info -->
     <ItemGroup>
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="..\MatchManagerModule\MatchManagerModule.csproj" />
+        <ProjectReference Include="..\MatchManagerModule\MatchManagerModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
     </ItemGroup>
 
     <!-- Project references for dependencies -->

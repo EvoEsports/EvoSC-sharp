@@ -38,6 +38,23 @@ public class ValueReaderManager : IValueReaderManager
         }
     }
 
+    public void RemoveReader(IValueReader reader)
+    {
+        foreach (var type in reader.AllowedTypes)
+        {
+            if (!_readers.TryGetValue(type, out var readers))
+            {
+                continue;
+            }
+
+            readers.Remove(reader);
+            if (readers.Count == 0)
+            {
+                _readers.Remove(type);
+            }
+        }
+    }
+
     public IEnumerable<IValueReader> GetReaders(Type type)
     {
         if (_readers.TryGetValue(type, out var readers))

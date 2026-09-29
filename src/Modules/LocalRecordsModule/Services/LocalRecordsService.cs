@@ -11,7 +11,6 @@ using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Database;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Services;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Services;

@@ -17,5 +17,20 @@ public class ModuleCommandsController(IModuleManagerService moduleManagerService
     public Task DisableModuleAsync(IModuleLoadContext module) => moduleManagerService.DisableModuleAsync(module);
 
     [ChatCommand("modules", "[Command.Modules]")]
-    public Task ListLoadedModulesAsync() => moduleManagerService.ListModulesAsync(Context.Player);
+    public Task ListModulesAsync() => moduleManagerService.ListModulesAsync();
+
+    [ChatCommand("reloadmodule", "[Command.ReloadModule]", ModuleManagerPermissions.ConfigureModules)]
+    public Task ReloadModuleAsync(IModuleLoadContext module) => moduleManagerService.ReloadModuleAsync(module);
+
+    [ChatCommand("loadmodule", "[Command.LoadModule]", ModuleManagerPermissions.ConfigureModules)]
+    public Task LoadModuleAsync(string directory) => moduleManagerService.LoadModuleAsync(directory);
+
+    [ChatCommand("unloadmodule", "[Command.UnloadModule]", ModuleManagerPermissions.ConfigureModules)]
+    public Task UnloadModuleAsync(IModuleLoadContext module) => moduleManagerService.UnloadModuleAsync(module);
+
+    [ChatCommand("installmodule", "[Command.InstallModule]", ModuleManagerPermissions.InstallModule)]
+    public Task InstallModuleAsync(string directory) => moduleManagerService.InstallModuleAsync(directory);
+
+    [ChatCommand("uninstallmodule", "[Command.UninstallModule]", ModuleManagerPermissions.InstallModule)]
+    public Task UninstallModuleAsync(IModuleLoadContext module) => moduleManagerService.UninstallModuleAsync(module);
 }

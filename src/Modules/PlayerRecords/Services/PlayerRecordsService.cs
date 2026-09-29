@@ -8,7 +8,6 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Common.Util;
 using EvoSC.Modules.Official.PlayerRecords.Events;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
-using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Services;
 

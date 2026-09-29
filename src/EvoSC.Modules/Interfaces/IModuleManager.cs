@@ -8,9 +8,17 @@ namespace EvoSC.Modules.Interfaces;
 public interface IModuleManager
 {
     /// <summary>
-    /// Warning: creates a copy of loaded modules. O(n)
+    /// Get a snapshot of the currently loaded modules.
     /// </summary>
-    public IReadOnlyList<IModuleLoadContext> LoadedModules { get; }
+    public IReadOnlyList<IModuleLoadContext> GetLoadedModules();
+
+    /// <summary>
+    /// Get the loaded modules ordered so that a module comes after the modules it depends on. Use
+    /// this where the order matters, such as running migrations: a foreign key can only point at a
+    /// table that already exists. Modules that depend on each other cannot be ordered, and are
+    /// returned in the order they were loaded in.
+    /// </summary>
+    public IReadOnlyList<IModuleLoadContext> GetLoadedModulesByDependency();
 
     /// <summary>
     /// Get the load context of a module by it's load ID.
@@ -64,16 +72,23 @@ public interface IModuleManager
     /// Load an external module.
     /// </summary>
     /// <param name="moduleInfo">Module info for the external module.</param>
+    /// <param name="install">Whether to run the module's installation as part of the load. Pass
+    /// false to load a module that was previously unloaded without running its installation
+    /// again.</param>
     /// <returns></returns>
-    public Task LoadAsync(IExternalModuleInfo moduleInfo);
+    public Task LoadAsync(IExternalModuleInfo moduleInfo, bool install = true);
     
     /// <summary>
-    /// Load a module from an assembly.
+    /// Load the modules that ship with EvoSC from a fixed directory. An internal module is loaded
+    /// exactly like an external one - its own load context, its own dependencies, its own
+    /// migrations - the difference being that the application registers it by id instead of it
+    /// being discovered, and that it can never be unloaded or reloaded at run time.
     /// </summary>
-    /// <param name="assembly">The assembly that contains the module.</param>
+    /// <param name="moduleIds">The ids of the internal modules to load.</param>
+    /// <param name="directory">The directory containing the module directories.</param>
     /// <returns></returns>
-    public Task LoadAsync(Assembly assembly);
-    
+    public Task LoadInternalModulesAsync(IEnumerable<string> moduleIds, string directory);
+
     /// <summary>
     /// Load a collection of external modules. This will load modules in the order represented
     /// by the collection. You can use SortedModuleCollection to sort by dependencies.
@@ -88,4 +103,12 @@ public interface IModuleManager
     /// <param name="loadId">The load ID of the module to unload.</param>
     /// <returns></returns>
     public Task UnloadAsync(Guid loadId);
+
+    /// <summary>
+    /// Reload an external module from its directory. Dependents that were unloaded as
+    /// part of the dependency cascade are not automatically reloaded.
+    /// </summary>
+    /// <param name="loadId">The load ID of the module to reload.</param>
+    /// <returns></returns>
+    public Task ReloadAsync(Guid loadId);
 }

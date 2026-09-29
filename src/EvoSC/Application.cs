@@ -10,8 +10,6 @@ namespace EvoSC;
 
 public sealed class Application : IEvoSCApplication, IDisposable
 {
-    private readonly bool _isDebug;
-
     private readonly IEvoScBaseConfig _config;
 
     private readonly CancellationTokenSource _runningToken = new();
@@ -24,7 +22,6 @@ public sealed class Application : IEvoSCApplication, IDisposable
     public Application(IEvoScBaseConfig config, ICliContext cliContext)
     {
         _config = config;
-        _isDebug = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
         StartupPipeline = new StartupPipeline(_config);
 
         StartupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();
@@ -35,7 +32,7 @@ public sealed class Application : IEvoSCApplication, IDisposable
     public async Task RunAsync()
     {
         StartupPipeline.SetupPipeline(_config);
-        await StartupPipeline.ExecuteAllAsync();
+        await StartupPipeline.ExecuteAllAsync(_runningToken.Token);
 
         // wait indefinitely
         WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
@@ -45,7 +42,15 @@ public sealed class Application : IEvoSCApplication, IDisposable
     {
         var moduleManager = Services.GetInstance<IModuleManager>();
 
-        foreach (var module in moduleManager.LoadedModules)
+        // Disable everything first so feature registration is torn down in a predictable
+        // state, then unload the external modules. The modules that ship with EvoSC stay
+        // loaded: they are part of the host for as long as it runs.
+        foreach (var module in moduleManager.GetLoadedModules().Where(m => m.IsEnabled))
+        {
+            await moduleManager.DisableAsync(module.LoadId);
+        }
+
+        foreach (var module in moduleManager.GetLoadedModules().Where(m => !m.ModuleInfo.IsInternal))
         {
             await moduleManager.UnloadAsync(module.LoadId);
         }

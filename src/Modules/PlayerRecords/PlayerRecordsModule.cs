@@ -2,7 +2,7 @@
 
 namespace EvoSC.Modules.Official.PlayerRecords;
 
-[Module]
+[Module(IsInternal = true)]
 public class PlayerRecordsModule : EvoScModule
 {
 }

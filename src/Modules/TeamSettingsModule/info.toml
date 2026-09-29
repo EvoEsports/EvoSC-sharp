@@ -1,8 +1,6 @@
 ﻿[info]
-# A unique name for this module, this is used as a identifier
-name = "TeamSettingsModule"
-# The title of the module
-title = "TeamSettings Module"
+id = "TeamSettingsModule"
+name = "TeamSettings Module"
 # A short description of what the module is and does
 summary = "Change team settings (name, colors, emblem)."
 # The current version of this module, using SEMVER

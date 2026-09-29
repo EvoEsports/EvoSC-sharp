@@ -6,6 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <ApplicationIcon>appicon.ico</ApplicationIcon>
+        <!-- Staging root the modules write to; see src/Modules/Directory.Build.targets. -->
+        <EvoSCModulesOutRoot>$(MSBuildThisFileDirectory)..\..\artifacts\modules\</EvoSCModulesOutRoot>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,38 +26,45 @@
         <ProjectReference Include="..\EvoSC.CLI\EvoSC.CLI.csproj" />
         <ProjectReference Include="..\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
         <ProjectReference Include="..\EvoSC.Modules\EvoSC.Modules.csproj" />
-        <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" />
-        <ProjectReference Include="..\Modules\CurrentMapModule\CurrentMapModule.csproj" />
-        <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" />
-        <ProjectReference Include="..\Modules\FastestCpModule\FastestCpModule.csproj" />
-        <ProjectReference Include="..\Modules\ForceTeamModule\ForceTeamModule.csproj" />
-        <ProjectReference Include="..\Modules\GameModeUiModule\GameModeUiModule.csproj" />
-        <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" />
-        <ProjectReference Include="..\Modules\LocalRecordsModule\LocalRecordsModule.csproj" />
-        <ProjectReference Include="..\Modules\MapListModule\MapListModule.csproj" />
-        <ProjectReference Include="..\Modules\MapQueueModule\MapQueueModule.csproj" />
-        <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
-        <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" />
-        <ProjectReference Include="..\Modules\MatchRankingModule\MatchRankingModule.csproj" />
-        <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" />
-        <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" />
-        <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" />
-        <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
-        <ProjectReference Include="..\Modules\NextMapModule\NextMapModule.csproj" />
-        <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" />
-        <ProjectReference Include="..\Modules\Player\Player.csproj" />
-        <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />
-        <ProjectReference Include="..\Modules\RoundRankingModule\RoundRankingModule.csproj" />
-        <ProjectReference Include="..\Modules\ScoreboardModule\ScoreboardModule.csproj" />
-        <ProjectReference Include="..\Modules\ServerManagementModule\ServerManagementModule.csproj" />
-        <ProjectReference Include="..\Modules\SetNameModule\SetNameModule.csproj" />
-        <ProjectReference Include="..\Modules\SpectatorCamModeModule\SpectatorCamModeModule.csproj" />
-        <ProjectReference Include="..\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj" />
-        <ProjectReference Include="..\Modules\TeamChatModule\TeamChatModule.csproj" />
-        <ProjectReference Include="..\Modules\TeamInfoModule\TeamInfoModule.csproj" />
-        <ProjectReference Include="..\Modules\TeamSettingsModule\TeamSettingsModule.csproj" />
-        <ProjectReference Include="..\Modules\UiControlModule\UiControlModule.csproj" />
-        <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" />
+
+        <!--
+            The host does not use any module type at compile time: InternalModules registers the
+            modules that ship with EvoSC by id, and they are loaded at run time from the module
+            directory staged below. These references only order the build, so each module is
+            staged before the host collects it.
+        -->
+        <ProjectReference Include="..\Modules\ASayModule\ASayModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\CurrentMapModule\CurrentMapModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\ExampleModule\ExampleModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\FastestCpModule\FastestCpModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\ForceTeamModule\ForceTeamModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\GameModeUiModule\GameModeUiModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\LocalRecordsModule\LocalRecordsModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MapListModule\MapListModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MapQueueModule\MapQueueModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MatchManagerModule\MatchManagerModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MatchRankingModule\MatchRankingModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MatchReadyModule\MatchReadyModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MatchTrackerModule\MatchTrackerModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\ModuleManagerModule\ModuleManagerModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\NextMapModule\NextMapModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\Player\Player.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\RoundRankingModule\RoundRankingModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\ScoreboardModule\ScoreboardModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\ServerManagementModule\ServerManagementModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\SetNameModule\SetNameModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\SpectatorCamModeModule\SpectatorCamModeModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\SpectatorTargetInfoModule\SpectatorTargetInfoModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\TeamChatModule\TeamChatModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\TeamInfoModule\TeamInfoModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\TeamSettingsModule\TeamSettingsModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\UiControlModule\UiControlModule.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Modules\WorldRecordModule\WorldRecordModule.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <ItemGroup>
@@ -65,4 +74,27 @@
     <ItemGroup>
       <Folder Include="bin\Debug\net8.0\config\" />
     </ItemGroup>
+
+    <!--
+      Modules are loaded as external modules: each one is staged into a directory of its own
+      and loaded in its own assembly load context, the same way a third-party module is. The
+      references above exist only to build the modules in the right order (and, until the
+      internal module system is removed, to compile against them); they must not end up in
+      the host's own output directory, or the host would load a second copy of a module.
+
+      Modules stage themselves into the repository's artifacts directory, from where they are
+      copied here into the "modules" directory of the output, which is the default
+      ModuleDirectories entry. Directories that are already present are left alone, so a
+      third-party module dropped into modules\ survives a rebuild.
+    -->
+    <Target Name="EvoSC_StageModules" AfterTargets="Build">
+        <ItemGroup>
+            <EvoSC_StagedModuleFile Include="$(EvoSCModulesOutRoot)**\*" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(EvoSC_StagedModuleFile)"
+              DestinationFiles="@(EvoSC_StagedModuleFile->'$(OutDir)modules\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true" />
+    </Target>
+
 </Project>

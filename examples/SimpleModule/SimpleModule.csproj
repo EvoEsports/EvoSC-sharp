@@ -7,25 +7,34 @@
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <Authors>snixtho</Authors>
         <Title>Simple Module</Title>
+
+        <!--
+            Stage into this project's own output, so the built result is a ready to load module
+            directory: copy it into a module directory of your EvoSC installation. The default would
+            be artifacts/modules, which is where the host collects the modules that ship with it.
+            The path is spelled out because TargetDir is not known this early.
+        -->
+        <EvoSCModulesOutDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\modules\$(MSBuildProjectName)\</EvoSCModulesOutDir>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\..\src\EvoSC.Modules\EvoSC.Modules.csproj" />
-        <ProjectReference Include="..\..\src\Modules\Player\Player.csproj" />
+        <ProjectReference Include="..\..\src\EvoSC.Modules.Build\EvoSC.Modules.Build.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="info.toml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.15.0.81779">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.15.0.81779">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
+    <!--
+        Adds info.toml to the source generator, and stages the module assembly, its dependencies and
+        its info file into EvoSCModulesOutDir. A module consumes another module's contracts with
+        <ProjectReference Include="..\SomeModule\SomeModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />.
+    -->
+    <Import Project="..\..\src\EvoSC.Modules.Build\build\EvoSC.Modules.Build.targets" />
 
 </Project>
