@@ -100,22 +100,17 @@ public class ModuleManagerServiceTests
         Assert.Contains(_success, s => s.Contains("ModuleWasDisabled(OpenPlanet)"));
     }
 
-    [Theory]
-    [InlineData("Player")]
-    [InlineData("MatchManagerModule")]
-    [InlineData("MapQueueModule")]
-    [InlineData("GameModeUiModule")]
-    public async Task Disable_Refuses_Protected_Module(string id)
+    [Fact]
+    public async Task Disable_Allows_Otherwise_Essential_Modules()
     {
-        var module = CreateModule(id);
+        var module = CreateModule("Player");
         SetLoadedModules(module);
 
         await _service.DisableModuleAsync(module);
 
-        _modules.Verify(m => m.DisableAsync(It.IsAny<Guid>()), Times.Never);
-        _audit.Verify(a => a.Error(), Times.Once);
-        _audit.Verify(a => a.Success(), Times.Never);
-        Assert.Contains(_errors, e => e.Contains("CannotDisableProtectedModule"));
+        _modules.Verify(m => m.DisableAsync(module.LoadId), Times.Once);
+        _audit.Verify(a => a.Success(), Times.Once);
+        Assert.Contains(_success, s => s.Contains("ModuleWasDisabled(Player)"));
     }
 
     [Fact]
@@ -249,6 +244,46 @@ public class ModuleManagerServiceTests
     }
 
     [Fact]
+    public async Task Load_Loads_Module_Without_Running_Install()
+    {
+        var directory = CreateModuleDirectory("TestModule");
+
+        try
+        {
+            await _service.LoadModuleAsync(directory);
+
+            _modules.Verify(m => m.LoadAsync(It.IsAny<IExternalModuleInfo>(), false), Times.Once);
+            _modules.Verify(m => m.LoadAsync(It.IsAny<string>()), Times.Never);
+            _audit.Verify(a => a.Success(), Times.Once);
+            _audit.Verify(a => a.WithEventName(AuditEvents.ModuleLoaded), Times.Once);
+            Assert.Contains(_success, s => s.Contains("ModuleWasLoaded(TestModule)"));
+        }
+        finally
+        {
+            Directory.Delete(directory, true);
+        }
+    }
+
+    [Fact]
+    public async Task Load_Refuses_Directory_Without_Module_Info()
+    {
+        var directory = Directory.CreateTempSubdirectory("EvoSC-EmptyModule").FullName;
+
+        try
+        {
+            await _service.LoadModuleAsync(directory);
+
+            _modules.Verify(m => m.LoadAsync(It.IsAny<IExternalModuleInfo>(), false), Times.Never);
+            _audit.Verify(a => a.Error(), Times.Once);
+            Assert.Contains(_errors, e => e.Contains("FailedLoadingModule"));
+        }
+        finally
+        {
+            Directory.Delete(directory, true);
+        }
+    }
+
+    [Fact]
     public async Task Uninstall_Uninstalls_Module()
     {
         var module = CreateModule("OpenPlanet");
@@ -278,9 +313,9 @@ public class ModuleManagerServiceTests
     {
         var disabled = CreateModule("AaaModule", ModuleStatus.Disabled, isEnabled: false);
         var internalModule = CreateModule("BbbModule", ModuleStatus.Loaded, isInternal: true, isEnabled: false);
-        var protectedModule = CreateModule("Player", ModuleStatus.Enabled);
+        var enabled = CreateModule("Player", ModuleStatus.Enabled);
         var errored = CreateModule("ZzzModule", ModuleStatus.Error);
-        SetLoadedModules(errored, internalModule, disabled, protectedModule);
+        SetLoadedModules(errored, internalModule, disabled, enabled);
 
         await _service.ListModulesAsync(_actor.Object);
 
@@ -303,7 +338,6 @@ public class ModuleManagerServiceTests
         Assert.Contains("v1.2.3", _info[1]);
 
         Assert.Contains("(InternalModule)", _info[2]);
-        Assert.Contains("(ProtectedModule)", _info[3]);
     }
 
     [Fact]

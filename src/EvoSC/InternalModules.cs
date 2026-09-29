@@ -28,7 +28,6 @@ public static class InternalModules
     [
         "ASayModule",
         "CurrentMapModule",
-        "ExampleModule",
         "FastestCpModule",
         "ForceTeamModule",
         "GameModeUiModule",

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using EvoSC.Common.Interfaces.Localization;
 using EvoSC.Common.Localization;
 using Microsoft.Extensions.Logging;
