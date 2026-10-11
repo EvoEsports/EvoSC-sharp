@@ -48,11 +48,13 @@ public class ChatCommandManager : IChatCommandManager
     
     public void RegisterForController(Type controllerType)
     {
-        if (!_controllerCommands.ContainsKey(controllerType))
-        {
-            _controllerCommands[controllerType] = new List<IChatCommand>();
-        }
-        
+        // Always starts from an empty list: a controller that was unregistered and is now being
+        // re-registered (module re-enabled/reloaded) must not keep the commands from its previous
+        // registration around. Those stale entries share the same command names as the fresh ones,
+        // so unregistering them later would remove the live command by name and then fail to find
+        // it again for the entry that actually represents it.
+        _controllerCommands[controllerType] = new List<IChatCommand>();
+
         var methods = controllerType.GetMethods(ReflectionUtils.InstanceMethods);
 
         foreach (var method in methods)
@@ -88,15 +90,17 @@ public class ChatCommandManager : IChatCommandManager
 
     public void UnregisterForController(Type controllerType)
     {
-        if (!_controllerCommands.ContainsKey(controllerType))
+        if (!_controllerCommands.TryGetValue(controllerType, out var commands))
         {
             return;
         }
-        
-        foreach (var cmd in _controllerCommands[controllerType])
+
+        foreach (var cmd in commands)
         {
             RemoveCommand(cmd);
         }
+
+        _controllerCommands.Remove(controllerType);
     }
 
     public void AddCommand(IChatCommand cmd)
