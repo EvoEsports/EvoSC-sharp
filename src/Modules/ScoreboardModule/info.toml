@@ -1,6 +1,6 @@
 ﻿[info]
-name = "ScoreboardModule"
-title = "Scoreboard Module"
+id = "ScoreboardModule"
+name = "Scoreboard Module"
 summary = "Custom EvoSC Scoreboards."
 version = "1.0.0"
 author = "Evo"
