@@ -1,0 +1,12 @@
+<Project>
+
+  <!--
+    Test projects compile against modules directly, and a module keeps the contracts it shares
+    with other modules in its export assembly. Reference those export assemblies here so a test
+    sees the same surface a consuming module does, without every test project having to know
+    which exports exist.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)..\src\EvoSC.Modules.Build\build\EvoSC.Modules.Build.ExportReferences.targets"
+          Condition="'$(EvoSCModuleProject)' != 'true'" />
+
+</Project>

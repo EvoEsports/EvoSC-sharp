@@ -1,0 +1,142 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    Wires export assemblies into the reference lists of a project that compiles against a module.
+
+    A project that references a module outright - a test project, or a tool - needs the module's
+    export assembly too, because the contracts it compiles against were moved out of the module's
+    main assembly. Those are ordinary references: the caller is not a module, so nothing has to be
+    kept out of its output.
+
+    A module that consumes another module's contracts says so with one project reference:
+      <ProjectReference Include="..\Modules.X\Modules.X.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+    and the target below turns that into the reference the module compiles against. An editor needs
+    the same reference while it evaluates the project, which is before any target has run, so the
+    target also writes those references to a props file in the module's intermediate directory,
+    which EvoSC.Modules.Build.targets imports:
+      obj\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).ModuleExports.props
+    That file is what makes the contracts resolve in an editor; it is generated, and nothing about
+    it is written by hand. The path in it deliberately points into the provider's intermediate
+    directory rather than its output directory: an editor takes a file under another project's
+    output for that project's output assembly and resolves it through the project reference instead,
+    which carries ReferenceOutputAssembly="false", and the contracts would read as unresolved.
+
+    An explicit path
+    (<ModuleExportReference Include="path\to\X.Exports.dll" />) is still honored for a project that
+    would rather not use a project reference.
+
+    This file is imported by EvoSC.Modules.Build.targets for module projects, and can be imported
+    on its own by projects that only consume modules.
+  -->
+
+  <Target Name="EvoSC_ResolveExportReferences"
+          AfterTargets="ResolveReferences"
+          DependsOnTargets="ResolveProjectReferences"
+          Condition="'$(Language)' == 'C#' and (@(ModuleExportReference) != '' or @(ProjectReference) != '')">
+    <ItemGroup>
+      <_EvoSCModuleProjectRef Include="@(ProjectReference)"
+          Condition="'%(ProjectReference.ReferenceOutputAssembly)' == 'false' and
+                     '%(ProjectReference.EvoSCModule)' == 'true'" />
+    </ItemGroup>
+    <ItemGroup>
+      <!--
+        A provider writes its export assembly to its intermediate directory (see
+        EvoSC.Modules.Build.targets) and that is the copy a consumer compiles against, so the path
+        follows from the project reference alone. Deliberately not the provider's output directory:
+        an IDE takes a file under another project's output for that project's output assembly and
+        resolves it through the project reference instead, which carries ReferenceOutputAssembly=
+        "false", and the contracts would then read as unresolved in the editor.
+      -->
+      <ModuleExportReference
+          Include="@(_EvoSCModuleProjectRef->'%(RootDir)%(Directory)obj\$(Configuration)\$(TargetFramework)\%(Filename).Exports.dll')"
+          Condition="Exists('%(RootDir)%(Directory)obj\$(Configuration)\$(TargetFramework)\%(Filename).Exports.dll')">
+        <!-- A dependency's export assembly must never ship with the depending module: it is
+             resolved dynamically from the provider at runtime. Keep it compile-only so it is
+             neither copied to the output directory nor embedded anywhere in the module. -->
+        <Private>false</Private>
+        <CopyLocal>false</CopyLocal>
+      </ModuleExportReference>
+    </ItemGroup>
+    <ItemGroup>
+      <!--
+        The compile reference list. The compiler is given these by the target above; an editor needs
+        the same references while it evaluates the project, and reads them from the props file this
+        target writes - see the note at the top of this file. The item list is also what a project
+        declares by hand instead of by project reference, and then this is the only way the
+        references are made known at all.
+      -->
+      <ReferencePathWithRefAssemblies Include="@(ModuleExportReference)" />
+      <!-- A module resolves a dependency's exports through the export load context, but a project
+           that merely consumes modules - a test project - has to load them itself. -->
+      <ReferenceCopyLocalPaths Include="@(ModuleExportReference)"
+                              Condition="'$(EvoSCModuleProject)' != 'true'" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_EvoSCReferencedModuleProjectRef Include="@(ProjectReference)"
+          Condition="'%(ProjectReference.ReferenceOutputAssembly)' != 'false' and
+                     '%(ProjectReference.EvoSCModule)' != 'true'" />
+    </ItemGroup>
+    <MSBuild Projects="@(_EvoSCReferencedModuleProjectRef)"
+             Targets="GetTargetPath"
+             Condition="'@(_EvoSCReferencedModuleProjectRef)' != ''">
+      <Output TaskParameter="TargetOutputs" ItemName="_EvoSCReferencedModuleTargetPaths" />
+    </MSBuild>
+    <ItemGroup>
+      <_EvoSCReferencedModuleTargetPaths>
+        <ExportDir>$([System.IO.Path]::GetDirectoryName('%(Identity)'))</ExportDir>
+        <ExportBase>$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</ExportBase>
+      </_EvoSCReferencedModuleTargetPaths>
+      <_EvoSCReferencedModuleExport
+          Include="@(_EvoSCReferencedModuleTargetPaths->'%(ExportDir)\%(ExportBase).Exports.dll')"
+          Condition="Exists('%(ExportDir)\%(ExportBase).Exports.dll')" />
+    </ItemGroup>
+    <ItemGroup>
+      <!-- Unlike a dependency of a module, the contracts a plain reference pulls in are needed at
+           run time too - a test executes against them - so the export assembly is copied next to
+           the module it belongs to. -->
+      <ReferencePathWithRefAssemblies Include="@(_EvoSCReferencedModuleExport)" />
+      <ReferenceCopyLocalPaths Include="@(_EvoSCReferencedModuleExport)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+      <!--
+        The same for a project that merely consumes a module, but only for a design-time build, which
+        an IDE runs to produce its project model. Such a build writes no deps file and copies
+        nothing, so the provider being recorded twice cannot come up, while a real build has the
+        export assembly sitting next to the module it belongs to and would fail with MSB4018.
+      -->
+      <ReferencePath Include="@(_EvoSCReferencedModuleExport)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    The export assemblies a module compiles against, as references for an editor to read while it
+    evaluates the project. It cannot be given them by a target: by then it has already decided what
+    the project sees, and the very reason a module needs this is that its project reference to a
+    provider carries ReferenceOutputAssembly="false" and so tells the editor nothing about the
+    provider's contracts. Hence the file, and the import of it in EvoSC.Modules.Build.targets.
+
+    The props file holds what the target above passes to the compiler, so it cannot make the two
+    disagree, and nothing here is required to build: a module that has never been built is compiled
+    by the target alone. It is only written when its content changes, because a build that rewrites
+    it looks like a project change to a watching editor.
+  -->
+  <Target Name="EvoSC_WriteModuleExportsProps"
+          AfterTargets="EvoSC_ResolveExportReferences"
+          Condition="'$(EvoSCModuleProject)' == 'true' and '$(Language)' == 'C#'">
+    <ItemGroup>
+      <_EvoSCModuleExportsPropsLine Include="&lt;Project&gt;" />
+      <_EvoSCModuleExportsPropsLine Include="  &lt;!-- Generated by EvoSC.Modules.Build - do not edit. --&gt;" />
+      <_EvoSCModuleExportsPropsLine Include="&lt;ItemGroup&gt;" Condition="'@(ModuleExportReference)' != ''" />
+      <_EvoSCModuleExportsPropsLine
+          Include="@(ModuleExportReference->'  &lt;Reference Include=&quot;%(Filename)&quot; HintPath=&quot;%(Identity)&quot; Private=&quot;false&quot; /&gt;')" />
+      <_EvoSCModuleExportsPropsLine Include="&lt;/ItemGroup&gt;" Condition="'@(ModuleExportReference)' != ''" />
+      <_EvoSCModuleExportsPropsLine Include="&lt;/Project&gt;" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_EvoSCModuleExportsProps)"
+                      Lines="@(_EvoSCModuleExportsPropsLine)"
+                      Overwrite="true"
+                      WriteOnlyWhenDifferent="true" />
+  </Target>
+</Project>

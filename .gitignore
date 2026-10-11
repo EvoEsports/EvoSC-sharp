@@ -25,6 +25,9 @@ nupkg/
 x64/
 x86/
 build/
+# ...but the MSBuild targets that carry the module build contract live in a folder of that name
+# and are imported by every module project, so they are source, not build output.
+!src/EvoSC.Modules.Build/build/
 bld/
 [Bb]in/
 [Oo]bj/
@@ -45,3 +48,6 @@ docker-compose.yml
 global.json
 .env
 nuget.config
+
+# Module staging output (see src/Modules/Directory.Build.targets)
+artifacts/

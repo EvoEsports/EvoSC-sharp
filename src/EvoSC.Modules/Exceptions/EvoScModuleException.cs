@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using EvoSC.Common.Exceptions;
+﻿using EvoSC.Common.Exceptions;
 
 namespace EvoSC.Modules.Exceptions;
 
@@ -9,10 +8,6 @@ namespace EvoSC.Modules.Exceptions;
 public class EvoScModuleException : EvoSCException
 {
     public EvoScModuleException()
-    {
-    }
-
-    protected EvoScModuleException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 
