@@ -3,6 +3,7 @@ using EvoSC.Modules.Attributes;
 using EvoSC.Modules.Exceptions;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Util;
+using EvoSC.Modules.Models;
 
 namespace EvoSC.Modules.Tests;
 
@@ -106,7 +107,7 @@ public class InternalModuleTests
         // An internal module is deployed to the default module directory, which is also scanned for
         // external modules, so discovery has to skip what the application already registered while
         // still finding the external ones next to it.
-        var external = new SortedModuleCollection<IExternalModuleInfo>();
+        var external = new SortedModuleCollection<ExternalModuleInfo>();
         ModuleDirectoryUtils.FindModulesFromDirectory(
             Path.Combine(AppContext.BaseDirectory, "modules"), external, [InternalModuleId]);
 

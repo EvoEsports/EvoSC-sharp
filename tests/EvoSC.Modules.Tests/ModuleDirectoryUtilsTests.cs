@@ -48,7 +48,7 @@ public class ModuleDirectoryUtilsTests
     [Fact]
     public void SortedModuleCollection_ThrowsForUnknownDependency()
     {
-        var modules = new SortedModuleCollection<Interfaces.IExternalModuleInfo>();
+        var modules = new SortedModuleCollection<Models.ExternalModuleInfo>();
         modules.Add(CreateModule("OrphanModule", "MissingModule"));
 
         Assert.Throws<Exceptions.ModuleDependency.DependencyNotFoundException>(() => modules.ToArray());
@@ -61,7 +61,7 @@ public class ModuleDirectoryUtilsTests
     [Fact]
     public void SortedModuleCollection_KeepsModulesThatDependOnEachOther()
     {
-        var modules = new SortedModuleCollection<Interfaces.IExternalModuleInfo>();
+        var modules = new SortedModuleCollection<Models.ExternalModuleInfo>();
         modules.Add(CreateModule("CyclicModuleA", "CyclicModuleB"));
         modules.Add(CreateModule("CyclicModuleB", "CyclicModuleA"));
 
@@ -75,7 +75,7 @@ public class ModuleDirectoryUtilsTests
     [Fact]
     public void SortedModuleCollection_OrdersCyclicModulesAfterResolvableOnes()
     {
-        var modules = new SortedModuleCollection<Interfaces.IExternalModuleInfo>();
+        var modules = new SortedModuleCollection<Models.ExternalModuleInfo>();
         modules.Add(CreateModule("CyclicModuleA", "CyclicModuleB"));
         modules.Add(CreateModule("CyclicModuleB", "CyclicModuleA"));
         modules.Add(CreateModule("StandaloneModule"));
@@ -86,7 +86,7 @@ public class ModuleDirectoryUtilsTests
             modules.Select(m => m.Id));
     }
 
-    private static Interfaces.IExternalModuleInfo CreateModule(string id, params string[] dependencies)
+    private static Models.ExternalModuleInfo CreateModule(string id, params string[] dependencies)
         => new Models.ExternalModuleInfo
         {
             Id = id,

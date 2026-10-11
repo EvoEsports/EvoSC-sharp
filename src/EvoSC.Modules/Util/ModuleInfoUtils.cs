@@ -21,7 +21,7 @@ public static class ModuleInfoUtils
     /// Create an external module info object from a module directory.
     /// </summary>
     /// <param name="dir">The directory containing the module info file.</param>
-    public static IExternalModuleInfo CreateFromDirectory(DirectoryInfo dir)
+    public static ExternalModuleInfo CreateFromDirectory(DirectoryInfo dir)
     {
         var path = Path.Combine(dir.FullName, "info.toml");
 

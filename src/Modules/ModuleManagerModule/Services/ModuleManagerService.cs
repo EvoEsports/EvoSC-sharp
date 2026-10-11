@@ -7,6 +7,7 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Util.TextFormatting;
 using EvoSC.Modules;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Models;
 using EvoSC.Modules.Official.ModuleManagerModule.Events;
 using EvoSC.Modules.Official.ModuleManagerModule.Interfaces;
 using EvoSC.Modules.Util;
@@ -169,7 +170,7 @@ public class ModuleManagerService(IContextService context, IModuleManager module
     /// loaded.
     /// </summary>
     private async Task RunDirectoryOperationAsync(Enum eventName, string directory, string comment,
-        Func<IExternalModuleInfo, Task> operation, Func<string, string> success, Func<Exception, string> failure)
+        Func<ExternalModuleInfo, Task> operation, Func<string, string> success, Func<Exception, string> failure)
     {
         context.Audit()
             .WithEventName(eventName)

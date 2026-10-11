@@ -20,13 +20,13 @@ public static class ModuleDirectoryUtils
                 continue;
             }
 
-            yield return (ExternalModuleInfo)ModuleInfoUtils.CreateFromDirectory(new DirectoryInfo(dir));
+            yield return ModuleInfoUtils.CreateFromDirectory(new DirectoryInfo(dir));
         }
     }
 
-    public static SortedModuleCollection<IExternalModuleInfo> FindModulesFromDirectory(string directory)
+    public static SortedModuleCollection<ExternalModuleInfo> FindModulesFromDirectory(string directory)
     {
-        var modules = new SortedModuleCollection<IExternalModuleInfo>();
+        var modules = new SortedModuleCollection<ExternalModuleInfo>();
         FindModulesFromDirectory(directory, modules);
         return modules;
     }
@@ -36,7 +36,7 @@ public static class ModuleDirectoryUtils
     /// <paramref name="excludeIds"/> are left out, so that a module already registered from another
     /// source is not loaded twice.
     /// </summary>
-    public static void FindModulesFromDirectory(string directory, SortedModuleCollection<IExternalModuleInfo> modules, IEnumerable<string>? excludeIds = null)
+    public static void FindModulesFromDirectory(string directory, SortedModuleCollection<ExternalModuleInfo> modules, IEnumerable<string>? excludeIds = null)
     {
         var excluded = excludeIds?.ToHashSet() ?? [];
 

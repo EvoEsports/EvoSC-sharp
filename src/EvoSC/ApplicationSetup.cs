@@ -20,6 +20,7 @@ using EvoSC.Manialinks;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Extensions;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
 using SimpleInjector;
 
@@ -190,7 +191,7 @@ public static class ApplicationSetup
         await modules.LoadInternalModulesAsync(InternalModules.ModuleIds, InternalModules.DefaultDirectory);
 
         var dirs = config.Modules.ModuleDirectories;
-        var externalModules = new SortedModuleCollection<IExternalModuleInfo>();
+        var externalModules = new SortedModuleCollection<ExternalModuleInfo>();
         foreach (var dir in dirs)
         {
             if (!Directory.Exists(dir))

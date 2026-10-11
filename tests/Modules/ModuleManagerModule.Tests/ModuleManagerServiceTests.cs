@@ -8,6 +8,7 @@ using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Util.TextFormatting;
 using EvoSC.Modules;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Models;
 using EvoSC.Modules.Official.ModuleManagerModule.Events;
 using EvoSC.Modules.Official.ModuleManagerModule.Services;
 using EvoSC.Testing;
@@ -216,7 +217,7 @@ public class ModuleManagerServiceTests
         {
             await _service.InstallModuleAsync(directory);
 
-            _modules.Verify(m => m.LoadAsync(It.IsAny<IExternalModuleInfo>(), true), Times.Once);
+            _modules.Verify(m => m.LoadAsync(It.IsAny<ExternalModuleInfo>(), true), Times.Once);
             _modules.Verify(m => m.LoadAsync(It.IsAny<string>()), Times.Never);
             _audit.Verify(a => a.Success(), Times.Once);
             _audit.Verify(a => a.WithEventName(AuditEvents.ModuleInstalled), Times.Once);
@@ -256,7 +257,7 @@ public class ModuleManagerServiceTests
         {
             await _service.LoadModuleAsync(directory);
 
-            _modules.Verify(m => m.LoadAsync(It.IsAny<IExternalModuleInfo>(), false), Times.Once);
+            _modules.Verify(m => m.LoadAsync(It.IsAny<ExternalModuleInfo>(), false), Times.Once);
             _modules.Verify(m => m.LoadAsync(It.IsAny<string>()), Times.Never);
             _audit.Verify(a => a.Success(), Times.Once);
             _audit.Verify(a => a.WithEventName(AuditEvents.ModuleLoaded), Times.Once);
@@ -277,7 +278,7 @@ public class ModuleManagerServiceTests
         {
             await _service.LoadModuleAsync(directory);
 
-            _modules.Verify(m => m.LoadAsync(It.IsAny<IExternalModuleInfo>(), false), Times.Never);
+            _modules.Verify(m => m.LoadAsync(It.IsAny<ExternalModuleInfo>(), false), Times.Never);
             _audit.Verify(a => a.Error(), Times.Once);
             Assert.Contains(_errors, e => e.Contains("FailedLoadingModule"));
         }
