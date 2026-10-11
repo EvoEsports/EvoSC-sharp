@@ -36,7 +36,70 @@
   <data name="FailedDisablingModule" xml:space="preserve">
     <value>Failed to disable the module: {0}</value>
   </data>
-  <data name="LoadedModules" xml:space="preserve">
+  <data name="Audit.ModuleReloaded" xml:space="preserve">
+    <value>Module reloaded.</value>
+  </data>
+  <data name="ModuleWasReloaded" xml:space="preserve">
+    <value>The module '{0}' was reloaded.</value>
+  </data>
+  <data name="FailedReloadingModule" xml:space="preserve">
+    <value>Failed to reload the module: {0}</value>
+  </data>
+  <data name="Audit.ModuleUnloaded" xml:space="preserve">
+    <value>Module unloaded.</value>
+  </data>
+  <data name="ModuleWasUnloaded" xml:space="preserve">
+    <value>The module '{0}' was unloaded, together with the modules that depended on it.</value>
+  </data>
+  <data name="FailedUnloadingModule" xml:space="preserve">
+    <value>Failed to unload the module: {0}</value>
+  </data>
+  <data name="Audit.ModuleLoaded" xml:space="preserve">
+    <value>Module loaded.</value>
+  </data>
+  <data name="ModuleWasLoaded" xml:space="preserve">
+    <value>The module '{0}' was loaded.</value>
+  </data>
+  <data name="FailedLoadingModule" xml:space="preserve">
+    <value>Failed to load the module: {0}</value>
+  </data>
+  <data name="Audit.ModuleInstalled" xml:space="preserve">
+    <value>Module installed.</value>
+  </data>
+  <data name="ModuleWasInstalled" xml:space="preserve">
+    <value>The module '{0}' was installed.</value>
+  </data>
+  <data name="FailedInstallingModule" xml:space="preserve">
+    <value>Failed to install the module: {0}</value>
+  </data>
+  <data name="Audit.ModuleUninstalled" xml:space="preserve">
+    <value>Module uninstalled.</value>
+  </data>
+  <data name="ModuleWasUninstalled" xml:space="preserve">
+    <value>The module '{0}' was uninstalled. Use /unloadmodule to remove it from this server.</value>
+  </data>
+  <data name="FailedUninstallingModule" xml:space="preserve">
+    <value>Failed to uninstall the module: {0}</value>
+  </data>
+  <data name="CannotDisableModuleWithDependents" xml:space="preserve">
+    <value>these enabled modules depend on it: {0}</value>
+  </data>
+  <data name="InternalModule" xml:space="preserve">
+    <value>internal</value>
+  </data>
+  <data name="Status.Enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="Status.Loaded" xml:space="preserve">
+    <value>Loaded</value>
+  </data>
+  <data name="Status.Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="Status.Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="GetLoadedModules" xml:space="preserve">
     <value>Loaded modules: </value>
   </data>
   <data name="Command.EnableModule" xml:space="preserve">
@@ -47,6 +110,21 @@
   </data>
   <data name="Command.Modules" xml:space="preserve">
     <value>List loaded modules in the chat.</value>
+  </data>
+  <data name="Command.ReloadModule" xml:space="preserve">
+    <value>Reload an external module from its directory.</value>
+  </data>
+  <data name="Command.UnloadModule" xml:space="preserve">
+    <value>Unload a module and the modules that depend on it.</value>
+  </data>
+  <data name="Command.LoadModule" xml:space="preserve">
+    <value>Load a module from a directory without installing it.</value>
+  </data>
+  <data name="Command.InstallModule" xml:space="preserve">
+    <value>Install a module from a directory.</value>
+  </data>
+  <data name="Command.UninstallModule" xml:space="preserve">
+    <value>Run the uninstallation of a module.</value>
   </data>
   <data name="Permission.ActivateModule" xml:space="preserve">
     <value>Can enable or disable modules.</value>
