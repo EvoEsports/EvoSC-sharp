@@ -134,6 +134,7 @@ public class ModuleManager : IModuleManager
 		_themeManager = themeManager;
 		_exportAssemblies = new ExportAssemblyStore();
 		WarnForDisabledVerification();
+		ConfigNetInterceptor.VerifyCompatibility();
 	}
 
 	private void WarnForDisabledVerification()

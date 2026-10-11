@@ -48,6 +48,33 @@ internal static class ConfigNetInterceptor
         return (IInterceptor)Construct(InterfaceInterceptorTypeName, settingsInterface, ioHandler, null);
     }
 
+    /// <summary>
+    /// Verifies that the Config.Net internals this class reaches into by reflection — the three
+    /// handler types, their constructors and the configuration builder's fields — still exist.
+    /// Called once at startup so an incompatible Config.Net upgrade fails loudly there instead of
+    /// silently the first time a module tries to read a setting.
+    /// </summary>
+    internal static void VerifyCompatibility()
+    {
+        EnsureFieldExists(StoresFieldName);
+        EnsureFieldExists(ParsersFieldName);
+        EnsureFieldExists(CacheIntervalFieldName);
+
+        FindConstructor(ValueHandlerTypeName, argumentCount: 1);
+        FindConstructor(IoHandlerTypeName, argumentCount: 3);
+        FindConstructor(InterfaceInterceptorTypeName, argumentCount: 3);
+    }
+
+    private static void EnsureFieldExists(string fieldName)
+    {
+        if (typeof(ConfigurationBuilder<>).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic) is null)
+        {
+            throw new EvoScModuleException(
+                $"Config.Net's configuration builder no longer has the field '{fieldName}'. " +
+                "A module's settings cannot be built with this version of Config.Net.");
+        }
+    }
+
     private static object ReadField<T>(object instance, string fieldName)
     {
         var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
@@ -64,7 +91,7 @@ internal static class ConfigNetInterceptor
         return value;
     }
 
-    private static object Construct(string typeName, params object?[] arguments)
+    private static ConstructorInfo FindConstructor(string typeName, int argumentCount)
     {
         var type = typeof(ConfigurationBuilder<>).Assembly.GetType(typeName)
                    ?? throw new EvoScModuleException(
@@ -72,13 +99,15 @@ internal static class ConfigNetInterceptor
                        "with this version of Config.Net.");
 
         var constructor = Array.Find(type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
-            ctor => ctor.GetParameters().Length == arguments.Length);
+            ctor => ctor.GetParameters().Length == argumentCount);
 
-        if (constructor is null)
-        {
-            throw new EvoScModuleException(
-                $"Config.Net's '{typeName}' has no constructor taking {arguments.Length} argument(s).");
-        }
+        return constructor ?? throw new EvoScModuleException(
+            $"Config.Net's '{typeName}' has no constructor taking {argumentCount} argument(s).");
+    }
+
+    private static object Construct(string typeName, params object?[] arguments)
+    {
+        var constructor = FindConstructor(typeName, arguments.Length);
 
         try
         {
