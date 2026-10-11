@@ -25,14 +25,9 @@ public class ModuleLoadContext : IModuleLoadContext
     
     public required IReadOnlyList<Type> Themes { get; init; }
 
-    public bool IsEnabled { get; private set; }
+    public bool IsEnabled => Status == ModuleStatus.Enabled;
 
     public ModuleStatus Status { get; private set; } = ModuleStatus.Loaded;
-
-    void IModuleLoadContext.SetEnabled(bool enabled)
-    {
-        IsEnabled = enabled;
-    }
 
     void IModuleLoadContext.SetStatus(ModuleStatus status)
     {

@@ -44,6 +44,13 @@ namespace EvoSC.Modules;
 
 public class ModuleManager : IModuleManager
 {
+	/// <summary>
+	/// Reported to the GC after unloading a module's assemblies, to nudge a collection that reclaims
+	/// the unloaded load context sooner. The figure is a rough estimate of a module's managed
+	/// footprint, not a measured value.
+	/// </summary>
+	private const long UnloadedModuleMemoryPressure = 50_000_000L;
+
 	private readonly ILogger<ModuleManager> _logger;
 	private readonly ILogger<LocalizationManager> _localizationLogger;
 
@@ -679,10 +686,22 @@ public class ModuleManager : IModuleManager
 				continue;
 			}
 
-			loadedDependencies.Add(dependencyLoadId);
-			_servicesManager.RegisterDependency(loadId, dependencyLoadId);
-			_logger.LogDebug("Module '{Name}' is linked to dependency '{Dependency}'", moduleInfo.Id, dependencyId);
+			LinkDependency(loadId, moduleInfo.Id, dependencyId, dependencyLoadId, loadedDependencies);
 		}
+	}
+
+	/// <summary>
+	/// Records that a module is linked to one of its dependencies: the dependency's services
+	/// become resolvable from the module's container. Shared by <see cref="LinkLoadedDependencies"/>
+	/// and <see cref="LinkModuleAsync"/>, which differ only in how they decide a dependency still
+	/// needs linking.
+	/// </summary>
+	private void LinkDependency(Guid loadId, string moduleId, string dependencyId, Guid dependencyLoadId,
+		List<Guid> loadedDependencies)
+	{
+		loadedDependencies.Add(dependencyLoadId);
+		_servicesManager.RegisterDependency(loadId, dependencyLoadId);
+		_logger.LogDebug("Module '{Name}' is linked to dependency '{Dependency}'", moduleId, dependencyId);
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
@@ -732,9 +751,8 @@ public class ModuleManager : IModuleManager
 				continue;
 			}
 
-			moduleContext.LoadedDependencies.Add(dependencyLoadId);
-			_servicesManager.RegisterDependency(moduleContext.LoadId, dependencyLoadId);
-			_logger.LogDebug("Module '{Name}' is linked to dependency '{Dependency}'", moduleInfo.Id, dependencyId);
+			LinkDependency(moduleContext.LoadId, moduleInfo.Id, dependencyId, dependencyLoadId,
+				moduleContext.LoadedDependencies);
 		}
 
 		await RegisterMiddlewaresAsync(moduleContext);
@@ -783,16 +801,24 @@ public class ModuleManager : IModuleManager
 			{
 				return;
 			}
-			await EnableDependenciesAsync(moduleContext, enabling);
-			await EnableThemesAsync(moduleContext);
-			await EnableControllersAsync(moduleContext);
-			await EnableMiddlewaresAsync(moduleContext);
-			await EnableManialinkTemplatesAsync(moduleContext);
-			await StartBackgroundServicesAsync(moduleContext);
-			await TryCallModuleEnableAsync(moduleContext);
-			moduleContext.SetEnabled(enabled: true);
-			moduleContext.SetStatus(ModuleStatus.Enabled);
-			_logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
+
+			try
+			{
+				await EnableDependenciesAsync(moduleContext, enabling);
+				await EnableThemesAsync(moduleContext);
+				await EnableControllersAsync(moduleContext);
+				await EnableMiddlewaresAsync(moduleContext);
+				await EnableManialinkTemplatesAsync(moduleContext);
+				await StartBackgroundServicesAsync(moduleContext);
+				await TryCallModuleEnableAsync(moduleContext);
+				moduleContext.SetStatus(ModuleStatus.Enabled);
+				_logger.LogDebug("Module {Type}({Module}) was enabled", moduleContext.MainClass, loadId);
+			}
+			catch
+			{
+				moduleContext.SetStatus(ModuleStatus.Error);
+				throw;
+			}
 		}
 		finally
 		{
@@ -859,15 +885,23 @@ public class ModuleManager : IModuleManager
 	public async Task DisableAsync(Guid loadId)
 	{
 		IModuleLoadContext moduleContext = GetModule(loadId);
-		await DisableManialinkTemplatesAsync(moduleContext);
-		await DisableControllersAsync(moduleContext);
-		await DisableMiddlewaresAsync(moduleContext);
-		await DisableThemesAsync(moduleContext);
-		await StopBackgroundServicesAsync(moduleContext);
-		await TryCallModuleDisableAsync(moduleContext);
-		moduleContext.SetEnabled(enabled: false);
-		moduleContext.SetStatus(ModuleStatus.Disabled);
-		_logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
+
+		try
+		{
+			await DisableManialinkTemplatesAsync(moduleContext);
+			await DisableControllersAsync(moduleContext);
+			await DisableMiddlewaresAsync(moduleContext);
+			await DisableThemesAsync(moduleContext);
+			await StopBackgroundServicesAsync(moduleContext);
+			await TryCallModuleDisableAsync(moduleContext);
+			moduleContext.SetStatus(ModuleStatus.Disabled);
+			_logger.LogDebug("Module {Type}({Module}) was disabled", moduleContext.MainClass, loadId);
+		}
+		catch
+		{
+			moduleContext.SetStatus(ModuleStatus.Error);
+			throw;
+		}
 	}
 
 	private async Task DisableThemesAsync(IModuleLoadContext moduleContext)
@@ -1090,7 +1124,7 @@ public class ModuleManager : IModuleManager
 		_loadedModules.Remove(loadId);
 		_moduleNameMap.Remove(moduleContext.ModuleInfo.Id);
 		_exportAssemblies.ReleaseModule(loadId);
-		GC.AddMemoryPressure(50000000L);
+		GC.AddMemoryPressure(UnloadedModuleMemoryPressure);
 		WeakReference? alcWeakRef = DetachLoadContext(moduleContext.AsmLoadContext);
 		return (Instance: instanceWeakRef, LoadContext: alcWeakRef);
 	}

@@ -53,8 +53,8 @@ public class ModuleManagerServiceTests
     }
 
     private static IModuleLoadContext CreateModule(string id, ModuleStatus status = ModuleStatus.Enabled,
-        bool isInternal = false, bool isEnabled = true, List<Guid>? loadedDependencies = null) =>
-        TestModuleLoader.CreateModule(id, status, isInternal, isEnabled, loadedDependencies);
+        bool isInternal = false, List<Guid>? loadedDependencies = null) =>
+        TestModuleLoader.CreateModule(id, status, isInternal, loadedDependencies);
 
     private void SetLoadedModules(params IModuleLoadContext[] modules) =>
         _modules.Setup(m => m.GetLoadedModules()).Returns(modules);
@@ -132,7 +132,7 @@ public class ModuleManagerServiceTests
     public async Task Disable_Ignores_Disabled_Dependents()
     {
         var module = CreateModule("OpenPlanet");
-        var dependent = CreateModule("PlayerRecords", ModuleStatus.Disabled, isEnabled: false,
+        var dependent = CreateModule("PlayerRecords", ModuleStatus.Disabled,
             loadedDependencies: new List<Guid> {module.LoadId});
         SetLoadedModules(module, dependent);
 
@@ -313,8 +313,8 @@ public class ModuleManagerServiceTests
     [Fact]
     public async Task List_Sends_Header_And_One_Message_Per_Module()
     {
-        var disabled = CreateModule("AaaModule", ModuleStatus.Disabled, isEnabled: false);
-        var internalModule = CreateModule("BbbModule", ModuleStatus.Loaded, isInternal: true, isEnabled: false);
+        var disabled = CreateModule("AaaModule", ModuleStatus.Disabled);
+        var internalModule = CreateModule("BbbModule", ModuleStatus.Loaded, isInternal: true);
         var enabled = CreateModule("Player", ModuleStatus.Enabled);
         var errored = CreateModule("ZzzModule", ModuleStatus.Error);
         SetLoadedModules(errored, internalModule, disabled, enabled);

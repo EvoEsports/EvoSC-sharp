@@ -79,7 +79,8 @@ public interface IModuleLoadContext
     public IReadOnlyList<Type> Themes { get; }
 
     /// <summary>
-    /// Whether this module is currently enabled.
+    /// Whether this module is currently enabled. Equivalent to <see cref="Status"/> being
+    /// <see cref="ModuleStatus.Enabled"/>.
     /// </summary>
     public bool IsEnabled { get; }
 
@@ -87,12 +88,6 @@ public interface IModuleLoadContext
     /// The lifecycle status of the module.
     /// </summary>
     public ModuleStatus Status { get; }
-
-    /// <summary>
-    /// Set the enabled status of this module.
-    /// </summary>
-    /// <param name="enabled">True if enabled, false otherwise.</param>
-    internal void SetEnabled(bool enabled);
 
     /// <summary>
     /// Set the lifecycle status of this module.
