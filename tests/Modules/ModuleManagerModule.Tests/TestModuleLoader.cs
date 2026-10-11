@@ -12,13 +12,10 @@ namespace EvoSC.Modules.Official.ModuleManagerModule.Tests;
 
 internal static class TestModuleLoader
 {
-    private static readonly MethodInfo SetStatusMethod = typeof(IModuleLoadContext)
-        .GetMethod("SetStatus", BindingFlags.Instance | BindingFlags.NonPublic)!;
-
     public static IModuleLoadContext CreateModule(string id, ModuleStatus status = ModuleStatus.Enabled,
         bool isInternal = false, List<Guid>? loadedDependencies = null)
     {
-        var module = new ModuleLoadContext
+        IModuleLoadContext module = new ModuleLoadContext
         {
             Instance = null,
             Services = new Container(),
@@ -35,7 +32,7 @@ internal static class TestModuleLoader
             Themes = Array.Empty<Type>()
         };
 
-        SetStatusMethod.Invoke(module, new object[] {status});
+        module.SetStatus(status);
 
         return module;
     }
