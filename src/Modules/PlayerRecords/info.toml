@@ -1,6 +1,6 @@
 ﻿[info]
-name = "RecordsModule"
-title = "Player Records"
+id = "RecordsModule"
+name = "Player Records"
 summary = "Tracking and reporting of player records."
 version = "1.0.0"
 author = "Evo"

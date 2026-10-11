@@ -1,6 +1,6 @@
 ﻿[info]
-name = "MapsModule"
-title = "Maps Module"
+id = "MapsModule"
+name = "Maps Module"
 summary = "Module for handling and managing maps."
 version = "1.0.0"
 author = "Evo"

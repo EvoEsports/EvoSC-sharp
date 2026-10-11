@@ -1,6 +1,6 @@
 ﻿[info]
-name = "SetNameModule"
-title = "Set Name"
+id = "SetNameModule"
+name = "Set Name"
 summary = "Adds the possibility to set custom styled nicknames."
 version = "1.1.0"
 author = "Evo"

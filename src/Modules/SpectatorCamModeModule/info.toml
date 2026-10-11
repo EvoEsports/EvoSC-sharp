@@ -1,6 +1,6 @@
 ﻿[info]
-name = "SpectatorCamModeModule"
-title = "Spectator Cam Mode"
+id = "SpectatorCamModeModule"
+name = "Spectator Cam Mode"
 summary = "Shows and allows changing the cam mode."
 version = "1.0.0"
 author = "Evo"

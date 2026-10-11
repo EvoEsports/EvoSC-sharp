@@ -1,8 +1,6 @@
 [info]
-# A unique name for this module, this is used as a identifier
-name = "MapListModule"
-# The title of the module
-title = "Map List"
+id = "MapListModule"
+name = "Map List"
 # A short description of what the module is and does
 summary = "Map list management."
 # The current version of this module, using SEMVER

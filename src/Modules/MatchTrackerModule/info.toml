@@ -1,6 +1,6 @@
 ﻿[info]
-name = "MatchTrackerModule"
-title = "Match Tracker"
+id = "MatchTrackerModule"
+name = "Match Tracker"
 summary = "Extensive live tracking and recording of match timelines."
 version = "1.0.0"
 author = "Evo Esports"

@@ -1,6 +1,6 @@
 ﻿[info]
-name = "MatchManagerModule"
-title = "Match Manager"
+id = "MatchManagerModule"
+name = "Match Manager"
 summary = "Edit, load and save match settings."
 version = "1.0.0"
 author = "Evo"
