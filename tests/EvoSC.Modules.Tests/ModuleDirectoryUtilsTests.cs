@@ -46,7 +46,7 @@ public class ModuleDirectoryUtilsTests
     }
 
     [Fact]
-    public void FindModulesFromDirectory_ThrowsForUnknownDependency()
+    public void SortedModuleCollection_ThrowsForUnknownDependency()
     {
         var modules = new SortedModuleCollection<Interfaces.IExternalModuleInfo>();
         modules.Add(CreateModule("OrphanModule", "MissingModule"));

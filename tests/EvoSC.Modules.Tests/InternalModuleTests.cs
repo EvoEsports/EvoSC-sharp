@@ -116,14 +116,32 @@ public class InternalModuleTests
     }
 
     [Fact]
-    public void Module_Can_Classify_Itself_As_Internal()
+    public void InternalFixtureModule_DeclaresItselfInternal_SanityCheck()
     {
         // The declaration is the module's own, independent of how it was loaded, so read it from
-        // the deployed module rather than from a reference to it.
+        // the deployed module rather than from a reference to it. This guards the fixture itself,
+        // not ModuleManager: see Module_Loaded_Externally_Is_Protected_When_It_Declares_Itself_Internal
+        // for the behavior this attribute is supposed to drive.
         var assembly = Assembly.LoadFrom(Path.Combine(InternalModuleDirectory, $"{InternalModuleId}.dll"));
         var mainClass = assembly.GetTypes().Single(t => t.GetCustomAttribute<ModuleAttribute>() != null);
 
         Assert.True(mainClass.GetCustomAttribute<ModuleAttribute>()!.IsInternal);
+    }
+
+    [Fact]
+    public async Task Module_Loaded_Externally_Is_Protected_When_It_Declares_Itself_Internal()
+    {
+        // ApplyModuleDeclaration reads a module's own [Module(IsInternal = true)] attribute when it
+        // is loaded through the external path, not pre-registered via LoadInternalModulesAsync, and
+        // protects it from unload/reload exactly like a registered internal module.
+        using var harness = new ModuleManagerHarness();
+
+        await harness.Manager.LoadAsync(InternalModuleDirectory);
+        var module = Assert.Single(harness.Manager.GetLoadedModules());
+
+        Assert.True(module.ModuleInfo.IsInternal);
+        await Assert.ThrowsAsync<EvoScModuleException>(() => harness.Manager.UnloadAsync(module.LoadId));
+        await Assert.ThrowsAsync<EvoScModuleException>(() => harness.Manager.ReloadAsync(module.LoadId));
     }
 
     [Fact]

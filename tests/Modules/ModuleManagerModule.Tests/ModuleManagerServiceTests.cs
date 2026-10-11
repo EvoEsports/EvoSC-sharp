@@ -102,9 +102,11 @@ public class ModuleManagerServiceTests
     }
 
     [Fact]
-    public async Task Disable_Allows_Otherwise_Essential_Modules()
+    public async Task Disable_Does_Not_Exempt_Internal_Modules()
     {
-        var module = CreateModule("Player");
+        // Only a dependent that is still enabled refuses a disable (GetDisableRefusal); being an
+        // internal module carries no such exemption at this layer.
+        var module = CreateModule("Player", isInternal: true);
         SetLoadedModules(module);
 
         await _service.DisableModuleAsync(module);
