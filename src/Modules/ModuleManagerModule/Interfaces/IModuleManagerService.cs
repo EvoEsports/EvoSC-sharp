@@ -1,4 +1,5 @@
-﻿using EvoSC.Modules.Interfaces;
+﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules.Official.ModuleManagerModule.Interfaces;
 
@@ -47,4 +48,10 @@ public interface IModuleManagerService
     /// Prints a list of the loaded modules to the chat.
     /// </summary>
     Task ListModulesAsync();
+
+    /// <summary>
+    /// Shows the module manager window, listing every loaded module with controls to enable,
+    /// disable, reload, unload or uninstall it.
+    /// </summary>
+    Task ShowManagerWindowAsync(IPlayer player);
 }

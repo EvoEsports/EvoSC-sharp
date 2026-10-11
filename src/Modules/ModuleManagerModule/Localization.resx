@@ -135,4 +135,10 @@
   <data name="Permission.ConfigureModules" xml:space="preserve">
     <value>Can access all modules's configuration.</value>
   </data>
+  <data name="Command.ShowModuleManager" xml:space="preserve">
+    <value>Open the module manager window.</value>
+  </data>
+  <data name="ModuleManagerWindowTitle" xml:space="preserve">
+    <value>Module Manager</value>
+  </data>
 </root>
