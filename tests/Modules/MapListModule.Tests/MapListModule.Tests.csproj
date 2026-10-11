@@ -30,6 +30,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
     <ProjectReference Include="..\..\..\src\Modules\MapListModule\MapListModule.csproj" />
+        <!-- Contracts this module consumes from another module. -->
+        <ProjectReference Include="..\..\..\src\Modules\MapQueueModule\MapQueueModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
+        <ProjectReference Include="..\..\..\src\Modules\MapsModule\MapsModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
     <ProjectReference Include="..\..\..\src\Modules\PlayerRecords\PlayerRecords.csproj" />
     <ProjectReference Include="..\..\EvoSC.Common.Tests\EvoSC.Common.Tests.csproj" />
   </ItemGroup>

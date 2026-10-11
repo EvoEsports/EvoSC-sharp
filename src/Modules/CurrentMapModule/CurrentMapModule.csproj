@@ -11,8 +11,7 @@
         <ProjectReference Include="..\..\EvoSC.Modules.SourceGeneration\EvoSC.Modules.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
         <EmbeddedResource Include="Templates\**\*" />
-        <ProjectReference Include="..\WorldRecordModule\WorldRecordModule.csproj" />
-    </ItemGroup>
+            </ItemGroup>
     
     <ItemGroup>
       <PackageReference Include="ISO3166" Version="1.0.4" />
@@ -20,6 +19,11 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+    </ItemGroup>
+
+    <!-- Assemblies this module needs at runtime, shipped next to it for its load context. -->
+    <ItemGroup>
+        <EvoSCModulePackage Include="ISO3166" />
     </ItemGroup>
     
     
