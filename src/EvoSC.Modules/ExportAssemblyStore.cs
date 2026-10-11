@@ -20,7 +20,6 @@ internal sealed class ExportAssemblyStore
     private readonly Dictionary<string, string> _assemblyNameToModuleId = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, ExportRegistration> _exports = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, HashSet<string>> _referencedBy = new(StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<string, int> _moduleReferenceCounts = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<Guid, HashSet<string>> _instanceReferences = new();
 
     private readonly ConcurrentDictionary<Assembly, byte> _loadedAssemblies = new();
@@ -112,23 +111,6 @@ internal sealed class ExportAssemblyStore
             {
                 return;
             }
-
-            foreach (var moduleId in referenced)
-            {
-                if (!_moduleReferenceCounts.TryGetValue(moduleId, out var count))
-                {
-                    continue;
-                }
-
-                if (count <= 1)
-                {
-                    _moduleReferenceCounts.Remove(moduleId);
-                }
-                else
-                {
-                    _moduleReferenceCounts[moduleId] = count - 1;
-                }
-            }
         }
 
         foreach (var moduleId in referenced)
@@ -145,12 +127,12 @@ internal sealed class ExportAssemblyStore
             _instanceReferences[ownerLoadId] = set;
         }
 
-        if (set.Add(moduleId))
-        {
-            _moduleReferenceCounts.TryGetValue(moduleId, out var count);
-            _moduleReferenceCounts[moduleId] = count + 1;
-        }
+        set.Add(moduleId);
     }
+
+    /// <summary>Whether any loaded module instance still holds a reference to <paramref name="moduleId"/>'s export.</summary>
+    private bool IsStillReferencedByAModule(string moduleId) =>
+        _instanceReferences.Values.Any(referenced => referenced.Contains(moduleId));
 
     /// <summary>Answers a single CLR assembly-binding request. Only exports resolve here.</summary>
     private Assembly? ResolveForBinder(Guid ownerLoadId, string requestedAssemblyName)
@@ -264,7 +246,7 @@ internal sealed class ExportAssemblyStore
                 return;
             }
 
-            if (_moduleReferenceCounts.GetValueOrDefault(moduleId) > 0)
+            if (IsStillReferencedByAModule(moduleId))
             {
                 return;
             }
@@ -275,7 +257,6 @@ internal sealed class ExportAssemblyStore
             }
 
             _exports.Remove(moduleId);
-            _moduleReferenceCounts.Remove(moduleId);
             _loadedAssemblies.TryRemove(registration.Assembly, out _);
             _knownPaths.Remove(moduleId);
             _assemblyNameToModuleId.Remove(registration.Assembly.GetName().Name!);
