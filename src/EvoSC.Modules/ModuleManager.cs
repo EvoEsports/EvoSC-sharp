@@ -70,6 +70,8 @@ public class ModuleManager : IModuleManager
 
 	private readonly IThemeManager _themeManager;
 
+	private readonly IKnownInternalModules _knownInternalModules;
+
 	private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new Dictionary<Guid, IModuleLoadContext>();
 
 	private readonly Dictionary<string, Guid> _moduleNameMap = new Dictionary<string, Guid>();
@@ -120,7 +122,7 @@ public class ModuleManager : IModuleManager
 	internal ExportAssemblyStore ExportAssemblies => _exportAssemblies;
 
 	public ModuleManager(ILogger<ModuleManager> logger, ILogger<LocalizationManager> localizationLogger,
-        IEvoScBaseConfig config, IControllerManager controllers, IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions, IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager)
+        IEvoScBaseConfig config, IControllerManager controllers, IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions, IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager, IKnownInternalModules knownInternalModules)
 	{
 		_logger = logger;
 		_localizationLogger = localizationLogger;
@@ -132,6 +134,7 @@ public class ModuleManager : IModuleManager
 		_configStoreRepository = configStoreRepository;
 		_manialinkManager = manialinkManager;
 		_themeManager = themeManager;
+		_knownInternalModules = knownInternalModules;
 		_exportAssemblies = new ExportAssemblyStore();
 		WarnForDisabledVerification();
 		ConfigNetInterceptor.VerifyCompatibility();
@@ -541,9 +544,11 @@ public class ModuleManager : IModuleManager
 	}
 
 	/// <summary>
-	/// A module classifies itself with [Module(IsInternal = true)]. The application also knows which
-	/// modules it registered as internal, so either declaration is enough to protect a module from
-	/// being unloaded or reloaded.
+	/// A module classifies itself with [Module(IsInternal = true)], but self-declaration alone is
+	/// not enough to grant the protection from unload/reload that internal status carries: an
+	/// arbitrary third-party module could otherwise claim it. The declaration is honored only for
+	/// a module whose id the application was built to know about, or whose files are signed by the
+	/// internal module key.
 	/// </summary>
 	private void ApplyModuleDeclaration(IExternalModuleInfo moduleInfo, Type mainClass)
 	{
@@ -552,11 +557,21 @@ public class ModuleManager : IModuleManager
 			return;
 		}
 
-		if (moduleInfo is ExternalModuleInfo module)
+		if (!IsAuthorizedToDeclareInternal(moduleInfo))
 		{
-			module.IsInternal = true;
+			_logger.LogWarning(
+				"Module '{Name}' declares itself internal with [Module(IsInternal = true)] but is " +
+				"neither a known internal module nor signed by the internal module key. The " +
+				"declaration is ignored.", moduleInfo.Id);
+			return;
 		}
+
+		moduleInfo.IsInternal = true;
 	}
+
+	private bool IsAuthorizedToDeclareInternal(IExternalModuleInfo moduleInfo) =>
+		_knownInternalModules.Contains(moduleInfo.Id) ||
+		moduleInfo.ModuleFiles.All(file => file.IsSignedByInternalModuleKey());
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private void EnsureExportDependenciesLoaded(Guid ownerLoadId, IModuleInfo moduleInfo)

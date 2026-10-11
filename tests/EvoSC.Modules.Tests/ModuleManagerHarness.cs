@@ -11,6 +11,7 @@ using EvoSC.Common.Localization;
 using EvoSC.Common.Services;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Interfaces;
+using EvoSC.Modules.Models;
 using EvoSC.Modules.Util;
 using SimpleInjector;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -41,7 +42,8 @@ public class ModuleManagerHarness : IDisposable
 
     private readonly Dictionary<string, DbConfigOption> _configOptions = new();
 
-    public ModuleManagerHarness(Mock<IManialinkManager>? manialinkManager = null)
+    public ModuleManagerHarness(Mock<IManialinkManager>? manialinkManager = null,
+        IEnumerable<string>? knownInternalModuleIds = null)
     {
         var app = new FakeApp(RootServices);
 
@@ -82,7 +84,8 @@ public class ModuleManagerHarness : IDisposable
             new Mock<IPermissionManager>().Object,
             ConfigStoreRepository.Object,
             ManialinkManager.Object,
-            new Mock<IThemeManager>().Object);
+            new Mock<IThemeManager>().Object,
+            new KnownInternalModules(knownInternalModuleIds ?? []));
     }
 
     public string ProviderDirectory => Path.Combine(AppContext.BaseDirectory, "modules", "ContractApiProviderModule");

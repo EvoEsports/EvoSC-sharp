@@ -45,7 +45,7 @@ public static class ApplicationSetup
 
             .Services(AppFeature.GbxRemoteClient, s => s.AddGbxRemoteClient())
 
-            .Services(AppFeature.Modules, s => s.AddEvoScModules())
+            .Services(AppFeature.Modules, s => s.AddEvoScModules(InternalModules.ModuleIds))
 
             .Services(AppFeature.ControllerManager, s => s.AddEvoScControllers())
 

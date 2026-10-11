@@ -49,7 +49,9 @@ public static class CliStartup
                 , "Logging", "Config", "Events", "ActionPipelines", "InitializeGbxRemoteConnection", "Themes")
 
             .Services(AppFeature.Modules, s => s
-                    .AddEvoScModules()
+                    // The CLI never loads external modules, so there is nothing for a module to
+                    // falsely declare itself internal against.
+                    .AddEvoScModules([])
                 , "Logging", "Config", "ControllerManager", "ServicesManager", "ActionPipelines", "Permissions",
                 "Database", "Manialinks")
 

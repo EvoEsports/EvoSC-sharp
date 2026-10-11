@@ -3,6 +3,13 @@
 public interface IExternalModuleInfo : IModuleInfo
 {
     /// <summary>
+    /// Whether this module is internal or not. Settable here, unlike on <see cref="IModuleInfo"/>:
+    /// a module's internal status is only ever decided while it is still being loaded, by
+    /// <see cref="IModuleManager"/> itself.
+    /// </summary>
+    public new bool IsInternal { get; set; }
+
+    /// <summary>
     /// The directory which this module resides in.
     /// </summary>
     public DirectoryInfo Directory { get; }
