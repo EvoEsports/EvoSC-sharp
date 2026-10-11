@@ -1,12 +1,14 @@
 ﻿using EvoSC.Common.Interfaces.Models;
-using EvoSC.Common.Database.Models.PlayerRecords;
+using EvoSC.Modules.Official.PlayerRecords.Database.Models;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Interfaces;
 
 /// <summary>
-/// Exported so other modules can read the records table without a reference to this module. The
-/// record entity is part of the shared framework, which is what lets a module's own table hold a
-/// foreign key to it.
+/// Exported so other modules can read the records table without a reference to this module.
+/// DbPlayerRecord and every type it references are discovered automatically and emitted into
+/// this module's export assembly, so a consuming module's own table can hold a foreign key to
+/// the very same entity type.
 /// </summary>
 [Export]
 public interface IPlayerRecordsRepository

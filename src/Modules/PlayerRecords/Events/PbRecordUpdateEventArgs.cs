@@ -1,4 +1,5 @@
 ﻿using EvoSC.Common.Interfaces.Models;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Events;
 

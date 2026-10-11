@@ -1,7 +1,8 @@
 using EvoSC.Common.Database.Models.Maps;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
-using EvoSC.Common.Database.Models.PlayerRecords;
+using EvoSC.Modules.Official.PlayerRecords.Database.Models;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB.Mapping;
 
 namespace EvoSC.Modules.Official.LocalRecordsModule.Database.Models;

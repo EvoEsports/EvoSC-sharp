@@ -1,12 +1,13 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.PlayerRecords.Events;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Interfaces;
 
 /// <summary>
 /// Exported so other modules can read and write personal records without a reference to this
-/// module. The record types themselves live in the shared framework, so both sides exchange the
-/// same data.
+/// module. IPlayerRecord and every type it references are discovered automatically and emitted
+/// into this module's export assembly, so both sides exchange the same data under one identity.
 /// </summary>
 [Export]
 public interface IPlayerRecordsService

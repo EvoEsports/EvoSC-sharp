@@ -7,8 +7,9 @@ using EvoSC.Modules.Official.LocalRecordsModule.Config;
 using EvoSC.Modules.Official.LocalRecordsModule.Database.Models;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces;
 using EvoSC.Modules.Official.LocalRecordsModule.Interfaces.Database;
-using EvoSC.Common.Database.Models.PlayerRecords;
+using EvoSC.Modules.Official.PlayerRecords.Database.Models;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 

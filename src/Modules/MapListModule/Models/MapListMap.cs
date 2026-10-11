@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.MapListModule.Interfaces.Models;
+using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 
 namespace EvoSC.Modules.Official.MapListModule.Models;
 
