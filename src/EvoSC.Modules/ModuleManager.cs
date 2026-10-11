@@ -70,6 +70,8 @@ public class ModuleManager : IModuleManager
 
 	private readonly IThemeManager _themeManager;
 
+	private readonly IKnownInternalModules _knownInternalModules;
+
 	private readonly Dictionary<Guid, IModuleLoadContext> _loadedModules = new Dictionary<Guid, IModuleLoadContext>();
 
 	private readonly Dictionary<string, Guid> _moduleNameMap = new Dictionary<string, Guid>();
@@ -120,7 +122,7 @@ public class ModuleManager : IModuleManager
 	internal ExportAssemblyStore ExportAssemblies => _exportAssemblies;
 
 	public ModuleManager(ILogger<ModuleManager> logger, ILogger<LocalizationManager> localizationLogger,
-        IEvoScBaseConfig config, IControllerManager controllers, IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions, IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager)
+        IEvoScBaseConfig config, IControllerManager controllers, IServiceContainerManager servicesManager, IActionPipelineManager pipelineManager, IPermissionManager permissions, IConfigStoreRepository configStoreRepository, IManialinkManager manialinkManager, IThemeManager themeManager, IKnownInternalModules knownInternalModules)
 	{
 		_logger = logger;
 		_localizationLogger = localizationLogger;
@@ -132,6 +134,7 @@ public class ModuleManager : IModuleManager
 		_configStoreRepository = configStoreRepository;
 		_manialinkManager = manialinkManager;
 		_themeManager = themeManager;
+		_knownInternalModules = knownInternalModules;
 		_exportAssemblies = new ExportAssemblyStore();
 		WarnForDisabledVerification();
 		ConfigNetInterceptor.VerifyCompatibility();
@@ -489,13 +492,13 @@ public class ModuleManager : IModuleManager
 		return ReflectionUtils.CallMethod(configBuilder, "Build");
 	}
 
-	private bool VerifyExternalModule(IExternalModuleInfo moduleInfo)
+	private bool VerifyExternalModule(ExternalModuleInfo moduleInfo)
 	{
 		return !_config.Modules.RequireSignatureVerification || moduleInfo.ModuleFiles.All((IModuleFile file) => file.VerifySignature());
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	private (Type?, AssemblyLoadContext?) CreateAssemblyLoadContext(Guid loadId, IExternalModuleInfo moduleInfo)
+	private (Type?, AssemblyLoadContext?) CreateAssemblyLoadContext(Guid loadId, ExternalModuleInfo moduleInfo)
 	{
 		string[] assemblyPaths = moduleInfo.AssemblyFiles.Select((IModuleFile f) => f.File.FullName).ToArray();
 		string[] exportPaths = assemblyPaths.Where((string f) => Path.GetFileNameWithoutExtension(f).EndsWith(".Exports", StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -541,22 +544,34 @@ public class ModuleManager : IModuleManager
 	}
 
 	/// <summary>
-	/// A module classifies itself with [Module(IsInternal = true)]. The application also knows which
-	/// modules it registered as internal, so either declaration is enough to protect a module from
-	/// being unloaded or reloaded.
+	/// A module classifies itself with [Module(IsInternal = true)], but self-declaration alone is
+	/// not enough to grant the protection from unload/reload that internal status carries: an
+	/// arbitrary third-party module could otherwise claim it. The declaration is honored only for
+	/// a module whose id the application was built to know about, or whose files are signed by the
+	/// internal module key.
 	/// </summary>
-	private void ApplyModuleDeclaration(IExternalModuleInfo moduleInfo, Type mainClass)
+	private void ApplyModuleDeclaration(ExternalModuleInfo moduleInfo, Type mainClass)
 	{
 		if (mainClass.GetCustomAttribute<ModuleAttribute>() is not { IsInternal: true })
 		{
 			return;
 		}
 
-		if (moduleInfo is ExternalModuleInfo module)
+		if (!IsAuthorizedToDeclareInternal(moduleInfo))
 		{
-			module.IsInternal = true;
+			_logger.LogWarning(
+				"Module '{Name}' declares itself internal with [Module(IsInternal = true)] but is " +
+				"neither a known internal module nor signed by the internal module key. The " +
+				"declaration is ignored.", moduleInfo.Id);
+			return;
 		}
+
+		moduleInfo.IsInternal = true;
 	}
+
+	private bool IsAuthorizedToDeclareInternal(ExternalModuleInfo moduleInfo) =>
+		_knownInternalModules.Contains(moduleInfo.Id) ||
+		moduleInfo.ModuleFiles.All(file => file.IsSignedByInternalModuleKey());
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private void EnsureExportDependenciesLoaded(Guid ownerLoadId, IModuleInfo moduleInfo)
@@ -925,12 +940,12 @@ public class ModuleManager : IModuleManager
 		{
 			throw new DirectoryNotFoundException("The module directory was not found at: " + directory);
 		}
-		IExternalModuleInfo moduleInfo = ModuleInfoUtils.CreateFromDirectory(new DirectoryInfo(directory));
+		ExternalModuleInfo moduleInfo = ModuleInfoUtils.CreateFromDirectory(new DirectoryInfo(directory));
 		return LoadAsync(moduleInfo);
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public async Task LoadAsync(IExternalModuleInfo moduleInfo, bool install = true)
+	public async Task LoadAsync(ExternalModuleInfo moduleInfo, bool install = true)
 	{
 		if (!VerifyExternalModule(moduleInfo))
 		{
@@ -963,7 +978,7 @@ public class ModuleManager : IModuleManager
 		}
 
 		var available = ModuleDirectoryUtils.FindModulesIn(directory).ToDictionary(module => module.Id);
-		var internalModules = new SortedModuleCollection<IExternalModuleInfo>();
+		var internalModules = new SortedModuleCollection<ExternalModuleInfo>();
 		var missing = new List<string>();
 
 		foreach (string moduleId in moduleIds)
@@ -1008,13 +1023,13 @@ public class ModuleManager : IModuleManager
 	/// dictate the order modules are loaded in, and modules may depend on each other in a cycle.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public async Task LoadAsync(IModuleCollection<IExternalModuleInfo> collection)
+	public async Task LoadAsync(IModuleCollection<ExternalModuleInfo> collection)
 	{
-		var prepared = new List<(IExternalModuleInfo ModuleInfo, Type Type, AssemblyLoadContext? AsmLoadContext, Guid LoadId)>();
+		var prepared = new List<(ExternalModuleInfo ModuleInfo, Type Type, AssemblyLoadContext? AsmLoadContext, Guid LoadId)>();
 
 		// Create all load contexts up front so that every module's export assembly is registered
 		// before any module type is loaded.
-		foreach (IExternalModuleInfo module in collection)
+		foreach (ExternalModuleInfo module in collection)
 		{
 			if (!VerifyExternalModule(module))
 			{
@@ -1183,7 +1198,7 @@ public class ModuleManager : IModuleManager
 		{
 			throw new EvoScModuleException($"Attempted to reload internal module '{loadId}' but this is not allowed");
 		}
-		DirectoryInfo directory = ((IExternalModuleInfo)moduleContext.ModuleInfo).Directory;
+		DirectoryInfo directory = ((ExternalModuleInfo)moduleContext.ModuleInfo).Directory;
 		_logger.LogDebug("Reloading module '{Name}' ({LoadId})", moduleContext.ModuleInfo.Id, loadId);
 		await UnloadAsync(loadId);
 		await LoadAsync(directory.FullName);

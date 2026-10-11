@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using EvoSC.Modules.Models;
 
 namespace EvoSC.Modules.Interfaces;
 
@@ -76,7 +77,7 @@ public interface IModuleManager
     /// false to load a module that was previously unloaded without running its installation
     /// again.</param>
     /// <returns></returns>
-    public Task LoadAsync(IExternalModuleInfo moduleInfo, bool install = true);
+    public Task LoadAsync(ExternalModuleInfo moduleInfo, bool install = true);
     
     /// <summary>
     /// Load the modules that ship with EvoSC from a fixed directory. An internal module is loaded
@@ -95,7 +96,7 @@ public interface IModuleManager
     /// </summary>
     /// <param name="collection">The collection of modules to load.</param>
     /// <returns></returns>
-    public Task LoadAsync(IModuleCollection<IExternalModuleInfo> collection);
+    public Task LoadAsync(IModuleCollection<ExternalModuleInfo> collection);
     
     /// <summary>
     /// Unload a module. This disables and removes the module from memory.
