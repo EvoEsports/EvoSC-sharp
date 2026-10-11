@@ -50,7 +50,7 @@ public class ModuleManagerServiceTests
             .Returns(Task.CompletedTask);
 
         _service = new ModuleManagerService(_context.Object, _modules.Object, _chat.Object, new TestLocale(),
-            Mock.Of<ILogger<ModuleManagerService>>(), Mock.Of<IManialinkManager>());
+            Mock.Of<ILogger<ModuleManagerService>>(), Mock.Of<IManialinkManager>(), new ModuleOperationLocks());
     }
 
     private static IModuleLoadContext CreateModule(string id, ModuleStatus status = ModuleStatus.Enabled,

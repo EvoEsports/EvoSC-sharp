@@ -17,7 +17,8 @@ namespace EvoSC.Modules.Official.ModuleManagerModule.Services;
 
 [Service]
 public class ModuleManagerService(IContextService context, IModuleManager modules, IChatService chat, Locale locale,
-    ILogger<ModuleManagerService> logger, IManialinkManager manialinkManager) : IModuleManagerService
+    ILogger<ModuleManagerService> logger, IManialinkManager manialinkManager, IModuleOperationLocks operationLocks)
+    : IModuleManagerService
 {
     private readonly dynamic _locale = locale;
 
@@ -138,38 +139,41 @@ public class ModuleManagerService(IContextService context, IModuleManager module
     /// <summary>
     /// Runs an audited module operation: on success the module is reported to the actor, on failure
     /// the audit is marked as an error and the message is reported instead. The failure reason is
-    /// logged so a module that fails to toggle can be diagnosed after the fact.
+    /// logged so a module that fails to toggle can be diagnosed after the fact. Operations for the
+    /// same module are serialized, so triggering one again (e.g. a repeated manialink click) before
+    /// the first finishes waits for it instead of racing it.
     /// </summary>
-    private async Task RunModuleOperationAsync(IModuleLoadContext module, Enum eventName, string comment,
-        Func<Task> operation, Func<string> success, Func<Exception, string> failure)
-    {
-        context.Audit()
-            .WithEventName(eventName)
-            .HavingProperties(new {module.LoadId, module.ModuleInfo})
-            .Comment(comment);
-
-        var actor = context.Audit().Actor;
-
-        try
+    private Task RunModuleOperationAsync(IModuleLoadContext module, Enum eventName, string comment,
+        Func<Task> operation, Func<string> success, Func<Exception, string> failure) =>
+        operationLocks.RunExclusiveAsync(module.LoadId, async () =>
         {
-            await operation();
-            context.Audit().Success();
-            if (actor != null)
+            context.Audit()
+                .WithEventName(eventName)
+                .HavingProperties(new {module.LoadId, module.ModuleInfo})
+                .Comment(comment);
+
+            var actor = context.Audit().Actor;
+
+            try
             {
-                await chat.SuccessMessageAsync(success(), actor);
+                await operation();
+                context.Audit().Success();
+                if (actor != null)
+                {
+                    await chat.SuccessMessageAsync(success(), actor);
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            context.Audit().Error();
-            logger.LogError(ex, "Module operation '{Event}' failed for module '{Module}'", eventName,
-                module.ModuleInfo.Id);
-            if (actor != null)
+            catch (Exception ex)
             {
-                await chat.ErrorMessageAsync(failure(ex), actor);
+                context.Audit().Error();
+                logger.LogError(ex, "Module operation '{Event}' failed for module '{Module}'", eventName,
+                    module.ModuleInfo.Id);
+                if (actor != null)
+                {
+                    await chat.ErrorMessageAsync(failure(ex), actor);
+                }
             }
-        }
-    }
+        });
 
     /// <summary>
     /// Runs an audited directory operation, reading the module's info up front so the actor is told
