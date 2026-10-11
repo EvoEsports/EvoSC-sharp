@@ -86,7 +86,7 @@ public class StartupPipeline(IEvoScBaseConfig config) : IStartupPipeline, IDispo
     private async Task ExecuteComponentAsync(IStartupComponent component)
     {
         _logger.LogDebug("Executing startup component {Name}", component.Name);
-        
+
         if (component is IServiceStartupComponent serviceComponent)
         {
             serviceComponent.ConfigAction(_services);
@@ -101,6 +101,28 @@ public class StartupPipeline(IEvoScBaseConfig config) : IStartupPipeline, IDispo
         }
     }
 
+    /// <summary>
+    /// Runs every component in order, stopping before the first one once <paramref name="token"/> is
+    /// cancelled. Returns false when execution stopped early, so a caller running several batches in
+    /// sequence knows not to start the next one.
+    /// </summary>
+    private async Task<bool> ExecuteComponentsAsync(IEnumerable<IStartupComponent> components, CancellationToken token,
+        Action<IStartupComponent>? onCancelled = null)
+    {
+        foreach (var component in components)
+        {
+            if (token.IsCancellationRequested)
+            {
+                onCancelled?.Invoke(component);
+                return false;
+            }
+
+            await ExecuteComponentAsync(component);
+        }
+
+        return true;
+    }
+
     public async Task ExecuteAsync(params string[] components) => await ExecuteAsync(CancellationToken.None, components);
 
     public async Task ExecuteAsync(CancellationToken token, params string[] components)
@@ -110,26 +132,12 @@ public class StartupPipeline(IEvoScBaseConfig config) : IStartupPipeline, IDispo
 
         CreatedDependencyOrder(components, services, actions, new HashSet<string>());
 
-        foreach (var (_, component) in services)
+        if (!await ExecuteComponentsAsync(services.Values, token) ||
+            !await ExecuteComponentsAsync(actions.Values, token))
         {
-            if (token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            await ExecuteComponentAsync(component);
+            return;
         }
 
-        foreach (var (_, component) in actions)
-        {
-            if (token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            await ExecuteComponentAsync(component);
-        }
-        
         LogExecutionSuccess();
     }
 
@@ -137,21 +145,16 @@ public class StartupPipeline(IEvoScBaseConfig config) : IStartupPipeline, IDispo
 
     public async Task ExecuteAllAsync(CancellationToken token)
     {
-        foreach (var component in _components.Values)
-        {
-            // A component can shut the application down, for example when the connection to the
-            // Trackmania server cannot be established. The components that come after it expect
-            // the state it was supposed to set up, so they must not run in that case.
-            if (token.IsCancellationRequested)
-            {
-                _logger.LogWarning("Startup was aborted before the component {Name} could be executed", component.Name);
-                return;
-            }
+        // A component can shut the application down, for example when the connection to the
+        // Trackmania server cannot be established. The components that come after it expect
+        // the state it was supposed to set up, so they must not run in that case.
+        var completed = await ExecuteComponentsAsync(_components.Values, token, component =>
+            _logger.LogWarning("Startup was aborted before the component {Name} could be executed", component.Name));
 
-            await ExecuteComponentAsync(component);
+        if (completed)
+        {
+            LogExecutionSuccess();
         }
-        
-        LogExecutionSuccess();
     }
 
     public void Dispose()
