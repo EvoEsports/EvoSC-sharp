@@ -27,7 +27,7 @@ public class UiControlService(
 
     public List<string> GetTemplateNames()
     {
-        return moduleManager.LoadedModules
+        return moduleManager.GetLoadedModules()
             .Select(moduleLoadContext => moduleLoadContext.ManialinkTemplates)
             .SelectMany(a => a)
             .Where(manialinkTemplate => !manialinkTemplate.Name.StartsWith("UiControl"))

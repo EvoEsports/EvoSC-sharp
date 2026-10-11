@@ -2,6 +2,10 @@
 
 namespace EvoSC.Modules.Official.MapQueueModule.Interfaces;
 
+/// <summary>
+/// Exported so other modules can enqueue and drop maps without a reference to this module.
+/// </summary>
+[Export]
 public interface IMapQueueService
 {
     /// <summary>

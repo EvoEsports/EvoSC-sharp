@@ -26,6 +26,8 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
       <ProjectReference Include="..\..\..\src\Modules\TeamInfoModule\TeamInfoModule.csproj" />
+        <!-- Contracts this module consumes from another module. -->
+        <ProjectReference Include="..\..\..\src\Modules\TeamSettingsModule\TeamSettingsModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
     </ItemGroup>
 
     <ItemGroup>

@@ -18,6 +18,12 @@ public interface IValueReaderManager
     public void RemoveReaders(params Type[] types);
 
     /// <summary>
+    /// Remove a single reader instance from the manager.
+    /// </summary>
+    /// <param name="reader">Instance of the value reader.</param>
+    public void RemoveReader(IValueReader reader);
+
+    /// <summary>
     /// Get all readers of a specific type.
     /// </summary>
     /// <param name="type">The object type that a value reader can read.</param>
