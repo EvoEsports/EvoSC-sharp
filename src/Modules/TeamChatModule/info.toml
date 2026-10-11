@@ -1,8 +1,6 @@
 [info]
-# A unique name for this module, this is used as a identifier
-name = "TeamChatModule"
-# The title of the module
-title = "Team Chat"
+id = "TeamChatModule"
+name = "Team Chat"
 # A short description of what the module is and does
 summary = "Functionality for teams to only send messages to themselves."
 # The current version of this module, using SEMVER

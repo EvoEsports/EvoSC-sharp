@@ -1,6 +1,6 @@
 ﻿[info]
-name = "SpectatorTargetInfoModule"
-title = "Spectator Target Info"
+id = "SpectatorTargetInfoModule"
+name = "Spectator Target Info"
 summary = "Shows player info in spectator mode."
 version = "1.0.0"
 author = "Evo"
