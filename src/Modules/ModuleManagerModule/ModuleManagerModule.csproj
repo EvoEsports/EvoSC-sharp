@@ -19,6 +19,7 @@
     <ItemGroup>
       <EmbeddedResource Update="Localization.resx">
       </EmbeddedResource>
+      <EmbeddedResource Include="Templates\**\*" />
     </ItemGroup>
 
     <ItemGroup>

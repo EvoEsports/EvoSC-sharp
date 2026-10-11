@@ -33,4 +33,7 @@ public class ModuleCommandsController(IModuleManagerService moduleManagerService
 
     [ChatCommand("uninstallmodule", "[Command.UninstallModule]", ModuleManagerPermissions.InstallModule)]
     public Task UninstallModuleAsync(IModuleLoadContext module) => moduleManagerService.UninstallModuleAsync(module);
+
+    [ChatCommand("modulemanager", "[Command.ShowModuleManager]", ModuleManagerPermissions.ActivateModule)]
+    public Task ShowModuleManagerAsync() => moduleManagerService.ShowManagerWindowAsync(Context.Player);
 }

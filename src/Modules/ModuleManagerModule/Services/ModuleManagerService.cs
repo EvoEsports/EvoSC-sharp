@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Util.TextFormatting;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ModuleManagerModule.Events;
@@ -16,7 +17,7 @@ namespace EvoSC.Modules.Official.ModuleManagerModule.Services;
 
 [Service]
 public class ModuleManagerService(IContextService context, IModuleManager modules, IChatService chat, Locale locale,
-    ILogger<ModuleManagerService> logger) : IModuleManagerService
+    ILogger<ModuleManagerService> logger, IManialinkManager manialinkManager) : IModuleManagerService
 {
     private readonly dynamic _locale = locale;
 
@@ -125,6 +126,13 @@ public class ModuleManagerService(IContextService context, IModuleManager module
 
             await chat.InfoMessageAsync(message, actor);
         }
+    }
+
+    public Task ShowManagerWindowAsync(IPlayer player)
+    {
+        var loadedModules = modules.GetLoadedModules().OrderBy(m => m.ModuleInfo.Id, StringComparer.Ordinal);
+        return manialinkManager.SendManialinkAsync(player, "ModuleManagerModule.ModuleManagerWindow",
+            new { modules = loadedModules, Locale = locale });
     }
 
     /// <summary>

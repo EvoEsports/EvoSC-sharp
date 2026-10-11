@@ -6,6 +6,7 @@ using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Interfaces.Util.Auditing;
 using EvoSC.Common.Util.TextFormatting;
+using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules;
 using EvoSC.Modules.Interfaces;
 using EvoSC.Modules.Official.ModuleManagerModule.Events;
@@ -49,7 +50,7 @@ public class ModuleManagerServiceTests
             .Returns(Task.CompletedTask);
 
         _service = new ModuleManagerService(_context.Object, _modules.Object, _chat.Object, new TestLocale(),
-            Mock.Of<ILogger<ModuleManagerService>>());
+            Mock.Of<ILogger<ModuleManagerService>>(), Mock.Of<IManialinkManager>());
     }
 
     private static IModuleLoadContext CreateModule(string id, ModuleStatus status = ModuleStatus.Enabled,
