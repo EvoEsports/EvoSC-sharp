@@ -2,8 +2,6 @@
 
 public interface IExternalModuleInfo : IModuleInfo
 {
-    bool IModuleInfo.IsInternal => false;
-
     /// <summary>
     /// The directory which this module resides in.
     /// </summary>

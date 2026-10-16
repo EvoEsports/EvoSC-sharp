@@ -416,12 +416,12 @@ public class ManialinkActionManager(ILogger<ManialinkActionManager> logger) : IM
 
         lock (_controllerRoutesMutex)
         {
-            if (!_controllerRoutes.ContainsKey(controllerType))
-            {
-                _controllerRoutes[controllerType] = new List<string>();
-            }
+            // Always starts from an empty list: a controller that was unregistered and is now being
+            // re-registered (module re-enabled/reloaded) must not keep the routes from its previous
+            // registration around, or they pile up on every cycle.
+            _controllerRoutes[controllerType] = new List<string>();
         }
-        
+
         var methods = controllerType.GetMethods(ActionMethodBindingFlags);
         var controllerRoute = GetControllerRoute(controllerType);
 
@@ -458,12 +458,12 @@ public class ManialinkActionManager(ILogger<ManialinkActionManager> logger) : IM
     {
         lock (_controllerRoutesMutex)
         {
-            if (!_controllerRoutes.ContainsKey(controllerType))
+            if (!_controllerRoutes.TryGetValue(controllerType, out var routes))
             {
                 return;
             }
 
-            foreach (var route in _controllerRoutes[controllerType])
+            foreach (var route in routes)
             {
                 try
                 {
@@ -477,6 +477,8 @@ public class ManialinkActionManager(ILogger<ManialinkActionManager> logger) : IM
                         controllerType.ToString());
                 }
             }
+
+            _controllerRoutes.Remove(controllerType);
         }
     }
 }

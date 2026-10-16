@@ -2,16 +2,13 @@
 
 public interface IModuleInfo
 {
-    /// <summary>
-    /// The unique identifier name for the module.
-    /// 
-    /// </summary>
-    public string Name { get; }
+    /// <summary>The unique identifier of the module.</summary>
+    public string Id { get; }
     
     /// <summary>
-    /// The title of the module.
+    /// The display name of the module.
     /// </summary>
-    public string Title { get; }
+    public string Name { get; }
     
     /// <summary>
     /// Short description of the module.

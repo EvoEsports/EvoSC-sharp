@@ -8,7 +8,7 @@ public class ModuleFile(FileInfo file) : IModuleFile
 
     public bool VerifySignature()
     {
-        // todo: github #35 https://github.com/EvoTM/EvoSC-sharp/issues/35
+        // Signature verification is not implemented yet (see github #35); files are trusted as-is.
         return true;
     }
 }

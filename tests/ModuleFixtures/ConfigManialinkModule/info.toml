@@ -1,0 +1,9 @@
+[info]
+id = "ConfigManialinkModule"
+name = "Config and Manialink Module"
+# A short description of what the module is and does
+summary = "Fixture module with a Config.Net settings interface and a manialink template."
+# The current version of this module, using SEMVER
+version = "1.0.0"
+# The name of the author that created this module
+author = "Evo"
