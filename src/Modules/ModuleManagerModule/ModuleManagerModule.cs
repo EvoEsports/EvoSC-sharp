@@ -8,17 +8,27 @@ namespace EvoSC.Modules.Official.ModuleManagerModule;
 [Module(IsInternal = true)]
 public class ModuleManagerModule(IChatCommandManager commands, IModuleManager modules) : EvoScModule, IToggleable
 {
+    private ModuleValueReader? _reader;
+
     public Task EnableAsync()
     {
-        commands.ValueReader.AddReader(new ModuleValueReader(modules));
+        if (_reader == null)
+        {
+            _reader = new ModuleValueReader(modules);
+            commands.ValueReader.AddReader(_reader);
+        }
 
         return Task.CompletedTask;
     }
 
     public Task DisableAsync()
     {
-        commands.ValueReader.RemoveReaders(typeof(IModuleLoadContext));
-        
+        if (_reader != null)
+        {
+            commands.ValueReader.RemoveReader(_reader);
+            _reader = null;
+        }
+
         return Task.CompletedTask;
     }
 }

@@ -74,10 +74,26 @@ public interface IStartupPipeline
     /// <param name="components">The components to execute.</param>
     /// <returns></returns>
     public Task ExecuteAsync(params string[] components);
+
+    /// <summary>
+    /// Execute the given components/steps in the pipeline, stopping when the token is cancelled.
+    /// </summary>
+    /// <param name="token">Cancels the execution of the remaining components.</param>
+    /// <param name="components">The components to execute.</param>
+    /// <returns></returns>
+    public Task ExecuteAsync(CancellationToken token, params string[] components);
     
     /// <summary>
     /// Execute all components in the pipeline in the defined order.
     /// </summary>
     /// <returns></returns>
     public Task ExecuteAllAsync();
+
+    /// <summary>
+    /// Execute all components in the pipeline in the defined order, stopping when the token is
+    /// cancelled.
+    /// </summary>
+    /// <param name="token">Cancels the execution of the remaining components.</param>
+    /// <returns></returns>
+    public Task ExecuteAllAsync(CancellationToken token);
 }

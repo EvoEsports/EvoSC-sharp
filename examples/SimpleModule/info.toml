@@ -1,6 +1,9 @@
-﻿[info]
-name = "SimpleModule"
-title = "Simple Module"
+[info]
+id = "SimpleModule"
+name = "Simple Module"
+# A short description of what the module is and does
 summary = "The most basic module possible."
+# The current version of this module, using SEMVER
 version = "1.0.0"
+# The name of the author that created this module
 author = "Evo"

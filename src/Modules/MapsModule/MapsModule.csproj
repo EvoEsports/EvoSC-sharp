@@ -22,7 +22,12 @@
 
     <ItemGroup>
       <EmbeddedResource Update="Localization.resx">
-      </EmbeddedResource>
+      </EmbeddedResource>    </ItemGroup>
+
+    <!-- Assemblies this module needs at runtime, shipped next to it for its load context. -->
+    <ItemGroup>
+        <EvoSCModulePackage Include="Hawf" />
+        <EvoSCModulePackage Include="ManiaExchange.ApiClient" />
     </ItemGroup>
 
 </Project>

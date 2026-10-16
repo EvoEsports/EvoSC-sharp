@@ -3,7 +3,7 @@ using EvoSC.Modules.Interfaces;
 
 namespace EvoSC.Modules.Official.ExampleModule;
 
-[Module(IsInternal = true)]
+[Module]
 public class ExampleModule : EvoScModule, IToggleable
 {
     public ExampleModule()

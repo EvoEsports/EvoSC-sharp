@@ -1,5 +1,10 @@
 ﻿namespace EvoSC.Modules.Official.PlayerRecords.Events;
 
+/// <summary>
+/// Exported as part of the personal record surface, so a module handling the personal best event
+/// reads the same status values.
+/// </summary>
+[Export]
 public enum RecordUpdateStatus
 {
     /// <summary>

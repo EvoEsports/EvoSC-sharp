@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
-using EvoSC.Common.Interfaces.Localization;
-using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Interfaces.Models;
+using EvoSC.Common.Interfaces.Middleware;
 using EvoSC.Common.Middleware;
 using SimpleInjector;
 
@@ -75,23 +74,24 @@ public interface IModuleLoadContext
     public string RootNamespace { get; init; }
     
     /// <summary>
-    /// The localization manager for this module if the module includes localizations.
-    /// </summary>
-    public ILocalizationManager? Localization { get; }
-    
-    /// <summary>
     /// List of themes available from this module.
     /// </summary>
     public IReadOnlyList<Type> Themes { get; }
 
     /// <summary>
-    /// Whether this module is currently enabled.
+    /// Whether this module is currently enabled. Equivalent to <see cref="Status"/> being
+    /// <see cref="ModuleStatus.Enabled"/>.
     /// </summary>
     public bool IsEnabled { get; }
 
     /// <summary>
-    /// Set the enabled status of this module.
+    /// The lifecycle status of the module.
     /// </summary>
-    /// <param name="enabled">True if enabled, false otherwise.</param>
-    internal void SetEnabled(bool enabled);
+    public ModuleStatus Status { get; }
+
+    /// <summary>
+    /// Set the lifecycle status of this module.
+    /// </summary>
+    /// <param name="status">The new status.</param>
+    internal void SetStatus(ModuleStatus status);
 }

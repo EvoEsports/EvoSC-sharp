@@ -121,6 +121,14 @@ public partial class ServerClient : IServerClient
 
     public async Task StopAsync(CancellationToken token)
     {
+        // A shutdown can be requested when the connection was never established, e.g. when the
+        // server is unreachable and the retries run out. The calls below would then fault, and
+        // that fault would take the process down while it is already shutting down.
+        if (!_connected)
+        {
+            return;
+        }
+
         await _gbxRemote.ChatEnableManualRoutingAsync(false, false);
         await _gbxRemote.SendHideManialinkPageAsync();  //hide all manialinks on disconnect
         await _gbxRemote.DisconnectAsync();

@@ -4,8 +4,6 @@ using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Modules.Official.TeamInfoModule.Controllers;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
-using EvoSC.Modules.Official.TeamSettingsModule.Events.EventArgs;
-using EvoSC.Modules.Official.TeamSettingsModule.Models;
 using EvoSC.Testing.Controllers;
 using GbxRemoteNet.Events;
 using Moq;
@@ -169,10 +167,9 @@ public class TeamInfoEventControllerTests : ControllerMock<TeamInfoEventControll
         _teamInfoService.Setup(s => s.GetModeIsTeamsAsync())
             .Returns(Task.FromResult(true));
 
-        await Controller.OnTeamSettingsUpdatedAsync(null, new TeamSettingsEventArgs
-        {
-            Settings = new TeamSettingsModel()
-        });
+        // The handler does not read the payload, so it takes a plain EventArgs and the test does
+        // not need the settings model of the module that raises the event.
+        await Controller.OnTeamSettingsUpdatedAsync(null, new EventArgs());
         
         _teamInfoService.Verify(s => s.SendTeamInfoWidgetEveryoneAsync(), Times.Once);
     }

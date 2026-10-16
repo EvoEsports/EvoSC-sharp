@@ -13,6 +13,8 @@
         <ProjectReference Include="..\..\..\src\EvoSC.Manialinks\EvoSC.Manialinks.csproj" />
         <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
         <ProjectReference Include="..\..\..\src\Modules\SpectatorCamModeModule\SpectatorCamModeModule.csproj" />
+        <!-- Contracts this module consumes from another module. -->
+        <ProjectReference Include="..\..\..\src\Modules\GameModeUiModule\GameModeUiModule.csproj" ReferenceOutputAssembly="false" EvoSCModule="true" />
     </ItemGroup>
 
     <ItemGroup>
