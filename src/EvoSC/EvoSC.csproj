@@ -32,6 +32,7 @@
         <ProjectReference Include="..\Modules\GameModeUiModule\GameModeUiModule.csproj" />
         <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" />
         <ProjectReference Include="..\Modules\LocalRecordsModule\LocalRecordsModule.csproj" />
+        <ProjectReference Include="..\Modules\RankingModule\RankingModule.csproj" />
         <ProjectReference Include="..\Modules\MapListModule\MapListModule.csproj" />
         <ProjectReference Include="..\Modules\MapQueueModule\MapQueueModule.csproj" />
         <ProjectReference Include="..\Modules\MapsModule\MapsModule.csproj" />
