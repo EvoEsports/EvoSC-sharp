@@ -189,6 +189,5 @@ public class ChatCommandManager : IChatCommandManager
         return _ignoredCommands.Contains(lookupName);
     }
 
-    public IEnumerable<IChatCommand> GetCommands() =>
-        _cmds.Values.Where(cmd => !IsIgnoredCommand(cmd.Name, cmd.UsePrefix));
+    public IEnumerable<IChatCommand> GetCommands() => _cmds.Values;
 }
