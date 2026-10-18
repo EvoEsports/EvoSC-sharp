@@ -1,6 +1,6 @@
-namespace EvoSC.Modules.Official.HelpModule.Models;
+namespace EvoSC.Modules.Official.ShowCommandsModule.Models;
 
-public class HelpCommandInfo
+public class CommandInfo
 {
     public required string Usage { get; init; }
     public required string Description { get; init; }

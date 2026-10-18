@@ -2,9 +2,9 @@
 Show a row with a single command's usage, description and required permission.
 -->
 <component>
-  <using namespace="EvoSC.Modules.Official.HelpModule.Models" />
+  <using namespace="EvoSC.Modules.Official.ShowCommandsModule.Models" />
 
-  <property type="HelpCommandInfo" name="command" />
+  <property type="CommandInfo" name="command" />
 
   <property type="double" name="x" default="0.0" />
   <property type="double" name="y" default="0.0" />

@@ -3,15 +3,15 @@ Shows a window with a list of all available chat commands, including the permiss
 required to run them, if any.
 -->
 <component>
-  <using namespace="EvoSC.Modules.Official.HelpModule.Models" />
+  <using namespace="EvoSC.Modules.Official.ShowCommandsModule.Models" />
   <using namespace="System.Linq" />
 
   <import component="EvoSC.Containers.Window" as="Window" />
   <import component="EvoSC.Containers.Container" as="Container" />
   <import component="EvoSC.Style.UIStyle" as="UIStyle" />
-  <import component="HelpModule.Parts.CommandRow" as="CommandRow" />
+  <import component="ShowCommandsModule.Parts.CommandRow" as="CommandRow" />
 
-  <property type="IEnumerable<HelpCommandInfo>" name="commands" />
+  <property type="IEnumerable<CommandInfo>" name="commands" />
 
   <template>
     <UIStyle />
@@ -25,10 +25,10 @@ required to run them, if any.
                  scrollHeight="{{ commands.Count()*10 }}"
                  width="116"
                  height="80"
-                 id="help-command-list"
+                 id="show-commands-list"
       >
         <CommandRow
-                foreach="HelpCommandInfo command in commands"
+                foreach="CommandInfo command in commands"
                 command="{{ command }}"
                 y="{{ -__index*10 }}"
                 width="114"

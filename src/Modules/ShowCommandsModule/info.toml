@@ -1,8 +1,8 @@
 [info]
 # A unique name for this module, this is used as a identifier
-name = "HelpModule"
+name = "ShowCommandsModule"
 # The title of the module
-title = "Help"
+title = "Show Commands"
 # A short description of what the module is and does
 summary = "Shows a list of all available chat commands."
 # The current version of this module, using SEMVER

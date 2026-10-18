@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <RootNamespace>EvoSC.Modules.Official.HelpModule</RootNamespace>
+    <RootNamespace>EvoSC.Modules.Official.ShowCommandsModule</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -30,7 +30,7 @@
         <ProjectReference Include="..\Modules\FastestCpModule\FastestCpModule.csproj" />
         <ProjectReference Include="..\Modules\ForceTeamModule\ForceTeamModule.csproj" />
         <ProjectReference Include="..\Modules\GameModeUiModule\GameModeUiModule.csproj" />
-        <ProjectReference Include="..\Modules\HelpModule\HelpModule.csproj" />
+        <ProjectReference Include="..\Modules\ShowCommandsModule\ShowCommandsModule.csproj" />
         <ProjectReference Include="..\Modules\LiveRankingModule\LiveRankingModule.csproj" />
         <ProjectReference Include="..\Modules\LocalRecordsModule\LocalRecordsModule.csproj" />
         <ProjectReference Include="..\Modules\MapListModule\MapListModule.csproj" />

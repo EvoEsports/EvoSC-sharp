@@ -5,27 +5,26 @@ using EvoSC.Commands.Interfaces;
 using EvoSC.Common.Controllers;
 using EvoSC.Common.Controllers.Attributes;
 using EvoSC.Manialinks.Interfaces;
-using EvoSC.Modules.Official.HelpModule.Models;
+using EvoSC.Modules.Official.ShowCommandsModule.Models;
 
-namespace EvoSC.Modules.Official.HelpModule.Controllers;
+namespace EvoSC.Modules.Official.ShowCommandsModule.Controllers;
 
 [Controller]
-public class HelpCommandController(IChatCommandManager commands, IManialinkManager manialinks)
+public class ShowCommandsController(IChatCommandManager commands, IManialinkManager manialinks)
     : EvoScController<ICommandInteractionContext>
 {
-    [ChatCommand("help", "Show a list of all available commands.")]
-    [CommandAlias("/commands")]
-    public Task ShowHelpAsync()
+    [ChatCommand("commands", "Show a list of all available commands.")]
+    public Task ShowCommandsAsync()
     {
         var commandList = commands.GetCommands()
-            .Select(ToHelpCommandInfo)
+            .Select(ToCommandInfo)
             .OrderBy(cmd => cmd.Usage)
             .ToArray();
 
-        return manialinks.SendManialinkAsync(Context.Player, "HelpModule.HelpTemplate", new { commands = commandList });
+        return manialinks.SendManialinkAsync(Context.Player, "ShowCommandsModule.ShowCommandsTemplate", new { commands = commandList });
     }
 
-    private static HelpCommandInfo ToHelpCommandInfo(IChatCommand cmd) => new()
+    private static CommandInfo ToCommandInfo(IChatCommand cmd) => new()
     {
         Usage = BuildUsage(cmd), Description = cmd.Description, Permission = cmd.Permission
     };
