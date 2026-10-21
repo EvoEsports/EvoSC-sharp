@@ -21,6 +21,7 @@ using EvoSC.Modules.Official.NextMapModule;
 using EvoSC.Modules.Official.OpenPlanetModule;
 using EvoSC.Modules.Official.Player;
 using EvoSC.Modules.Official.PlayerRecords;
+using EvoSC.Modules.Official.RankingModule;
 using EvoSC.Modules.Official.RoundRankingModule;
 using EvoSC.Modules.Official.ScoreboardModule;
 using EvoSC.Modules.Official.ServerManagementModule;
@@ -69,6 +70,7 @@ public static class InternalModules
         typeof(ServerManagementModule),
         typeof(TeamInfoModule),
         typeof(TeamChatModule),
+        typeof(RankingModule),
         typeof(RoundRankingModule),
         typeof(UiControlModule),
         typeof(ShowCommandsModule)
