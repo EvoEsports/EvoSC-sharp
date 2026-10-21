@@ -340,6 +340,15 @@ Text GetUsersNickname(CUser user) {
     return user.Name;
 }
 
+Text GetUsersRole(CUser user) {
+    declare Text[Text] EvoSC_Player_Roles for UI = [];
+    if(EvoSC_Player_Roles.existskey(user.Login)){
+        return EvoSC_Player_Roles[user.Login];
+    }
+    
+    return "";
+}
+
 Void HideEmptyPlayerRows(Integer[Integer] rowsFilled) {
     for(teamNumber, C_Team_One, C_Team_Two){
         declare offset = 0;
@@ -425,6 +434,7 @@ Void UpdateScoreTable() {
             SetCountryFlag(playerRow, Score);
             SetPlayerRank(playerRow, playerRank);
             SetNickname(playerRow, GetUsersNickname(Score.User));
+            SetRole(playerRow, GetUsersRole(Score.User));
             SetClubTag(playerRow, Score);
         }
         

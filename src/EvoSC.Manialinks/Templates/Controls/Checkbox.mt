@@ -68,6 +68,7 @@
             />
             <HiddenEntry
                     name="{{ id }}"
+                    id="{{ id }}-entry"
                     value="{{ isChecked }}"
             />
         </frame>

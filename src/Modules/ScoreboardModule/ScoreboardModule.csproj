@@ -10,6 +10,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\EvoSC.Modules\EvoSC.Modules.csproj" />
       <ProjectReference Include="..\GameModeUiModule\GameModeUiModule.csproj" />
+      <ProjectReference Include="..\GroupsModule\GroupsModule.csproj" />
       <ProjectReference Include="..\MatchManagerModule\MatchManagerModule.csproj" />
       <ProjectReference Include="..\SetNameModule\SetNameModule.csproj" />
     </ItemGroup>

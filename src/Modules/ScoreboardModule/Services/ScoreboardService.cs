@@ -17,6 +17,7 @@ public class ScoreboardService(
     IManialinkManager manialinks,
     IServerClient server,
     IScoreboardNicknamesService nicknamesService,
+    IScoreboardRolesService rolesService,
     IScoreboardSettings settings,
     IGameModeUiModuleService gameModeUiModuleService,
     IMatchSettingsService matchSettingsService,
@@ -40,6 +41,7 @@ public class ScoreboardService(
                 MaxPlayers = currentNextMaxPlayers.CurrentValue + currentNextMaxSpectators.CurrentValue
             });
         await nicknamesService.SendNicknamesManialinkAsync();
+        await rolesService.SendRolesManialinkAsync();
     }
 
     public async Task SendMetaDataAsync()

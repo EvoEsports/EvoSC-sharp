@@ -8,3 +8,4 @@ author = "Evo"
 [dependencies]
 GameModeUiModule = "1.0.0"
 SetNameModule = "1.1.0"
+GroupsModule = "1.0.0"

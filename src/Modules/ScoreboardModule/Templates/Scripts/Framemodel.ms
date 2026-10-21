@@ -45,8 +45,12 @@ Void SetPlayerRowWidth(CMlFrame playerRow, Real width) {
     declare scoreLabel <=> (playerRow.GetFirstChild("score") as CMlLabel);
     declare playerActionsFrame <=> (playerRow.GetFirstChild("player_actions") as CMlFrame);
     
+    declare roleLabel <=> (playerRow.GetFirstChild("role") as CMlLabel);
+
     playerRow.Size.X = width;
     nameLabel.Size.X = width / 3.0;
+    roleLabel.RelativePosition_V3.X = ({{ rowInnerHeight * 3f + columnSpacing * 2f }}) * 1.0 + width / 3.0 + ({{ columnSpacing / 2f }}) * 1.0;
+    roleLabel.Size.X = width / 6.0;
     scoreLabel.RelativePosition_V3.X = (width - {{ columnSpacing }}) * 1.0;
     playerActionsFrame.RelativePosition_V3.X = width - ({{ rowHeight*1.2/2f }}) * 1.0;
 }
@@ -97,6 +101,11 @@ Void SetClubTag(CMlFrame playerRow, CSmScore score) {
 Void SetNickname(CMlFrame playerRow, Text nickname) {
     declare nameLabel = (playerRow.GetFirstChild("name") as CMlLabel);
     nameLabel.Value = nickname;
+}
+        
+Void SetRole(CMlFrame playerRow, Text role) {
+    declare roleLabel = (playerRow.GetFirstChild("role") as CMlLabel);
+    roleLabel.Value = role;
 }
         
 Void SetCountryFlag(CMlFrame playerRow, CSmScore score){

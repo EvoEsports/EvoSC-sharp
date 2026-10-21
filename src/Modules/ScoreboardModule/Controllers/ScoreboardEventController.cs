@@ -5,6 +5,7 @@ using EvoSC.Common.Interfaces.Controllers;
 using EvoSC.Common.Remote;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Util;
+using EvoSC.Modules.Official.GroupsModule.Events;
 using EvoSC.Modules.Official.ScoreboardModule.Interfaces;
 using EvoSC.Modules.Official.SetNameModule.Events;
 using GbxRemoteNet.Events;
@@ -15,13 +16,17 @@ namespace EvoSC.Modules.Official.ScoreboardModule.Controllers;
 public class ScoreboardEventController(
     IScoreboardService scoreboardService,
     IScoreboardStateService scoreboardStateService,
-    IScoreboardNicknamesService nicknamesService
+    IScoreboardNicknamesService nicknamesService,
+    IScoreboardRolesService rolesService
 )
     : EvoScController<IEventControllerContext>
 {
     [Subscribe(GbxRemoteEvent.PlayerConnect)]
-    public Task OnPlayerConnectAsync(object sender, PlayerGbxEventArgs args) =>
-        nicknamesService.FetchAndAddNicknameByLoginAsync(args.Login);
+    public async Task OnPlayerConnectAsync(object sender, PlayerGbxEventArgs args)
+    {
+        await nicknamesService.FetchAndAddNicknameByLoginAsync(args.Login);
+        await rolesService.SendRolesManialinkAsync();
+    }
 
     [Subscribe(GbxRemoteEvent.BeginMap)]
     public async Task OnBeginMapAsync(object sender, MapGbxEventArgs args)
@@ -65,6 +70,9 @@ public class ScoreboardEventController(
         await scoreboardStateService.SetCurrentRoundNumberAsync(args.Current);
         await scoreboardService.SendMetaDataAsync();
     }
+
+    [Subscribe(GroupsEvents.RolesChanged)]
+    public Task OnRolesChangedAsync(object sender, EventArgs args) => rolesService.SendRolesManialinkAsync();
 
     [Subscribe(SetNameEvents.NicknameUpdated)]
     public async Task OnPlayerNicknameChangeAsync(object sender, NicknameUpdatedEventArgs args)
