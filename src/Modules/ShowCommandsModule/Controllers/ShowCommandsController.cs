@@ -18,7 +18,8 @@ public class ShowCommandsController(IChatCommandManager commands, IManialinkMana
     {
         var commandList = commands.GetCommands()
             .Select(ToCommandInfo)
-            .OrderBy(cmd => cmd.Usage)
+            .OrderBy(cmd => cmd.Permission != null)
+            .ThenBy(cmd => cmd.Usage)
             .ToArray();
 
         return manialinks.SendManialinkAsync(Context.Player, "ShowCommandsModule.ShowCommandsTemplate", new { commands = commandList });

@@ -24,6 +24,7 @@ Show a row with a single command's usage, description and required permission.
              text="{{ command.Usage }}"
              textsize="{{ Theme.UI_FontSize*1.1 }}"
              pos="1 {{ -1.5 }}"
+             size="{{ width*0.5 }} 3"
       />
 
       <label class="text-primary"
@@ -33,10 +34,11 @@ Show a row with a single command's usage, description and required permission.
              size="{{ width - 2 }} {{ height - 5 }}"
       />
 
-      <label class="text-secondary"
+      <label class="text-muted text-xs"
              text='{{ "Permission: " + command.Permission }}'
              halign="right"
              pos="{{ width - 1 }} {{ -1.5 }}"
+             size="{{ width*0.45 }} 3"
              if="command.Permission != null"
       />
     </frame>
