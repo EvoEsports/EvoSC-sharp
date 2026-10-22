@@ -24,12 +24,7 @@ public record PlayerRank(
     public double WinRate => MapsPlayed == 0 ? 0 : (double)MapsWon / MapsPlayed;
 
     /// <summary>
-    /// Chat color of static text.
-    /// </summary>
-    public const string TextColor = "$0cc";
-
-    /// <summary>
-    /// Wrap a value in white, restoring the text color afterwards.
+    /// Wrap a value in white, restoring the message color afterwards.
     /// </summary>
     public static string Highlight(object value) => $"$<$fff{value}$>";
 
@@ -70,6 +65,6 @@ public record PlayerRank(
     /// One-line chat description of the score, playtime and wins, with the values highlighted.
     /// </summary>
     public string Summary() =>
-        $"{TextColor}{Highlight(ScoreText)} pts, {Highlight(PlaytimeText)} played, " +
+        $"{Highlight(ScoreText)} pts, {Highlight(PlaytimeText)} played, " +
         $"{Highlight(MapsWon)}/{Highlight(MapsPlayed)} wins ({Highlight(WinRate.ToString("P0"))})";
 }

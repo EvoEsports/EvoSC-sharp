@@ -2,11 +2,13 @@ using System.Collections.Concurrent;
 using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
+using EvoSC.Common.Interfaces.Themes;
 using EvoSC.Common.Models;
 using EvoSC.Common.Models.Callbacks;
 using EvoSC.Common.Remote.EventArgsModels;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
+using EvoSC.Common.Util.TextFormatting;
 using EvoSC.Common.Util.MatchSettings;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.RankingModule.Config;
@@ -24,6 +26,7 @@ public class RankingService(
     IPlayerManagerService players,
     IMatchSettingsService matchSettings,
     IManialinkManager manialinks,
+    IThemeManager themes,
     IRankingSettings settings,
     ILogger<RankingService> logger) : IRankingService
 {
@@ -43,9 +46,11 @@ public class RankingService(
     {
         var rank = await GetPlayerRankAsync(accountId);
 
+        var infoColor = new TextColor(themes.Theme.Chat_Info);
+
         var message = rank == null
-            ? $"{PlayerRank.TextColor}You are not ranked yet, play a few maps to get a rank."
-            : $"{PlayerRank.TextColor}Your rank is {PlayerRank.Highlight($"{rank.Rank}/{rank.Total}")} - {rank.Summary()}";
+            ? $"{infoColor}You are not ranked yet, play a few maps to get a rank."
+            : $"{infoColor}Your rank is {PlayerRank.Highlight($"{rank.Rank}/{rank.Total}")} - {rank.Summary()}";
 
         await server.Chat.InfoMessageAsync(message, await players.GetOrCreatePlayerAsync(accountId));
     }
