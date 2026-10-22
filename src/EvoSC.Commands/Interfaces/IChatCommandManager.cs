@@ -42,4 +42,9 @@ public interface IChatCommandManager : IControllerActionRegistry
     /// <param name="withPrefix">Whether to include prefix in the name.</param>
     /// <returns></returns>
     public Boolean IsIgnoredCommand(string alias, bool withPrefix);
+    /// <summary>
+    /// Get all registered commands, excluding ignored ones.
+    /// </summary>
+    /// <returns>An enumerable of all registered commands.</returns>
+    public IEnumerable<IChatCommand> GetCommands();
 }
