@@ -38,10 +38,15 @@ msbuild.wrn
 
 # logs
 */logs/*
-EvoSC/plugins/*
-EvoSC/ext_plugins/*
 
+# EvoSC specific tools
+src/EvoSC/plugins/*
+src/EvoSC/ext_plugins/*
+src/EvoSC/config
+
+# Others
 docker-compose.yml
 global.json
 .env
 nuget.config
+docker/nui
