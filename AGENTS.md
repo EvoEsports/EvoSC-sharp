@@ -45,6 +45,8 @@ server or loaded:
    silently never loaded.
 2. **`src/EvoSC/EvoSC.csproj`**: add a `ProjectReference` to the module's csproj.
 3. **`EvoSC.sln`**: add the project, for example with `dotnet sln EvoSC.sln add src/Modules/<Name>/<Name>.csproj`.
+   `dotnet sln add` also adds `x64` and `x86` platform configurations; delete those lines afterwards. Do not add
+   build configurations to the solution. Only `Debug|Any CPU` and `Release|Any CPU` are used.
 
 If the module depends on another module, also reference that project in its csproj and list it under
 `[dependencies]` in `info.toml`.

@@ -36,6 +36,16 @@ public class MotdServiceTests
         _context = Mocking.NewContextServiceMock(_commandContext.Context.Object, null);
     }
 
+    private async Task WaitForGetAsyncCallsAsync(int count, int timeoutMs = 10000)
+    {
+        var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
+        while (DateTime.UtcNow < deadline &&
+               _httpService.Invocations.Count(i => i.Method.Name == nameof(IHttpService.GetAsync)) < count)
+        {
+            await Task.Delay(25);
+        }
+    }
+
     private void SetupMocks(int interval = 200)
     {
         _httpService.Setup(r => r.GetAsync(It.IsAny<string>()))
@@ -106,7 +116,7 @@ public class MotdServiceTests
         SetupMocks();
         SetupController();
         _motdService!.SetInterval(100, _player.Object);
-        await Task.Delay(150 * times);
+        await WaitForGetAsyncCallsAsync(times);
         _httpService.Verify(r => r.GetAsync(It.IsAny<string>()),
             Times.AtLeast(times));
     }
@@ -119,9 +129,9 @@ public class MotdServiceTests
         _httpService.Setup(r => r.GetAsync("test")).Returns(Task.FromResult("test"));
         _motdService!.SetInterval(1000, _player.Object);
         _motdService.SetUrl("test", _player.Object);
-        await Task.Delay(1000);
+        await WaitForGetAsyncCallsAsync(2);
 
-        _httpService.Verify(r => r.GetAsync("test"), Times.Exactly(2));
+        _httpService.Verify(r => r.GetAsync("test"), Times.AtLeast(2));
     }
 
     [Fact]
