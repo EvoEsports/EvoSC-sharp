@@ -3,7 +3,6 @@ using EvoSC.Common.Interfaces;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Interfaces.Services;
-using EvoSC.Modules.Official.GroupsModule.Events;
 using EvoSC.Common.Permissions.Models;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
@@ -25,7 +24,6 @@ public class GroupsService(
     IPlayerCacheService playerCache,
     IManialinkManager manialinks,
     IServerClient server,
-    IEventManager events,
     ILogger<GroupsService> logger) : IGroupsService
 {
     public const int PlayersPerPage = 10;
@@ -93,8 +91,7 @@ public class GroupsService(
                     Description = group.Description,
                     Icon = group.Icon,
                     Color = group.Color,
-                    Unrestricted = group.Unrestricted,
-                    ShowOnScoreboard = (await repository.GetScoreboardGroupIdsAsync()).Contains(group.Id)
+                    Unrestricted = group.Unrestricted
                 };
             }
         }
@@ -226,8 +223,6 @@ public class GroupsService(
                 Permissions = []
             });
 
-            await repository.SetScoreboardVisibleAsync(created.Id, input.ShowOnScoreboard);
-
             await server.Chat.SuccessMessageAsync($"Created the group '{title}'.", actor);
             return created.Id;
         }
@@ -254,9 +249,7 @@ public class GroupsService(
         group.Unrestricted = input.Unrestricted;
 
         await permissions.UpdateGroupAsync(group);
-        await repository.SetScoreboardVisibleAsync(group.Id, input.ShowOnScoreboard);
         await RefreshOnlinePlayersAsync();
-        await RaiseRolesChangedAsync();
 
         await server.Chat.SuccessMessageAsync($"Saved the group '{title}'.", actor);
         return group.Id;
@@ -285,9 +278,7 @@ public class GroupsService(
         }
 
         await permissions.RemoveGroupAsync(group.Id);
-        await repository.SetScoreboardVisibleAsync(group.Id, false);
         await RefreshOnlinePlayersAsync();
-        await RaiseRolesChangedAsync();
 
         await server.Chat.SuccessMessageAsync($"Deleted the group '{group.Title}'.", actor);
         return true;
@@ -334,8 +325,7 @@ public class GroupsService(
         {
             await permissions.AddPlayerToGroupAsync(target, group);
             await NotifyRoleReceivedAsync(target, group);
-            await RaiseRolesChangedAsync();
-            return true;
+                return true;
         }
 
         if (group.Unrestricted && target.Id == actor.Id)
@@ -346,7 +336,6 @@ public class GroupsService(
         }
 
         await permissions.RemovePlayerFromGroupAsync(target, group);
-        await RaiseRolesChangedAsync();
         return false;
     }
 
@@ -365,8 +354,6 @@ public class GroupsService(
             logger.LogDebug(ex, "Failed to notify player {AccountId} about their new role", player.AccountId);
         }
     }
-
-    private Task RaiseRolesChangedAsync() => events.RaiseAsync(GroupsEvents.RolesChanged, EventArgs.Empty);
 
     private async Task<bool> IsMemberAsync(IPlayer player, int groupId) =>
         (await repository.GetPlayerGroupIdsAsync(player.Id)).Contains(groupId);

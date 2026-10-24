@@ -67,13 +67,8 @@ Form for creating a group or editing the details of one.
                 isChecked="{{ input.Unrestricted }}"
                 y="-39"
       />
-      <Checkbox id="ShowOnScoreboard"
-                text="Show as role on the scoreboard"
-                isChecked="{{ input.ShowOnScoreboard }}"
-                y="-47"
-      />
 
-      <frame pos="0 -56">
+      <frame pos="0 -48">
         <Button id="btnSave" text="Save" action="Groups/SaveGroup/{{ groupId }}" />
         <Button id="btnCancel" text="Cancel" type="secondary" x="20" action="Groups/ShowGroupList" />
       </frame>

@@ -32,9 +32,9 @@ Shows all groups, where the ones a player is in can be switched on and off.
       <HiddenEntry name="Search" value="{{ search }}" />
 
       <Container scrollable="true"
-                 scrollHeight="{{ groups.Count()*7 }}"
+                 scrollHeight="{{ ListLayout.ScrollHeight(groups.Count(), ListLayout.GroupRowPitch) }}"
                  width="94"
-                 height="54"
+                 height="{{ ListLayout.ListHeight }}"
                  id="playergroups-container"
       >
         <PlayerGroupRow
@@ -43,7 +43,7 @@ Shows all groups, where the ones a player is in can be switched on and off.
                 accountId="{{ accountId }}"
                 page="{{ page }}"
                 index="{{ __index }}"
-                y="{{ -__index*7 }}"
+                y="{{ -__index*ListLayout.GroupRowPitch }}"
                 width="90"
         />
       </Container>

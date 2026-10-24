@@ -50,14 +50,4 @@ public interface IGroupsRepository
     /// Get the number of distinct players that are in a group with unrestricted permissions.
     /// </summary>
     public Task<int> CountUnrestrictedPlayersAsync();
-
-    /// <summary>
-    /// Get the IDs of the groups that are shown as the role of their players on the scoreboard.
-    /// </summary>
-    public Task<IReadOnlySet<int>> GetScoreboardGroupIdsAsync();
-
-    /// <summary>
-    /// Set whether a group is shown as the role of its players on the scoreboard.
-    /// </summary>
-    public Task SetScoreboardVisibleAsync(int groupId, bool visible);
 }

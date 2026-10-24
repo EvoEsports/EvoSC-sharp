@@ -83,17 +83,6 @@
                        textfont="{{ Font.Regular }}"
                        textcolor="{{ Theme.ScoreboardModule_Text_Color }}"
                 />
-
-                <!-- Player Role -->
-                <label id="role"
-                       class="text-primary"
-                       pos="{{ rowInnerHeight * 3f + columnSpacing * 2f + w / 3f + columnSpacing / 2f }} 0"
-                       size="{{ w / 6f }} {{ rowHeight }}"
-                       valign="center2"
-                       textsize="{{ Theme.UI_FontSize*1.6 }}"
-                       textfont="{{ Font.Regular }}"
-                       textcolor="{{ Theme.ScoreboardModule_Text_Color_Muted }}"
-                />
             </frame>
             <frame id="details_wrapper" z-index="10">
                 <!-- Spec/Disconnected -->

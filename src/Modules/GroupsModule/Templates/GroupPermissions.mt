@@ -34,10 +34,10 @@ Shows all permissions of the server, where the ones a group has can be switched 
       />
 
       <Container scrollable="true"
-                 scrollHeight="{{ permissions.Count()*8 }}"
+                 scrollHeight="{{ ListLayout.ScrollHeight(permissions.Count(), ListLayout.PermissionRowPitch) }}"
                  y="-6"
                  width="104"
-                 height="54"
+                 height="{{ ListLayout.ListHeight }}"
                  id="permissions-container"
       >
         <PermissionRow
@@ -45,7 +45,7 @@ Shows all permissions of the server, where the ones a group has can be switched 
                 permission="{{ permission }}"
                 groupId="{{ groupId }}"
                 index="{{ __index }}"
-                y="{{ -__index*8 }}"
+                y="{{ -__index*ListLayout.PermissionRowPitch }}"
                 width="100"
         />
       </Container>

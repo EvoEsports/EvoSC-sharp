@@ -4,7 +4,6 @@ using EvoSC.Common.Database.Repository;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Util;
-using EvoSC.Modules.Official.GroupsModule.Database.Models;
 using EvoSC.Modules.Official.GroupsModule.Interfaces;
 using LinqToDB;
 
@@ -89,21 +88,5 @@ public class GroupsRepository(IDbConnectionFactory dbConnFactory) : DbRepository
             select ug.UserId;
 
         return (await AsyncExtensions.ToListAsync(query)).Distinct().Count();
-    }
-
-    public async Task<IReadOnlySet<int>> GetScoreboardGroupIdsAsync()
-    {
-        var ids = await AsyncExtensions.ToListAsync(Queryable.Select(Table<DbScoreboardGroup>(), g => g.GroupId));
-        return ids.ToHashSet();
-    }
-
-    public async Task SetScoreboardVisibleAsync(int groupId, bool visible)
-    {
-        await Table<DbScoreboardGroup>().DeleteAsync(g => g.GroupId == groupId);
-
-        if (visible)
-        {
-            await Database.InsertAsync(new DbScoreboardGroup { GroupId = groupId });
-        }
     }
 }

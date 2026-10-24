@@ -28,17 +28,17 @@ Shows a window with all groups, where they can be created, edited and deleted.
       <label class="text-muted" text="Permissions" pos="84 -3" halign="center" valign="center" />
 
       <Container scrollable="true"
-                 scrollHeight="{{ groups.Count()*7 }}"
+                 scrollHeight="{{ ListLayout.ScrollHeight(groups.Count(), ListLayout.GroupRowPitch) }}"
                  y="-6"
                  width="114"
-                 height="54"
+                 height="{{ ListLayout.ListHeight }}"
                  id="grouplist-container"
       >
         <GroupRow
                 foreach="GroupListItem group in groups"
                 group="{{ group }}"
                 index="{{ __index }}"
-                y="{{ -__index*7 }}"
+                y="{{ -__index*ListLayout.GroupRowPitch }}"
                 width="110"
         />
       </Container>

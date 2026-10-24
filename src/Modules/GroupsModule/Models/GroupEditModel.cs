@@ -21,6 +21,4 @@ public class GroupEditModel
     public string? Color { get; set; }
 
     public bool Unrestricted { get; set; }
-
-    public bool ShowOnScoreboard { get; set; }
 }
