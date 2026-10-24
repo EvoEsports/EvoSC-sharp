@@ -6,6 +6,16 @@ Void SetCheckboxState(Text idName, Boolean value) {
     declare icon <=> checkboxFrame.Controls[2] as CMlLabel;
     
     IsChecked = value;
+
+    // keep the value submitted with forms in sync with the state of the checkbox
+    declare entry <=> Page.MainFrame.GetFirstChild(idName ^ "-entry") as CMlEntry;
+    if (entry != Null) {
+        if (value) {
+            entry.Value = "True";
+        } else {
+            entry.Value = "False";
+        }
+    }
     
     if (value) {
         icon.SetText("");
