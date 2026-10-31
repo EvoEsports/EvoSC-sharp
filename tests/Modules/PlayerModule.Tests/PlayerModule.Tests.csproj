@@ -33,7 +33,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\EvoSC.Testing\EvoSC.Testing.csproj" />
-      <ProjectReference Include="..\..\..\src\Modules\Player\Player.csproj" />
+      <ProjectReference Include="..\..\..\src\Modules\PlayerModule\PlayerModule.csproj" />
     </ItemGroup>
 
 </Project>
