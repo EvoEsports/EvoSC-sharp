@@ -45,7 +45,7 @@
         <ProjectReference Include="..\Modules\MotdModule\MotdModule.csproj" />
         <ProjectReference Include="..\Modules\NextMapModule\NextMapModule.csproj" />
         <ProjectReference Include="..\Modules\OpenPlanetModule\OpenPlanetModule.csproj" />
-        <ProjectReference Include="..\Modules\Player\Player.csproj" />
+        <ProjectReference Include="..\Modules\PlayerModule\PlayerModule.csproj" />
         <ProjectReference Include="..\Modules\PlayerRecords\PlayerRecords.csproj" />
         <ProjectReference Include="..\Modules\RoundRankingModule\RoundRankingModule.csproj" />
         <ProjectReference Include="..\Modules\ScoreboardModule\ScoreboardModule.csproj" />

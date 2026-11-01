@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Commands", "src\EvoSC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{DC47658A-F421-4BA4-B617-090A7DFB3900}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Player", "src\Modules\Player\Player.csproj", "{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerModule", "src\Modules\PlayerModule\PlayerModule.csproj", "{6B5E0AB1-6E1E-40B5-9AA9-DAE9E6545FD3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleModule", "src\Modules\ExampleModule\ExampleModule.csproj", "{EB9804D1-3521-4FAB-BBEE-E41361B05A93}"
 EndProject
@@ -51,19 +51,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastestCpModule", "src\Modu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{6D75D6A2-6ECD-4DE4-96C5-CAD7D134407A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastestCp.Tests", "tests\Modules\FastestCp.Tests\FastestCp.Tests.csproj", "{65E0FCC8-1908-409E-8214-9A9F5EC29402}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastestCpModule.Tests", "tests\Modules\FastestCpModule.Tests\FastestCpModule.Tests.csproj", "{65E0FCC8-1908-409E-8214-9A9F5EC29402}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule", "src\Modules\CurrentMapModule\CurrentMapModule.csproj", "{75867550-1DE2-4FBB-9FC1-BA840984AF49}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrentMapModule.Tests", "tests\Modules\CurrentMapModule.Tests\CurrentMapModule.Tests.csproj", "{B684B864-31BF-407E-9ED9-A95D32BC4FE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Player.Tests", "tests\Modules\Player.Tests\Player.Tests.csproj", "{BA828B35-E9B7-4F18-B139-7F000B267D4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerModule.Tests", "tests\Modules\PlayerModule.Tests\PlayerModule.Tests.csproj", "{BA828B35-E9B7-4F18-B139-7F000B267D4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Testing", "src\EvoSC.Testing\EvoSC.Testing.csproj", "{CB5A943B-CE07-48F4-BCE3-04BE895F46AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapsModule.Tests", "tests\Modules\MapsModule.Tests\MapsModule.Tests.csproj", "{42628040-A753-48AC-A1B8-0FB90D2BD278}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetName.Tests", "tests\Modules\SetName.Tests\SetName.Tests.csproj", "{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetNameModule.Tests", "tests\Modules\SetNameModule.Tests\SetNameModule.Tests.csproj", "{7EECB9FB-A6B0-4C3F-95B6-8ADD86ADF8B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoSC.Testing.Tests", "tests\EvoSC.Testing.Tests\EvoSC.Testing.Tests.csproj", "{3BD1A79F-D464-4103-81FD-21E88E5B08A3}"
 EndProject
