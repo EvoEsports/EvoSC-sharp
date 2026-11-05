@@ -50,4 +50,14 @@ public interface IGroupsRepository
     /// Get the number of distinct players that are in a group with unrestricted permissions.
     /// </summary>
     public Task<int> CountUnrestrictedPlayersAsync();
+
+    /// <summary>
+    /// Check if a player is in any group with unrestricted permissions.
+    /// </summary>
+    public Task<bool> IsInUnrestrictedGroupAsync(long playerId);
+
+    /// <summary>
+    /// Get the number of players in a group.
+    /// </summary>
+    public Task<int> CountGroupMembersAsync(int groupId);
 }

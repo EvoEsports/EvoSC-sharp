@@ -44,7 +44,7 @@ A single permission in the permissions window, with a button to switch it on or 
               width="22"
               x="{{ width-24 }}"
               y="{{ -(height-5)/2 }}"
-              action="Groups/ToggleGroupPermission/{{ groupId }}/{{ permission.Id }}"
+              action="Groups/SetGroupPermission/{{ groupId }}/{{ permission.Id }}/{{ permission.Granted ? 0 : 1 }}"
       />
     </Panel>
   </template>

@@ -284,7 +284,7 @@ public class GroupsService(
         return true;
     }
 
-    public async Task<(string Name, bool Granted)?> TogglePermissionAsync(int groupId, int permissionId)
+    public async Task<(string Name, bool Granted)?> SetPermissionAsync(int groupId, int permissionId, bool grant)
     {
         var group = await permissions.GetGroupAsync(groupId);
         var permission = (await repository.GetPermissionsAsync()).FirstOrDefault(p => p.Id == permissionId);
@@ -296,19 +296,25 @@ public class GroupsService(
 
         var granted = (await repository.GetGroupPermissionIdsAsync(groupId)).Contains(permissionId);
 
-        if (granted)
+        // the view was out of date, so there is nothing to change
+        if (granted == grant)
         {
-            await permissions.RemovePermissionFromGroupAsync(group, permission);
+            return (permission.Name, grant);
         }
-        else
+
+        if (grant)
         {
             await permissions.AddPermissionToGroupAsync(group, permission);
         }
+        else
+        {
+            await permissions.RemovePermissionFromGroupAsync(group, permission);
+        }
 
-        return (permission.Name, !granted);
+        return (permission.Name, grant);
     }
 
-    public async Task<bool?> TogglePlayerGroupAsync(IPlayer actor, string accountId, int groupId)
+    public async Task<bool?> SetPlayerGroupAsync(IPlayer actor, string accountId, int groupId, bool member)
     {
         var target = await players.GetPlayerAsync(accountId);
         var group = await permissions.GetGroupAsync(groupId);
@@ -319,19 +325,40 @@ public class GroupsService(
             return null;
         }
 
+        // otherwise anyone who can manage player groups could make themselves or others unrestricted
+        if (group.Unrestricted && !await repository.IsInUnrestrictedGroupAsync(actor.Id))
+        {
+            await server.Chat.ErrorMessageAsync(
+                $"Only players in an unrestricted group can change who is in '{group.Title}'.", actor);
+            return null;
+        }
+
         var isMember = await IsMemberAsync(target, groupId);
 
-        if (!isMember)
+        // the view was out of date, so there is nothing to change
+        if (isMember == member)
+        {
+            return member;
+        }
+
+        if (member)
         {
             await permissions.AddPlayerToGroupAsync(target, group);
-            await NotifyRoleReceivedAsync(target, group);
-                return true;
+            await NotifyGroupReceivedAsync(target, group);
+            return true;
         }
 
         if (group.Unrestricted && target.Id == actor.Id)
         {
             await server.Chat.ErrorMessageAsync(
                 $"You can't remove yourself from the unrestricted group '{group.Title}'.", actor);
+            return null;
+        }
+
+        if (group.Unrestricted && await repository.CountGroupMembersAsync(groupId) <= 1)
+        {
+            await server.Chat.ErrorMessageAsync(
+                $"You can't remove the last player from the unrestricted group '{group.Title}'.", actor);
             return null;
         }
 
@@ -342,16 +369,16 @@ public class GroupsService(
     /// <summary>
     /// Tell a player which group they were just added to. Players who are offline simply miss the message.
     /// </summary>
-    private async Task NotifyRoleReceivedAsync(IPlayer player, IGroup group)
+    private async Task NotifyGroupReceivedAsync(IPlayer player, IGroup group)
     {
         try
         {
             await server.Chat.InfoMessageAsync(
-                $"You received the role {FormattingUtils.CleanTmFormatting(group.Title)}.", player);
+                $"You were added to the group {FormattingUtils.CleanTmFormatting(group.Title)}.", player);
         }
         catch (Exception ex)
         {
-            logger.LogDebug(ex, "Failed to notify player {AccountId} about their new role", player.AccountId);
+            logger.LogDebug(ex, "Failed to notify player {AccountId} about their new group", player.AccountId);
         }
     }
 

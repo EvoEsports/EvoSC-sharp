@@ -74,9 +74,9 @@ public class GroupsManialinkController(IGroupsService groupsService) : Manialink
         Context.AuditEvent.Cancel();
     }
 
-    public async Task ToggleGroupPermissionAsync(int groupId, int permissionId)
+    public async Task SetGroupPermissionAsync(int groupId, int permissionId, int grant)
     {
-        var result = await groupsService.TogglePermissionAsync(groupId, permissionId);
+        var result = await groupsService.SetPermissionAsync(groupId, permissionId, grant != 0);
 
         if (result == null)
         {

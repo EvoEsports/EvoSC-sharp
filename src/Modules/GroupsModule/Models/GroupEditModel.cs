@@ -13,7 +13,7 @@ public class GroupEditModel
     [MaxLength(200, ErrorMessage = "The description can be at most 200 characters.")]
     public string? Description { get; set; }
 
-    [MaxLength(2, ErrorMessage = "The icon must be a single character.")]
+    [MaxLength(1, ErrorMessage = "The icon must be a single character.")]
     public string? Icon { get; set; }
 
     [RegularExpression("^([0-9a-fA-F]{3}|[0-9a-fA-F]{6})?$",

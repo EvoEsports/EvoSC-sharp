@@ -54,14 +54,14 @@ public interface IGroupsService
     public Task<bool> DeleteGroupAsync(IPlayer actor, int groupId);
 
     /// <summary>
-    /// Give a group a permission if it does not have it, otherwise take it away.
+    /// Give a group a permission, or take it away. Does nothing if the group is already as requested.
     /// </summary>
     /// <returns>The name of the permission and whether the group has it now, or null if there was no such group or permission.</returns>
-    public Task<(string Name, bool Granted)?> TogglePermissionAsync(int groupId, int permissionId);
+    public Task<(string Name, bool Granted)?> SetPermissionAsync(int groupId, int permissionId, bool grant);
 
     /// <summary>
-    /// Add a player to a group if they are not in it, otherwise remove them from it.
+    /// Add a player to a group, or remove them from it. Does nothing if the player is already as requested.
     /// </summary>
     /// <returns>Whether the player is in the group now, or null if it could not be changed. The actor is told why.</returns>
-    public Task<bool?> TogglePlayerGroupAsync(IPlayer actor, string accountId, int groupId);
+    public Task<bool?> SetPlayerGroupAsync(IPlayer actor, string accountId, int groupId, bool member);
 }

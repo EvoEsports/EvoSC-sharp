@@ -33,9 +33,10 @@ public class PlayerRolesManialinkController(IGroupsService groupsService) : Mani
         Context.AuditEvent.Cancel();
     }
 
-    public async Task TogglePlayerGroupAsync(string accountId, int groupId, int page, PlayerSearchModel input)
+    public async Task SetPlayerGroupAsync(string accountId, int groupId, int member, int page,
+        PlayerSearchModel input)
     {
-        var isMember = await groupsService.TogglePlayerGroupAsync(Context.Player, accountId, groupId);
+        var isMember = await groupsService.SetPlayerGroupAsync(Context.Player, accountId, groupId, member != 0);
 
         if (isMember == null)
         {

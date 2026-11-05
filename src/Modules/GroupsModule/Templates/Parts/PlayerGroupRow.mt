@@ -37,7 +37,7 @@ A single group in the player groups window, with a button to add the player to i
               width="22"
               x="{{ width-24 }}"
               y="{{ -(height-5)/2 }}"
-              action="PlayerRoles/TogglePlayerGroup/{{ accountId }}/{{ group.Id }}/{{ page }}"
+              action="PlayerRoles/SetPlayerGroup/{{ accountId }}/{{ group.Id }}/{{ group.Member ? 0 : 1 }}/{{ page }}"
       />
     </Panel>
   </template>

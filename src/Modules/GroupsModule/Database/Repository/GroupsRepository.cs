@@ -29,14 +29,20 @@ public class GroupsRepository(IDbConnectionFactory dbConnFactory) : DbRepository
 
     public async Task<IReadOnlyDictionary<int, int>> GetPermissionCountsAsync()
     {
-        var groupIds = await AsyncExtensions.ToListAsync(Queryable.Select(Table<DbGroupPermission>(), gp => gp.GroupId));
-        return groupIds.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
+        var counts = await AsyncExtensions.ToListAsync(
+            Queryable.Select(Queryable.GroupBy(Table<DbGroupPermission>(), gp => gp.GroupId),
+                g => new { GroupId = g.Key, Count = g.Count() }));
+
+        return counts.ToDictionary(c => c.GroupId, c => c.Count);
     }
 
     public async Task<IReadOnlyDictionary<int, int>> GetMemberCountsAsync()
     {
-        var groupIds = await AsyncExtensions.ToListAsync(Queryable.Select(Table<DbUserGroup>(), ug => ug.GroupId));
-        return groupIds.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
+        var counts = await AsyncExtensions.ToListAsync(
+            Queryable.Select(Queryable.GroupBy(Table<DbUserGroup>(), ug => ug.GroupId),
+                g => new { GroupId = g.Key, Count = g.Count() }));
+
+        return counts.ToDictionary(c => c.GroupId, c => c.Count);
     }
 
     public async Task<IReadOnlySet<int>> GetPlayerGroupIdsAsync(long playerId)
@@ -55,13 +61,14 @@ public class GroupsRepository(IDbConnectionFactory dbConnFactory) : DbRepository
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var term = search.Trim();
-            query = Queryable.Where(query, p => p.NickName.Contains(term) || p.UbisoftName.Contains(term));
+            var term = search.Trim().ToLowerInvariant();
+            query = Queryable.Where(query,
+                p => Sql.Lower(p.NickName).Contains(term) || Sql.Lower(p.UbisoftName).Contains(term));
         }
 
         var total = await AsyncExtensions.CountAsync(query);
         var players = await AsyncExtensions.ToListAsync(
-            Queryable.Take(Queryable.Skip(Queryable.OrderBy(query, p => p.UbisoftName), skip), take));
+            Queryable.Take(Queryable.Skip(Queryable.ThenBy(Queryable.OrderBy(query, p => Sql.Lower(p.NickName)), p => p.Id), skip), take));
 
         return (players, total);
     }
@@ -87,6 +94,20 @@ public class GroupsRepository(IDbConnectionFactory dbConnFactory) : DbRepository
             where g.Unrestricted
             select ug.UserId;
 
-        return (await AsyncExtensions.ToListAsync(query)).Distinct().Count();
+        return await AsyncExtensions.CountAsync(Queryable.Distinct(query));
     }
+
+    public async Task<bool> IsInUnrestrictedGroupAsync(long playerId)
+    {
+        var query =
+            from ug in Table<DbUserGroup>()
+            join g in Table<DbGroup>() on ug.GroupId equals g.Id
+            where g.Unrestricted && ug.UserId == playerId
+            select ug.UserId;
+
+        return await AsyncExtensions.AnyAsync(query);
+    }
+
+    public async Task<int> CountGroupMembersAsync(int groupId) =>
+        await AsyncExtensions.CountAsync(Queryable.Where(Table<DbUserGroup>(), ug => ug.GroupId == groupId));
 }
