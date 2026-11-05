@@ -1,7 +1,4 @@
 ﻿using System.CommandLine;
-using System.CommandLine.Builder;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using System.ComponentModel;
 using System.Reflection;
 using EvoSC.CLI.Attributes;
@@ -22,7 +19,6 @@ namespace EvoSC.CLI;
 public class CliManager : ICliManager, IEvoSCApplication
 {
     private readonly RootCommand _rootCommand;
-    private readonly Parser _cliParser;
     private readonly Option<IEnumerable<string>> _configOption;
     private readonly List<ICliCommandInfo> _registeredCommands = new();
 
@@ -30,47 +26,34 @@ public class CliManager : ICliManager, IEvoSCApplication
     {
         _rootCommand = new RootCommand("EvoSC# TrackMania server controller.");
 
-        _configOption =
-            new Option<IEnumerable<string>>(new[] {"--option", "-o"},
-                description: "Override configuration options. Format is key:value");
-        
-        _rootCommand.AddGlobalOption(_configOption);
+        _configOption = new Option<IEnumerable<string>>("--option", "-o")
+        {
+            Description = "Override configuration options. Format is key:value",
+            Recursive = true
+        };
 
-        _cliParser = new CommandLineBuilder(_rootCommand)
-            .UseVersionOption()
-            .UseHelp()
-            .UseEnvironmentVariableDirective()
-            .UseParseDirective()
-            .UseSuggestDirective()
-            .RegisterWithDotnetSuggest()
-            .UseTypoCorrections()
-            .UseParseErrorReporting()
-            .CancelOnProcessTermination()
-            .Build();
+        _rootCommand.Options.Add(_configOption);
     }
 
-    private async Task ExecuteHandlerAsync(ICliCommandInfo command, InvocationContext context)
+    private async Task<int> ExecuteHandlerAsync(ICliCommandInfo command, ParseResult parseResult)
     {
+        var cliContext = new CliContext(parseResult);
         var paramValues = new List<object?>();
+        var optionIndex = 0;
 
-        foreach (var option in command.Options)
-        { 
-            if (option == _configOption)
+        foreach (var param in command.HandlerMethod.GetParameters())
+        {
+            if (IsContextParameter(param))
             {
+                paramValues.Add(cliContext);
                 continue;
             }
 
-            if (option.ValueType == typeof(InvocationContext))
-            {
-                paramValues.Add(context);
-                continue;
-            }
-            
-            var optionValue = context.BindingContext.ParseResult.GetValueForOption(option);
-            paramValues.Add(optionValue);
+            var option = command.Options[optionIndex++];
+            paramValues.Add(parseResult.GetResult(option)?.GetValueOrDefault<object>());
         }
 
-        var cliConfig = context.BindingContext.ParseResult.GetValueForOption(_configOption);
+        var cliConfig = parseResult.GetValue(_configOption);
         var cliConfigOptions = new Dictionary<string, string> ();
 
         if (cliConfig != null)
@@ -94,7 +77,7 @@ public class CliManager : ICliManager, IEvoSCApplication
         var startupPipeline = new StartupPipeline(config);
         startupPipeline.ServiceContainer.ConfigureServiceContainerForEvoSc();
         startupPipeline.SetupBasePipeline(config);
-        startupPipeline.Services("CliContext", s => s.RegisterInstance<ICliContext>(new CliContext(context)));
+        startupPipeline.Services("CliContext", s => s.RegisterInstance<ICliContext>(cliContext));
         startupPipeline.Services("Application", s => s.RegisterInstance<IEvoSCApplication>(this));
 
         await startupPipeline.ExecuteAsync(command.RequiredFeatures
@@ -113,7 +96,12 @@ public class CliManager : ICliManager, IEvoSCApplication
         }
 
         await task;
+
+        return cliContext.ExitCode;
     }
+
+    private static bool IsContextParameter(ParameterInfo param) =>
+        param.ParameterType == typeof(ICliContext) || param.ParameterType == typeof(CliContext);
 
     private Option? CreateOption(ParameterInfo param)
     {
@@ -121,13 +109,16 @@ public class CliManager : ICliManager, IEvoSCApplication
         var aliases = param
             .GetCustomAttributes<AliasAttribute>()
             .Select(a => a.Name)
-            .ToList();
-
-        aliases.Add($"--{param.Name}");
+            .ToArray();
 
         var description = param.GetCustomAttribute<DescriptionAttribute>();
 
-        var option = Activator.CreateInstance(cmdOptionType, aliases.ToArray(), description?.Description ?? "") as Option;
+        var option = Activator.CreateInstance(cmdOptionType, $"--{param.Name}", aliases) as Option;
+
+        if (option != null)
+        {
+            option.Description = description?.Description ?? "";
+        }
 
         return option;
     }
@@ -166,6 +157,11 @@ public class CliManager : ICliManager, IEvoSCApplication
         var options = new List<Option>();
         foreach (var param in handlerMethod.GetParameters())
         {
+            if (IsContextParameter(param))
+            {
+                continue;
+            }
+
             var option = CreateOption(param);
 
             if (option == null)
@@ -174,7 +170,7 @@ public class CliManager : ICliManager, IEvoSCApplication
             }
 
             options.Add(option);
-            command.AddOption(option);
+            command.Options.Add(option);
         }
             
         options.Add(_configOption);
@@ -188,20 +184,17 @@ public class CliManager : ICliManager, IEvoSCApplication
             RequiredFeatures = requiredFeatures?.Features ?? Array.Empty<AppFeature>()
         };
 
-        command.SetHandler(async context =>
-        {
-            await ExecuteHandlerAsync(commandInfo, context);
-        });
+        command.SetAction((parseResult, _) => ExecuteHandlerAsync(commandInfo, parseResult));
 
         _registeredCommands.Add(commandInfo);
-        _rootCommand.AddCommand(command);
+        _rootCommand.Subcommands.Add(command);
 
         return this;
     }
 
     public Task<int> ExecuteAsync(string[] args)
     {
-        return _cliParser.InvokeAsync(args);
+        return _rootCommand.Parse(args).InvokeAsync(new InvocationConfiguration { EnableDefaultExceptionHandler = false });
     }
 
     public IStartupPipeline StartupPipeline { get; }

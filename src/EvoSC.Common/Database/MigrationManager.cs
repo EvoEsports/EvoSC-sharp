@@ -40,7 +40,7 @@ public class MigrationManager(IEvoScBaseConfig config) : IMigrationManager
     private static string GetDatabaseTypeIdentifier(IDatabaseConfig.DatabaseType databaseType) => databaseType switch
     {
         IDatabaseConfig.DatabaseType.MySql => "MySql5",
-        IDatabaseConfig.DatabaseType.SQLite => "Sqlite",
-        _ => "Postgres"
+        IDatabaseConfig.DatabaseType.SQLite => "SQLite",
+        _ => "PostgreSQL"
     };
 }

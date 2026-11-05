@@ -2,6 +2,7 @@
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace EvoSC.Common.Database.Repository.Stores;
 

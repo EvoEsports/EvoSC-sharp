@@ -8,6 +8,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Interfaces.Models;
 using EvoSC.Modules.Official.MatchTrackerModule.Models.Database;
 using EvoSC.Modules.Official.MatchTrackerModule.Util;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.MatchTrackerModule.Repository;

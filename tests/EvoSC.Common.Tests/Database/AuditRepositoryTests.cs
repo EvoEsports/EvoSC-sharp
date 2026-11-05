@@ -7,6 +7,7 @@ using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Models.Audit;
 using EvoSC.Testing.Database;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Database;

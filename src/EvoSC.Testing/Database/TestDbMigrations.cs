@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Generators;
+using FluentMigrator.Runner.Generators.SQLite;
+using Microsoft.Extensions.Options;
 using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +27,8 @@ public static class TestDbMigrations
             {
                 opt.Tags = new[] { "Production" };
             })
+            .AddSingleton<SQLiteGenerator>(_ => new SQLiteGenerator(new SQLiteQuoter(),
+                new OptionsWrapper<GeneratorOptions>(new GeneratorOptions { CompatibilityMode = CompatibilityMode.LOOSE })))
             .BuildServiceProvider(false);
 
         var runner = sp.GetRequiredService<IMigrationRunner>();

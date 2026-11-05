@@ -5,6 +5,7 @@ using EvoSC.Common.Database.Repository.Stores;
 using EvoSC.Common.Interfaces.Database;
 using EvoSC.Testing.Database;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Database;

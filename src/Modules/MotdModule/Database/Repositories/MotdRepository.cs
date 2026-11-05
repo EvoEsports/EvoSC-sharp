@@ -7,6 +7,7 @@ using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MotdModule.Database.Models;
 using EvoSC.Modules.Official.MotdModule.Interfaces;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace EvoSC.Modules.Official.MotdModule.Database.Repositories;
 
@@ -16,9 +17,8 @@ public class MotdRepository(IDbConnectionFactory dbConnFactory) : DbRepository(d
     // NOTE: qualified with AsyncExtensions because .NET 10's
     // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous with linq2db's.
     public Task<MotdEntry?> GetEntryAsync(IPlayer player)
-        => AsyncExtensions.SingleOrDefaultAsync(Table<MotdEntry>()
-            .LoadWith(r => r.DbPlayer),
-            r => r.PlayerId == player.Id);
+        => Table<MotdEntry>()
+            .LoadWith(r => r.DbPlayer).SingleOrDefaultAsync(r => r.PlayerId == player.Id);
     
     public async Task<MotdEntry> InsertOrUpdateEntryAsync(IPlayer player, bool hidden)
     {

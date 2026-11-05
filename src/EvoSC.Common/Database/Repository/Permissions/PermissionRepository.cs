@@ -4,6 +4,7 @@ using EvoSC.Common.Interfaces.Database;
 using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database.Repository.Permissions;

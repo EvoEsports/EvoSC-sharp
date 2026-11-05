@@ -1,5 +1,6 @@
 ﻿using EvoSC.Common.Database.Models.Permissions;
 using FluentMigrator;
+using FluentMigrator.Postgres;
 
 namespace EvoSC.Common.Database.Migrations;
 
@@ -10,7 +11,7 @@ public class AddUserPermissionTables : Migration
     public override void Up()
     {
         Create.Table(DbGroup.TableName)
-            .WithColumn("Id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("Id").AsInt32().PrimaryKey().Identity(PostgresGenerationType.ByDefault)
             .WithColumn("Title").AsString()
             .WithColumn("Description").AsString()
             .WithColumn("Icon").AsString().Nullable()

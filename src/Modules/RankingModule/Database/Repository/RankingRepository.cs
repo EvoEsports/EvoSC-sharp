@@ -4,6 +4,7 @@ using EvoSC.Common.Services.Attributes;
 using EvoSC.Modules.Official.RankingModule.Database.Models;
 using EvoSC.Modules.Official.RankingModule.Interfaces;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace EvoSC.Modules.Official.RankingModule.Database.Repository;
 

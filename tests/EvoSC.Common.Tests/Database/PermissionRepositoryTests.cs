@@ -9,6 +9,7 @@ using EvoSC.Common.Permissions.Models;
 using EvoSC.Testing;
 using EvoSC.Testing.Database;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Database;

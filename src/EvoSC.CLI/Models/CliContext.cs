@@ -1,9 +1,10 @@
-﻿using System.CommandLine.Invocation;
+﻿using System.CommandLine;
 using EvoSC.CLI.Interfaces;
 
 namespace EvoSC.CLI.Models;
 
-public class CliContext(InvocationContext context) : ICliContext
+public class CliContext(ParseResult parseResult) : ICliContext
 {
-    public InvocationContext Context { get; } = context;
+    public ParseResult ParseResult { get; } = parseResult;
+    public int ExitCode { get; set; }
 }

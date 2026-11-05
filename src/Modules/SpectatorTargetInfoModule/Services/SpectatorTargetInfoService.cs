@@ -14,6 +14,7 @@ using EvoSC.Modules.Official.SpectatorTargetInfoModule.Interfaces;
 using EvoSC.Modules.Official.SpectatorTargetInfoModule.Models;
 using GbxRemoteNet.Structs;
 using LinqToDB.Common;
+using LinqToDB.Internal.Common;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.SpectatorTargetInfoModule.Services;

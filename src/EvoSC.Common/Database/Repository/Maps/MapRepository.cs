@@ -7,6 +7,7 @@ using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using EvoSC.Common.Models.Maps;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Common.Database.Repository.Maps;

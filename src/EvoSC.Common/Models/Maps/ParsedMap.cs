@@ -49,17 +49,17 @@ internal class ParsedMap : IParsedMap
         Map = map;
         var mapNode = ParseMap(baseDirectory, map.FilePath);
         
-        AuthorTime = RaceTime.FromMilliseconds(mapNode.TMObjective_AuthorTime?.Milliseconds ?? 0);
-        GoldTime = RaceTime.FromMilliseconds(mapNode.TMObjective_GoldTime?.Milliseconds ?? 0);
-        SilverTime = RaceTime.FromMilliseconds(mapNode.TMObjective_SilverTime?.Milliseconds ?? 0);
-        BronzeTime = RaceTime.FromMilliseconds(mapNode.TMObjective_BronzeTime?.Milliseconds ?? 0);
+        AuthorTime = RaceTime.FromMilliseconds(mapNode.AuthorTime?.Milliseconds ?? 0);
+        GoldTime = RaceTime.FromMilliseconds(mapNode.GoldTime?.Milliseconds ?? 0);
+        SilverTime = RaceTime.FromMilliseconds(mapNode.SilverTime?.Milliseconds ?? 0);
+        BronzeTime = RaceTime.FromMilliseconds(mapNode.BronzeTime?.Milliseconds ?? 0);
         Environment = mapNode.Decoration?.ToString() ?? "";
         Mood = "";
-        Cost = mapNode.Cost ?? 0;
-        LapCount = mapNode.TMObjective_NbLaps ?? 0;
+        Cost = mapNode.Cost;
+        LapCount = mapNode.NbLaps;
         MapStyle = mapNode.MapStyle ?? "";
         MapType = mapNode.MapType ?? "";
-        CheckpointCount = mapNode.NbCheckpoints ?? 0;
+        CheckpointCount = mapNode.NbCheckpoints;
     }
 
     private CGameCtnChallenge ParseMap(string baseDirectory, string filePath)

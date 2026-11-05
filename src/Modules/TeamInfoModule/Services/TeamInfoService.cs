@@ -7,6 +7,7 @@ using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.TeamInfoModule.Config;
 using EvoSC.Modules.Official.TeamInfoModule.Interfaces;
 using LinqToDB.Common;
+using LinqToDB.Internal.Common;
 
 namespace EvoSC.Modules.Official.TeamInfoModule.Services;
 

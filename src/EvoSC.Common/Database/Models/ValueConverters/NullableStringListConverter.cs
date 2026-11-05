@@ -1,4 +1,6 @@
 ﻿using LinqToDB.Common;
+using LinqToDB.Internal.Common;
+using LinqToDB.Mapping;
 
 namespace EvoSC.Common.Database.Models.ValueConverters;
 

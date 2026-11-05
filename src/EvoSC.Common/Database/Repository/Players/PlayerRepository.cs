@@ -6,18 +6,19 @@ using EvoSC.Common.Interfaces.Database.Repository;
 using EvoSC.Common.Interfaces.Models;
 using GbxRemoteNet.Structs;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace EvoSC.Common.Database.Repository.Players;
 
-public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRepository permissionRepository) : DbRepository(dbConnFactory), IPlayerRepository
+public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRepository permissionRepository)
+    : DbRepository(dbConnFactory), IPlayerRepository
 {
     public async Task<DbPlayer?> GetPlayerByAccountIdAsync(string accountId)
     {
         // NOTE: qualified with AsyncExtensions because .NET 10's
         // System.Linq.AsyncEnumerable overloads would otherwise be ambiguous with linq2db's.
-        var player = await AsyncExtensions.SingleOrDefaultAsync(Table<DbPlayer>()
-            .LoadWith(p => p.DbSettings),
-            t => t.AccountId == accountId);
+        var player = await Table<DbPlayer>()
+            .LoadWith(p => p.DbSettings).SingleOrDefaultAsync(t => t.AccountId == accountId);
 
         if (player == null)
         {
@@ -28,9 +29,7 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
         {
             var playerSettings = new DbPlayerSettings
             {
-                PlayerId = player.Id,
-                DisplayLanguage = "en",
-                HiddenManialinks = []
+                PlayerId = player.Id, DisplayLanguage = "en", HiddenManialinks = []
             };
 
             try
@@ -41,8 +40,7 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
             {
                 // PlayerId is unique, so a concurrent lookup for the same player may have
                 // already inserted the settings row between our check and this insert.
-                playerSettings = await AsyncExtensions.SingleOrDefaultAsync(Table<DbPlayerSettings>(),
-                    s => s.PlayerId == player.Id);
+                playerSettings = await Table<DbPlayerSettings>().SingleOrDefaultAsync(s => s.PlayerId == player.Id);
 
                 if (playerSettings == null)
                 {
@@ -82,13 +80,11 @@ public class PlayerRepository(IDbConnectionFactory dbConnFactory, IPermissionRep
         };
 
         var id = await Database.InsertWithIdentityAsync(player);
-        player.Id =  Convert.ToInt64(id);
+        player.Id = Convert.ToInt64(id);
 
         var playerSettings = new DbPlayerSettings
         {
-            PlayerId = player.Id,
-            DisplayLanguage = "en",
-            HiddenManialinks = []
+            PlayerId = player.Id, DisplayLanguage = "en", HiddenManialinks = []
         };
 
         await Database.InsertAsync(playerSettings);

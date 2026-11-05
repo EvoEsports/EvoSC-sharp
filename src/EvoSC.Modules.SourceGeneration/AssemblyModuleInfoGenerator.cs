@@ -12,20 +12,24 @@ namespace EvoSC.Modules.SourceGeneration
     /// implement internal and external modules together to ease with development.
     /// </summary>
     [Generator]
-    public class AssemblyModuleInfoGenerator : ISourceGenerator
+    public class AssemblyModuleInfoGenerator : IIncrementalGenerator
     {
-        public void Initialize(GeneratorInitializationContext context)
+        public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            // not needed for this
+            var input = context.AnalyzerConfigOptionsProvider.Combine(context.CompilationProvider);
+
+            context.RegisterSourceOutput(input, (productionContext, source) =>
+            {
+                source.Left.GlobalOptions.TryGetValue("build_property.projectdir", out var dir);
+                Execute(productionContext, dir, source.Right.Assembly.Name);
+            });
         }
 
-        private static void FileNotFoundError(GeneratorExecutionContext context)
+        private static void FileNotFoundError(SourceProductionContext context, string dir, string assemblyName)
         {
             var errorMessage = new StringBuilder();
 
-            context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out var dir);
-            
-            errorMessage.AppendLine($"#error Source Generator Error (Module: {context.Compilation.Assembly.Name}): ");
+            errorMessage.AppendLine($"#error Source Generator Error (Module: {assemblyName}): ");
             errorMessage.AppendLine("#error Failed to generate the module's assembly info.");
             errorMessage.AppendLine("#error You must provide a \"info.toml\" file in the module's root namespace.");
             errorMessage.AppendLine("#error For more information, refer to the module documentation.");
@@ -35,7 +39,7 @@ namespace EvoSC.Modules.SourceGeneration
             context.AddSource("Info.g.cs", errorMessage.ToString());
         }
 
-        private static void ParserError(GeneratorExecutionContext context, string message)
+        private static void ParserError(SourceProductionContext context, string message)
         {
             var errorMessage = new StringBuilder();
                 
@@ -46,10 +50,8 @@ namespace EvoSC.Modules.SourceGeneration
             context.AddSource("Info.g.cs", errorMessage.ToString());
         }
 
-        public void Execute(GeneratorExecutionContext context)
+        private static void Execute(SourceProductionContext context, string dir, string assemblyName)
         {
-            context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out var dir);
-
             if (dir == null)
             {
                 return;
@@ -59,7 +61,7 @@ namespace EvoSC.Modules.SourceGeneration
 
             if (!File.Exists(infoFile))
             {
-                FileNotFoundError(context);
+                FileNotFoundError(context, dir, assemblyName);
                 return;
             }
 

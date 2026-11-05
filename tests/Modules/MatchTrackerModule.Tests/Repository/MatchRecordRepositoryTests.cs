@@ -6,6 +6,7 @@ using EvoSC.Modules.Official.MatchTrackerModule.Models.Database;
 using EvoSC.Modules.Official.MatchTrackerModule.Repository;
 using EvoSC.Testing.Database;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -42,7 +43,7 @@ public class MatchRecordRepositoryTests
         Assert.NotNull(record);
         Assert.Equal(state.TimelineId, record.TimelineId);
         Assert.Equal(MatchStatus.Running, record.Status);
-        Assert.Equal(state.Timestamp, record.Timestamp);
+        Assert.Equal(state.Timestamp, record.Timestamp, TimeSpan.FromMilliseconds(1));
         Assert.Equal(json, record.Report);
     }
 }

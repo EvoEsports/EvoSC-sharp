@@ -19,9 +19,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=evosc_sharp
-      - POSTGRES_USER=evosc_sharp
-      - POSTGRES_DB=evosc_sharp
+      - POSTGRES_PASSWORD=evosc
+      - POSTGRES_USER=evosc
+      - POSTGRES_DB=evosc
 
 #  evosc_sharp:
 #    image: evoscsharp

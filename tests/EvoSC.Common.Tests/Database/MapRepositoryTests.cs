@@ -9,6 +9,7 @@ using EvoSC.Common.Models.Maps;
 using EvoSC.Testing;
 using EvoSC.Testing.Database;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Database;

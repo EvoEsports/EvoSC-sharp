@@ -7,6 +7,7 @@ using EvoSC.Testing;
 using EvoSC.Testing.Database;
 using GbxRemoteNet.Structs;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace EvoSC.Common.Tests.Database;
@@ -44,7 +45,7 @@ public class PlayerRepositoryTests
         var permissionRepo = new PermissionRepository(factory, logger);
         var playerRepo = new PlayerRepository(factory, permissionRepo);
 
-        Assert.Throws<System.Data.SQLite.SQLiteException>(() =>
+        Assert.Throws<Microsoft.Data.Sqlite.SqliteException>(() =>
         {
             playerRepo.AddPlayerAsync("TestAccountId", new TmPlayerDetailedInfo
             {

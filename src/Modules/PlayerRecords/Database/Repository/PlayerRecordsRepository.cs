@@ -9,6 +9,7 @@ using EvoSC.Modules.Official.PlayerRecords.Database.Models;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces;
 using EvoSC.Modules.Official.PlayerRecords.Interfaces.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging;
 
 namespace EvoSC.Modules.Official.PlayerRecords.Database.Repository;
