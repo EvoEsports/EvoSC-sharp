@@ -1,0 +1,11 @@
+[info]
+# A unique name for this module, this is used as an identifier
+name = "GroupsModule"
+# The title of the module
+title = "Groups & Roles"
+# A short description of what the module is and does
+summary = "Create and modify groups and their permissions, and assign groups to players."
+# The current version of this module, using SEMVER
+version = "1.0.0"
+# The name of the author that created this module
+author = "Evo"

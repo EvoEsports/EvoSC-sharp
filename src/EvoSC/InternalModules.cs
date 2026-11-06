@@ -6,6 +6,7 @@ using EvoSC.Modules.Official.ExampleModule;
 using EvoSC.Modules.Official.FastestCpModule;
 using EvoSC.Modules.Official.ForceTeamModule;
 using EvoSC.Modules.Official.GameModeUiModule;
+using EvoSC.Modules.Official.GroupsModule;
 using EvoSC.Modules.Official.ShowCommandsModule;
 using EvoSC.Modules.Official.LiveRankingModule;
 using EvoSC.Modules.Official.LocalRecordsModule;
@@ -50,6 +51,7 @@ public static class InternalModules
         typeof(MatchManagerModule),
         typeof(SetNameModule),
         typeof(TeamSettingsModule),
+        typeof(GroupsModule),
         typeof(ScoreboardModule),
         // typeof(FastestCpModule),
         typeof(CurrentMapModule),
