@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using LinqToDB.Mapping;
 
 namespace EvoSC.Modules.Official.MapListModule.Database.Models;
 
@@ -6,10 +6,10 @@ namespace EvoSC.Modules.Official.MapListModule.Database.Models;
 public class DbMapTagMap
 {
     public const string TableName = "MapTagMap";
-    
+
     [Column]
     public int MapTagId { get; set; }
-    
+
     [Column]
-    public int MapId { get; set; }
+    public long MapId { get; set; }
 }

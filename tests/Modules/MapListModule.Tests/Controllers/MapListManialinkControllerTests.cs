@@ -5,6 +5,7 @@ using EvoSC.Manialinks.Interfaces.Models;
 using EvoSC.Modules.Official.MapListModule.Controllers;
 using EvoSC.Modules.Official.MapListModule.Interfaces;
 using EvoSC.Modules.Official.MapQueueModule.Interfaces;
+using EvoSC.Modules.Official.MapsModule.Interfaces;
 using EvoSC.Testing.Controllers;
 using Moq;
 
@@ -17,10 +18,13 @@ public class MapListManialinkControllerTests : ManialinkControllerTestBase<MapLi
     private Mock<IMapService> _mapService = new();
     private Mock<IMapQueueService> _mapQueueService = new();
     private Mock<IMapListService> _mapListService = new();
+    private Mock<IMapListStateService> _stateService = new();
+    private Mock<ITmxSearchService> _tmxSearch = new();
+    private Mock<IMxMapService> _mxMapService = new();
     
     public MapListManialinkControllerTests()
     {
-        InitMock(_player.Object, _manialinkActionContext.Object, _mapService, _mapQueueService, _mapListService);
+        InitMock(_player.Object, _manialinkActionContext.Object, _mapService, _mapQueueService, _mapListService, _stateService, _tmxSearch, _mxMapService);
     }
 
     [Fact]

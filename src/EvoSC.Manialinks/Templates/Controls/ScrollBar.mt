@@ -1,4 +1,4 @@
-<component>
+﻿<component>
   <property type="string" name="id" />
   <property type="string" name="forFrame" default="" />
   
@@ -11,11 +11,14 @@
   
   <property type="int" name="zIndex" default="0" />
   
+  <!-- Color of the slider handle. Uses the primary background color when empty. -->
+  <property type="string" name="color" default="" />
+  
   <template>
     <frame pos="{{ x }} {{ y }}" id="{{ id }}">
       <quad
               size="2 5"
-              bgcolor="{{ Theme.UI_BgPrimary }}"
+              bgcolor='{{ string.IsNullOrEmpty(color) ? Theme.UI_BgPrimary : color }}'
               scriptevents="1"
               id="scrollbar_quad_{{ id }}"
       />

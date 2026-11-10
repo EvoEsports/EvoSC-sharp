@@ -91,6 +91,9 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
         await events.RaiseAsync(MapEvent.MapRemoved, new MapEventArgs { Map = map });
     }
 
+    public Task<IMap> SetMapEnabledAsync(IMap map, bool enabled) =>
+        mapRepository.UpdateMapAsync(new DbMap(map) { Enabled = enabled, UpdatedAt = DateTime.Now });
+
     public async Task AddCurrentMapListAsync()
     {
         var maplist = await GetRemoteMapListAsync();

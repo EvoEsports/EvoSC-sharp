@@ -1,5 +1,3 @@
-﻿using EvoSC.Common.Interfaces.Models;
-
 namespace EvoSC.Modules.Official.MapListModule.Interfaces.Models;
 
 /// <summary>
@@ -8,12 +6,12 @@ namespace EvoSC.Modules.Official.MapListModule.Interfaces.Models;
 public interface IMapFavorite
 {
     /// <summary>
-    /// The map that was favorited.
+    /// ID of the map that was favorited.
     /// </summary>
-    public IMap Map { get; }
-    
+    public long MapId { get; }
+
     /// <summary>
-    /// The player that favorited the map.
+    /// ID of the player that favorited the map.
     /// </summary>
-    public IPlayer Player { get; }
+    public long PlayerId { get; }
 }

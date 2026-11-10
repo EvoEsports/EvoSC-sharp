@@ -64,7 +64,7 @@ public class DbMap : IMap
         
         Id = map.Id;
         Uid = map.Uid;
-        FilePath = "";
+        FilePath = map.FilePath ?? "";
         AuthorId = map.Author?.Id ?? 0;
         Enabled = map.Enabled;
         Name = map.Name;
