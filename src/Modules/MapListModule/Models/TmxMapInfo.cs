@@ -15,7 +15,7 @@ public class TmxMapInfo
     public int Awards { get; init; }
     public DateTime? UploadedAt { get; init; }
 
-    public string ThumbnailUrl => $"http://trackmania.exchange/mapthumb/{Id}";
+    public string TmxUrl => $"https://trackmania.exchange/mapshow/{Id}";
 }
 
 /// <summary>

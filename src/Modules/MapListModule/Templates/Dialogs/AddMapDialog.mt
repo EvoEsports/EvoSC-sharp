@@ -1,6 +1,6 @@
 <!--
 Dialog for searching Trackmania Exchange and adding a map to the server,
-with a preview of the selected map.
+with details of the selected map.
 -->
 <component>
   <using namespace="System" />
@@ -9,6 +9,7 @@ with a preview of the selected map.
   
   <import component="EvoSC.Containers.Window" as="Window" />
   <import component="EvoSC.Controls.Button" as="Button" />
+  <import component="EvoSC.Controls.LinkButton" as="LinkButton" />
   <import component="EvoSC.Controls.TextInput" as="TextInput" />
   <import component="EvoSC.Controls.Tag" as="Tag" />
   <import component="EvoSC.Style.UIStyle" as="UIStyle" />
@@ -83,38 +84,33 @@ with a preview of the selected map.
               disabled="{{ !tmx.Result.HasMore }}"
               action="MapListManialinkController/TmxPage/{{ tmx.Page + 1 }}" />
       
-      <!-- Preview -->
-      <quad if="selected != null" 
-            pos="116 -7" 
-            size="38 38" 
-            image="{{ selected.ThumbnailUrl }}" 
-            keepratio="Fit" />
+      <!-- Details. Remote images are not loaded while a player is driving, so no thumbnail is shown. -->
       <label if="selected != null" 
              class="text-primary" 
              text="{{ selected.Name }}" 
-             pos="98 -46" 
+             pos="98 -8" 
              size="74 5" 
              textsize="1.2" />
       <label if="selected != null" 
              class="text-primary" 
              text="by {{ selected.Authors }}" 
-             pos="98 -51" 
+             pos="98 -15" 
              size="74 4" 
              textsize="0.6" />
       <label if="selected != null" 
              class="text-primary" 
              text='{{ selected.Difficulty }}  |  {{ selected.Length.ToString(@"m\:ss\.fff") }}  |  {{ selected.Awards }} awards' 
-             pos="98 -56" 
+             pos="98 -21" 
              textsize="0.5" />
       <label if="selected != null" 
              class="text-primary" 
              text='Uploaded {{ selected.UploadedAt?.ToString("yyyy-MM-dd") ?? "-" }}  |  TMX #{{ selected.Id }}' 
-             pos="98 -60" 
+             pos="98 -26" 
              textsize="0.4" />
       <label if="selected != null" 
              class="text-primary" 
              text='Tags: {{ selected.Tags.Count > 0 ? string.Join(", ", selected.Tags.Take(6)) + (selected.Tags.Count > 6 ? " +" + (selected.Tags.Count - 6) : "") : "-" }}' 
-             pos="98 -64" 
+             pos="98 -31" 
              size="74 4" 
              textsize="0.4" />
       
@@ -124,12 +120,19 @@ with a preview of the selected map.
               x="98" y="-70" 
               width="36"
               action="MapListManialinkController/TmxAdd/{{ selected.Id }}" />
+      <LinkButton if="selected != null"
+                  id="btnTmxView"
+                  text="View on TMX"
+                  url="{{ selected.TmxUrl }}"
+                  x="98" y="-76"
+                  width="36"
+                  type="secondary" />
       <Button id="btnTmxClose" text="Close" x="136" y="-70" width="36" type="secondary" action="MapListManialinkController/CloseAddMap" />
       
       <label if="tmx.Message != null" 
              class="text-primary" 
              text="{{ tmx.Message }}" 
-             pos="98 -78" 
+             pos="98 -84" 
              size="74 4" 
              textsize="0.5" />
     </Window>
