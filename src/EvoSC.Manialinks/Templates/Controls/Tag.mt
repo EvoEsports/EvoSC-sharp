@@ -43,6 +43,9 @@ Generic tag that can be used to display additional info, values or status.
   <!-- Whether to center the text on the tag background -->
   <property type="bool" name="centerText" default="true" />
   
+  <!-- Font size of the tag text -->
+  <property type="double" name="textSize" default="0.4" />
+
   <template>
     <Panel
             x="{{ x }}"
@@ -61,7 +64,7 @@ Generic tag that can be used to display additional info, values or status.
               textcolor="{{ string.IsNullOrEmpty(textColor) ? Util.TypeToColorText(severity) : textColor }}"
               size="{{ width }} 5"
               text="{{ text }}"
-              textsize="0.4"
+              textsize="{{ textSize }}"
               valign="center"
               halign='{{ centerText ? "center" : "left" }}'
       />

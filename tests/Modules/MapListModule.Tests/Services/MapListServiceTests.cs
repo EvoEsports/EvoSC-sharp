@@ -5,7 +5,10 @@ using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Models.Maps;
 using EvoSC.Manialinks.Interfaces;
 using EvoSC.Modules.Official.MapListModule.Interfaces;
+using EvoSC.Modules.Official.MapListModule.Interfaces.Database;
 using EvoSC.Modules.Official.MapListModule.Interfaces.Models;
+using EvoSC.Modules.Official.MapListModule.Models;
+using EvoSC.Modules.Official.MapListModule.Permissions;
 using EvoSC.Modules.Official.MapListModule.Services;
 using EvoSC.Modules.Official.MapsModule;
 using EvoSC.Modules.Official.PlayerRecords.Database.Models;
@@ -43,6 +46,10 @@ public class MapListServiceTests
         var server = Mocking.NewServerClientMock();
         var manialinkManagerService = new Mock<IManialinkManager>();
         var permissionManagerService = new Mock<IPermissionManager>();
+        var repository = new Mock<IMapListRepository>();
+        repository.Setup(r => r.GetFavoriteMapIdsAsync(It.IsAny<long>())).ReturnsAsync([]);
+        repository.Setup(r => r.GetTagsByMapAsync()).ReturnsAsync([]);
+        repository.Setup(r => r.GetAllTagsAsync()).ReturnsAsync([]);
 
         var maplistService = new MapListService(
             matchSettingsService.Object,
@@ -52,7 +59,10 @@ public class MapListServiceTests
             logger,
             server.Chat.Object,
             manialinkManagerService.Object,
-            permissionManagerService.Object
+            permissionManagerService.Object,
+            repository.Object,
+            new MapListStateService(),
+            server.Client.Object
         );
 
         return (
@@ -68,6 +78,66 @@ public class MapListServiceTests
             manialinkManagerService,
             permissionManagerService
         );
+    }
+
+    [Fact]
+    public async Task Maps_Are_Searched_By_Name_And_Sorted()
+    {
+        var mock = NewMapListServiceMock();
+        IMap[] maps = [new Map { Enabled = true, Uid = "a", Name = "Zebra" }, new Map { Enabled = true, Uid = "b", Name = "Alpha" }, new Map { Enabled = true, Uid = "c", Name = "Almond" }];
+        mock.MatchSettings.Setup(m => m.GetCurrentMapListAsync()).ReturnsAsync(maps);
+
+        var all = await mock.MapListService.GetFilteredMapsForPlayerAsync(mock.Player.Object, new MapListFilter());
+        Assert.Equal(["Almond", "Alpha", "Zebra"], all.Maps.Select(m => m.Map.Name));
+        Assert.Equal(3, all.TotalCount);
+
+        var desc = await mock.MapListService.GetFilteredMapsForPlayerAsync(mock.Player.Object,
+            new MapListFilter { Descending = true });
+        Assert.Equal("Zebra", desc.Maps[0].Map.Name);
+
+        var searched = await mock.MapListService.GetFilteredMapsForPlayerAsync(mock.Player.Object,
+            new MapListFilter { Search = "alm" });
+        Assert.Single(searched.Maps);
+        Assert.Equal(3, searched.TotalCount);
+    }
+
+    [Fact]
+    public async Task No_Finish_Filter_Only_Returns_Maps_Without_Pb()
+    {
+        var mock = NewMapListServiceMock();
+        IMap[] maps = [new Map { Enabled = true, Uid = "a", Name = "A" }, new Map { Enabled = true, Uid = "b", Name = "B" }];
+        mock.MatchSettings.Setup(m => m.GetCurrentMapListAsync()).ReturnsAsync(maps);
+        mock.PlayerRecords.Setup(m => m.GetPlayerRecordAsync(mock.Player.Object, maps[0]))
+            .ReturnsAsync(new DbPlayerRecord());
+
+        var result = await mock.MapListService.GetFilteredMapsForPlayerAsync(mock.Player.Object,
+            new MapListFilter { NoFinishOnly = true });
+
+        Assert.Equal("B", Assert.Single(result.Maps).Map.Name);
+    }
+
+    [Fact]
+    public async Task Disabled_Maps_Are_Hidden_Without_Permission_And_Shown_With_It()
+    {
+        var mock = NewMapListServiceMock();
+        IMap[] rotation = [new Map { Uid = "a", Name = "A", Enabled = true }];
+        IMap[] allMaps = [rotation[0], new Map { Uid = "b", Name = "B", Enabled = false }];
+        mock.MatchSettings.Setup(m => m.GetCurrentMapListAsync()).ReturnsAsync(rotation);
+        mock.MapService.Setup(m => m.GetCurrentMapListAsync()).ReturnsAsync(allMaps);
+
+        var without = await mock.MapListService.GetFilteredMapsForPlayerAsync(mock.Player.Object, new MapListFilter());
+        Assert.Equal("A", Assert.Single(without.Maps).Map.Name);
+
+        mock.PermissionManager
+            .Setup(m => m.HasPermissionAsync(mock.Player.Object, MapListPermissions.ToggleMapEnabled))
+            .ReturnsAsync(true);
+
+        var with = await mock.MapListService.GetFilteredMapsForPlayerAsync(mock.Player.Object, new MapListFilter());
+        Assert.Equal(2, with.Maps.Count);
+
+        var onlyDisabled = await mock.MapListService.GetFilteredMapsForPlayerAsync(mock.Player.Object,
+            new MapListFilter { DisabledOnly = true });
+        Assert.Equal("B", Assert.Single(onlyDisabled.Maps).Map.Name);
     }
 
     [Fact]
@@ -151,7 +221,7 @@ public class MapListServiceTests
     public async Task ShowMapList_Is_Shown_To_Player()
     {
         var mock = NewMapListServiceMock();
-        var map = new Map { Uid = "map" };
+        var map = new Map { Enabled = true, Uid = "map" };
 
         mock.MatchSettings
             .Setup(m => m.GetCurrentMapListAsync())
@@ -171,7 +241,7 @@ public class MapListServiceTests
             mock.Player.Object,
             "MapListModule.MapList",
             It.Is<object>(d =>
-                ((IEnumerable<IMapListMap>)d.GetType().GetProperty("maps").GetValue(d, null)).First().Map == map
+                ((MapListResult)d.GetType().GetProperty("result").GetValue(d, null)).Maps.First().Map == map
                 && (bool)(d.GetType().GetProperty("canRemoveMaps").GetValue(d, null))
             )));
     }

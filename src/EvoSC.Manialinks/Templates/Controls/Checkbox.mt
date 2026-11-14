@@ -66,6 +66,14 @@
                     pos="2.5 -2.5"
                     scriptevents="1"
             />
+            <!-- Click area over the box. Must stay after the icon label, the script finds the icon by index. -->
+            <quad
+                    class="evosc-checkbox"
+                    data-id="{{ id }}"
+                    size="5 5"
+                    bgcolor="00000000"
+                    scriptevents="1"
+            />
             <HiddenEntry
                     name="{{ id }}"
                     id="{{ id }}-entry"

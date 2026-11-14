@@ -40,7 +40,7 @@ public class DbMap : IMap
     [Column]
     public DateTime CreatedAt { get; set; }
 
-    [Column]
+    [Column(SkipOnUpdate = true)]
     public DateTime UpdatedAt { get; set; }
     
     [Association(ThisKey = nameof(AuthorId), OtherKey = nameof(DbPlayer.Id))]
@@ -64,7 +64,7 @@ public class DbMap : IMap
         
         Id = map.Id;
         Uid = map.Uid;
-        FilePath = "";
+        FilePath = map.FilePath ?? "";
         AuthorId = map.Author?.Id ?? 0;
         Enabled = map.Enabled;
         Name = map.Name;

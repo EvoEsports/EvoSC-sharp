@@ -57,6 +57,15 @@ public interface IMapService
     public Task RemoveMapAsync(long mapId);
 
     /// <summary>
+    /// Enable or disable a map. A disabled map stays on the server and in the database,
+    /// but is not part of the map rotation.
+    /// </summary>
+    /// <param name="map">The map to enable or disable.</param>
+    /// <param name="enabled">Whether the map should be enabled.</param>
+    /// <returns>The updated map.</returns>
+    public Task<IMap> SetMapEnabledAsync(IMap map, bool enabled);
+
+    /// <summary>
     /// Add all maps in the current map list to the database if they don't already exist.
     /// </summary>
     /// <returns></returns>

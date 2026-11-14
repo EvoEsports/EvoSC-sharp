@@ -1,7 +1,6 @@
-﻿using EvoSC.Common.Database.Models.Maps;
-using EvoSC.Common.Database.Models.Player;
-using EvoSC.Common.Interfaces.Models;
 using EvoSC.Modules.Official.MapListModule.Interfaces.Models;
+using EvoSC.Common.Database.Models.Maps;
+using EvoSC.Common.Database.Models.Player;
 using LinqToDB.Mapping;
 
 namespace EvoSC.Modules.Official.MapListModule.Database.Models;
@@ -10,13 +9,19 @@ namespace EvoSC.Modules.Official.MapListModule.Database.Models;
 public class DbMapFavorite : IMapFavorite
 {
     public const string TableName = "MapFavorites";
-    
+
     [PrimaryKey, Identity]
-    public int Id { get; set; }
-    
-    [Association(ThisKey = nameof(Id), OtherKey = nameof(DbMap.Id))]
-    public IMap Map { get; set; }
-    
-    [Association(ThisKey = nameof(Id), OtherKey = nameof(DbPlayer.Id))]
-    public IPlayer Player { get; set; }
+    public long Id { get; set; }
+
+    [Column]
+    public long MapId { get; set; }
+
+    [Column]
+    public long PlayerId { get; set; }
+
+    [Association(ThisKey = nameof(MapId), OtherKey = nameof(DbMap.Id))]
+    public DbMap? Map { get; set; }
+
+    [Association(ThisKey = nameof(PlayerId), OtherKey = nameof(DbPlayer.Id))]
+    public DbPlayer? Player { get; set; }
 }
