@@ -28,12 +28,12 @@ public class CommandsMiddleware(ActionDelegate next, ILogger<CommandsMiddleware>
                 return;
             }
 
-            await serverClient.Chat.ErrorMessageAsync($"Error: {cmdParserException.Message}", player);
+            await serverClient.Chat.ErrorMessageAsync(cmdParserException.Message, player);
+            logger.LogWarning(cmdParserException, "Failed to parse command");
         }
-
-        if (result.Exception is PlayerNotFoundException playerNotFoundException)
+        else if (result.Exception is PlayerNotFoundException playerNotFoundException)
         {
-            await serverClient.Chat.ErrorMessageAsync($"Error: {playerNotFoundException.Message}", player);
+            await serverClient.Chat.ErrorMessageAsync(playerNotFoundException.Message, player);
         }
         else
         {
