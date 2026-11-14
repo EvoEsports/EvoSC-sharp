@@ -48,8 +48,7 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
                 Name = mapStream.MapMetadata.MapName,
                 ExternalId = mapStream.MapMetadata.ExternalId,
                 ExternalVersion = mapStream.MapMetadata.ExternalVersion,
-                ExternalMapProvider = mapStream.MapMetadata.ExternalMapProvider,
-                UpdatedAt = DateTime.Now
+                ExternalMapProvider = mapStream.MapMetadata.ExternalMapProvider
             });
             
             await events.RaiseAsync(MapEvent.MapUpdated, new MapUpdatedEventArgs { Map = updatedMap, OldMap = existingMap });
@@ -63,9 +62,19 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
         
         var author = await playerService.GetOrCreatePlayerAsync(authorAccountId, mapStream.MapMetadata.AuthorName);
         var newMap = await mapRepository.AddMapAsync(mapStream.MapMetadata, author, mapRelativePath);
-        var mapDetails = await FetchMapDetailsAsync(newMap);
-        
-        await mapRepository.AddMapDetailsAsync(mapDetails, newMap);
+
+        try
+        {
+            var mapDetails = await FetchMapDetailsAsync(newMap);
+            await mapRepository.AddMapDetailsAsync(mapDetails, newMap);
+        }
+        catch
+        {
+            // don't leave a half-added map behind, or it will be reported as already added next time
+            await RollbackAddedMapAsync(newMap, mapFullPath);
+            throw;
+        }
+
         await events.RaiseAsync(MapEvent.MapAdded, new MapEventArgs { Map = newMap });
         
         return newMap;
@@ -92,7 +101,7 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
     }
 
     public Task<IMap> SetMapEnabledAsync(IMap map, bool enabled) =>
-        mapRepository.UpdateMapAsync(new DbMap(map) { Enabled = enabled, UpdatedAt = DateTime.Now });
+        mapRepository.UpdateMapAsync(new DbMap(map) { Enabled = enabled });
 
     public async Task AddCurrentMapListAsync()
     {
@@ -214,6 +223,30 @@ public class MapService(IMapRepository mapRepository, ILogger<MapService> logger
     private static bool MapVersionExistsInDb(IMap map, MapMetadata mapMetadata)
     {
         return map.ExternalVersion == mapMetadata.ExternalVersion;
+    }
+
+    private async Task RollbackAddedMapAsync(IMap map, string mapFullPath)
+    {
+        try
+        {
+            await mapRepository.RemoveMapAsync(map.Id);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to remove map {Uid} from the database after a failed add", map.Uid);
+        }
+
+        try
+        {
+            if (File.Exists(mapFullPath))
+            {
+                File.Delete(mapFullPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to delete map file {Path} after a failed add", mapFullPath);
+        }
     }
 
     private async Task SaveMapFileAsync(Stream mapStream, string filePath)

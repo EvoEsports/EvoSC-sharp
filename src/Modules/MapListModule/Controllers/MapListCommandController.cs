@@ -15,7 +15,7 @@ public class MapListCommandController(IMapListService mapList, IMapService mapSe
     [CommandAlias("/maps")]
     [CommandAlias("/tracklist")]
     [CommandAlias("/tracks")]
-    public Task MapListAsync() => mapList.ShowMapListAsync(Context.Player);
+    public Task MapListAsync() => mapList.OpenMapListAsync(Context.Player);
 
     [ChatCommand("addtag", "Add a tag to the current map.", MapListPermissions.ManageTags)]
     public async Task AddTagAsync(string tag)

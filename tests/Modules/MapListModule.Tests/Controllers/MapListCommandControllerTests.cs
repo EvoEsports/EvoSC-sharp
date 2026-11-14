@@ -24,6 +24,6 @@ public class MapListCommandControllerTests : CommandInteractionControllerTestBas
     {
         await Controller.MapListAsync();
 
-        _mapListService.Verify(m => m.ShowMapListAsync(_player.Object));
+        _mapListService.Verify(m => m.OpenMapListAsync(_player.Object));
     }
 }

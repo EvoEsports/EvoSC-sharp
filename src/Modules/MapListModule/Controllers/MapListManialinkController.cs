@@ -1,5 +1,4 @@
 ﻿using EvoSC.Common.Controllers.Attributes;
-using System.Data;
 using EvoSC.Common.Interfaces.Services;
 using EvoSC.Manialinks;
 using EvoSC.Manialinks.Attributes;
@@ -14,7 +13,7 @@ using EvoSC.Modules.Official.MapsModule.Interfaces;
 namespace EvoSC.Modules.Official.MapListModule.Controllers;
 
 [Controller]
-public class MapListManialinkController(IMapService mapService, IMapQueueService mapQueueService, IMapListService mapListService, IMapListStateService stateService, ITmxSearchService tmxSearch, IMxMapService mxMapService) : ManialinkController
+public class MapListManialinkController(IMapService mapService, IMapQueueService mapQueueService, IMapListService mapListService, IMapListStateService stateService, IMapListFilterService filterService, IMapListTmxService tmxService) : ManialinkController
 {
     public async Task QueueMapAsync(string mapUid)
     {
@@ -28,91 +27,65 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
         await mapQueueService.DropAsync(map);
     }
 
-    public async Task FavoriteMapAsync(string mapUid)
+    public async Task SetFavoriteAsync(string mapUid, bool favorite)
     {
-        await mapListService.ToggleFavoriteAsync(Context.Player, mapUid);
+        await mapListService.SetFavoriteAsync(Context.Player, mapUid, favorite);
         await mapListService.ShowMapListAsync(Context.Player);
     }
 
     public async Task SearchAsync(MapListSearchModel input)
     {
-        stateService.GetFilter(Context.Player).Search = input.Search ?? "";
+        filterService.SetSearch(Context.Player, input.Search);
         await mapListService.ShowMapListAsync(Context.Player);
     }
 
-    public async Task ToggleFilterAsync(string name)
+    public async Task ResetFilterAsync()
     {
-        var filter = stateService.GetFilter(Context.Player);
+        stateService.ResetFilter(Context.Player);
+        await mapListService.ShowMapListAsync(Context.Player);
+    }
 
-        switch (name)
-        {
-            case "all":
-                stateService.ResetFilter(Context.Player);
-                break;
-            case "favorites":
-                filter.FavoritesOnly = !filter.FavoritesOnly;
-                break;
-            case "search":
-                filter.Search = "";
-                break;
-            case "disabled":
-                filter.DisabledOnly = !filter.DisabledOnly;
-                break;
-            case "nofinish":
-                filter.NoFinishOnly = !filter.NoFinishOnly;
-                break;
-        }
-
+    public async Task ClearSearchAsync()
+    {
+        filterService.SetSearch(Context.Player, null);
         await mapListService.ShowMapListAsync(Context.Player);
     }
 
     /// <summary>
-    /// Add a tag to the tag filter. Selecting an active tag again removes it.
+    /// Turn one of the filters (favorites, nofinish or disabled) on or off.
     /// </summary>
-    public async Task ToggleTagAsync(string tag)
+    public async Task SetFilterAsync(string name, bool enabled)
     {
-        var filter = stateService.GetFilter(Context.Player);
-        var removed = filter.Tags.RemoveAll(t => string.Equals(t, tag, StringComparison.OrdinalIgnoreCase));
-
-        if (removed == 0)
-        {
-            filter.Tags.Add(tag);
-        }
-
+        filterService.SetFilter(Context.Player, name, enabled);
         await mapListService.ShowMapListAsync(Context.Player);
     }
 
     /// <summary>
-    /// List all maps of an author. Selecting the active author again clears it.
+    /// Add a tag to the tag filter or remove it.
     /// </summary>
-    public async Task ToggleAuthorAsync(string accountId)
+    public async Task SetTagAsync(string tag, bool active)
     {
-        var filter = stateService.GetFilter(Context.Player);
-        filter.AuthorAccountId = filter.AuthorAccountId == accountId ? null : accountId;
-        filter.AuthorName = null;
+        filterService.SetTag(Context.Player, tag, active);
         await mapListService.ShowMapListAsync(Context.Player);
     }
 
     /// <summary>
-    /// Sort by a column. Selecting the active column again flips the direction.
+    /// List all maps of an author, or clear the author filter.
     /// </summary>
-    public async Task SortAsync(string column)
+    public async Task SetAuthorAsync(string accountId, bool active)
     {
-        if (!Enum.TryParse<MapListSort>(column, true, out var sort))
+        filterService.SetAuthor(Context.Player, accountId, active);
+        await mapListService.ShowMapListAsync(Context.Player);
+    }
+
+    /// <summary>
+    /// Sort by a column in the given direction.
+    /// </summary>
+    public async Task SortAsync(string column, bool descending)
+    {
+        if (!filterService.SetSort(Context.Player, column, descending))
         {
             return;
-        }
-
-        var filter = stateService.GetFilter(Context.Player);
-
-        if (filter.Sort == sort)
-        {
-            filter.Descending = !filter.Descending;
-        }
-        else
-        {
-            filter.Sort = sort;
-            filter.Descending = false;
         }
 
         await mapListService.ShowMapListAsync(Context.Player);
@@ -174,18 +147,16 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
     }
 
     [ManialinkRoute(Permission = MapListPermissions.ToggleMapEnabled)]
-    public async Task ToggleMapEnabledAsync(string mapUid)
+    public async Task SetMapEnabledAsync(string mapUid, bool enabled)
     {
-        var enabled = await mapListService.ToggleMapEnabledAsync(Context.Player, mapUid);
-
-        if (enabled == null)
+        if (!await mapListService.SetMapEnabledAsync(Context.Player, mapUid, enabled))
         {
             Context.AuditEvent.Error();
             return;
         }
 
         Context.AuditEvent
-            .WithEventName(enabled.Value ? AuditEvents.EnableMap : AuditEvents.DisableMap)
+            .WithEventName(enabled ? AuditEvents.EnableMap : AuditEvents.DisableMap)
             .HavingProperties(new { mapUid })
             .Success();
 
@@ -225,12 +196,7 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
     [ManialinkRoute(Permission = MapsPermissions.AddMap)]
     public async Task OpenAddMapAsync()
     {
-        var tmx = stateService.GetTmxState(Context.Player);
-
-        if (tmx.Result.Maps.Count == 0)
-        {
-            await LoadTmxPageAsync(tmx, tmx.Query, 0);
-        }
+        await tmxService.EnsureLoadedAsync(Context.Player);
 
         // hide the map list first so it doesn't flash while the dialog is being drawn
         await HideAsync(Context.Player, "MapListModule.MapList");
@@ -240,82 +206,47 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
     [ManialinkRoute(Permission = MapsPermissions.AddMap)]
     public async Task TmxSearchAsync(TmxSearchModel input)
     {
-        await LoadTmxPageAsync(stateService.GetTmxState(Context.Player), input.TmxSearch ?? "", 0);
+        await tmxService.SearchAsync(Context.Player, input.TmxSearch ?? "");
         await mapListService.ShowAddMapDialogAsync(Context.Player);
     }
 
     [ManialinkRoute(Permission = MapsPermissions.AddMap)]
     public async Task TmxPageAsync(int page)
     {
-        var tmx = stateService.GetTmxState(Context.Player);
-        await LoadTmxPageAsync(tmx, tmx.Query, Math.Max(page, 0));
+        await tmxService.GoToPageAsync(Context.Player, page);
         await mapListService.ShowAddMapDialogAsync(Context.Player);
     }
 
     [ManialinkRoute(Permission = MapsPermissions.AddMap)]
     public async Task TmxSelectAsync(int id)
     {
-        var tmx = stateService.GetTmxState(Context.Player);
-        tmx.SelectedId = id;
-        tmx.Message = null;
+        tmxService.Select(Context.Player, id);
         await mapListService.ShowAddMapDialogAsync(Context.Player);
     }
 
     [ManialinkRoute(Permission = MapsPermissions.AddMap)]
     public async Task TmxAddAsync(int id)
     {
-        var tmx = stateService.GetTmxState(Context.Player);
+        string? mapUid;
 
         try
         {
-            var tmxInfo = tmx.Result.Maps.FirstOrDefault(m => m.Id == id);
-            var existing = await mapService.GetMapByExternalIdAsync(id.ToString()) ??
-                           (string.IsNullOrEmpty(tmxInfo?.Uid) ? null : await mapService.GetMapByUidAsync(tmxInfo.Uid));
-
-            var map = existing == null ? await mxMapService.FindAndDownloadMapAsync(id, null, Context.Player) : null;
-
-            if (existing != null)
-            {
-                tmx.Message = "Map already in map list.";
-                Context.AuditEvent.Error();
-            }
-            else if (map == null)
-            {
-                tmx.Message = "Could not download the map from Trackmania Exchange.";
-                Context.AuditEvent.Error();
-            }
-            else
-            {
-                // carry over the Trackmania Exchange tags as map list tags
-                var tmxMap = tmx.Result.Maps.FirstOrDefault(m => m.Id == id);
-
-                foreach (var tag in tmxMap?.Tags ?? [])
-                {
-                    await mapListService.AddTagAsync(map.Uid, tag);
-                }
-
-                tmx.Message = $"Added '{map.Name}'.";
-                Context.AuditEvent.WithEventName(AuditEvents.AddTmxMap).HavingProperties(new { id, map.Uid }).Success();
-            }
-        }
-        catch (DuplicateNameException)
-        {
-            tmx.Message = "That map has already been added.";
-            Context.AuditEvent.Error();
-        }
-        catch (FileLoadException)
-        {
-            tmx.Message = "The server can't find the downloaded map file. Check the maps path in the EvoSC config.";
-            Context.AuditEvent.Error();
-            await mapListService.ShowAddMapDialogAsync(Context.Player);
-            throw;
+            mapUid = await tmxService.AddMapAsync(Context.Player, id);
         }
         catch (Exception)
         {
-            tmx.Message = "Failed to add the map.";
             Context.AuditEvent.Error();
             await mapListService.ShowAddMapDialogAsync(Context.Player);
             throw;
+        }
+
+        if (mapUid == null)
+        {
+            Context.AuditEvent.Error();
+        }
+        else
+        {
+            Context.AuditEvent.WithEventName(AuditEvents.AddTmxMap).HavingProperties(new { id, Uid = mapUid }).Success();
         }
 
         await mapListService.ShowAddMapDialogAsync(Context.Player);
@@ -325,23 +256,5 @@ public class MapListManialinkController(IMapService mapService, IMapQueueService
     {
         await HideAsync(Context.Player, "MapListModule.Dialogs.AddMapDialog");
         await mapListService.ShowMapListAsync(Context.Player);
-    }
-
-    private async Task LoadTmxPageAsync(TmxSearchState tmx, string query, int page)
-    {
-        var result = await tmxSearch.SearchAsync(query, page);
-
-        tmx.Query = query;
-        tmx.Message = null;
-
-        if (result == null)
-        {
-            tmx.Message = "Could not reach Trackmania Exchange.";
-            return;
-        }
-
-        tmx.Page = page;
-        tmx.Result = result;
-        tmx.SelectedId = result.Maps.FirstOrDefault()?.Id;
     }
 }

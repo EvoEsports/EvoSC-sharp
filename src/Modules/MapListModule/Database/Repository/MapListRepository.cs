@@ -17,19 +17,23 @@ public class MapListRepository(IDbConnectionFactory dbConnFactory) : DbRepositor
         return ids.ToHashSet();
     }
 
-    public async Task<bool> ToggleFavoriteAsync(long playerId, long mapId)
+    public async Task SetFavoriteAsync(long playerId, long mapId, bool favorite)
     {
-        var deleted = await Table<DbMapFavorite>()
-            .Where(f => f.PlayerId == playerId && f.MapId == mapId)
-            .DeleteAsync();
-
-        if (deleted > 0)
+        if (!favorite)
         {
-            return false;
+            await Table<DbMapFavorite>()
+                .Where(f => f.PlayerId == playerId && f.MapId == mapId)
+                .DeleteAsync();
+            return;
         }
 
-        await Database.InsertAsync(new DbMapFavorite { PlayerId = playerId, MapId = mapId });
-        return true;
+        // the unique (PlayerId, MapId) index makes this safe to repeat
+        await Table<DbMapFavorite>()
+            .Merge()
+            .Using(new[] { new DbMapFavorite { PlayerId = playerId, MapId = mapId } })
+            .On((t, src) => t.PlayerId == src.PlayerId && t.MapId == src.MapId)
+            .InsertWhenNotMatched()
+            .MergeAsync();
     }
 
     public async Task<IReadOnlyList<DbMapTag>> GetAllTagsAsync() =>
@@ -37,33 +41,31 @@ public class MapListRepository(IDbConnectionFactory dbConnFactory) : DbRepositor
 
     public async Task<Dictionary<long, List<DbMapTag>>> GetTagsByMapAsync()
     {
-        var tags = await GetAllTagsAsync();
-        var links = await AsyncExtensions.ToListAsync(Table<DbMapTagMap>());
-        var tagsById = tags.ToDictionary(t => t.Id);
+        var links = await AsyncExtensions.ToListAsync(
+            from link in Table<DbMapTagMap>()
+            join tag in Table<DbMapTag>() on link.MapTagId equals tag.Id
+            orderby tag.Name
+            select new { link.MapId, Tag = tag });
 
         return links
-            .Where(l => tagsById.ContainsKey(l.MapTagId))
             .GroupBy(l => l.MapId)
-            .ToDictionary(g => g.Key, g => g.Select(l => tagsById[l.MapTagId]).OrderBy(t => t.Name).ToList());
+            .ToDictionary(g => g.Key, g => g.Select(l => l.Tag).ToList());
     }
 
     public async Task AddTagToMapAsync(long mapId, string tagName)
     {
-        var tag = await AsyncExtensions.FirstOrDefaultAsync(Table<DbMapTag>(), t => t.Name == tagName);
+        // tag names are unique, so adding an existing name does nothing
+        await Table<DbMapTag>()
+            .Merge()
+            .Using(new[] { new DbMapTag { Name = tagName } })
+            .On((t, src) => t.Name == src.Name)
+            .InsertWhenNotMatched()
+            .MergeAsync();
 
-        if (tag == null)
-        {
-            tag = new DbMapTag { Name = tagName };
-            tag.Id = Convert.ToInt32(await Database.InsertWithIdentityAsync(tag));
-        }
-
-        var exists = await AsyncExtensions.AnyAsync(Table<DbMapTagMap>(),
-            l => l.MapId == mapId && l.MapTagId == tag.Id);
-
-        if (!exists)
-        {
-            await Database.InsertAsync(new DbMapTagMap { MapId = mapId, MapTagId = tag.Id });
-        }
+        // link the tag, unless the map already has it
+        await Queryable.Where(Table<DbMapTag>(), t => t.Name == tagName &&
+                                                      !Table<DbMapTagMap>().Any(l => l.MapId == mapId && l.MapTagId == t.Id))
+            .InsertAsync(Table<DbMapTagMap>(), t => new DbMapTagMap { MapTagId = t.Id, MapId = mapId });
     }
 
     public async Task<bool> RemoveTagFromMapAsync(long mapId, string tagName)

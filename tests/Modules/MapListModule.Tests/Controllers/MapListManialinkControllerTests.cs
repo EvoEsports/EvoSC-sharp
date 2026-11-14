@@ -19,12 +19,12 @@ public class MapListManialinkControllerTests : ManialinkControllerTestBase<MapLi
     private Mock<IMapQueueService> _mapQueueService = new();
     private Mock<IMapListService> _mapListService = new();
     private Mock<IMapListStateService> _stateService = new();
-    private Mock<ITmxSearchService> _tmxSearch = new();
-    private Mock<IMxMapService> _mxMapService = new();
+    private Mock<IMapListFilterService> _filterService = new();
+    private Mock<IMapListTmxService> _tmxService = new();
     
     public MapListManialinkControllerTests()
     {
-        InitMock(_player.Object, _manialinkActionContext.Object, _mapService, _mapQueueService, _mapListService, _stateService, _tmxSearch, _mxMapService);
+        InitMock(_player.Object, _manialinkActionContext.Object, _mapService, _mapQueueService, _mapListService, _stateService, _filterService, _tmxService);
     }
 
     [Fact]

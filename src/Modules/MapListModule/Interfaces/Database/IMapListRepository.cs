@@ -10,10 +10,9 @@ public interface IMapListRepository
     public Task<HashSet<long>> GetFavoriteMapIdsAsync(long playerId);
 
     /// <summary>
-    /// Favorite a map if it is not already, otherwise remove it from the favorites.
+    /// Set whether a map is a favorite of a player. Setting the current state again has no effect.
     /// </summary>
-    /// <returns>True if the map is now a favorite.</returns>
-    public Task<bool> ToggleFavoriteAsync(long playerId, long mapId);
+    public Task SetFavoriteAsync(long playerId, long mapId, bool favorite);
 
     /// <summary>
     /// Get all existing tags.

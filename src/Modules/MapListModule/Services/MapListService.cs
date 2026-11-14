@@ -152,17 +152,21 @@ public class MapListService(
         return result;
     }
 
-    public async Task<bool?> ToggleMapEnabledAsync(IPlayer actor, string mapUid)
+    public async Task<bool> SetMapEnabledAsync(IPlayer actor, string mapUid, bool enable)
     {
         var map = await mapService.GetMapByUidAsync(mapUid);
 
         if (map == null)
         {
             logger.LogError("Map with UID {MapUid} was not found", mapUid);
-            return null;
+            return false;
         }
 
-        var enable = !map.Enabled;
+        if (map.Enabled == enable)
+        {
+            // the list the player acted on was outdated
+            return true;
+        }
 
         try
         {
@@ -191,11 +195,11 @@ public class MapListService(
         {
             logger.LogError(ex, "Failed to {Action} map {MapUid}", enable ? "enable" : "disable", mapUid);
             await chat.ErrorMessageAsync($"Failed to {(enable ? "enable" : "disable")} the map '{map.Name}'", actor);
-            return null;
+            return false;
         }
 
         await chat.SuccessMessageAsync($"'{map.Name}' was {(enable ? "enabled" : "disabled")}.", actor);
-        return enable;
+        return true;
     }
 
     private static bool Contains(string? text, string search) =>
@@ -216,10 +220,17 @@ public class MapListService(
         return ordered.ThenBy(m => FormattingUtils.CleanTmFormatting(m.Map.Name).ToLowerInvariant());
     }
 
-    public async Task<bool> ToggleFavoriteAsync(IPlayer player, string mapUid)
+    public async Task<bool> SetFavoriteAsync(IPlayer player, string mapUid, bool favorite)
     {
         var map = await mapService.GetMapByUidAsync(mapUid);
-        return map != null && await repository.ToggleFavoriteAsync(player.Id, map.Id);
+
+        if (map == null)
+        {
+            return false;
+        }
+
+        await repository.SetFavoriteAsync(player.Id, map.Id, favorite);
+        return true;
     }
 
     public async Task<bool> AddTagAsync(string mapUid, string tag)
@@ -271,6 +282,12 @@ public class MapListService(
         }
         
         await chat.SuccessMessageAsync($"'{map.Name}' was removed from the map list.", actor);
+    }
+
+    public Task OpenMapListAsync(IPlayer player)
+    {
+        state.ResetFilter(player);
+        return ShowMapListAsync(player);
     }
 
     public async Task ShowMapListAsync(IPlayer player)

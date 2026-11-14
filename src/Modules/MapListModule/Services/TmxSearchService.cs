@@ -1,5 +1,7 @@
 using System.Globalization;
+using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using EvoSC.Common.Services.Attributes;
 using EvoSC.Common.Services.Models;
 using EvoSC.Modules.Official.MapListModule.Interfaces;
@@ -77,10 +79,10 @@ public class TmxSearchService(ILogger<TmxSearchService> logger) : ITmxSearchServ
         using var response = await Http.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
-        await using var stream = await response.Content.ReadAsStreamAsync();
-        using var doc = await JsonDocument.ParseAsync(stream);
+        var body = await response.Content.ReadFromJsonAsync<TmxMapsResponse>()
+                   ?? throw new JsonException("Empty response from Trackmania Exchange.");
 
-        return doc.RootElement.GetProperty("Results").EnumerateArray().Select(ParseMap).ToList();
+        return body.Results.Select(ToMapInfo).ToList();
     }
 
     private static async Task<int?> FindTagIdAsync(string query)
@@ -91,11 +93,11 @@ public class TmxSearchService(ILogger<TmxSearchService> logger) : ITmxSearchServ
             using var response = await Http.GetAsync("https://trackmania.exchange/api/meta/tags");
             response.EnsureSuccessStatusCode();
 
-            await using var stream = await response.Content.ReadAsStreamAsync();
-            using var doc = await JsonDocument.ParseAsync(stream);
+            var apiTags = await response.Content.ReadFromJsonAsync<List<TmxTagDto>>() ?? [];
 
-            tags = doc.RootElement.EnumerateArray()
-                .ToDictionary(t => Normalize(t.GetProperty("Name").GetString() ?? ""), t => t.GetProperty("ID").GetInt32());
+            tags = apiTags
+                .GroupBy(t => Normalize(t.Name))
+                .ToDictionary(g => g.Key, g => g.First().Id);
             _tags = tags;
         }
 
@@ -106,26 +108,40 @@ public class TmxSearchService(ILogger<TmxSearchService> logger) : ITmxSearchServ
 
     private static Dictionary<string, int>? _tags;
 
-    private static TmxMapInfo ParseMap(JsonElement e)
+    private static TmxMapInfo ToMapInfo(TmxMapDto dto) => new()
     {
-        var difficulty = e.GetProperty("Difficulty").GetInt32();
+        Id = dto.MapId,
+        Uid = dto.MapUid ?? "",
+        Name = dto.Name ?? "",
+        Authors = string.Join(", ", dto.Authors.Select(a => a.User.Name)),
+        Tags = dto.Tags.Select(t => t.Name).ToList(),
+        Difficulty = dto.Difficulty >= 0 && dto.Difficulty < Difficulties.Length
+            ? Difficulties[dto.Difficulty]
+            : "Unknown",
+        Length = TimeSpan.FromMilliseconds(dto.Length),
+        Awards = dto.AwardCount,
+        UploadedAt = DateTime.TryParse(dto.UploadedAt, CultureInfo.InvariantCulture, DateTimeStyles.None,
+            out var uploaded)
+            ? uploaded
+            : null
+    };
 
-        return new TmxMapInfo
-        {
-            Id = e.GetProperty("MapId").GetInt32(),
-            Uid = e.GetProperty("MapUid").GetString() ?? "",
-            Name = e.GetProperty("Name").GetString() ?? "",
-            Authors = string.Join(", ",
-                e.GetProperty("Authors").EnumerateArray()
-                    .Select(a => a.GetProperty("User").GetProperty("Name").GetString())),
-            Tags = e.GetProperty("Tags").EnumerateArray().Select(t => t.GetProperty("Name").GetString() ?? "").ToList(),
-            Difficulty = difficulty >= 0 && difficulty < Difficulties.Length ? Difficulties[difficulty] : "Unknown",
-            Length = TimeSpan.FromMilliseconds(e.GetProperty("Length").GetInt32()),
-            Awards = e.GetProperty("AwardCount").GetInt32(),
-            UploadedAt = DateTime.TryParse(e.GetProperty("UploadedAt").GetString(), CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out var uploaded)
-                ? uploaded
-                : null
-        };
-    }
+    private record TmxMapsResponse(List<TmxMapDto> Results);
+
+    private record TmxMapDto(
+        int MapId,
+        string? MapUid,
+        string? Name,
+        List<TmxAuthorDto> Authors,
+        List<TmxTagDto> Tags,
+        int Difficulty,
+        int Length,
+        int AwardCount,
+        string? UploadedAt);
+
+    private record TmxAuthorDto(TmxUserDto User);
+
+    private record TmxUserDto(string Name);
+
+    private record TmxTagDto([property: JsonPropertyName("ID")] int Id, string Name);
 }

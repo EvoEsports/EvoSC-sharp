@@ -48,33 +48,33 @@ a sidebar for searching, filtering and sorting.
         
         <Button id="btnFilterAll" text="All maps" x="0" y="-14" width="34" 
                 type='{{ (!filter.FavoritesOnly && !filter.NoFinishOnly && !filter.DisabledOnly && filter.Tags.Count == 0 && filter.AuthorAccountId == null && filter.Search == "") ? "primary" : "secondary" }}'
-                action="MapListManialinkController/ToggleFilter/all" />
+                action="MapListManialinkController/ResetFilter" />
         <frame pos="0 -20">
-          <Rectangle id="chkFavorites" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/ToggleFilter/favorites" />
-          <label if="filter.FavoritesOnly" text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/ToggleFilter/favorites" />
-          <label class="text-primary" text="Favorites" textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/ToggleFilter/favorites" />
+          <Rectangle id="chkFavorites" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/SetFilter/favorites/{{ !filter.FavoritesOnly }}" />
+          <label if="filter.FavoritesOnly" text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/SetFilter/favorites/{{ !filter.FavoritesOnly }}" />
+          <label class="text-primary" text="Favorites" textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/SetFilter/favorites/{{ !filter.FavoritesOnly }}" />
         </frame>
         <frame pos="0 -26">
-          <Rectangle id="chkNoFinish" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/ToggleFilter/nofinish" />
-          <label if="filter.NoFinishOnly" text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/ToggleFilter/nofinish" />
-          <label class="text-primary" text="No Finish" textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/ToggleFilter/nofinish" />
+          <Rectangle id="chkNoFinish" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/SetFilter/nofinish/{{ !filter.NoFinishOnly }}" />
+          <label if="filter.NoFinishOnly" text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/SetFilter/nofinish/{{ !filter.NoFinishOnly }}" />
+          <label class="text-primary" text="No Finish" textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/SetFilter/nofinish/{{ !filter.NoFinishOnly }}" />
         </frame>
         <frame if="canToggleMaps" pos="0 -32">
-          <Rectangle id="chkDisabled" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/ToggleFilter/disabled" />
-          <label if="filter.DisabledOnly" text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/ToggleFilter/disabled" />
-          <label class="text-primary" text="Disabled" textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/ToggleFilter/disabled" />
+          <Rectangle id="chkDisabled" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/SetFilter/disabled/{{ !filter.DisabledOnly }}" />
+          <label if="filter.DisabledOnly" text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/SetFilter/disabled/{{ !filter.DisabledOnly }}" />
+          <label class="text-primary" text="Disabled" textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/SetFilter/disabled/{{ !filter.DisabledOnly }}" />
         </frame>
         
         <frame if="filter.AuthorAccountId != null" pos="0 {{ canToggleMaps ? -38 : -32 }}">
-          <Rectangle id="chkAuthor" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/ToggleAuthor/{{ filter.AuthorAccountId }}" />
-          <label text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/ToggleAuthor/{{ filter.AuthorAccountId }}" />
-          <label class="text-primary" text='{{ filter.AuthorName ?? "Author" }}' textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/ToggleAuthor/{{ filter.AuthorAccountId }}" />
+          <Rectangle id="chkAuthor" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/SetAuthor/{{ filter.AuthorAccountId }}/false" />
+          <label text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/SetAuthor/{{ filter.AuthorAccountId }}/false" />
+          <label class="text-primary" text='{{ filter.AuthorName ?? "Author" }}' textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/SetAuthor/{{ filter.AuthorAccountId }}/false" />
         </frame>
         
         <frame if="!string.IsNullOrEmpty(filter.Search)" pos="0 {{ (canToggleMaps ? -38 : -32) - (filter.AuthorAccountId != null ? 6 : 0) }}">
-          <Rectangle id="chkSearch" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/ToggleFilter/search" />
-          <label text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/ToggleFilter/search" />
-          <label class="text-primary" text='{{ filter.Search }}' textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/ToggleFilter/search" />
+          <Rectangle id="chkSearch" width="4.5" height="4.5" cornerRadius="0.5" bgColor="{{ Theme.UI_Checkbox_Default_Bg }}" action="MapListManialinkController/ClearSearch" />
+          <label text="{{ Icons.Check }}" textcolor="{{ Theme.UI_Checkbox_Default_CheckColor }}" textsize="1.5" size="4.5 4.5" halign="center" valign="center" pos="2.25 -2.25" action="MapListManialinkController/ClearSearch" />
+          <label class="text-primary" text='{{ filter.Search }}' textsize="0.8" size="26 4.5" valign="center" pos="6 -2.25" action="MapListManialinkController/ClearSearch" />
         </frame>
         
         <label class="text-primary" text="Tags:" pos="0 {{ (canToggleMaps ? -40 : -34) - ((filter.AuthorAccountId != null ? 6 : 0) + (!string.IsNullOrEmpty(filter.Search) ? 6 : 0)) }}" valign="center" />
@@ -87,7 +87,7 @@ a sidebar for searching, filtering and sorting.
                     y="0"
                     width="34"
                     type="secondary"
-                    action="MapListManialinkController/ToggleTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[0].Name }}" />
+                    action="MapListManialinkController/SetTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[0].Name }}/true" />
             <Button if="result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList().Count > 1"
                     id="btnAddTag1"
                     text="{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[1].Name }}"
@@ -95,7 +95,7 @@ a sidebar for searching, filtering and sorting.
                     y="-5"
                     width="34"
                     type="secondary"
-                    action="MapListManialinkController/ToggleTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[1].Name }}" />
+                    action="MapListManialinkController/SetTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[1].Name }}/true" />
             <Button if="result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList().Count > 2"
                     id="btnAddTag2"
                     text="{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[2].Name }}"
@@ -103,7 +103,7 @@ a sidebar for searching, filtering and sorting.
                     y="-10"
                     width="34"
                     type="secondary"
-                    action="MapListManialinkController/ToggleTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[2].Name }}" />
+                    action="MapListManialinkController/SetTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[2].Name }}/true" />
             <Button if="result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList().Count > 3"
                     id="btnAddTag3"
                     text="{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[3].Name }}"
@@ -111,7 +111,7 @@ a sidebar for searching, filtering and sorting.
                     y="-15"
                     width="34"
                     type="secondary"
-                    action="MapListManialinkController/ToggleTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[3].Name }}" />
+                    action="MapListManialinkController/SetTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[3].Name }}/true" />
             <Button if="result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList().Count > 4"
                     id="btnAddTag4"
                     text="{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[4].Name }}"
@@ -119,7 +119,7 @@ a sidebar for searching, filtering and sorting.
                     y="-20"
                     width="34"
                     type="secondary"
-                    action="MapListManialinkController/ToggleTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[4].Name }}" />
+                    action="MapListManialinkController/SetTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[4].Name }}/true" />
             <Button if="result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList().Count > 5"
                     id="btnAddTag5"
                     text="{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[5].Name }}"
@@ -127,7 +127,7 @@ a sidebar for searching, filtering and sorting.
                     y="-25"
                     width="34"
                     type="secondary"
-                    action="MapListManialinkController/ToggleTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[5].Name }}" />
+                    action="MapListManialinkController/SetTag/{{ result.AllTags.Where(t => !filter.Tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList()[5].Name }}/true" />
           </Dropdown>
         </frame>
         <Tag foreach="string activeTag in filter.Tags.Take(3)"
@@ -148,7 +148,7 @@ a sidebar for searching, filtering and sorting.
                     x="29"
                     y="{{ (canToggleMaps ? -50 : -44) - ((filter.AuthorAccountId != null ? 6 : 0) + (!string.IsNullOrEmpty(filter.Search) ? 6 : 0)) + 0.75 - __index*4.5 }}"
                     type="secondary"
-                    action="MapListManialinkController/ToggleTag/{{ activeTag }}" />
+                    action="MapListManialinkController/SetTag/{{ activeTag }}/false" />
         
         <label class="text-primary" 
                text="Showing {{ result.Maps.Count }} of {{ result.TotalCount }} total maps" 
@@ -163,22 +163,22 @@ a sidebar for searching, filtering and sorting.
                 text='Name{{ filter.Sort == MapListSort.Name ? (filter.Descending ? " (desc)" : " (asc)") : "" }}' 
                 x="10" width="22" 
                 type='{{ filter.Sort == MapListSort.Name ? "primary" : "secondary" }}'
-                action="MapListManialinkController/Sort/Name" />
+                action="MapListManialinkController/Sort/Name/{{ filter.Sort == MapListSort.Name && !filter.Descending }}" />
         <Button id="btnSortAuthor" 
                 text='Author{{ filter.Sort == MapListSort.Author ? (filter.Descending ? " (desc)" : " (asc)") : "" }}' 
                 x="33" width="22" 
                 type='{{ filter.Sort == MapListSort.Author ? "primary" : "secondary" }}'
-                action="MapListManialinkController/Sort/Author" />
+                action="MapListManialinkController/Sort/Author/{{ filter.Sort == MapListSort.Author && !filter.Descending }}" />
         <Button id="btnSortPb" 
                 text='PB{{ filter.Sort == MapListSort.Pb ? (filter.Descending ? " (desc)" : " (asc)") : "" }}' 
                 x="56" width="22" 
                 type='{{ filter.Sort == MapListSort.Pb ? "primary" : "secondary" }}'
-                action="MapListManialinkController/Sort/Pb" />
+                action="MapListManialinkController/Sort/Pb/{{ filter.Sort == MapListSort.Pb && !filter.Descending }}" />
         <Button id="btnSortFavorite" 
                 text='Favorite{{ filter.Sort == MapListSort.Favorite ? (filter.Descending ? " (desc)" : " (asc)") : "" }}' 
                 x="79" width="22" 
                 type='{{ filter.Sort == MapListSort.Favorite ? "primary" : "secondary" }}'
-                action="MapListManialinkController/Sort/Favorite" />
+                action="MapListManialinkController/Sort/Favorite/{{ filter.Sort == MapListSort.Favorite && !filter.Descending }}" />
         <Button if="canAddMaps"
                 id="btnAddMap"
                 text="Add map"

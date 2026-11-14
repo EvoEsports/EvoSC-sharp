@@ -12,7 +12,7 @@
   <property type="int" name="zIndex" default="0" />
   
   <!-- Color of the slider handle. Uses the primary background color when empty. -->
-  <property type="string" name="color" default="" />
+  <property type="string" name="color" default="{{ Theme.UI_BgPrimary }}" />
   
   <template>
     <frame pos="{{ x }} {{ y }}" id="{{ id }}">

@@ -40,7 +40,7 @@ public class DbMap : IMap
     [Column]
     public DateTime CreatedAt { get; set; }
 
-    [Column]
+    [Column(SkipOnUpdate = true)]
     public DateTime UpdatedAt { get; set; }
     
     [Association(ThisKey = nameof(AuthorId), OtherKey = nameof(DbPlayer.Id))]

@@ -132,8 +132,10 @@ with details of the selected map.
       <label if="tmx.Message != null" 
              class="text-primary" 
              text="{{ tmx.Message }}" 
-             pos="98 -84" 
-             size="74 4" 
+             pos="98 -80" 
+             size="74 12" 
+             valign="top"
+             autonewline="1"
              textsize="0.5" />
     </Window>
   </template>

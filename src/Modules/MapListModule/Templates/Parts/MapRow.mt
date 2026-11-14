@@ -43,7 +43,7 @@ Show a row with map information along with action buttons.
               x="{{ width*0.26 }}"
               id="btnAuthor{{ index }}"
               type="secondary"
-              action="MapListManialinkController/ToggleAuthor/{{ map.Map.Author.AccountId }}"
+              action="MapListManialinkController/SetAuthor/{{ map.Map.Author.AccountId }}/true"
       />
       
       <label class="text-primary" 
@@ -109,7 +109,7 @@ Show a row with map information along with action buttons.
               x="{{ width-6 - (canRemoveMaps ? 6 : 0) }}"
               id="btnToggleEnabled{{ index }}"
               type="secondary"
-              action="MapListManialinkController/ToggleMapEnabled/{{ map.Map.Uid }}"
+              action="MapListManialinkController/SetMapEnabled/{{ map.Map.Uid }}/{{ !map.IsEnabled }}"
               if="canToggleMaps"
       />
       
@@ -135,7 +135,7 @@ Show a row with map information along with action buttons.
                   y="{{ -(height-5)/2 }}" 
                   x="{{ width-12 - 6*((canRemoveMaps ? 1 : 0) + (canToggleMaps ? 1 : 0) + (canManageTags ? 1 : 0)) }}" 
                   id="btnFavorite{{ index }}"
-                  action="MapListManialinkController/FavoriteMap/{{ map.Map.Uid }}" />
+                  action="MapListManialinkController/SetFavorite/{{ map.Map.Uid }}/{{ !map.IsFavorite }}" />
     </Panel>
   </template>
 </component>

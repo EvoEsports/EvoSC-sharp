@@ -23,6 +23,14 @@ public interface IMapListService
     public Task DeleteMapAsync(IPlayer actor, string mapUid);
 
     /// <summary>
+    /// Open the map list for a player from scratch. The player's search, filters and sorting are reset first.
+    /// Use <see cref="ShowMapListAsync"/> to redraw the list while keeping them.
+    /// </summary>
+    /// <param name="player">Player to open the maplist for.</param>
+    /// <returns></returns>
+    public Task OpenMapListAsync(IPlayer player);
+
+    /// <summary>
     /// Show the map list UI to a player.
     /// </summary>
     /// <param name="player">Player to show the maplist to.</param>
@@ -47,12 +55,13 @@ public interface IMapListService
     public Task<MapListResult> GetFilteredMapsForPlayerAsync(IPlayer player, MapListFilter filter);
 
     /// <summary>
-    /// Add a map to a player's favorites, or remove it if it already is one.
+    /// Add a map to a player's favorites or remove it. Setting the current state again has no effect.
     /// </summary>
     /// <param name="player">The player to update favorites for.</param>
     /// <param name="mapUid">UID of the map.</param>
-    /// <returns>True if the map is now a favorite.</returns>
-    public Task<bool> ToggleFavoriteAsync(IPlayer player, string mapUid);
+    /// <param name="favorite">True to make the map a favorite, false to remove it from the favorites.</param>
+    /// <returns>False if the map was not found.</returns>
+    public Task<bool> SetFavoriteAsync(IPlayer player, string mapUid, bool favorite);
 
     /// <summary>
     /// Add a tag to a map.
@@ -71,13 +80,14 @@ public interface IMapListService
     public Task<bool> RemoveTagAsync(string mapUid, string tag);
 
     /// <summary>
-    /// Disable a map if it is enabled, otherwise enable it. Disabling removes the map from the
-    /// map rotation and hides it from players that can't toggle maps. Enabling adds it back to the rotation.
+    /// Enable or disable a map. Disabling removes the map from the map rotation and hides it from players
+    /// that can't toggle maps. Enabling adds it back to the rotation. Setting the current state again has no effect.
     /// </summary>
-    /// <param name="actor">Player that toggled the map.</param>
+    /// <param name="actor">Player that changed the map.</param>
     /// <param name="mapUid">UID of the map.</param>
-    /// <returns>True if the map is now enabled, false if disabled, null if the map was not found or it failed.</returns>
-    public Task<bool?> ToggleMapEnabledAsync(IPlayer actor, string mapUid);
+    /// <param name="enabled">True to enable the map, false to disable it.</param>
+    /// <returns>False if the map was not found or it failed.</returns>
+    public Task<bool> SetMapEnabledAsync(IPlayer actor, string mapUid, bool enabled);
 
     /// <summary>
     /// Show the dialog for viewing and editing the tags of a map.
