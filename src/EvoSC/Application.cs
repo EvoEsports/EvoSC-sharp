@@ -1,7 +1,10 @@
 ﻿using EvoSC.CLI.Interfaces;
 using EvoSC.Common.Application;
 using EvoSC.Common.Config.Models;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using EvoSC.Common.Interfaces;
+using EvoSC.Common.Interfaces.Services;
 using EvoSC.Common.Services;
 using EvoSC.Modules.Interfaces;
 using SimpleInjector;
@@ -15,6 +18,8 @@ public sealed class Application : IEvoSCApplication, IDisposable
     private readonly IEvoScBaseConfig _config;
 
     private readonly CancellationTokenSource _runningToken = new();
+
+    private int _shuttingDown;
 
     public IStartupPipeline StartupPipeline { get; }
 
@@ -37,8 +42,44 @@ public sealed class Application : IEvoSCApplication, IDisposable
         StartupPipeline.SetupPipeline(_config);
         await StartupPipeline.ExecuteAllAsync();
 
+        using var sigterm = PosixSignalRegistration.Create(PosixSignal.SIGTERM, OnSigterm);
+
         // wait indefinitely
         WaitHandle.WaitAll(new[] {_runningToken.Token.WaitHandle});
+    }
+
+    /// <summary>
+    /// The version of the running application, without build metadata.
+    /// </summary>
+    public static string GetVersion()
+    {
+        var version = Assembly.GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+        return version?.Split('+')[0] ?? "unknown";
+    }
+
+    private void OnSigterm(PosixSignalContext context)
+    {
+        // we handle the shutdown ourselves so the message can be sent before disconnecting
+        context.Cancel = true;
+
+        if (_runningToken.IsCancellationRequested || Interlocked.Exchange(ref _shuttingDown, 1) == 1)
+        {
+            return;
+        }
+
+        try
+        {
+            Services.GetInstance<IChatService>().WarningMessageAsync("EvoSC# is shutting down.")
+                .GetAwaiter().GetResult();
+        }
+        catch (Exception)
+        {
+            // the server may already be unreachable, shut down regardless
+        }
+
+        ShutdownAsync().GetAwaiter().GetResult();
     }
     
     public async Task ShutdownAsync()

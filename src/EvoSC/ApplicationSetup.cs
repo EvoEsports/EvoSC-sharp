@@ -102,6 +102,8 @@ public static class ApplicationSetup
             )
 
             .AsyncAction("InitializeGbxRemoteConnection", SetupGbxRemoteConnectionAsync)
+
+            .AsyncAction("AnnounceStartup", AnnounceStartupAsync)
                 
             .AsyncAction("InitializeCaches", InitializeCachesAndTrackersAsync)
 
@@ -111,8 +113,22 @@ public static class ApplicationSetup
                 
             .AsyncAction("ActionEnableModules", EnableModulesAsync)
 
-            .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks");
+            .AsyncAction("ActionInitializeTemplates", InitializeTemplatesAsync, "Manialinks")
+
+            .AsyncAction("AnnounceStartupFinished", AnnounceStartupFinishedAsync);
     }
+
+    /// <summary>
+    /// Tell players in the chat that EvoSC# is starting.
+    /// </summary>
+    private static Task AnnounceStartupAsync(ServicesBuilder s) =>
+        s.GetInstance<IChatService>().InfoMessageAsync("EvoSC# is starting...");
+
+    /// <summary>
+    /// Tell players in the chat that EvoSC# has started, including its version.
+    /// </summary>
+    private static Task AnnounceStartupFinishedAsync(ServicesBuilder s) =>
+        s.GetInstance<IChatService>().SuccessMessageAsync($"EvoSC# v{Application.GetVersion()} started.");
     
     /// <summary>
     /// Preprocesses manialinks.
